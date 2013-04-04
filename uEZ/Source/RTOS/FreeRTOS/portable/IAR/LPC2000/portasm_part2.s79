@@ -1,0 +1,68 @@
+        NAME LPC2000_FreeRTOS_portASM_part2
+
+#include "FreeRTOSConfig.h"
+#include "ISR_Support.h"
+
+AsmVector MACRO vectorNum
+        portSAVE_CONTEXT
+        mov R0, #vectorNum
+        BL  InterruptHandlerX
+        portRESTORE_CONTEXT
+        ENDM
+
+        SECTION `.text`:CODE:NOROOT(2)
+        ARM
+
+        EXTERN InterruptHandlerX
+	EXTERN vTaskSwitchContext
+	EXTERN vTaskIncrementTick
+	EXTERN vPortPreemptiveTick
+
+            PUBLIC AsmVector16
+AsmVector16: AsmVector 16
+
+            PUBLIC AsmVector17
+AsmVector17: AsmVector 17
+
+            PUBLIC AsmVector18
+AsmVector18: AsmVector 18
+
+            PUBLIC AsmVector19
+AsmVector19: AsmVector 19
+
+            PUBLIC AsmVector20
+AsmVector20: AsmVector 20
+
+            PUBLIC AsmVector21
+AsmVector21: AsmVector 21
+
+            PUBLIC AsmVector22
+AsmVector22: AsmVector 22
+
+            PUBLIC AsmVector23
+AsmVector23: AsmVector 23
+
+            PUBLIC AsmVector24
+AsmVector24: AsmVector 24
+
+            PUBLIC AsmVector25
+AsmVector25: AsmVector 25
+
+            PUBLIC AsmVector26
+AsmVector26: AsmVector 26
+
+            PUBLIC AsmVector27
+AsmVector27: AsmVector 27
+
+            PUBLIC AsmVector28
+AsmVector28: AsmVector 28
+
+            PUBLIC AsmVector29
+AsmVector29: AsmVector 29
+
+            PUBLIC AsmVector30
+AsmVector30: AsmVector 30
+
+            PUBLIC AsmVector31
+AsmVector31: AsmVector 31
+            END

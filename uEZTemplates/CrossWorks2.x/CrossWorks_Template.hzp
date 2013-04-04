@@ -1,0 +1,47 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="CrossWorks_Template" target="8" version="2">
+  <project Name="CrossWorks_Template">
+    <configuration Name="Common" Target="LPC1788" arm_architecture="v7M" arm_core_type="Cortex-M3" arm_gcc_target="arm-unknown-eabi" arm_linker_heap_size="500000" arm_linker_process_stack_size="0" arm_linker_stack_size="2048" arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000" arm_target_debug_interface_type="ADIv5" arm_target_loader_parameter="12000000" build_remove_unused_symbols="Yes" c_only_additional_options="-fms-extensions" c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET" c_user_include_directories=".;../../.;./Source;../../uEZ;../../uEZ/Include;../../uEZ/Source/RTOS/FreeRTOS/include;../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQS;../../uEZ/Source/Processor/NXP/LPC1788;../../uEZ/Source/Processor/NXP/LPC1788/CrossWorks2.0/include" link_include_startup_code="No" linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)" linker_memory_map_file="$(ProjectDir)/uEZGUI-1788_MemoryMap.xml" linker_section_placement_file="$(ProjectDir)/uEZGUI-1788_placement.xml" oscillator_frequency="12MHz" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml"/>
+    <configuration Name="Flash" Placement="Flash" arm_target_flash_loader_file_path="$(TargetsDir)/LPC1000/Release/Loader_lpc177x_8x.elf" arm_target_flash_loader_type="LIBMEM RPC Loader" build_remove_unused_symbols="Yes" linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC1000/LPC1000_LinkPatch.js\&quot;);patch(\&quot;$(TargetPath)\&quot;);&quot;" target_reset_script="FLASHReset()"/>
+    <folder Name="Source">
+      <file file_name="Source/Calibration.c"/>
+      <file file_name="Source/Calibration.h"/>
+      <file file_name="Source/Config_App.h"/>
+      <file file_name="Source/Hello_World.c"/>
+      <file file_name="Source/Hello_World.h"/>
+      <file file_name="Source/NVSettings.c"/>
+      <file file_name="Source/NVSettings.h"/>
+      <file file_name="Source/Audio.c"/>
+      <file file_name="Source/Audio.h"/>
+    </folder>
+    <folder Name="uEZ Files">
+      <folder Name="Platform">
+        <file file_name="../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQS/uEZGUI_1788_43WQS.c"/>
+        <file file_name="../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQS/uEZPlatform.h"/>
+      </folder>
+      <folder Name="uEZ Library">
+        <file file_name="../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks2.x/Release/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks2_Release.a"/>
+      </folder>
+      <folder Name="Processor">
+        <folder Name="NXP">
+          <folder Name="LPC1788">
+            <folder Name="CrossWorks">
+              <file file_name="../../uEZ/Source/Processor/NXP/LPC1788/CrossWorks2.0/LPC177x_8x_Target.js">
+                <configuration Name="Common" file_type="Target Script"/>
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+    </folder>
+    <file file_name="Config_Build.h"/>
+    <file file_name="main.c"/>
+  </project>
+  <configuration Name="THUMB" Platform="ARM" arm_instruction_set="THUMB" arm_library_instruction_set="THUMB" c_preprocessor_definitions="__THUMB" hidden="Yes"/>
+  <configuration Name="Debug" build_debug_information="Yes" c_preprocessor_definitions="DEBUG" gcc_optimization_level="None" hidden="Yes" link_include_startup_code="No"/>
+  <configuration Name="Release" build_debug_information="No" c_additional_options="-g1" c_preprocessor_definitions="NDEBUG" gcc_optimization_level="Level 1" hidden="Yes" link_include_startup_code="No"/>
+  <configuration Name="Flash" c_preprocessor_definitions="__FLASH_BUILD" hidden="Yes"/>
+  <configuration Name="Common" linker_section_placement_file="C:/FDI/uEZ/SVN/Template/CrossWorks2.x/uEZGUI-1788_placement.xml"/>
+  <configuration Name="Debug" inherited_configurations="Flash;THUMB"/>
+  <configuration Name="Release" inherited_configurations="Flash;THUMB"/>
+</solution>

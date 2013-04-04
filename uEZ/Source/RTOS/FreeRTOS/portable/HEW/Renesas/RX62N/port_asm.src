@@ -1,0 +1,15 @@
+		.GLB	_vSoftwareInterruptISR
+		.GLB	_vSoftwareInterruptEntry
+
+		.SECTION   P,CODE
+		
+_vSoftwareInterruptEntry:
+
+	BRA	_vSoftwareInterruptISR
+
+		.RVECTOR	27, _vSoftwareInterruptEntry
+
+		.END
+
+
+

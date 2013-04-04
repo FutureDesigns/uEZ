@@ -1,0 +1,59 @@
+<!DOCTYPE CrossStudio_Group_Values>
+<propertyGroups>
+  <group short="Target Processor" group="Build Options" long="Select a set of target options" name="Target" default="LPC1768" >
+    <groupEntry name="LPC1751" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1751_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x8000;0x2000;0x0"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1751" />
+    </groupEntry>
+    <groupEntry name="LPC1752" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1752_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x10000;0x4000;0x0"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1752" />
+    </groupEntry>
+    <groupEntry name="LPC1754" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1754_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x20000;0x8000;0x0"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1754" />
+    </groupEntry>
+    <groupEntry name="LPC1756" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1756_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x40000;0x8000;0x0"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1756" />
+    </groupEntry>
+    <groupEntry name="LPC1758" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1758_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x80000;0x8000;0x8000"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1758" />
+    </groupEntry>
+    <groupEntry name="LPC1764" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1764_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x20000;0x8000;0x0"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1764" />
+    </groupEntry>
+    <groupEntry name="LPC1765" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1765_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x40000;0x8000;0x8000"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1765" />
+    </groupEntry>
+    <groupEntry name="LPC1766" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1766_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x40000;0x8000;0x8000"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1766" />
+    </groupEntry>
+    <groupEntry name="LPC1768" >
+      <property name="linker_memory_map_file" value="$(TargetsDir)/LPC1000/LPC1768_MemoryMap.xml" />
+      <property name="arm_simulator_memory_simulation_parameter" value="0x80000;0x8000;0x8000"/>
+      <cdefine name="__TARGET_PROCESSOR" value="LPC1768" />
+    </groupEntry>
+  </group>
+  <group short="Section Placement" group="Build Options" long="Select a set of options based on section placement." name="Placement" default="Flash" >
+    <groupEntry name="RAM">
+      <property value="$(StudioDir)/targets/Cortex_M/ram_placement.xml" name="linker_section_placement_file" />
+    </groupEntry>
+    <groupEntry name="Flash">
+      <property value="$(StudioDir)/targets/Cortex_M/flash_placement.xml" name="linker_section_placement_file" />
+    </groupEntry>
+  </group>
+  <include filename="../frequencies.xml"/>
+</propertyGroups>

@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Config">
+      <UniqueIdentifier>{665bf044-fef4-43c0-8239-2ae3a98c9147}</UniqueIdentifier>
+      <Extensions>*.h</Extensions>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{a3c4246a-fd20-4636-9f78-b62f55e5ff26}</UniqueIdentifier>
+      <Extensions>*.*</Extensions>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{8482cfc3-f25b-44b9-bff3-e7eacf84b12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Simulation">
+      <UniqueIdentifier>{725ede1e-3ff6-4c23-8567-a3494dee8356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Simulation\Res">
+      <UniqueIdentifier>{fb4ebaaa-ec83-476d-a38e-cf46ff918c47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Simulation\WinMain">
+      <UniqueIdentifier>{8d44559e-a4b3-4aea-8114-0539f22ff25f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{469ff9b7-f2fb-4896-a3b1-8676e4215531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\GUICommon">
+      <UniqueIdentifier>{5974a258-f9be-4593-8fab-a8b2af29c21f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ">
+      <UniqueIdentifier>{5c53816c-e350-44f3-b62c-796cf3cbe2a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ\Source">
+      <UniqueIdentifier>{fce5640f-a745-4092-b96a-5891b235d2ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ\Source\uEZSystem">
+      <UniqueIdentifier>{60068b5e-8790-42b2-abe9-37c810e0ecf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ\Source\RTOS">
+      <UniqueIdentifier>{224e44c0-9e6d-4740-999c-e2c273fbd086}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Config\GUIConf.c">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\LCDConf.c">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\SIMConf.c">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Simulation\WinMain\WinMain.c">
+      <Filter>System\Simulation\WinMain</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\App\GUICommon\FDI_emWin_Demo.c">
+      <Filter>Application\GUICommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\App\GUICommon\Keyboard.c">
+      <Filter>Application\GUICommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\App\GUICommon\Keypad.c">
+      <Filter>Application\GUICommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\App\GUICommon\LookAndFeel.c">
+      <Filter>Application\GUICommon</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZLCD.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZTimeDate.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZTS.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\RTOS\uEZRTOS_FreeRTOS.c">
+      <Filter>uEZ\Source\RTOS</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Config\GUIConf.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\LCDConf.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Simulation\GUI_SIM_Win32.h">
+      <Filter>System\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Simulation\SIM.h">
+      <Filter>System\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Simulation\Res\ResourceSim.h">
+      <Filter>System\Simulation\Res</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\App\GUICommon\FDI_emWin_Demo.h">
+      <Filter>Application\GUICommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\App\GUICommon\Keyboard.h">
+      <Filter>Application\GUICommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\App\GUICommon\Keypad.h">
+      <Filter>Application\GUICommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\App\GUICommon\LookAndFeel.h">
+      <Filter>Application\GUICommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Config_App.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Config_Build.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Simulation\Res\Branding.rh">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Device.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Device1.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Logo.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\n.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\no.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\nw.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\o.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\off.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\off1.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\s.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Simulation.ico">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\so.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\sw.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\w.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="System\Simulation\Res\Simulation.rc">
+      <Filter>System\Simulation\Res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="GUI\GUIx86.lib">
+      <Filter>GUI</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

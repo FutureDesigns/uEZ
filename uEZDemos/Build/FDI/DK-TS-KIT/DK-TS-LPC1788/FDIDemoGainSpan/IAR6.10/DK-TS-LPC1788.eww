@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\DK-TS-LPC1788.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR6.x\uEZ_NXP_LPC1788_FreeRTOS_IAR6.ewp</path>
+  </project>
+  <batchBuild/>
+</workspace>
+
+

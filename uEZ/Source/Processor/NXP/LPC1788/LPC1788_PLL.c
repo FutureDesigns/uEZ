@@ -1,0 +1,190 @@
+/*-------------------------------------------------------------------------*
+ * File:  LPC1788_PLL.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *     
+ *-------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------
+ * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
+
+/*-------------------------------------------------------------------------*
+ * Includes:
+ *-------------------------------------------------------------------------*/
+#include <uEZ.h>
+#include <uEZProcessor.h>
+#include "LPC1788_PLL.h"
+
+/*-------------------------------------------------------------------------*
+ * Constants:
+ *-------------------------------------------------------------------------*/
+
+/*-------------------------------------------------------------------------*
+ * Globals:
+ *-------------------------------------------------------------------------*/
+TUInt32 G_OscillatorFrequency IN_INTERNAL_RAM;
+TUInt32 G_ProcessorFrequency IN_INTERNAL_RAM;
+TUInt32 G_PeripheralFrequency IN_INTERNAL_RAM;
+TUInt32 G_EMCFrequency IN_INTERNAL_RAM;
+TUInt32 G_USBFrequency IN_INTERNAL_RAM;
+
+/*-------------------------------------------------------------------------*
+ * Types:
+ *-------------------------------------------------------------------------*/
+typedef struct {
+    __IO uint32_t CON; /*!< Offset: 0x080 (R/W)  PLL Control Register */
+    __IO uint32_t CFG; /*!< Offset: 0x084 (R/W)  PLL Configuration Register */
+    __I uint32_t STAT; /*!< Offset: 0x088 (R/ )  PLL Status Register */
+    __O uint32_t FEED; /*!< Offset: 0x08C ( /W)  PLL Feed Register */
+} T_pllRegs;
+
+/*-------------------------------------------------------------------------*
+ * Prototypes:
+ *-------------------------------------------------------------------------*/
+static void IPLLSetup(T_pllRegs *pll, TUInt32 aGoalFreq, TUInt32 aRefFreq)
+{
+    TUInt32 m = aGoalFreq / aRefFreq;
+    TUInt32 p = 0;
+    TUInt32 fcco;
+
+    do {
+        fcco = aRefFreq * (1 << p) * 2 * m;
+        if ((fcco >= 156000000) && (fcco <= 320000000))
+            break;
+        p++;
+    } while (1);
+    pll->CFG = (p << 5) | (m - 1);
+
+    // Enable
+    pll->CON = 0x01;
+    pll->FEED = 0xAA;
+    pll->FEED = 0x55;
+
+    /* Wait for PLOCK0 */
+    while (!(pll->STAT & (1 << 10)))
+        ;
+
+    // Enable & Connect
+    pll->CON = 0x03;
+    pll->FEED = 0xAA;
+    pll->FEED = 0x55;
+}
+
+void LPC1788_PLL_SetFrequencies(const T_LPC1788_PLL_Frequencies *aFreq)
+{
+    TUInt32 pll0_clk;
+    TUInt32 pll1_clk;
+    TUInt32 f_clk;
+    TUInt32 usbsel_clk;
+
+    /* Start with the safest FLASHCFG setting */
+    LPC_SC->FLASHCFG = 0x00005000;
+
+    /* Turn on the main oscillator */
+    LPC_SC->SCS = 0x00000020;
+    /* Wait for Oscillator to be ready */
+    while (
+        (LPC_SC->SCS & (1 << 6)) == 0)
+        ;
+
+    /* Peripheral Clock Selection */
+    LPC_SC->PCLKSEL = aFreq->iPeripheralClockDivider;
+
+    /* EMC Clock Selection */
+    LPC_SC->EMCCLKSEL = aFreq->iEMCClockDivider - 1;
+
+    /* SPIFI Clock Selection (old) */
+    //LPC_SC->SPIFISEL = 1;
+
+    /* Select Clock Source for PLL0 */
+    LPC_SC->CLKSRCSEL = aFreq->iClockSourceSelect;
+    if (aFreq->iClockSourceSelect)
+        G_OscillatorFrequency = aFreq->iOscillatorClockHz;
+    else
+        G_OscillatorFrequency = LPC1788_IRC_FREQUENCY;
+
+    /* Setup Clock Divider */
+    LPC_SC->CCLKSEL = aFreq->iCPUClockDivider;
+
+    // Setup the PLL0 and connect to the CPU
+    IPLLSetup((T_pllRegs *)&LPC_SC->PLL0CON, aFreq->iPLL0Frequency,
+            aFreq->iOscillatorClockHz);
+    LPC_SC->CCLKSEL |= 0x100;
+
+    /* It seems that the LPC_SC->SPIFISEL is W only */
+    //LPC_SC->SPIFISEL = 0x101;
+
+    /* Setup USB Clock Divider on PLL1 with a divide by 1 */
+    LPC_SC->USBCLKSEL = 1;
+    IPLLSetup((T_pllRegs *)&LPC_SC->PLL1CON, aFreq->iPLL1Frequency,
+            aFreq->iOscillatorClockHz);
+    LPC_SC->USBCLKSEL |= (aFreq->iUSBClockSelect << 8);
+    //  LPC_SC->SPIFISEL = 0x200 | SPIFISEL_Val; /* It seems that the LPC_SC->SPIFISEL is W only */
+
+    /* Clock Output Configuration */
+    LPC_SC->CLKOUTCFG = aFreq->iClockOutSelect
+            | (((aFreq->iClockOutDivider - 1) & 15) << 4)
+            | (aFreq->iClockOutEnable ? 0x100 : 0);
+
+    /* Determine clock frequency according to clock register values */
+    /* If PLL0 enabled and connected */
+    if (((LPC_SC->PLL0STAT >> 8) & 1) == 1) {
+        pll0_clk = G_OscillatorFrequency * ((LPC_SC->PLL0STAT & 0x1F) + 1);
+        f_clk = pll0_clk;
+    } else {
+        f_clk = G_OscillatorFrequency;
+    }
+    G_ProcessorFrequency = f_clk / (LPC_SC->CCLKSEL & 0x1F);
+    G_PeripheralFrequency = f_clk / (LPC_SC->PCLKSEL & 0x1F);
+    G_EMCFrequency = f_clk / (1 + (LPC_SC->EMCCLKSEL & 1));
+    if (((LPC_SC->USBCLKSEL >> 8) & 3) == 0) {
+        usbsel_clk = G_OscillatorFrequency;
+    } else if (((LPC_SC->USBCLKSEL >> 8) & 3) == 1) {
+        pll0_clk = G_OscillatorFrequency * ((LPC_SC->PLL0STAT & 0x1F) + 1);
+        usbsel_clk = pll0_clk;
+    } else {
+        pll1_clk = G_OscillatorFrequency * ((LPC_SC->PLL1STAT & 0x1F) + 1);
+        usbsel_clk = pll1_clk;
+    }
+    G_USBFrequency = usbsel_clk / (LPC_SC->USBCLKSEL & 0x1F);
+
+    // --------------------- Flash Accelerator Configuration ----------------------
+    //   <o1.0..1>   FETCHCFG: Fetch Configuration
+    //               <0=> Instruction fetches from flash are not buffered
+    //               <1=> One buffer is used for all instruction fetch buffering
+    //               *<2=> All buffers may be used for instruction fetch buffering
+    //               <3=> Reserved (do not use this setting)
+    //   <o1.2..3>   DATACFG: Data Configuration
+    //               <0=> Data accesses from flash are not buffered
+    //               <1=> One buffer is used for all data access buffering
+    //               *<2=> All buffers may be used for data access buffering
+    //               <3=> Reserved (do not use this setting)
+    //   <o1.4>      *ACCEL: Acceleration Enable
+    //   <o1.5>      *PREFEN: Prefetch Enable
+    //   <o1.6>      PREFOVR: Prefetch Override
+    //   <o1.12..15> FLASHTIM: Flash Access Time
+    //               <0=> 1 CPU clock (for CPU clock up to 20 MHz)
+    //               <1=> 2 CPU clocks (for CPU clock up to 40 MHz)
+    //               <2=> 3 CPU clocks (for CPU clock up to 60 MHz)
+    //               <3=> 4 CPU clocks (for CPU clock up to 80 MHz)
+    //               <4=> 5 CPU clocks (for CPU clock up to 100 MHz)
+    //               <5=> 6 CPU clocks (for any CPU clock)
+    // And turn on the Flash Accelerator functions
+    LPC_SC->FLASHCFG = ((((G_ProcessorFrequency + 19999999) / 20000000) - 1)
+            << 12) | 0x3A;
+}
+
+/*-------------------------------------------------------------------------*
+ * End of File:  LPC1788_PLL.c
+ *-------------------------------------------------------------------------*/

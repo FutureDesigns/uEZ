@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<flash_device>
+  <exe>$PROJ_DIR$\flash_loader_NOR\FlashLoader_UEZGUI_2478_NOR.out</exe>
+  <flash_base>0x80000000</flash_base>
+  <page>32</page>
+  <block>128 0x10000</block>
+  <macro>$PROJ_DIR$\flash_loader_NOR\uEZGUI-2478-70WVE_NOR.mac</macro>
+  <aggregate>1</aggregate>
+  <args_doc>None.</args_doc> 
+</flash_device>
