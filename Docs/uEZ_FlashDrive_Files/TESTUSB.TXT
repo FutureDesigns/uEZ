@@ -1,0 +1,3 @@
+* SAMPLE FILE FOR USB FLASH DRIVE *
+
+This is a sample file used by the functional tester to check the operation of the USB drive.
