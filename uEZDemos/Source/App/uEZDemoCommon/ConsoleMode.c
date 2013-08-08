@@ -34,6 +34,7 @@
 #include "uEZDemoCommon.h"
 #include <UEZPlatform.h>
 #include <UEZLCD.h>
+#include <UEZKeypad.h>
 
 /*-------------------------------------------------------------------------*
  * External Hooks:
@@ -471,7 +472,10 @@ void ConsoleMode(const T_choice *aChoice)
     T_uezDevice ts;
     static T_uezQueue queue = (TUInt32)NULL;
     T_pixelColor *pixels;
-
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
+    
     memset(G_coCharsLast, 0, sizeof(G_coCharsLast));
     memset(G_coChars, ' ', sizeof(G_coChars));
     G_coCursorX = G_coCursorY = 0;
@@ -479,7 +483,7 @@ void ConsoleMode(const T_choice *aChoice)
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == queue)
 	{
-	  	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) != UEZ_ERROR_NONE)
+	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
 		{
 		  	queue = NULL;
 		}
@@ -489,8 +493,14 @@ void ConsoleMode(const T_choice *aChoice)
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
 	  	UEZQueueAddToRegistry( queue, "Console TS" );	
 #else
-	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
-#endif	
+	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "Console", "\0");
+#endif
+#endif
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
+#endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
             // Open the LCD and get the pixel buffer
@@ -538,6 +548,9 @@ void ConsoleMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
         UEZQueueDelete(queue);
 #endif

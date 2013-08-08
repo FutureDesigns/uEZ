@@ -16,11 +16,10 @@
     <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
     <!-- Reserved 1 Meg for loading work space at end-->
     <ProgramSection alignment="4" size="1*1024*1024" load="No" name=".loadspace"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.data.RecorderData*)" name=".trace"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
   </MemorySegment>
-   <MemorySegment name="RAM">
+  <MemorySegment name="RAM">
     <ProgramSection alignment="4" load="No" name=".fast_run"/>
     <ProgramSection alignment="4" load="No" name=".data_run"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
@@ -30,11 +29,12 @@
     <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
   </MemorySegment>
-  <MemorySegment name="USB RAM">
-    <ProgramSection load="No" name=".usbram"/>
+  <MemorySegment name="AHBSRAM0" oldname="USB RAM">
+    <ProgramSection load="No" name=".usbhostmem"/>
+    <ProgramSection load="No" name=".mcimem"/>
   </MemorySegment>
-  <MemorySegment name="Ethernet RAM">
+  <MemorySegment name="AHBSRAM1">
     <!-- The ethernet area is reserved currently -->
-    <ProgramSection load="No" name=".ethernet" size="16*1024"/>
+    <ProgramSection load="No" name=".emacmem"/>
   </MemorySegment>
 </Root>

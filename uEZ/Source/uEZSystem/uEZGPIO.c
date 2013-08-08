@@ -598,6 +598,37 @@ TBool UEZGPIORead(T_uezGPIOPortPin aPortPin)
     return (read) ? ETrue : EFalse;
 }
 
+/**
+ *  Reads an entire GPIO port
+ *
+ *  @param [in]    aPortPin 	Port pin to control
+ *  @param [out]   aReadValue 	Port read value
+ *
+ *  @return        T_uezError
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZGPIO.h>
+ *
+ *  TUInt32 readValue, i;
+ *  UEZGPIOInput(GPIO_P0_12);		// set P0_12 to input
+ *  
+ *  if (UEZGPIOReadPort(GPIO_P0, &readValue) == UEZ_ERROR_NONE) {
+ *		for(i=0; i<NUM_PINS; i++) {
+ *          if(readValue>>i)
+ *              // Pin 0.i is high
+*       }
+ *  }
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZGPIOReadPort(T_uezGPIOPort aPort, TUInt32 *aReadValue)
+{
+    HAL_GPIOPort **p = UEZGPIOGetPortOrFail(aPort);
+
+    return (*p)->Read(p, 0xFFFFFFFF, aReadValue);
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  UEZGPIOLock
  *---------------------------------------------------------------------------*/

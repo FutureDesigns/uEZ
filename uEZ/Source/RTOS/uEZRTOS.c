@@ -32,6 +32,10 @@
 
 #define MAX_UEZ_TASK_LIST   10
 
+#ifndef configMAX_TASK_NAME_LEN
+#define configMAX_TASK_NAME_LEN   16
+#endif
+
 typedef struct {
         char iName[configMAX_TASK_NAME_LEN+1];
         T_uezPriority iPriority;

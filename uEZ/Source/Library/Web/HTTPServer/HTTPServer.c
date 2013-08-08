@@ -11,7 +11,7 @@
  *    HTTP Server Implementation
  *
  * @par Example code:
- * Example task to 
+ * Example task to
  * @par
  * @code
  * #include <uEZ.h>
@@ -43,33 +43,6 @@
 #include <uEZNetwork.h>
 #include <uEZINI.h>
 
-#undef DEBUG_HTTP_SERVER // temporarily
-#ifndef DEBUG_HTTP_SERVER
-#define DEBUG_HTTP_SERVER           1
-#endif
-
-#if DEBUG_HTTP_SERVER
-#define dprintf printf
-#else
-#define dprintf(...)
-#endif
-
-#ifndef WEB_SERVER_HTTP_PORT
-#define WEB_SERVER_HTTP_PORT               80
-#endif
-
-#ifndef WEB_SERVER_STACK_SIZE
-#define WEB_SERVER_STACK_SIZE  UEZ_TASK_STACK_BYTES(2048)
-#endif
-
-#ifndef WEB_SERVER_REPORT_VERSION
-#define WEB_SERVER_REPORT_VERSION         0
-#endif
-
-#ifndef WEB_SERVER_DRIVE
-#define WEB_SERVER_DRIVE                    "0"
-#endif
-
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
  *---------------------------------------------------------------------------*/
@@ -78,9 +51,6 @@
 
 /* Standard GET response. */
 #define HTTP_OK                 "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n"
-
-/* The port on which we listen. */
-#define HTTP_PORT               80
 
 #define  HTTP_MSG_NOT_FOUND \
         "<HTML>\r\n" \
@@ -100,13 +70,40 @@
         "</BODY>\r\n" \
         "</HTML>\r\n"
 
-#define MAX_LINE_LENGTH     512
-#define MAX_HTTP_VERSION    30
-#define MAX_HTTP_CONTENT_TYPE   120
-#define MAX_HTTP_CONTENT_BOUNDARY   80
+// when enabled prints information to console.
+#ifndef DEBUG_HTTP_SERVER
+#define DEBUG_HTTP_SERVER           	  0
+#endif
 
-#define MAX_VAR_NAME_LENGTH 20
-#define HTTP_WRITE_BUFFER_SIZE    512
+// Stack size of the HTTP Server
+#ifndef WEB_SERVER_STACK_SIZE
+#define WEB_SERVER_STACK_SIZE  UEZ_TASK_STACK_BYTES(2048)
+#endif
+
+// Displayed version number of the HTTP Server
+#ifndef WEB_SERVER_REPORT_VERSION
+#define WEB_SERVER_REPORT_VERSION         0
+#endif
+		
+#define MAX_LINE_LENGTH           512 // Max length of message to send/receive per packet
+#define MAX_HTTP_VERSION          30  // Supported version of HTTP advertised by the server
+#define MAX_HTTP_CONTENT_TYPE     120 // Type of content supplied from the HTTP Server
+#define MAX_HTTP_CONTENT_BOUNDARY 80  // Content boundary of the HTTP Server
+#define MAX_VAR_NAME_LENGTH       20  // Maximum length of variable name
+#define HTTP_WRITE_BUFFER_SIZE    512 // Max length of write buffer size
+
+#if DEBUG_HTTP_SERVER
+	#define dprintf printf
+#else
+	#if (COMPILER_TYPE == RenesasRX)
+    	void dprintf(const char * temp, ...);
+		void dprintf(const char * temp, ...){
+			; // do nothing	
+		}
+	#else
+		#define dprintf(...)
+	#endif
+#endif
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -137,6 +134,7 @@ typedef struct {
     TUInt32 iWriteLen;
     TUInt8 iContentType[MAX_HTTP_CONTENT_TYPE+1];
     TUInt8 iContentBoundary[MAX_HTTP_CONTENT_BOUNDARY+1];
+    const char *iDrivePrefix;
 } T_httpState;
 
 /*---------------------------------------------------------------------------*
@@ -164,7 +162,7 @@ extern void FuncTestPageHit(void);
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -199,7 +197,7 @@ memset(p, 0xCC, sizeof(T_httpState));
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -240,7 +238,7 @@ static void IHTTPStateFree(T_httpState *aState)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -271,7 +269,7 @@ static T_httpStateVar *IHTTPFindVar(T_httpState *aState, const char *aName)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -308,14 +306,14 @@ static void IHTTPFreeVar(T_httpState *aState, T_httpStateVar *aVar)
  *  Get a variable in the list of vars attached to this state
  *
  *	@param [in] *aHTTPState		HTTP session in progress
- *                          
+ *
  *	@param [out] *aVar 			Variable name to search for
  *
  *	@return		*char			Returns variable's data, or 0 if not found.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -340,16 +338,16 @@ const char *HTTPServerGetVar(void *aHTTPState, const char *aVar)
  *   Set a variable in the list of vars attached to this state
  *
  *	@param [in] *aHTTPState	Pointer to state of HTTP server
- *                          
+ *
  *	@param [in]	*aVar		Poitner to variable
  *
  *	@param [in] *aValue		Pointer to value
- *            
+ *
  *	@return		T_uezError	error
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -441,11 +439,11 @@ T_uezError HTTPServerSetVar(
  *
  *  @param [in]    aParameter 	Place to store parsed item.  Will be null string
  *              				in all cases where an item cannot be parsed.
- *  @return        
+ *  @return
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -514,7 +512,7 @@ static T_uezError IHTTPWrite(
     TBool aMoreToCome)
 {
     TUInt32 i;
-    T_uezError error;
+    T_uezError error = UEZ_ERROR_NONE;
 
     for (i=0; i<aLength; i++) {
         error = IHTTPWriteByte(aState, aData[i]);
@@ -551,7 +549,7 @@ static T_uezError IHTTPWrite(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -602,7 +600,7 @@ static T_uezError IHTTPReportError(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -645,7 +643,7 @@ static T_uezError IHTTPOutputHeader(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -677,7 +675,7 @@ static int ICompareStringInsensitive(const char *aString1, const char *aString2)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -755,7 +753,7 @@ static const char *IDetermineMimeTypeFromFilename(const char *aFilename)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -867,7 +865,7 @@ static T_uezError IHTTPParseFileForVars(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -979,7 +977,7 @@ static T_uezError IHTTPOutputParsedFile(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -987,20 +985,23 @@ static T_uezError IHTTPOutputParsedFile(
 static T_uezError IHTTPGet(T_httpState *aState)
 {
     T_uezFile file;
-    TUInt32 len;
+    TUInt32 len, totalLengthLeft;
+    TBool moreToCome;
     TUInt8 *block = aState->iFirstLine;
     const char *mimeType;
     T_uezError error = UEZ_ERROR_NONE;
+    TUInt32 prefixLen;
 
     // Parse out the filename and store in the first line field
-    // with a /httproot/ prefix
-    strcpy((char *)aState->iLine, WEB_SERVER_DRIVE ":/httproot");
+    // with a prefix (given in the iDrivePrefix)
+    strcpy((char *)aState->iLine, aState->iDrivePrefix);
+    prefixLen = strlen((char *)aState->iLine);
     IHTTPParameter(aState->iFirstLine, aState->iFirstLineLength, 1,
-        aState->iLine + 11 /*length of "/httproot"*/);
+        aState->iLine + prefixLen /*length of "/httproot"*/);
 
     // Check to see if we are blank?  If so, go to the default index.htm file.
-    if (strcmp((char *)aState->iLine + 11, "/") == 0)
-        strcpy((char *)aState->iLine + 11, "/INDEX.HTM");
+    if (strcmp((char *)aState->iLine + prefixLen, "/") == 0)
+        strcpy((char *)aState->iLine + prefixLen, "/INDEX.HTM");
     // Get the version
     IHTTPParameter(aState->iFirstLine, aState->iFirstLineLength, 2,
         aState->iHTTPVersion);
@@ -1011,10 +1012,10 @@ static T_uezError IHTTPGet(T_httpState *aState)
         == UEZ_ERROR_NONE) {
         len = 0;
         UEZFileGetLength(file, &len);
+        totalLengthLeft = len; // total file length
         dprintf("\r\nFetching file: %s (size %d)\r\n", aState->iLine, len);
         // File exists!
         mimeType = IDetermineMimeTypeFromFilename((char *)aState->iLine);
-
         // If there is a function to parse types and this a HTML file
         // then we need to parse the data, getting values as found, and
         // determine the real length
@@ -1030,22 +1031,32 @@ static T_uezError IHTTPGet(T_httpState *aState)
         }
         if (error == UEZ_ERROR_NONE) {
             IHTTPOutputHeader(aState, 200, "OK", mimeType, len);
-
             // If there is a function to parse the vars in a HTML file,
             // we now use the previously parsed vars and data to output
             if ((aState->iGetFunc) && (strcmp(mimeType, "text/html") == 0)) {
                 // Output the parsed data
                 IHTTPOutputParsedFile(aState, file, len);
             } else {
-                do {
-                    // Read a section
-                    if (UEZFileRead(file, block, MAX_LINE_LENGTH, &len)
-                        != UEZ_ERROR_NONE)
-                        break;
-                    // Write a section
-                    if (IHTTPWrite(aState, (char *)block, len, ETrue) != UEZ_ERROR_NONE)
-                        break;
-                } while (len >= MAX_LINE_LENGTH);
+              do {
+                // Read a section
+                if (UEZFileRead(file, block, MAX_LINE_LENGTH, &len)!= UEZ_ERROR_NONE){
+                  break;
+                }
+                if(totalLengthLeft <= MAX_LINE_LENGTH){
+                  moreToCome = EFalse;
+                  // Write a section
+                  if (IHTTPWrite(aState, (char *)block, totalLengthLeft, moreToCome) != UEZ_ERROR_NONE){
+                    break;
+                  }
+                } else {
+                  moreToCome = ETrue;
+                  // Write a section
+                  if (IHTTPWrite(aState, (char *)block, len, moreToCome) != UEZ_ERROR_NONE){
+                    break;
+                  }
+                }
+                totalLengthLeft -= len; // subtract how many bytes were read
+              } while (moreToCome == ETrue);
             }
         }
         UEZFileClose(file);
@@ -1073,7 +1084,7 @@ static T_uezError IHTTPGet(T_httpState *aState)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -1122,10 +1133,10 @@ static T_uezError IHTTPReadByte(T_httpState *aState, char *aChar)
 static T_uezError IHTTPProcessURLEncodedFormData(T_httpState *aState)
 {
     TUInt32 i;
-    char c;
+    char c=0;
     TUInt8 mode = 0;
     TUInt32 varNameLength = 0;
-    TUInt32 dataLength;
+    TUInt32 dataLength = 0;
     TUInt8 ch;
     T_uezError error = UEZ_ERROR_NONE;
 
@@ -1456,7 +1467,7 @@ static T_uezError IHTTPProcessMultipartFormData(T_httpState *aState)
  * Routine:  IHTTPPost
  *---------------------------------------------------------------------------*/
 /**
- *  A POST request is being performed.  After the header there is 
+ *  A POST request is being performed.  After the header there is
  *      data (of Content-Length) to be grabbed.  Get this data and then
  *      handle the response the same way a GET is handled.
  *
@@ -1466,7 +1477,7 @@ static T_uezError IHTTPProcessMultipartFormData(T_httpState *aState)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -1504,7 +1515,7 @@ static T_uezError IHTTPPost(T_httpState *aState)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -1542,7 +1553,7 @@ static T_uezError IProcessHeader(T_httpState *aState)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -1590,7 +1601,7 @@ static T_uezError IProcessHeaderLine(T_httpState *aState)
  *---------------------------------------------------------------------------*/
 /**
  *  Take the header in and append to previous data finding the different
- *      lines.  Each time a line is found, process it. 
+ *      lines.  Each time a line is found, process it.
  *
  *  @param [in]    *aState    	Parse state
  *
@@ -1598,7 +1609,7 @@ static T_uezError IProcessHeaderLine(T_httpState *aState)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -1647,19 +1658,20 @@ static T_uezError IParseHeaderLine(T_httpState *aState)
  *
  *  @param [in]    aGetFunc		Pointer to a function that will handle
  *          			 		variable parsing responses (on HTML only).
- *  @param [in]    aSetFunc 	Pointer to a functiont that will handle 
+ *  @param [in]    aSetFunc 	Pointer to a functiont that will handle
  *          					variables being set via POST or GET.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
 static void vProcessConnection(
     T_uezDevice aNetwork, T_uezNetworkSocket aSocket,
-    T_HTTPCallbackGetVarFunc aGetFunc, T_HTTPCallbackSetVarFunc aSetFunc)
+    T_HTTPCallbackGetVarFunc aGetFunc, T_HTTPCallbackSetVarFunc aSetFunc,
+    const char *aDrivePrefix)
 {
     T_uezError error;
     T_httpState *p_parse;
@@ -1669,6 +1681,7 @@ static void vProcessConnection(
     if (p_parse) {
         p_parse->iGetFunc = aGetFunc;
         p_parse->iSetFunc = aSetFunc;
+        p_parse->iDrivePrefix = aDrivePrefix;
         while (!done) {
             do {
                 error = UEZNetworkSocketRead(aNetwork, aSocket,
@@ -1707,7 +1720,7 @@ static void vProcessConnection(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */
@@ -1723,14 +1736,14 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
     T_httpServerParameters *p_params = (T_httpServerParameters *)aParameters;
 
     dprintf("HTTPServer: Starting\n");
-    
+
     /* Create a new tcp connection handle */
     network = p_params->iNetwork;
 
     if (UEZNetworkSocketCreate(network, UEZ_NETWORK_SOCKET_TYPE_TCP, &socket)
         == UEZ_ERROR_NONE) {
         // Setup the socket to be on the HTTP port
-        UEZNetworkSocketBind(network, socket, 0, WEB_SERVER_HTTP_PORT);
+        UEZNetworkSocketBind(network, socket, 0, p_params->iPort);
 
         // Put the socket into listen mode
         UEZNetworkSocketListen(network, socket);
@@ -1746,8 +1759,8 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
             if (newSocket) {
                 vProcessConnection(network, newSocket,
                     (p_params) ? p_params->iGet : 0,
-                    (p_params) ? p_params->iSet : 0);
-                //IProcessConnection(network, socket);
+                    (p_params) ? p_params->iSet : 0,
+                    (p_params) ? p_params->iDrivePrefix : "0:/HTTPROOT");
                 UEZNetworkSocketDelete(network, newSocket);
             }
         }
@@ -1770,12 +1783,12 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
  *   Start the Web Server
  *
  *	@param [in] *aParams pointer to input parameters
- *                
+ *
  *	@return		T_uezError
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *  TODO
  *  @endcode
  */

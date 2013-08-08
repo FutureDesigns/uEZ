@@ -95,6 +95,11 @@ typedef struct {
         const T_I2CSlaveCallbacks *aCallbacks);
     T_uezError (*Enable)(void *aWorkspace);
     T_uezError (*Disable)(void *aWorkspace);
+/**
+ *  uEZ v2.05 *
+ */
+    T_uezError (*IsHung)(void *aWorkspace, TBool *aBool);
+    T_uezError (*ResetBus)(void *aWorkspace);
 } HAL_I2CBus;
 
 #endif // _HAL_I2CBUS_H_

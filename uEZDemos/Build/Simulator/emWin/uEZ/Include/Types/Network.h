@@ -98,7 +98,7 @@ typedef TUInt16 T_uezNetworkSocket;
 
 typedef enum {
     UEZ_NETWORK_SOCKET_TYPE_TCP,
-	UEZ_NETWORK_SOCKET_TYPE_UDP,
+    UEZ_NETWORK_SOCKET_TYPE_UDP,
 /** TODO: UDP has not been tested! */
 } T_uezNetworkSocketType;
 

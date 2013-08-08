@@ -43,8 +43,10 @@
 #define INPUT_EVENT_TYPE_XY             2
 
 #define BUTTON_ACTION_PRESS             0x0001
-#define BUTTON_ACTION_RELEASE           0x0002
-#define BUTTON_ACTION_REPEAT            0x0003
+#define BUTTON_ACTION_RELEASE           0x0000
+
+#define XY_ACTION_PRESS_AND_HOLD        0x0001
+#define XY_ACTION_RELEASE               0x0000
 
 #define KEY_NONE                        0xFFFF
 
@@ -88,15 +90,16 @@
  * Types:
  *-------------------------------------------------------------------------*/
 typedef struct {
-    TUInt8 iType;
+    TUInt32 iType;
     union {
         struct {
             TUInt32 iKey;
-            TUInt8 iAction;
+            TUInt32 iAction;
         } iButton;
         struct {
             TUInt32 iX;
             TUInt32 iY;
+            TUInt32 iAction;
         } iXY;
     } iEvent;
 } T_uezInputEvent;

@@ -46,9 +46,9 @@ typedef struct {
 
     // Functions
    /**
-	* Read the temperature in 15.16 signed fixed point format 
-	* degrees Celsius.
-	*/ 
+    * Read the temperature in 15.16 signed fixed point format 
+    * degrees Celsius.
+    */ 
     T_uezError (*Read)(
             void *aWorkspace,
             TInt32 *aTemperature);

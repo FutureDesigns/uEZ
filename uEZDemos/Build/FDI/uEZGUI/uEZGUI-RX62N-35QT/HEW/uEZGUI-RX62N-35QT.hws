@@ -3,12 +3,12 @@
 [DATABASE_VERSION]
 "11.0" 
 [WORKSPACE_DETAILS]
-"uEZGUI-RX62N-35QT" "C:\FDI\uEZ\SVN\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW" "C:\FDI\uEZ\SVN\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT.hws" "RX" "Renesas RX Standard" 
+"uEZGUI-RX62N-35QT" "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW" "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT.hws" "RX" "Renesas RX Standard" 
 [SHARED_WORKSPACE_CONTROL_STATUS]
 "" "" "" 
 "" "" "" 
 [PROJECTS]
-"uEZGUI-RX62N-35QT" "C:\FDI\uEZ\SVN\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT" "C:\FDI\uEZ\SVN\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT\uEZGUI-RX62N-35QT.hwp" 0 
+"uEZGUI-RX62N-35QT" "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT" "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT\uEZGUI-RX62N-35QT.hwp" 0 
 [INFORMATION]
 "No workspace information available" 
 [SCRAP]
@@ -17,11 +17,11 @@
 [HELP_FILES]
 "c:\apps\renesas\hew\tools\renesas\rx\1_0_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 "c:\apps\renesas\hew\tools\renesas\rx\1_1_0\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
-"c:\apps\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 1 
+"c:\apps\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 "c:\program files (x86)\renesas\hew\tools\renesas\rx\1_0_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 "c:\program files (x86)\renesas\hew\tools\renesas\rx\1_1_0\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 "c:\program files (x86)\renesas\hew\tools\renesas\rx\1_2_0\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
-"c:\program files (x86)\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
+"c:\program files (x86)\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 1 
 "c:\program files\renesas\hew\tools\renesas\rx\1_0_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 "c:\program files\renesas\hew\tools\renesas\rx\1_1_0\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 "c:\program files\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 

@@ -48,11 +48,8 @@ typedef struct {
     T_uezGPIOPortPin iVolumeGPIO;
     T_uezGPIOPortPin iModeGPIO;
     T_uezGPIOPortPin iVolEnableGPIO;
-//    HAL_GPIOPort **iVolumeGPIO;
-//    HAL_GPIOPort **iModeGPIO;
-//#if UEZ_OPTIONAL_VOL_CTRL_ENABLE
-//HAL_GPIOPort **iVolEnableGPIO;
-//#endif
+    TUInt8 iMaxLevel;
+    TUInt8 iMinLevel;
 } T_AudioAmp_8551T_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -69,15 +66,19 @@ typedef struct {
 T_uezError AudioAmp_8551T_SetLevel(void *aWorkSpace, TUInt8 aLevel)
 {
     T_AudioAmp_8551T_Workspace *p = (T_AudioAmp_8551T_Workspace *)aWorkSpace;
-    TUInt8 i, levels = p->iLevel;
+    TUInt8 i, setLevel, oldLevel;
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
 
+    oldLevel = ((((p->iLevel * 100) / (0xFF)) * (p->iMaxLevel - p->iMinLevel))/100) + p->iMinLevel;
+    p->iLevel = aLevel;
+    setLevel = ((p->iLevel * (p->iMaxLevel - p->iMinLevel))/0xFF) + p->iMinLevel;
+
     UEZGPIOSetMux(p->iVolumeGPIO, 0); // set to GPIO
 
-    if (levels != aLevel) {
-        if (levels < aLevel) {
-            for (i = levels; i < aLevel; i++) {
+    if (setLevel != oldLevel) {
+        if (oldLevel < setLevel) {
+            for (i = oldLevel; i < setLevel; i++) {
                 UEZGPIOSet(p->iVolumeGPIO); //set High to go up
                 UEZGPIOOutput(p->iVolumeGPIO); //set to output
                 if (p->iVolEnableGPIO != GPIO_NONE)
@@ -91,7 +92,7 @@ T_uezError AudioAmp_8551T_SetLevel(void *aWorkSpace, TUInt8 aLevel)
                 UEZTaskDelay(1);
             }
         } else {
-            for (i = levels; i > aLevel; i--) {
+            for (i = oldLevel; i > setLevel; i--) {
                 UEZGPIOClear(p->iVolumeGPIO); //set low to go down
                 UEZGPIOOutput(p->iVolumeGPIO); //set to output
                 if (p->iVolEnableGPIO != GPIO_NONE)
@@ -200,13 +201,14 @@ T_uezError AudioAmp_8551T_UnMute(void *aWorkSpace)
 T_uezError AudioAmp_8551T_Open(void *aWorkSpace)
 {
     T_AudioAmp_8551T_Workspace *p = (T_AudioAmp_8551T_Workspace *)aWorkSpace;
-    TUInt8 i, levels = p->iLevel;
+    TUInt8 i, setLevel;
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
 
     p->iNumOpen++;
 
     if (!(p->iIsOn)) {
+        setLevel = ((p->iLevel * (p->iMaxLevel - p->iMinLevel))/0xFF) + p->iMinLevel;
         p->iIsOn = ETrue;
         UEZGPIOOutput(p->iModeGPIO);
         UEZGPIOSetMux(p->iModeGPIO, 0); // set to GPIO
@@ -227,7 +229,7 @@ T_uezError AudioAmp_8551T_Open(void *aWorkSpace)
             UEZTaskDelay(1);
         }
 
-        for (i = LOW_LEVEL; i < levels; i++) {
+        for (i = LOW_LEVEL; i < setLevel; i++) {
             UEZGPIOSet(p->iVolumeGPIO); // set low to go down
             UEZGPIOOutput(p->iVolumeGPIO); // set to output
             if (p->iVolEnableGPIO != GPIO_NONE)
@@ -297,7 +299,7 @@ T_uezError AudioAmp_8551T_InitializeWorkspace(void *aWorkSpace)
     T_AudioAmp_8551T_Workspace *p = (T_AudioAmp_8551T_Workspace *)aWorkSpace;
 
     p->iNumOpen = 0;
-    p->iLevel = DEFAULT_LEVEL;
+    p->iLevel = DEFAULT_LEVEL*4;
     p->iIsMuted = EFalse;
     p->iIsOn = EFalse;
 
@@ -312,7 +314,8 @@ void AudioAmp_8551T_Create(
         const char *aName,
         T_uezGPIOPortPin aVolumeGPIO,
         T_uezGPIOPortPin aModeGPIO,
-        T_uezGPIOPortPin aVolEnableGPIO)
+        T_uezGPIOPortPin aVolEnableGPIO,
+        TInt8 aMaxLevel)
 {
     T_AudioAmp_8551T_Workspace *p;
     UEZDeviceTableRegister(
@@ -328,6 +331,13 @@ void AudioAmp_8551T_Create(
     if (aVolEnableGPIO != GPIO_NONE)
         UEZGPIOLock(aVolEnableGPIO);
     p->iVolEnableGPIO = aVolEnableGPIO;
+
+    if(aMaxLevel > HIGH_LEVEL){
+        p->iMaxLevel = HIGH_LEVEL;
+    } else {
+        p->iMaxLevel = aMaxLevel;
+    }
+    p->iMinLevel = 0;
 }
 
 /*---------------------------------------------------------------------------*

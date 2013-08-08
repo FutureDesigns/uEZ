@@ -24,6 +24,7 @@
 #include "uEZTypes.h"
 #include "uEZErrors.h"
 #include <uEZRTOS.h>
+#include <Types/InputEvent.h>
 
 #define UEZTS_NO_PRESSURE    0
 

@@ -126,6 +126,21 @@ static TBool G_WaitForRelease = EFalse;
 static void IUEZTSGrab(void);
 static void IUEZTSRelease(void);
 
+static T_uezInputEvent IConvertTSReadingToInputEvent(T_uezTSReading *p_aReading) {
+    T_uezInputEvent inputEvent;
+    
+    inputEvent.iType = INPUT_EVENT_TYPE_XY;
+    inputEvent.iEvent.iXY.iX = p_aReading->iX;
+    inputEvent.iEvent.iXY.iY = p_aReading->iY;
+    
+    if(p_aReading->iFlags & TSFLAG_PEN_DOWN)
+        inputEvent.iEvent.iXY.iAction = XY_ACTION_PRESS_AND_HOLD;
+    else
+        inputEvent.iEvent.iXY.iAction = XY_ACTION_RELEASE;
+    
+    return inputEvent;
+}
+
 /*---------------------------------------------------------------------------*
  * Task:  IUEZTSMonitorTouchscreensTask
  *---------------------------------------------------------------------------*/
@@ -159,6 +174,7 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
     T_tsDevice *p;
     T_tsQueue *pq;
     T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
 
     for (;;) {
         IUEZTSGrab();
@@ -182,7 +198,8 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
                     // Apply the reading to all the queues (as last reported)
                     for (pq = p->iQueueList; pq; pq=pq->iNext) {
                         // Send it on the queue.
-                        UEZQueueSend(pq->iQueue, &reading, 0);
+                        inputEvent = IConvertTSReadingToInputEvent(&reading);
+                        UEZQueueSend(pq->iQueue, &inputEvent, 0);
                     }
                 }
             }
@@ -212,8 +229,12 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
 static void IUEZTSInitialize(void)
 {
     G_tsDevices = 0;
-    if (UEZSemaphoreCreateBinary(&G_tsSem) == UEZ_ERROR_NONE)
+    if (UEZSemaphoreCreateBinary(&G_tsSem) == UEZ_ERROR_NONE){
         G_tsDidInit = ETrue;
+#if UEZ_REGISTER
+        UEZSemaphoreSetName(G_tsSem, "uEZ_TS", "\0");
+#endif
+    }
 
     UEZTaskCreate(
         (T_uezTaskFunction)IUEZTSMonitorTouchscreensTask,

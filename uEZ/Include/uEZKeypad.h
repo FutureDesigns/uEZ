@@ -34,7 +34,8 @@
  */
 T_uezError UEZKeypadOpen(
             const char *const aName, 
-            T_uezDevice *aDevice);
+            T_uezDevice *aDevice,
+            T_uezQueue *aEventQueue);
 						
 /**
  *	End access to the Keypad bank.
@@ -43,21 +44,7 @@ T_uezError UEZKeypadOpen(
  *
  *	@return		T_uezError
  */
-T_uezError UEZKeypadClose(T_uezDevice aDevice);
-
-/**
- *	End access to the Keypad bank.
- *
- *	@param [in]		aDevice		Keypad Device Handle
- *	@param [out]	*aEvent		Keypad event
- *	@param [in]		aTimeout	Timeout in milliseconds
- *
- *	@return		T_uezError
- */
-T_uezError UEZKeypadRead(
-            T_uezDevice aDevice, 
-            T_uezInputEvent *aEvent,
-            TUInt32 aTimeout);
+T_uezError UEZKeypadClose(T_uezDevice aDevice, T_uezQueue *aEventQueue);
 
 #endif // _UEZ_Keypad_H_
 

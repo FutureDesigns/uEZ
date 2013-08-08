@@ -192,8 +192,8 @@ T_uezError LPC1788_LCDController_Configure(
 
     LPC_LCD->TIMV = ((((aSettings->iVerticalLinesPerPanel - 1) & 0x3FF) << 0)
             | (((aSettings->iVerticalSyncPulseWidth - 1) & 0x03F) << 10)
-            | (((aSettings->iVerticalFrontPorch - 1) & 0x0FF) << 16)
-            | (((aSettings->iVerticalBackPorch - 1) & 0x0FF) << 24));
+            | (((aSettings->iVerticalFrontPorch) & 0x0FF) << 16)
+            | (((aSettings->iVerticalBackPorch) & 0x0FF) << 24));
 
     regValue = 0;
     if (aSettings->iACBiasPinFrequency)
@@ -509,7 +509,7 @@ T_uezError LPC1788_LCDController_SetPaletteColor(
  *      void *aWorkspace             -- LCD Controller's workspace
  *      HAL_GPIOPort **aPowerPort    -- Pointer to HAL GPIO port
  *      TUInt32 aPowerPinIndex       -- Index of port pin
- *      TBool aPowerPinIsActiveHigh	 -- ETrue if active high, EFalse otherwise
+ *      TBool aPowerPinIsActiveHigh  -- ETrue if active high, EFalse otherwise
  *      TUInt32 aPowerOnDelay        -- Delay (in milliseconds?)
  * Outputs:
  *      T_uezError                   -- If successful, returns UEZ_ERROR_NONE.
@@ -550,7 +550,7 @@ T_uezError LCDController_LPC1788_ConfigurePowerPin(
  *      LCDControllerVerticalSync aCallbackFunc  -- Call back function
  *      void *aCallbackWorkspace                 -- Call back workspace
  * Outputs:
- *      T_uezError                               -- If successful, returns 
+ *      T_uezError                               -- If successful, returns
  *                                               UEZ_ERROR_NONE.
  *---------------------------------------------------------------------------*/
 T_uezError LPC1788_LCDController_EnableVerticalSync(

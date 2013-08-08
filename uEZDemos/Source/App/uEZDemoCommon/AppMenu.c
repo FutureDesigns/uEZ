@@ -28,6 +28,7 @@
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include "uEZDemoCommon.h"
 #include <UEZLCD.h>
+#include <UEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -233,7 +234,7 @@ static T_appMenuWorkspace *GetWorkspaceAndQueue(T_uezQueue *q)
         /* Has the queue already been created. */
         if( xAppMenuData[usLoop].queue == NULL )
         {
-            if (UEZQueueCreate(1, sizeof(T_uezTSReading), &xAppMenuData[usLoop].queue) != UEZ_ERROR_NONE)
+            if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &xAppMenuData[usLoop].queue) != UEZ_ERROR_NONE)
             {
                 xAppMenuData[usLoop].queue = NULL;
             }
@@ -244,8 +245,12 @@ static T_appMenuWorkspace *GetWorkspaceAndQueue(T_uezQueue *q)
     }
 #else
     T_appMenuWorkspace *xWs = UEZMemAlloc(sizeof(T_appMenuWorkspace));
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), q) != UEZ_ERROR_NONE)
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), q) != UEZ_ERROR_NONE)
         *q = NULL;
+#if UEZ_REGISTER
+    else
+        UEZQueueSetName(*q, "Q_AppMenu_TS", "\0");
+#endif
 #endif // NO_DYNAMIC_MEMORY_ALLOC
     return xWs;
 }
@@ -289,16 +294,24 @@ void AppMenu(const T_appMenu *aMenu)
     T_uezDevice ts;
     T_uezQueue queue;
 	T_appMenuWorkspace *p_ws;
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
     
     p_ws = GetWorkspaceAndQueue(&queue);
     if (!p_ws)
         return;
     memset(p_ws, 0, sizeof(*p_ws));
     p_ws->iMenu = aMenu;
-
+   
     //TS_MC_AR1020_InitializeWorkspace(*p_ws);///REMOVE
     // Setup queue to receive touchscreen events
     if (queue != NULL) {
+        
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
+#endif
+        
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue) == UEZ_ERROR_NONE) {
             // Open the LCD and get the pixel buffer
@@ -333,6 +346,11 @@ void AppMenu(const T_appMenu *aMenu)
             }
             UEZTSClose(ts, queue);
         }
+        
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
+        
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
         UEZQueueDelete(queue);
 #endif

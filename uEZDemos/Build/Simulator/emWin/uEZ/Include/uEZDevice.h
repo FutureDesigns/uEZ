@@ -1,8 +1,8 @@
 /**
- *	@file 	uEZDevice.h
- *  @brief 	uEZ Device Interface
+ *    @file     uEZDevice.h
+ *  @brief     uEZ Device Interface
  *
- *	The uEZ interface which maps to lower level device drivers.
+ *    The uEZ interface which maps to lower level device drivers.
  */
 /*--------------------------------------------------------------------------
  * uEZ(R) - Copyright (C) 2007-2011 Future Designs, Inc.
@@ -24,7 +24,7 @@
 #include "uEZErrors.h"
 
 /**
- *	@struct uEZDeviceInterface
+ *    @struct uEZDeviceInterface
  */
 typedef struct {
     const char *iName;
@@ -34,7 +34,7 @@ typedef struct {
 } T_uezDeviceInterface;
 
 /**
- *	@struct T_uezDeviceWorkspace
+ *    @struct T_uezDeviceWorkspace
  */
 typedef struct {
     T_uezDeviceInterface *iInterface;
@@ -42,23 +42,23 @@ typedef struct {
 
 
 /**
- *	Open up access to the Device bank.
+ *    Open up access to the Device bank.
  *
- *	@param [in]		*aDeviceName		Pointer to name of Device bank
- *	@param [out]	*aDevice	Pointer to device handle to be returned
+ *    @param [in]        *aDeviceName        Pointer to name of Device bank
+ *    @param [out]    *aDevice    Pointer to device handle to be returned
  *
- *	@return	T_uezError
+ *    @return    T_uezError
  */
 T_uezError UEZDeviceOpen(
             const char *aDeviceName, 
             T_uezDevice *aDevice);
 
 /**
- *	End access to the Device bank.
+ *    End access to the Device bank.
  *
- *	@param [in]	aDevice		Device handle of Device to close
+ *    @param [in]    aDevice        Device handle of Device to close
  *
- *	@return	T_uezError
+ *    @return    T_uezError
  */
 T_uezError UEZDeviceClose(T_uezDevice aDevice);
 

@@ -2,7 +2,7 @@
  * File:  Network_GainSpan.c
  *-------------------------------------------------------------------------*
  * Description:
- *     
+ *
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
@@ -22,8 +22,8 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <uEZ.h>
 #include <uEZDevice.h>  // This is needed for the RX compiler
@@ -161,7 +161,9 @@ static T_uezError IConvertErrorCode(ATLIBGS_MSG_ID_E aGSError)
         default:
             return UEZ_ERROR_UNKNOWN;
     }
+#if (COMPILER_TYPE!=IAR)
     return UEZ_ERROR_UNKNOWN;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -255,7 +257,7 @@ static T_uezError IStartup(
     } else {
         return UEZ_ERROR_INCORRECT_TYPE;
     }
-    
+
     return error;
 }
 
@@ -1115,6 +1117,21 @@ void Network_GainSpan_Create(
             (T_uezDeviceInterface *)&GainSpan_Network_Interface,
             0,
             (T_uezDeviceWorkspace **)&p_wired);
+
+    // See if a factory restory line is set
+    if (aSettings->iWIFIFactoryRestore != GPIO_NONE) {
+        // Ensure the factory restore line is low before the reset comes in
+        // Currently, we don't use this line for doing factory restores,
+        // but it MUST be held low either by output pin or hardware.
+        // If you do not do this, the unit will typically work only one time
+        // and then not work again until reprogrammed.  Even more annoying,
+        // this problem only occurs with certain GainSpan firmware versions.
+        // -- lshields 6/26/2013
+        UEZGPIOLock(aSettings->iWIFIFactoryRestore);
+        UEZGPIOClear(aSettings->iWIFIFactoryRestore);
+        UEZGPIOSetMux(aSettings->iWIFIFactoryRestore, 0);
+        UEZGPIOOutput(aSettings->iWIFIFactoryRestore);
+    }
 
     Network_GainSpan_Configure(p_wired, aSettings);
 }

@@ -30,28 +30,35 @@
  *  Example task to read the keypad
  *  @par
  *  @code
- *  #include <uEZ.h>
- *  #include <uEZKeypad.h>
- *
- * TUInt32 KeypadRead(T_uezTask aMyTask, void *aParams)
- * {
- *  T_uezDevice keypad;
- *  T_uezInputEvent event;
- *  if (UEZKeypadOpen("Keypad", &keypad) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
- *	    if (UEZKeypadRead(keypad, &event, 1000)) == UEZ_ERROR_NONE) {
- *            // keypad read successful, stored in event 
- *            // event.iEvent.iButton.iKey 		// 32 bit
- *            // event.iEvent.iButton.iAction 	//  8 bit
- *      }
- *      if (UEZKeypadClose(keypad) != UEZ_ERROR_NONE) {
- *            // error closing keypad
- *      }
- *  } else {
- *      // an error occurred opening keypad
- *  }
- *  return 0;
+ *  #include <UEZKeypad.h>
+ *  #include <Types/InputEvent.h>
+ *       
+ *  T_uezError error;
+ *  T_uezDevice keypadDevice;
+ *  T_uezInputEvent keypadEvent;
+ *         
+ *  UEZPlatform_ButtonBoard_Require();
+ *       
+ *  error = UEZKeypadOpen("BBKeypad", &keypadDevice);
+ *  if(error)
+ *    UEZFailureMsg("Cannot open 'BBKeypad'");
+ *  else {  
+ *    // Continuously poll the keypad for key strokes
+ *    while(1) {
+ *       error = UEZKeypadRead(keypadDevice, &keypadEvent, 500);
+ *       if(error)
+ *          printf("Keypad error: %d\r\n", error);
+ *       else {
+ *          if(keypadEvent.iEvent.iButton.iKey != KEY_NONE) {
+ *             if(keypadEvent.iEvent.iButton.iAction == INPUT_EVENT_ACTION_PRESS)
+ *                printf("Button Press: %x - PRESS\r\n", keypadEvent.iEvent.iButton.iKey);
+ *             else if(keypadEvent.iEvent.iButton.iAction == INPUT_EVENT_ACTION_RELEASE)
+ *                printf("Button Press: %x - RELEASE\r\n", keypadEvent.iEvent.iButton.iKey);
+ *             else
+ *                printf("Button Press: %x - REPEAT\r\n", keypadEvent.iEvent.iButton.iKey);
+            }
+ *       }
+ *    } 
  * }
  * @endcode
  */
@@ -61,8 +68,6 @@
 #include "Device/Keypad.h"
 #include "uEZDevice.h"
 #include <uEZDeviceTable.h>
-
-static T_uezQueue G_uezKeypadQueue = 0;
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZKeypadOpen
@@ -95,33 +100,24 @@ static T_uezQueue G_uezKeypadQueue = 0;
 /*---------------------------------------------------------------------------*/
 T_uezError UEZKeypadOpen(
             const char *const aName, 
-            T_uezDevice *aDevice)
+            T_uezDevice *aDevice,
+            T_uezQueue *aEventQueue)
 {
     T_uezError error;
     DEVICE_Keypad **p;
     
     error = UEZDeviceTableFind(aName, aDevice);
-    if (error)
-        return error;
 
-    error = UEZDeviceTableGetWorkspace(*aDevice, (T_uezDeviceWorkspace **)&p);
-    if (error)
-        return error;
-
-    // Create the default queue the first time
-    if (G_uezKeypadQueue == 0) {
-        // Open the keypad
-        (*p)->Open(p);
-
-        error = UEZQueueCreate(6, sizeof(T_uezInputEvent), &G_uezKeypadQueue);
-        if (!error) {
-            // Now register it for events
-            (*p)->Register(p, G_uezKeypadQueue);
-        }
-    } else {
-        error = UEZ_ERROR_NOT_AVAILABLE;
+    if(!error)
+        error = UEZDeviceTableGetWorkspace(*aDevice, (T_uezDeviceWorkspace **)&p);
+    
+    if(!error)
+        error = (*p)->Open(p); 
+    
+    if((!error) || (error == UEZ_ERROR_ALREADY_EXISTS)) {
+        error = (*p)->Register(p, *aEventQueue);
     }
-
+    
     return error;
 }
 
@@ -156,85 +152,20 @@ T_uezError UEZKeypadOpen(
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-T_uezError UEZKeypadClose(T_uezDevice aDevice)
+T_uezError UEZKeypadClose(T_uezDevice aDevice, T_uezQueue *aEventQueue)
 {
     T_uezError error = UEZ_ERROR_NONE;
     DEVICE_Keypad **p;
-    
-    if (G_uezKeypadQueue == 0) {
-        // Not in use?
-    } else {
-        error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
-        if (!error) {
 
-            // Now remove it from the registry
-            (*p)->Unregister(p, G_uezKeypadQueue);
-            
-            // And Free the queue
-            UEZQueueDelete(G_uezKeypadQueue);
-            G_uezKeypadQueue = 0;
-
-            // close the keypad
-            (*p)->Close(p);
-        }
-    }
-
-    return error;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZKeypadRead
- *---------------------------------------------------------------------------*/
-/**
- *  Waits for a keypad event on the default keypad queue.
- *
- *  @param [in]    aDevice      	Handle to opened Keypad bank device
- *
- *  @param [in]    *aEvent  		Returned event if found
- *
- *  @param [in]    aTimeout         How long to wait until try event
- *
- *  @return        T_uezError       If successful, returns UEZ_ERROR_NONE.  If 
- *                                  an invalid device handle, returns 
- *                                  UEZ_ERROR_HANDLE_INVALID.  If timeout,
- *                                  returns UEZ_ERROR_TIMEOUT.
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  #include <uEZKeypad.h>
- *
- *  T_uezDevice keypad;
- *  T_uezInputEvent event;
- *  if (UEZKeypadOpen("Keypad", &keypad) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
- *	    if (UEZKeypadRead(keypad, &event, 1000)) == UEZ_ERROR_NONE) {
- *            // keypad read successful, stored in event 
- *            // event.iEvent.iButton.iKey 		// 32 bit
- *            // event.iEvent.iButton.iAction 	//  8 bit
- *      }
- *      if (UEZKeypadClose(keypad) != UEZ_ERROR_NONE) {
- *            // error closing keypad
- *      }
- *  } else {
- *      // an error occurred opening keypad
- *  }
- *  @endcode
- */
-/*---------------------------------------------------------------------------*/
-T_uezError UEZKeypadRead(
-            T_uezDevice aDevice, 
-            T_uezInputEvent *aEvent,
-            TUInt32 aTimeout)
-{
-    T_uezError error;
-    DEVICE_Keypad **p;
-    
     error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
-    if (error)
-        return error;
 
-    return UEZQueueReceive(G_uezKeypadQueue, (void *)aEvent, aTimeout);
+    if(!error)
+        (*p)->Close(p);
+    
+    if(!error)
+        error = (*p)->Unregister(p,*aEventQueue);
+    
+    return error;
 }
 /** @} */
 /*-------------------------------------------------------------------------*

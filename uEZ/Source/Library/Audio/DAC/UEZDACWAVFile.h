@@ -31,3 +31,4 @@ T_uezError UEZDACWAVPlayBuffer(TUInt8 *aBuffer, TUInt32 aSize);
 void UEZDACWaveSetVolume(TUInt16 aVolume);
 TUInt32 UEZDACWAVGetSamplePos(void);
 TBool UEZDACWAVIsDone(void);
+T_uezError UEZDACWAVPlayPause(TBool aBool);

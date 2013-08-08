@@ -3096,6 +3096,15 @@
     <group>
       <name>App</name>
       <group>
+        <name>ExpansionBoard</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\UEZGUI_EXP_DK\UEZGUI_EXP_DK.h</name>
+        </file>
+      </group>
+      <group>
         <name>SEGGER</name>
         <group>
           <name>emWin</name>
@@ -3176,6 +3185,12 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AccelDemoMode.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.c</name>
         </file>
         <file>
@@ -3197,6 +3212,9 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\ConsoleMode.c</name>
         </file>
         <file>
@@ -3204,6 +3222,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\MultiSlideshowMode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NVSettings.c</name>
@@ -3236,6 +3257,15 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\VideoPlayer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\VideoPlayer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\VideoPlayerSelection.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\YourAppMode.c</name>
         </file>
       </group>
@@ -3261,6 +3291,15 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTestLoop.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\main.c</name>
@@ -3290,7 +3329,7 @@
             <group>
               <name>NXP</name>
               <file>
-                <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_518_IAR650_M3_LE.a</name>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_520_IAR650_M3_LE.a</name>
               </file>
             </group>
           </group>
@@ -3302,7 +3341,7 @@
       <group>
         <name>uEZGUI_1788_56VI</name>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_56VI\uEZGUI-1788-56VI.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_56VI\uEZGUI_1788_56VI.c</name>
         </file>
       </group>
     </group>

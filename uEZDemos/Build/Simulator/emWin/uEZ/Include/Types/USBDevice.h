@@ -194,7 +194,7 @@ typedef struct {
 /**
  * USB Standard Device Requests:
  */
-#define	USB_DEVICE_REQUEST_GET_STATUS                   0x00
+#define    USB_DEVICE_REQUEST_GET_STATUS                   0x00
 #define USB_DEVICE_REQUEST_CLEAR_FEATURE                0x01
 #define USB_DEVICE_REQUEST_SET_FEATURE                  0x03
 #define USB_DEVICE_REQUEST_SET_ADDRESS                  0x05

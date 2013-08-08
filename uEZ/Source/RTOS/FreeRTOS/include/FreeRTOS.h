@@ -162,7 +162,7 @@ typedef portBASE_TYPE (*pdTASK_HOOK_CODE)( void * );
 #endif
 
 #ifndef INCLUDE_pcTaskGetTaskName
-	#define INCLUDE_pcTaskGetTaskName 0
+	#define INCLUDE_pcTaskGetTaskName 1
 #endif
 
 #ifndef configUSE_APPLICATION_TASK_TAG

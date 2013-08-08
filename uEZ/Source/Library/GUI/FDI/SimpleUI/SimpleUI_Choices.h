@@ -24,6 +24,7 @@
 
 #include <uEZ.h>
 #include <Source/Library/Graphics/SWIM/lpc_swim.h>
+#include <Types/InputEvent.h>
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -61,7 +62,7 @@ const T_choice *ChoicesUpdate(
 const T_choice *ChoicesUpdateByReading(
         SWIM_WINDOW_T *aWin,
         const T_choice *aChoices,
-        T_uezTSReading *p_reading);
+        T_uezInputEvent *p_inputEvent);
 void ChoicesSetSettings(T_choicesSettings *aSettings);
 void ChoicesGetSettings(T_choicesSettings *aSettings);
 

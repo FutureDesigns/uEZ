@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -393,27 +393,28 @@ U32       GUI_CalcVisColorError(GUI_COLOR color);
 *
 *       Error handler
 */
-void GUI_Error(const char * s);
+void GUI_Error         (const char * s);
+void GUI_SetOnErrorFunc(void (* pFunc)(const char * s));
 
 /*********************************************************************
 *
 *       Logging (for debugging primarily)
 */
 void GUI_Log      (const char * s);
-void GUI_Log1     (const char * s, int p0);
-void GUI_Log2     (const char * s, int p0, int p1);
-void GUI_Log3     (const char * s, int p0, int p1, int p2);
-void GUI_Log4     (const char * s, int p0, int p1, int p2,int p3);
+void GUI_Log1     (const char * s, I32 p0);
+void GUI_Log2     (const char * s, I32 p0, I32 p1);
+void GUI_Log3     (const char * s, I32 p0, I32 p1, I32 p2);
+void GUI_Log4     (const char * s, I32 p0, I32 p1, I32 p2,I32 p3);
 void GUI_Warn     (const char * s);
-void GUI_Warn1    (const char * s, int p0);
-void GUI_Warn2    (const char * s, int p0, int p1);
-void GUI_Warn3    (const char * s, int p0, int p1, int p2);
-void GUI_Warn4    (const char * s, int p0, int p1, int p2, int p3);
+void GUI_Warn1    (const char * s, I32 p0);
+void GUI_Warn2    (const char * s, I32 p0, I32 p1);
+void GUI_Warn3    (const char * s, I32 p0, I32 p1, I32 p2);
+void GUI_Warn4    (const char * s, I32 p0, I32 p1, I32 p2, I32 p3);
 void GUI_ErrorOut (const char * s);
-void GUI_ErrorOut1(const char * s, int p0);
-void GUI_ErrorOut2(const char * s, int p0, int p1);
-void GUI_ErrorOut3(const char * s, int p0, int p1, int p2);
-void GUI_ErrorOut4(const char * s, int p0, int p1, int p2, int p3);
+void GUI_ErrorOut1(const char * s, I32 p0);
+void GUI_ErrorOut2(const char * s, I32 p0, I32 p1);
+void GUI_ErrorOut3(const char * s, I32 p0, I32 p1, I32 p2);
+void GUI_ErrorOut4(const char * s, I32 p0, I32 p1, I32 p2, I32 p3);
 
 /*********************************************************************
 *
@@ -575,7 +576,6 @@ typedef struct {
   void                           GUI_CURSOR_ShowEx       (int Layer);
   GUI_HSPRITE                    GUI_CURSOR__GetSpriteEx (int LayerIndex, int * pxPos, int * pyPos);
   void                           GUI_CURSOR__SetSpriteEx (GUI_HSPRITE hSprite, const GUI_CURSOR * pCursor, int LayerIndex);
-
 #else
   #define GUI_CURSOR_Show();
   #define GUI_CURSOR_Clear();
@@ -592,11 +592,13 @@ typedef struct {
 #define GUI_SPRITE_HIDE 1
 
 GUI_HSPRITE GUI_SPRITE__CreateEx           (const GUI_BITMAP GUI_UNI_PTR * pBM, int x, int y, int Layer, U16 Flags); /* Not to be documented, only used by cursor modul */
-void        GUI_SPRITE__SetCallback        (GUI_HSPRITE hSprite, GUI_HMEM hContext, void (* pCB)(GUI_HMEM hContext, int Cmd));
+void        GUI_SPRITE__SetCallback        (GUI_HSPRITE hSprite, GUI_HMEM hContext, void (* pCB)(GUI_HSPRITE, int));
 GUI_HSPRITE GUI_SPRITE_Create              (const GUI_BITMAP GUI_UNI_PTR * pBM, int x, int y);
 GUI_HSPRITE GUI_SPRITE_CreateAnim          (const GUI_BITMAP GUI_UNI_PTR ** ppBm, int x, int y, unsigned Period, const unsigned * pPeriod, int NumItems);
 GUI_HSPRITE GUI_SPRITE_CreateEx            (const GUI_BITMAP GUI_UNI_PTR * pBM, int x, int y, int Layer);
 GUI_HSPRITE GUI_SPRITE_CreateExAnim        (const GUI_BITMAP GUI_UNI_PTR ** ppBm, int x, int y, unsigned Period, const unsigned * pPeriod, int NumItems, int LayerIndex);
+GUI_HSPRITE GUI_SPRITE_CreateHidden        (const GUI_BITMAP GUI_UNI_PTR * pBM, int x, int y);
+GUI_HSPRITE GUI_SPRITE_CreateHiddenEx      (const GUI_BITMAP GUI_UNI_PTR * pBM, int x, int y, int Layer);
 void        GUI_SPRITE_Delete              (GUI_HSPRITE hSprite);
 int         GUI_SPRITE_GetState            (GUI_HSPRITE hSprite);
 void        GUI_SPRITE_Hide                (GUI_HSPRITE hSprite);
@@ -714,16 +716,18 @@ void GUI_TTF_SetCacheSize (unsigned MaxFaces, unsigned MaxSizes, U32 MaxBytes);
 *
 *       Resource file support
 */
-int          GUI_LANG_GetNumItems  (int IndexLang);
-const char * GUI_LANG_GetText      (int IndexText);
-const char * GUI_LANG_GetTextEx    (int IndexText, int IndexLang);
-int          GUI_LANG_LoadCSV      (char * pFileData, U32 FileSize);
-int          GUI_LANG_LoadCSVEx    (GUI_GET_DATA_FUNC * pfGetData, void * p);
-int          GUI_LANG_LoadText     (char * pFileData, U32 FileSize, int IndexLang);
-int          GUI_LANG_LoadTextEx   (GUI_GET_DATA_FUNC * pfGetData, void * p, int IndexLang);
-int          GUI_LANG_SetLang      (int IndexLang);
-unsigned     GUI_LANG_SetMaxNumLang(unsigned MaxNumLang);
-U16          GUI_LANG_SetSep       (U16 Sep);
+int          GUI_LANG_GetNumItems      (int IndexLang);
+const char * GUI_LANG_GetText          (int IndexText);
+int          GUI_LANG_GetTextBuffered  (int IndexText, char * pBuffer, int SizeOfBuffer);
+int          GUI_LANG_GetTextBufferedEx(int IndexText, int IndexLang, char * pBuffer, int SizeOfBuffer);
+const char * GUI_LANG_GetTextEx        (int IndexText, int IndexLang);
+int          GUI_LANG_LoadCSV          (const U8 * pFileData, U32 FileSize);
+int          GUI_LANG_LoadCSVEx        (GUI_GET_DATA_FUNC * pfGetData, void * p);
+int          GUI_LANG_LoadText         (const U8 * pFileData, U32 FileSize, int IndexLang);
+int          GUI_LANG_LoadTextEx       (GUI_GET_DATA_FUNC * pfGetData, void * p, int IndexLang);
+int          GUI_LANG_SetLang          (int IndexLang);
+unsigned     GUI_LANG_SetMaxNumLang    (unsigned MaxNumLang);
+U16          GUI_LANG_SetSep           (U16 Sep);
 
 /*********************************************************************
 *
@@ -892,10 +896,13 @@ typedef struct {
 
 #define GUI_MAKE_ALPHA(Alpha, Color) ((U32)(((U32)Alpha << 24) | Color))
 
-unsigned GUI_EnableAlpha     (unsigned OnOff);
-U32      GUI_RestoreUserAlpha(GUI_ALPHA_STATE * pAlphaState);
-unsigned GUI_SetAlpha        (U8 Alpha);
-U32      GUI_SetUserAlpha    (GUI_ALPHA_STATE * pAlphaState, U32 UserAlpha);
+unsigned GUI_EnableAlpha         (unsigned OnOff);
+U32      GUI_RestoreUserAlpha    (GUI_ALPHA_STATE * pAlphaState);
+unsigned GUI_SetAlpha            (U8 Alpha);
+U32      GUI_SetUserAlpha        (GUI_ALPHA_STATE * pAlphaState, U32 UserAlpha);
+void     GUI_SetFuncAlphaBlending(void (* pfAlphaBlending)(LCD_COLOR *, LCD_COLOR *, LCD_COLOR *, U32));
+void     GUI_SetFuncMixColors    (LCD_COLOR (* pFunc)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens));
+void     GUI_SetFuncMixColorsBulk(void (* pFunc)(U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens));
 
 /*********************************************************************
 *
@@ -1006,6 +1013,12 @@ DECLARE_CREATE_FROM_STREAM(24)
 DECLARE_CREATE_FROM_STREAM(Alpha)
 DECLARE_CREATE_FROM_STREAM(RLEAlpha)
 DECLARE_CREATE_FROM_STREAM(RLE32)
+DECLARE_CREATE_FROM_STREAM(444_12)
+DECLARE_CREATE_FROM_STREAM(M444_12)
+DECLARE_CREATE_FROM_STREAM(444_12_1)
+DECLARE_CREATE_FROM_STREAM(M444_12_1)
+DECLARE_CREATE_FROM_STREAM(444_16)
+DECLARE_CREATE_FROM_STREAM(M444_16)
 
 int  GUI_CreateBitmapFromStream  (GUI_BITMAP * pBMP, GUI_LOGPALETTE * pPAL, const void * p);
 void GUI_DrawStreamedBitmap      (const void * p, int x, int y);
@@ -1038,10 +1051,10 @@ void GUI_BMP_SerializeExBpp(GUI_CALLBACK_VOID_U8_P * pfSerialize, int x0, int y0
 *
 *       Time / execution related routines
 */
-void GUI_Delay  (int Period);
-int  GUI_GetTime(void);
-int  GUI_Exec(void);         /* Execute all jobs ... Return 0 if nothing was done. */
-int  GUI_Exec1(void);        /* Execute one job  ... Return 0 if nothing was done. */
+void           GUI_Delay  (int Period);
+GUI_TIMER_TIME GUI_GetTime(void);
+int            GUI_Exec(void);         /* Execute all jobs ... Return 0 if nothing was done. */
+int            GUI_Exec1(void);        /* Execute one job  ... Return 0 if nothing was done. */
 
 /*********************************************************************
 *
@@ -1216,35 +1229,35 @@ int  GUI_TOUCH_X_MeasureY (void);
 // Configuration
 //
 void GUI_X_Config(void);
-void GUI_X_Init(void);
+void GUI_X_Init  (void);
 
 //
 // Timing routines
 //
-int  GUI_X_GetTime(void);
-void GUI_X_Delay(int Period);
+GUI_TIMER_TIME GUI_X_GetTime(void);
+void           GUI_X_Delay  (int Period);
 
 //
 // Multitask routines - required only if multitasking is used (#define GUI_OS 1)
 //
-void GUI_X_Unlock(void);
-void GUI_X_Lock(void);
+void GUI_X_Unlock   (void);
+void GUI_X_Lock     (void);
 U32  GUI_X_GetTaskId(void);
-void GUI_X_InitOS(void);
+void GUI_X_InitOS   (void);
 
 //
 // Event driving (optional with multitasking)
 //
-void GUI_X_ExecIdle(void);
-void GUI_X_WaitEvent(void);
+void GUI_X_ExecIdle      (void);
+void GUI_X_WaitEvent     (void);
 void GUI_X_WaitEventTimed(int Period);
-void GUI_X_SignalEvent(void);
+void GUI_X_SignalEvent   (void);
 
 //
 // Recording (logs/warnings and errors) - required only for higher levels
 //
-void GUI_X_Log(const char * s);
-void GUI_X_Warn(const char * s);
+void GUI_X_Log     (const char * s);
+void GUI_X_Warn    (const char * s);
 void GUI_X_ErrorOut(const char * s);
 
 /*********************************************************************
@@ -1262,33 +1275,46 @@ extern const GUI_BITMAP_METHODS GUI_BitmapMethodsRLEM16Ex;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethodsRLE32;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethodsRLE32Ex;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethodsRLEAlpha;
-extern const GUI_BITMAP_METHODS GUI_BitmapMethods8888;
 
-extern const GUI_BITMAP_METHODS GUI_BitmapMethods888;
-extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM888;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethods444_12;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM444_12;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethods444_12_1;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM444_12_1;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethods444_16;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM444_16;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethods555;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM555;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethods565;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM565;
 extern const GUI_BITMAP_METHODS GUI_BitmapMethods24;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethods888;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethodsM888;
+extern const GUI_BITMAP_METHODS GUI_BitmapMethods8888;
 
 #define GUI_COMPRESS_RLE4 0
 #define GUI_COMPRESS_RLE8 0
 
-#define GUI_DRAW_RLE4     &GUI_BitmapMethodsRLE4     /* Method table ! */
-#define GUI_DRAW_RLE8     &GUI_BitmapMethodsRLE8     /* Method table ! */
-#define GUI_DRAW_RLE16    &GUI_BitmapMethodsRLE16    /* Method table ! */
-#define GUI_DRAW_RLEM16   &GUI_BitmapMethodsRLEM16   /* Method table ! */
-#define GUI_DRAW_RLE32    &GUI_BitmapMethodsRLE32    /* Method table ! */
-#define GUI_DRAW_RLEALPHA &GUI_BitmapMethodsRLEAlpha /* Method table ! */
-#define GUI_DRAW_BMP555   &GUI_BitmapMethods555      /* Method table ! */
-#define GUI_DRAW_BMPM555  &GUI_BitmapMethodsM555     /* Method table ! */
-#define GUI_DRAW_BMP565   &GUI_BitmapMethods565      /* Method table ! */
-#define GUI_DRAW_BMPM565  &GUI_BitmapMethodsM565     /* Method table ! */
-#define GUI_DRAW_BMP888   &GUI_BitmapMethods888      /* Method table ! */
-#define GUI_DRAW_BMPM888  &GUI_BitmapMethodsM888     /* Method table ! */
-#define GUI_DRAW_BMP8888  &GUI_BitmapMethods8888     /* Method table ! */
-#define GUI_DRAW_BMP24    &GUI_BitmapMethods24       /* Method table ! */
+#define GUI_DRAW_RLE4         &GUI_BitmapMethodsRLE4       /* Method table ! */
+#define GUI_DRAW_RLE8         &GUI_BitmapMethodsRLE8       /* Method table ! */
+#define GUI_DRAW_RLE16        &GUI_BitmapMethodsRLE16      /* Method table ! */
+#define GUI_DRAW_RLEM16       &GUI_BitmapMethodsRLEM16     /* Method table ! */
+#define GUI_DRAW_RLE32        &GUI_BitmapMethodsRLE32      /* Method table ! */
+#define GUI_DRAW_RLEALPHA     &GUI_BitmapMethodsRLEAlpha   /* Method table ! */
+
+#define GUI_DRAW_BMP444_12    &GUI_BitmapMethods444_12     /* Method table ! */
+#define GUI_DRAW_BMPM444_12   &GUI_BitmapMethodsM444_12    /* Method table ! */
+#define GUI_DRAW_BMP444_12_1  &GUI_BitmapMethods444_12_1   /* Method table ! */
+#define GUI_DRAW_BMPM444_12_1 &GUI_BitmapMethodsM444_12_1  /* Method table ! */
+#define GUI_DRAW_BMP444_16    &GUI_BitmapMethods444_16     /* Method table ! */
+#define GUI_DRAW_BMPM444_16   &GUI_BitmapMethodsM444_16    /* Method table ! */
+#define GUI_DRAW_BMP555       &GUI_BitmapMethods555        /* Method table ! */
+#define GUI_DRAW_BMPM555      &GUI_BitmapMethodsM555       /* Method table ! */
+#define GUI_DRAW_BMP565       &GUI_BitmapMethods565        /* Method table ! */
+#define GUI_DRAW_BMPM565      &GUI_BitmapMethodsM565       /* Method table ! */
+#define GUI_DRAW_BMP24        &GUI_BitmapMethods24         /* Method table ! */
+#define GUI_DRAW_BMP888       &GUI_BitmapMethods888        /* Method table ! */
+#define GUI_DRAW_BMPM888      &GUI_BitmapMethodsM888       /* Method table ! */
+#define GUI_DRAW_BMP8888      &GUI_BitmapMethods8888       /* Method table ! */
 
 extern const tGUI_SIF_APIList GUI_SIF_APIList_Prop;
 extern const tGUI_SIF_APIList GUI_SIF_APIList_Prop_Ext;
@@ -1366,7 +1392,7 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_EDIT7      0x107
 #define GUI_ID_EDIT8      0x108
 #define GUI_ID_EDIT9      0x109
-                          
+
 #define GUI_ID_LISTBOX0   0x110
 #define GUI_ID_LISTBOX1   0x111
 #define GUI_ID_LISTBOX2   0x112
@@ -1377,7 +1403,7 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_LISTBOX7   0x117
 #define GUI_ID_LISTBOX8   0x118
 #define GUI_ID_LISTBOX9   0x119
-                          
+
 #define GUI_ID_CHECK0     0x120
 #define GUI_ID_CHECK1     0x121
 #define GUI_ID_CHECK2     0x122
@@ -1388,7 +1414,7 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_CHECK7     0x127
 #define GUI_ID_CHECK8     0x128
 #define GUI_ID_CHECK9     0x129
-                          
+
 #define GUI_ID_SLIDER0    0x130
 #define GUI_ID_SLIDER1    0x131
 #define GUI_ID_SLIDER2    0x132
@@ -1413,7 +1439,7 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_RADIO5     0x155
 #define GUI_ID_RADIO6     0x156
 #define GUI_ID_RADIO7     0x157
-                          
+
 #define GUI_ID_TEXT0      0x160
 #define GUI_ID_TEXT1      0x161
 #define GUI_ID_TEXT2      0x162
@@ -1502,6 +1528,8 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_SPINBOX7   0x287
 #define GUI_ID_SPINBOX8   0x288
 #define GUI_ID_SPINBOX9   0x289
+
+#define GUI_ID_CALENDAR0  0x290
 
 #define GUI_ID_USER       0x800
 

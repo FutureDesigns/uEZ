@@ -86,6 +86,10 @@ static const T_appMenuEntry settings_menu_entries[] = {
     { "Brightness", BrightnessControlMode, G_contrastIcon, 0 },
     { "Calibrate", CalibrateMode, G_calibrationIcon, 0 },
     { "Functional Test", FunctionalTest, G_funcTestIcon, 0 },
+#if UEZGUI_EXP_DK_FCT_TEST
+    { "EXP-DK Test", FunctionalTest_EXP_DK, G_funcTestIcon, 0 },
+    { "EXP-DK Loopback", FunctionalTest_EXP_DK_Loopback, G_funcTestIcon, 0 },
+#endif
     { 0 },
 };
 
@@ -124,6 +128,9 @@ static const T_appMenuEntry mainmenu_entries[] = {
 #endif
 #if APP_DEMO_YOUR_APP
         { "Your App Here!", YourAppMode, G_questionIcon, 0 },
+#endif
+#if APP_DEMO_VIDEO_PLAYER
+        { "Video Player", VideoPlayerSelection, G_videoIcon, 0 },
 #endif
         { 0 },
 };

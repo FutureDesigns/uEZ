@@ -37,6 +37,7 @@
 #include <Source/Library/Graphics/SWIM/lpc_droidsansr76.h>
 #include <Source/Library/Graphics/SWIM/droidsansr32.h>
 #include <UEZLCD.h>
+#include <UEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -631,7 +632,9 @@ void TimeDateMode(const T_choice *aChoice)
     static T_timeDateWorkspace *G_ws = NULL;
     TUInt32 timeLastTouch = UEZTickCounterGet();
     TBool lastShowButtons;
-
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == G_ws)
 	{
@@ -651,7 +654,7 @@ void TimeDateMode(const T_choice *aChoice)
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == queue)
 	{
-	  	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) != UEZ_ERROR_NONE)
+	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
 		{
 		  	queue = NULL;
 		}
@@ -661,7 +664,14 @@ void TimeDateMode(const T_choice *aChoice)
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
 	  	UEZQueueAddToRegistry( queue, "TimeDate TS" );	
 #else
-	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "TimeDate", "\0");
+#endif
+
+#endif
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
@@ -696,6 +706,9 @@ void TimeDateMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
 	    UEZQueueDelete(queue);
 #endif

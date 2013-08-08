@@ -51,7 +51,7 @@ WM_HWIN G_SystemWindows_PF[NUM_WINDOWS];
  /*---------------------------------------------------------------------------*/
 static U32 _TouchTask(T_uezTask aMyTask, void *aParameters)
 {
-    T_uezTSReading TouchResult;
+    T_uezInputEvent inputEvent;
     GUI_PID_STATE State = { 0 };
 
     (void)aMyTask;
@@ -66,10 +66,10 @@ static U32 _TouchTask(T_uezTask aMyTask, void *aParameters)
         // Wait for 100ms for a new touch event to occur. Else skip over to give the
         // task a chance to respond to an exit request.
         //
-        if (UEZQueueReceive(_hTSQueue, &TouchResult, 100) == UEZ_ERROR_NONE) {
-            if (TouchResult.iFlags & TSFLAG_PEN_DOWN) {
-                State.x = TouchResult.iX;
-                State.y = TouchResult.iY;
+        if (UEZQueueReceive(_hTSQueue, &inputEvent, 100) == UEZ_ERROR_NONE) {
+            if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD) {
+                State.x = inputEvent.iEvent.iXY.iX;
+                State.y = inputEvent.iEvent.iXY.iY;
                 State.Pressed = 1;
             } else {
                 State.x = -1;
@@ -120,7 +120,7 @@ T_uezError GUIManager_Start_emWin_PF()
     WM_MULTIBUF_Enable(1); // enable automatic mult-buffering
 
     //Created the touch screen task
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &_hTSQueue) != UEZ_ERROR_NONE)
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &_hTSQueue) != UEZ_ERROR_NONE)
         UEZFailureMsg("Main: no queue for TS!");
 
     // Open touch screen

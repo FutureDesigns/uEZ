@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -156,6 +156,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_4;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M4;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_5;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_16;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_1616I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_111;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_222;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_233;
@@ -174,14 +175,18 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_822216;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_84444;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_8666;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_8666_1;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_88666I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_888;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_8888;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M111;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M1555I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M222;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M233;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M323;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M332;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M4444I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M444_12;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M444_12_1;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M444_16;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M555;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M565;
@@ -192,58 +197,71 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M666_9;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M8565;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M888;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M8888;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M8888I;
 
-#define GUICC_0        &LCD_API_ColorConv_0
-#define GUICC_1        &LCD_API_ColorConv_1
-#define GUICC_1_2      &LCD_API_ColorConv_1_2
-#define GUICC_1_4      &LCD_API_ColorConv_1_4
-#define GUICC_1_5      &LCD_API_ColorConv_1_5
-#define GUICC_1_8      &LCD_API_ColorConv_1_8
-#define GUICC_1_16     &LCD_API_ColorConv_1_16
-#define GUICC_1_24     &LCD_API_ColorConv_1_24
-#define GUICC_M1       &LCD_API_ColorConv_M1
-#define GUICC_2        &LCD_API_ColorConv_2
-#define GUICC_M2       &LCD_API_ColorConv_M2
-#define GUICC_4        &LCD_API_ColorConv_4
-#define GUICC_M4       &LCD_API_ColorConv_M4
-#define GUICC_5        &LCD_API_ColorConv_5
-#define GUICC_16       &LCD_API_ColorConv_16
-#define GUICC_111      &LCD_API_ColorConv_111
-#define GUICC_222      &LCD_API_ColorConv_222
-#define GUICC_233      &LCD_API_ColorConv_233
-#define GUICC_323      &LCD_API_ColorConv_323
-#define GUICC_332      &LCD_API_ColorConv_332
-#define GUICC_444_12   &LCD_API_ColorConv_444_12
-#define GUICC_444_12_1 &LCD_API_ColorConv_444_12_1
-#define GUICC_444_16   &LCD_API_ColorConv_444_16
-#define GUICC_555      &LCD_API_ColorConv_555
-#define GUICC_565      &LCD_API_ColorConv_565
-#define GUICC_556      &LCD_API_ColorConv_556
-#define GUICC_655      &LCD_API_ColorConv_655
-#define GUICC_666      &LCD_API_ColorConv_666
-#define GUICC_666_9    &LCD_API_ColorConv_666_9
-#define GUICC_822216   &LCD_API_ColorConv_822216
-#define GUICC_84444    &LCD_API_ColorConv_84444
-#define GUICC_8666     &LCD_API_ColorConv_8666
-#define GUICC_8666_1   &LCD_API_ColorConv_8666_1
-#define GUICC_888      &LCD_API_ColorConv_888
-#define GUICC_8888     &LCD_API_ColorConv_8888
-#define GUICC_M111     &LCD_API_ColorConv_M111
-#define GUICC_M222     &LCD_API_ColorConv_M222
-#define GUICC_M233     &LCD_API_ColorConv_M233
-#define GUICC_M323     &LCD_API_ColorConv_M323
-#define GUICC_M332     &LCD_API_ColorConv_M332
-#define GUICC_M444_12  &LCD_API_ColorConv_M444_12
-#define GUICC_M444_16  &LCD_API_ColorConv_M444_16
-#define GUICC_M555     &LCD_API_ColorConv_M555
-#define GUICC_M565     &LCD_API_ColorConv_M565
-#define GUICC_M556     &LCD_API_ColorConv_M556
-#define GUICC_M655     &LCD_API_ColorConv_M655
-#define GUICC_M666     &LCD_API_ColorConv_M666
-#define GUICC_M666_9   &LCD_API_ColorConv_M666_9
-#define GUICC_M8565    &LCD_API_ColorConv_M8565
-#define GUICC_M888     &LCD_API_ColorConv_M888
-#define GUICC_M8888    &LCD_API_ColorConv_M8888
+#define GUICC_0         &LCD_API_ColorConv_0
+#define GUICC_1         &LCD_API_ColorConv_1
+#define GUICC_1_2       &LCD_API_ColorConv_1_2
+#define GUICC_1_4       &LCD_API_ColorConv_1_4
+#define GUICC_1_5       &LCD_API_ColorConv_1_5
+#define GUICC_1_8       &LCD_API_ColorConv_1_8
+#define GUICC_1_16      &LCD_API_ColorConv_1_16
+#define GUICC_1_24      &LCD_API_ColorConv_1_24
+#define GUICC_M1        &LCD_API_ColorConv_M1
+#define GUICC_2         &LCD_API_ColorConv_2
+#define GUICC_M2        &LCD_API_ColorConv_M2
+#define GUICC_4         &LCD_API_ColorConv_4
+#define GUICC_M4        &LCD_API_ColorConv_M4
+#define GUICC_5         &LCD_API_ColorConv_5
+#define GUICC_16        &LCD_API_ColorConv_16
+#define GUICC_1616I     &LCD_API_ColorConv_1616I
+#define GUICC_111       &LCD_API_ColorConv_111
+#define GUICC_222       &LCD_API_ColorConv_222
+#define GUICC_233       &LCD_API_ColorConv_233
+#define GUICC_323       &LCD_API_ColorConv_323
+#define GUICC_332       &LCD_API_ColorConv_332
+#define GUICC_M4444I    &LCD_API_ColorConv_M4444I
+#define GUICC_444_12    &LCD_API_ColorConv_444_12
+#define GUICC_444_12_1  &LCD_API_ColorConv_444_12_1
+#define GUICC_444_16    &LCD_API_ColorConv_444_16
+#define GUICC_555       &LCD_API_ColorConv_555
+#define GUICC_565       &LCD_API_ColorConv_565
+#define GUICC_556       &LCD_API_ColorConv_556
+#define GUICC_655       &LCD_API_ColorConv_655
+#define GUICC_666       &LCD_API_ColorConv_666
+#define GUICC_666_9     &LCD_API_ColorConv_666_9
+#define GUICC_822216    &LCD_API_ColorConv_822216
+#define GUICC_84444     &LCD_API_ColorConv_84444
+#define GUICC_8666      &LCD_API_ColorConv_8666
+#define GUICC_8666_1    &LCD_API_ColorConv_8666_1
+#define GUICC_88666I    &LCD_API_ColorConv_88666I
+#define GUICC_888       &LCD_API_ColorConv_888
+#define GUICC_8888      &LCD_API_ColorConv_8888
+#define GUICC_M111      &LCD_API_ColorConv_M111
+#define GUICC_M1555I    &LCD_API_ColorConv_M1555I
+#define GUICC_M222      &LCD_API_ColorConv_M222
+#define GUICC_M233      &LCD_API_ColorConv_M233
+#define GUICC_M323      &LCD_API_ColorConv_M323
+#define GUICC_M332      &LCD_API_ColorConv_M332
+#define GUICC_M444_12   &LCD_API_ColorConv_M444_12
+#define GUICC_M444_12_1 &LCD_API_ColorConv_M444_12_1
+#define GUICC_M444_16   &LCD_API_ColorConv_M444_16
+#define GUICC_M555      &LCD_API_ColorConv_M555
+#define GUICC_M565      &LCD_API_ColorConv_M565
+#define GUICC_M556      &LCD_API_ColorConv_M556
+#define GUICC_M655      &LCD_API_ColorConv_M655
+#define GUICC_M666      &LCD_API_ColorConv_M666
+#define GUICC_M666_9    &LCD_API_ColorConv_M666_9
+#define GUICC_M8565     &LCD_API_ColorConv_M8565
+#define GUICC_M888      &LCD_API_ColorConv_M888
+#define GUICC_M8888     &LCD_API_ColorConv_M8888
+#define GUICC_M8888I    &LCD_API_ColorConv_M8888I
+
+void GUICC_M1555I_SetCustColorConv(tLCDDEV_Color2IndexBulk * pfColor2IndexBulk, tLCDDEV_Index2ColorBulk * pfIndex2ColorBulk);
+void GUICC_M565_SetCustColorConv  (tLCDDEV_Color2IndexBulk * pfColor2IndexBulk, tLCDDEV_Index2ColorBulk * pfIndex2ColorBulk);
+void GUICC_M4444I_SetCustColorConv(tLCDDEV_Color2IndexBulk * pfColor2IndexBulk, tLCDDEV_Index2ColorBulk * pfIndex2ColorBulk);
+void GUICC_M888_SetCustColorConv  (tLCDDEV_Color2IndexBulk * pfColor2IndexBulk, tLCDDEV_Index2ColorBulk * pfIndex2ColorBulk);
+void GUICC_M8888I_SetCustColorConv(tLCDDEV_Color2IndexBulk * pfColor2IndexBulk, tLCDDEV_Index2ColorBulk * pfIndex2ColorBulk);
 
 /*********************************************************************
 *
@@ -277,9 +295,9 @@ typedef void         tLCDDEV_FillRect     (int x0, int y0, int x1, int y1);
 typedef unsigned int tLCDDEV_GetPixelIndex(int x, int y);
 typedef void         tLCDDEV_SetPixelIndex(int x, int y, int ColorIndex);
 typedef void         tLCDDEV_XorPixel     (int x, int y);
-typedef void         tLCDDEV_FillPolygon  (const GUI_POINT* pPoints, int NumPoints, int x0, int y0);
-typedef void         tLCDDEV_FillPolygonAA(const GUI_POINT* pPoints, int NumPoints, int x0, int y0);
-typedef void         tLCDDEV_GetRect      (LCD_RECT*pRect);
+typedef void         tLCDDEV_FillPolygon  (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
+typedef void         tLCDDEV_FillPolygonAA(const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
+typedef void         tLCDDEV_GetRect      (LCD_RECT * pRect);
 typedef int          tLCDDEV_Init         (void);
 typedef void         tLCDDEV_On           (void);
 typedef void         tLCDDEV_Off          (void);
@@ -298,7 +316,7 @@ typedef struct GUI_DEVICE_API GUI_DEVICE_API;
 typedef void tLCDDEV_DrawBitmap   (int x0, int y0, int xsize, int ysize,
                        int BitsPerPixel, int BytesPerLine,
                        const U8 GUI_UNI_PTR * pData, int Diff,
-                       const void* pTrans);   /* Really LCD_PIXELINDEX, but is void to avoid compiler warnings*/
+                       const void * pTrans);   /* Really LCD_PIXELINDEX, but is void to avoid compiler warnings */
 #define GUI_MEMDEV_APILIST_1  &GUI_MEMDEV_DEVICE_1
 #define GUI_MEMDEV_APILIST_8  &GUI_MEMDEV_DEVICE_8
 #define GUI_MEMDEV_APILIST_16 &GUI_MEMDEV_DEVICE_16
@@ -382,6 +400,8 @@ int LCD_GetNumLayers(void);
 LCD_COLOR * LCD_GetPalette  (void);
 LCD_COLOR * LCD_GetPaletteEx(int LayerIndex);
 
+void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
+
 /*********************************************************************
 *
 *       Values for requesting and setting function pointers (display driver)
@@ -417,6 +437,8 @@ LCD_COLOR * LCD_GetPaletteEx(int LayerIndex);
 #define LCD_DEVFUNC_COPYBUFFER    0x21 /* ...copying complete frame buffers */
 #define LCD_DEVFUNC_SHOWBUFFER    0x22 /* ...shows the given buffer */
 #define LCD_DEVFUNC_COPYRECT      0x23 /* ...filling a rectangular area */
+#define LCD_DEVFUNC_DRAWBMP_16BPP 0x24 /* ...drawing a 16bpp bitmap */
+#define LCD_DEVFUNC_DRAWBMP_8BPP  0x25 /* ...drawing a 8bpp bitmap */
 
 /*********************************************************************
 *
@@ -563,31 +585,31 @@ LCD_API_NEXT_PIXEL * LCD_GetNextPixelAPI(void);
 *
 *      LCD_CLIP function table
 */
-typedef void         tLCD_HL_DrawHLine    (int x0, int y0,  int x1);
-typedef void         tLCD_HL_DrawPixel    (int x0, int y0);
+typedef void tLCD_HL_DrawHLine    (int x0, int y0,  int x1);
+typedef void tLCD_HL_DrawPixel    (int x0, int y0);
 
 typedef struct {
-  tLCD_HL_DrawHLine*          pfDrawHLine;
-  tLCD_HL_DrawPixel*          pfDrawPixel;
+  tLCD_HL_DrawHLine * pfDrawHLine;
+  tLCD_HL_DrawPixel * pfDrawPixel;
 } tLCD_HL_APIList;
 
 void LCD_DrawHLine(int x0, int y0,  int x1);
 void LCD_DrawPixel(int x0, int y0);
-void LCD_DrawVLine  (int x, int y0,  int y1);
+void LCD_DrawVLine(int x,  int y0,  int y1);
 
 
 /*********************************************************************
 *
 *       Declarations for LCD_
 */
-void LCD_SetClipRectEx(const LCD_RECT* pRect);
+void LCD_SetClipRectEx(const LCD_RECT * pRect);
 void LCD_SetClipRectMax(void);
 
 /* Get device capabilities (0 if not supported) */
 I32  LCD_GetDevCap  (int Index);
 I32  LCD_GetDevCapEx(int LayerIndex, int Index);
 
-/* Initialize LCD using config-paramters */
+/* Initialize LCD using config-parameters */
 int LCD_Init(void);
 int LCD_InitColors(void);
 
@@ -624,7 +646,7 @@ int LCD_SetMaxNumColors(unsigned MaxNumColors);
 
 /*********************************************************************
 *
-*       Optional support for rotatation
+*       Optional support for rotation
 */
 #if GUI_SUPPORT_ROTATION
 

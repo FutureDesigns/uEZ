@@ -1,7 +1,7 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="uEZGUI-2478-43WQS" target="8" version="2">
   <project Name="uEZGUI-2478-43WQS" file_name="">
-    <configuration Name="Common" Target="LPC2478" arm_architecture="v4T" arm_core_type="ARM7TDMI-S" arm_linker_heap_size="500000" arm_simulator_memory_simulation_filename="$(TargetsDir)/Philips_LPC210X/LPC2000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC24;0x80000;0x10000;0x0;0x0;0x0;0x0;0x0;0x0;0x0;0x0" arm_target_debug_interface_type="ARM7TDI" arm_target_loader_parameter="12000000" build_remove_unused_symbols="Yes" c_enforce_ansi_checking="No" c_preprocessor_definitions="SUPERVISOR_START;VECTORED_IRQ_INTERRUPTS;ALIGN_STRUCT_END=__attribute__((aligned(4)));STARTUP_FROM_RESET;SRAM_EXCEPTIONS;COMPILER_TYPE=RowleyARM;UEZ" c_user_include_directories=".;../../../../../../Source/App/uEZGUI;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ/.;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/Platform/FDI/uEZGUI-2478-43WQS;../../../../../../../uEZ/Source/Processor/NXP/LPC2478;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc" gcc_entry_point="" gcc_optimization_level="None" link_include_standard_libraries="Yes" link_include_startup_code="No" linker_additional_files="" linker_memory_map_file="$(ProjectDir)/UEZ_GUI_MemoryMap.xml" linker_output_format="hex" linker_printf_enabled="Yes" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/UEZ_GUI_placement.xml" oscillator_frequency="12MHz" project_dependencies="uEZ_NXP_LPC2478_FreeRTOS_CrossWorks2(uEZ_NXP_LPC2478_FreeRTOS_CrossWorks2)" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/Philips_LPC210X/propertyGroups24xx.xml"/>
+    <configuration Name="Common" Target="LPC2478" arm_architecture="v4T" arm_core_type="ARM7TDMI-S" arm_linker_heap_size="500000" arm_simulator_memory_simulation_filename="$(TargetsDir)/Philips_LPC210X/LPC2000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC24;0x80000;0x10000;0x0;0x0;0x0;0x0;0x0;0x0;0x0;0x0" arm_target_debug_interface_type="ARM7TDI" arm_target_loader_parameter="12000000" build_remove_unused_symbols="Yes" c_enforce_ansi_checking="No" c_preprocessor_definitions="SUPERVISOR_START;VECTORED_IRQ_INTERRUPTS;ALIGN_STRUCT_END=__attribute__((aligned(4)));STARTUP_FROM_RESET;SRAM_EXCEPTIONS;COMPILER_TYPE=RowleyARM;UEZ" c_user_include_directories=".;../../../../../../Source/App/uEZGUI;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ/.;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_43WQS;../../../../../../../uEZ/Source/Processor/NXP/LPC2478;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc" gcc_entry_point="" gcc_optimization_level="None" link_include_standard_libraries="Yes" link_include_startup_code="No" linker_additional_files="" linker_memory_map_file="$(ProjectDir)/UEZ_GUI_MemoryMap.xml" linker_output_format="hex" linker_printf_enabled="Yes" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/UEZ_GUI_placement.xml" oscillator_frequency="12MHz" project_dependencies="uEZ_NXP_LPC2478_FreeRTOS_CrossWorks2(uEZ_NXP_LPC2478_FreeRTOS_CrossWorks2)" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/Philips_LPC210X/propertyGroups24xx.xml"/>
     <configuration Name="Flash" Placement="Flash" arm_target_flash_loader_file_path="$(PackagesDir)/targets/Philips_LPC210X/Release/Loader_lpc2300.elf" arm_target_flash_loader_type="LIBMEM RPC Loader" target_reset_script="FLASHReset()"/>
     <configuration Name="ARM" arm_architecture="v4T" arm_core_type="ARM7TDMI-S" arm_instruction_set="ARM" arm_keep_assembly="Yes" arm_linker_fiq_stack_size="256" arm_linker_irq_stack_size="1024" arm_linker_stack_size="1024" arm_linker_svc_stack_size="2048" build_debug_information="Yes" c_preprocessor_definitions="GCC_ARM7" c_system_include_directories="$(StudioDir)/include" gcc_entry_point="reset_handler" gcc_optimization_level="Level 3" linker_keep_symbols="_vectors" linker_post_build_command=""/>
     <folder Name="Source">
@@ -20,9 +20,9 @@
       <folder Name="Platform">
         <folder Name="FDI">
           <folder Name="uEZGUI_2478_43WQS">
-            <file file_name="../../../../../../../../uEZ/Source/Platform/FDI/uEZGUI-2478-43WQS/lwipopts.h"/>
-            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI-2478-43WQS/uEZGUI-2478-43WQS.c"/>
-            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI-2478-43WQS/UEZPlatform.h"/>
+            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_43WQS/lwipopts.h"/>
+            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_43WQS/uEZGUI_2478_43WQS.c"/>
+            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_43WQS/UEZPlatform.h"/>
           </folder>
         </folder>
       </folder>
@@ -40,9 +40,28 @@
           </folder>
         </folder>
       </folder>
+      <folder Name="Scripts">
+        <folder Name="Compilers">
+          <folder Name="CrossWorks">
+            <folder Name="FreeRTOS">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+                <configuration Name="Common" file_type="Threads Script"/>
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="ExpansionBoard">
+        <folder Name="FDI">
+          <folder Name="uEZGUI_EXP_DK" file_name="">
+            <file file_name="../../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.c"/>
+            <file file_name="../../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h"/>
+          </folder>
+        </folder>
+      </folder>
     </folder>
     <folder Name="App">
-      <folder Name="uEZGUI">
+      <folder Name="uEZGUI" file_name="">
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AppMenu.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AppMenu.h"/>
@@ -65,8 +84,11 @@
         <file file_name="../../../../../../Source/App/uEZDemoCommon/UDCImages.h"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/YourAppMode.c"/>
+        <file file_name="../../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.c"/>
+        <file file_name="../../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.h"/>
+        <file file_name="../../../../../../Source/App/uEZGUI/FunctionalTestLoop.c"/>
       </folder>
-      <folder Name="uEZDemoCommon">
+      <folder Name="uEZDemoCommon" file_name="">
         <file file_name="../../../../../../Source/App/uEZGUI/AppDemo.h"/>
         <file file_name="../../../../../../Source/App/uEZGUI/AppTasks.c"/>
         <file file_name="../../../../../../Source/App/uEZGUI/AppTasks.h"/>
@@ -79,6 +101,10 @@
         <file file_name="../../../../../../Source/App/uEZGUI/TestCmds.c"/>
         <file file_name="../../../../../../Source/App/uEZGUI/TestCmds.h"/>
         <file file_name="../../../../../../Source/App/uEZGUI/TestMode.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/NetworkStartup.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/CANTest.c"/>
       </folder>
       <folder Name="SEGGER">
         <folder Name="emWin">

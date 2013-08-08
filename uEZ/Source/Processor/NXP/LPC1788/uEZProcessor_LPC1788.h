@@ -90,6 +90,21 @@
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
 #endif // (COMPILER_TYPE==RowleyARM)
 
+#if (COMPILER_TYPE==GCC)
+#define     IRQ_ROUTINE(name)  void name(void) ;\
+                                void name(void)
+#define     IRQ_START()
+#define     IRQ_END()
+#define     IRQ_HANDLER(funcname, param) \
+                    IRQ_ROUTINE(funcname##_irq) \
+                    IRQ_START() \
+                    funcname(param);\
+                    IRQ_END()
+#define     __packed        __attribute__((packed))
+#define     INLINE          inline
+#define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
+#endif // (COMPILER_TYPE==GCC)
+
 #if (COMPILER_TYPE==IAR)
 #define     IRQ_ROUTINE(name)  void name(void)
 #define     IRQ_START() // context is saved by lower assembly routine
@@ -122,6 +137,9 @@
 
 
 #if(COMPILER_TYPE == RowleyARM)
+	#define NOP() __NOP()
+#endif
+#if(COMPILER_TYPE == GCC)
 	#define NOP() __NOP()
 #endif
 #if (COMPILER_TYPE==IAR)

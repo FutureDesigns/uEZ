@@ -1,8 +1,8 @@
 /**
- *	@file 	uEZErrors.h
- *  @brief 	uEZError Type definition
+ *    @file     uEZErrors.h
+ *  @brief     uEZError Type definition
  *
- *	Common return type in uEZ
+ *    Common return type in uEZ
  */
 /*--------------------------------------------------------------------------
  * uEZ(R) - Copyright (C) 2007-2011 Future Designs, Inc.
@@ -21,7 +21,7 @@
 #define _UEZ_ERRORS_H_
 
 /**
- *	@typedef T_uezError
+ *    @typedef T_uezError
  */
 typedef enum {
     UEZ_ERROR_NONE=0,
@@ -83,8 +83,8 @@ typedef enum {
     UEZ_ERROR_COULD_NOT_RESET=2003,
     UEZ_ERROR_COULD_NOT_START=2004,
     UEZ_ERROR_MUST_CLOSE_FIRST=2005,
-	UEZ_ERROR_RTOS_START=3000,		/** Refer to RTOS specific errors. */
-	UEZ_ERROR_RTOS_END=4000,		/** Range reserved for RTOS errors. */
+    UEZ_ERROR_RTOS_START=3000,        /** Refer to RTOS specific errors. */
+    UEZ_ERROR_RTOS_END=4000,        /** Range reserved for RTOS errors. */
     UEZ_ERROR_UNKNOWN=(int)0xFFFFFFFF
 } T_uezError;
 

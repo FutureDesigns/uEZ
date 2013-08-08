@@ -557,7 +557,7 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-70WVT/IAR6.x</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI_1788_70WVT/IAR6.x</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVT</state>
@@ -657,7 +657,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-70WVT.out</state>
+          <state>uEZGUI_1788_70WVT.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1498,7 +1498,7 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-70WVT/IAR6.x</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI_1788_70WVT/IAR6.x</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVT</state>
@@ -1544,7 +1544,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>uEZGUI-1788-70WVT.hex</state>
+          <state>uEZGUI_1788_70WVT.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1598,7 +1598,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-70WVT.out</state>
+          <state>uEZGUI_1788_70WVT.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -2301,7 +2301,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_518_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_520_IAR650_M3_LE.a</name>
                 </file>
               </group>
             </group>
@@ -2619,7 +2619,7 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\lwipopts.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\uEZGUI-1788-70WVT.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\uEZGUI_1788_70WVT.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\UEZPlatform.h</name>

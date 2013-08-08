@@ -87,7 +87,7 @@ static T_uezTask G_ssTask;
 static TBool G_ssIsActive = EFalse;
 static TBool G_ssTaskActive = EFalse;
 static TBool G_ssBacklightON = ETrue;
-static TBool G_ssLCD_ON = ETrue;
+//static TBool G_ssLCD_ON = ETrue;
 static TBool G_ssStop = EFalse;
 static TUInt32 G_ssOriginalBLLevel;
 
@@ -608,12 +608,12 @@ void UEZLCDScreensaverTask(void)
                     UEZLCDBacklight(G_ssLCD, G_ssOriginalBLLevel);
                     G_ssBacklightON = ETrue;
                 }
-                                
+                /*                
                 if(G_ssLCD_ON == EFalse) {
                     UEZLCDOn(G_ssLCD);
-                    G_ssLCD_ON = EFalse;
+                    G_ssLCD_ON = ETrue;
                 }
-                
+                */
                 startTime = UEZTickCounterGet();
                 G_ssIsActive = EFalse;
                 G_ssWake = EFalse;
@@ -655,8 +655,10 @@ void UEZLCDScreensaverTask(void)
                     G_ssState++;
                 break;
             case LCD_SS_SLEEP_START:
-                UEZLCDOff(G_ssLCD);
-                G_ssLCD_ON = EFalse;
+                //UEZLCDOff(G_ssLCD);
+                //G_ssLCD_ON = EFalse;
+                UEZLCDBacklight(G_ssLCD, 0);
+                G_ssBacklightON = EFalse;
                 G_ssState++;
                 break;
             case LCD_SS_SLEEP:

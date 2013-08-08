@@ -3,12 +3,12 @@
 [DATABASE_VERSION]
 "11.0" 
 [WORKSPACE_DETAILS]
-"RDK_RX63N" "C:\FDI\SVN\FDI\uEZDemos\Build\Renesas\RDK_RX63N" "C:\FDI\SVN\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N.hws" "RX" "Renesas RX Standard" 
+"RDK_RX63N" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N.hws" "RX" "Renesas RX Standard" 
 [SHARED_WORKSPACE_CONTROL_STATUS]
 "" "" "" 
 "" "" "" 
 [PROJECTS]
-"RDK_RX63N" "C:\FDI\SVN\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N" "C:\FDI\SVN\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\RDK_RX63N.hwp" 0 
+"RDK_RX63N" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\RDK_RX63N.hwp" 0 
 [INFORMATION]
 "No workspace information available" 
 [SCRAP]

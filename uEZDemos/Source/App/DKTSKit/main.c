@@ -36,6 +36,12 @@
 #include "Audio.h"
 #include "Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h"
 
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#include <trcUser.h>
+#endif
+
+extern T_uezTask G_mainTask;
+
 /*---------------------------------------------------------------------------*
  * Options:
  *---------------------------------------------------------------------------*/
@@ -127,7 +133,9 @@ TUInt32 UEZEmWinGetRAMSize(void)
  *---------------------------------------------------------------------------*/
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
-    extern T_uezTask G_mainTask;
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+     TUInt32 traceAddressInMemory = 0;
+#endif
     
     UEZPlatform_Standard_Require();
     #if (SIMPLEUI_DOUBLE_SIZED_ICONS)
@@ -137,6 +145,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     #endif
 
     // USB Flash drive needed?
+    UEZPlatform_USBHost_PortA_Require();
     UEZPlatform_USBFlash_Drive_Require(0);
 
     // USB Device needed?
@@ -146,8 +155,29 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     UEZPlatform_SDCard_Drive_Require(1);
 
     // Network needed?
-    UEZPlatform_WiredNetwork0_Require();
-
+#if UEZ_ENABLE_WIRED_NETWORK
+     UEZPlatform_WiredNetwork0_Require();
+#endif
+     
+#if UEZ_ENABLE_WIRELESS_NETWORK
+#if UEZ_WIRELESS_PROGRAM_MODE
+     UEZPlatform_WiFiProgramMode();
+#endif
+     UEZPlatform_WirelessNetwork0_Require();
+#endif
+     
+#if ENABLE_UEZ_BUTTON
+    UEZPlatform_Keypad_Require();
+#endif
+         
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+     uiTraceStart();
+     vTraceStartStatusMonitor();
+     
+     traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();
+     printf("%x", traceAddressInMemory);
+#endif
+    
     // Create a main task (not running yet)
     UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
             UEZ_PRIORITY_NORMAL, &G_mainTask);

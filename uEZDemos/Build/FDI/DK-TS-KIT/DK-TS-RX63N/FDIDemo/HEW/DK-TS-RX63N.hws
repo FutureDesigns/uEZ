@@ -3,20 +3,20 @@
 [DATABASE_VERSION]
 "11.0" 
 [WORKSPACE_DETAILS]
-"DK-TS-RX63N" "C:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW" "C:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW\DK-TS-RX63N.hws" "RX" "Renesas RX Standard" 
+"DK-TS-RX63N" "R:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW" "R:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW\DK-TS-RX63N.hws" "RX" "Renesas RX Standard" 
 [SHARED_WORKSPACE_CONTROL_STATUS]
 "" "" "" 
 "" "" "" 
 [PROJECTS]
-"DK-TS-RX63N" "C:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW\DK-TS-RX63N" "C:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW\DK-TS-RX63N\DK-TS-RX63N.hwp" 0 
+"DK-TS-RX63N" "R:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW\DK-TS-RX63N" "R:\FDI\uEZDemos\Build\FDI\DK-TS-KIT\DK-TS-RX63N\FDIDemo\HEW\DK-TS-RX63N\DK-TS-RX63N.hwp" 0 
 [INFORMATION]
 "No workspace information available" 
 [SCRAP]
 [PROJECT_DEPENDENCY]
 [WORKSPACE_PROPERTIES]
 [HELP_FILES]
-"c:\program files (x86)\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
-"c:\program files\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 1 
+"c:\program files (x86)\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 1 
+"c:\program files\renesas\hew\tools\renesas\rx\1_2_1\hew\stdlib.chm" "C/C++ Standard Library Help" 0 
 [GENERAL_DATA_PROJECT]
 [USERMENUTOOLS]
 [CUSTOMPLACEHOLDERS]

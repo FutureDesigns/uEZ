@@ -128,7 +128,7 @@ Attention : Do not modify this file ! If you do, you will not
 /* Default for types */
 #ifndef GUI_TIMER_TIME
   #define GUI_TIMER_TIME int  /* default is to use 16 bits for 16 bit CPUs,
-	                           32 bits on 32 bit CPUs for timing */
+                               32 bits on 32 bit CPUs for timing */
 #endif
 
 /* Types used for memory allocation */

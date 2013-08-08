@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -71,6 +71,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #define GUIDRV_FLEXCOLOR_F66718   GUIDRV_FlexColor_SetFunc66718
 #define GUIDRV_FLEXCOLOR_F66719   GUIDRV_FlexColor_SetFunc66719
 #define GUIDRV_FLEXCOLOR_F66720   GUIDRV_FlexColor_SetFunc66720
+#define GUIDRV_FLEXCOLOR_F66772   GUIDRV_FlexColor_SetFunc66772
 
 //
 // Hardware interfaces
@@ -142,6 +143,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   void GUIDRV_FlexColor_SetFunc66718     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66719     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66720     (GUI_DEVICE * pDevice);
+  void GUIDRV_FlexColor_SetFunc66772     (GUI_DEVICE * pDevice);
 
   //
   // Operation mode configuration (16bpp)
@@ -162,7 +164,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   //
   // User interface
   //
-  void GUIDRV_FlexColor_SetFunc(GUI_DEVICE * pDevice, GUI_PORT_API * pHW_API, void (* pfFunc)(GUI_DEVICE * pDevice), void (* pfMode)(GUI_DEVICE * pDevice));
+  void GUIDRV_FlexColor_SetFunc(GUI_DEVICE * pDevice, GUI_PORT_API * pHW_API, void (* pfFunc)(GUI_DEVICE *), void (* pfMode)(GUI_DEVICE *));
   void GUIDRV_FlexColor_Config (GUI_DEVICE * pDevice, CONFIG_FLEXCOLOR * pConfig);
 
   //
@@ -182,6 +184,8 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   #define GUIDRV_FlexColor_SetReadFunc66715_B9(pDevice, Func)  GUIDRV_FlexColor_SetReadFunc66712_B9(pDevice, Func)
   #define GUIDRV_FlexColor_SetReadFunc66715_B16(pDevice, Func) GUIDRV_FlexColor_SetReadFunc66712_B16(pDevice, Func)
   void GUIDRV_FlexColor_SetReadFunc66720_B16(GUI_DEVICE * pDevice, int Func);
+  void GUIDRV_FlexColor_SetReadFunc66772_B8 (GUI_DEVICE * pDevice, int Func);
+  void GUIDRV_FlexColor_SetReadFunc66772_B16(GUI_DEVICE * pDevice, int Func);
 
 #else
 
@@ -196,6 +200,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   #define GUIDRV_FlexColor_SetFunc66718(pDevice)
   #define GUIDRV_FlexColor_SetFunc66719(pDevice)
   #define GUIDRV_FlexColor_SetFunc66720(pDevice)
+  #define GUIDRV_FlexColor_SetFunc66772(pDevice)
 
   //
   // Operation mode configuration (16bpp)
@@ -237,6 +242,8 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   #define GUIDRV_FlexColor_SetReadFunc66715_B9(pDevice, Func)
   #define GUIDRV_FlexColor_SetReadFunc66715_B16(pDevice, Func)
   #define GUIDRV_FlexColor_SetReadFunc66720_B16(pDevice, Func)
+  #define GUIDRV_FlexColor_SetReadFunc66772_B8(pDevice, Func)
+  #define GUIDRV_FlexColor_SetReadFunc66772_B16(pDevice, Func)
 
 #endif
 

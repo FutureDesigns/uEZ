@@ -131,6 +131,11 @@ sys_mbox_t sys_mbox_new(int size)
     if (UEZQueueCreate(archMESG_QUEUE_LENGTH, sizeof(void *), &mbox) != UEZ_ERROR_NONE) {
         return SYS_MBOX_NULL;
     }
+#if UEZ_REGISTER
+    else {
+        UEZQueueSetName(mbox, "LwIP", "\0");
+    }
+#endif
 #endif
 	
 #if SYS_STATS
@@ -367,6 +372,9 @@ sys_sem_t sys_sem_new(u8_t count)
 	}
 #else
     error = UEZSemaphoreCreateBinary(&xSemaphore);
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(xSemaphore, "LwIP", "\0");
+#endif
 #endif
 	
     if (error != UEZ_ERROR_NONE) {

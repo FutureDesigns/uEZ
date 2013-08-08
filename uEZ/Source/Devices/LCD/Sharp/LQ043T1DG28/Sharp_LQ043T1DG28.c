@@ -118,7 +118,7 @@ static const T_LCDControllerSettings LCD_LQ043T1DG28_paramsI15bit = {
     2,          /* HSYNC pulse width */
     480,        /* Pixels per line */
 
-    4,          /* Vertical back porch */
+    3,          /* Vertical back porch */
     2,          /* Vertical front porch */
     1,         /* VSYNC pulse width */
     272,        /* Lines per panel */

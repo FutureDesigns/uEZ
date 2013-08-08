@@ -38,22 +38,22 @@
  *      T_uezTimeDate TimeDate;
  *      if (UEZTimeDateInit() == UEZ_ERROR_NONE) {
  *
- *  	    // success on setting up RTC
+ *          // success on setting up RTC
  *          // Setup intial time into RTC
  *          // set date to January 2, 2012
- *  	    UEZDateParse(&TimeDate.iDate, "01/02/2012");
+ *          UEZDateParse(&TimeDate.iDate, "01/02/2012");
  *
  *          // set time to 4:30pm
- *  	    UEZTimeParse(&TimeDate.iTime, "16:30:00");
- *  	    if (UEZTimeDateSet(&TimeDate) == UEZ_ERROR_NONE) {
- *  		    // success on setting RTC to 4:30pm Jan 2, 2012
- *  	    }
+ *          UEZTimeParse(&TimeDate.iTime, "16:30:00");
+ *          if (UEZTimeDateSet(&TimeDate) == UEZ_ERROR_NONE) {
+ *              // success on setting RTC to 4:30pm Jan 2, 2012
+ *          }
  *
  *          // After some time has passed, read the RTC.
- *  	    if (UEZTimeDateGet(&TimeDate) == UEZ_ERROR_NONE) {
+ *          if (UEZTimeDateGet(&TimeDate) == UEZ_ERROR_NONE) {
  *              // success on retriving time from RTC
  *              // current time value stored in TimeDate
- *  	    }
+ *          }
  *
  *      } else {
  *          // an error occurred initialzing the RTC
@@ -133,7 +133,7 @@ T_uezError UEZTimeDateInit(void)
 /**
  *  Get the time date structure from the system.
  *
- *  @param [in]    *aTimeDate 		Time and date structure returned
+ *  @param [in]    *aTimeDate         Time and date structure returned
  *
  *  @return        T_uezError       If time/date structure retrieved,
  *                                  UEZ_ERROR_NONE, else error code.
@@ -152,14 +152,14 @@ T_uezError UEZTimeDateInit(void)
 T_uezError UEZTimeDateGet(T_uezTimeDate *aTimeDate)
 {
     T_uezError error = UEZ_ERROR_NONE;
-	
-	aTimeDate->iTime.iHour = 12;
-	aTimeDate->iTime.iMinute = 12;
-	aTimeDate->iTime.iSecond = 12;
-	
-	aTimeDate->iDate.iMonth = 12;
-	aTimeDate->iDate.iDay = 12;
-	aTimeDate->iDate.iYear = 2012;
+    
+    aTimeDate->iTime.iHour = 12;
+    aTimeDate->iTime.iMinute = 12;
+    aTimeDate->iTime.iSecond = 12;
+    
+    aTimeDate->iDate.iMonth = 12;
+    aTimeDate->iDate.iDay = 12;
+    aTimeDate->iDate.iYear = 2012;
 
     return error;
 }
@@ -170,7 +170,7 @@ T_uezError UEZTimeDateGet(T_uezTimeDate *aTimeDate)
 /**
  *  Sets the time and date on the system clock.
  *
- *  @param [in]    *aTimeDate 		Time and date structure to use
+ *  @param [in]    *aTimeDate         Time and date structure to use
  *
  *  @return        T_uezError       If time/date structure changed,
  *                                  UEZ_ERROR_NONE, else error code.
@@ -203,11 +203,11 @@ T_uezError UEZTimeDateSet(T_uezTimeDate *aTimeDate)
  *      errors if there is a problem with the RTC.  If not valid, the
  *      time is reset with the passed in reset time and date.
  *
- *  @param [in]    *aResetTimeDate 		Time and date structure to use
- *          							if the RTC needs to be reset.
- *  @return        T_uezError 			If time/date invalid, returns 
- *										UEZ_ERROR_INVALID, else returns 
- *										UEZ_ERROR_NONE or a system error code.
+ *  @param [in]    *aResetTimeDate         Time and date structure to use
+ *                                      if the RTC needs to be reset.
+ *  @return        T_uezError             If time/date invalid, returns 
+ *                                        UEZ_ERROR_INVALID, else returns 
+ *                                        UEZ_ERROR_NONE or a system error code.
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
@@ -235,16 +235,16 @@ T_uezError UEZTimeDateIsValid(const T_uezTimeDate *aResetTimeDate)
 /**
  *  Parse a number from a string and move to the next location.
  *
- *  @param [in]    **aStringPtr 	pointer to a pointer of the string
+ *  @param [in]    **aStringPtr     pointer to a pointer of the string
  *
- *  @return        TUInt8		 	number parsed
- *              		(also) char (*aStringPtr) updated to next character
+ *  @return        TUInt8             number parsed
+ *                      (also) char (*aStringPtr) updated to next character
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time;
+ *  T_uezTime       Time;
  *  char aString[] = "03:05:06";
  *  char * stringptr = &aString;
  *  Time.iHour = (TUInt8)ITD_GrabNumber(stringptr);
@@ -266,7 +266,7 @@ static TUInt8 ITD_GrabNumber(char * *aStringPtr)
 /**
  *  Reset a time value
  *
- *  @param [in]    *aTime 		time structure to reset
+ *  @param [in]    *aTime         time structure to reset
  *                 
  *  @return        void
  *  @par Example Code:
@@ -274,7 +274,7 @@ static TUInt8 ITD_GrabNumber(char * *aStringPtr)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time;
+ *  T_uezTime       Time;
  *  UEZTimeInit(&Time);
  *  @endcode
  */
@@ -292,11 +292,11 @@ void UEZTimeInit(T_uezTime *aTime)
  * times and put them into the duration variable.  The calculation assumes
  * the same day and is down to the second.
  *
- *  @param [in]    *aT1 		first time
+ *  @param [in]    *aT1         first time
  *
- *  @param [in]    *aT2 		second time
+ *  @param [in]    *aT2         second time
  *
- *  @param [in]    *aDuration 	difference in time to the second
+ *  @param [in]    *aDuration     difference in time to the second
  *
  *  @return        void
  *  @par Example Code:
@@ -304,8 +304,8 @@ void UEZTimeInit(T_uezTime *aTime)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time1;
- *  T_uezTime 	  Time2;
+ *  T_uezTime       Time1;
+ *  T_uezTime       Time2;
  *  T_uezTimeDuration Duration;
  *  UEZTimeParse(&Time1, "14:30:00"); // 2:30pm
  *  UEZTimeParse(&Time2, "16:30:00"); // 4:30pm
@@ -316,7 +316,7 @@ void UEZTimeInit(T_uezTime *aTime)
 /*---------------------------------------------------------------------------*/
 void UEZTimeCalcDuration(T_uezTime *aT1, T_uezTime *aT2, T_uezTimeDuration *aDuration)
 {
-	return;
+    return;
 }
 
 /*-------------------------------------------------------------------------*
@@ -326,20 +326,20 @@ void UEZTimeCalcDuration(T_uezTime *aT1, T_uezTime *aT2, T_uezTimeDuration *aDur
  *  Compare two times and determine if the first is greater than the
  * second or visa-versa or they are equal.
  *
- *  @param [in]    *aT1 	first to compare
+ *  @param [in]    *aT1     first to compare
  *
- *  @param [in]    *aT2 	second to compare
+ *  @param [in]    *aT2     second to compare
  *
- *  @return        char		positive if aT1 > aT2
- *                    		negative if aT1 < aT2
- *                    		0        if aT1 = aT2
+ *  @return        char        positive if aT1 > aT2
+ *                            negative if aT1 < aT2
+ *                            0        if aT1 = aT2
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time1;
- *  T_uezTime 	  Time2;
+ *  T_uezTime       Time1;
+ *  T_uezTime       Time2;
  *  UEZTimeParse(&Time1, "14:30:00"); // 2:30pm
  *  UEZTimeParse(&Time2, "16:30:00"); // 4:30pm
  *  char compare = UEZTimeCompare(&Time1, &Time2);
@@ -361,9 +361,9 @@ char UEZTimeCompare(T_uezTime *aT1, T_uezTime *aT2)
  * order:  [Hours] [Minutes] [Seconds]
  * If a field is missing, it is zero.
  *
- *  @param [out]    *aTime 		place to store the current date
+ *  @param [out]    *aTime         place to store the current date
  *
- *  @param [in]     *aString 	 time inpput string version
+ *  @param [in]     *aString      time inpput string version
  *
  *  @return        void
  *  @par Example Code:
@@ -371,7 +371,7 @@ char UEZTimeCompare(T_uezTime *aT1, T_uezTime *aT2)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time;
+ *  T_uezTime       Time;
  *  UEZTimeParse(&Time, "16:30:00"); // time is now 4:30pm
  *  @endcode
  */
@@ -389,17 +389,17 @@ void UEZTimeParse(T_uezTime *aTime, char *aString)
  * structure.  The resulting value is the number of days that are rolled
  * over.
  *
- *  @param [in]    *aTime 		Time structure to have duration added to
+ *  @param [in]    *aTime         Time structure to have duration added to
  *
- *  @param [in]    *aDuration 	Amount of time to add
+ *  @param [in]    *aDuration     Amount of time to add
  *
- *  @return        TUInt16 		Number of midnights passed.
+ *  @return        TUInt16         Number of midnights passed.
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time;
+ *  T_uezTime       Time;
  *  T_uezTimeDuration Duration;
  *  Duration.iDays = 3;
  *  Duration.iHours = 2;
@@ -422,17 +422,17 @@ TUInt16 UEZTimeAddDuration(T_uezTime *aTime, T_uezTimeDuration *aDuration)
  *      structure.  The resulting value is the number of days that are rolled
  *      back (0 or 1).
  *
- *  @param [in]    *aTime		Time structure to have duration subtracted from
+ *  @param [in]    *aTime        Time structure to have duration subtracted from
  *
- *  @param [in]    *aDuration 	Amount of time to subtract
+ *  @param [in]    *aDuration     Amount of time to subtract
  *
- *  @return        TUInt16 		Number of midnights rolled back.
+ *  @return        TUInt16         Number of midnights rolled back.
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezTime 	  Time;
+ *  T_uezTime       Time;
  *  T_uezTimeDuration Duration;
  *  Duration.iDays = 3;
  *  Duration.iHours = 2;
@@ -453,7 +453,7 @@ TUInt16 UEZTimeSubtractDuration(T_uezTime *aTime, T_uezTimeDuration *aDuration)
 /**
  *  Setup a date structure with zeros.
  *
- *  @param [in]    *aDate 		place to store zeros
+ *  @param [in]    *aDate         place to store zeros
  *
  *  @return        void
  *  @par Example Code:
@@ -461,7 +461,7 @@ TUInt16 UEZTimeSubtractDuration(T_uezTime *aTime, T_uezTimeDuration *aDuration)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateInit(&Date);
  *  @endcode
  */
@@ -478,20 +478,20 @@ void UEZDateInit(T_uezDate *aDate)
  *  Compare two dates and determine if the first is greater than the
  *  second or visa-versa or they are equal.
  *
- *  @param [in]    *aDate1 		first to compare
+ *  @param [in]    *aDate1         first to compare
  *
- *  @param [in]    *aDate2 		second to compare
+ *  @param [in]    *aDate2         second to compare
  *
- *  @return        TInt8 	positive if aDate1 > aDate2
- *                      	negative if aDate1 < aDate2
- *                      	0        if aDate1 = aDate2
+ *  @return        TInt8     positive if aDate1 > aDate2
+ *                          negative if aDate1 < aDate2
+ *                          0        if aDate1 = aDate2
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date1;
- *  T_uezDate 	  Date2;
+ *  T_uezDate       Date1;
+ *  T_uezDate       Date2;
  *  UEZDateParse(&Date1, "12/15/2012"); // set date to Dec 15, 2012
  *  UEZDateParse(&Date2, "12/25/2012"); // set date to Dec 25, 2012
  *  TInt8 datecompare = UEZDateCompare(&Date1,&Date2);
@@ -510,15 +510,15 @@ TInt8 UEZDateCompare(T_uezDate *aDate1, T_uezDate *aDate2)
 /**
  *  Determine if the year of the given date is a leap year.
  *
- *  @param [in]    *aDate 		date of which has the year
+ *  @param [in]    *aDate         date of which has the year
  *
- *  @return        TBool 		ETrue if leapyear, else EFalse
+ *  @return        TBool         ETrue if leapyear, else EFalse
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "12/31/2012"); // set date to Dec 31, 2012
  *  TBool isLeapYear = UEZDateIsLeapYear(&Date);
  *  // isLeapYear = ETrue;
@@ -537,15 +537,15 @@ TBool UEZDateIsLeapYear(T_uezDate *aDate)
  *  Determine the 0 based day of the year.  January 1st is 0 and
  *  December 31st is either day 365 or 366 (if a leap year).
  *
- *  @param [in]    *aDate 	date to get the day of the year of
+ *  @param [in]    *aDate     date to get the day of the year of
  *
- *  @return        TUInt16 	Calculated day of the year
+ *  @return        TUInt16     Calculated day of the year
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "12/31/2012"); // set date to Dec 31, 2012
  *  TUInt16 days = UEZDateGetDayOfYear(&Date);
  *  // days == 366
@@ -564,15 +564,15 @@ TUInt16 UEZDateGetDayOfYear(T_uezDate *aDate)
  *  Determine how many days in the given month of the date object
  * taking into consideration if the given year is a leap year.
  *
- *  @param [in]    *aDate 	date with month item
+ *  @param [in]    *aDate     date with month item
  *
- *  @return        TUInt8 	Number of days in that month
+ *  @return        TUInt8     Number of days in that month
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "02/01/2012"); // set date to February 1, 2012
  *  TUInt8 days = UEZDateGetNumDaysInMonth(&Date);
  *  // days == 29
@@ -581,7 +581,7 @@ TUInt16 UEZDateGetDayOfYear(T_uezDate *aDate)
 /*---------------------------------------------------------------------------*/
 TUInt8 UEZDateGetNumDaysInMonth(T_uezDate *aDate)
 {
-	return 0;
+    return 0;
 }
 
 /*-------------------------------------------------------------------------*
@@ -589,8 +589,8 @@ TUInt8 UEZDateGetNumDaysInMonth(T_uezDate *aDate)
  *---------------------------------------------------------------------------*/
 /** 
  *  Increments a date structure by one day.
- *	
- *  @param [in]    *aDate 		date to step forward one day
+ *    
+ *  @param [in]    *aDate         date to step forward one day
  *
  *  @return        void
  *  @par Example Code:
@@ -598,7 +598,7 @@ TUInt8 UEZDateGetNumDaysInMonth(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/01/2012"); // set date to January 1, 2012
  *  UEZDateNextDay(&Date);
  *  // now Date is Jan 2nd, 2012
@@ -607,7 +607,7 @@ TUInt8 UEZDateGetNumDaysInMonth(T_uezDate *aDate)
 /*---------------------------------------------------------------------------*/
 void UEZDateNextDay(T_uezDate *aDate)
 {
-	return;
+    return;
 }
 
 /*-------------------------------------------------------------------------*
@@ -616,7 +616,7 @@ void UEZDateNextDay(T_uezDate *aDate)
 /**
  *  Determines what the date is one week in advance of the current day.
  *
- *  @param [in]    *aDate 		date to step forward one week
+ *  @param [in]    *aDate         date to step forward one week
  *
  *  @return        void
  *  @par Example Code:
@@ -624,7 +624,7 @@ void UEZDateNextDay(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/01/2012"); // set date to January 1, 2012
  *  UEZDateNextWeek(&Date);
  *  // now Date is Jan 8th, 2012
@@ -633,7 +633,7 @@ void UEZDateNextDay(T_uezDate *aDate)
 /*---------------------------------------------------------------------------*/
 void UEZDateNextWeek(T_uezDate *aDate)
 {
-	return;
+    return;
 }
 
 /*-------------------------------------------------------------------------*
@@ -642,7 +642,7 @@ void UEZDateNextWeek(T_uezDate *aDate)
 /**
  *  Determines what the date is one month from the current date.
  *
- *  @param [in]    *aDate 	date to step forward one month
+ *  @param [in]    *aDate     date to step forward one month
  *
  *  @return        void
  *  @par Example Code:
@@ -650,7 +650,7 @@ void UEZDateNextWeek(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/01/2012"); // set date to January 1, 2012
  *  UEZDateNextMonth(&Date);
  *  // now Date is Feb 1st, 2012
@@ -659,7 +659,7 @@ void UEZDateNextWeek(T_uezDate *aDate)
 /*---------------------------------------------------------------------------*/
 void UEZDateNextMonth(T_uezDate *aDate)
 {
-	return;
+    return;
 }
 
 /*-------------------------------------------------------------------------*
@@ -669,7 +669,7 @@ void UEZDateNextMonth(T_uezDate *aDate)
  *  Determines what the date is one year from the current date and
  * updates the century field.
  *
- *  @param [in]    *aDate 	date to step forward one year
+ *  @param [in]    *aDate     date to step forward one year
  *
  *  @return        void
  *  @par Example Code:
@@ -677,7 +677,7 @@ void UEZDateNextMonth(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/01/2012"); // set date to January 1, 2012
  *  UEZDateNextYear(&Date);
  *  // now Date is Jan 1st, 2013
@@ -695,7 +695,7 @@ void UEZDateNextYear(T_uezDate *aDate)
 /**
  *  Go back one day and adjust the month.
  *
- *  @param [in]    *aDate 	date containing a day
+ *  @param [in]    *aDate     date containing a day
  *
  *  @return        void
  *  @par Example Code:
@@ -703,7 +703,7 @@ void UEZDateNextYear(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/01/2012"); // set date to January 1, 2012
  *  UEZDatePreviousDay(&Date);
  *  // now Date is Dec 31st, 2011
@@ -721,7 +721,7 @@ void UEZDatePreviousDay(T_uezDate *aDate)
 /**
  *  Go back one week and adjust the month.
  *
- *  @param [in]    *aDate 	date containing a day
+ *  @param [in]    *aDate     date containing a day
  *
  *  @return        void
  *  @par Example Code:
@@ -729,7 +729,7 @@ void UEZDatePreviousDay(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/02/2012"); // set date to January 2, 2012
  *  UEZDatePreviousWeek(&Date);
  *  // now Date is Dec 26, 2011
@@ -747,7 +747,7 @@ void UEZDatePreviousWeek(T_uezDate *aDate)
 /**
  *  Go back one month and adjust the year.
  *
- *  @param [in]    *aDate 		date containing a month
+ *  @param [in]    *aDate         date containing a month
  *
  *  @return        void
  *  @par Example Code:
@@ -755,7 +755,7 @@ void UEZDatePreviousWeek(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  Date.iMonth = 7;
  *  UEZDatePreviousMonth(&Date);
  *  // now Date.iMonth is 6
@@ -773,7 +773,7 @@ void UEZDatePreviousMonth(T_uezDate *aDate)
 /**
  *  Go back one year and adjust century.
 
- *  @param [in]    *aDate 		date containing a year
+ *  @param [in]    *aDate         date containing a year
  *
  *  @return        void
  *  @par Example Code:
@@ -781,7 +781,7 @@ void UEZDatePreviousMonth(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  Date.iYear = 2000;
  *  UEZDatePreviousYear(&Date);
  *  // now Date.iYear is 1999
@@ -799,9 +799,9 @@ void UEZDatePreviousYear(T_uezDate *aDate)
 /**
  *  Determine the number of days in a year factoring in leap years.
  *
- *  @param [in]    *aDate 	date containing year
+ *  @param [in]    *aDate     date containing year
  *
- *  @return        TUInt16 	number of days in year
+ *  @return        TUInt16     number of days in year
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
@@ -827,18 +827,18 @@ TUInt16 UEZDateGetNumDaysInYear(T_uezDate *aDate)
  *      times and put them into the duration variable.  The calculation assumes
  *      the same day and is down to the second.
  *
- *  @param [in]    *aD1 		first date
+ *  @param [in]    *aD1         first date
  *
- *  @param [in]    *aD2 		second date
+ *  @param [in]    *aD2         second date
  *
- *  @return        TUInt32 		Number of days difference
+ *  @return        TUInt32         Number of days difference
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date1;
- *  T_uezDate 	  Date2;
+ *  T_uezDate       Date1;
+ *  T_uezDate       Date2;
  *  TUInt32 secDifference =  UEZDateCalcDuration(&Date1, &Date2);
  *  // difference in time in seconds of date1 and date2 stored in secDifference
  *  @endcode
@@ -846,7 +846,7 @@ TUInt16 UEZDateGetNumDaysInYear(T_uezDate *aDate)
 /*---------------------------------------------------------------------------*/
 TUInt32 UEZDateCalcDuration(T_uezDate *aD1, T_uezDate *aD2)
 {
-	return 0;
+    return 0;
 }
 
 /*-------------------------------------------------------------------------*
@@ -858,9 +858,9 @@ TUInt32 UEZDateCalcDuration(T_uezDate *aD1, T_uezDate *aD2)
  *      order:  [Month] [Day] [Year]
  *      If a field is missing, it is zero.
  *
- *  @param [out]   *aDate 		place to store the current date
+ *  @param [out]   *aDate         place to store the current date
  *
- *  @param [in]    *aString 	time input string
+ *  @param [in]    *aString     time input string
  *
  *  @return        void
  *  @par Example Code:
@@ -868,7 +868,7 @@ TUInt32 UEZDateCalcDuration(T_uezDate *aD1, T_uezDate *aD2)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateParse(&Date, "01/02/2012"); // parse January 2, 2012
  *  @endcode
  */
@@ -885,7 +885,7 @@ void UEZDateParse(T_uezDate *aDate, char *aString)
  *  Determines what day of the week the current date is.
  *      The result goes from Monday = 0 to Sunday = 6
  *
- *  @param [in]    *aDate 	Date to determine day of week of
+ *  @param [in]    *aDate     Date to determine day of week of
  *
  *  @return        void
  *  @par Example Code:
@@ -893,8 +893,8 @@ void UEZDateParse(T_uezDate *aDate, char *aString)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
- *	Date.iMonth = 5; 
+ *  T_uezDate       Date;
+ *    Date.iMonth = 5; 
  *  Date.iDay = 20;
  *  Date.iYear = 2012; 
  *  TUInt8 dayOfWeek = UEZDateGetDayOfWeek(&Date);
@@ -913,9 +913,9 @@ TUInt8 UEZDateGetDayOfWeek(T_uezDate *aDate)
 /**
  *  Determine what the date is based on the day of the year.
  *
- *  @param [in]    aDayOfYear 	Day of year to convert to date (0 based)
+ *  @param [in]    aDayOfYear     Day of year to convert to date (0 based)
  *
- *  @param [in]    *aDate 		Receiving date from day of year
+ *  @param [in]    *aDate         Receiving date from day of year
  *
  *  @return        void
  *  @par Example Code:
@@ -923,7 +923,7 @@ TUInt8 UEZDateGetDayOfWeek(T_uezDate *aDate)
  *  #include <uEZ.h>
  *  #include <uEZTimeDate.h>
  *
- *  T_uezDate 	  Date;
+ *  T_uezDate       Date;
  *  UEZDateDayOfYearToDate(300, &Date); // turn 300th day of year into a date
  *  @endcode
  */
@@ -940,13 +940,13 @@ void UEZDateDayOfYearToDate(TUInt16 aDayOfYear, T_uezDate *aDate)
  *  Compare two dates and times and figure out the first is later
  *      than the second (even if down to the second).
  *
- *  @param [in]    *aTD1 	first to compare
+ *  @param [in]    *aTD1     first to compare
  *
- *  @param [in]    *aTD2 	second to compare
+ *  @param [in]    *aTD2     second to compare
  *
- *  @return        TInt8 	positive if aTD1 > aTD2
- * 				            negative if aTD1 < aTD2
- *              			zero     if aTD1 = aTD2
+ *  @return        TInt8     positive if aTD1 > aTD2
+ *                             negative if aTD1 < aTD2
+ *                          zero     if aTD1 = aTD2
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
@@ -978,11 +978,11 @@ TInt8 UEZTimeDateCompare(T_uezTimeDate *aTD1, T_uezTimeDate *aTD2)
  *      times and put them into the duration variable.  The calculation is down
  *      to the second.
  *
- *  @param [in]    *aTD1 		first date and time
+ *  @param [in]    *aTD1         first date and time
  *
- *  @param [in]    *aTD2 		second date and time
+ *  @param [in]    *aTD2         second date and time
  *
- *  @param [in]    *aDuration 	difference in time to the second
+ *  @param [in]    *aDuration     difference in time to the second
  *
  *  @return        void
  *  @par Example Code:
@@ -1012,7 +1012,7 @@ void UEZTimeDateCalcDuration(
 /**
  *  Clear a duration structure to the standard defaults.
  *
- *  @param [in]    *aDuration 	difference in time to the second
+ *  @param [in]    *aDuration     difference in time to the second
  *
  *  @return        void
  *  @par Example Code:
@@ -1036,9 +1036,9 @@ void UEZTimeDateDurationInit(T_uezTimeDuration *aDuration)
 /**
  *  Adds two durations together and puts the result in the first.
  *
- *  @param [in]    *aSum 	Sum of the two
+ *  @param [in]    *aSum     Sum of the two
  *
- *  @param [in]    *aAdded 		duration added to first
+ *  @param [in]    *aAdded         duration added to first
  *
  *  @return        void
  *  @par Example Code:
@@ -1048,7 +1048,7 @@ void UEZTimeDateDurationInit(T_uezTimeDuration *aDuration)
  *
  *  T_uezTimeDuration Sum;
  *  T_uezTimeDuration Added;
- *	Sum.iDays = 2;
+ *    Sum.iDays = 2;
  *  Added.iDays = 3;
  *  UEZTimeDateSumDuration(&Sum, &Added); // Sum.iDays now equals 5
  *  @endcode
@@ -1066,11 +1066,11 @@ void UEZTimeDateSumDuration(T_uezTimeDuration *aSum, T_uezTimeDuration *aAdded)
  *  Parse out the time and date basically doing a call to UEZTimeParse
  *      and UEZDateParse.
  *
- *  @param [in]    *aTD 			Time and date structure to fill
+ *  @param [in]    *aTD             Time and date structure to fill
  *
- *  @param [in]    *aDateString 	Date string to parse
+ *  @param [in]    *aDateString     Date string to parse
  *
- *  @param [in]    *aTimeString 	Time string to parse
+ *  @param [in]    *aTimeString     Time string to parse
  *
  *  @return        void
  *  @par Example Code:
@@ -1098,9 +1098,9 @@ void UEZTimeDateParse(
 /**
  *  Convert a duration value into a double which represents 1 day as 1.0
  *
- *  @param [in]    *aDuration 	difference in time to the second
+ *  @param [in]    *aDuration     difference in time to the second
  *
- *  @return        double 		duration as double float
+ *  @return        double         duration as double float
  *  @par Example Code:
  *  @code 
  *  #include <uEZ.h>
@@ -1124,9 +1124,9 @@ double UEZTimeDateDurationToDouble(T_uezTimeDuration *aDuration)
 /**
  *  Adds a time duration to a time structure.
  *
- *  @param [in]    *aTD 		Time to add to
+ *  @param [in]    *aTD         Time to add to
  *
- *  @param [in]    *aAdded 		amount of time to add
+ *  @param [in]    *aAdded         amount of time to add
  *
  *  @return        void
  *  @par Example Code:
@@ -1152,9 +1152,9 @@ void UEZTimeDateAddDuration(T_uezTimeDate *aTD, T_uezTimeDuration *aAdded)
 /**
  *  Subtracts a time duration from a time structure.
  *
- *  @param [in]    *aTD 			Time to add to
+ *  @param [in]    *aTD             Time to add to
  *
- *  @param [in]    *aDuration 		amount of time to add
+ *  @param [in]    *aDuration         amount of time to add
  *
  *  @return        void
  *  @par Example Code:

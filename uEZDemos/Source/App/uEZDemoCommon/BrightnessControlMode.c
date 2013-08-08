@@ -33,11 +33,13 @@
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/Screensaver/BouncingLogoSS.h>
+#include <Types/InputEvent.h>
 #if UEZ_ENABLE_LIGHT_SENSOR
 #include "uEZRTOS.h"
 #include <Source/Devices/Light Sensor/ROHM/BH1721FVC/Light_Sensor_BH1721FVC.h>
 #endif
 #include <UEZLCD.h>
+#include <UEZKeypad.h>
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
  *---------------------------------------------------------------------------*/
@@ -390,8 +392,11 @@ void BrightnessControlMode(const T_choice *aChoice)
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
     static T_brightnessControlWorkspace *G_ws = NULL;
-    T_uezTSReading reading;
     INT_32 winX, winY;
+    T_uezInputEvent inputEvent;
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
 #if UEZ_ENABLE_LIGHT_SENSOR
     TUInt32 levelCurrent = 1, levelPrevious = 0;
     T_uezDevice ls;
@@ -429,7 +434,7 @@ void BrightnessControlMode(const T_choice *aChoice)
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == queue)
 	{
-	  	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) != UEZ_ERROR_NONE)
+	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
 		{
 		  	queue = NULL;
 		}
@@ -439,10 +444,18 @@ void BrightnessControlMode(const T_choice *aChoice)
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
 	  	UEZQueueAddToRegistry( queue, "Brightness TS" );	  
 #else
-	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "Brightness", "\0");
 #endif
+#endif
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
+#endif
+
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
+ 
             // Open the LCD and get the pixel buffer
             if (UEZLCDOpen("LCD", &G_ws->iLCD) == UEZ_ERROR_NONE)  {
                 UEZLCDGetBacklightLevel(G_ws->iLCD, &G_ws->iLevel, &G_ws->iNumLevels);
@@ -453,11 +466,11 @@ void BrightnessControlMode(const T_choice *aChoice)
                 // Sit here in a loop until we are done
                 while (!G_ws->iExit) {
                     // Do choices and updates
-                    if (UEZQueueReceive(queue, &reading, 500)==UEZ_ERROR_NONE) {
-                        winX = reading.iX;
-                        winY = reading.iY;
+                    if (UEZQueueReceive(queue, &inputEvent, 500)==UEZ_ERROR_NONE) {
+                        winX = inputEvent.iEvent.iXY.iX;
+                        winY = inputEvent.iEvent.iXY.iY;
                         swim_get_virtual_xy(&G_win, &winX, &winY);
-                        if (reading.iFlags & TSFLAG_PEN_DOWN)  {
+                        if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD)  {
                             // Are we in the panel?
                             if ((winY >= G_ws->iRSlidePanel.iTop) && (winY <= G_ws->iRSlidePanel.iBottom) && 
                                     (winX >= G_ws->iRSlidePanel.iLeft) && (winX <= G_ws->iRSlidePanel.iRight)) {
@@ -475,7 +488,7 @@ void BrightnessControlMode(const T_choice *aChoice)
                                 G_ws->iNeedUpdate = ETrue;
                             }
                         }
-                        ChoicesUpdateByReading(&G_win, G_ws->iChoices, &reading);
+                        ChoicesUpdateByReading(&G_win, G_ws->iChoices, &inputEvent);
 #if UEZ_ENABLE_LIGHT_SENSOR
                         if (lightSensorActive){
                             levelCurrent = (*p)->GetLevel((void *)p);
@@ -513,6 +526,9 @@ void BrightnessControlMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
         UEZQueueDelete(queue);
 #endif

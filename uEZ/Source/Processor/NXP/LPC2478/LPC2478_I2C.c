@@ -27,6 +27,7 @@
 #include <HAL/Interrupt.h>
 #include "LPC2478_I2C.h"
 #include <uEZPlatform.h>
+#include <UEZGPIO.h>
 
 // Setup Master mode only.  Slave mode is a future version but we'll
 // leave some of the code in so we don't have to write it later.
@@ -77,6 +78,8 @@ typedef struct {
     TUInt8 iIndex;
     I2CRequestCompleteCallback iCompleteFunc;
     void *iCompleteWorkspace;
+    T_uezGPIOPortPin iSDAPin;
+    T_uezGPIOPortPin iSCLPin;
 
     volatile TBool iDoneFlag;
 #if COMPILE_I2C_SLAVE_MODE
@@ -113,6 +116,35 @@ typedef TUInt8 T_lpc2478_i2cMode;
 static T_LPC2478_I2C_Workspace *G_lpc2478_i2c0Workspace;
 static T_LPC2478_I2C_Workspace *G_lpc2478_i2c1Workspace;
 static T_LPC2478_I2C_Workspace *G_lpc2478_i2c2Workspace;
+
+static const T_LPC2478_PINSEL_ConfigList G_sda0[] = {
+        {GPIO_P0_27,   1},
+};
+static const T_LPC2478_PINSEL_ConfigList G_scl0[] = {
+        {GPIO_P0_28,   1},
+};
+
+static const T_LPC2478_PINSEL_ConfigList G_sda1[] = {
+        {GPIO_P0_0,  3},
+        {GPIO_P0_19, 3},
+        {GPIO_P2_14, 3},
+};
+static const T_LPC2478_PINSEL_ConfigList   G_scl1[] = {
+        {GPIO_P0_1,  3},
+        {GPIO_P0_20, 3},
+        {GPIO_P2_15, 3},
+};
+
+static const T_LPC2478_PINSEL_ConfigList G_sda2[] = {
+        {GPIO_P0_10, 2},
+        {GPIO_P2_30, 3},
+        {GPIO_P4_20, 2},
+};
+static const T_LPC2478_PINSEL_ConfigList G_scl2[] = {
+        {GPIO_P0_11, 2},
+        {GPIO_P2_31, 3},
+        {GPIO_P4_21, 2},
+};
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
@@ -525,6 +557,29 @@ void ILPC2478_ProcessState(T_LPC2478_I2C_Workspace *p)
     SI_CLEAR(p);
 }
 
+T_uezError ILPC2478_I2C_IsHung(void *aWorkspace, TBool *aBool)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_LPC2478_I2C_Workspace *p = (T_LPC2478_I2C_Workspace *)aWorkspace;
+    TBool sda, scl;
+
+    sda = UEZGPIORead(p->iSDAPin);
+    scl = UEZGPIORead(p->iSCLPin);
+
+    *aBool = (!scl || !sda) ? ETrue : EFalse;
+
+    return error;
+}
+
+T_uezError ILPC2478_I2C_ResetBus(void *aWorkspace)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    //T_LPC2478_I2C_Workspace *p = (T_LPC2478_I2C_Workspace *)aWorkspace;
+    //TODO: implement reset functionality.
+
+    return error;
+}
+
 IRQ_ROUTINE(ILPC2478_I2C0InterruptHandler)
 {
     IRQ_START();
@@ -640,65 +695,49 @@ void LPC2478_I2C0_Require(
         T_uezGPIOPortPin aPinSDA0,
         T_uezGPIOPortPin aPinSCL0)
 {
-    static const T_LPC2478_PINSEL_ConfigList sda0[] = {
-            {GPIO_P0_27,   1},
-    };
-    static const T_LPC2478_PINSEL_ConfigList scl0[] = {
-            {GPIO_P0_28,   1},
-    };
+    T_LPC2478_I2C_Workspace *p;
+
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C0 Bus driver
     HALInterfaceRegister("I2C0", (T_halInterface *)&I2C_LPC2478_Bus0_Interface,
-            0, 0);
-    LPC2478_PINSEL_ConfigPin(aPinSDA0, sda0, ARRAY_COUNT(sda0));
-    LPC2478_PINSEL_ConfigPin(aPinSCL0, scl0, ARRAY_COUNT(scl0));
+            0, (T_halWorkspace **)&p);
+    LPC2478_PINSEL_ConfigPin(aPinSDA0, G_sda0, ARRAY_COUNT(G_sda0));
+    LPC2478_PINSEL_ConfigPin(aPinSCL0, G_scl0, ARRAY_COUNT(G_scl0));
+    p->iSCLPin = aPinSCL0;
+    p->iSDAPin = aPinSDA0;
 }
 
 void LPC2478_I2C1_Require(
         T_uezGPIOPortPin aPinSDA1,
         T_uezGPIOPortPin aPinSCL1)
 {
-    static const T_LPC2478_PINSEL_ConfigList sda1[] = {
-            {GPIO_P0_0,  3},
-            {GPIO_P0_19, 3},
-            {GPIO_P2_14, 3},
-    };
-    static const T_LPC2478_PINSEL_ConfigList scl1[] = {
-            {GPIO_P0_1,  3},
-            {GPIO_P0_20, 3},
-            {GPIO_P2_15, 3},
-    };
+    T_LPC2478_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C1 Bus driver
     HALInterfaceRegister("I2C1", (T_halInterface *)&I2C_LPC2478_Bus1_Interface,
-            0, 0);
-    LPC2478_PINSEL_ConfigPin(aPinSDA1, sda1, ARRAY_COUNT(sda1));
-    LPC2478_PINSEL_ConfigPin(aPinSCL1, scl1, ARRAY_COUNT(scl1));
+            0, (T_halWorkspace **)&p);
+    LPC2478_PINSEL_ConfigPin(aPinSDA1, G_sda1, ARRAY_COUNT(G_sda1));
+    LPC2478_PINSEL_ConfigPin(aPinSCL1, G_scl1, ARRAY_COUNT(G_scl1));
+    p->iSCLPin = aPinSCL1;
+    p->iSDAPin = aPinSDA1;
 }
 
 void LPC2478_I2C2_Require(
         T_uezGPIOPortPin aPinSDA2,
         T_uezGPIOPortPin aPinSCL2)
 {
-    static const T_LPC2478_PINSEL_ConfigList sda2[] = {
-            {GPIO_P0_10, 2},
-            {GPIO_P2_30, 3},
-            {GPIO_P4_20, 2},
-    };
-    static const T_LPC2478_PINSEL_ConfigList scl2[] = {
-            {GPIO_P0_11, 2},
-            {GPIO_P2_31, 3},
-            {GPIO_P4_21, 2},
-    };
+    T_LPC2478_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C0 Bus driver
     HALInterfaceRegister("I2C2", (T_halInterface *)&I2C_LPC2478_Bus2_Interface,
-            0, 0);
+            0, (T_halWorkspace **)&p);
 
-    LPC2478_PINSEL_ConfigPin(aPinSDA2, sda2, ARRAY_COUNT(sda2));
-    LPC2478_PINSEL_ConfigPin(aPinSCL2, scl2, ARRAY_COUNT(scl2));
+    LPC2478_PINSEL_ConfigPin(aPinSDA2, G_sda2, ARRAY_COUNT(G_sda2));
+    LPC2478_PINSEL_ConfigPin(aPinSCL2, G_scl2, ARRAY_COUNT(G_scl2));
+    p->iSCLPin = aPinSCL2;
+    p->iSDAPin = aPinSDA2;
 }
 /*---------------------------------------------------------------------------*
  * HAL Interface tables:
@@ -711,6 +750,8 @@ const HAL_I2CBus I2C_LPC2478_Bus0_Interface = {
 
     ILPC2478_I2C_StartRead,
     ILPC2478_I2C_StartWrite,
+    0,0,0,
+    ILPC2478_I2C_IsHung, ILPC2478_I2C_ResetBus
 };
 
 const HAL_I2CBus I2C_LPC2478_Bus1_Interface = {
@@ -721,6 +762,8 @@ const HAL_I2CBus I2C_LPC2478_Bus1_Interface = {
 
     ILPC2478_I2C_StartRead,
     ILPC2478_I2C_StartWrite,
+    0,0,0,
+    ILPC2478_I2C_IsHung, ILPC2478_I2C_ResetBus
 };
 
 const HAL_I2CBus I2C_LPC2478_Bus2_Interface = {
@@ -731,6 +774,8 @@ const HAL_I2CBus I2C_LPC2478_Bus2_Interface = {
 
     ILPC2478_I2C_StartRead,
     ILPC2478_I2C_StartWrite,
+    0,0,0,
+    ILPC2478_I2C_IsHung, ILPC2478_I2C_ResetBus
 };
 
 /*-------------------------------------------------------------------------*

@@ -8,7 +8,7 @@ LR_IROM1 0x00000000 0x00080000  {    ; load region size_region
    *(InRoot$$Sections)
    .ANY (+RO)
   }
-  RW_ERAM1 0xA0680000 0x00180000  {  ; RW data, 512K of 8 Megs of SDRAM
+  RW_ERAM1 0xA0700000 0x00100000  {  ; RW data, 512K of 8 Megs of SDRAM
    .ANY (+RW +ZI)
    memp.o (+RW +ZI)
    trcbase.o (+RW +ZI)
@@ -18,14 +18,18 @@ LR_IROM1 0x00000000 0x00080000  {    ; load region size_region
    LPC1788_PLL.o (+RW)
    .ANY (+RW +ZI)
   }
-  ; Reserved, directly accessed by USB
-  ;AHBSRAM0 0x20000000 0x00004000 {
-  ;   .ANY (+RW +ZI)
+  ;EW_ERAM_LOADSPACE 0xA05DD000 0x00100000 { ; RW data for loadspace
+    ;VideoPlayer.o (+RW +ZI)
   ;}
+  ; Reserved, directly accessed by USB
+  AHBSRAM0 0x20000000 0x00004000 {
+        *.o (.usbhostmem +First) 
+        *.o (.mcimem) 
+  }
   ; Dedicate this area for the Ethernet device's memory
   ; (and the leftovers can be other memory)
-  ;AHBSRAM1 0x20004000 0x0004000 {
-  ; memp.o (+RW +ZI)
-  ;}
+  AHBSRAM1 0x20004000 0x0004000 {
+        *.o (.emacmem) 
+  }
 }
 

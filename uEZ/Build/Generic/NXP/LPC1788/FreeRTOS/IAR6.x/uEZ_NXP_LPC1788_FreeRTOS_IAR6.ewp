@@ -3121,7 +3121,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDevice.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDeviceTable.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZDeviceTable.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZEINT.h</name>
@@ -3169,7 +3169,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPacked.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZPlatformAPI.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPlatformAPI.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZProcessor.h</name>
@@ -3214,7 +3214,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWatchdog.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZWAVFile.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWAVFile.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\unistd.h</name>
@@ -3307,6 +3307,30 @@
             <name>TDA8551_T</name>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\NXP\TDA8551_T\AudioAmp_8551T.c</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>TI</name>
+          <group>
+            <name>LM48100</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>Wolfson</name>
+          <group>
+            <name>WM8731</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.h</name>
             </file>
           </group>
         </group>
@@ -3432,6 +3456,21 @@
         </group>
       </group>
       <group>
+        <name>GPIO</name>
+        <group>
+          <name>I2C</name>
+          <group>
+            <name>PCF8574T</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.h</name>
+            </file>
+          </group>
+        </group>
+      </group>
+      <group>
         <name>HID</name>
         <group>
           <name>Generic</name>
@@ -3448,6 +3487,18 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\I2C\Generic\Generic_i2c.c</name>
           </file>
         </group>
+        <group>
+          <name>Mux</name>
+          <group>
+            <name>PCA9546</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.h</name>
+            </file>
+          </group>
+        </group>
       </group>
       <group>
         <name>I2S</name>
@@ -3463,6 +3514,15 @@
       </group>
       <group>
         <name>Keypad</name>
+        <group>
+          <name>GPIO</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.h</name>
+          </file>
+        </group>
         <group>
           <name>NXP</name>
           <group>
@@ -3511,6 +3571,18 @@
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Inteltronic\LMIX0560NTN53V1\Inteltronic_LMIX0560NTN53V1.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>Microtips</name>
+          <group>
+            <name>UMSH-8596MD-20T</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\MicroTips\UMSH-8596MD-20T\Microtips_UMSH_8596MD_20T.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\MicroTips\UMSH-8596MD-20T\Microtips_UMSH_8596MD_20T.h</name>
             </file>
           </group>
         </group>
@@ -3679,6 +3751,9 @@
         <group>
           <name>SDCard</name>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_MCI.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_SPI.c</name>
           </file>
         </group>
@@ -3691,6 +3766,15 @@
       </group>
       <group>
         <name>Network</name>
+        <group>
+          <name>Gainspan</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\GainSpan\Network_GainSpan.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\GainSpan\Network_GainSpan.h</name>
+          </file>
+        </group>
         <group>
           <name>lwIP</name>
           <file>
@@ -3922,6 +4006,18 @@
             </file>
           </group>
         </group>
+        <group>
+          <name>Sitronix</name>
+          <group>
+            <name>ST1232</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Sitronix\ST1232\ST1232TouchScreen.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Sitronix\ST1232\ST1232TouchScreen.h</name>
+            </file>
+          </group>
+        </group>
       </group>
       <group>
         <name>USBDevice</name>
@@ -3957,11 +4053,29 @@
     <group>
       <name>Library</name>
       <group>
+        <name>Audio</name>
+        <group>
+          <name>DAC</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.h</name>
+          </file>
+        </group>
+      </group>
+      <group>
         <name>Console</name>
         <group>
           <name>FDICmd</name>
           <group>
             <name>Commands</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Console\FDICmd\Commands\FDICmd_AudioDAC.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Console\FDICmd\Commands\FDICmd_AudioDAC.h</name>
+            </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Console\FDICmd\Commands\FDICmd_File.c</name>
             </file>
@@ -3973,6 +4087,12 @@
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Console\FDICmd\Commands\FDICmd_I2C.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Console\FDICmd\Commands\FDICmd_WAVPlay.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Console\FDICmd\Commands\FDICmd_WAVPlay.h</name>
             </file>
           </group>
           <file>
@@ -4989,6 +5109,24 @@
         </group>
       </group>
       <group>
+        <name>Tests</name>
+        <group>
+          <name>ALS</name>
+          <group>
+            <name>Vishay</name>
+            <group>
+              <name>VCNL4010</name>
+              <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.c</name>
+              </file>
+              <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.h</name>
+              </file>
+            </group>
+          </group>
+        </group>
+      </group>
+      <group>
         <name>uEZFailure</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\uEZFailure\FatalError.c</name>
@@ -5027,6 +5165,15 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Web\BasicWeb\BasicWEB.h</name>
+          </file>
+        </group>
+        <group>
+          <name>HTTPServer</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Web\HTTPServer\HTTPServer.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Web\HTTPServer\HTTPServer.h</name>
           </file>
         </group>
       </group>
@@ -5150,6 +5297,9 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_LCDController.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_MCI.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PLL.c</name>
@@ -5363,6 +5513,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZAudioAmp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZBSPInit.c</name>

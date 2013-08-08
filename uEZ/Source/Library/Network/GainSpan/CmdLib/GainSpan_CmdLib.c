@@ -40,7 +40,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h> /* for sprintf(), strstr(), strlen() , strtok() and strcpy()  */
-#include <stdlib.h>
+//#include <stdlib.h> // causes re-defined errors in Crossworks
 #include <ctype.h>
 #include "GainSpan_Config.h"
 #include "GainSpan_SPI.h"
@@ -188,6 +188,7 @@ T_uezError GainSpan_CmdLib_ConfigureForSPI(
 {
     T_uezError error;
     ATLIBGS_MSG_ID_E r;
+    int i;
 
     G_GSCmdLibSettings = *aSettings;
     G_GSSPITemplate.iBitsPerTransfer = 8;
@@ -241,11 +242,17 @@ T_uezError GainSpan_CmdLib_ConfigureForSPI(
     // Flush anything there
     AtLibGs_FlushIncomingMessage();
 
-    /* Send command to check */
-    do {
+    /* Send command to check 5 times for module */
+    for (i = 0; i < 5; i++){
         AtLibGs_FlushIncomingMessage();
         r = AtLibGs_Check(GAINSPAN_AT_DEFAULT_TIMEOUT);
-    } while (ATLIBGS_MSG_ID_OK != r);
+        if(ATLIBGS_MSG_ID_OK == r){
+        break;
+        }
+    }
+    if(ATLIBGS_MSG_ID_RESPONSE_TIMEOUT == r){
+         return UEZ_ERROR_NOT_FOUND;
+    }
 
     /* Send command to DISABLE echo */
     do {

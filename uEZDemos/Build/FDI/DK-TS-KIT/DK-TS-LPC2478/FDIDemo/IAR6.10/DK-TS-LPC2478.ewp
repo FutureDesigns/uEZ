@@ -302,7 +302,7 @@
           <state>$PROJ_DIR$/../../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_2478</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC2478</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478/IAR</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -562,7 +562,7 @@
           <state>$PROJ_DIR$/.</state>
           <state>$PROJ_DIR$/../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../Source/App/Demos/DKTSKit</state>
-          <state>$PROJ_DIR$/../../../../../Source/Platform/FDI/CARRIER_2478</state>
+          <state>$PROJ_DIR$/../../../../../Source/Platform/FDI/CARRIER_LPC2478</state>
           <state>$PROJ_DIR$/../../../../../Source/Processor/NXP/LPC2478</state>
           <state>$PROJ_DIR$/../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../Source/RTOS/FreeRTOS/include</state>
@@ -724,7 +724,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform\FDI\CARRIER_2478\IAR\ROM_config SDRAM.icf</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform\FDI\CARRIER_LPC2478\IAR\ROM_config SDRAM.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1247,7 +1247,7 @@
           <state>$PROJ_DIR$/../../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_2478</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC2478</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478/IAR</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -1507,7 +1507,7 @@
           <state>$PROJ_DIR$/.</state>
           <state>$PROJ_DIR$/../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../Source/App/Demos/DKTSKit</state>
-          <state>$PROJ_DIR$/../../../../../Source/Platform/FDI/CARRIER_2478</state>
+          <state>$PROJ_DIR$/../../../../../Source/Platform/FDI/CARRIER_LPC2478</state>
           <state>$PROJ_DIR$/../../../../../Source/Processor/NXP/LPC2478</state>
           <state>$PROJ_DIR$/../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../Source/RTOS/FreeRTOS/include</state>
@@ -1669,7 +1669,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform\FDI\CARRIER_2478\IAR\ROM_config SDRAM.icf</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform\FDI\CARRIER_LPC2478\IAR\ROM_config SDRAM.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2186,9 +2186,6 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\DKTSKit\AppTasks.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\DKTSKit\CANTest.c</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\DKTSKit\Config_App.h</name>
         </file>
         <file>
@@ -2213,6 +2210,12 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AccelDemoMode.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.c</name>
         </file>
         <file>
@@ -2234,6 +2237,9 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\ConsoleMode.c</name>
         </file>
         <file>
@@ -2241,6 +2247,12 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\MultiSlideshowMode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NVSettings.c</name>
@@ -2305,13 +2317,13 @@
         <group>
           <name>CARRIER</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_2478\CARRIER_LPC2478.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC2478\CARRIER_LPC2478.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_2478\lwipopts.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC2478\lwipopts.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_2478\UEZPlatform.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC2478\UEZPlatform.h</name>
           </file>
         </group>
       </group>

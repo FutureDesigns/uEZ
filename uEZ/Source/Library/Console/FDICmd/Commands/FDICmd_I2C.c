@@ -44,9 +44,9 @@
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      I2CPROBE [bus]
+ *      I2CPROBE <bus>
  *
- *  Where [bus] is the number used in the bus name (e.g., 0 for I2C0).
+ *  Where <bus> is the number used in the bus name (e.g., 0 for I2C0).
  *  A list of devices found are shown, or a failure error.
  *
  *  @param [in]     *aWorkspace     FDICmd workspace, needed for outputs
@@ -105,12 +105,12 @@ int UEZCmdI2CProbe(void *aWorkspace, int argc, char *argv[])
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      I2CWRITE [bus] [7-bit slave addr] [byte1] [byte2] [byte3] ... [byteN]
+ *      I2CWRITE <bus> <7-bit slave addr> <byte1> <byte2> <byte3> ... <byteN>
  *
  *  Where,
- *      [bus] is the number used in the bus name (e.g., 0 for I2C0).
- *      [7-bit slave addr] is the 7-bit I2C address of the device.
- *      [byteX] is the bytes to write
+ *      <bus> is the number used in the bus name (e.g., 0 for I2C0).
+ *      <7-bit slave addr> is the 7-bit I2C address of the device.
+ *      <byteX> is the bytes to write
  *
  *  The bytes are written and a final status is reported.  Only up to 128
  *  bytes can be written at a time.
@@ -195,12 +195,12 @@ int UEZCmdI2CWrite(void *aWorkspace, int argc, char *argv[])
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      I2CREAD [bus] [7-bit slave addr] [num bytes read]
+ *      I2CREAD <bus> <7-bit slave addr> <num bytes read>
  *
  *  Where,
- *      [bus] is the number used in the bus name (e.g., 0 for I2C0).
- *      [7-bit slave addr] is the 7-bit I2C address of the device.
- *      [num bytes read] is the number of bytes to read back by this command.
+ *      <bus> is the number used in the bus name (e.g., 0 for I2C0).
+ *      <7-bit slave addr> is the 7-bit I2C address of the device.
+ *      <num bytes read> is the number of bytes to read back by this command.
  *
  *  The bytes are shown formatted in 16 columns.  Only up to 128 bytes can
  *  be read with this command.
@@ -211,7 +211,7 @@ int UEZCmdI2CWrite(void *aWorkspace, int argc, char *argv[])
  *
  *  @param [in]     *argv[]         Parsed arguments (strings)
  *
- *  @return         int        		0 if success, non-zero for error.
+ *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
 int UEZCmdI2CRead(void *aWorkspace, int argc, char *argv[])

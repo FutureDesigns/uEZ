@@ -178,7 +178,7 @@ TBool Watchdog_Generic_IsActive(void *aWorkspace)
     TBool result;
 
     IGrab();
-    result = (*p->iWatchdog)->IsResetFromWatchdog(p->iWatchdog);
+    result = (*p->iWatchdog)->IsActive(p->iWatchdog);
     IRelease();
 
     return result;

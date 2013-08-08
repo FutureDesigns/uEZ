@@ -279,7 +279,7 @@ void MainMenu(void)
             PlayAudio(1046, 100);
             PlayAudio(783, 100);
             PlayAudio(659, 100);
-            PlayAudio(523, 100);				
+            PlayAudio(523, 100);                
 
 
 #if DKTS_BUTTON_SLIDE_SHOW_DEMO // show emwin on button 1, auto slideshow on buttons 2-4
@@ -307,9 +307,9 @@ void MainMenu(void)
                         char str2[] = {'F','D','I','\0'};
                         memcpy(aDef.iDirectory,str2,strlen(str2)+1);
                         SingleSlideshowMode(&aDef);
-						
-						// change to Speedometer Demo here
-						
+                        
+                        // change to Speedometer Demo here
+                        
                     }
                     else if (ButtonsPressed == 11) { // button 3 pressed
                         char str3[] = {'u','E','Z','G','U','I',' ','F','a','m','i','l','y','\0'};

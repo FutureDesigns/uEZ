@@ -57,6 +57,7 @@
 #include <UEZPlatform.h>
 #include <UEZLCD.h>
 #include <NVSettings.h>
+#include <Types/InputEvent.h>
 
 TBool G_webPageHit;
 
@@ -1488,7 +1489,7 @@ const T_testAPI G_testAPI = {
  *---------------------------------------------------------------------------*/
 void FunctionalTest(const T_choice *aChoice)
 {
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
     T_uezDevice ts;
     T_uezDevice lcd;
     TUInt32 lastX=0, lastY=0;
@@ -1513,7 +1514,7 @@ void FunctionalTest(const T_choice *aChoice)
     G_td.iPauseComplete = EFalse;
 
     // Setup queue to receive touchscreen events
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
             // Open the LCD and get the pixel buffer
@@ -1537,18 +1538,18 @@ void FunctionalTest(const T_choice *aChoice)
                     // Wait forever until we receive a touchscreen event
                     // NOTE: UEZTSGetReading() can also be used, but it doesn't wait.
                     // Check every 50 ms
-                    if (UEZQueueReceive(queue, &reading, 10)==UEZ_ERROR_NONE) {
-                        winX = reading.iX;
-                        winY = reading.iY;
+                    if (UEZQueueReceive(queue, &inputEvent, 10)==UEZ_ERROR_NONE) {
+                        winX = inputEvent.iEvent.iXY.iX;
+                        winY = inputEvent.iEvent.iXY.iY;
                         swim_get_virtual_xy(&G_td.iWin, &winX, &winY);
 
                         // Is this a touching event?
-                        if (reading.iFlags & TSFLAG_PEN_DOWN)  {
+                        if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD)  {
                             // We are touching the screen.
                             // Is this a different position than before?
-                            if ((reading.iX != lastX) || (reading.iY != lastY))  {
-                                x = reading.iX;
-                                y = reading.iY;
+                            if ((inputEvent.iEvent.iXY.iX != lastX) || (inputEvent.iEvent.iXY.iY != lastY))  {
+                                x = inputEvent.iEvent.iXY.iX;
+                                y = inputEvent.iEvent.iXY.iY;
                                 // Determine which choice we are in
                                 for (p_button=G_testButtons; p_button->iBit; p_button++)  {
                                     if ((x >= p_button->iX1) && (x <= p_button->iX2) &&

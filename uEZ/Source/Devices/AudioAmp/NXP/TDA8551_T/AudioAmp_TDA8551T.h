@@ -70,7 +70,8 @@ void AudioAmp_8551T_Create(
         const char *aName,
         T_uezGPIOPortPin aVolumeGPIO,
         T_uezGPIOPortPin aModeGPIO,
-        T_uezGPIOPortPin aVolEnableGPIO);
+        T_uezGPIOPortPin aVolEnableGPIO,
+        TInt8 aMaxLevel);
 
 #endif // AUDIOAMP_TDA8551_T_H_
 /*-------------------------------------------------------------------------*

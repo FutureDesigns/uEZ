@@ -37,6 +37,11 @@
 #define APP_DEMO_APPS                       1
 #define UEZ_ENABLE_TCPIP_STACK              1
 #define UEZ_ENABLE_USB_HOST_STACK           1
+#define UEZ_BASIC_WEB_SERVER                0
+#define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
+#define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
+#define UEZ_ENABLE_WIRELESS_NETWORK         0
+#define UEZ_WIRELESS_PROGRAM_MODE           0
 
 #define UEZ_ENABLE_WIRED_NETWORK            1
 
@@ -52,4 +57,9 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
+#ifdef NDEBUG
+#define UEZ_REGISTER              0
+#else
+#define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+#endif
 

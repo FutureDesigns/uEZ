@@ -19,7 +19,7 @@ CONFIG = ALL
 ############################
 # Toolchain directory define
 # If incorrect, change to the location of the RX Standard Toolchain toolchain
-TC_INSTALL_DIR = c:\program files\renesas\hew\tools\renesas\rx\1_2_1
+TC_INSTALL_DIR = c:\program files (x86)\renesas\hew\tools\renesas\rx\1_2_1
 
 # Release configuration
 !IF  "$(CONFIG)" == "ALL" || "$(CONFIG)" == "Release"
@@ -59,9 +59,12 @@ RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC0="..\..\..\..\..\uEZ\Include\uEZ.h"
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Audio.h" "..\..\..\..\..\uEZ\Include\uEZToneGenerator.h" \
-	"..\..\..\..\..\uEZ\Include\Device\ToneGenerator.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h"
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Audio.h" \
+	"..\..\..\..\..\uEZ\Include\uEZToneGenerator.h" "..\..\..\..\..\uEZ\Include\Device\ToneGenerator.h" \
+	"..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" \
+	"..\..\..\..\..\uEZ\Include\UEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
+	"..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h"
 RDK_RX63N_RELEASE_RX_CC_COMPILER02_OUTFILESC1="..\RDK_RX63N\Release\NVSettings.obj"
 RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\uEZ\Include\Config.h" "..\RDK_RX63N\Config_Build.h" \
 	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Config_App.h" "..\..\..\..\..\uEZ\Include\uEZTypes.h" \
@@ -75,11 +78,12 @@ RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\uEZ\Include\uEZ.h"
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\uEZ\Include\Device\EEPROM.h" \
-	"..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Include\Types\EEPROM.h" \
-	"..\..\..\..\..\uEZ\Include\Device\Flash.h" "..\..\..\..\..\uEZ\Include\Types\Flash.h" \
-	"..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h"
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "$(TC_INSTALL_DIR)\include\string.h" \
+	"..\..\..\..\..\uEZ\Include\Device\EEPROM.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\uEZ\Include\Types\EEPROM.h" "..\..\..\..\..\uEZ\Include\Device\Flash.h" \
+	"..\..\..\..\..\uEZ\Include\Types\Flash.h" "..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
+	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h"
 RDK_RX63N_RELEASE_RX_CC_COMPILER02_OUTFILESC2="..\RDK_RX63N\Release\main.obj"
 RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\uEZ\Include\Config.h" "..\RDK_RX63N\Config_Build.h" \
 	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Config_App.h" "..\..\..\..\..\uEZ\Include\uEZTypes.h" \
@@ -93,21 +97,21 @@ RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h"
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" \
-	"..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" \
-	"..\..\..\..\..\uEZ\Include\UEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" "..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTemperature.h" "..\..\..\..\..\uEZ\Include\uEZAccelerometer.h" \
-	"..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" "..\..\..\..\..\uEZ\Include\uEZADC.h" \
-	"..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h" \
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "..\..\..\..\..\uEZ\Include\uEZGPIO.h" \
+	"..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
+	"..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" "..\..\..\..\..\uEZ\Include\UEZNetwork.h" \
+	"..\..\..\..\..\uEZ\Include\Types\Network.h" "..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" \
+	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
+	"..\..\..\..\..\uEZ\Include\uEZAccelerometer.h" "..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" \
+	"..\..\..\..\..\uEZ\Include\uEZADC.h" "..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_api.h" \
 	"..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_cfg.h" "..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_types.h" \
 	"..\..\..\..\..\uEZ\Source\Library\Web\BasicWeb\BasicWeb.h"
@@ -132,8 +136,9 @@ RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\uEZ\Include\uEZADC.h" "..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\uEZ\Include\uEZAudioAmp.h" \
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "..\..\..\..\..\uEZ\Include\uEZADC.h" \
+	"..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\uEZ\Include\uEZAudioAmp.h" \
 	"..\..\..\..\..\uEZ\Include\uEZBSP.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
@@ -154,6 +159,7 @@ RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config
 	"..\..\..\..\..\uEZ\Include\Device\Flash.h" "..\..\..\..\..\uEZ\Include\Types\Flash.h" \
 	"..\..\..\..\..\uEZ\Include\Device\MassStorage.h" "..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\uEZ\Include\Device\PWM.h" "..\..\..\..\..\uEZ\Include\Device\ToneGenerator.h" \
+	"..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" "..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" \
 	"..\..\..\..\..\uEZ\Include\Device\Touchscreen.h" "..\..\..\..\..\uEZ\Include\Device\I2CBus.h" \
 	"..\..\..\..\..\uEZ\Include\HAL\I2CBus.h" "..\..\..\..\..\uEZ\Source\Devices\ADC\Generic\Generic_ADC.h" \
 	"..\..\..\..\..\uEZ\Source\Devices\Backlight\Generic\BacklightPWMControlled\BacklightPWM.h" \
@@ -170,8 +176,7 @@ RDK_RX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config
 	"..\..\..\..\..\uEZ\Include\HAL\Serial.h" "..\..\..\..\..\uEZ\Include\Types\Serial.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_I2C.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_RTC.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_PWM_TPU.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_Flash.h" "..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\UEZPlatform.h" \
-	"..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\vecttbl.c" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_Flash.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\vecttbl.c" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\vect.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\dbsct.c" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\typedefine.h" "$(TC_INSTALL_DIR)\include\stdio.h"
 
@@ -210,7 +215,7 @@ RDK_RX63N_RELEASE_RX_CC_LIBRARY_GENERATOR01_ENVC0 :
 	set INC_RX=$(TC_INSTALL_DIR)\include
 	set PATH=$(TC_INSTALL_DIR)\bin
 	set BIN_RX=$(TC_INSTALL_DIR)\bin
-	set TMP_RX=C:\Temp
+	set TMP_RX=C:\Users\AUTOBU~1\AppData\Local\Temp
 
 $(RDK_RX63N_RELEASE_RX_CC_LIBRARY_GENERATOR01_OUTFILESC0) : $(RDK_RX63N_RELEASE_RX_CC_LIBRARY_GENERATOR01_DEPFILESC0)
 	"$(RDK_RX63N_RELEASE_RX_CC_LIBRARY_GENERATOR01_EXEDIR)\$(RDK_RX63N_RELEASE_RX_CC_LIBRARY_GENERATOR01_EXE)" -subcommand=<<
@@ -352,7 +357,7 @@ $(RDK_RX63N_RELEASE_OPTLINKER04_OUTFILESC0) : $(RDK_RX63N_RELEASE_OPTLINKER04_IN
 noprelink
 nodebug
 rom D=R,D_1=R_1,D_2=R_2
-nomessage=1320 
+nomessage 
 list "..\RDK_RX63N\Release\RDK_RX63N.map"
 nooptimize
 -start=B_RX_DESC,B_TX_DESC,B_RX_BUFF_1,B_TX_BUFF_1,B_1,R_1,B_2,R_2,B,R,SI/01000,PResetPRG/0FFF80000,C_1,C_2,C,C$*,D_1,D_2,D,P,PIntPRG,W*,L/0FFF80100,FIXEDVECT/0FFFFFFD0
@@ -365,6 +370,7 @@ nologo
 -library="..\RDK_RX63N\Release\RDK_RX63N.lib"
 -library="..\..\..\..\..\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib"
 -output="..\RDK_RX63N\Release\RDK_RX63N.abs"
+nomessage=1320
 end
 -input="..\RDK_RX63N\Release\RDK_RX63N.abs"
 form hexadecimal
@@ -414,9 +420,12 @@ RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC0="..\..\..\..\..\uEZ\Include\uEZ.h" "
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Audio.h" "..\..\..\..\..\uEZ\Include\uEZToneGenerator.h" \
-	"..\..\..\..\..\uEZ\Include\Device\ToneGenerator.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h"
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Audio.h" \
+	"..\..\..\..\..\uEZ\Include\uEZToneGenerator.h" "..\..\..\..\..\uEZ\Include\Device\ToneGenerator.h" \
+	"..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" \
+	"..\..\..\..\..\uEZ\Include\UEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
+	"..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h"
 RDK_RX63N_DEBUG_RX_CC_COMPILER02_OUTFILESC1="..\RDK_RX63N\Debug\NVSettings.obj"
 RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\uEZ\Include\Config.h" "..\RDK_RX63N\Config_Build.h" \
 	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Config_App.h" "..\..\..\..\..\uEZ\Include\uEZTypes.h" \
@@ -430,11 +439,12 @@ RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\uEZ\Include\uEZ.h" "
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\uEZ\Include\Device\EEPROM.h" \
-	"..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Include\Types\EEPROM.h" \
-	"..\..\..\..\..\uEZ\Include\Device\Flash.h" "..\..\..\..\..\uEZ\Include\Types\Flash.h" \
-	"..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h"
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "$(TC_INSTALL_DIR)\include\string.h" \
+	"..\..\..\..\..\uEZ\Include\Device\EEPROM.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\uEZ\Include\Types\EEPROM.h" "..\..\..\..\..\uEZ\Include\Device\Flash.h" \
+	"..\..\..\..\..\uEZ\Include\Types\Flash.h" "..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
+	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h"
 RDK_RX63N_DEBUG_RX_CC_COMPILER02_OUTFILESC2="..\RDK_RX63N\Debug\main.obj"
 RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\uEZ\Include\Config.h" "..\RDK_RX63N\Config_Build.h" \
 	"..\..\..\..\Source\App\RDK_RX63N\RDKDemo\Config_App.h" "..\..\..\..\..\uEZ\Include\uEZTypes.h" \
@@ -448,21 +458,21 @@ RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h" "
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" \
-	"..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" \
-	"..\..\..\..\..\uEZ\Include\UEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" "..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTemperature.h" "..\..\..\..\..\uEZ\Include\uEZAccelerometer.h" \
-	"..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" "..\..\..\..\..\uEZ\Include\uEZADC.h" \
-	"..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h" \
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "..\..\..\..\..\uEZ\Include\uEZGPIO.h" \
+	"..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
+	"..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" "..\..\..\..\..\uEZ\Include\UEZNetwork.h" \
+	"..\..\..\..\..\uEZ\Include\Types\Network.h" "..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" \
+	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
+	"..\..\..\..\..\uEZ\Include\uEZAccelerometer.h" "..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" \
+	"..\..\..\..\..\uEZ\Include\uEZADC.h" "..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\Source\App\RDK_RX63N\RDKDemo\NVSettings.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_api.h" \
 	"..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_cfg.h" "..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_types.h" \
 	"..\..\..\..\..\uEZ\Source\Library\Web\BasicWeb\BasicWeb.h"
@@ -487,8 +497,9 @@ RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config.h
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
 	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
 	"..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" "..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" \
-	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\uEZ\Include\uEZADC.h" "..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\uEZ\Include\uEZAudioAmp.h" \
+	"..\..\..\..\..\uEZ\Include\uEZTS.h" "..\..\..\..\..\uEZ\Include\Types\InputEvent.h" \
+	"..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" "..\..\..\..\..\uEZ\Include\uEZADC.h" \
+	"..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\uEZ\Include\uEZAudioAmp.h" \
 	"..\..\..\..\..\uEZ\Include\uEZBSP.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
@@ -509,6 +520,7 @@ RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config.h
 	"..\..\..\..\..\uEZ\Include\Device\Flash.h" "..\..\..\..\..\uEZ\Include\Types\Flash.h" \
 	"..\..\..\..\..\uEZ\Include\Device\MassStorage.h" "..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\uEZ\Include\Device\PWM.h" "..\..\..\..\..\uEZ\Include\Device\ToneGenerator.h" \
+	"..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" "..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" \
 	"..\..\..\..\..\uEZ\Include\Device\Touchscreen.h" "..\..\..\..\..\uEZ\Include\Device\I2CBus.h" \
 	"..\..\..\..\..\uEZ\Include\HAL\I2CBus.h" "..\..\..\..\..\uEZ\Source\Devices\ADC\Generic\Generic_ADC.h" \
 	"..\..\..\..\..\uEZ\Source\Devices\Backlight\Generic\BacklightPWMControlled\BacklightPWM.h" \
@@ -525,8 +537,7 @@ RDK_RX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config.h
 	"..\..\..\..\..\uEZ\Include\HAL\Serial.h" "..\..\..\..\..\uEZ\Include\Types\Serial.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_I2C.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_RTC.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_PWM_TPU.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_Flash.h" "..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX63N\UEZPlatform.h" \
-	"..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\vecttbl.c" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RX63N_Flash.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\vecttbl.c" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\vect.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\dbsct.c" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\typedefine.h" "$(TC_INSTALL_DIR)\include\stdio.h"
 
@@ -565,7 +576,7 @@ RDK_RX63N_DEBUG_RX_CC_LIBRARY_GENERATOR01_ENVC0 :
 	set INC_RX=$(TC_INSTALL_DIR)\include
 	set PATH=$(TC_INSTALL_DIR)\bin
 	set BIN_RX=$(TC_INSTALL_DIR)\bin
-	set TMP_RX=C:\Temp
+	set TMP_RX=C:\Users\AUTOBU~1\AppData\Local\Temp
 
 $(RDK_RX63N_DEBUG_RX_CC_LIBRARY_GENERATOR01_OUTFILESC0) : $(RDK_RX63N_DEBUG_RX_CC_LIBRARY_GENERATOR01_DEPFILESC0)
 	"$(RDK_RX63N_DEBUG_RX_CC_LIBRARY_GENERATOR01_EXEDIR)\$(RDK_RX63N_DEBUG_RX_CC_LIBRARY_GENERATOR01_EXE)" -subcommand=<<
@@ -724,7 +735,7 @@ nologo
 -library="..\RDK_RX63N\Debug\RDK_RX63N.lib"
 -library="..\..\..\..\..\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib"
 -output="..\RDK_RX63N\Debug\RDK_RX63N.abs"
-nomessage
+nomessage=1320
 end
 -input="..\RDK_RX63N\Debug\RDK_RX63N.abs"
 form hexadecimal

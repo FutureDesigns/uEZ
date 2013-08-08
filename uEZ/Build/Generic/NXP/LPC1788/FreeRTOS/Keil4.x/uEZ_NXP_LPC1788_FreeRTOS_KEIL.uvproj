@@ -165,6 +165,7 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
+          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -846,6 +847,11 @@
               <FileName>SDCard_MS_driver_SPI.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_SPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>SDCard_MS_driver_MCI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_MCI.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2238,6 +2244,11 @@
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_LCDController.h</FilePath>
             </File>
             <File>
+              <FileName>LPC1788_MCI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_MCI.c</FilePath>
+            </File>
+            <File>
               <FileName>LPC1788_PLL.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PLL.c</FilePath>
@@ -2827,6 +2838,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZEEPROM.c</FilePath>
             </File>
+            <File>
+              <FileName>uEZAudioMixer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2836,6 +2852,116 @@
               <FileName>BouncingLogoSS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Library\ScreenSaver\BouncingLogoSS.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library/Audio/DAC</GroupName>
+          <Files>
+            <File>
+              <FileName>UEZDACWavFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/GPIO/I2C/PCF8574T</GroupName>
+          <Files>
+            <File>
+              <FileName>GPIO_PCF8574T.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO_PCF8574T.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Source\Devices\Keypad\GPIO</GroupName>
+          <Files>
+            <File>
+              <FileName>Keypad_Generic_GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>Keypad_Generic_GPIO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/AudioAmp/TI/LM48100</GroupName>
+          <Files>
+            <File>
+              <FileName>AudioAmp_LM48100.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/LCD/Microtips/UMSH-8596MD-20T</GroupName>
+          <Files>
+            <File>
+              <FileName>Microtips_UMSH_8596MD_20T.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\LCD\MicroTips\UMSH-8596MD-20T\Microtips_UMSH_8596MD_20T.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devuce/Touchscreen/Sitronix/ST1232</GroupName>
+          <Files>
+            <File>
+              <FileName>ST1232TouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Sitronix\ST1232\ST1232TouchScreen.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/AudioAmp/Wolfson/WM8731</GroupName>
+          <Files>
+            <File>
+              <FileName>AudioAmp_WM8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/I2C/Mux/PCA9546</GroupName>
+          <Files>
+            <File>
+              <FileName>I2C_Mux_PCA9546.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C_Mux_PCA9546.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library/Tests/ALS/Vishay/VCNL4010</GroupName>
+          <Files>
+            <File>
+              <FileName>TestVCNL4010.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestVCNL4010.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -3000,6 +3126,7 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
+          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -3682,6 +3809,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_SPI.c</FilePath>
             </File>
+            <File>
+              <FileName>SDCard_MS_driver_MCI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_MCI.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5073,6 +5205,11 @@
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_LCDController.h</FilePath>
             </File>
             <File>
+              <FileName>LPC1788_MCI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_MCI.c</FilePath>
+            </File>
+            <File>
               <FileName>LPC1788_PLL.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PLL.c</FilePath>
@@ -5662,6 +5799,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZEEPROM.c</FilePath>
             </File>
+            <File>
+              <FileName>uEZAudioMixer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5671,6 +5813,116 @@
               <FileName>BouncingLogoSS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Library\ScreenSaver\BouncingLogoSS.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library/Audio/DAC</GroupName>
+          <Files>
+            <File>
+              <FileName>UEZDACWavFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/GPIO/I2C/PCF8574T</GroupName>
+          <Files>
+            <File>
+              <FileName>GPIO_PCF8574T.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO_PCF8574T.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Source\Devices\Keypad\GPIO</GroupName>
+          <Files>
+            <File>
+              <FileName>Keypad_Generic_GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>Keypad_Generic_GPIO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/AudioAmp/TI/LM48100</GroupName>
+          <Files>
+            <File>
+              <FileName>AudioAmp_LM48100.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/LCD/Microtips/UMSH-8596MD-20T</GroupName>
+          <Files>
+            <File>
+              <FileName>Microtips_UMSH_8596MD_20T.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\LCD\MicroTips\UMSH-8596MD-20T\Microtips_UMSH_8596MD_20T.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devuce/Touchscreen/Sitronix/ST1232</GroupName>
+          <Files>
+            <File>
+              <FileName>ST1232TouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Sitronix\ST1232\ST1232TouchScreen.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/AudioAmp/Wolfson/WM8731</GroupName>
+          <Files>
+            <File>
+              <FileName>AudioAmp_WM8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/I2C/Mux/PCA9546</GroupName>
+          <Files>
+            <File>
+              <FileName>I2C_Mux_PCA9546.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C_Mux_PCA9546.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library/Tests/ALS/Vishay/VCNL4010</GroupName>
+          <Files>
+            <File>
+              <FileName>TestVCNL4010.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestVCNL4010.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -5835,6 +6087,7 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
+          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -6517,6 +6770,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_SPI.c</FilePath>
             </File>
+            <File>
+              <FileName>SDCard_MS_driver_MCI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\MassStorage\SDCard\SDCard_MS_driver_MCI.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -7908,6 +8166,11 @@
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_LCDController.h</FilePath>
             </File>
             <File>
+              <FileName>LPC1788_MCI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_MCI.c</FilePath>
+            </File>
+            <File>
               <FileName>LPC1788_PLL.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PLL.c</FilePath>
@@ -8337,6 +8600,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZEEPROM.c</FilePath>
             </File>
+            <File>
+              <FileName>uEZAudioMixer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8346,6 +8614,116 @@
               <FileName>BouncingLogoSS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Library\ScreenSaver\BouncingLogoSS.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library/Audio/DAC</GroupName>
+          <Files>
+            <File>
+              <FileName>UEZDACWavFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/GPIO/I2C/PCF8574T</GroupName>
+          <Files>
+            <File>
+              <FileName>GPIO_PCF8574T.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO_PCF8574T.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Source\Devices\Keypad\GPIO</GroupName>
+          <Files>
+            <File>
+              <FileName>Keypad_Generic_GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>Keypad_Generic_GPIO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Keypad\GPIO\Keypad_Generic_GPIO.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/AudioAmp/TI/LM48100</GroupName>
+          <Files>
+            <File>
+              <FileName>AudioAmp_LM48100.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/LCD/Microtips/UMSH-8596MD-20T</GroupName>
+          <Files>
+            <File>
+              <FileName>Microtips_UMSH_8596MD_20T.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\LCD\MicroTips\UMSH-8596MD-20T\Microtips_UMSH_8596MD_20T.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devuce/Touchscreen/Sitronix/ST1232</GroupName>
+          <Files>
+            <File>
+              <FileName>ST1232TouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Sitronix\ST1232\ST1232TouchScreen.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/AudioAmp/Wolfson/WM8731</GroupName>
+          <Files>
+            <File>
+              <FileName>AudioAmp_WM8731.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/I2C/Mux/PCA9546</GroupName>
+          <Files>
+            <File>
+              <FileName>I2C_Mux_PCA9546.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C_Mux_PCA9546.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library/Tests/ALS/Vishay/VCNL4010</GroupName>
+          <Files>
+            <File>
+              <FileName>TestVCNL4010.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestVCNL4010.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.h</FilePath>
             </File>
           </Files>
         </Group>

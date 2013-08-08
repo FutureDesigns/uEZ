@@ -260,15 +260,18 @@ static void ISSPConfig(T_LPC1788_SSP_Workspace *aW, SPI_Request *aRequest)
     (*(aRequest->iCSGPIOPort))->SetOutputMode(aRequest->iCSGPIOPort,
             aRequest->iCSGPIOBit);
 
-    // Calculate the scr divider (rounding up to the next even number)
-    //    scr = (((((Fpclk/1000)+(aRequest->iRate-1))/(aRequest->iRate)))+1)&0xFFFE;
-    scr = (((Fpclk / 1000) + (aRequest->iRate - 1)) / (aRequest->iRate)) - 1;
-    // Minimum of 2 divide factor
-    if (scr < 2)
-        scr = 2;
 
     // Make sure the SSP clock is PCLK/2
     p->iCPSR = 2;
+    // Calculate the scr prescalar
+    scr = ((Fpclk/1000)/(p->iCPSR * aRequest->iRate));
+    // If too fast, run it down one more divider (this happenes when not
+    // exactly on the right divider)
+    while (((Fpclk/1000)/(p->iCPSR * scr)) > aRequest->iRate)
+        scr++;
+    // Final value of scr is one less
+    scr--;
+    
 
     p->iCR0 =
     // Number of bits per transaction

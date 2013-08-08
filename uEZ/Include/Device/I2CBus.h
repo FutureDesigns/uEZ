@@ -46,6 +46,8 @@ typedef void (*T_I2CSlaveCallbackFunc)(
     void *aCallbackWorkspace,
     T_I2CSlaveEvent aStatus);
 
+typedef T_uezError (*T_I2CResetCallbackFunc)(void);
+
 typedef struct {
     // Header
     T_uezDeviceInterface iDevice;
@@ -67,6 +69,11 @@ typedef struct {
         TUInt32 aTimeout);
     T_uezError (*Enable)(void *aWorkspace);
     T_uezError (*Disable)(void *aWorkspace);
+/**
+ *  uEZ v2.05 *
+ */
+    T_uezError (*IsHung)(void *aWorkspace, TBool *aBool);
+    T_uezError (*ResetBus)(void *aWorkspace);
 } DEVICE_I2C_BUS;
 
 #endif // _DEVICE_I2C_BUS_H_

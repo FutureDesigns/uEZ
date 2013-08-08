@@ -45,8 +45,8 @@ typedef struct {
     T_uezDeviceInterface iInterface;
 
    /**
-	* uEZ v1.07 Functions
-	*/
+    * uEZ v1.07 Functions
+    */
     T_uezError (*SetMaximumTime)(
         void *aWorkspace,
         TUInt32 aMaxTime); /**< in ms */

@@ -1,7 +1,7 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="uEZGUI-1788-56VI" target="8" version="2">
   <project Name="uEZGUI-1788-56VI">
-    <configuration Name="Common" Target="LPC1788" arm_architecture="v7M" arm_core_type="Cortex-M3" arm_gcc_target="arm-unknown-eabi" arm_interwork="No" arm_linker_heap_size="500000" arm_linker_process_stack_size="0" arm_linker_stack_size="2048" arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000" arm_target_debug_interface_type="ADIv5" arm_target_loader_parameter="12000000" c_only_additional_options="-fms-extensions" c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET" c_user_include_directories="$(TargetsDir)/LPC1000/include/CMSIS;$(TargetsDir)/CMSIS_3/CMSIS/Include;$(TargetsDir)/LPC1000/include;.;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI;../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../uEZ/Source/Processor/NXP/LPC1788/CrossWorks2.0/include;../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config" link_include_startup_code="No" linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)" linker_memory_map_file="$(ProjectDir)/uEZGUI-1788-56VI_MemoryMap.xml" linker_output_format="hex" linker_printf_enabled="Yes" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/uEZGUI-1788-56VI_placement.xml" oscillator_frequency="12MHz" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml"/>
+    <configuration Name="Common" Target="LPC1788" arm_architecture="v7M" arm_core_type="Cortex-M3" arm_gcc_target="arm-unknown-eabi" arm_interwork="No" arm_linker_heap_size="500000" arm_linker_process_stack_size="0" arm_linker_stack_size="2048" arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000" arm_target_debug_interface_type="ADIv5" arm_target_loader_parameter="12000000" c_only_additional_options="-fms-extensions" c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET" c_user_include_directories="$(TargetsDir)/LPC1000/include/CMSIS;$(TargetsDir)/CMSIS_3/CMSIS/Include;$(TargetsDir)/LPC1000/include;.;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI;../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../uEZ/Source/Processor/NXP/LPC1788/CrossWorks2.0/include;../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config" link_include_startup_code="No" linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)" linker_memory_map_file="$(ProjectDir)/uEZGUI-1788-56VI_MemoryMap.xml" linker_output_format="hex" linker_printf_enabled="Yes" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/uEZGUI-1788-56VI_placement.xml" oscillator_frequency="12MHz" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml" target_reset_script="FlashReset()"/>
     <configuration Name="Flash" Placement="Flash" arm_target_flash_loader_file_path="$(TargetsDir)/LPC1000/Release/Loader_lpc177x_8x.elf" arm_target_flash_loader_type="LIBMEM RPC Loader" linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC1000/LPC1000_LinkPatch.js\&quot;);patch(\&quot;$(TargetPath)\&quot;);&quot;" target_reset_script="FLASHReset()"/>
     <configuration Name="RAM" Placement="RAM" c_preprocessor_definitions="__RAM_MODE__" linker_section_placement_file="$(TargetsDir)/LPC1000/ram_placement.xml" target_reset_script="SRAMReset()"/>
     <folder Name="Source">
@@ -34,7 +34,7 @@
             <file file_name="../../../../../Source/App/SEGGER/emWin/emWin.c"/>
           </folder>
         </folder>
-        <folder Name="uEZGUI">
+        <folder Name="uEZGUI" file_name="">
           <file file_name="../../../../../Source/App/uEZGUI/AppDemo.h"/>
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c"/>
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h"/>
@@ -47,8 +47,11 @@
           <file file_name="../../../../../Source/App/uEZGUI/TestCmds.c"/>
           <file file_name="../../../../../Source/App/uEZGUI/TestCmds.h"/>
           <file file_name="../../../../../Source/App/uEZGUI/TestMode.c"/>
+          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.c"/>
+          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.h"/>
+          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTestLoop.c"/>
         </folder>
-        <folder Name="uEZDemoCommon">
+        <folder Name="uEZDemoCommon" file_name="">
           <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.c"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.h"/>
@@ -71,6 +74,12 @@
           <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.h"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayerSelection.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c"/>
         </folder>
       </folder>
       <folder Name="Library">
@@ -80,7 +89,7 @@
               <folder Name="Libraries">
                 <folder Name="NXP">
                   <folder Name="CrossWorks">
-                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_518_LPCXpresso501_M3_LE_Redlib.a"/>
+                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_520_LPCXpresso510_M3_LE_Redlib.a"/>
                   </folder>
                 </folder>
               </folder>
@@ -88,12 +97,23 @@
           </folder>
         </folder>
       </folder>
+      <folder Name="Scripts">
+        <folder Name="Compilers">
+          <folder Name="CrossWorks">
+            <folder Name="FreeRTOS">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+                <configuration Name="Common" file_type="Threads Script"/>
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
       <folder Name="Platform">
         <folder Name="FDI">
-          <folder Name="uEZGUI-1788-56VI">
+          <folder Name="uEZGUI_1788_56VI">
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/lwipopts.h"/>
-            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/uEZGUI-1788-56VI.c"/>
-            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/UEZPlatform.h"/>
+            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/uEZGUI_1788_56VI.c"/>
+            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/uEZPlatform.h"/>
           </folder>
         </folder>
       </folder>
@@ -105,6 +125,14 @@
                 <configuration Name="Common" file_type="Target Script"/>
               </file>
             </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="ExpansionBoard">
+        <folder Name="FDI">
+          <folder Name="uEZGUI_EXP_DK" file_name="">
+            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.c"/>
+            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h"/>
           </folder>
         </folder>
       </folder>

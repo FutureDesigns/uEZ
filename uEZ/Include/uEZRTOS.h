@@ -147,6 +147,8 @@ T_uezError _isr_UEZSemaphoreGrab(T_uezSemaphore aSemaphore);
 T_uezError UEZSemaphoreRelease(T_uezSemaphore aSemaphore);
 T_uezError _isr_UEZSemaphoreRelease(T_uezSemaphore aSemaphore);
 
+T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName, const char* aInterfaceName);
+
 /** Note: SafeRTOS does not support a priority inheritance mechanism, therefore 
 mutexes are not available. Hence UEZ API functions UEZSemaphoreCreateMutex,
 UEZSemaphoreCreateRecursiveMutex, UEZSemaphoreRecursiveGrab and
@@ -198,18 +200,11 @@ T_uezError UEZQueueGetCount(T_uezQueue aQueue, TUInt32 *aCount);
  * The queue registry is just a means for kernel aware debuggers to locate
  * queue structures.  It has no other purpose so is an optional component.
  */
-#if (configQUEUE_REGISTRY_OPTION == configQUEUE_REGISTRY_FULL)
 
-T_uezError UEZQueueAddToRegistry( T_uezQueue aQueue, signed char *pcQueueName );
-T_uezError UEZQueueUnregisterQueue( T_uezQueue aQueue );
+T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aInterfaceName);
 
-#else
-
-#define UEZQueueAddToRegistry( xQueue, pcQueueName )
-#define UEZQueueUnregisterQueue( xQueue )
-
-#endif
-
+#define UEZQueueAddToRegistry UEZQueueSetName
+#define UEZQueueUnregisterQueue(aQueue) UEZQueueSetName(aQueue, '\0')
 
 #endif // _UEZ_RTOS_H_
 /*-------------------------------------------------------------------------*

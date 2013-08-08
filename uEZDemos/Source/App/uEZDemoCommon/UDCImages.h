@@ -22,6 +22,10 @@
 #define _UDC_IMAGES_H_
 #include <uEZ.h>
 
+#define ICONS_SET_UEZ_OPEN_SOURCE            0
+#define ICONS_SET_PROFESSIONAL_ICONS         1
+#define ICONS_SET_PROFESSIONAL_ICONS_LARGE   2
+
 /*---------------------------------------------------------------------------*
  * Shared Globals:
  *---------------------------------------------------------------------------*/
@@ -66,6 +70,7 @@ extern const TUInt8 G_arrowUp[];
 extern const TUInt8 G_arrowDown[];
 extern const TUInt8 G_GainSpanLogo[];
 extern const TUInt8 G_uEZLogo[];
+extern const TUInt8 G_videoIcon[];
 
 #endif // _UDC_IMAGES_H_
 /*-------------------------------------------------------------------------*

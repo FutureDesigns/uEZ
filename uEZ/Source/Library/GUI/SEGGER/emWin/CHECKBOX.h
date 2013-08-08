@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -87,7 +87,7 @@ typedef struct {
   GUI_COLOR aColorFrame[3];
   GUI_COLOR aColorInner[2];
   GUI_COLOR ColorCheck;
-  int ButtonSize;
+  int       ButtonSize;
 } CHECKBOX_SKINFLEX_PROPS;
 
 /*********************************************************************
@@ -97,12 +97,10 @@ typedef struct {
 **********************************************************************
 */
 
-CHECKBOX_Handle CHECKBOX_Create        (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int Id, int Flags);
-CHECKBOX_Handle CHECKBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK* cb);
-CHECKBOX_Handle CHECKBOX_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                        int WinFlags, int ExFlags, int Id);
-CHECKBOX_Handle CHECKBOX_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                        int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+CHECKBOX_Handle CHECKBOX_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags);
+CHECKBOX_Handle CHECKBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+CHECKBOX_Handle CHECKBOX_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+CHECKBOX_Handle CHECKBOX_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 
 /*********************************************************************
 *
@@ -111,7 +109,7 @@ CHECKBOX_Handle CHECKBOX_CreateUser    (int x0, int y0, int xsize, int ysize, WM
 * Do not call it directly ! It is only to be used from within an
 * overwritten callback.
 */
-void CHECKBOX_Callback(WM_MESSAGE *pMsg);
+void CHECKBOX_Callback(WM_MESSAGE * pMsg);
 
 /*********************************************************************
 *
@@ -165,12 +163,14 @@ void      CHECKBOX_SetTextColor (CHECKBOX_Handle hObj, GUI_COLOR Color);
 *
 **********************************************************************
 */
-void CHECKBOX_GetSkinFlexProps     (CHECKBOX_SKINFLEX_PROPS * pProps, int Index);
-void CHECKBOX_SetSkinClassic       (CHECKBOX_Handle hObj);
-void CHECKBOX_SetSkin              (CHECKBOX_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
-int  CHECKBOX_DrawSkinFlex         (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
-void CHECKBOX_SetSkinFlexProps     (const CHECKBOX_SKINFLEX_PROPS * pProps, int Index);
-void CHECKBOX_SetDefaultSkinClassic(void);
+void CHECKBOX_GetSkinFlexProps      (CHECKBOX_SKINFLEX_PROPS * pProps, int Index);
+void CHECKBOX_SetSkinClassic        (CHECKBOX_Handle hObj);
+void CHECKBOX_SetSkin               (CHECKBOX_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
+int  CHECKBOX_DrawSkinFlex          (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+void CHECKBOX_SetSkinFlexProps      (const CHECKBOX_SKINFLEX_PROPS * pProps, int Index);
+void CHECKBOX_SetDefaultSkinClassic (void);
+int  CHECKBOX_GetSkinFlexButtonSize (CHECKBOX_Handle hObj);
+void CHECKBOX_SetSkinFlexButtonSize (CHECKBOX_Handle hObj, int ButtonSize);
 WIDGET_DRAW_ITEM_FUNC * CHECKBOX_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
 
 #define CHECKBOX_SKIN_FLEX    CHECKBOX_DrawSkinFlex
@@ -194,3 +194,5 @@ WIDGET_DRAW_ITEM_FUNC * CHECKBOX_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSk
 
 #endif   /* if GUI_WINSUPPORT */
 #endif   /* CHECKBOX_H */
+
+/*************************** End of file ****************************/

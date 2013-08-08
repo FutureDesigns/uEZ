@@ -23,6 +23,7 @@ Purpose     : Display controller initialization
 #define GUICONF_C
 
 #include "GUI.h"
+#include <uEZ.h>
 
 /*********************************************************************
 *
@@ -30,6 +31,22 @@ Purpose     : Display controller initialization
 *
 **********************************************************************
 */
+
+static T_uezSemaphore G_uez_emWin_sem;
+
+static void uEZ_emWin_SignalEvent(void)
+{
+    UEZSemaphoreRelease(G_uez_emWin_sem);
+}
+static void uEZ_emWin_WaitEvent(void)
+{
+    UEZSemaphoreGrab(G_uez_emWin_sem, UEZ_TIMEOUT_INFINITE);
+}
+static void uEZ_emWin_WaitEventTimed(int Period)
+{
+    UEZSemaphoreGrab(G_uez_emWin_sem, (TUInt32)Period);
+}
+
 /*********************************************************************
 *
 *       GUI_X_Config
@@ -44,6 +61,12 @@ void GUI_X_Config(void) {
   //
   GUI_ALLOC_AssignMemory(GUI_pMem, GUI_MemSize);
   GUI_ALLOC_SetAvBlockSize(GUI_BLOCKSIZE);
+
+  UEZSemaphoreCreateBinary(&G_uez_emWin_sem);
+  UEZSemaphoreRelease(G_uez_emWin_sem);
+  GUI_SetSignalEventFunc(uEZ_emWin_SignalEvent);
+  GUI_SetWaitEventFunc(uEZ_emWin_WaitEvent);
+  GUI_SetWaitEventTimedFunc(uEZ_emWin_WaitEventTimed);
 }
 
 /*************************** End of file ****************************/

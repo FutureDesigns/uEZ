@@ -29,7 +29,7 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>18</version>
+          <version>19</version>
           <state>1</state>
         </option>
         <option>
@@ -38,8 +38,8 @@
         </option>
         <option>
           <name>Input variant</name>
-          <version>1</version>
-          <state>0</state>
+          <version>3</version>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
@@ -47,8 +47,8 @@
         </option>
         <option>
           <name>Output variant</name>
-          <version>0</version>
-          <state>0</state>
+          <version>2</version>
+          <state>1</state>
         </option>
         <option>
           <name>Output description</name>
@@ -137,12 +137,12 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>18</version>
+          <version>19</version>
           <state>1</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>18</version>
+          <version>19</version>
           <state>1</state>
         </option>
         <option>
@@ -159,7 +159,7 @@
       <name>ICCARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>27</version>
+        <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -394,16 +394,16 @@
           <state>1</state>
         </option>
         <option>
-          <name>IccRelaxedFpPrecision</name>
-          <state>0</state>
-        </option>
-        <option>
           <name>IccCppInlineSemantics</name>
           <state>1</state>
         </option>
         <option>
           <name>IccCmsis</name>
           <state>1</state>
+        </option>
+        <option>
+          <name>IccFloatSemantics</name>
+          <state>0</state>
         </option>
       </data>
     </settings>
@@ -641,7 +641,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>12</version>
+        <version>14</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -891,6 +891,30 @@
           <name>IlinkCmsis</name>
           <state>1</state>
         </option>
+        <option>
+          <name>IlinkOptMergeDuplSections</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkOptUseVfe</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IlinkOptForceVfe</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkStackAnalysisEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkStackControlFile</name>
+          <state></state>
+        </option>
+        <option>
+          <name>IlinkStackCallGraphFile</name>
+          <state></state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -947,7 +971,7 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>18</version>
+          <version>19</version>
           <state>1</state>
         </option>
         <option>
@@ -956,8 +980,8 @@
         </option>
         <option>
           <name>Input variant</name>
-          <version>1</version>
-          <state>0</state>
+          <version>3</version>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
@@ -965,8 +989,8 @@
         </option>
         <option>
           <name>Output variant</name>
-          <version>0</version>
-          <state>0</state>
+          <version>2</version>
+          <state>1</state>
         </option>
         <option>
           <name>Output description</name>
@@ -1055,12 +1079,12 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>18</version>
+          <version>19</version>
           <state>1</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>18</version>
+          <version>19</version>
           <state>1</state>
         </option>
         <option>
@@ -1077,7 +1101,7 @@
       <name>ICCARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>27</version>
+        <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1313,16 +1337,16 @@
           <state>1</state>
         </option>
         <option>
-          <name>IccRelaxedFpPrecision</name>
-          <state>0</state>
-        </option>
-        <option>
           <name>IccCppInlineSemantics</name>
           <state>1</state>
         </option>
         <option>
           <name>IccCmsis</name>
           <state>1</state>
+        </option>
+        <option>
+          <name>IccFloatSemantics</name>
+          <state>0</state>
         </option>
       </data>
     </settings>
@@ -1560,7 +1584,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>12</version>
+        <version>14</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1809,6 +1833,30 @@
         <option>
           <name>IlinkCmsis</name>
           <state>1</state>
+        </option>
+        <option>
+          <name>IlinkOptMergeDuplSections</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkOptUseVfe</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>IlinkOptForceVfe</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkStackAnalysisEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkStackControlFile</name>
+          <state></state>
+        </option>
+        <option>
+          <name>IlinkStackCallGraphFile</name>
+          <state></state>
         </option>
       </data>
     </settings>
@@ -2347,12 +2395,15 @@
       <group>
         <name>FDI</name>
         <group>
-          <name>uEZGUI-2478-43WQS</name>
+          <name>uEZGUI_2478_43WQS</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI-2478-43WQS\uEZGUI-2478-43WQS.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_2478_43WQS\lwipopts.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI-2478-43WQS\UEZPlatform.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_2478_43WQS\uEZGUI_2478_43WQS.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_2478_43WQS\UEZPlatform.h</name>
           </file>
         </group>
       </group>

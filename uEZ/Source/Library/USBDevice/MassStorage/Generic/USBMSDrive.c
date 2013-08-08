@@ -1122,7 +1122,7 @@ T_uezError USBMSDriveInitialize(
     error = UEZTaskCreate(
                 USBMSDriveMonitor,
                 "USBMSDrive",
-                UEZ_TASK_STACK_BYTES( 512 ),
+                UEZ_TASK_STACK_BYTES( 1024 ),
                 0,
                 UEZ_PRIORITY_HIGH,
                 &G_ghTask);

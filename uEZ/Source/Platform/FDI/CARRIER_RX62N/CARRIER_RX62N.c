@@ -82,6 +82,7 @@
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h> // Needs to go away!
 
 #include <UEZPlatform.h>
+#include <uEZAudioMixer.h>
 
 #include "DirectDrive/DirectLCD_CNF.h"
 
@@ -349,7 +350,7 @@ void UEZBSP_RAMInit(void)
     //   row address in row address/column address multiplexing. These bits
     //   also select the row address bits to be used for comparison in the
     //   SDRAMC continuous access operation.
-    BSC.SDADR.BIT.MXC = 8-8;
+    BSC.SDADR.BIT.MXC = 1;//8-8;
 
     // Auto-refresh operation is enabled
     BSC.SDRFEN.BIT.RFEN = 1;
@@ -358,7 +359,7 @@ void UEZBSP_RAMInit(void)
     BSC.SDCCR.BIT.EXENB = 1;
 
 #if 0
-    MemoryTest();
+    MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);         
 #endif
 
     /* connect MTU channel 3 to B pins */
@@ -683,6 +684,7 @@ void UEZPlatform_Speaker_Require(void)
     ToneGenerator_Generic_PWM_Create("Speaker", &settings);
 }
 
+static T_uezDevice G_Amp;
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioAmp_Require
  *---------------------------------------------------------------------------*
@@ -691,15 +693,59 @@ void UEZPlatform_Speaker_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_AudioAmp_Require(void)
 {
-    T_uezDevice amp;
-
     DEVICE_CREATE_ONCE();
 
     // P97 = VOL_UD
     // P96 = AMP_MODE  
-    AudioAmp_8551T_Create("AMP0", GPIO_P97, GPIO_P96, GPIO_NONE);
-    UEZAudioAmpOpen("AMP0", &amp);
-    UEZAudioAmpSetLevel(amp, UEZ_DEFAULT_AUDIO_LEVEL);
+    AudioAmp_8551T_Create("AMP0", GPIO_P97, GPIO_P96, GPIO_NONE, 64);
+    UEZAudioAmpOpen("AMP0", &G_Amp);
+    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_AUDIO_LEVEL);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  CARRIERRX62N_AudioMixerCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *
+ *---------------------------------------------------------------------------*/
+static T_uezError CARRIERRX62N_AudioMixerCallback(
+        T_uezAudioMixerOutput aChangedOutput,
+            TBool aMute,
+            TUInt8 aLevel)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+
+    switch(aChangedOutput){
+        case  UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER:
+            if(G_Amp){
+                if(aMute){
+                    error = UEZAudioAmpMute(G_Amp);
+                } else {
+                    error = UEZAudioAmpUnMute(G_Amp);
+                }
+                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
+            }
+            break;
+        default:
+            break;
+    }
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_AudioMixer_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Audio Mixer driver and callback function
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_AudioMixer_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &CARRIERRX62N_AudioMixerCallback);
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 255);
+    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER);
 }
 
 /*---------------------------------------------------------------------------*
@@ -889,7 +935,7 @@ void UEZPlatform_I2C0_Require(void)
 
     // Ensure the I2C0 exists in the HAL level
     RX62N_RIIC0_Require();
-    I2C_Generic_Create("I2C0", "RIIC0");
+    I2C_Generic_Create("I2C0", "RIIC0", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1088,6 +1134,7 @@ void UEZPlatform_Standard_Require(void)
 	UEZPlatform_IRTC_Require();
 	UEZPlatform_Button_Require();
 	UEZPlatform_LED_Require();
+	UEZPlatform_AudioMixer_Require();
 }
 
 void UEZPlatform_Full_Require(void)

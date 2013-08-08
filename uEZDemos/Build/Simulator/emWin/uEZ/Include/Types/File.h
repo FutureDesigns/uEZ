@@ -53,20 +53,20 @@
 #define UEZ_FILE_ENTRY_ATTR_ARCHIVE         (1<<4)
 
 typedef struct {
-    TUInt8 iHour;       	/** 0 - 23 */
-    TUInt8 iMinutes;    	/** 0 - 59 */
-    TUInt8 iSeconds;    	/** 0 - 59 */
+    TUInt8 iHour;           /** 0 - 23 */
+    TUInt8 iMinutes;        /** 0 - 59 */
+    TUInt8 iSeconds;        /** 0 - 59 */
     TUInt8 iFineSeconds;    /** 0 - 100 multiples of 10 ms */
 } T_uezFileTime;
 
 typedef struct {
-    TUInt16 iYear;      	/** 0 - 9999 */
-    TUInt8 iMonth;      	/** 1 - 12 */
-    TUInt8 iDay;        	/** 1 - 31 */
+    TUInt16 iYear;          /** 0 - 9999 */
+    TUInt8 iMonth;          /** 1 - 12 */
+    TUInt8 iDay;            /** 1 - 31 */
 } T_uezFileDate;
 
 typedef struct {
-    char iFilename[256+1]; 	/** Complete filename */
+    char iFilename[256+1];     /** Complete filename */
     TUInt8 iFileAttributes;
     TUInt32 iFilesize;
     T_uezFileDate iCreateDate;

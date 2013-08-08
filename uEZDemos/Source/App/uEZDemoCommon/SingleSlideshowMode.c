@@ -32,6 +32,7 @@
 #include <uEZWAVFile.h>
 #include "SingleSlideshowMode.h"
 #include <UEZLCD.h>
+#include <UEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Defines:
@@ -126,7 +127,7 @@ typedef struct {
 } T_slideLoadResponse;
 
 //static T_slideshowList *G_slideshowList;
-static T_SSMWorkspace *G_ws;
+static T_SSMWorkspace *G_ws = 0;
 #define G_win           (G_ws->iWin)
 #define G_slideshowList (&G_ws->iSlideshowList)
 
@@ -794,11 +795,14 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
     T_uezDevice lcd;
     T_uezQueue queue;
     T_uezDevice ts;
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
     TUInt32 slideNum;
     T_slideLoadResponse slideResponse;
     TUInt32 time;
     TInt32 diffY;
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
 #if UEZ_ENABLE_I2S_AUDIO
     char filename[80];
     char directory[80];
@@ -850,7 +854,10 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
         UEZQueueCreate(3, sizeof(T_singleSlideshowEvent),
                 &G_slideshowEventQueue);
 
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
+#endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue) == UEZ_ERROR_NONE) {
             if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
@@ -866,6 +873,10 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
 
                     // Sit here in a loop until we are done
                     while (!G_ws->iExit) {
+                        
+                        // Prevent Screen Saver operation while in slide show
+                        UEZLCDScreensaverWake();
+                        
                         // If we need to load a slide, do it now
                         if (G_ws->iNeedLoad) {
                             SSMLoadSlide();
@@ -909,7 +920,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
 #endif
 
                         //Wait till we get a touchscreen event
-                        if (UEZQueueReceive(queue, &reading,
+                        if (UEZQueueReceive(queue, &inputEvent,
                                 UEZ_TIMEOUT_INFINITE) == UEZ_ERROR_NONE) {
                             if (G_ws->iShowPanel) {
                                 ChoicesUpdate(&G_win, G_ws->iChoices, queue,
@@ -921,7 +932,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
                                     time = UEZTickCounterGet();
                                 }
                             } else {
-                                if (reading.iFlags & TSFLAG_PEN_DOWN) {
+                                if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD) {
                                     // Show panel now
                                     G_ws->iShowPanel = ETrue;
                                     G_ws->iNeedDraw = ETrue;
@@ -944,12 +955,12 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
                             }
 
                             // Watch to see if we are dragging
-                            if (reading.iFlags & TSFLAG_PEN_DOWN) {
+                            if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD) {
                                 if (!G_ws->iTouched) {
                                     // Start recording touch
-                                    G_ws->iTouchStartY = reading.iY;
+                                    G_ws->iTouchStartY = inputEvent.iEvent.iXY.iY;
                                 } else {
-                                    G_ws->iTouchEndY = reading.iY;
+                                    G_ws->iTouchEndY = inputEvent.iEvent.iXY.iY;
                                 }
                                 G_ws->iTouched = ETrue;
                             } else {
@@ -977,6 +988,9 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
             }
             UEZTSClose(ts, queue);
         }
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
         UEZQueueDelete(queue);
     }
 
@@ -999,6 +1013,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
     if (G_ws->iSlideReady)
         UEZQueueDelete(G_ws->iSlideReady);
     UEZMemFree(G_ws);
+    G_ws = 0;
 }
 
 TUInt32 SingleSlideshowGetSlideNum(void)
@@ -1014,6 +1029,13 @@ TUInt32 SingleSlideshowGetNumSlides(void)
         return G_ws->iNumSlides;
     return 0;
 }
+
+void SlideShowExit()
+{
+    if(G_ws)
+      G_ws->iExit = ETrue;
+}
+
 
 /*-------------------------------------------------------------------------*
  * End of File:  SingleSlideshowMode.c

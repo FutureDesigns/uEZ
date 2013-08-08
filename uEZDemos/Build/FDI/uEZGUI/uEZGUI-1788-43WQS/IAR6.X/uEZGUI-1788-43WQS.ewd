@@ -57,11 +57,11 @@
         </option>
         <option>
           <name>CExtraOptionsCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CExtraOptions</name>
-          <state></state>
+          <state>--jlink_script_file=$PROJ_DIR$\Reset.JLinkScript</state>
         </option>
         <option>
           <name>CFpuProcessor</name>
@@ -428,7 +428,7 @@
         <option>
           <name>CCJLinkResetList</name>
           <version>6</version>
-          <state>13</state>
+          <state>10</state>
         </option>
         <option>
           <name>CCJLinkInterfaceCmdLine</name>
@@ -1024,11 +1024,11 @@
         </option>
         <option>
           <name>CExtraOptionsCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CExtraOptions</name>
-          <state></state>
+          <state>--jlink_script_file=$PROJ_DIR$\Reset.JLinkScript</state>
         </option>
         <option>
           <name>CFpuProcessor</name>
@@ -1395,7 +1395,7 @@
         <option>
           <name>CCJLinkResetList</name>
           <version>6</version>
-          <state>13</state>
+          <state>10</state>
         </option>
         <option>
           <name>CCJLinkInterfaceCmdLine</name>
@@ -1991,11 +1991,11 @@
         </option>
         <option>
           <name>CExtraOptionsCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CExtraOptions</name>
-          <state></state>
+          <state>--jlink_script_file=$PROJ_DIR$\Reset.JLinkScript</state>
         </option>
         <option>
           <name>CFpuProcessor</name>
@@ -2362,7 +2362,7 @@
         <option>
           <name>CCJLinkResetList</name>
           <version>6</version>
-          <state>13</state>
+          <state>10</state>
         </option>
         <option>
           <name>CCJLinkInterfaceCmdLine</name>

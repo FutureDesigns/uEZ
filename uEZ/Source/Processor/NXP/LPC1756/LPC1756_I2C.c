@@ -96,6 +96,8 @@ typedef struct {
     TUInt8 iIndex;
     I2CRequestCompleteCallback iCompleteFunc;
     void *iCompleteWorkspace;
+    T_uezGPIOPortPin iSDAPin;
+    T_uezGPIOPortPin iSCLPin;
 
     volatile TBool iDoneFlag;
 #if COMPILE_I2C_SLAVE_MODE
@@ -134,6 +136,20 @@ typedef TUInt8 T_lpc1756_i2cMode;
  *-------------------------------------------------------------------------*/
 static T_LPC1756_I2C_Workspace *G_lpc1756_i2c1Workspace;
 static T_LPC1756_I2C_Workspace *G_lpc1756_i2c2Workspace;
+
+static const T_LPC1756_IOCON_ConfigList G_sda1[] = { {
+    GPIO_P0_0,
+    IOCON_I_DEFAULT(3) }, { GPIO_P0_19, IOCON_I_DEFAULT(3) }, };
+static const T_LPC1756_IOCON_ConfigList G_scl1[] = { {
+    GPIO_P0_1,
+    IOCON_I_DEFAULT(3) }, { GPIO_P0_20, IOCON_I_DEFAULT(3) }, };
+
+static const T_LPC1756_IOCON_ConfigList G_sda2[] = { {
+    GPIO_P0_10,
+    IOCON_I_DEFAULT(2) }, };
+static const T_LPC1756_IOCON_ConfigList G_scl2[] = { {
+    GPIO_P0_11,
+    IOCON_I_DEFAULT(2) }, };
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
@@ -670,6 +686,29 @@ T_uezError ILPC1756_Disable(void *aWorkspace)
     return UEZ_ERROR_NONE;
 }
 
+T_uezError ILPC1756_I2C_IsHung(void *aWorkspace, TBool *aBool)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_LPC1756_I2C_Workspace *p = (T_LPC1756_I2C_Workspace *)aWorkspace;
+    TBool sda, scl;
+
+    sda = UEZGPIORead(p->iSDAPin);
+    scl = UEZGPIORead(p->iSCLPin);
+
+    *aBool = (!scl || !sda) ? ETrue : EFalse;
+
+    return error;
+}
+
+T_uezError ILPC1756_I2C_ResetBus(void *aWorkspace)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    //T_LPC1756_I2C_Workspace *p = (T_LPC1756_I2C_Workspace *)aWorkspace;
+    //TODO: implement reset functionality.
+
+    return error;
+}
+
 IRQ_ROUTINE(ILPC1756_I2C1InterruptHandler)
 {
     IRQ_START();
@@ -764,7 +803,8 @@ const HAL_I2CBus I2C_LPC1756_Bus1_Interface = {
     ILPC1756_I2C_StartWrite,
     ILPC1756_ConfigureSlave,
     ILPC1756_Enable,
-    ILPC1756_Disable, };
+    ILPC1756_Disable,
+    ILPC1756_I2C_IsHung, ILPC1756_I2C_ResetBus};
 
 const HAL_I2CBus I2C_LPC1756_Bus2_Interface = {
     {
@@ -777,46 +817,41 @@ const HAL_I2CBus I2C_LPC1756_Bus2_Interface = {
     ILPC1756_I2C_StartWrite,
     ILPC1756_ConfigureSlave,
     ILPC1756_Enable,
-    ILPC1756_Disable, };
+    ILPC1756_Disable,
+    ILPC1756_I2C_IsHung, ILPC1756_I2C_ResetBus};
 
 /*---------------------------------------------------------------------------*
  * Requirement routines:
  *---------------------------------------------------------------------------*/
 void LPC1756_I2C1_Require(T_uezGPIOPortPin aPinSDA1, T_uezGPIOPortPin aPinSCL1)
 {
-    static const T_LPC1756_IOCON_ConfigList sda1[] = { {
-        GPIO_P0_0,
-        IOCON_I_DEFAULT(3) }, { GPIO_P0_19, IOCON_I_DEFAULT(3) }, };
-    static const T_LPC1756_IOCON_ConfigList scl1[] = { {
-        GPIO_P0_1,
-        IOCON_I_DEFAULT(3) }, { GPIO_P0_20, IOCON_I_DEFAULT(3) }, };
+    T_LPC1756_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
 
     /** Register I2C Bus driver */
     HALInterfaceRegister("I2C1", (T_halInterface *)&I2C_LPC1756_Bus1_Interface,
-        0, 0);
-    LPC1756_IOCON_ConfigPin(aPinSDA1, sda1, ARRAY_COUNT(sda1));
-    LPC1756_IOCON_ConfigPin(aPinSCL1, scl1, ARRAY_COUNT(scl1));
+        0, (T_halWorkspace **)&p);
+    LPC1756_IOCON_ConfigPin(aPinSDA1, G_sda1, ARRAY_COUNT(G_sda1));
+    LPC1756_IOCON_ConfigPin(aPinSCL1, G_scl1, ARRAY_COUNT(G_scl1));
+    p->iSCLPin = aPinSCL1;
+    p->iSDAPin = aPinSDA1;
 }
 
 void LPC1756_I2C2_Require(T_uezGPIOPortPin aPinSDA2, T_uezGPIOPortPin aPinSCL2)
 {
-    static const T_LPC1756_IOCON_ConfigList sda2[] = { {
-        GPIO_P0_10,
-        IOCON_I_DEFAULT(2) }, };
-    static const T_LPC1756_IOCON_ConfigList scl2[] = { {
-        GPIO_P0_11,
-        IOCON_I_DEFAULT(2) }, };
+    T_LPC1756_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
 
     /** Register I2C Bus driver */
     HALInterfaceRegister("I2C2", (T_halInterface *)&I2C_LPC1756_Bus2_Interface,
-        0, 0);
+        0, (T_halWorkspace **)&p);
 
-    LPC1756_IOCON_ConfigPin(aPinSDA2, sda2, ARRAY_COUNT(sda2));
-    LPC1756_IOCON_ConfigPin(aPinSCL2, scl2, ARRAY_COUNT(scl2));
+    LPC1756_IOCON_ConfigPin(aPinSDA2, G_sda2, ARRAY_COUNT(G_sda2));
+    LPC1756_IOCON_ConfigPin(aPinSCL2, G_scl2, ARRAY_COUNT(G_scl2));
+    p->iSCLPin = aPinSCL2;
+    p->iSDAPin = aPinSDA2;
 }
 /** @} */
 /*-------------------------------------------------------------------------*

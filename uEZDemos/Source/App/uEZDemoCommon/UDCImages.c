@@ -21,10 +21,6 @@
 #include <uEZ.h>
 #include "AppDemo.h"
 
-#define ICONS_SET_UEZ_OPEN_SOURCE            0
-#define ICONS_SET_PROFESSIONAL_ICONS         1
-#define ICONS_SET_PROFESSIONAL_ICONS_LARGE   2
-
 #ifndef UEZ_ICONS_SET
     #define UEZ_ICONS_SET ICONS_SET_UEZ_OPEN_SOURCE
 #endif
@@ -108,6 +104,7 @@
 #include "images/Professional_Icons/ArrowUp.h"
 #include "images/Professional_Icons/ArrowDown.h"
 #include "images/Professional_Icons/GainSpanLogo.h"
+#include "images/Professional_Icons/VideoIcon.h"
 #if SIMPLEUI_DOUBLE_SIZED_ICONS
 #include "images/Professional_Icons/uEZLogoLarge.h"
 #else
@@ -155,6 +152,7 @@
 #include "images/Professional_Icons128/ArrowDown.h"
 #include "images/Professional_Icons128/GainSpanLogo.h"
 #include "images/Professional_Icons128/uEZLogo.h"
+#include "images/Professional_Icons128/VideoIcon128.h"
 #endif
 
 /*-------------------------------------------------------------------------*

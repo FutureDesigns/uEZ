@@ -171,9 +171,9 @@
     #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
     #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
 
-	/**
-	 * The Seiko 7" display needs different touchscreen sensitivity levels
-	 */
+    /**
+     * The Seiko 7" display needs different touchscreen sensitivity levels
+     */
     #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        700   //0x2000
     #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         200   //0x1000
 

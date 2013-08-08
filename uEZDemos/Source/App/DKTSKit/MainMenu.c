@@ -260,7 +260,7 @@ void MainMenu(void)
     T_uezQueue queue;
 
     // Setup queue to receive touchscreen events
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
         // Open the LCD and get the pixel buffer
         if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
             UEZLCDGetFrame(lcd, 0, (void **)&pixels);

@@ -20,3 +20,15 @@
 #define PCLK_FREQUENCY              UEZPlatform_GetPCLKFrequency()
 
 #define INTERRUPT_BASED_EMAC        1
+
+#ifdef FREERTOS_PLUS_TRACE
+#define configUSE_TRACE_FACILITY  1
+#define configUSE_TIMERS          1
+#define SELECTED_PORT PORT_ARM_CortexM
+#endif
+
+#ifdef NDEBUG
+#define UEZ_REGISTER              0
+#else
+#define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+#endif

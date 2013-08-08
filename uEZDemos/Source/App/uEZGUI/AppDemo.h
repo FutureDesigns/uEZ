@@ -62,6 +62,8 @@ void DrawMode(const T_choice *p_choice);
 void ConsoleMode(const T_choice *p_choice);
 void CalibrateMode(const T_choice *p_choice);
 void FunctionalTest(const T_choice *aChoice);
+void FunctionalTest_EXP_DK(const T_choice *aChoice);
+void FunctionalTest_EXP_DK_Loopback(const T_choice *aChoice);
 void AccelDemoMode(const T_choice *aChoice);
 void MainMenu(void);
 void PWMAudio(TUInt32 freq, TUInt32 onTime, TUInt32 offTime);
@@ -76,6 +78,8 @@ void YourAppMode(const T_choice *aChoice);
 void BrightnessControlMode(const T_choice *aChoice);
 void emWin(const T_choice *aChoice);
 void GainSpanDemoMode(const T_choice *aChoice);
+void VideoPlayer(const T_choice *aChoice);
+void VideoPlayerSelection(const T_choice *aChoice);
 
 extern volatile TBool G_mmTestMode;
 extern volatile TBool G_mmTestModeRunning;

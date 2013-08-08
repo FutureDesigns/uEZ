@@ -62,6 +62,8 @@ typedef struct {
     TUInt8 iMSTPBBit;
     TBool iFirstInit;
     T_i2cState iState;
+    T_uezGPIOPortPin iSDAPin;
+    T_uezGPIOPortPin iSCLPin;
     volatile TBool iDoneFlag;
 } T_RX63N_I2C_Workspace;
 
@@ -596,6 +598,29 @@ static void IRX63N_ProcessStateWrite(
     }
 }
 
+T_uezError IRX63N_I2C_IsHung(void *aWorkspace, TBool *aBool)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_RX63N_I2C_Workspace *p = (T_RX63N_I2C_Workspace *)aWorkspace;
+    TBool sda, scl;
+
+    sda = UEZGPIORead(p->iSDAPin);
+    scl = UEZGPIORead(p->iSCLPin);
+
+    *aBool = (!scl || !sda) ? ETrue : EFalse;
+
+    return error;
+}
+
+T_uezError IRX63N_I2C_ResetBus(void *aWorkspace)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    //T_RX63N_I2C_Workspace *p = (T_RX63N_I2C_Workspace *)aWorkspace;
+    //TODO: implement reset functionality.
+
+    return error;
+}
+
 static void IRX63N_ProcessStateRead(
         T_RX63N_I2C_Workspace *p,
         T_i2cInterrupt aInterrupt)
@@ -1098,6 +1123,8 @@ const HAL_I2CBus I2C_RX63N_RIIC0_Interface = {
 
         IRX63N_I2C_StartReadInterrupts,
         IRX63N_I2C_StartWriteInterrupts,
+        0,0,0,
+        IRX63N_I2C_IsHung, IRX63N_I2C_ResetBus
 };
 
 const HAL_I2CBus I2C_RX63N_RIIC1_Interface = {
@@ -1108,6 +1135,8 @@ const HAL_I2CBus I2C_RX63N_RIIC1_Interface = {
 
         IRX63N_I2C_StartReadInterrupts,
         IRX63N_I2C_StartWriteInterrupts,
+        0,0,0,
+        IRX63N_I2C_IsHung, IRX63N_I2C_ResetBus
 };
 		
 const HAL_I2CBus I2C_RX63N_RIIC2_Interface = {
@@ -1118,6 +1147,8 @@ const HAL_I2CBus I2C_RX63N_RIIC2_Interface = {
 
         IRX63N_I2C_StartReadInterrupts,
         IRX63N_I2C_StartWriteInterrupts,
+        0,0,0,
+        IRX63N_I2C_IsHung, IRX63N_I2C_ResetBus
 };
 		
 const HAL_I2CBus I2C_RX63N_RIIC3_Interface = {
@@ -1128,58 +1159,76 @@ const HAL_I2CBus I2C_RX63N_RIIC3_Interface = {
 
         IRX63N_I2C_StartReadInterrupts,
         IRX63N_I2C_StartWriteInterrupts,
+        0,0,0,
+        IRX63N_I2C_IsHung, IRX63N_I2C_ResetBus
 };
 		
 void RX63N_RIIC0_Require(void)
 {
+	T_RX63N_I2C_Workspace *p;
 	static const T_RX63N_MPC_ConfigList pins[] = {
 		{GPIO_P12, 0x0F},	// SCL0
 		{GPIO_P13, 0x0F},	// SDA0
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
-    HALInterfaceRegister("RIIC0", (T_halInterface *)&I2C_RX63N_RIIC0_Interface, 0, 0);
+    HALInterfaceRegister("RIIC0", (T_halInterface *)&I2C_RX63N_RIIC0_Interface, 0, (T_halWorkspace **)&p);
 	
-	RX63N_MPC_ConfigAllPins(pins, ARRAY_COUNT(pins));
+	RX63N_MPC_ConfigAllPins(pins, ARRAY_COUNT(pins));     
+
+    p->iSCLPin = GPIO_P12;
+    p->iSDAPin = GPIO_P13;
 }
 
 void RX63N_RIIC1_Require(void)
 {
+	T_RX63N_I2C_Workspace *p;
 	static const T_RX63N_MPC_ConfigList pins[] = {
 		{GPIO_P21, 0x0F},	// SCL1
 		{GPIO_P20, 0x0F},	// SDA1
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
-    HALInterfaceRegister("RIIC1", (T_halInterface *)&I2C_RX63N_RIIC1_Interface, 0, 0);
+    HALInterfaceRegister("RIIC1", (T_halInterface *)&I2C_RX63N_RIIC1_Interface, 0, (T_halWorkspace **)&p);
 	
 	RX63N_MPC_ConfigAllPins(pins, ARRAY_COUNT(pins));
+
+    p->iSCLPin = GPIO_P21;
+    p->iSDAPin = GPIO_P20;
 }
 
 void RX63N_RIIC2_Require(void)
 {
+	T_RX63N_I2C_Workspace *p;
 	static const T_RX63N_MPC_ConfigList pins[] = {
 		{GPIO_P16, 0x0F},	// SCL2
 		{GPIO_P17, 0x0F},	// SDA2
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
-    HALInterfaceRegister("RIIC2", (T_halInterface *)&I2C_RX63N_RIIC2_Interface, 0, 0);
+    HALInterfaceRegister("RIIC2", (T_halInterface *)&I2C_RX63N_RIIC2_Interface, 0, (T_halWorkspace **)&p);
 	
 	RX63N_MPC_ConfigAllPins(pins, ARRAY_COUNT(pins));
+
+    p->iSCLPin = GPIO_P16;
+    p->iSDAPin = GPIO_P17;
 }
 
 void RX63N_RIIC3_Require(void)
 {
+	T_RX63N_I2C_Workspace *p;
 	static const T_RX63N_MPC_ConfigList pins[] = {
 		{GPIO_PC0, 0x0F},	// SCL3
 		{GPIO_PC1, 0x0F},	// SDA3
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
-    HALInterfaceRegister("RIIC3", (T_halInterface *)&I2C_RX63N_RIIC3_Interface, 0, 0);
+    HALInterfaceRegister("RIIC3", (T_halInterface *)&I2C_RX63N_RIIC3_Interface, 0, (T_halWorkspace **)&p);
 	
 	RX63N_MPC_ConfigAllPins(pins, ARRAY_COUNT(pins));
+
+    p->iSCLPin = GPIO_PC0;
+    p->iSDAPin = GPIO_PC1;
 }
 
 /*-------------------------------------------------------------------------*

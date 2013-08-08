@@ -417,13 +417,13 @@ void TestModeAlignmentBorder(T_uezDevice aLCD)
 void TestModeTouchscreen(T_uezDevice aLCD, T_uezDevice aTS, T_uezQueue aQueue)
 {
     T_pixelColor *pixels;
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
 
     // We are busy doing calibration
     G_mmTestModeTouchscreenCalibrationBusy = ETrue;
 
     // Flush the queue by reading all the events up til this point
-    while(UEZQueueReceive(aQueue, &reading, 0) == UEZ_ERROR_NONE)
+    while(UEZQueueReceive(aQueue, &inputEvent, 0) == UEZ_ERROR_NONE)
         {}
 
     UEZLCDGetFrame(aLCD, 0, (void **)&pixels);
@@ -433,7 +433,7 @@ void TestModeTouchscreen(T_uezDevice aLCD, T_uezDevice aTS, T_uezQueue aQueue)
     IClearScreen(aLCD);
 
     // Flush the queue by reading all the events up til this point
-    while(UEZQueueReceive(aQueue, &reading, 0) == UEZ_ERROR_NONE)
+    while(UEZQueueReceive(aQueue, &inputEvent, 0) == UEZ_ERROR_NONE)
         {}
 
     // Done doing calibration
@@ -459,7 +459,7 @@ void TestMode(void)
 
     if (UEZQueueCreate(1, sizeof(TUInt32), &G_mmTestModeQueue) == UEZ_ERROR_NONE) {
         // Setup queue to receive touchscreen events
-        if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+        if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
             // Open up the touchscreen and pass in the queue to receive events
             if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
                 // Open the LCD and get the pixel buffer

@@ -558,7 +558,7 @@ void DrawMode(const T_choice *aChoice)
     static T_uezQueue queue = (TUInt32)NULL;
     INT_32 winX, winY;
     T_pixelColor *pixels;
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
     TBool isDrawing = EFalse;
     INT_32 lastWinX, lastWinY;
 
@@ -567,7 +567,7 @@ void DrawMode(const T_choice *aChoice)
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == queue)
 	{
-	  	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) != UEZ_ERROR_NONE)
+	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
 		{
 		  	queue = NULL;
 		}
@@ -577,7 +577,7 @@ void DrawMode(const T_choice *aChoice)
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
 	  	UEZQueueAddToRegistry( queue, "Draw TS" );	
 #else
-	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
 #endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
@@ -592,16 +592,16 @@ void DrawMode(const T_choice *aChoice)
                 while (!G_drExit) {
                     // Wait forever until we receive a touchscreen event
                     // NOTE: UEZTSGetReading() can also be used, but it doesn't wait.
-                    if (UEZQueueReceive(queue, &reading, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE) {
-                        winX = reading.iX;
-                        winY = reading.iY;
+                    if (UEZQueueReceive(queue, &inputEvent, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE) {
+                        winX = inputEvent.iEvent.iXY.iX;
+                        winY = inputEvent.iEvent.iXY.iY;
                         swim_get_virtual_xy(&G_drWin, &winX, &winY);
 
                         // Are we in the drawing area?
                         if ((winX > DR_IMAGE_LEFT) && (winX < DR_IMAGE_RIGHT) &&
                                 (winY > DR_IMAGE_TOP) && (winY < DR_IMAGE_BOTTOM)) {
                             // Pen down or up?
-                            if (reading.iFlags & TSFLAG_PEN_DOWN)  {
+                            if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD)  {
                             
                                 UEZLCDScreensaverWake();
                             
@@ -630,8 +630,8 @@ void DrawMode(const T_choice *aChoice)
                                 isDrawing = EFalse;
                             }
                         } else {
-                            ChoicesUpdateByReading(&G_drWin, G_drChoices, &reading);
-                            if (!(reading.iFlags & TSFLAG_PEN_DOWN))
+                            ChoicesUpdateByReading(&G_drWin, G_drChoices, &inputEvent);
+                            if (inputEvent.iEvent.iXY.iAction == XY_ACTION_RELEASE)
                                 isDrawing = EFalse;
                         }
                     }

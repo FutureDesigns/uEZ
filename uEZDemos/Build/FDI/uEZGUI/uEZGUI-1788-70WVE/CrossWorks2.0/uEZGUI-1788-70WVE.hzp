@@ -5,7 +5,7 @@
     <file file_name="Config_Build.h"/>
     <folder Name="App">
       <folder Name="Demos">
-        <folder Name="uEZDemoCommon">
+        <folder Name="uEZDemoCommon" file_name="">
           <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.c"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.c"/>
@@ -22,6 +22,10 @@
           <file file_name="../../../../../Source/App/uEZDemoCommon/TimeDateMode.c"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.c"/>
           <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c"/>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c"/>
         </folder>
         <folder Name="SEGGER">
           <folder Name="emWin">
@@ -51,7 +55,7 @@
             <file file_name="../../../../../Source/App/SEGGER/emWin/emWin.c"/>
           </folder>
         </folder>
-        <folder Name="uEZGUI">
+        <folder Name="uEZGUI" file_name="">
           <file file_name="../../../../../Source/App/uEZGUI/AppDemo.h"/>
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c"/>
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h"/>
@@ -64,6 +68,9 @@
           <file file_name="../../../../../Source/App/uEZGUI/TestCmds.c"/>
           <file file_name="../../../../../Source/App/uEZGUI/TestCmds.h"/>
           <file file_name="../../../../../Source/App/uEZGUI/TestMode.c"/>
+          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.c"/>
+          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.h"/>
+          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTestLoop.c"/>
         </folder>
       </folder>
       <configuration Name="Common" c_user_include_directories=""/>
@@ -73,8 +80,8 @@
         <folder Name="FDI">
           <folder Name="uEZGUI_1788_70WVE">
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVE/lwipopts.h"/>
-            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVE/uEZGUI-1788-70WVE.c"/>
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVE/uEZPlatform.h"/>
+            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVE/uEZGUI_1788_70WVE.c"/>
           </folder>
         </folder>
       </folder>
@@ -95,10 +102,29 @@
             <folder Name="Library">
               <folder Name="NXP">
                 <folder Name="CrossWorks">
-                  <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_518_LPCXpresso501_M3_LE_Redlib.a"/>
+                  <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_520_LPCXpresso510_M3_LE_Redlib.a"/>
                 </folder>
               </folder>
             </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Scripts">
+        <folder Name="Compilers">
+          <folder Name="CrossWorks">
+            <folder Name="FreeRTOS">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+                <configuration Name="Common" file_type="Threads Script"/>
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="ExpansionBoard">
+        <folder Name="FDI">
+          <folder Name="uEZGUI_EXP_DK" file_name="">
+            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.c"/>
+            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h"/>
           </folder>
         </folder>
       </folder>

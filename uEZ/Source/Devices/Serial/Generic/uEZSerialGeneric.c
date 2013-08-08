@@ -61,7 +61,7 @@ T_uezError Serial_Generic_InitializeWorkspace(void *aW)
     p->iTxBusy = EFalse;
     p->iNumOpen = 0;
     UEZSemaphoreCreateBinary(&p->iSemEmpty);
-    UEZSemaphoreGrab(p->iSemEmpty, 0);
+    UEZSemaphoreGrab(p->iSemEmpty,  0);
 
     // Then create a semaphore to limit the number of accessors
     error = UEZSemaphoreCreateBinary(&p->iSem);
@@ -145,18 +145,35 @@ T_uezError Serial_Generic_Configure(
     // Record serial device
     p->iSerial = aSerial;
 
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(p->iSemEmpty, "Empty", (*(p->iSerial))->iInterface.iName);
+    UEZSemaphoreSetName(p->iSemEmpty, "Serial", (*(p->iSerial))->iInterface.iName);
+#endif
+
     // Create queue to hold sending data
     error = UEZQueueCreate(aQueueSendSize, 1, &p->iQueueSend);
     if (error)
         return error;
+#if UEZ_REGISTER
+    else
+       UEZQueueSetName(p->iQueueSend, "Send", (*(p->iSerial))->iInterface.iName);
+#endif
 
     // Create queue to hold receiving data
     error = UEZQueueCreate(aQueueReceiveSize, 1, &p->iQueueReceive);
     if (error)  {
+#if UEZ_REGISTER
+        UEZQueueSetName(p->iQueueSend, "\0", "\0");
+#endif
         UEZQueueDelete(p->iQueueSend);
         p->iQueueSend = 0;
         return error;
     }
+#if UEZ_REGISTER
+    else {
+        UEZQueueSetName(p->iQueueReceive, "Receive", (*(p->iSerial))->iInterface.iName);
+    }
+#endif
 
     // setup the callbacks
     (*p->iSerial)->Configure(

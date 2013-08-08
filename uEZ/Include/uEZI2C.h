@@ -141,6 +141,10 @@ T_uezError UEZI2CEnable(T_uezDevice aDevice);
  */
 T_uezError UEZI2CDisable(T_uezDevice aDevice);
 
+T_uezError UEZI2CIsHung(T_uezDevice aDevice, TBool *aBool);
+
+T_uezError UEZI2CResetBus(T_uezDevice);
+
 #endif // _UEZ_I2C_H_
 /*-------------------------------------------------------------------------*
  * End of File:  uEZI2C.h

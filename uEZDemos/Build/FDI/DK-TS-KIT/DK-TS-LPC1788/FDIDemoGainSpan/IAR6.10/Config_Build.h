@@ -49,7 +49,7 @@
 #endif
 
 // Use up 48K of the heap
-#define configTOTAL_HEAP_SIZE		( ( size_t ) (( 48 * 1024 ) - 64))
+#define configTOTAL_HEAP_SIZE        ( ( size_t ) (( 48 * 1024 ) - 64))
 
 #define UEZ_ENABLE_WATCHDOG       0 // Turn on watchdog for testing
 

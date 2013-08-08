@@ -250,7 +250,7 @@ void FunctionalTestLoop(const T_choice *aChoice)
     G_ttExit = EFalse;
 
 
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
             // Open the LCD and get the pixel buffer

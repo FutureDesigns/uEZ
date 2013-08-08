@@ -301,7 +301,7 @@
           <state>$PROJ_DIR$/../../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/uEZGUI-2478-43WQS</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_43WQS</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -705,7 +705,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI-2478-43WQS\IAR\ROM_config SDRAM.icf</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_2478_43WQS\IAR\ROM_config SDRAM.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1227,7 +1227,7 @@
           <state>$PROJ_DIR$/../../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/uEZGUI-2478-43WQS</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_43WQS</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC2478/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -1631,7 +1631,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI-2478-43WQS\IAR\ROM_config SDRAM.icf</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_2478_43WQS\IAR\ROM_config SDRAM.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2217,6 +2217,12 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AccelDemoMode.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.c</name>
         </file>
         <file>
@@ -2238,6 +2244,9 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\ConsoleMode.c</name>
         </file>
         <file>
@@ -2245,6 +2254,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\MultiSlideshowMode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\NVSettings.c</name>
@@ -2304,6 +2316,15 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTestLoop.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\main.c</name>
         </file>
         <file>
@@ -2318,6 +2339,21 @@
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZGUI\TestMode.c</name>
         </file>
+      </group>
+    </group>
+    <group>
+      <name>ExpansionBoard</name>
+      <group>
+        <name>FDI</name>
+        <group>
+          <name>uEZGUI_EXP_DK</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.h</name>
+          </file>
+        </group>
       </group>
     </group>
     <group>
@@ -2346,9 +2382,9 @@
       <group>
         <name>FDI</name>
         <group>
-          <name>uEZGUI-2478-43WQS</name>
+          <name>uEZGUI_2478_43WQS</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI-2478-43WQS\uEZGUI-2478-43WQS.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_2478_43WQS\uEZGUI_2478_43WQS.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI-2478-43WQS\UEZPlatform.h</name>

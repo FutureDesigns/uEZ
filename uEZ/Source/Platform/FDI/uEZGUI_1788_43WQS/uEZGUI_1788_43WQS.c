@@ -90,6 +90,8 @@
 #include <Source/Processor/NXP/LPC1788/LPC1788_USBDeviceController.h>
 #include <Source/Processor/NXP/LPC1788/LPC1788_USBHost.h>
 #include <Source/Processor/NXP/LPC1788/LPC1788_Watchdog.h>
+#include <Source/Processor/NXP/LPC1788/LPC1788_MCI.h>
+#include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
 #include <uEZDevice.h>
@@ -100,6 +102,7 @@
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
+#include <uEZAudioMixer.h>
 
 extern int MainTask(void);
 
@@ -375,7 +378,7 @@ void UEZPlatform_I2C0_Require(void)
     // Ensure the I2C0 exists in the HAL level
     LPC1788_GPIO5_Require();
     LPC1788_I2C0_Require(GPIO_P5_2, GPIO_P5_3);
-    I2C_Generic_Create("I2C0", "I2C0");
+    I2C_Generic_Create("I2C0", "I2C0", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -391,7 +394,7 @@ void UEZPlatform_I2C1_Require(void)
     // Ensure the I2C0 exists in the HAL level
     LPC1788_GPIO2_Require();
     LPC1788_I2C1_Require(GPIO_P2_14, GPIO_P2_15);
-    I2C_Generic_Create("I2C1", "I2C1");
+    I2C_Generic_Create("I2C1", "I2C1", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -408,7 +411,7 @@ void UEZPlatform_I2C2_Require(void)
     // Ensure the I2C0 exists in the HAL level
     LPC1788_GPIO0_Require();
     LPC1788_I2C2_Require(GPIO_P0_10, GPIO_P0_11);
-    I2C_Generic_Create("I2C2", "I2C2");
+    I2C_Generic_Create("I2C2", "I2C2", 0);
 
 }
 
@@ -614,6 +617,43 @@ void UEZPlatform_Console_FullDuplex_UART1_Require(
             GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
     UEZPlatform_Console_FullDuplex_UART_Require("UART1", aWriteBufferSize,
             aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART0.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.2/P0.3
+    LPC1788_GPIO0_Require();
+    LPC1788_UART0_Require(GPIO_P0_2, GPIO_P0_3);
+    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_UART1_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the raw UART1 driver.  No stream is attached.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_UART1_Require(void)
+{
+    // UART1 on P0.15/P0.16
+    LPC1788_GPIO0_Require();
+    LPC1788_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1343,6 +1383,66 @@ void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MCI_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the MCI Peripheral
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_MCI_Require(void)
+{
+    const T_LPC1788_MCI_Pins pins = {
+        GPIO_P1_6, // DAT0
+        GPIO_P1_7, // DAT1
+        GPIO_P1_11, // DAT2
+        GPIO_P1_12, // DAT3
+        GPIO_P0_19, // CLK
+        GPIO_P0_20,  // CMD
+        GPIO_NONE, // GPIO_P1_3, // Card Detect
+        GPIO_P1_5, // Write Protect Detect
+    };
+    DEVICE_CREATE_ONCE();
+    UEZPlatform_GPDMA1_Require();
+    LPC1788_MCI_Require(&pins, "GPDMA1");
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MS1_MCI_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Mass Storage device MS1 using high speed SDCard drive.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_MS1_MCI_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_MCI_Require();
+    UEZPlatform_GPDMA1_Require();
+    MassStorage_SDCard_MCI_Create("MS1", "MCI", "GPDMA1");
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_SDCard_MCI_Drive_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the high speed SDCard drive using MS1 on the given drive number
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum)
+{
+    T_uezDevice ms1;
+    T_uezDeviceWorkspace *p_ms1;
+
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_MS1_MCI_Require();
+    UEZPlatform_FileSystem_Require();
+
+    UEZDeviceTableFind("MS1", &ms1);
+    UEZDeviceTableGetWorkspace(ms1, (T_uezDeviceWorkspace **)&p_ms1);
+    FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms1);
+}
+
+static T_uezDevice G_Amp;
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioAmp_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -1350,16 +1450,60 @@ void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_AudioAmp_Require(void)
 {
-    T_uezDevice amp;
-
     DEVICE_CREATE_ONCE();
 
     LPC1788_GPIO0_Require();
     // P0.18 = VOL_UD
     // P0.21 = AMP_MODE
-    AudioAmp_8551T_Create("AMP0", GPIO_P0_18, GPIO_P0_21, GPIO_NONE);
-    UEZAudioAmpOpen("AMP0", &amp);
-    UEZAudioAmpSetLevel(amp, UEZ_DEFAULT_AUDIO_LEVEL);
+    AudioAmp_8551T_Create("AMP0", GPIO_P0_18, GPIO_P0_21, GPIO_NONE, 64);
+    UEZAudioAmpOpen("AMP0", &G_Amp);
+    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_AUDIO_LEVEL);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZGUI43WQS_AudioMixerCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *
+ *---------------------------------------------------------------------------*/
+static T_uezError UEZGUI43WQS_AudioMixerCallback(
+        T_uezAudioMixerOutput aChangedOutput,
+            TBool aMute,
+            TUInt8 aLevel)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+
+    switch(aChangedOutput){
+        case  UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER:
+            if(G_Amp){
+                if(aMute){
+                    error = UEZAudioAmpMute(G_Amp);
+                } else {
+                    error = UEZAudioAmpUnMute(G_Amp);
+                }
+                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
+            }
+            break;
+        default:
+            break;
+    }
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_AudioMixer_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Audio Mixer driver and callback function
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_AudioMixer_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &UEZGUI43WQS_AudioMixerCallback);
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 255);
+    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1657,7 +1801,7 @@ void UEZPlatform_I2S_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC1788_I2S_Require(&settings);
-    I2C_Generic_Create("I2S", "I2S");
+    Generic_I2S_Create("I2S", "I2S");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1689,10 +1833,8 @@ void UEZPlatform_Standard_Require(void)
     // Setup console immediately
     UEZPlatform_Console_Expansion_Require(UEZ_CONSOLE_WRITE_BUFFER_SIZE,
             UEZ_CONSOLE_READ_BUFFER_SIZE);
+    
     UEZPlatform_LCD_Require();
-
-    UEZPlatform_FullDuplex_UART1_Require(UEZ_CONSOLE_WRITE_BUFFER_SIZE,
-            UEZ_CONSOLE_READ_BUFFER_SIZE);
     UEZPlatform_I2C0_Require();
     UEZPlatform_I2C1_Require();
     UEZPlatform_Temp0_Require();
@@ -1712,6 +1854,7 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
     UEZPlatform_Touchscreen_Require();
+    UEZPlatform_AudioMixer_Require();
 }
 
 void UEZPlatform_Require(void)

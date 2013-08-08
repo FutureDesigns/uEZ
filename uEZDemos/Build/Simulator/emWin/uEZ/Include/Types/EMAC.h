@@ -40,10 +40,10 @@
  * Types:
  *-------------------------------------------------------------------------*/
 typedef struct {
-    TUInt32 iPHYType;   	/** 0=unknown, use detect */ 
+    TUInt32 iPHYType;       /** 0=unknown, use detect */ 
     TUInt32 iPHYAddr;
 
-    TUInt8 iMACAddress[6]; 	/** 6 byte Ethernet MAC address */ 
+    TUInt8 iMACAddress[6];     /** 6 byte Ethernet MAC address */ 
 } T_EMACSettings;
 
 #endif // _EMAC_TYPES_H_

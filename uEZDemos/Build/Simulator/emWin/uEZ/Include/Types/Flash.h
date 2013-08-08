@@ -52,8 +52,8 @@ typedef struct {
 
 typedef struct {
     TUInt32 iNumBytesLow;
-    TUInt32 iNumBytesHigh;		/** if bigger than 4 Gig */ 
-    TUInt8 iBitWidth;   		/**  8, 16, or 32 */
+    TUInt32 iNumBytesHigh;        /** if bigger than 4 Gig */ 
+    TUInt8 iBitWidth;           /**  8, 16, or 32 */
 
     TUInt32 iNumRegions;
     T_FlashChipRegion iRegions[FLASH_CHIP_MAX_TRACKED_REGIONS];

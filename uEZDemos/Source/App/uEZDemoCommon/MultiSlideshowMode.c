@@ -35,6 +35,7 @@
 #ifndef UEZ_SLIDESHOW_NAME
     #define UEZ_SLIDESHOW_NAME      ""
 #endif
+#include <UEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -472,14 +473,22 @@ void MultiSlideshowMode(const T_choice *aChoice)
     T_uezError driveError[2];
     T_uezQueue queue;
     T_uezDevice ts;
-    T_uezTSReading reading;
-
+    T_uezInputEvent inputEvent;
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
     G_ws = UEZMemAlloc(sizeof(T_MSMWorkspace));
     if (!G_ws)
         return;
     memset(G_ws, 0, sizeof(*G_ws));
 
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
+#endif
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "MultiSlideShow", "\0");
+#endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
             if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
@@ -545,7 +554,7 @@ void MultiSlideshowMode(const T_choice *aChoice)
                     // Sit here in a loop until we are done
                     while (!G_ws->iExit) {
                       //Wait till we get a touchscreen event
-                      if (UEZQueueReceive(queue, &reading, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE) {
+                      if (UEZQueueReceive(queue, &inputEvent, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE) {
                         ChoicesUpdate(&G_win, G_ws->iChoices, queue, 500);
                       }
                     }
@@ -561,6 +570,9 @@ void MultiSlideshowMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
         UEZQueueDelete(queue);
     }
 

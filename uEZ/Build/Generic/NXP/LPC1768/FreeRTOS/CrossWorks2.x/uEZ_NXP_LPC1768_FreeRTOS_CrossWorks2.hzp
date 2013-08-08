@@ -708,6 +708,10 @@
             <file file_name="../../../../../../Source/Library/Web/BasicWeb/BasicWEB.c"/>
             <file file_name="../../../../../../Source/Library/Web/BasicWeb/BasicWEB.h"/>
           </folder>
+          <folder Name="HTTPServer" file_name="">
+            <file file_name="../../../../../../Source/Library/Web/HTTPServer/HTTPServer.c"/>
+            <file file_name="../../../../../../Source/Library/Web/HTTPServer/HTTPServer.h"/>
+          </folder>
         </folder>
         <folder Name="Parser">
           <folder Name="IntelHexParser">

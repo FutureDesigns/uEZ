@@ -302,7 +302,7 @@
           <state>$PROJ_DIR$/../../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -707,7 +707,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform\FDI\CARRIER_1788\IAR\ROM_config SDRAM.icf</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform\FDI\CARRIER_LPC1788\IAR\ROM_config SDRAM.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1230,7 +1230,7 @@
           <state>$PROJ_DIR$/../../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -1635,7 +1635,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI\CARRIER_1788\IAR\ROM_config SDRAM.icf</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI\CARRIER_LPC1788\IAR\ROM_config SDRAM.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2331,7 +2331,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_518_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_520_IAR650_M3_LE.a</name>
                 </file>
               </group>
             </group>
@@ -2344,15 +2344,15 @@
       <group>
         <name>FDI</name>
         <group>
-          <name>CARRIER_1788</name>
+          <name>CARRIER_LPC1788</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_1788\CARRIER_LPC1788.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC1788\CARRIER_LPC1788.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_1788\lwipopts.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC1788\lwipopts.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_1788\UEZPlatform.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC1788\UEZPlatform.h</name>
           </file>
         </group>
       </group>

@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -63,8 +63,8 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 **********************************************************************
 */
-typedef int (* GUI_tSend)   (const U8 * pData, int len, void * pConnectInfo);
-typedef int (* GUI_tReceive)(      U8 * pData, int len, void * pConnectInfo);
+typedef int (*GUI_tSend)   (const U8 * pData, int len, void* pConnectInfo);
+typedef int (*GUI_tReceive)(      U8 * pData, int len, void* pConnectInfo);
 
 typedef struct GUI_VNC_CONTEXT {
   GUI_DEVICE * pDevice;

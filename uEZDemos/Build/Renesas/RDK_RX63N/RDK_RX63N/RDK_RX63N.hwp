@@ -3,14 +3,14 @@
 [DATABASE_VERSION]
 "2.8" 
 [PROJECT_DETAILS]
-"RDK_RX63N" "C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N" "C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\RDK_RX63N.hwp" "RX" "Renesas RX Standard" "Application" "RX600" "RX63N" 
+"RDK_RX63N" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\RDK_RX63N.hwp" "RX" "Renesas RX Standard" "Application" "RX600" "RX63N" 
 [INFORMATION]
 "No project information available" 
 [TOOL_CHAIN]
 "Renesas RX Standard Toolchain" "1.2.1.0" 
 [CONFIGURATIONS]
-"Debug" "C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\Debug" 
-"Release" "C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\Release" 
+"Debug" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\Debug" 
+"Release" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\Release" 
 [BUILD_PHASES]
 "Renesas OptLinker" 1 
 "Renesas RX Assembler" 1 
@@ -116,18 +116,18 @@
 "Object file" "Renesas OptLinker" "Renesas RX Assembler" 
 "Object file" "Renesas OptLinker" "Renesas RX C/C++ Compiler" 
 [PROJECT_FILES]
-"C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\Config_Build.h" "User" "Source" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.c" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.h" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Config_App.h" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.c" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.h" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\main.c" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
-"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib" "User" "Library file" 2 
-"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib" "User" "Library file" 2 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\Glyph_uEZ_SPI.c" "User" "Source|Platform|Renesas|RDK_RX63N" 2 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\RDK_RX63N.c" "User" "Source|Platform|Renesas|RDK_RX63N" 2 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" "User" "Source|Platform|Renesas|RDK_RX63N" 2 
+"R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\Config_Build.h" "User" "Source" 2 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.c" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.h" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Config_App.h" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.c" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.h" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\main.c" "User" "Source|App|RDK_RX63N|RDKDemo" 2 
+"R:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib" "User" "Library file" 2 
+"R:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib" "User" "Library file" 2 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\Glyph_uEZ_SPI.c" "User" "Source|Platform|Renesas|RDK_RX63N" 2 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\RDK_RX63N.c" "User" "Source|Platform|Renesas|RDK_RX63N" 2 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\uEZPlatform.h" "User" "Source|Platform|Renesas|RDK_RX63N" 2 
 [FOLDER]
 "C header file" "C header file" 
 "C source file" "C source file" 
@@ -145,12 +145,13 @@
 "MAKEGEN_MAKEFILE_RELATIVITY" "2" 
 "MAKEGEN_SCAN_DEPENDENCIES_WHILST_BUILDING_MAKEFILE" "1" 
 "MAKEGEN_USE_STATIC_SUBCOMMAND_FILES" "0" 
+"ParallelOn" "1" 
 "USE_CUSTOM_LINKAGE_ORDER" "0" 
 [ON_DEMAND_COMPONENTS_LOADED]
 [SYNC_SESSION_NAMES]
 [SESSIONS]
-"DefaultSession" "C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\DefaultSession.hsf" 0 
-"nodebug" "C:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\nodebug.hsf" 0 
+"DefaultSession" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\DefaultSession.hsf" 0 
+"nodebug" "R:\FDI\uEZDemos\Build\Renesas\RDK_RX63N\RDK_RX63N\nodebug.hsf" 0 
 [GENERAL_DATA_SESSION_DefaultSession]
 [GENERAL_DATA_SESSION_nodebug]
 [OPTIONS_Debug_Renesas OptLinker]
@@ -161,11 +162,11 @@
 [OPTIONS_Debug_Renesas RX C/C++ Compiler]
 "C source file" "0067d436fd2adc10" 3 
 "C++ source file" "0067d436fd2adc10" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.c" "0067d436fd2adc10" 3 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.c" "0067d436fd2adc10" 3 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\main.c" "0067d436fd2adc10" 3 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\Glyph_uEZ_SPI.c" "0067d436fd2adc10" 3 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\RDK_RX63N.c" "0067d436fd2adc10" 3 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.c" "0067d436fd2adc10" 3 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.c" "0067d436fd2adc10" 3 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\main.c" "0067d436fd2adc10" 3 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\Glyph_uEZ_SPI.c" "0067d436fd2adc10" 3 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\RDK_RX63N.c" "0067d436fd2adc10" 3 
 [OPTIONS_Debug_Renesas RX C/C++ Library Generator]
 "Single Shot" "0fa80d605f2adc10" 1 
 [OPTIONS_Debug_Renesas RX Configurator]
@@ -184,22 +185,22 @@
 "[V|VERSION|6] [S|FORM|HEXADECIMAL] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|1] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).hex^"] [I|SPACE|^"FF^"] [B|OPTIMIZE|0] [S|START|B_RX_DESC,B_TX_DESC,B_RX_BUFF_1,B_TX_BUFF_1,B_1,R_1,B_2,R_2,B,R,SI(01000)|PResetPRG(0FFF80000)|C_1,C_2,C,C$*,D_1,D_2,D,P,PIntPRG,W*,L(0FFF80100)|FIXEDVECT(0FFFFFFD0)] [S|MEMORY|HIGH] [S|OTHER|^"nomessage=1320^"] [B|SKIPDEPENDENCY|1]
 " 5 
 [EXCLUDED_FILES_Debug]
-"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib" 
+"R:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib" 
 [LINKAGE_ORDER_Debug]
 [GENERAL_DATA_CONFIGURATION_Debug]
 [OPTIONS_Release_Renesas OptLinker]
-"Single Shot" "0187df103cccdc10" 5 
+"Single Shot" "09f23a012353ec10" 5 
 [OPTIONS_Release_Renesas RX Assembler]
 "Assembly source file" "04e14221bbccdc10" 4 
 "Linkage symbol file" "04e14221bbccdc10" 4 
 [OPTIONS_Release_Renesas RX C/C++ Compiler]
 "C source file" "04e14221bbccdc10" 3 
 "C++ source file" "04e14221bbccdc10" 2 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.c" "04e14221bbccdc10" 3 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.c" "04e14221bbccdc10" 3 
-"C:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\main.c" "04e14221bbccdc10" 3 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\Glyph_uEZ_SPI.c" "04e14221bbccdc10" 3 
-"C:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\RDK_RX63N.c" "04e14221bbccdc10" 3 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\Audio.c" "04e14221bbccdc10" 3 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\NVSettings.c" "04e14221bbccdc10" 3 
+"R:\FDI\uEZDemos\Source\App\RDK_RX63N\RDKDemo\main.c" "04e14221bbccdc10" 3 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\Glyph_uEZ_SPI.c" "04e14221bbccdc10" 3 
+"R:\FDI\uEZ\Source\Platform\Renesas\RDK_RX63N\RDK_RX63N.c" "04e14221bbccdc10" 3 
 [OPTIONS_Release_Renesas RX C/C++ Library Generator]
 "Single Shot" "04e14221bbccdc10" 1 
 [OPTIONS_Release_Renesas RX Configurator]
@@ -215,10 +216,10 @@
 " 3 
 "[V|VERSION|1] [S|MODE|BUILD/CHANGED] [S|EXISTOUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|RUNTIME|1] [B|CTYPE|1] [B|MATH|1] [B|MATHF|1] [B|STDARG|1] [B|STDIO|1] [B|STDLIB|1] [B|STRING|1] [B|IOS|1] [B|NEW|1] [B|COMPLEX|1] [B|CPPSTRING|1] [B|C99_COMPLEX|1] [B|FENV|1] [B|INTTYPES|1] [B|WCHAR|1] [B|WCTYPE|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|SIZE|1] [I|INLINE|100] [I|LOOP|2] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
 " 1 
-"[V|VERSION|6] [S|FORM|HEXADECIMAL] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|0] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).hex^"] [I|SPACE|^"FF^"] [B|OPTIMIZE|0] [S|START|B_RX_DESC,B_TX_DESC,B_RX_BUFF_1,B_TX_BUFF_1,B_1,R_1,B_2,R_2,B,R,SI(01000)|PResetPRG(0FFF80000)|C_1,C_2,C,C$*,D_1,D_2,D,P,PIntPRG,W*,L(0FFF80100)|FIXEDVECT(0FFFFFFD0)] [S|MEMORY|HIGH] [B|SKIPDEPENDENCY|1]
+"[V|VERSION|6] [S|FORM|HEXADECIMAL] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|0] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).hex^"] [I|SPACE|^"FF^"] [B|OPTIMIZE|0] [S|START|B_RX_DESC,B_TX_DESC,B_RX_BUFF_1,B_TX_BUFF_1,B_1,R_1,B_2,R_2,B,R,SI(01000)|PResetPRG(0FFF80000)|C_1,C_2,C,C$*,D_1,D_2,D,P,PIntPRG,W*,L(0FFF80100)|FIXEDVECT(0FFFFFFD0)] [S|MEMORY|HIGH] [S|OTHER|^"nomessage=1320^"] [B|SKIPDEPENDENCY|1]
 " 5 
 [EXCLUDED_FILES_Release]
-"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib" 
+"R:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib" 
 [LINKAGE_ORDER_Release]
 [GENERAL_DATA_CONFIGURATION_Release]
 [GENERAL_DATA_CONFIGURATION_SESSION_Debug_DefaultSession]

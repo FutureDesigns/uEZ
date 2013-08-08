@@ -165,8 +165,20 @@ T_uezError TS_FourWireTouchResist_InitializeWorkspace(void *aW)
     error = UEZSemaphoreCreateCounting(&p->iSemWaitForTouch, 1, 0);
     if (error)
         return error;
+#if UEZ_REGISTER
+    else {
+        UEZSemaphoreSetName(p->iSemWaitForTouch, "WaitForTouch", "\0");
+    }
+#endif
 
-    return UEZSemaphoreCreateBinary(&p->iSem);
+    error = UEZSemaphoreCreateBinary(&p->iSem);
+    if (error)
+        return error;
+#if UEZ_REGISTER
+    else
+        UEZSemaphoreSetName(p->iSem, "ReadTouch", "\0");
+#endif
+    return error;
 }
 
 /*---------------------------------------------------------------------------*

@@ -58,7 +58,7 @@
  *          return 1;
  *      }
  *      if (UEZTSOpen("Touchscreen", &TS, &aTSQueue) == UEZ_ERROR_NONE) {
- *	 
+ *     
  *          UEZTSGetReading(TS, &aReading);
  *          //  Touchscreen data now in aReading structure
  *
@@ -112,7 +112,7 @@ static T_uezTask G_tsMonitorTask;
 
 // Declare static TS queues when not using dynamic memory allocation. 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
-#define ueztsMAX_TS_QUEUES			( 5 )
+#define ueztsMAX_TS_QUEUES            ( 5 )
 static T_tsQueue xTsQueues[ ueztsMAX_TS_QUEUES ];
 static T_tsQueue *xFreeTsList;
 #endif  // NO_DYNAMIC_MEMORY_ALLOC
@@ -130,11 +130,11 @@ static void IUEZTSRelease(void);
  *  The monitor touchscreens routine is used to monitor all touchscreens,
  *      poll their settings, and report events.
  *
- *  @param [in]    aMyTask       	This task's handle
+ *  @param [in]    aMyTask           This task's handle
  *
- *  @param [in]    *aParams     	Parameters for this task (not used)
+ *  @param [in]    *aParams         Parameters for this task (not used)
  *
- *  @return        TUInt32        	Result code.  (not used)
+ *  @return        TUInt32            Result code.  (not used)
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -182,9 +182,9 @@ static void IUEZTSInitialize(void)
 /**
  *  Open a touchscreen device and register queue (if given)
  *
- *  @param [in]    *aName   		Name of touchscreen device
+ *  @param [in]    *aName           Name of touchscreen device
  *
- *  @param [in]    *aDevice   		Opened device (if opened)
+ *  @param [in]    *aDevice           Opened device (if opened)
  *
  *  @param [in]    *aEventQueue     Pointer to queue to receive touchscreen 
  *                                  events.
@@ -227,9 +227,9 @@ T_uezError UEZTSOpen(
 /**
  *  Close a previously opened touchscreen device.
  *
- *  @param [in]    aDevice       	Touchscreen device to close
+ *  @param [in]    aDevice           Touchscreen device to close
  *
- *  @param [in]    aTSQueue       	Queue being used with touchscreen
+ *  @param [in]    aTSQueue           Queue being used with touchscreen
  *
  *  @return        T_uezError       Error code, or UEZ_ERROR_NONE if closed
  *  @par Example Code:
@@ -244,14 +244,14 @@ T_uezError UEZTSOpen(
  *      EPRINTF("Could not allocate queue for touchscreen\n");
  *  } else {
  *      if (UEZTSOpen("Touchscreen", &TS, &aTSQueue) == UEZ_ERROR_NONE) {
- *	 
+ *     
  *          if (UEZTSClose(TS, aTSQueue) != UEZ_ERROR_NONE) {
  *              // error closing the device
  *          }
  *
- *  	} else {
+ *      } else {
  *          // an error occurred opening the device
- *  	}
+ *      }
  *  }
  *  @endcode
  */
@@ -311,9 +311,9 @@ static void IUEZTSRelease(void)
  *      match, return the associated device entry in the device list.
  *      If not found, create a new device entry and return.
  *
- *  @param [in]    aDevice       	Device to find
+ *  @param [in]    aDevice           Device to find
  *
- *  @return        *T_tsDevice   	Device entry found or added.  Returns
+ *  @return        *T_tsDevice       Device entry found or added.  Returns
  *                                      NULL if cannot add.
  *  @par Example Code:
  *  @code
@@ -339,11 +339,11 @@ static T_tsDevice *IFindOrAddDevice(T_uezDevice aDevice)
 /**
  *  Forces the touch screen to poll for an immediate reading.
  *
- *  @param [in]    aDevice     		Touchscreen device to read
+ *  @param [in]    aDevice             Touchscreen device to read
  *
- *  @param [in]    *aReading   	 	Pointer to reading structure to use
+ *  @param [in]    *aReading            Pointer to reading structure to use
  *
- *  @return        T_uezError   	Error code, or UEZ_ERROR_NONE if read.
+ *  @return        T_uezError       Error code, or UEZ_ERROR_NONE if read.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -356,7 +356,7 @@ static T_tsDevice *IFindOrAddDevice(T_uezDevice aDevice)
  *  if (UEZQueueCreate(1, sizeof(T_uezTSReading), &aTSQueue) != UEZ_ERROR_NONE) {
  *      EPRINTF("Could not allocate queue for touchscreen\n");
  *  } else {
- *  	if (UEZTSOpen("Touchscreen", &TS, &aTSQueue) == UEZ_ERROR_NONE) {
+ *      if (UEZTSOpen("Touchscreen", &TS, &aTSQueue) == UEZ_ERROR_NONE) {
  *
  *          UEZTSGetReading(TS, &aReading);
  *
@@ -381,7 +381,7 @@ T_uezError UEZTSGetReading(T_uezDevice aDevice, T_uezTSReading *aReading)
  *
  *  @param [in]    aTSDevice      Touchscreen device to calibrate
  *
- *  @return        T_uezError 	Error code, or UEZ_ERROR_NONE if read.
+ *  @return        T_uezError     Error code, or UEZ_ERROR_NONE if read.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -403,9 +403,9 @@ T_uezError UEZTSCalibrationStart(T_uezDevice aTSDevice)
 /**
  *  Finishes the calibration and calculates the final setting.
  *
- *  @param [in]    aTSDevice   		Touchscreen device
+ *  @param [in]    aTSDevice           Touchscreen device
  *
- *  @return        T_uezError    	Error code, or UEZ_ERROR_NONE if read.
+ *  @return        T_uezError        Error code, or UEZ_ERROR_NONE if read.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -429,13 +429,13 @@ T_uezError UEZTSCalibrationEnd(T_uezDevice aTSDevice)
 /**
  *  Adds a data point to the touch screen calibration system.
  *
- *  @param [in]    aTSDevice   			Touchscreen device
+ *  @param [in]    aTSDevice               Touchscreen device
  *
- *  @param [in]    *aReadingTaken 		Reading taken using UEZTSGetReading.
+ *  @param [in]    *aReadingTaken         Reading taken using UEZTSGetReading.
  *
- *  @param [in]    *aReadingExpected 	Reading that was expected (ideal).
+ *  @param [in]    *aReadingExpected     Reading that was expected (ideal).
  *
- *  @return        T_uezError          	Error code, or UEZ_ERROR_NONE if read.
+ *  @return        T_uezError              Error code, or UEZ_ERROR_NONE if read.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -467,7 +467,7 @@ T_uezError UEZTSCalibrationAddReading(
 /**
  *  Return a TS queue.
  *
- *  @return        T_tsQueue*	TS Queue pointer
+ *  @return        T_tsQueue*    TS Queue pointer
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -480,7 +480,7 @@ T_uezError UEZTSCalibrationAddReading(
 /*---------------------------------------------------------------------------*/
 static T_tsQueue *AllocateTsQueue( void )
 {
-	return 1;
+    return 1;
 }
 
 /*---------------------------------------------------------------------------*
@@ -489,7 +489,7 @@ static T_tsQueue *AllocateTsQueue( void )
 /**
  *  Return a TS queue to the free list.
  *
- *  @param [in]    *tsq 	TS Queue pointer
+ *  @param [in]    *tsq     TS Queue pointer
  *
  *  @par Example Code:
  *  @code
@@ -503,7 +503,7 @@ static T_tsQueue *AllocateTsQueue( void )
 /*---------------------------------------------------------------------------*/
 static void ReleaseTsQueue( T_tsQueue *tsq )
 {
-	return;
+    return;
 }
 
 /*---------------------------------------------------------------------------*
@@ -512,11 +512,11 @@ static void ReleaseTsQueue( T_tsQueue *tsq )
 /**
  *  Adds a data point to the touch screen calibration system.
  *
- *  @param [in]    aTSDevice        	Touchscreen device
+ *  @param [in]    aTSDevice            Touchscreen device
  *
- *  @param [in]    aEventQueue     	Queue to receive touchscreen events
+ *  @param [in]    aEventQueue         Queue to receive touchscreen events
  *
- *  @return        T_uezError      	If the queue added, returns
+ *  @return        T_uezError          If the queue added, returns
  *                                  UEZ_ERROR_NONE. If the queue cannot be 
  *                                  added, returns UEZ_ERROR_OUT_OF_MEMORY.
  *  @par Example Code:
@@ -532,7 +532,7 @@ static void ReleaseTsQueue( T_tsQueue *tsq )
 /*---------------------------------------------------------------------------*/
 T_uezError UEZTSAddQueue(T_uezDevice aTSDevice, T_uezQueue aEventQueue)
 {
-	return UEZ_ERROR_NONE;
+    return UEZ_ERROR_NONE;
 }
 
 /*---------------------------------------------------------------------------*
@@ -541,11 +541,11 @@ T_uezError UEZTSAddQueue(T_uezDevice aTSDevice, T_uezQueue aEventQueue)
 /**
  *  Remove queue receiving touch screen events for associate device.
  *
- *  @param [in]    aTSDevice      	Touchscreen device
+ *  @param [in]    aTSDevice          Touchscreen device
  *
- *  @param [in]    aEventQueue     	Queue receiving touchscreen events
+ *  @param [in]    aEventQueue         Queue receiving touchscreen events
  *
- *  @return        T_uezError      	If the queue added, returns
+ *  @return        T_uezError          If the queue added, returns
  *                                  UEZ_ERROR_NONE. If the queue cannot be 
  *                                  added, returns UEZ_ERROR_OUT_OF_MEMORY.
  *  @par Example Code:
@@ -577,11 +577,11 @@ T_uezError UEZTSRemoveQueue(T_uezDevice aTSDevice, T_uezQueue aEventQueue)
  *
  *  @param [in]    aTSDevice      Touchscreen device
  *
- *  @param [in]    aLowLevel	Low (press) reference level (0-0xFFFF)
+ *  @param [in]    aLowLevel    Low (press) reference level (0-0xFFFF)
  *
  *  @param [in]    aHighLevel   High (release) reference level (0-0xFFFF)
  *    
- *  @return        T_uezError  	If the queue added, returns UEZ_ERROR_NONE. If
+ *  @return        T_uezError      If the queue added, returns UEZ_ERROR_NONE. If
  *                              the queue cannot be added, returns
  *                              UEZ_ERROR_OUT_OF_MEMORY.
  *  @par Example Code:

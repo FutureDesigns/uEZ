@@ -45,7 +45,7 @@
  *      aRequest.iTrigger = ADC_TRIGGER_NOW;
  *      aRequest.iCapturedData = &ADCReading;
  *      if (UEZADCRequestSingle(adc,&aRequest) == UEZ_ERROR_NONE) {
- *          percent = ADCReading * 100 / 0x200; // got ADC in ADCReading
+ *          percent = ADCReading * 100 / 1024; // got ADC in ADCReading
  *      } else {
  *          //an error occurred reading the ADC
  *      }

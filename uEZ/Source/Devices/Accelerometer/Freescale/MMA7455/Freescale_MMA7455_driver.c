@@ -252,6 +252,9 @@ T_uezError Accelerometer_Freescale_MMA7455_I2C_InitializeWorkspace(void *aW)
 
     // Then create a semaphore to limit the number of accessors
     error = UEZSemaphoreCreateBinary(&p->iSem);
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(p->iSem, "Accelerometer", "\0");
+#endif
 
     p->iLastReading.iX = 0;
     p->iLastReading.iY = 0;
@@ -429,8 +432,8 @@ T_uezError Accelerometer_Freescale_MMA7455_I2C_Configure(
         r.iWriteData = reg[i]; // change data location and process second set of bytes
         error = (*p->iI2C)->ProcessRequest(p->iI2C, &r);
         if (error)
-            //break;
-            UEZFailureMsg("Accelerometer could not be configured!");
+            break;
+            //UEZFailureMsg("Accelerometer could not be configured!");
         i++;
     }
 

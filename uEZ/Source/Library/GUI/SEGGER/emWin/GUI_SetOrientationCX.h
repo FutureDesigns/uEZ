@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -83,7 +83,7 @@ static void _Sort(int * p0, int * p1) {
 */
 static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 const GUI_UNI_PTR * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX IndexMask, Index0, Index1, Pixel;
-  unsigned (* pfGetPixelIndex)(GUI_DEVICE * pDevice, int x, int y);
+  unsigned (* pfGetPixelIndex)(GUI_DEVICE *, int, int);
   PIXEL * pData;
   int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
@@ -392,7 +392,7 @@ static void _DrawBitLine32BPP(GUI_DEVICE * pDevice, int x, int y, U32 const GUI_
 */
 static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int x0, int y0,
                        int xSize, int ySize,
-                       int BitsPerPixel, 
+                       int BitsPerPixel,
                        int BytesPerLine,
                        const U8 GUI_UNI_PTR * pData, int Diff,
                        const LCD_PIXELINDEX* pTrans) {
@@ -447,12 +447,12 @@ static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int x0, int y0,
   _Sort(&y0_phys, &y1_phys);
   pDataBM = XY2PTR(x0_phys, y0_phys);
   pDevice = pDevice->pNext;
-  pDevice->pDeviceAPI->pfDrawBitmap(pDevice, 
-                                    x0_phys, y0_phys, 
-                                    x1_phys - x0_phys + 1, 
-                                    y1_phys - y0_phys + 1, 
-                                    pContext->pDrawingAPI->BytesPerPixel << 3, 
-                                    pContext->pDrawingAPI->BytesPerPixel * pContext->vxSize, 
+  pDevice->pDeviceAPI->pfDrawBitmap(pDevice,
+                                    x0_phys, y0_phys,
+                                    x1_phys - x0_phys + 1,
+                                    y1_phys - y0_phys + 1,
+                                    pContext->pDrawingAPI->BytesPerPixel << 3,
+                                    pContext->pDrawingAPI->BytesPerPixel * pContext->vxSize,
                                     (U8 *)pDataBM, 0, NULL);
 }
 
@@ -569,12 +569,12 @@ static void _FillRect_CX(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1) {
     }
   }
   pDevice = pDevice->pNext;
-  pDevice->pDeviceAPI->pfDrawBitmap(pDevice, 
-                                    x0_phys, y0_phys, 
-                                    x1_phys - x0_phys + 1, 
-                                    y1_phys - y0_phys + 1, 
-                                    pContext->pDrawingAPI->BytesPerPixel << 3, 
-                                    pContext->pDrawingAPI->BytesPerPixel * pContext->vxSize, 
+  pDevice->pDeviceAPI->pfDrawBitmap(pDevice,
+                                    x0_phys, y0_phys,
+                                    x1_phys - x0_phys + 1,
+                                    y1_phys - y0_phys + 1,
+                                    pContext->pDrawingAPI->BytesPerPixel << 3,
+                                    pContext->pDrawingAPI->BytesPerPixel * pContext->vxSize,
                                     (U8 *)pData, 0, NULL);
 }
 

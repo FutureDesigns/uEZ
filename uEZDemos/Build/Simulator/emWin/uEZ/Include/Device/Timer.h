@@ -53,8 +53,8 @@ typedef struct {
 
         // Functions
         /**
-		 * Added uEZ v1.13
-		 */
+         * Added uEZ v1.13
+         */
         T_uezError (*Reset)(void *aWorkspace);
         T_uezError (*Enable)(void *aWorkspace);
         T_uezError (*Disable)(void *aWorkspace);

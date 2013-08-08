@@ -54,6 +54,8 @@ typedef struct {
     HAL_LCDController **iLCDController;
     char iSPIBus[5];
     T_uezGPIOPortPin iCSGPIOPin;
+    T_uezGPIOPortPin iSHUTGPIOPin;
+    T_uezGPIOPortPin iENBGPIOPin;
     DEVICE_SPI_BUS **iSPI;
     DEVICE_Backlight **iBacklight;
     const T_uezLCDConfiguration *iConfiguration;
@@ -327,18 +329,28 @@ T_uezError LCD_RH320240T_Open(void *aW)
         LCD_RH320240T_settings.iBaseAddress = p->iBaseAddress;
 
         // Turn on LCD controller and output power pin
+        // Programs SPI first after power up
         error = (*plcdc)->Configure(plcdc, &LCD_RH320240T_settings);
 
 // Testing
-(*p->iLCDController)->On(p->iLCDController);
+(*p->iLCDController)->On(p->iLCDController); // turns on data next
+
+        UEZGPIOSetMux(p->iSHUTGPIOPin, 0);
+        UEZGPIOSet(p->iSHUTGPIOPin);
+        UEZGPIOOutput(p->iSHUTGPIOPin);
 
         // Drop SHUT down to be a low (active)
-        (*p->r.iCSGPIOPort)->Clear(p->r.iCSGPIOPort, 1<<0);
+        UEZGPIOClear(p->iSHUTGPIOPin);
+
+        // What does data enable pin do? high or low? It doesn't appear to be needed.
+//      UEZGPIOSetMux(p->iENBGPIOPin, 0);
+//      UEZGPIOClear(p->iENBGPIOPin);
+//      UEZGPIOSet(p->iENBGPIOPin);
+//      UEZGPIOOutput(p->iENBGPIOPin);
 
         // Configure SPI
         LCD_ConfigureSPI(p);
 
-//        return (*plcdc)->Configure(plcdc, &LCD_RH320240T_settings);
         return error;
     }
 
@@ -384,13 +396,13 @@ T_uezError LCD_RH320240T_Configure(
     T_uezDevice spi;
     T_uezDeviceWorkspace *p_spi;
 //    T_uezDeviceWorkspace *p_gpio2;
-    
+
     T_RH320240TWorkspace *p = (T_RH320240TWorkspace *)aW;
     p->iLCDController = aLCDController;
     p->iBaseAddress = aBaseAddress;
 
     p->iBacklight = aBacklight;
-   
+
     UEZDeviceTableFind(p->iSPIBus, &spi);
     UEZDeviceTableGetWorkspace(spi, (T_uezDeviceWorkspace **)&p_spi);
 
@@ -567,7 +579,7 @@ T_uezError LCD_RH320240T_SetBacklightLevel(void *aW, TUInt32 aLevel)
  *                                  no backlight for LCD.
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_RH320240T_GetBacklightLevel(
-        void *aW, 
+        void *aW,
         TUInt32 *aLevel,
         TUInt32 *aNumLevels)
 {
@@ -627,7 +639,7 @@ T_uezError LCD_RH320240T_SetPaletteColor(
 
  *---------------------------------------------------------------------------*
  * Description:
- *      Sends configuration data to the LCD via the SPI Bus 
+ *      Sends configuration data to the LCD via the SPI Bus
  * Inputs:
  *      void *aW                -- Workspace
  * Outputs:
@@ -636,7 +648,7 @@ T_uezError LCD_RH320240T_SetPaletteColor(
 void LCD_ConfigureSPI(T_RH320240TWorkspace *p)
 {
      TUInt8 i;
-     
+
      for (i=0; i<8; i++)
      {
         p->iCmd[0] = 0x70; // command byte to send register
@@ -645,7 +657,7 @@ void LCD_ConfigureSPI(T_RH320240TWorkspace *p)
         p->r.iNumTransfers = 3;
 
         (*p->iSPI)->TransferPolled(p->iSPI, &p->r);
-        
+
         p->iCmd[0] = 0x72; // command byte to send register
         p->iCmd[1] = (G_LCDConfig[i].dataByte>>8);
         p->iCmd[2] = (G_LCDConfig[i].dataByte &0xFF);
@@ -696,7 +708,10 @@ static T_uezError LCD_RH320240T_WaitForVerticalSync(
     return UEZSemaphoreGrab(p->iVSyncSem, aTimeout);
 }
 
-void LCD_RH320240T_Create(char* aName, char* aSPIBus, T_uezGPIOPortPin aSPICSPin)
+void LCD_RH320240T_Create(char* aName, char* aSPIBus,
+                          T_uezGPIOPortPin aSPICSPin,
+                          T_uezGPIOPortPin aSHUTGPIOPin,
+                          T_uezGPIOPortPin aENBGPIOPin)
 {
     T_RH320240TWorkspace *p;
 
@@ -710,6 +725,8 @@ void LCD_RH320240T_Create(char* aName, char* aSPIBus, T_uezGPIOPortPin aSPICSPin
 
     strcpy(p->iSPIBus, aSPIBus);
     p->iCSGPIOPin = aSPICSPin;
+    p->iSHUTGPIOPin = aSHUTGPIOPin;
+    p->iENBGPIOPin = aENBGPIOPin;
 }
 
 /*---------------------------------------------------------------------------*

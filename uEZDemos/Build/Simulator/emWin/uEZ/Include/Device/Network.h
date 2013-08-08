@@ -50,8 +50,8 @@ typedef struct {
         T_uezDeviceInterface iDevice;
 
        /**
-		* Functions uEZ v1.08
-		*/
+        * Functions uEZ v1.08
+        */
         T_uezError (*Open)(void *aWorkspace, T_uezNetworkSettings *aSettings);
         T_uezError (*Close)(void *aWorkspace);
         T_uezError (*Scan)(void *aWorkspace, TUInt32 aChannelNumber, // 0 = auto
@@ -109,15 +109,15 @@ typedef struct {
                 void *aAuxData);
 
        /**
-		* Functions uEZ v1.09
-		*/
+        * Functions uEZ v1.09
+        */
         T_uezError (*Leave)(
                 void *aWorkspace,
                 TUInt32 aTimeout);
 
        /**
-		* Functions uEZ v1.13
-		*/
+        * Functions uEZ v1.13
+        */
         T_uezError (*ResolveAddress)(
             void *aWorkspace,
             const char *aName,

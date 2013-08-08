@@ -29,12 +29,13 @@
 #include "ST1232TouchScreen.h"
 #include <uEZGPIO.h>
 #include <uEZProcessor.h>
+#include <UEZPlatform.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
 
-#define ST1232_I2C_SPEED         100 //kHz
+#define ST1232_I2C_SPEED         400 //kHz
 #define ST1232_I2C_ADDRESS       (0x55)
 
 #define ST1232_DEVICE_MODE       0x00
@@ -221,13 +222,13 @@ static void TS_ST1232_ApplyCalibration(
         TUInt32 *newX,
         TUInt32 *newY)
 {
+#if 0
     TInt32 v;
 
     v = x - p->iPenOffsetX;
     v *= p->iPenXScaleTop;
     v /= p->iPenXScaleBottom;
     v += p->iPenBaseX;
-#if 0
     if (v < 0)
         v = 0;
     if (v >= DISPLAY_WIDTH)
@@ -235,11 +236,12 @@ static void TS_ST1232_ApplyCalibration(
 #endif
     *newX = (TUInt32)x;
 
+#if 0
     v = y - p->iPenOffsetY;
     v *= p->iPenYScaleTop;
     v /= p->iPenYScaleBottom;
     v += p->iPenBaseY;
-#if 0
+
     if (v < 0)
         v = 0;
     if (v >= DISPLAY_HEIGHT)
@@ -264,13 +266,13 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
     T_ST1232Workspace *p =
             (T_ST1232Workspace *) aWorkspace;
     T_uezError error;
-    I2C_Request r;
     T_uezDevice i2c0;
-    TUInt8 dataIn[0x30];
+    TUInt8 dataIn[0x20];
     TUInt8 dataOut[5];
     TUInt32 Read = 0;
     TUInt32 x;
     TUInt32 y;
+    TUInt32 z;
     
     error = UEZI2COpen(p->iI2CBus, &i2c0);
 
@@ -282,69 +284,78 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
         Read = 0;
     }
 
-    if ( Read == 0)
-    {
-        aReading->iFlags = p->iLastTouch;
-        aReading->iX = p->iLastX;
-        aReading->iY = p->iLastY;
 
-        TS_ST1232_ApplyCalibration(
-        p, (p->iLastX), (p->iLastY),
-        (TUInt32 *) &aReading->iX,
-        (TUInt32 *) &aReading->iY);
-        return UEZ_ERROR_NONE;
-    }
-    else
-    {
-        dataOut[0] = 0x00;
-        error = UEZI2CWrite(i2c0,
-                ST1232_I2C_ADDRESS,
-                ST1232_I2C_SPEED,
-                dataOut,
-                1,
-                50);
-
-        error = UEZI2CRead(i2c0,
-                ST1232_I2C_ADDRESS,
-                ST1232_I2C_SPEED,
-                dataIn,
-                0x26,
-                50);
-        
-        x = (((dataIn[0x12] & 0x70)<<4) | dataIn[0x13]);
-
-        y = (((dataIn[0x12] & 0x07)<<8) | dataIn[0x14]);
-        
-        y = (UEZ_LCD_DISPLAY_HEIGHT) - y;
-
-        if((dataIn[0x12] & 0x80) == 0x80)
-        {
-            (aReading->iFlags) = (p->iLastTouch) = TSFLAG_PEN_DOWN;
-            (aReading->iX) = (p->iLastX)= x;
-            (aReading->iY) = (p->iLastY)= y;
-            if ((!p->iIsCalibrating) && (p->iHaveCalibration)) {
-                // Convert X & Y coordinates
-                TS_ST1232_ApplyCalibration(
-                        p, x, y,
-                        (TUInt32 *) &aReading->iX,
-                        (TUInt32 *) &aReading->iY);
-            }
+    while (1){
+        if(UEZGPIORead(p->iInteruptPin)){
+            Read = 0;
         }
-        else //if ((dataIn[3] & 0xC0) == 0x40)
+        if ( Read == 0)
         {
-            (aReading->iFlags) = (p->iLastTouch)= 0;
-            (aReading->iX) = (p->iLastX);
-            (aReading->iY) = (p->iLastY);
+            aReading->iFlags = p->iLastTouch;
+            aReading->iX = p->iLastX;
+            aReading->iY = p->iLastY;
 
             TS_ST1232_ApplyCalibration(
                     p, (p->iLastX), (p->iLastY),
                     (TUInt32 *) &aReading->iX,
                     (TUInt32 *) &aReading->iY);
-        }
+            return UEZ_ERROR_NONE;
+        }else{
+            dataOut[0] = 0x00;
+            error = UEZI2CWrite(i2c0,
+                    ST1232_I2C_ADDRESS,
+                    ST1232_I2C_SPEED,
+                    dataOut,
+                    1,
+                    50);
 
-        UEZGPIOClearIRQ(GPIO_P0_22);
-        return error;
+            error = UEZI2CRead(i2c0,
+                    ST1232_I2C_ADDRESS,
+                    ST1232_I2C_SPEED,
+                    dataIn,
+                    0x20,
+                    50);
+            if(error != UEZ_ERROR_NONE){
+                UEZGPIOClearIRQ(p->iInteruptPin);
+                UEZGPIOClear(p->iResetPin);
+                UEZTaskDelay(1);
+                UEZGPIOSet(p->iResetPin);
+                break;
+            }
+
+            x = (((dataIn[0x12] & 0x70)<<4) | dataIn[0x13]);
+
+            y = (((dataIn[0x12] & 0x07)<<8) | dataIn[0x14]);
+
+            y = (UEZ_LCD_DISPLAY_HEIGHT) - y;
+
+            z = dataIn[0x18];
+
+            if((dataIn[0x12] & 0x80) == 0x80 && (z > 5) && (dataIn[0x10] != 0)){
+                (aReading->iFlags) = (p->iLastTouch) = TSFLAG_PEN_DOWN;
+                (aReading->iX) = (p->iLastX)= x;
+                (aReading->iY) = (p->iLastY)= y;
+                if ((!p->iIsCalibrating) && (p->iHaveCalibration)) {
+                    // Convert X & Y coordinates
+                    TS_ST1232_ApplyCalibration(
+                            p, x, y,
+                            (TUInt32 *) &aReading->iX,
+                            (TUInt32 *) &aReading->iY);
+                }
+            }else {
+                (aReading->iFlags) = (p->iLastTouch)= 0;
+                (aReading->iX) = (p->iLastX);
+                (aReading->iY) = (p->iLastY);
+
+                TS_ST1232_ApplyCalibration(
+                        p, (p->iLastX), (p->iLastY),
+                        (TUInt32 *) &aReading->iX,
+                        (TUInt32 *) &aReading->iY);
+            }
+            UEZGPIOClearIRQ(p->iInteruptPin);
+        }
     }
+    return error;
 }
 
 /*---------------------------------------------------------------------------*

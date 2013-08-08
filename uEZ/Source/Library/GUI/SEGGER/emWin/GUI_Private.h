@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -116,8 +116,10 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 **********************************************************************
 */
+extern const U8 GUI__aConvert_15_255[(1 << 4)];
 extern const U8 GUI__aConvert_31_255[(1 << 5)];
 extern const U8 GUI__aConvert_63_255[(1 << 6)];
+extern const U8 GUI__aConvert_255_15[(1 << 8)];
 extern const U8 GUI__aConvert_255_31[(1 << 8)];
 extern const U8 GUI__aConvert_255_63[(1 << 8)];
 
@@ -189,7 +191,7 @@ typedef struct {
 #define      GUI_MEMDEV_LOCK_H(h) ((GUI_MEMDEV *)GUI_LOCK_H(h))
 
 void         GUI_MEMDEV__CopyFromLCD (GUI_MEMDEV_Handle hMem);
-void         GUI_MEMDEV__GetRect     (GUI_RECT* pRect);
+void         GUI_MEMDEV__GetRect     (GUI_RECT * pRect);
 unsigned     GUI_MEMDEV__Color2Index (LCD_COLOR Color);
 LCD_COLOR    GUI_MEMDEV__Index2Color (int Index);
 unsigned int GUI_MEMDEV__GetIndexMask(void);
@@ -296,15 +298,15 @@ int  GUI__GetOverlap       (U16 Char);
 int  GUI__GetLineDistX     (const char GUI_UNI_PTR * s, int Len);
 int  GUI__GetFontSizeY     (void);
 int  GUI__HandleEOLine     (const char GUI_UNI_PTR ** ps);
-void GUI__DispLine         (const char GUI_UNI_PTR * s, int Len, const GUI_RECT* pr);
+void GUI__DispLine         (const char GUI_UNI_PTR * s, int Len, const GUI_RECT * pr);
 void GUI__AddSpaceHex      (U32 v, U8 Len, char ** ps);
-void GUI__CalcTextRect     (const char GUI_UNI_PTR * pText, const GUI_RECT* pTextRectIn, GUI_RECT* pTextRectOut, int TextAlign);
+void GUI__CalcTextRect     (const char GUI_UNI_PTR * pText, const GUI_RECT * pTextRectIn, GUI_RECT * pTextRectOut, int TextAlign);
 
 int  GUI__WrapGetNumCharsDisp       (const char GUI_UNI_PTR * pText, int xSize, GUI_WRAPMODE WrapMode);
 int  GUI__WrapGetNumCharsToNextLine (const char GUI_UNI_PTR * pText, int xSize, GUI_WRAPMODE WrapMode);
 int  GUI__WrapGetNumBytesToNextLine (const char GUI_UNI_PTR * pText, int xSize, GUI_WRAPMODE WrapMode);
-void GUI__memset    (U8 * p, U8 Fill, int NumBytes);
-void GUI__memset16  (U16* p, U16 Fill, int NumWords);
+void GUI__memset    (U8  * p, U8 Fill, int NumBytes);
+void GUI__memset16  (U16 * p, U16 Fill, int NumWords);
 int  GUI__strlen    (const char GUI_UNI_PTR * s);
 int  GUI__strcmp    (const char GUI_UNI_PTR * s0, const char GUI_UNI_PTR * s1);
 int  GUI__strcmp_hp (GUI_HMEM hs0, const char GUI_UNI_PTR * s1);
@@ -354,7 +356,7 @@ extern int (* GUI__Wrap_pfGetCharWrap)(const char GUI_UNI_PTR * s, int xSize);
 const GUI_FONT_PROP * GUIPROP__FindChar(const GUI_FONT_PROP * pProp, U16P c);
 
 /* Extended proportional font support */
-const GUI_FONT_PROP_EXT GUI_UNI_PTR * GUIPROP_EXT__FindChar(const GUI_FONT_PROP_EXT GUI_UNI_PTR* pPropExt, U16P c);
+const GUI_FONT_PROP_EXT GUI_UNI_PTR * GUIPROP_EXT__FindChar(const GUI_FONT_PROP_EXT GUI_UNI_PTR * pPropExt, U16P c);
 void  GUIPROP_EXT__DispLine      (const char GUI_UNI_PTR * s, int Len);
 void  GUIPROP_EXT__ClearLine     (const char GUI_UNI_PTR * s, int Len);
 void  GUIPROP_EXT__SetfpClearLine(void (* fpClearLine)(const char GUI_UNI_PTR * s, int Len));
@@ -380,25 +382,39 @@ tLCDDEV_Color2Index * GUI_GetpfColor2IndexEx(int LayerIndex);
 
 int GUI_GetBitsPerPixelEx(int LayerIndex);
 
-LCD_PIXELINDEX*  LCD_GetpPalConvTable        (const LCD_LOGPALETTE GUI_UNI_PTR *  pLogPal);
-LCD_PIXELINDEX*  LCD_GetpPalConvTableUncached(const LCD_LOGPALETTE GUI_UNI_PTR *  pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTable        (const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTableUncached(const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTableBM      (const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, const GUI_BITMAP GUI_UNI_PTR * pBitmap, int LayerIndex);
 
-/* Streamed bitmaps */
-/*   IMPORTANT: DO NOT CHANGE THESE VALUES! */
-/*   THEY HAVE TO CORRESPOND TO THE DEFINITIONS WITHIN THE CODE OF THE BITMAPCONVERTER! */
-#define GUI_STREAM_FORMAT_INDEXED 100 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_RLE4      6 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_RLE8      7 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_565       8 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_M565      9 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_555      10 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_M555     11 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_RLE16    12 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_RLEM16   13 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_RLE32    15 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_8888     16 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_24       17 /* DO NOT CHANGE */
-#define GUI_STREAM_FORMAT_RLEALPHA 18 /* DO NOT CHANGE */
+/* Setting a function for converting a color palette to an array of index values */
+void GUI_SetFuncGetpPalConvTable(LCD_PIXELINDEX * (* pFunc)(const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, const GUI_BITMAP GUI_UNI_PTR * pBitmap, int LayerIndex));
+
+/*********************************************************************
+*
+*       Format definitions used by streamed bitmaps
+*
+*   IMPORTANT: DO NOT CHANGE THESE VALUES!
+*   THEY HAVE TO CORRESPOND TO THE DEFINITIONS WITHIN THE CODE OF THE BITMAPCONVERTER!
+*/
+#define GUI_STREAM_FORMAT_INDEXED    100 /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_RLE4       6   /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_RLE8       7   /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_565        8   /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_M565       9   /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_555        10  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_M555       11  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_RLE16      12  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_RLEM16     13  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_8888       16  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_RLE32      15  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_24         17  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_RLEALPHA   18  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_444_12     19  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_M444_12    20  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_444_12_1   21  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_M444_12_1  22  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_444_16     23  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_M444_16    24  /* DO NOT CHANGE */
 
 void GUI__ReadHeaderFromStream  (GUI_BITMAP_STREAM * pBitmapHeader, const U8 * pData);
 void GUI__CreateBitmapFromStream(const GUI_BITMAP_STREAM * pBitmapHeader, const void * pData, GUI_BITMAP * pBMP, GUI_LOGPALETTE * pPAL, const GUI_BITMAP_METHODS * pMethods);
@@ -503,6 +519,7 @@ int       GUI_GetBitmapPixelIndexEx(int BitsPerPixel, int BytesPerLine, const U8
 void      GUI__DrawBitmap16bpp(int x0, int y0, int xsize, int ysize, const U8 GUI_UNI_PTR * pPixel, const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, int xMag, int yMag, tLCDDEV_Index2Color * pfIndex2Color);
 void      GUI__SetPixelAlpha  (int x, int y, U8 Alpha, LCD_COLOR Color);
 LCD_COLOR GUI__MixColors      (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
+void      GUI__MixColorsBulk  (U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
 
 extern const GUI_UC_ENC_APILIST GUI_UC_None;
 
@@ -547,10 +564,6 @@ typedef struct {
 
 extern const LCD_SET_COLOR_API * LCD__pSetColorAPI;
 
-//extern LCD_PIXELINDEX * LCD_pBkColorIndex;
-//extern LCD_PIXELINDEX * LCD_pColorIndex;
-//extern LCD_PIXELINDEX * LCD_pAColorIndex;
-
 #define LCD__SetBkColorIndex(Index) (*GUI_pContext->LCD_pBkColorIndex = Index)
 #define LCD__SetColorIndex(Index)   (*GUI_pContext->LCD_pColorIndex   = Index)
 #define LCD__GetBkColorIndex()      (*GUI_pContext->LCD_pBkColorIndex)
@@ -572,6 +585,21 @@ extern GUI_SADDR GUI_CONTEXT * GUI_pContext;
 
 extern GUI_DEVICE * GUI__apDevice[GUI_NUM_LAYERS];
 
+//
+// Function pointer for converting a palette containing a color array into an index array
+//
+extern LCD_PIXELINDEX * (* GUI_pfGetpPalConvTable)(const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, const GUI_BITMAP GUI_UNI_PTR * pBitmap, int LayerIndex);
+
+//
+// Function pointer for mixing up 2 colors
+//
+extern LCD_COLOR (* GUI__pfMixColors)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
+
+//
+// Function pointer for mixing up arrays of colors
+//
+extern void (* GUI__pfMixColorsBulk)(U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
+
 #ifdef  GL_CORE_C
   #define GUI_EXTERN
 #else
@@ -583,11 +611,11 @@ GUI_EXTERN const GUI_UC_ENC_APILIST * GUI_pUC_API; /* Unicode encoding API */
 GUI_EXTERN GUI_SADDR char             GUI_DecChar;
 GUI_EXTERN           GUI_tfTimer    * GUI_pfTimerExec;
 GUI_EXTERN           WM_tfHandlePID * WM_pfHandlePID;
-GUI_EXTERN      void (*GUI_pfDispCharStyle)(U16 Char);
+GUI_EXTERN   void (* GUI_pfDispCharStyle)(U16 Char);
 GUI_EXTERN           const char     * GUI_sError;
 
 #if GUI_SUPPORT_ROTATION
-  GUI_EXTERN const tLCD_APIList * GUI_pLCD_APIList;   /* Used for rotating text */
+  GUI_EXTERN const tLCD_APIList * GUI_pLCD_APIList; /* Used for rotating text */
 #endif
 
 GUI_EXTERN I16 GUI_OrgX, GUI_OrgY;

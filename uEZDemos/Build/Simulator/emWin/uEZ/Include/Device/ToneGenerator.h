@@ -56,8 +56,8 @@ typedef struct {
     T_uezDeviceInterface iDevice;
 
    /**
-	* Set the ToneGenerator output in number of processor cycles
-	*/
+    * Set the ToneGenerator output in number of processor cycles
+    */
     T_uezError (*Open)(void *aWorkspace);
     T_uezError (*Close)(void *aWorkspace);
     T_uezError (*SetTone)(void *aWorkspace, TUInt32 aTonePeriod);

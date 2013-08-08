@@ -84,6 +84,8 @@ typedef struct {
     I2CRequestCompleteCallback iCompleteFunc;
     void *iCompleteWorkspace;
     TUInt16 iPowerBits;
+    T_uezGPIOPortPin iSDAPin;
+    T_uezGPIOPortPin iSCLPin;
 
     volatile TBool iDoneFlag;
 #if COMPILE_I2C_SLAVE_MODE
@@ -120,6 +122,59 @@ typedef TUInt8 T_lpc1788_i2cMode;
 static T_LPC1788_I2C_Workspace *G_lpc1788_i2c0Workspace;
 static T_LPC1788_I2C_Workspace *G_lpc1788_i2c1Workspace;
 static T_LPC1788_I2C_Workspace *G_lpc1788_i2c2Workspace;
+
+static const T_LPC1788_IOCON_ConfigList G_sda0[] = {
+        {GPIO_P0_27,   IOCON_I_DEFAULT(1) | IOCON_OPEN_DRAIN},
+        {GPIO_P1_30,   IOCON_A(4, IOCON_NO_PULL, IOCON_HYS_ENABLE,
+                                                IOCON_INVERT_OFF, IOCON_DIGITAL, IOCON_FILTER_OFF,
+                                                IOCON_OPEN_DRAIN, IOCON_DAC_DISABLE)},
+        {GPIO_P5_2, IOCON_I_DEFAULT(5) | IOCON_OPEN_DRAIN},
+};
+static const T_LPC1788_IOCON_ConfigList G_scl0[] = {
+        {GPIO_P0_28,   IOCON_I_DEFAULT(1) | IOCON_OPEN_DRAIN},
+        {GPIO_P1_31,   IOCON_A(4, IOCON_NO_PULL, IOCON_HYS_ENABLE,
+                                                IOCON_INVERT_OFF, IOCON_DIGITAL, IOCON_FILTER_OFF,
+                                                IOCON_OPEN_DRAIN, IOCON_DAC_DISABLE)},
+        {GPIO_P5_3, IOCON_I_DEFAULT(5) | IOCON_OPEN_DRAIN},
+};
+
+static const T_LPC1788_IOCON_ConfigList G_sda1[] = {
+        {GPIO_P0_0,     IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P0_19,   IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P2_14, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+};
+static const T_LPC1788_IOCON_ConfigList G_scl1[] = {
+        {GPIO_P0_1,     IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P0_20,   IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P2_15, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+};
+
+static const T_LPC1788_IOCON_ConfigList G_sda2[] = {
+        {GPIO_P0_10, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P1_15, IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P2_30, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P4_20, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+};
+static const T_LPC1788_IOCON_ConfigList G_scl2[] = {
+        {GPIO_P0_11, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P2_31, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P4_21, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+        {GPIO_P4_29, IOCON_D(4, IOCON_NO_PULL, IOCON_HYS_DISABLE,
+                IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
+};
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
@@ -511,6 +566,29 @@ void ILPC1788_ProcessState(T_LPC1788_I2C_Workspace *p)
     SI_CLEAR(p);
 }
 
+T_uezError ILPC1788_I2C_IsHung(void *aWorkspace, TBool *aBool)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_LPC1788_I2C_Workspace *p = (T_LPC1788_I2C_Workspace *)aWorkspace;
+    TBool sda, scl;
+
+    sda = UEZGPIORead(p->iSDAPin);
+    scl = UEZGPIORead(p->iSCLPin);
+
+    *aBool = (!scl || !sda) ? ETrue : EFalse;
+
+    return error;
+}
+
+T_uezError ILPC1788_I2C_ResetBus(void *aWorkspace)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    //T_LPC1788_I2C_Workspace *p = (T_LPC1788_I2C_Workspace *)aWorkspace;
+    //TODO: implement reset functionality.
+
+    return error;
+}
+
 IRQ_ROUTINE(ILPC1788_I2C0InterruptHandler)
 {
     IRQ_START();
@@ -625,7 +703,9 @@ const HAL_I2CBus I2C_LPC1788_Bus0_Interface = { {
         LPC1788_I2C_Bus0_InitializeWorkspace,
         sizeof(T_LPC1788_I2C_Workspace), },
 
-ILPC1788_I2C_StartRead, ILPC1788_I2C_StartWrite, };
+ILPC1788_I2C_StartRead, ILPC1788_I2C_StartWrite,
+0,0,0,
+ILPC1788_I2C_IsHung, ILPC1788_I2C_ResetBus};
 
 const HAL_I2CBus I2C_LPC1788_Bus1_Interface = { {
         "LPC1788 I2C Bus1",
@@ -633,7 +713,9 @@ const HAL_I2CBus I2C_LPC1788_Bus1_Interface = { {
         LPC1788_I2C_Bus1_InitializeWorkspace,
         sizeof(T_LPC1788_I2C_Workspace), },
 
-ILPC1788_I2C_StartRead, ILPC1788_I2C_StartWrite, };
+ILPC1788_I2C_StartRead, ILPC1788_I2C_StartWrite,
+0,0,0,
+ILPC1788_I2C_IsHung, ILPC1788_I2C_ResetBus};
 
 const HAL_I2CBus I2C_LPC1788_Bus2_Interface = { {
         "LPC1788 I2C Bus2",
@@ -641,7 +723,9 @@ const HAL_I2CBus I2C_LPC1788_Bus2_Interface = { {
         LPC1788_I2C_Bus2_InitializeWorkspace,
         sizeof(T_LPC1788_I2C_Workspace), },
 
-ILPC1788_I2C_StartRead, ILPC1788_I2C_StartWrite, };
+ILPC1788_I2C_StartRead, ILPC1788_I2C_StartWrite,
+0,0,0,
+ILPC1788_I2C_IsHung, ILPC1788_I2C_ResetBus};
 
 /*---------------------------------------------------------------------------*
  * Requirement routines:
@@ -650,89 +734,52 @@ void LPC1788_I2C0_Require(
         T_uezGPIOPortPin aPinSDA0,
         T_uezGPIOPortPin aPinSCL0)
 {
-    static const T_LPC1788_IOCON_ConfigList sda0[] = {
-            {GPIO_P0_27,   IOCON_I_DEFAULT(1) | IOCON_OPEN_DRAIN},
-            {GPIO_P1_30,   IOCON_A(4, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                                                    IOCON_INVERT_OFF, IOCON_DIGITAL, IOCON_FILTER_OFF,
-                                                    IOCON_OPEN_DRAIN, IOCON_DAC_DISABLE)},
-            {GPIO_P5_2, IOCON_I_DEFAULT(5) | IOCON_OPEN_DRAIN},
-    };
-    static const T_LPC1788_IOCON_ConfigList scl0[] = {
-            {GPIO_P0_28,   IOCON_I_DEFAULT(1) | IOCON_OPEN_DRAIN},
-            {GPIO_P1_31,   IOCON_A(4, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                                                    IOCON_INVERT_OFF, IOCON_DIGITAL, IOCON_FILTER_OFF,
-                                                    IOCON_OPEN_DRAIN, IOCON_DAC_DISABLE)},
-            {GPIO_P5_3, IOCON_I_DEFAULT(5) | IOCON_OPEN_DRAIN},
-    };
+    T_LPC1788_I2C_Workspace *p;
+
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C0 Bus driver
     HALInterfaceRegister("I2C0", (T_halInterface *)&I2C_LPC1788_Bus0_Interface,
-            0, 0);
-    LPC1788_IOCON_ConfigPin(aPinSDA0, sda0, ARRAY_COUNT(sda0));
-    LPC1788_IOCON_ConfigPin(aPinSCL0, scl0, ARRAY_COUNT(scl0));
+            0, (T_halWorkspace **)&p);
+    LPC1788_IOCON_ConfigPin(aPinSDA0, G_sda0, ARRAY_COUNT(G_sda0));
+    LPC1788_IOCON_ConfigPin(aPinSCL0, G_scl0, ARRAY_COUNT(G_scl0));
+
+    p->iSCLPin = aPinSCL0;
+    p->iSDAPin = aPinSDA0;
 }
 
 void LPC1788_I2C1_Require(
         T_uezGPIOPortPin aPinSDA1,
         T_uezGPIOPortPin aPinSCL1)
 {
-    static const T_LPC1788_IOCON_ConfigList sda1[] = {
-            {GPIO_P0_0,     IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P0_19,   IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P2_14, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-    };
-    static const T_LPC1788_IOCON_ConfigList scl1[] = {
-            {GPIO_P0_1,     IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P0_20,   IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P2_15, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-    };
+    T_LPC1788_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C1 Bus driver
     HALInterfaceRegister("I2C1", (T_halInterface *)&I2C_LPC1788_Bus1_Interface,
-            0, 0);
-    LPC1788_IOCON_ConfigPin(aPinSDA1, sda1, ARRAY_COUNT(sda1));
-    LPC1788_IOCON_ConfigPin(aPinSCL1, scl1, ARRAY_COUNT(scl1));
+            0, (T_halWorkspace **)&p);
+    LPC1788_IOCON_ConfigPin(aPinSDA1, G_sda1, ARRAY_COUNT(G_sda1));
+    LPC1788_IOCON_ConfigPin(aPinSCL1, G_scl1, ARRAY_COUNT(G_scl1));
+
+    p->iSCLPin = aPinSCL1;
+    p->iSDAPin = aPinSDA1;
 }
 
 void LPC1788_I2C2_Require(
         T_uezGPIOPortPin aPinSDA2,
         T_uezGPIOPortPin aPinSCL2)
 {
-    static const T_LPC1788_IOCON_ConfigList sda2[] = {
-            {GPIO_P0_10, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P1_15, IOCON_D(3, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P2_30, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P4_20, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-    };
-    static const T_LPC1788_IOCON_ConfigList scl2[] = {
-            {GPIO_P0_11, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P2_31, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P4_21, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-            {GPIO_P4_29, IOCON_D(4, IOCON_NO_PULL, IOCON_HYS_ENABLE,
-                    IOCON_INVERT_OFF, IOCON_SLEW_STANDARD, IOCON_OPEN_DRAIN)},
-    };
+    T_LPC1788_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C0 Bus driver
     HALInterfaceRegister("I2C2", (T_halInterface *)&I2C_LPC1788_Bus2_Interface,
-            0, 0);
+            0, (T_halWorkspace **)&p);
 
-    LPC1788_IOCON_ConfigPin(aPinSDA2, sda2, ARRAY_COUNT(sda2));
-    LPC1788_IOCON_ConfigPin(aPinSCL2, scl2, ARRAY_COUNT(scl2));
+    LPC1788_IOCON_ConfigPin(aPinSDA2, G_sda2, ARRAY_COUNT(G_sda2));
+    LPC1788_IOCON_ConfigPin(aPinSCL2, G_scl2, ARRAY_COUNT(G_scl2));
+
+    p->iSCLPin = aPinSCL2;
+    p->iSDAPin = aPinSDA2;
 }
 
 /*-------------------------------------------------------------------------*

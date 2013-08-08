@@ -178,10 +178,19 @@ T_uezError Serial_GenericHalfDuplex_Configure(
     if (error)
         return error;
 
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(p->iSemEmpty, "EmptyHD", (*(p->iSerial))->iInterface.iName);
+    UEZSemaphoreSetName(p->iSemEmpty, "SerialHD", (*(p->iSerial))->iInterface.iName);
+#endif
+
     // Create queue to hold sending data
     error = UEZQueueCreate(aQueueSendSize, 1, &p->iQueueSend);
     if (error)
         return error;
+#if UEZ_REGISTER
+    else
+        UEZQueueSetName(p->iQueueSend, "SendHD", (*(p->iSerial))->iInterface.iName);
+#endif
 
     // Create queue to hold receiving data
     error = UEZQueueCreate(aQueueReceiveSize, 1, &p->iQueueReceive);
@@ -190,6 +199,11 @@ T_uezError Serial_GenericHalfDuplex_Configure(
         p->iQueueSend = 0;
         return error;
     }
+#if UEZ_REGISTER
+    else {
+        UEZQueueSetName(p->iQueueReceive, "ReceiveHD", (*(p->iSerial))->iInterface.iName);
+    }
+#endif
 
     // Make sure we are NOT driving enabled
     if (p->iDriveEnablePort) {

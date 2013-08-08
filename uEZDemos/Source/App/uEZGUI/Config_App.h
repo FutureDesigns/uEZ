@@ -39,10 +39,16 @@
 #define UEZ_ENABLE_TCPIP_STACK              1
 #endif
 
-// Choose one when stack is enabled
+// Choose one when TCP/IP stack is enabled
+#ifndef UEZ_BASIC_WEB_SERVER
+#define UEZ_BASIC_WEB_SERVER                0
+#endif
+#ifndef UEZ_HTTP_SERVER
 #define UEZ_HTTP_SERVER                     0
-#define DEBUG_HTTP_SERVER                   0
-#define UEZ_BASIC_WEB_SERVER                UEZ_ENABLE_TCPIP_STACK
+#endif
+#ifndef DEBUG_HTTP_SERVER
+#define DEBUG_HTTP_SERVER                   0   // When enabled prints information to console.
+#endif
 
 #ifndef UEZ_ENABLE_USB_HOST_STACK
 #define UEZ_ENABLE_USB_HOST_STACK           1
@@ -63,9 +69,10 @@
 
 #define UEZ_GUI_PLATFORM_USE_SPI0_OVER_SSP  1
 
+#if (RTOS == FreeRTOS)
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
-
-	 
+#endif
+	
 #ifndef APP_MENU_ALLOW_TEST_MODE
 #define APP_MENU_ALLOW_TEST_MODE            1
 #endif

@@ -60,6 +60,7 @@ extern const HAL_Serial G_LPC1788_Serial_UART0;
 extern const HAL_Serial G_LPC1788_Serial_UART1;
 extern const HAL_Serial G_LPC1788_Serial_UART2;
 extern const HAL_Serial G_LPC1788_Serial_UART3;
+extern const HAL_Serial G_LPC1788_Serial_UART4;
 
 void LPC1788_UART0_Require(
         T_uezGPIOPortPin aPinTXD0,
@@ -79,6 +80,9 @@ void LPC1788_UART2_Require(
 void LPC1788_UART3_Require(
         T_uezGPIOPortPin aPinTXD3,
         T_uezGPIOPortPin aPinRXD3);
+void LPC1788_UART4_Require(
+        T_uezGPIOPortPin aPinTXD4,
+        T_uezGPIOPortPin aPinRXD4);
 
 #endif // LPC1788_SERIAL_H_
 /*-------------------------------------------------------------------------*

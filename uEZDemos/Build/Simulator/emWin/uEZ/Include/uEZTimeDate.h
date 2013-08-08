@@ -1,8 +1,8 @@
 /**
- *	@file 	uEZTimeDate.h
- *  @brief 	uEZ Time and Date Interface
+ *    @file     uEZTimeDate.h
+ *  @brief     uEZ Time and Date Interface
  *
- *	The uEZ interface which maps to the low level TimeDate drivers.
+ *    The uEZ interface which maps to the low level TimeDate drivers.
  */
 #ifndef _UEZ_TimeDate_H_
 #define _UEZ_TimeDate_H_
@@ -26,20 +26,20 @@
 #include <Types/TimeDate.h>
 
 /**
- *	Get the time date structure from the system.
+ *    Get the time date structure from the system.
  *
- *	@param [out] 	*aTimeDate		Time and date structure returned
+ *    @param [out]     *aTimeDate        Time and date structure returned
  *
- *	@return		T_uezError
+ *    @return        T_uezError
  */
 T_uezError UEZTimeDateGet(T_uezTimeDate *aTimeDate);
 
 /**
- *	Set the time and date on the system clock.
+ *    Set the time and date on the system clock.
  *
- *	@param [out] 	*aTimeDate		Time and date structure to use
+ *    @param [out]     *aTimeDate        Time and date structure to use
  *
- *	@return		T_uezError
+ *    @return        T_uezError
  */
 T_uezError UEZTimeDateSet(T_uezTimeDate *aTimeDate);
 

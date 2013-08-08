@@ -27,3 +27,9 @@
 #define configUSE_TIMERS          1
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
+
+#ifdef NDEBUG
+#define UEZ_REGISTER              0
+#else
+#define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+#endif

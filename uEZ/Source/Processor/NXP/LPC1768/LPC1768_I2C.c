@@ -74,6 +74,8 @@ typedef struct {
     TUInt8 iIndex;
     I2CRequestCompleteCallback iCompleteFunc;
     void *iCompleteWorkspace;
+    T_uezGPIOPortPin iSDAPin;
+    T_uezGPIOPortPin iSCLPin;
 
     volatile TBool iDoneFlag;
 #if COMPILE_I2C_SLAVE_MODE
@@ -110,6 +112,22 @@ typedef TUInt8 T_lpc1768_i2cMode;
 static T_LPC1768_I2C_Workspace *G_lpc1768_i2c0Workspace;
 static T_LPC1768_I2C_Workspace *G_lpc1768_i2c1Workspace;
 static T_LPC1768_I2C_Workspace *G_lpc1768_i2c2Workspace;
+
+static const T_LPC1768_IOCON_ConfigList G_sda1[] = {
+    {GPIO_P0_0,     IOCON_I_DEFAULT(3) },
+    {GPIO_P0_19,    IOCON_I_DEFAULT(3) },
+};
+static const T_LPC1768_IOCON_ConfigList G_scl1[] = {
+    {GPIO_P0_1,     IOCON_I_DEFAULT(3) },
+    {GPIO_P0_20,    IOCON_I_DEFAULT(3) },
+};
+
+static const T_LPC1768_IOCON_ConfigList G_sda2[] = {
+    {GPIO_P0_10,    IOCON_I_DEFAULT(2) },
+};
+static const T_LPC1768_IOCON_ConfigList G_scl2[] = {
+    {GPIO_P0_11,    IOCON_I_DEFAULT(2) },
+};
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
@@ -522,6 +540,29 @@ void ILPC1768_ProcessState(T_LPC1768_I2C_Workspace *p)
     SI_CLEAR(p);
 }
 
+T_uezError ILPC1768_I2C_IsHung(void *aWorkspace, TBool *aBool)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_LPC1768_I2C_Workspace *p = (T_LPC1768_I2C_Workspace *)aWorkspace;
+    TBool sda, scl;
+
+    sda = UEZGPIORead(p->iSDAPin);
+    scl = UEZGPIORead(p->iSCLPin);
+
+    *aBool = (!scl || !sda) ? ETrue : EFalse;
+
+    return error;
+}
+
+T_uezError ILPC1768_I2C_ResetBus(void *aWorkspace)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    //T_LPC1768_I2C_Workspace *p = (T_LPC1768_I2C_Workspace *)aWorkspace;
+    //TODO: implement reset functionality.
+
+    return error;
+}
+
 IRQ_ROUTINE(ILPC1768_I2C0InterruptHandler)
 {
     IRQ_START();
@@ -655,6 +696,8 @@ const HAL_I2CBus I2C_LPC1768_Bus1_Interface = {
 
     ILPC1768_I2C_StartRead,
     ILPC1768_I2C_StartWrite,
+    0,0,0,
+    ILPC1768_I2C_IsHung, ILPC1768_I2C_ResetBus
 };
 
 const HAL_I2CBus I2C_LPC1768_Bus2_Interface = {
@@ -667,6 +710,8 @@ const HAL_I2CBus I2C_LPC1768_Bus2_Interface = {
 
     ILPC1768_I2C_StartRead,
     ILPC1768_I2C_StartWrite,
+    0,0,0,
+    ILPC1768_I2C_IsHung, ILPC1768_I2C_ResetBus
 };
 
 
@@ -677,6 +722,8 @@ void LPC1768_I2C0_Require(
         T_uezGPIOPortPin aPinSDA0,
         T_uezGPIOPortPin aPinSCL0)
 {
+    T_LPC1768_I2C_Workspace *p;
+
     static const T_LPC1768_IOCON_ConfigList sda0[] = {
             {GPIO_P0_27,   IOCON_I_DEFAULT(1) },
     };
@@ -686,50 +733,47 @@ void LPC1768_I2C0_Require(
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C0 Bus driver
     HALInterfaceRegister("I2C0", (T_halInterface *)&I2C_LPC1768_Bus0_Interface,
-            0, 0);
+            0, (T_halWorkspace **)&p);
     LPC1768_IOCON_ConfigPin(aPinSDA0, sda0, ARRAY_COUNT(sda0));
     LPC1768_IOCON_ConfigPin(aPinSCL0, scl0, ARRAY_COUNT(scl0));
+
+    p->iSCLPin = aPinSCL0;
+    p->iSDAPin = aPinSDA0;
 }
 
 void LPC1768_I2C1_Require(
         T_uezGPIOPortPin aPinSDA1,
         T_uezGPIOPortPin aPinSCL1)
 {
-    static const T_LPC1768_IOCON_ConfigList sda1[] = {
-        {GPIO_P0_0,     IOCON_I_DEFAULT(3) },
-        {GPIO_P0_19,    IOCON_I_DEFAULT(3) },
-    };
-    static const T_LPC1768_IOCON_ConfigList scl1[] = {
-        {GPIO_P0_1,     IOCON_I_DEFAULT(3) },
-        {GPIO_P0_20,    IOCON_I_DEFAULT(3) },
-    };
+    T_LPC1768_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C1 Bus driver
     HALInterfaceRegister("I2C1", (T_halInterface *)&I2C_LPC1768_Bus1_Interface,
-            0, 0);
-    LPC1768_IOCON_ConfigPin(aPinSDA1, sda1, ARRAY_COUNT(sda1));
-    LPC1768_IOCON_ConfigPin(aPinSCL1, scl1, ARRAY_COUNT(scl1));
+            0, (T_halWorkspace **)&p);
+    LPC1768_IOCON_ConfigPin(aPinSDA1, G_sda1, ARRAY_COUNT(G_sda1));
+    LPC1768_IOCON_ConfigPin(aPinSCL1, G_scl1, ARRAY_COUNT(G_scl1));
+
+    p->iSCLPin = aPinSCL1;
+    p->iSDAPin = aPinSDA1;
 }
 
 void LPC1768_I2C2_Require(
         T_uezGPIOPortPin aPinSDA2,
         T_uezGPIOPortPin aPinSCL2)
 {
-    static const T_LPC1768_IOCON_ConfigList sda2[] = {
-        {GPIO_P0_10,    IOCON_I_DEFAULT(2) },
-    };
-    static const T_LPC1768_IOCON_ConfigList scl2[] = {
-        {GPIO_P0_11,    IOCON_I_DEFAULT(2) },
-    };
+    T_LPC1768_I2C_Workspace *p;
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2C0 Bus driver
     HALInterfaceRegister("I2C2", (T_halInterface *)&I2C_LPC1768_Bus2_Interface,
-            0, 0);
+            0, (T_halWorkspace **)&p);
 
-    LPC1768_IOCON_ConfigPin(aPinSDA2, sda2, ARRAY_COUNT(sda2));
-    LPC1768_IOCON_ConfigPin(aPinSCL2, scl2, ARRAY_COUNT(scl2));
+    LPC1768_IOCON_ConfigPin(aPinSDA2, G_sda2, ARRAY_COUNT(G_sda2));
+    LPC1768_IOCON_ConfigPin(aPinSCL2, G_scl2, ARRAY_COUNT(G_scl2));
+
+    p->iSCLPin = aPinSCL2;
+    p->iSDAPin = aPinSDA2;
 }
 
 

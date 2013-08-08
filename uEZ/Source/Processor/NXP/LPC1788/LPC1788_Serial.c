@@ -2,7 +2,7 @@
  * File: Serial.c
  *-------------------------------------------------------------------------*
  * Description:
- *      LPC23xx 16550(?) Style serial ports
+ *      LPC23xx and LPC 17XX 16550(?) Style serial ports
  * Implementation:
  *      Four serial ports are available (although they can be individually
  *      setup as needed).  Buffers/Queues are not stored here but handled
@@ -117,6 +117,8 @@ IRQ_ROUTINE(ISerialUART2)
 ;
 IRQ_ROUTINE(ISerialUART3)
 ;
+IRQ_ROUTINE(ISerialUART4)
+;
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -125,16 +127,19 @@ extern const HAL_Serial G_LPC1788_Serial_UART0;
 extern const HAL_Serial G_LPC1788_Serial_UART1;
 extern const HAL_Serial G_LPC1788_Serial_UART2;
 extern const HAL_Serial G_LPC1788_Serial_UART3;
+extern const HAL_Serial G_LPC1788_Serial_UART4;
 
 extern const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART0;
 extern const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART1;
 extern const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART2;
 extern const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART3;
+extern const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART4;
 
 T_Serial_LPC1788_Workspace *G_UART0Workspace = 0;
 T_Serial_LPC1788_Workspace *G_UART1Workspace = 0;
 T_Serial_LPC1788_Workspace *G_UART2Workspace = 0;
 T_Serial_LPC1788_Workspace *G_UART3Workspace = 0;
+T_Serial_LPC1788_Workspace *G_UART4Workspace = 0;
 
 /*---------------------------------------------------------------------------*
  * Routine: ISerialProcessInterrupt
@@ -228,6 +233,20 @@ IRQ_ROUTINE(ISerialUART3)
 {
     IRQ_START();
     ISerialProcessInterrupt(G_UART3Workspace);
+    IRQ_END()
+    ;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine: ISerialUART4
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Capture the UART4 interrupt and forward to ISerialProcessInterrupt.
+ *---------------------------------------------------------------------------*/
+IRQ_ROUTINE(ISerialUART4)
+{
+    IRQ_START();
+    ISerialProcessInterrupt(G_UART4Workspace);
     IRQ_END()
     ;
 }
@@ -366,6 +385,28 @@ T_uezError LPC1788_Serial_InitializeWorkspace_UART3(void *aWorkspace)
     T_Serial_LPC1788_Workspace *p = (T_Serial_LPC1788_Workspace *)aWorkspace;
     G_UART3Workspace = p;
     p->iInfo = &G_LPC1788_Serial_Info_UART3;
+    p->iCallbackWorkspace = 0;
+    p->iReceivedByteFunc = 0;
+    p->iTransmitEmptyFunc = 0;
+
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine: LPC1788_Serial_InitializeWorkspace_UART4
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Initialize a serial port workspace for UART4
+ * Inputs:
+ *      T_serialPort aPort        -- Serial port to enable
+ * Outputs:
+ *      T_uezError                 -- Error code
+ *---------------------------------------------------------------------------*/
+T_uezError LPC1788_Serial_InitializeWorkspace_UART4(void *aWorkspace)
+{
+    T_Serial_LPC1788_Workspace *p = (T_Serial_LPC1788_Workspace *)aWorkspace;
+    G_UART4Workspace = p;
+    p->iInfo = &G_LPC1788_Serial_Info_UART4;
     p->iCallbackWorkspace = 0;
     p->iReceivedByteFunc = 0;
     p->iTransmitEmptyFunc = 0;
@@ -689,6 +730,24 @@ const HAL_Serial G_LPC1788_Serial_UART3 = {
         0,
         0,
         LPC1788_Serial_GetStatus, };
+	
+const HAL_Serial G_LPC1788_Serial_UART4 = {
+        {
+        "Serial:LCP1788 UART4",
+        0x0100,
+        LPC1788_Serial_InitializeWorkspace_UART4,
+        sizeof(T_Serial_LPC1788_Workspace),
+        },
+
+        LPC1788_Serial_Configure,
+        LPC1788_Serial_SetSerialSettings,
+        LPC1788_Serial_GetSerialSettings,
+        LPC1788_Serial_Activate,
+        LPC1788_Serial_Deactivate,
+        LPC1788_Serial_OutputByte,
+        0,
+        0,
+        LPC1788_Serial_GetStatus, };
 
 const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART0 = {
         UART0_IRQn,
@@ -722,6 +781,14 @@ const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART3 = {
         25, // PCUART3
         };
 
+const T_Serial_LPC1788_SerialInfo G_LPC1788_Serial_Info_UART4 = {
+        UART4_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_UART4_BASE,
+        (TISRFPtr)ISerialUART4,
+        8, // PCUART4
+        };
+	
 /*---------------------------------------------------------------------------*
  * Requirement routines:
  *---------------------------------------------------------------------------*/
@@ -854,6 +921,26 @@ void LPC1788_UART3_Require(
             0);
     LPC1788_IOCON_ConfigPinOrNone(aPinTXD3, txd3, ARRAY_COUNT(txd3));
     LPC1788_IOCON_ConfigPinOrNone(aPinRXD3, rxd3, ARRAY_COUNT(rxd3));
+}
+
+void LPC1788_UART4_Require(
+        T_uezGPIOPortPin aPinTXD4,
+        T_uezGPIOPortPin aPinRXD4)
+{
+    static const T_LPC1788_IOCON_ConfigList txd4[] = {
+            {GPIO_P0_22,  IOCON_D_DEFAULT(3)},
+            {GPIO_P1_29,  IOCON_D_DEFAULT(5)},
+            {GPIO_P5_4,   IOCON_A_DEFAULT(4)},
+    };
+    static const T_LPC1788_IOCON_ConfigList rxd4[] = {
+            {GPIO_P2_9,  IOCON_D_DEFAULT(3)},
+            {GPIO_P5_3,  IOCON_D_DEFAULT(4)},
+    };
+    HAL_DEVICE_REQUIRE_ONCE();
+    HALInterfaceRegister("UART4", (T_halInterface *)&G_LPC1788_Serial_UART4, 0,
+            0);
+    LPC1788_IOCON_ConfigPinOrNone(aPinTXD4, txd4, ARRAY_COUNT(txd4));
+    LPC1788_IOCON_ConfigPinOrNone(aPinRXD4, rxd4, ARRAY_COUNT(rxd4));
 }
 
 /*===========================================================================*

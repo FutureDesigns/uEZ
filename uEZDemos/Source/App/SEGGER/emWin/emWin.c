@@ -67,7 +67,7 @@ TUInt8 G_emWinLoaded = EFalse;
 static U32 _TouchTask(T_uezTask aMyTask, void *aParameters) {
 
 
-  T_uezTSReading TouchResult;
+  T_uezInputEvent inputEvent;
   GUI_PID_STATE  State = { 0 };
 
   (void)aMyTask;
@@ -82,10 +82,10 @@ static U32 _TouchTask(T_uezTask aMyTask, void *aParameters) {
     // Wait for 100ms for a new touch event to occur. Else skip over to give the
     // task a chance to respond to an exit request.
     //
-    if (UEZQueueReceive(_hTSQueue, &TouchResult, 100) == UEZ_ERROR_NONE) {
-      if (TouchResult.iFlags & TSFLAG_PEN_DOWN) {
-        State.x       = TouchResult.iX;
-        State.y       = TouchResult.iY;
+    if (UEZQueueReceive(_hTSQueue, &inputEvent, 100) == UEZ_ERROR_NONE) {
+      if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD) {
+        State.x       = inputEvent.iEvent.iXY.iX;
+        State.y       = inputEvent.iEvent.iXY.iY;
         State.Pressed = 1;
       } else {
         State.x       = -1;
@@ -122,7 +122,9 @@ void emWin(const T_choice *aChoice) {
 
 	(void)aChoice;
   FrameBufferSize = UEZ_LCD_DISPLAY_WIDTH * UEZ_LCD_DISPLAY_HEIGHT * GUI_NUM_VIRTUAL_DISPLAYS * GUI_PIXEL_WIDTH;
-  memset((void*)GUI_VRAM_BASE_ADDR, 0, FrameBufferSize);
+    GUI_pMem    = (U32*)(GUI_VRAM_BASE_ADDR + FrameBufferSize);
+  GUI_MemSize =       (GUI_VRAM_SIZE      - FrameBufferSize);
+  memset((void*)GUI_VRAM_BASE_ADDR, 0, GUI_MemSize);//FrameBufferSize);
   //
   // Check that frame buffer memory fits into VRAM memory and we have empty memory left
   //
@@ -132,8 +134,8 @@ void emWin(const T_choice *aChoice) {
   //
   // Assign memory left to emWin memory
   //
-  GUI_pMem    = (U32*)(GUI_VRAM_BASE_ADDR + FrameBufferSize);
-  GUI_MemSize =       (GUI_VRAM_SIZE      - FrameBufferSize);
+  //GUI_pMem    = (U32*)(GUI_VRAM_BASE_ADDR + FrameBufferSize);
+  //GUI_MemSize =       (GUI_VRAM_SIZE      - FrameBufferSize);
   //
   // emWin startup
   //
@@ -158,7 +160,7 @@ void emWin(const T_choice *aChoice) {
     //
     // Create touch screen queue
     //
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &_hTSQueue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &_hTSQueue) == UEZ_ERROR_NONE) {
       //
       // Open touch screen
       //

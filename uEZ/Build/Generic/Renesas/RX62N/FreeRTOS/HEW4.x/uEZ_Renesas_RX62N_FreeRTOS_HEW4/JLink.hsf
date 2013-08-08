@@ -25,7 +25,7 @@
 "{313F4FC1-6566-11D5-8BBE-0004E2013C71}CmdLineCtrlLogFileName" "" 
 "{313F4FC1-6566-11D5-8BBE-0004E2013C71}CmdLineCtrlSplitterPosition" "242" 
 "{313F4FC1-6566-11D5-8BBE-0004E2013C71}CmdLineCtrlViews" "1" 
-"{313F4FC1-6566-11D5-8BBE-0004E2013C71}CmdLineCtrlWindowProperties" "17" 
+"{313F4FC1-6566-11D5-8BBE-0004E2013C71}CmdLineCtrlWindowProperties" "18" 
 "{313F4FC1-6566-11D5-8BBE-0004E2013C71}CmdLineWndInstanceKey0" "{WK_00000001_CmdLine}" 
 "{313F4FC1-6566-11D5-8BBE-0004E2013C71}TclTkCtrlLogFileName" "" 
 "{313F4FC2-6566-11D5-8BBE-0004E2013C71}ECX_MEMORY_COMPARE_END_ADDRESS" "" 
@@ -1241,8 +1241,8 @@
 "SBK_TAR_EMUE100|Exception" 1 
 "SBK_TAR_EMUE100|BreakCondition" 1 
 "SBK_TAR_EMUE100|TaskID" 1 
-"SBK_TAR_EMUE100|PC" 1 
 "SBK_TAR_EMUE100|ExecutionTime" 1 
+"SBK_TAR_EMUE100|PC" 1 
 [STATUSBAR_DEBUGGER_PANESTATE_VD2]
 [STATUSBAR_DEBUGGER_PANESTATE_VD3]
 [STATUSBAR_DEBUGGER_PANESTATE_VD4]
@@ -1269,13 +1269,4 @@
 [FLASH_DETAILS]
 "" 0 0 "" 0 "" 0 0 "" 0 0 0 0 0 0 0 "" "" "" "" "" 
 [BREAKPOINTS]
-"c:\fdi\svn\uez\trunk\source\devices\backlight\generic\backlightpwmcontrolled\backlightpwmcontrolled.c" 127 0 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\devices\spi\generic\generic_spi.c" 103 34016192 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\library\lwip\src\netif\ethernetif.c" 332 2037539186 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\library\lwip\src\netif\ethernetif.c" 340 2037539186 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\library\web\basicweb\basicweb.c" 161 1936942435 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\library\web\basicweb\basicweb.c" 164 2037539186 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\processor\renesas\rx62n\rx62n_emac.c" 1059 1936024425 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\processor\renesas\rx62n\rx62n_spi.c" 317 1936024425 1 "{00000000-0000-0000-C000-000000000046}" "" 
-"c:\fdi\svn\uez\trunk\source\uezsystem\ueztonegenerator.c" 82 2037539186 1 "{00000000-0000-0000-C000-000000000046}" "" 
 [END]

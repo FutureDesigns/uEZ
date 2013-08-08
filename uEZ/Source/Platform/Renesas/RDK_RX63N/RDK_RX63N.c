@@ -614,7 +614,7 @@ void UEZPlatform_I2C0_Require(void)
 
     // Ensure the I2C0 exists in the HAL level
     RX63N_RIIC0_Require();
-    I2C_Generic_Create("I2C0", "RIIC0");
+    I2C_Generic_Create("I2C0", "RIIC0", 0);
 }
 
 /*---------------------------------------------------------------------------*

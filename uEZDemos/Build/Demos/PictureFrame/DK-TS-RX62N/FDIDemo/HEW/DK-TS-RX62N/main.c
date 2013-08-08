@@ -149,12 +149,12 @@ T_uezError UEZPlatform_Network_Connect(void)
     static TBool connected = EFalse;
     if (!connected) {
         connected = ETrue;
-		error = UEZNetworkConnect(
+        error = UEZNetworkConnect(
             "WiredNetwork0",
             "lwIP",
             (const T_uezNetworkAddr *)G_nonvolatileSettings.iIPAddr,
-			(const T_uezNetworkAddr *)G_nonvolatileSettings.iIPMask,
-			(const T_uezNetworkAddr *)G_nonvolatileSettings.iIPGateway,
+            (const T_uezNetworkAddr *)G_nonvolatileSettings.iIPMask,
+            (const T_uezNetworkAddr *)G_nonvolatileSettings.iIPGateway,
             ETrue,
             &G_network,
             &G_networkStatus);
@@ -176,7 +176,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     extern T_uezTask G_mainTask;
 
     UEZPlatform_Standard_Require();
-	
+    
     // SDCard needed?
     UEZPlatform_SDCard_Drive_Require(1);
 

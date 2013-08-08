@@ -25,7 +25,7 @@
 #include <Device/Accelerometer.h>
 #include <uEZDeviceTable.h>
 #include <UEZLCD.h>
-
+#include <uEZKeypad.h>
 #include <stdio.h>
 
 #define ACCEL_DEMO_DEBUG_PRINTF 0
@@ -439,6 +439,9 @@ void AccelDemoMode(const T_choice *aChoice)
     static T_uezQueue queue = (TUInt32)NULL;
     T_uezDevice acdevice;
     TUInt32 time, start, delta;
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif
 
     PARAM_NOT_USED(aChoice);
 
@@ -458,7 +461,7 @@ void AccelDemoMode(const T_choice *aChoice)
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == queue)
 	{
-	  	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) != UEZ_ERROR_NONE)
+	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
 		{
 		  	queue = NULL;
 		}
@@ -468,7 +471,11 @@ void AccelDemoMode(const T_choice *aChoice)
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
 	  	UEZQueueAddToRegistry( queue, "AccelDemo TS" );
 #else
-	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+	    UEZQueueSetName(queue, "AccelDemo", "\0");
+#endif
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
@@ -517,6 +524,9 @@ void AccelDemoMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
         UEZQueueDelete(queue);
 #endif

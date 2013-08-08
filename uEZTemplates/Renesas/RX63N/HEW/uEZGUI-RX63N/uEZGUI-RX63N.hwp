@@ -1,0 +1,542 @@
+[HIMDBVersion]
+2.0
+[DATABASE_VERSION]
+"2.8" 
+[PROJECT_DETAILS]
+"uEZGUI-RX63N" "C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N" "C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\uEZGUI-RX63N.hwp" "RX" "Renesas RX Standard" "Application" "RX600" "RX63N" 
+[INFORMATION]
+"No project information available" 
+[TOOL_CHAIN]
+"Renesas RX Standard Toolchain" "1.2.1.0" 
+[CONFIGURATIONS]
+"Debug" "C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Debug" 
+"Release" "C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Release" 
+[BUILD_PHASES]
+"Renesas OptLinker" 1 
+"Renesas RX Assembler" 1 
+"Renesas RX C/C++ Compiler" 1 
+"Renesas RX C/C++ Library Generator" 1 
+"Renesas RX Configurator" 1 
+[TOOL_ENVIRONMENT]
+[EXTENSIONS]
+"Absolute file" "ABS" 
+"Assembly include file" "INC" 
+"Assembly list file" "LST" 
+"Assembly source file" "S" 
+"Assembly source file" "SRC" 
+"Binary file" "BIN" 
+"C header file" "H" 
+"C source file" "C" 
+"C++ header file" "HPP" 
+"C++ source file" "CC" 
+"C++ source file" "CP" 
+"C++ source file" "CPP" 
+"CPU information file" "CPU" 
+"Calling information file" "CAL" 
+"Configuration file" "CFG" 
+"Debug information file" "DBG" 
+"Hex file" "HEX" 
+"Library file" "LIB" 
+"Library information file" "LBP" 
+"Linkage map file" "MAP" 
+"Linkage symbol file" "FSY" 
+"Object file" "OBJ" 
+"Optimize map file" "bls" 
+"Preprocessed C source file" "P" 
+"Preprocessed C++ source file" "PP" 
+"Relocatable file" "REL" 
+"Rts information file" "RTS" 
+"S-Record file" "MOT" 
+"Stack information file" "SNI" 
+"TD include object file" "RTI" 
+[FILE_GROUPS]
+"Absolute file" "BIN" "NONE" "" 
+"Assembly include file" "TEXT" "EDITOR" "" 
+"Assembly list file" "TEXT" "EDITOR" "" 
+"Assembly source file" "TEXT" "EDITOR" "" 
+"Binary file" "BIN" "NONE" "" 
+"C header file" "TEXT" "EDITOR" "" 
+"C source file" "TEXT" "EDITOR" "" 
+"C++ header file" "TEXT" "EDITOR" "" 
+"C++ source file" "TEXT" "EDITOR" "" 
+"CPU information file" "BIN" "NONE" "" 
+"Calling information file" "BIN" "NONE" "" 
+"Configuration file" "TEXT" "EDITOR" "" 
+"Debug information file" "BIN" "NONE" "" 
+"Hex file" "TEXT" "EDITOR" "" 
+"Library file" "BIN" "NONE" "" 
+"Library information file" "TEXT" "EDITOR" "" 
+"Linkage map file" "TEXT" "EDITOR" "" 
+"Linkage symbol file" "TEXT" "EDITOR" "" 
+"Object file" "BIN" "NONE" "" 
+"Optimize map file" "BIN" "NONE" "" 
+"Preprocessed C source file" "TEXT" "EDITOR" "" 
+"Preprocessed C++ source file" "TEXT" "EDITOR" "" 
+"Relocatable file" "BIN" "NONE" "" 
+"Rts information file" "BIN" "NONE" "" 
+"S-Record file" "TEXT" "EDITOR" "" 
+"Stack information file" "BIN" "NONE" "" 
+"TD include object file" "BIN" "NONE" "" 
+[ASSOCIATED_APPLICATIONS]
+[TOOLCHAIN_PHASE]
+"Renesas OptLinker" 
+"Renesas RX Assembler" 
+"Renesas RX C/C++ Compiler" 
+"Renesas RX C/C++ Library Generator" 
+"Renesas RX Configurator" 
+[UTILITY_PHASE]
+[CUSTOM_PHASES]
+[CUSTOM_PHASE_INPUT_GROUP]
+[CUSTOM_PHASE_OUTPUT_SYNTAX]
+[BUILD_ORDER]
+"Renesas RX C/C++ Library Generator" 1 
+"Renesas RX C/C++ Compiler" 1 
+"Renesas RX Assembler" 1 
+"Renesas OptLinker" 1 
+"Renesas RX Configurator" 0 
+[BUILD_PHASE_DETAILS]
+"Renesas OptLinker" "Object file|Library file|Relocatable file" 0 
+"Renesas RX Assembler" "Assembly source file|Linkage symbol file" 1 
+"Renesas RX C/C++ Compiler" "C source file|C++ source file" 1 
+"Renesas RX C/C++ Library Generator" "" 0 
+"Renesas RX Configurator" "Configuration file" 0 
+[BUILD_FILE_ORDER_Assembly source file]
+"Renesas RX Assembler" 1 
+[BUILD_FILE_ORDER_C source file]
+"Renesas RX C/C++ Compiler" 1 
+[BUILD_FILE_ORDER_C++ source file]
+"Renesas RX C/C++ Compiler" 1 
+[BUILD_FILE_ORDER_Linkage symbol file]
+"Renesas RX Assembler" 1 
+[SCRAP]
+"Project Generator Setup File" "" 
+[MAPPINGS]
+"Assembly source file" "Renesas RX Assembler" "Renesas RX C/C++ Compiler" 
+"Library file" "Renesas OptLinker" "Renesas RX C/C++ Library Generator" 
+"Object file" "Renesas OptLinker" "Renesas RX Assembler" 
+"Object file" "Renesas OptLinker" "Renesas RX C/C++ Compiler" 
+[PROJECT_FILES]
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Config_Build.h" "User" "" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Audio.c" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Audio.h" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Calibration.c" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Calibration.h" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Config_App.h" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Hello_World.c" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Hello_World.h" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\NVSettings.c" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\NVSettings.h" "User" "Source" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\main.c" "User" "" 2 
+"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib" "User" "Library file" 2 
+"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib" "User" "Library file" 2 
+"C:\FDI\uEZ\Source\Library\Memory\MemoryTest\MemoryTest.c" "User" "Source|Platform|FDI|CARRIER_RX63N" 2 
+"C:\FDI\uEZ\Source\Library\Memory\MemoryTest\MemoryTest.h" "User" "Source|Platform|FDI|CARRIER_RX63N" 2 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\CARRIER_RX63N.c" "User" "Source|Platform|FDI|CARRIER_RX63N" 2 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\CARRIER_RX63N_DirectDrive.c" "User" "Source|Platform|FDI|CARRIER_RX63N|DirectDrive" 2 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\CARRIER_RX63N_DirectDrive.h" "User" "Source|Platform|FDI|CARRIER_RX63N|DirectDrive" 2 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\RX63N_DirectDrive_LCDController.c" "User" "Source|Platform|FDI|CARRIER_RX63N|DirectDrive" 2 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\RX63N_DirectDrive_LCDController.h" "User" "Source|Platform|FDI|CARRIER_RX63N|DirectDrive" 2 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\uEZPlatform.h" "User" "Source|Platform|FDI|CARRIER_RX63N" 2 
+[FOLDER]
+"Library file" "Library file" 
+"Source" "Source" 
+"Source|Platform" "" 
+"Source|Platform|FDI" "" 
+"Source|Platform|FDI|CARRIER_RX63N" "" 
+"Source|Platform|FDI|CARRIER_RX63N|DirectDrive" "" 
+[GENERAL_DATA_PROJECT]
+"MAKEGEN_GENERATE_MAKEFILE_FOR" "1" 
+"MAKEGEN_MAKEFILE_FORMAT" "0" 
+"MAKEGEN_MAKEFILE_RELATIVITY" "2" 
+"MAKEGEN_SCAN_DEPENDENCIES_WHILST_BUILDING_MAKEFILE" "1" 
+"MAKEGEN_USE_STATIC_SUBCOMMAND_FILES" "0" 
+"ParallelOn" "1" 
+"USE_CUSTOM_LINKAGE_ORDER" "1" 
+[ON_DEMAND_COMPONENTS_LOADED]
+[SYNC_SESSION_NAMES]
+[SESSIONS]
+"JLink" "C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\JLink.hsf" 0 
+"nodebug" "C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\nodebug.hsf" 0 
+[GENERAL_DATA_SESSION_JLink]
+[GENERAL_DATA_SESSION_nodebug]
+[OPTIONS_Debug_Renesas OptLinker]
+"Single Shot" "0273442404d5ec10" 5 
+[OPTIONS_Debug_Renesas RX Assembler]
+"Assembly source file" "04137e7b9206dc10" 4 
+"Linkage symbol file" "04137e7b9206dc10" 4 
+[OPTIONS_Debug_Renesas RX C/C++ Compiler]
+"C source file" "0d6e159683d5ec10" 3 
+"C++ source file" "0d6e159683d5ec10" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Audio.c" "03a04b5b83d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Calibration.c" "03a04b5b83d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Hello_World.c" "03a04b5b83d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\NVSettings.c" "03a04b5b83d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\main.c" "037bf22393d5ec10" 3 
+"C:\FDI\uEZ\Source\Library\Memory\MemoryTest\MemoryTest.c" "0fdf932404d5ec10" 3 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\CARRIER_RX63N.c" "03656c87f3d5ec10" 3 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\CARRIER_RX63N_DirectDrive.c" "0d1f1d59f3d5ec10" 3 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\RX63N_DirectDrive_LCDController.c" "0d1f1d59f3d5ec10" 3 
+[OPTIONS_Debug_Renesas RX C/C++ Library Generator]
+"Single Shot" "0c96c1e69b68dc10" 1 
+[OPTIONS_Debug_Renesas RX Configurator]
+"Single Shot" "0fdf932404d5ec10" 6 
+[OPTIONS_Debug]
+"" 0 
+"[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 6 
+"[V|VERSION|1] [B|SJIS|1] [B|DEBUG|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [S|CPU|RX600] [S|BASE|00000000=NONE] [B|SKIPDEPENDENCY|1]
+" 4 
+"[V|VERSION|1] [S|LANG|CPP] [B|SJIS|1] [S|INCLUDE|^"$(PROJDIR)^"|^"$(PROJDIR)\Source^"|^"$(PROJDIR)\..\..\..\..\.^"|^"$(PROJDIR)\..\..\..\..\Source\App\UEZGUI-RX63N-35QT^"|^"$(PROJDIR)\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_RX63N_35QT^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\.^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\App\Demos\FDI\uEZDemoCommon^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Config^"] [S|DEFINE|COMPILER_TYPE=RenesasRX] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|DEBUG|1] [S|OPTIMIZE|MAX] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
+" 2 
+"[V|VERSION|1] [S|LANG|C] [B|SJIS|1] [S|INCLUDE|^"$(PROJDIR)^"|^"$(PROJDIR)\Source^"|^"$(PROJDIR)\..\..\..\..\.^"|^"$(PROJDIR)\..\..\..\..\Source\App\UEZGUI-RX63N-35QT^"|^"$(PROJDIR)\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_RX63N_35QT^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\.^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\App\Demos\FDI\uEZDemoCommon^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Config^"] [S|DEFINE|COMPILER_TYPE=RenesasRX] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [B|DEBUG|1] [S|OPTIMIZE|MAX] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
+" 3 
+"[V|VERSION|1] [S|MODE|BUILD/CHANGED] [S|EXISTOUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|RUNTIME|1] [B|CTYPE|1] [B|MATH|1] [B|MATHF|1] [B|STDARG|1] [B|STDIO|1] [B|STDLIB|1] [B|STRING|1] [B|IOS|1] [B|NEW|1] [B|CPPSTRING|1] [B|NOFLOAT|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|SIZE|1] [I|INLINE|100] [I|LOOP|2] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
+" 1 
+"[V|VERSION|6] [S|PRELINK|SKIP] [S|FORM|HEXADECIMAL] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|1] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|SYMBOL|REFERENCE|XREFERENCE|TOTAL_SIZE|VECTOR] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).hex^"] [I|SPACE|^"FF^"] [S|OPTIMIZEITEMS|ALL] [S|START|B_RX_DESC,B_TX_DESC,B_RX_BUFF_1,B_TX_BUFF_1,B_1,R_1,B_2,R_2,B,R,SU,SI(01000)|BLCD_Frames*(08000000)|PResetPRG,C_1,C_2,C,C$*,D*,P,W*,PIntPRG,L(0FFF80000)|FIXEDVECT(0FFFFFFD0)] [I|CPUINFORMATIONCHECK|1] [S|;CHECKDEVICE|RAM,0x00000000,0x00017FFF|ROM,0xFFF80000,0xFFFFFFFF|ROM,0x08000000,0x08FFFFFF] [B|STACK|1] [S|MEMORY|HIGH] [B|TOTAL_SIZE|1] [B|SKIPDEPENDENCY|1]
+" 5 
+[EXCLUDED_FILES_Debug]
+"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX63N_FreeRTOS_HEW4_release.lib" 
+[LINKAGE_ORDER_Debug]
+"\uEZGUI-RX63N\debug\acceldemomode.obj" 
+"\uEZGUI-RX63N\debug\api_lib.obj" 
+"\uEZGUI-RX63N\debug\api_msg.obj" 
+"\uEZGUI-RX63N\debug\appmenu.obj" 
+"\uEZGUI-RX63N\debug\asn1_dec.obj" 
+"\uEZGUI-RX63N\debug\asn1_enc.obj" 
+"\uEZGUI-RX63N\debug\audio.obj" 
+"\uEZGUI-RX63N\debug\audioamp_8551t.obj" 
+"\uEZGUI-RX63N\debug\autoip.obj" 
+"\uEZGUI-RX63N\debug\basicweb.obj" 
+"\uEZGUI-RX63N\debug\bosch_bma150_i2c_driver.obj" 
+"\uEZGUI-RX63N\debug\brightnesscontrolmode.obj" 
+"\uEZGUI-RX63N\debug\button_nxp_pca9551_driver.obj" 
+"\uEZGUI-RX63N\debug\calibration.obj" 
+"\uEZGUI-RX63N\debug\carrier_rx63n_uezbsp.obj" 
+"\uEZGUI-RX63N\debug\carrier_rx63n_uezplatform.obj" 
+"\uEZGUI-RX63N\debug\clock.obj" 
+"\uEZGUI-RX63N\debug\consolemode.obj" 
+"\uEZGUI-RX63N\debug\dbsct.obj" 
+"\uEZGUI-RX63N\debug\dhcp.obj" 
+"\uEZGUI-RX63N\debug\directlcd_rx.obj" 
+"\uEZGUI-RX63N\debug\diskio.obj" 
+"\uEZGUI-RX63N\debug\dktskitdemo_rx63n.lib" 
+"\uEZGUI-RX63N\debug\dns.obj" 
+"\uEZGUI-RX63N\debug\drawmode.obj" 
+"\uEZGUI-RX63N\debug\err.obj" 
+"\uEZGUI-RX63N\debug\etharp.obj" 
+"\uEZGUI-RX63N\debug\ethernetif.obj" 
+"\uEZGUI-RX63N\debug\exmemory.obj" 
+"\uEZGUI-RX63N\debug\ff.obj" 
+"\uEZGUI-RX63N\debug\flash_api_rx600.obj" 
+"\uEZGUI-RX63N\debug\flash_data.obj" 
+"\uEZGUI-RX63N\debug\flash_renesas_rx63n_driver.obj" 
+"\uEZGUI-RX63N\debug\freescale_mma7455_driver.obj" 
+"\uEZGUI-RX63N\debug\generic_i2c.obj" 
+"\uEZGUI-RX63N\debug\generic_pwm.obj" 
+"\uEZGUI-RX63N\debug\generic_spi.obj" 
+"\uEZGUI-RX63N\debug\hal.obj" 
+"\uEZGUI-RX63N\debug\heap_2.obj" 
+"\uEZGUI-RX63N\debug\hwsetup.obj" 
+"\uEZGUI-RX63N\debug\icmp.obj" 
+"\uEZGUI-RX63N\debug\igmp.obj" 
+"\uEZGUI-RX63N\debug\inet.obj" 
+"\uEZGUI-RX63N\debug\inet_chksum.obj" 
+"\uEZGUI-RX63N\debug\init.obj" 
+"\uEZGUI-RX63N\debug\intprg.obj" 
+"\uEZGUI-RX63N\debug\ip.obj" 
+"\uEZGUI-RX63N\debug\ip_addr.obj" 
+"\uEZGUI-RX63N\debug\ip_frag.obj" 
+"\uEZGUI-RX63N\debug\lcddriver.obj" 
+"\uEZGUI-RX63N\debug\led_nxp_pca9551_driver.obj" 
+"\uEZGUI-RX63N\debug\list.obj" 
+"\uEZGUI-RX63N\debug\loopif.obj" 
+"\uEZGUI-RX63N\debug\lowlvl.obj" 
+"\uEZGUI-RX63N\debug\lowsrc.obj" 
+"\uEZGUI-RX63N\debug\lpc_helvr10.obj" 
+"\uEZGUI-RX63N\debug\lpc_rom8x16.obj" 
+"\uEZGUI-RX63N\debug\lpc_rom8x8.obj" 
+"\uEZGUI-RX63N\debug\lpc_swim.obj" 
+"\uEZGUI-RX63N\debug\lpc_swim_font.obj" 
+"\uEZGUI-RX63N\debug\lpc_swim_image.obj" 
+"\uEZGUI-RX63N\debug\lpc_winfreesystem14x16.obj" 
+"\uEZGUI-RX63N\debug\lpc_x5x7.obj" 
+"\uEZGUI-RX63N\debug\lpc_x6x13.obj" 
+"\uEZGUI-RX63N\debug\main.obj" 
+"\uEZGUI-RX63N\debug\mainmenu.obj" 
+"\uEZGUI-RX63N\debug\mem.obj" 
+"\uEZGUI-RX63N\debug\memp.obj" 
+"\uEZGUI-RX63N\debug\mib2.obj" 
+"\uEZGUI-RX63N\debug\mib_structs.obj" 
+"\uEZGUI-RX63N\debug\msg_in.obj" 
+"\uEZGUI-RX63N\debug\msg_out.obj" 
+"\uEZGUI-RX63N\debug\multislideshowmode.obj" 
+"\uEZGUI-RX63N\debug\netbuf.obj" 
+"\uEZGUI-RX63N\debug\netdb.obj" 
+"\uEZGUI-RX63N\debug\netif.obj" 
+"\uEZGUI-RX63N\debug\netifapi.obj" 
+"\uEZGUI-RX63N\debug\nvsettings.obj" 
+"\uEZGUI-RX63N\debug\pbuf.obj" 
+"\uEZGUI-RX63N\debug\port.obj" 
+"\uEZGUI-RX63N\debug\printf-stdarg.obj" 
+"\uEZGUI-RX63N\debug\queue.obj" 
+"\uEZGUI-RX63N\debug\raw.obj" 
+"\uEZGUI-RX63N\debug\resetprg.obj" 
+"\uEZGUI-RX63N\debug\rtc.obj" 
+"\uEZGUI-RX63N\debug\rtc_pcf8563.obj" 
+"\uEZGUI-RX63N\debug\rx63n_directdrive_lcdcontroller.obj" 
+"\uEZGUI-RX63N\debug\rx63n_dktskit_ts.obj" 
+"\uEZGUI-RX63N\debug\rx63n_emac.obj" 
+"\uEZGUI-RX63N\debug\rx63n_gpio.obj" 
+"\uEZGUI-RX63N\debug\rx63n_halinit.obj" 
+"\uEZGUI-RX63N\debug\rx63n_interrupt.obj" 
+"\uEZGUI-RX63N\debug\rx63n_pwm.obj" 
+"\uEZGUI-RX63N\debug\rx63n_riic.obj" 
+"\uEZGUI-RX63N\debug\rx63n_sci.obj" 
+"\uEZGUI-RX63N\debug\rx63n_spi.obj" 
+"\uEZGUI-RX63N\debug\sbrk.obj" 
+"\uEZGUI-RX63N\debug\sdcard_ms_driver.obj" 
+"\uEZGUI-RX63N\debug\simpleui_choices.obj" 
+"\uEZGUI-RX63N\debug\simpleui_drawing.obj" 
+"\uEZGUI-RX63N\debug\simpleui_regions.obj" 
+"\uEZGUI-RX63N\debug\simpleui_utilityfunctions.obj" 
+"\uEZGUI-RX63N\debug\singleslideshowmode.obj" 
+"\uEZGUI-RX63N\debug\sockets.obj" 
+"\uEZGUI-RX63N\debug\stats.obj" 
+"\uEZGUI-RX63N\debug\sys.obj" 
+"\uEZGUI-RX63N\debug\sys_arch.obj" 
+"\uEZGUI-RX63N\debug\tasks.obj" 
+"\uEZGUI-RX63N\debug\tcp.obj" 
+"\uEZGUI-RX63N\debug\tcp_in.obj" 
+"\uEZGUI-RX63N\debug\tcp_out.obj" 
+"\uEZGUI-RX63N\debug\tcpip.obj" 
+"\uEZGUI-RX63N\debug\temperature_lm75a_driver.obj" 
+"\uEZGUI-RX63N\debug\tempmode.obj" 
+"\uEZGUI-RX63N\debug\timedatemode.obj" 
+"\uEZGUI-RX63N\debug\tonegenerator_generic_pwm_driver.obj" 
+"\uEZGUI-RX63N\debug\udcimages.obj" 
+"\uEZGUI-RX63N\debug\udp.obj" 
+"\uEZGUI-RX63N\debug\uezadc.obj" 
+"\uEZGUI-RX63N\debug\uezaudioamp.obj" 
+"\uEZGUI-RX63N\debug\uezbspinit.obj" 
+"\uEZGUI-RX63N\debug\uezchardisplay.obj" 
+"\uEZGUI-RX63N\debug\uezdevicetable.obj" 
+"\uEZGUI-RX63N\debug\uezemac_lwip.obj" 
+"\uEZGUI-RX63N\debug\uezfile.obj" 
+"\uEZGUI-RX63N\debug\uezfilesystem_fatfs.obj" 
+"\uEZGUI-RX63N\debug\uezflash.obj" 
+"\uEZGUI-RX63N\debug\uezhandles.obj" 
+"\uEZGUI-RX63N\debug\uezi2c.obj" 
+"\uEZGUI-RX63N\debug\uezinit.obj" 
+"\uEZGUI-RX63N\debug\uezkeypad.obj" 
+"\uEZGUI-RX63N\debug\uezlcd.obj" 
+"\uEZGUI-RX63N\debug\uezledbank.obj" 
+"\uEZGUI-RX63N\debug\uezmemory.obj" 
+"\uEZGUI-RX63N\debug\uezrtos_freertos.obj" 
+"\uEZGUI-RX63N\debug\uezserialgeneric.obj" 
+"\uEZGUI-RX63N\debug\uezspi.obj" 
+"\uEZGUI-RX63N\debug\uezssp.obj" 
+"\uEZGUI-RX63N\debug\uezstream.obj" 
+"\uEZGUI-RX63N\debug\ueztemperature.obj" 
+"\uEZGUI-RX63N\debug\ueztimedate.obj" 
+"\uEZGUI-RX63N\debug\ueztonegenerator.obj" 
+"\uEZGUI-RX63N\debug\uezts.obj" 
+"\uEZGUI-RX63N\debug\vecttbl.obj" 
+"\uEZGUI-RX63N\debug\yourappmode.obj" 
+[GENERAL_DATA_CONFIGURATION_Debug]
+[OPTIONS_Release_Renesas OptLinker]
+"Single Shot" "0273442404d5ec10" 5 
+[OPTIONS_Release_Renesas RX Assembler]
+"Assembly source file" "04137e7b9206dc10" 4 
+"Linkage symbol file" "04137e7b9206dc10" 4 
+[OPTIONS_Release_Renesas RX C/C++ Compiler]
+"C source file" "05eeed60b3d5ec10" 3 
+"C++ source file" "05eeed60b3d5ec10" 2 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Audio.c" "05eeed60b3d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Calibration.c" "05eeed60b3d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\Hello_World.c" "05eeed60b3d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\Source\NVSettings.c" "05eeed60b3d5ec10" 3 
+"C:\FDI\uEZTemplates\Renesas\RX63N\HEW\uEZGUI-RX63N\main.c" "05eeed60b3d5ec10" 3 
+"C:\FDI\uEZ\Source\Library\Memory\MemoryTest\MemoryTest.c" "0fdf932404d5ec10" 3 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\CARRIER_RX63N.c" "03656c87f3d5ec10" 3 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\CARRIER_RX63N_DirectDrive.c" "0d1f1d59f3d5ec10" 3 
+"C:\FDI\uEZ\Source\Platform\FDI\CARRIER_RX63N\DirectDrive\RX63N_DirectDrive_LCDController.c" "0d1f1d59f3d5ec10" 3 
+[OPTIONS_Release_Renesas RX C/C++ Library Generator]
+"Single Shot" "0fcf3e7b9206dc10" 1 
+[OPTIONS_Release_Renesas RX Configurator]
+"Single Shot" "0fdf932404d5ec10" 6 
+[OPTIONS_Release]
+"" 0 
+"[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 6 
+"[V|VERSION|1] [B|SJIS|1] [B|DEBUG|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [S|CPU|RX600] [S|BASE|00000000=NONE] [B|SKIPDEPENDENCY|1]
+" 4 
+"[V|VERSION|1] [S|LANG|CPP] [B|SJIS|1] [S|INCLUDE|^"$(PROJDIR)^"|^"$(PROJDIR)\Source^"|^"$(PROJDIR)\..\..\..\..\.^"|^"$(PROJDIR)\..\..\..\..\Source\App\UEZGUI-RX63N-35QT^"|^"$(PROJDIR)\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_RX63N_35QT^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\.^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\App\Demos\FDI\uEZDemoCommon^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Config^"] [S|DEFINE|COMPILER_TYPE=RenesasRX] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [S|OPTIMIZE|MAX] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
+" 2 
+"[V|VERSION|1] [S|LANG|C] [B|SJIS|1] [S|INCLUDE|^"$(PROJDIR)^"|^"$(PROJDIR)\Source^"|^"$(PROJDIR)\..\..\..\..\.^"|^"$(PROJDIR)\..\..\..\..\Source\App\UEZGUI-RX63N-35QT^"|^"$(PROJDIR)\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_RX63N_35QT^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX63N^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\.^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\include^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\App\Demos\FDI\uEZDemoCommon^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc^"|^"$(PROJDIR)\..\..\..\..\..\uEZ\Source\Platform\emWin\Config^"] [S|DEFINE|COMPILER_TYPE=RenesasRX] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(FILELEAF).obj^"] [S|OPTIMIZE|MAX] [B|SIZE|1] [B|MAP|0] [I|INLINE|100] [I|LOOP|2] [S|MISRA2004|ALL] [S|MISRA2004RULEFILE|^"$(CONFIGDIR)\$(PROJECTNAME).rde^"] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
+" 3 
+"[V|VERSION|1] [S|MODE|BUILD/CHANGED] [S|EXISTOUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|RUNTIME|1] [B|CTYPE|1] [B|MATH|1] [B|MATHF|1] [B|STDARG|1] [B|STDIO|1] [B|STDLIB|1] [B|STRING|1] [B|IOS|1] [B|NEW|1] [B|CPPSTRING|1] [B|NOFLOAT|1] [S|OUTPUTPATH|^"$(CONFIGDIR)\$(PROJECTNAME).lib^"] [B|SIZE|1] [I|INLINE|100] [I|LOOP|2] [S|CPU|RX600] [S|BASE|00000000=NONE] [I|PID|16] [B|SKIPDEPENDENCY|1]
+" 1 
+"[V|VERSION|6] [S|FORM|BINARY] [S|BYTE_COUNT_VALUE|FF] [B|DEBUG|1] [S|ROM|(D,R)|(D_1,R_1)|(D_2,R_2)] [S|CRC|NONE|DEFAULT|00000000] [B|LIST|1] [S|LIST|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|SHOW|METHODCUSTOM|SYMBOL|REFERENCE|SECTION|XREFERENCE|TOTAL_SIZE|VECTOR] [S|OUTPUT|^"$(CONFIGDIR)\$(PROJECTNAME).bin^"] [I|SPACE|^"FF^"] [S|OPTIMIZEITEMS|ALL] [S|START|B_RX_DESC,B_TX_DESC,B_RX_BUFF_1,B_TX_BUFF_1,B_1,R_1,B_2,R_2,B,R,SU,SI(01000)|BLCD_Frames*(08000000)|PResetPRG,C_1,C_2,C,C$*,D*,P,W*,PIntPRG,L(0FFF80000)|FIXEDVECT(0FFFFFFD0)] [I|CPUINFORMATIONCHECK|1] [S|;CHECKDEVICE|RAM,0x00000000,0x00017FFF|ROM,0xFFF80000,0xFFFFFFFF|ROM,0x08000000,0x08FFFFFF] [B|STACK|1] [S|MEMORY|HIGH] [B|TOTAL_SIZE|1] [B|SKIPDEPENDENCY|1]
+" 5 
+[EXCLUDED_FILES_Release]
+"C:\FDI\uEZ\Build\Generic\Renesas\RX63N\FreeRTOS\HEW4.x\uEZ_Renesas_RX63N_FreeRTOS_HEW4\Debug\uEZ_Renesas_RX63N_FreeRTOS_HEW4_debug.lib" 
+[LINKAGE_ORDER_Release]
+"\uEZGUI-RX63N\Release\acceldemomode.obj" 
+"\uEZGUI-RX63N\Release\api_lib.obj" 
+"\uEZGUI-RX63N\Release\api_msg.obj" 
+"\uEZGUI-RX63N\Release\appmenu.obj" 
+"\uEZGUI-RX63N\Release\asn1_dec.obj" 
+"\uEZGUI-RX63N\Release\asn1_enc.obj" 
+"\uEZGUI-RX63N\Release\audio.obj" 
+"\uEZGUI-RX63N\Release\audioamp_8551t.obj" 
+"\uEZGUI-RX63N\Release\autoip.obj" 
+"\uEZGUI-RX63N\Release\basicweb.obj" 
+"\uEZGUI-RX63N\Release\bosch_bma150_i2c_driver.obj" 
+"\uEZGUI-RX63N\Release\brightnesscontrolmode.obj" 
+"\uEZGUI-RX63N\Release\button_nxp_pca9551_driver.obj" 
+"\uEZGUI-RX63N\Release\calibration.obj" 
+"\uEZGUI-RX63N\Release\carrier_rx63n_uezbsp.obj" 
+"\uEZGUI-RX63N\Release\carrier_rx63n_uezplatform.obj" 
+"\uEZGUI-RX63N\Release\clock.obj" 
+"\uEZGUI-RX63N\Release\consolemode.obj" 
+"\uEZGUI-RX63N\Release\dbsct.obj" 
+"\uEZGUI-RX63N\Release\dhcp.obj" 
+"\uEZGUI-RX63N\Release\directlcd_rx.obj" 
+"\uEZGUI-RX63N\Release\diskio.obj" 
+"\uEZGUI-RX63N\Release\dktskitdemo_rx63n.lib" 
+"\uEZGUI-RX63N\Release\dns.obj" 
+"\uEZGUI-RX63N\Release\drawmode.obj" 
+"\uEZGUI-RX63N\Release\err.obj" 
+"\uEZGUI-RX63N\Release\etharp.obj" 
+"\uEZGUI-RX63N\Release\ethernetif.obj" 
+"\uEZGUI-RX63N\Release\exmemory.obj" 
+"\uEZGUI-RX63N\Release\ff.obj" 
+"\uEZGUI-RX63N\Release\flash_api_rx600.obj" 
+"\uEZGUI-RX63N\Release\flash_data.obj" 
+"\uEZGUI-RX63N\Release\flash_renesas_rx63n_driver.obj" 
+"\uEZGUI-RX63N\Release\freescale_mma7455_driver.obj" 
+"\uEZGUI-RX63N\Release\generic_i2c.obj" 
+"\uEZGUI-RX63N\Release\generic_pwm.obj" 
+"\uEZGUI-RX63N\Release\generic_spi.obj" 
+"\uEZGUI-RX63N\Release\hal.obj" 
+"\uEZGUI-RX63N\Release\heap_2.obj" 
+"\uEZGUI-RX63N\Release\hwsetup.obj" 
+"\uEZGUI-RX63N\Release\icmp.obj" 
+"\uEZGUI-RX63N\Release\igmp.obj" 
+"\uEZGUI-RX63N\Release\inet.obj" 
+"\uEZGUI-RX63N\Release\inet_chksum.obj" 
+"\uEZGUI-RX63N\Release\init.obj" 
+"\uEZGUI-RX63N\Release\intprg.obj" 
+"\uEZGUI-RX63N\Release\ip.obj" 
+"\uEZGUI-RX63N\Release\ip_addr.obj" 
+"\uEZGUI-RX63N\Release\ip_frag.obj" 
+"\uEZGUI-RX63N\Release\lcddriver.obj" 
+"\uEZGUI-RX63N\Release\led_nxp_pca9551_driver.obj" 
+"\uEZGUI-RX63N\Release\list.obj" 
+"\uEZGUI-RX63N\Release\loopif.obj" 
+"\uEZGUI-RX63N\Release\lowlvl.obj" 
+"\uEZGUI-RX63N\Release\lowsrc.obj" 
+"\uEZGUI-RX63N\Release\lpc_helvr10.obj" 
+"\uEZGUI-RX63N\Release\lpc_rom8x16.obj" 
+"\uEZGUI-RX63N\Release\lpc_rom8x8.obj" 
+"\uEZGUI-RX63N\Release\lpc_swim.obj" 
+"\uEZGUI-RX63N\Release\lpc_swim_font.obj" 
+"\uEZGUI-RX63N\Release\lpc_swim_image.obj" 
+"\uEZGUI-RX63N\Release\lpc_winfreesystem14x16.obj" 
+"\uEZGUI-RX63N\Release\lpc_x5x7.obj" 
+"\uEZGUI-RX63N\Release\lpc_x6x13.obj" 
+"\uEZGUI-RX63N\Release\main.obj" 
+"\uEZGUI-RX63N\Release\mainmenu.obj" 
+"\uEZGUI-RX63N\Release\mem.obj" 
+"\uEZGUI-RX63N\Release\memp.obj" 
+"\uEZGUI-RX63N\Release\mib2.obj" 
+"\uEZGUI-RX63N\Release\mib_structs.obj" 
+"\uEZGUI-RX63N\Release\msg_in.obj" 
+"\uEZGUI-RX63N\Release\msg_out.obj" 
+"\uEZGUI-RX63N\Release\multislideshowmode.obj" 
+"\uEZGUI-RX63N\Release\netbuf.obj" 
+"\uEZGUI-RX63N\Release\netdb.obj" 
+"\uEZGUI-RX63N\Release\netif.obj" 
+"\uEZGUI-RX63N\Release\netifapi.obj" 
+"\uEZGUI-RX63N\Release\nvsettings.obj" 
+"\uEZGUI-RX63N\Release\pbuf.obj" 
+"\uEZGUI-RX63N\Release\port.obj" 
+"\uEZGUI-RX63N\Release\printf-stdarg.obj" 
+"\uEZGUI-RX63N\Release\queue.obj" 
+"\uEZGUI-RX63N\Release\raw.obj" 
+"\uEZGUI-RX63N\Release\resetprg.obj" 
+"\uEZGUI-RX63N\Release\rtc.obj" 
+"\uEZGUI-RX63N\Release\rtc_pcf8563.obj" 
+"\uEZGUI-RX63N\Release\rx63n_directdrive_lcdcontroller.obj" 
+"\uEZGUI-RX63N\Release\rx63n_dktskit_ts.obj" 
+"\uEZGUI-RX63N\Release\rx63n_emac.obj" 
+"\uEZGUI-RX63N\Release\rx63n_gpio.obj" 
+"\uEZGUI-RX63N\Release\rx63n_halinit.obj" 
+"\uEZGUI-RX63N\Release\rx63n_interrupt.obj" 
+"\uEZGUI-RX63N\Release\rx63n_pwm.obj" 
+"\uEZGUI-RX63N\Release\rx63n_riic.obj" 
+"\uEZGUI-RX63N\Release\rx63n_sci.obj" 
+"\uEZGUI-RX63N\Release\rx63n_spi.obj" 
+"\uEZGUI-RX63N\Release\sbrk.obj" 
+"\uEZGUI-RX63N\Release\sdcard_ms_driver.obj" 
+"\uEZGUI-RX63N\Release\simpleui_choices.obj" 
+"\uEZGUI-RX63N\Release\simpleui_drawing.obj" 
+"\uEZGUI-RX63N\Release\simpleui_regions.obj" 
+"\uEZGUI-RX63N\Release\simpleui_utilityfunctions.obj" 
+"\uEZGUI-RX63N\Release\singleslideshowmode.obj" 
+"\uEZGUI-RX63N\Release\sockets.obj" 
+"\uEZGUI-RX63N\Release\stats.obj" 
+"\uEZGUI-RX63N\Release\sys.obj" 
+"\uEZGUI-RX63N\Release\sys_arch.obj" 
+"\uEZGUI-RX63N\Release\tasks.obj" 
+"\uEZGUI-RX63N\Release\tcp.obj" 
+"\uEZGUI-RX63N\Release\tcp_in.obj" 
+"\uEZGUI-RX63N\Release\tcp_out.obj" 
+"\uEZGUI-RX63N\Release\tcpip.obj" 
+"\uEZGUI-RX63N\Release\temperature_lm75a_driver.obj" 
+"\uEZGUI-RX63N\Release\tempmode.obj" 
+"\uEZGUI-RX63N\Release\timedatemode.obj" 
+"\uEZGUI-RX63N\Release\tonegenerator_generic_pwm_driver.obj" 
+"\uEZGUI-RX63N\Release\udcimages.obj" 
+"\uEZGUI-RX63N\Release\udp.obj" 
+"\uEZGUI-RX63N\Release\uezadc.obj" 
+"\uEZGUI-RX63N\Release\uezaudioamp.obj" 
+"\uEZGUI-RX63N\Release\uezbspinit.obj" 
+"\uEZGUI-RX63N\Release\uezchardisplay.obj" 
+"\uEZGUI-RX63N\Release\uezdevicetable.obj" 
+"\uEZGUI-RX63N\Release\uezemac_lwip.obj" 
+"\uEZGUI-RX63N\Release\uezfile.obj" 
+"\uEZGUI-RX63N\Release\uezfilesystem_fatfs.obj" 
+"\uEZGUI-RX63N\Release\uezflash.obj" 
+"\uEZGUI-RX63N\Release\uezhandles.obj" 
+"\uEZGUI-RX63N\Release\uezi2c.obj" 
+"\uEZGUI-RX63N\Release\uezinit.obj" 
+"\uEZGUI-RX63N\Release\uezkeypad.obj" 
+"\uEZGUI-RX63N\Release\uezlcd.obj" 
+"\uEZGUI-RX63N\Release\uezledbank.obj" 
+"\uEZGUI-RX63N\Release\uezmemory.obj" 
+"\uEZGUI-RX63N\Release\uezrtos_freertos.obj" 
+"\uEZGUI-RX63N\Release\uezserialgeneric.obj" 
+"\uEZGUI-RX63N\Release\uezspi.obj" 
+"\uEZGUI-RX63N\Release\uezssp.obj" 
+"\uEZGUI-RX63N\Release\uezstream.obj" 
+"\uEZGUI-RX63N\Release\ueztemperature.obj" 
+"\uEZGUI-RX63N\Release\ueztimedate.obj" 
+"\uEZGUI-RX63N\Release\ueztonegenerator.obj" 
+"\uEZGUI-RX63N\Release\uezts.obj" 
+"\uEZGUI-RX63N\Release\vecttbl.obj" 
+"\uEZGUI-RX63N\Release\yourappmode.obj" 
+[GENERAL_DATA_CONFIGURATION_Release]
+[GENERAL_DATA_CONFIGURATION_SESSION_Debug_JLink]
+[SESSION_DATA_CONFIGURATION_SESSION_Debug_JLink]
+"MEMORY_MAPPING_OPTIONS" "" 
+[GENERAL_DATA_CONFIGURATION_SESSION_Debug_nodebug]
+[SESSION_DATA_CONFIGURATION_SESSION_Debug_nodebug]
+"MEMORY_MAPPING_OPTIONS" "" 
+[GENERAL_DATA_CONFIGURATION_SESSION_Release_JLink]
+[SESSION_DATA_CONFIGURATION_SESSION_Release_JLink]
+"MEMORY_MAPPING_OPTIONS" "" 
+[GENERAL_DATA_CONFIGURATION_SESSION_Release_nodebug]
+[SESSION_DATA_CONFIGURATION_SESSION_Release_nodebug]
+"MEMORY_MAPPING_OPTIONS" "" 
+[EXT_DEBUGGER_INFO]
+0 "" "" "" "" 
+[END]

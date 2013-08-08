@@ -170,7 +170,7 @@ static TIAPResult IIAPCmd(TUInt8 aCmd)
     G_results[0] = NOTHING_HAPPENED;
 
     // Execute with interrupts turned off
-    portDISABLE_INTERRUPTS();
+    CPUDisableInterrupts();
 
     // Before doing any IAP commands, turn off the PLL
 #if CONFIG_DISABLE_PLL_ON_IAP_COMMANDS
@@ -184,7 +184,7 @@ static TIAPResult IIAPCmd(TUInt8 aCmd)
     CPUPLLStart();
 #endif
 
-    portENABLE_INTERRUPTS();
+    CPUEnableInterrupts();
 
     return G_results[0];
 }
@@ -911,3 +911,4 @@ const DEVICE_Flash Flash_NXP_LPC1788_Interface = { {
 /*-------------------------------------------------------------------------*
  * End of File:  LPC1788_IAP.c
  *-------------------------------------------------------------------------*/
+

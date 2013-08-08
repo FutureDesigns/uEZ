@@ -34,14 +34,16 @@
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#if (COMPILER_TYPE==RowleyARM)
+#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
     #define MCI_MEMORY __attribute__((section(".mcimem")));
+#elif (COMPILER_TYPE==IAR)
+    #define MCI_MEMORY @ ".mcimem"
 #else
     #define MCI_MEMORY // no mods
 #endif
 
 #ifndef NUM_MAX_BLOCKS
-    #define NUM_MAX_BLOCKS               24           /* Block transfer FIFO depth (>= 2), 20+ recommended */
+    #define NUM_MAX_BLOCKS               18         /* Block transfer FIFO depth (>= 2), 20+ recommended */
 #endif
 
 #ifndef SDCARD_MCI_RATE_FOR_RW_STATE
@@ -183,8 +185,8 @@ void LPC1788_MCI_ProcessInterrupt(
 {
     TUInt32 ms;
     TUInt8 xs;
-    TUInt32 n;
-    T_gpdmaRequest r;
+    //TUInt32 n;
+    //T_gpdmaRequest r;
 
     /* Clear MCI interrupt status */
     ms = MCI_STATUS & MCI_STATUS_ERRORS;
@@ -531,7 +533,7 @@ T_uezError LPC1788_MCI_ReadyReception(
     // Set data length
     MCI_DATA_LEN = 512 * aNumBlocks;
     // Data timer: 0.2sec
-    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 0.2);
+//    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 0.2);
     MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 2.0);
     // Clear status flags for errors
     MCI_CLEAR = MCI_STATUS_ERRORS;

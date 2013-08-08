@@ -61,6 +61,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopU1X>0</nStopU1X>
+            <nStopU2X>0</nStopU2X>
           </BeforeCompile>
           <BeforeMake>
             <RunUserProg1>0</RunUserProg1>
@@ -134,6 +136,7 @@
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -162,6 +165,7 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
+          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -342,6 +346,7 @@
             <Rwpi>0</Rwpi>
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
+            <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG</Define>
@@ -357,6 +362,7 @@
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
+            <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -456,6 +462,21 @@
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\TestCmds.h</FilePath>
             </File>
+            <File>
+              <FileName>FunctionalTest_EXP_DK.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.c</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest_EXP_DK.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.h</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTestLoop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTestLoop.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -580,6 +601,26 @@
               <FileName>YourAppMode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\YourAppMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppHTTPServer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppHTTPServer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</FilePath>
+            </File>
+            <File>
+              <FileName>NetworkStartup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</FilePath>
+            </File>
+            <File>
+              <FileName>CANTest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -729,6 +770,29 @@
                 <FileArmAds/>
               </FileOption>
             </File>
+            <File>
+              <FileName>uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Release\uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                </CommonProperty>
+                <FileArmAds/>
+              </FileOption>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -745,9 +809,9 @@
           <GroupName>Platform/FDI/UEZGUI_1788_70WVE</GroupName>
           <Files>
             <File>
-              <FileName>uEZGUI-1788-70WVE.c</FileName>
+              <FileName>uEZGUI_1788_70WVE.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI-1788-70WVE.c</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI_1788_70WVE.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -755,9 +819,24 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_518_Keil4_M3_LE.lib</FileName>
+              <FileName>emWin_520_Keil460_M3_LE.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_518_Keil4_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_520_Keil460_M3_LE.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP</GroupName>
+          <Files>
+            <File>
+              <FileName>uEZGUI_EXP_DK.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.c</FilePath>
+            </File>
+            <File>
+              <FileName>uEZGUI_EXP_DK.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -818,6 +897,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopU1X>0</nStopU1X>
+            <nStopU2X>0</nStopU2X>
           </BeforeCompile>
           <BeforeMake>
             <RunUserProg1>0</RunUserProg1>
@@ -891,6 +972,7 @@
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -919,6 +1001,7 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
+          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -1099,6 +1182,7 @@
             <Rwpi>0</Rwpi>
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
+            <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG, FREERTOS_PLUS_TRACE</Define>
@@ -1114,6 +1198,7 @@
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
+            <uSurpInc>0</uSurpInc>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -1212,6 +1297,21 @@
               <FileName>TestCmds.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\TestCmds.h</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest_EXP_DK.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.c</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest_EXP_DK.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.h</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTestLoop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTestLoop.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1337,6 +1437,26 @@
               <FileName>YourAppMode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\YourAppMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppHTTPServer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppHTTPServer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</FilePath>
+            </File>
+            <File>
+              <FileName>NetworkStartup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</FilePath>
+            </File>
+            <File>
+              <FileName>CANTest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1486,6 +1606,29 @@
               <FileType>4</FileType>
               <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Debug-Trace\uEZ_NXP_LPC1788_FreeRTOS_Keil_Debug-Trace.lib</FilePath>
             </File>
+            <File>
+              <FileName>uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Release\uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                </CommonProperty>
+                <FileArmAds/>
+              </FileOption>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1502,9 +1645,9 @@
           <GroupName>Platform/FDI/UEZGUI_1788_70WVE</GroupName>
           <Files>
             <File>
-              <FileName>uEZGUI-1788-70WVE.c</FileName>
+              <FileName>uEZGUI_1788_70WVE.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI-1788-70WVE.c</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI_1788_70WVE.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1512,9 +1655,860 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_518_Keil4_M3_LE.lib</FileName>
+              <FileName>emWin_520_Keil460_M3_LE.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_518_Keil4_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_520_Keil460_M3_LE.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP</GroupName>
+          <Files>
+            <File>
+              <FileName>uEZGUI_EXP_DK.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.c</FilePath>
+            </File>
+            <File>
+              <FileName>uEZGUI_EXP_DK.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+      </Groups>
+    </Target>
+    <Target>
+      <TargetName>Release</TargetName>
+      <ToolsetNumber>0x4</ToolsetNumber>
+      <ToolsetName>ARM-ADS</ToolsetName>
+      <TargetOption>
+        <TargetCommonOption>
+          <Device>LPC1788</Device>
+          <Vendor>NXP (founded by Philips)</Vendor>
+          <Cpu>IRAM(0x10000000-0x1000FFFF) IRAM2(0x20000000-0x20007FFF) IROM(0-0x7FFFF) CLOCK(12000000) CPUTYPE("Cortex-M3")</Cpu>
+          <FlashUtilSpec></FlashUtilSpec>
+          <StartupFile>"STARTUP\NXP\LPC177x_8x\startup_LPC177x_8x.s" ("NXP LPC177x_8x Startup Code")</StartupFile>
+          <FlashDriverDll>UL2CM3(-O463 -S0 -C0 -FO7 -FD10000000 -FC800 -FN1 -FF0LPC_IAP_512 -FS00 -FL080000)</FlashDriverDll>
+          <DeviceId>5325</DeviceId>
+          <RegisterFile>LPC177x_8x.H</RegisterFile>
+          <MemoryEnv></MemoryEnv>
+          <Cmp></Cmp>
+          <Asm></Asm>
+          <Linker></Linker>
+          <OHString></OHString>
+          <InfinionOptionDll></InfinionOptionDll>
+          <SLE66CMisc></SLE66CMisc>
+          <SLE66AMisc></SLE66AMisc>
+          <SLE66LinkerMisc></SLE66LinkerMisc>
+          <SFDFile></SFDFile>
+          <UseEnv>0</UseEnv>
+          <BinPath></BinPath>
+          <IncludePath></IncludePath>
+          <LibPath></LibPath>
+          <RegisterFilePath>NXP\LPC177x_8x\</RegisterFilePath>
+          <DBRegisterFilePath>NXP\LPC177x_8x\</DBRegisterFilePath>
+          <TargetStatus>
+            <Error>0</Error>
+            <ExitCodeStop>0</ExitCodeStop>
+            <ButtonStop>0</ButtonStop>
+            <NotGenerated>0</NotGenerated>
+            <InvalidFlash>1</InvalidFlash>
+          </TargetStatus>
+          <OutputDirectory>.\Release\</OutputDirectory>
+          <OutputName>uEZGUI-1788-70WVE</OutputName>
+          <CreateExecutable>1</CreateExecutable>
+          <CreateLib>0</CreateLib>
+          <CreateHexFile>1</CreateHexFile>
+          <DebugInformation>1</DebugInformation>
+          <BrowseInformation>1</BrowseInformation>
+          <ListingPath>.\Release\</ListingPath>
+          <HexFormatSelection>1</HexFormatSelection>
+          <Merge32K>0</Merge32K>
+          <CreateBatchFile>0</CreateBatchFile>
+          <BeforeCompile>
+            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg2>0</RunUserProg2>
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
+            <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
+            <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopU1X>0</nStopU1X>
+            <nStopU2X>0</nStopU2X>
+          </BeforeCompile>
+          <BeforeMake>
+            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg2>0</RunUserProg2>
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
+            <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
+            <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+          </BeforeMake>
+          <AfterMake>
+            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg2>0</RunUserProg2>
+            <UserProg1Name></UserProg1Name>
+            <UserProg2Name></UserProg2Name>
+            <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
+            <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+          </AfterMake>
+          <SelectedForBatchBuild>1</SelectedForBatchBuild>
+          <SVCSIdString></SVCSIdString>
+        </TargetCommonOption>
+        <CommonProperty>
+          <UseCPPCompiler>0</UseCPPCompiler>
+          <RVCTCodeConst>0</RVCTCodeConst>
+          <RVCTZI>0</RVCTZI>
+          <RVCTOtherData>0</RVCTOtherData>
+          <ModuleSelection>0</ModuleSelection>
+          <IncludeInBuild>1</IncludeInBuild>
+          <AlwaysBuild>0</AlwaysBuild>
+          <GenerateAssemblyFile>0</GenerateAssemblyFile>
+          <AssembleAssemblyFile>0</AssembleAssemblyFile>
+          <PublicsOnly>0</PublicsOnly>
+          <StopOnExitCode>3</StopOnExitCode>
+          <CustomArgument></CustomArgument>
+          <IncludeLibraryModules></IncludeLibraryModules>
+        </CommonProperty>
+        <DllOption>
+          <SimDllName>SARMCM3.DLL</SimDllName>
+          <SimDllArguments>-MPU</SimDllArguments>
+          <SimDlgDll>DARMP1.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pLPC1788</SimDlgDllArguments>
+          <TargetDllName>SARMCM3.DLL</TargetDllName>
+          <TargetDllArguments>-MPU</TargetDllArguments>
+          <TargetDlgDll>TARMP1.DLL</TargetDlgDll>
+          <TargetDlgDllArguments>-pLPC1788</TargetDlgDllArguments>
+        </DllOption>
+        <DebugOption>
+          <OPTHX>
+            <HexSelection>1</HexSelection>
+            <HexRangeLowAddress>0</HexRangeLowAddress>
+            <HexRangeHighAddress>0</HexRangeHighAddress>
+            <HexOffset>0</HexOffset>
+            <Oh166RecLen>16</Oh166RecLen>
+          </OPTHX>
+          <Simulator>
+            <UseSimulator>0</UseSimulator>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>1</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+          </Simulator>
+          <Target>
+            <UseTarget>1</UseTarget>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>0</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>0</RestoreTracepoints>
+          </Target>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
+          <TargetSelection>7</TargetSelection>
+          <SimDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+          </SimDlls>
+          <TargetDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+            <Driver>Segger\JL2CM3.dll</Driver>
+          </TargetDlls>
+        </DebugOption>
+        <Utilities>
+          <Flash1>
+            <UseTargetDll>1</UseTargetDll>
+            <UseExternalTool>0</UseExternalTool>
+            <RunIndependent>0</RunIndependent>
+            <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
+            <Capability>1</Capability>
+            <DriverSelection>4099</DriverSelection>
+          </Flash1>
+          <bUseTDR>0</bUseTDR>
+          <Flash2>Segger\JL2CM3.dll</Flash2>
+          <Flash3>"" ()</Flash3>
+          <Flash4></Flash4>
+        </Utilities>
+        <TargetArmAds>
+          <ArmAdsMisc>
+            <GenerateListings>0</GenerateListings>
+            <asHll>1</asHll>
+            <asAsm>1</asAsm>
+            <asMacX>1</asMacX>
+            <asSyms>1</asSyms>
+            <asFals>1</asFals>
+            <asDbgD>1</asDbgD>
+            <asForm>1</asForm>
+            <ldLst>0</ldLst>
+            <ldmm>1</ldmm>
+            <ldXref>1</ldXref>
+            <BigEnd>0</BigEnd>
+            <AdsALst>1</AdsALst>
+            <AdsACrf>1</AdsACrf>
+            <AdsANop>0</AdsANop>
+            <AdsANot>0</AdsANot>
+            <AdsLLst>1</AdsLLst>
+            <AdsLmap>1</AdsLmap>
+            <AdsLcgr>1</AdsLcgr>
+            <AdsLsym>1</AdsLsym>
+            <AdsLszi>1</AdsLszi>
+            <AdsLtoi>1</AdsLtoi>
+            <AdsLsun>1</AdsLsun>
+            <AdsLven>1</AdsLven>
+            <AdsLsxf>1</AdsLsxf>
+            <RvctClst>0</RvctClst>
+            <GenPPlst>0</GenPPlst>
+            <AdsCpuType>"Cortex-M3"</AdsCpuType>
+            <RvctDeviceName></RvctDeviceName>
+            <mOS>0</mOS>
+            <uocRom>0</uocRom>
+            <uocRam>0</uocRam>
+            <hadIROM>1</hadIROM>
+            <hadIRAM>1</hadIRAM>
+            <hadXRAM>0</hadXRAM>
+            <uocXRam>0</uocXRam>
+            <RvdsVP>0</RvdsVP>
+            <hadIRAM2>1</hadIRAM2>
+            <hadIROM2>0</hadIROM2>
+            <StupSel>8</StupSel>
+            <useUlib>1</useUlib>
+            <EndSel>0</EndSel>
+            <uLtcg>0</uLtcg>
+            <RoSelD>3</RoSelD>
+            <RwSelD>3</RwSelD>
+            <CodeSel>0</CodeSel>
+            <OptFeed>0</OptFeed>
+            <NoZi1>0</NoZi1>
+            <NoZi2>0</NoZi2>
+            <NoZi3>0</NoZi3>
+            <NoZi4>0</NoZi4>
+            <NoZi5>0</NoZi5>
+            <Ro1Chk>0</Ro1Chk>
+            <Ro2Chk>0</Ro2Chk>
+            <Ro3Chk>0</Ro3Chk>
+            <Ir1Chk>1</Ir1Chk>
+            <Ir2Chk>0</Ir2Chk>
+            <Ra1Chk>0</Ra1Chk>
+            <Ra2Chk>0</Ra2Chk>
+            <Ra3Chk>0</Ra3Chk>
+            <Im1Chk>1</Im1Chk>
+            <Im2Chk>0</Im2Chk>
+            <OnChipMemories>
+              <Ocm1>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm1>
+              <Ocm2>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm2>
+              <Ocm3>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm3>
+              <Ocm4>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm4>
+              <Ocm5>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm5>
+              <Ocm6>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </Ocm6>
+              <IRAM>
+                <Type>0</Type>
+                <StartAddress>0x10000000</StartAddress>
+                <Size>0x10000</Size>
+              </IRAM>
+              <IROM>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x80000</Size>
+              </IROM>
+              <XRAM>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </XRAM>
+              <OCR_RVCT1>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT1>
+              <OCR_RVCT2>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT2>
+              <OCR_RVCT3>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT3>
+              <OCR_RVCT4>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x80000</Size>
+              </OCR_RVCT4>
+              <OCR_RVCT5>
+                <Type>1</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT5>
+              <OCR_RVCT6>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT6>
+              <OCR_RVCT7>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT7>
+              <OCR_RVCT8>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
+              </OCR_RVCT8>
+              <OCR_RVCT9>
+                <Type>0</Type>
+                <StartAddress>0x10000000</StartAddress>
+                <Size>0x10000</Size>
+              </OCR_RVCT9>
+              <OCR_RVCT10>
+                <Type>0</Type>
+                <StartAddress>0x20000000</StartAddress>
+                <Size>0x8000</Size>
+              </OCR_RVCT10>
+            </OnChipMemories>
+            <RvctStartVector></RvctStartVector>
+          </ArmAdsMisc>
+          <Cads>
+            <interw>1</interw>
+            <Optim>1</Optim>
+            <oTime>0</oTime>
+            <SplitLS>0</SplitLS>
+            <OneElfS>0</OneElfS>
+            <Strict>0</Strict>
+            <EnumInt>0</EnumInt>
+            <PlainCh>0</PlainCh>
+            <Ropi>0</Ropi>
+            <Rwpi>0</Rwpi>
+            <wLevel>1</wLevel>
+            <uThumb>0</uThumb>
+            <uSurpInc>0</uSurpInc>
+            <VariousControls>
+              <MiscControls></MiscControls>
+              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3</Define>
+              <Undefine></Undefine>
+              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_70WVE;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
+            </VariousControls>
+          </Cads>
+          <Aads>
+            <interw>1</interw>
+            <Ropi>0</Ropi>
+            <Rwpi>0</Rwpi>
+            <thumb>0</thumb>
+            <SplitLS>0</SplitLS>
+            <SwStkChk>0</SwStkChk>
+            <NoWarn>0</NoWarn>
+            <uSurpInc>0</uSurpInc>
+            <VariousControls>
+              <MiscControls></MiscControls>
+              <Define></Define>
+              <Undefine></Undefine>
+              <IncludePath></IncludePath>
+            </VariousControls>
+          </Aads>
+          <LDads>
+            <umfTarg>0</umfTarg>
+            <Ropi>0</Ropi>
+            <Rwpi>0</Rwpi>
+            <noStLib>0</noStLib>
+            <RepFail>1</RepFail>
+            <useFile>0</useFile>
+            <TextAddressRange>0x00000000</TextAddressRange>
+            <DataAddressRange>0x10000000</DataAddressRange>
+            <ScatterFile>.\uEZGUI-1788-70WVE.sct</ScatterFile>
+            <IncludeLibs></IncludeLibs>
+            <IncludeLibsPath></IncludeLibsPath>
+            <Misc>--verbose</Misc>
+            <LinkerInputFile></LinkerInputFile>
+            <DisabledWarnings></DisabledWarnings>
+          </LDads>
+        </TargetArmAds>
+      </TargetOption>
+      <Groups>
+        <Group>
+          <GroupName>Build</GroupName>
+          <Files>
+            <File>
+              <FileName>Config_Build.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Config_Build.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>uEZGUI</GroupName>
+          <Files>
+            <File>
+              <FileName>AppTasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\AppTasks.c</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>MainMenu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\MainMenu.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestCmds.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\TestCmds.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\TestMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppDemo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\AppDemo.h</FilePath>
+            </File>
+            <File>
+              <FileName>AppTasks.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\AppTasks.h</FilePath>
+            </File>
+            <File>
+              <FileName>Config_App.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\Config_App.h</FilePath>
+            </File>
+            <File>
+              <FileName>FuncTestFramework.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FuncTestFramework.h</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest.h</FilePath>
+            </File>
+            <File>
+              <FileName>TestCmds.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\TestCmds.h</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest_EXP_DK.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.c</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTest_EXP_DK.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.h</FilePath>
+            </File>
+            <File>
+              <FileName>FunctionalTestLoop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZGUI\FunctionalTestLoop.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>uEZDemoCommon</GroupName>
+          <Files>
+            <File>
+              <FileName>AccelDemoMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AccelDemoMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppMenu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppMenu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h</FilePath>
+            </File>
+            <File>
+              <FileName>Audio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\Audio.c</FilePath>
+            </File>
+            <File>
+              <FileName>Audio.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\Audio.h</FilePath>
+            </File>
+            <File>
+              <FileName>AudioPlayer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayer.h</FilePath>
+            </File>
+            <File>
+              <FileName>AudioPlayerMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayerMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>BrightnessControlMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\BrightnessControlMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>Calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>Calibration.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h</FilePath>
+            </File>
+            <File>
+              <FileName>ConsoleMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\ConsoleMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>DrawMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\DrawMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>MultiSlideshowMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\MultiSlideshowMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>NVSettings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\NVSettings.c</FilePath>
+            </File>
+            <File>
+              <FileName>NVSettings.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\NVSettings.h</FilePath>
+            </File>
+            <File>
+              <FileName>SingleSlideshowMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\SingleSlideshowMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>SingleSlideshowMode.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\SingleSlideshowMode.h</FilePath>
+            </File>
+            <File>
+              <FileName>Slideshow.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h</FilePath>
+            </File>
+            <File>
+              <FileName>TempMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\TempMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>TimeDateMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\TimeDateMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>UDCImages.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.c</FilePath>
+            </File>
+            <File>
+              <FileName>UDCImages.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h</FilePath>
+            </File>
+            <File>
+              <FileName>uEZDemoCommon.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h</FilePath>
+            </File>
+            <File>
+              <FileName>YourAppMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\YourAppMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppHTTPServer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</FilePath>
+            </File>
+            <File>
+              <FileName>AppHTTPServer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</FilePath>
+            </File>
+            <File>
+              <FileName>NetworkStartup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</FilePath>
+            </File>
+            <File>
+              <FileName>CANTest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SEGGER/emWin</GroupName>
+          <Files>
+            <File>
+              <FileName>emWin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\emWin.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SEGGER/emWin/GUIDEMO</GroupName>
+          <Files>
+            <File>
+              <FileName>GUIDEMO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Automotive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Automotive.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Bitmap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Bitmap.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_ColorBar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ColorBar.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Cursor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Cursor.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Fading.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Fading.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Graph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Graph.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_IconView.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_IconView.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_ImageFlow.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ImageFlow.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Intro.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Intro.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Listview.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Listview.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Resource.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Resource.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Skinning.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Skinning.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Speed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Speed.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Speedometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Speedometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_TransparentDialog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_TransparentDialog.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Treeview.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Treeview.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_VScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_VScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_WashingMachine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_WashingMachine.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_ZoomAndRotate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ZoomAndRotate.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library</GroupName>
+          <Files>
+            <File>
+              <FileName>uEZ_NXP_LPC1788_FreeRTOS_Keil_Debug.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Debug\uEZ_NXP_LPC1788_FreeRTOS_Keil_Debug.lib</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                </CommonProperty>
+                <FileArmAds/>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>uEZ_NXP_LPC1788_FreeRTOS_Keil_Debug-Trace.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Debug-Trace\uEZ_NXP_LPC1788_FreeRTOS_Keil_Debug-Trace.lib</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                </CommonProperty>
+                <FileArmAds/>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Release\uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Include</GroupName>
+          <Files>
+            <File>
+              <FileName>Config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\Include\Config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Platform/FDI/UEZGUI_1788_70WVE</GroupName>
+          <Files>
+            <File>
+              <FileName>uEZGUI_1788_70WVE.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI_1788_70WVE.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
+          <Files>
+            <File>
+              <FileName>emWin_520_Keil460_M3_LE.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_520_Keil460_M3_LE.lib</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP</GroupName>
+          <Files>
+            <File>
+              <FileName>uEZGUI_EXP_DK.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.c</FilePath>
+            </File>
+            <File>
+              <FileName>uEZGUI_EXP_DK.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.h</FilePath>
             </File>
           </Files>
         </Group>

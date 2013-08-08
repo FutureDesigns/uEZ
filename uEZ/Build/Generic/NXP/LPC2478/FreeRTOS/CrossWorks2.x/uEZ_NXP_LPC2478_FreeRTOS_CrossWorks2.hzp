@@ -125,6 +125,14 @@
               <file file_name="../../../../../../Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h"/>
             </folder>
           </folder>
+          <folder Name="LM48100" file_name="">
+            <file file_name="../../../../../../Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.c"/>
+            <file file_name="../../../../../../Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h"/>
+          </folder>
+          <folder Name="Wolfson/WM8731" file_name="">
+            <file file_name="../../../../../../Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.c"/>
+            <file file_name="../../../../../../Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.h"/>
+          </folder>
         </folder>
         <folder Name="Backlight">
           <folder Name="Generic">
@@ -379,6 +387,10 @@
             <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_spi.h"/>
             <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_util.c"/>
             <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_util.h"/>
+          </folder>
+          <folder Name="GainSpan" file_name="">
+            <file file_name="../../../../../../Source/Devices/Network/GainSpan/Network_GainSpan.c"/>
+            <file file_name="../../../../../../Source/Devices/Network/GainSpan/Network_GainSpan.h"/>
           </folder>
         </folder>
         <folder Name="Audio Codec">
@@ -828,6 +840,10 @@
             <file file_name="../../../../../../Source/Library/Audio/MIDI/MIDIPlayer.c"/>
             <file file_name="../../../../../../Source/Library/Audio/MIDI/MIDIPlayer.h"/>
           </folder>
+          <folder Name="DAC" file_name="">
+            <file file_name="../../../../../../Source/Library/Audio/DAC/UEZDACWavFile.c"/>
+            <file file_name="../../../../../../Source/Library/Audio/DAC/UEZDACWAVFile.h"/>
+          </folder>
         </folder>
         <folder Name="uEZFailure" file_name="">
           <file file_name="../../../../../../Source/Library/uEZFailure/FatalError.c"/>
@@ -842,12 +858,32 @@
               <file file_name="../../../../../../Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.h"/>
             </folder>
           </folder>
+          <folder Name="GainSpan">
+            <folder Name="CmdLib" file_name="">
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/AtCmdLib.c"/>
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/AtCmdLib.h"/>
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.c"/>
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.h"/>
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.c"/>
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.h"/>
+            </folder>
+          </folder>
         </folder>
         <folder Name="ScreenSaver">
           <file file_name="../../../../../../Source/Library/ScreenSaver/BouncingLogoSS.c"/>
         </folder>
+        <folder Name="Tests">
+          <folder Name="ALS">
+            <folder Name="Vishay">
+              <folder Name="VCNL4010" file_name="">
+                <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.c"/>
+                <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.h"/>
+              </folder>
+            </folder>
+          </folder>
+        </folder>
       </folder>
-      <folder Name="uEZSystem">
+      <folder Name="uEZSystem" file_name="">
         <file file_name="../../../../../../Source/uEZSystem/HAL.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZADC.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZAudioAmp.c"/>
@@ -885,6 +921,7 @@
         <file file_name="../../../../../../Source/uEZSystem/uEZTimer.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZWAVFile.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZEEPROM.c"/>
+        <file file_name="../../../../../../Source/uEZSystem/uEZAudioMixer.c"/>
       </folder>
       <folder Name="Platform">
         <folder Name="emWin">

@@ -40,16 +40,16 @@
  * Types:
  *-------------------------------------------------------------------------*/
 typedef struct {
-        TUInt8 iHour; 		/** 0 - 23 */
-        TUInt8 iMinute; 	/** 0 - 59 */
-        TUInt8 iSecond; 	/** 0 - 59 */
-        TUInt8 iReserved; 	/** Always 0 */
+        TUInt8 iHour;         /** 0 - 23 */
+        TUInt8 iMinute;     /** 0 - 59 */
+        TUInt8 iSecond;     /** 0 - 59 */
+        TUInt8 iReserved;     /** Always 0 */
 } T_uezTime;
 
 typedef struct {
-        TUInt8 iMonth; 		/** 1 - 12 */
-        TUInt8 iDay; 		/** 1 - 31 */
-        TUInt16 iYear; 		/** 0 - 9999 */
+        TUInt8 iMonth;         /** 1 - 12 */
+        TUInt8 iDay;         /** 1 - 31 */
+        TUInt16 iYear;         /** 0 - 9999 */
 } T_uezDate;
 
 typedef struct {
@@ -58,10 +58,10 @@ typedef struct {
 } T_uezTimeDate;
 
 typedef struct {
-        TUInt16 iDays; 		/** Maximum of 65535 days or 179 years */
-        TUInt8 iHours; 		/** 0 - 23 */
-        TUInt8 iMinutes; 	/** 0 - 59 */
-        TUInt8 iSeconds; 	/** 0 - 59 */
+        TUInt16 iDays;         /** Maximum of 65535 days or 179 years */
+        TUInt8 iHours;         /** 0 - 23 */
+        TUInt8 iMinutes;     /** 0 - 59 */
+        TUInt8 iSeconds;     /** 0 - 59 */
 } T_uezTimeDuration;
 
 #endif // _TimeDate_TYPES_H_

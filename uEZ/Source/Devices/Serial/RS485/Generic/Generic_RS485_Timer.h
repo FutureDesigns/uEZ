@@ -4,8 +4,8 @@
  * Description:
  *     
  *-------------------------------------------------------------------------*/
-#ifndef GENERIC_RS485_H_
-#define GENERIC_RS485_H_
+#ifndef GENERIC_RS485_TIMER_H_
+#define GENERIC_RS485_TIMER_H_
 
 /*--------------------------------------------------------------------------
  * uEZ(tm) - Copyright (C) 2007-2011 Future Designs, Inc.
@@ -108,7 +108,7 @@ T_uezError RS485_Generic_Timer_Create(
     const char *aName,
     const T_RS485_Generic_Timer_Settings *aSettings);
 
-#endif // GENERIC_RS485_H_
+#endif // GENERIC_RS485_TIMER_H_
 /*-------------------------------------------------------------------------*
  * End of File:  Generic_RS485.h
  *-------------------------------------------------------------------------*/

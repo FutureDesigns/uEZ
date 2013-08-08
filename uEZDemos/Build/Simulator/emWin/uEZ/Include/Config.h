@@ -35,8 +35,8 @@
 #define RowleyARM                   1
 #define IAR                         2
 #define CodeRed                     3
-#define HEW			    4
-#define Keil4			    5
+#define HEW                4
+#define Keil4                5
 #define RenesasRX                   6
 #define VisualC                     7
 
@@ -91,7 +91,7 @@
 /** List of processor types */
 #define NXP_LPC2478                             1
 #define NXP_LPC1768                             2
-#define RENESAS_H8SX_1668RF	                3
+#define RENESAS_H8SX_1668RF                    3
 #define NXP_LPC1788                             4
 #define RENESAS_RX62N                           5
 #define STMICRO_STM32F105_7                     6

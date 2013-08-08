@@ -33,6 +33,7 @@
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 //#include <Source/Library/Graphics/SWIM/lpc_droidsansr76.h>
 #include <UEZLCD.h>
+#include <UEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -221,7 +222,9 @@ void YourAppMode(const T_choice *aChoice)
 {
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
-	
+#if ENABLE_UEZ_BUTTON
+    T_uezDevice keypadDevice;
+#endif	
 	G_crash = 1;
 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
@@ -245,7 +248,7 @@ void YourAppMode(const T_choice *aChoice)
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
 	if (NULL == queue)
 	{
-	  	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) != UEZ_ERROR_NONE)
+	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
 		{
 		  	queue = NULL;
 		}
@@ -255,9 +258,15 @@ void YourAppMode(const T_choice *aChoice)
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
 	  	UEZQueueAddToRegistry( queue, "YourApp TS" );	
 #else
-	if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "YourApp", "\0");
 #endif
 
+#endif
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
+#endif
 	G_crash = 4;
 
 		// Open up the touchscreen and pass in the queue to receive events
@@ -287,6 +296,9 @@ void YourAppMode(const T_choice *aChoice)
 			UEZTSClose(ts, queue);
 		}
 		G_crash = 9;
+#if ENABLE_UEZ_BUTTON
+        UEZKeypadClose(keypadDevice, &queue);
+#endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
 	    UEZQueueDelete(queue);
 #endif

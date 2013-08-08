@@ -57,7 +57,7 @@
 #endif
 
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  48
+    #define UEZ_DEFAULT_AUDIO_LEVEL  255
 #endif
 
 #ifndef UEZ_CONSOLE_READ_BUFFER_SIZE
@@ -89,6 +89,114 @@
  *-------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------*
+ * Expansion Connector Header Pin Mappings to CPU:
+ *-------------------------------------------------------------------------*/
+// Primary Expansion Header mapping from connector (J2) to CPU
+#define GPIO_PRIMARY_EXPANSION_PIN_1             GPIO_NONE // GND
+#define GPIO_PRIMARY_EXPANSION_PIN_2             GPIO_P0_11
+#define GPIO_PRIMARY_EXPANSION_PIN_3             GPIO_P0_10
+#define GPIO_PRIMARY_EXPANSION_PIN_4             GPIO_P0_20
+#define GPIO_PRIMARY_EXPANSION_PIN_5             GPIO_P0_19
+#define GPIO_PRIMARY_EXPANSION_PIN_6             GPIO_P0_22
+#define GPIO_PRIMARY_EXPANSION_PIN_7             GPIO_P0_17
+#define GPIO_PRIMARY_EXPANSION_PIN_8             GPIO_P0_16
+#define GPIO_PRIMARY_EXPANSION_PIN_9             GPIO_P0_15
+#define GPIO_PRIMARY_EXPANSION_PIN_10            GPIO_NONE // GND
+#define GPIO_PRIMARY_EXPANSION_PIN_11            GPIO_P0_30
+#define GPIO_PRIMARY_EXPANSION_PIN_12            GPIO_P0_29
+#define GPIO_PRIMARY_EXPANSION_PIN_13            GPIO_P4_26 // USB1H_PWRD
+#define GPIO_PRIMARY_EXPANSION_PIN_14            GPIO_P4_27 // USB1H_OVC
+#define GPIO_PRIMARY_EXPANSION_PIN_15            GPIO_P1_19 // USB1H_PPWR
+#define GPIO_PRIMARY_EXPANSION_PIN_16            GPIO_P0_9
+#define GPIO_PRIMARY_EXPANSION_PIN_17            GPIO_P0_8
+#define GPIO_PRIMARY_EXPANSION_PIN_18            GPIO_P0_7
+#define GPIO_PRIMARY_EXPANSION_PIN_19            GPIO_P0_6
+#define GPIO_PRIMARY_EXPANSION_PIN_20            GPIO_P0_5
+#define GPIO_PRIMARY_EXPANSION_PIN_21            GPIO_P0_4
+#define GPIO_PRIMARY_EXPANSION_PIN_22            GPIO_NONE // GND
+#define GPIO_PRIMARY_EXPANSION_PIN_23            GPIO_NONE // RESET_INn
+#define GPIO_PRIMARY_EXPANSION_PIN_24            GPIO_NONE // RESET_OUTn
+#define GPIO_PRIMARY_EXPANSION_PIN_25            GPIO_P0_26
+#define GPIO_PRIMARY_EXPANSION_PIN_26            GPIO_P1_31
+#define GPIO_PRIMARY_EXPANSION_PIN_27            GPIO_P1_17
+#define GPIO_PRIMARY_EXPANSION_PIN_28            GPIO_P1_16
+#define GPIO_PRIMARY_EXPANSION_PIN_29            GPIO_NONE // GND
+#define GPIO_PRIMARY_EXPANSION_PIN_30            GPIO_P1_15
+#define GPIO_PRIMARY_EXPANSION_PIN_31            GPIO_P1_14
+#define GPIO_PRIMARY_EXPANSION_PIN_32            GPIO_NONE // 3V3
+#define GPIO_PRIMARY_EXPANSION_PIN_33            GPIO_P1_10
+#define GPIO_PRIMARY_EXPANSION_PIN_34            GPIO_P1_9
+#define GPIO_PRIMARY_EXPANSION_PIN_35            GPIO_P1_8
+#define GPIO_PRIMARY_EXPANSION_PIN_36            GPIO_P1_4
+#define GPIO_PRIMARY_EXPANSION_PIN_37            GPIO_P1_1
+#define GPIO_PRIMARY_EXPANSION_PIN_38            GPIO_P1_0
+#define GPIO_PRIMARY_EXPANSION_PIN_39            GPIO_NONE // GND
+#define GPIO_PRIMARY_EXPANSION_PIN_40            GPIO_P2_10
+#define GPIO_PRIMARY_EXPANSION_PIN_41            GPIO_P0_3
+#define GPIO_PRIMARY_EXPANSION_PIN_42            GPIO_P0_2
+#define GPIO_PRIMARY_EXPANSION_PIN_43            GPIO_P0_11 // USBD_DP
+#define GPIO_PRIMARY_EXPANSION_PIN_44            GPIO_P0_11 // USBD_DM
+#define GPIO_PRIMARY_EXPANSION_PIN_45            GPIO_P0_11 // USBD_VBUS
+#define GPIO_PRIMARY_EXPANSION_PIN_46            GPIO_NONE // 5V0
+#define GPIO_PRIMARY_EXPANSION_PIN_47            GPIO_NONE // 5V0
+#define GPIO_PRIMARY_EXPANSION_PIN_48            GPIO_NONE // 5V0
+#define GPIO_PRIMARY_EXPANSION_PIN_49            GPIO_NONE // 3V3
+#define GPIO_PRIMARY_EXPANSION_PIN_50            GPIO_NONE // 3V3
+
+// Secondary Expansion Connector (J1) to CPU
+#define GPIO_SECONDARY_EXPANSION_PIN_1           GPIO_NONE // GND
+#define GPIO_SECONDARY_EXPANSION_PIN_2           GPIO_NONE // LPC1788 P5_4
+#define GPIO_SECONDARY_EXPANSION_PIN_3           GPIO_NONE // LPC1788 P5_3
+#define GPIO_SECONDARY_EXPANSION_PIN_4           GPIO_NONE // LPC1788 P5_2
+#define GPIO_SECONDARY_EXPANSION_PIN_5           GPIO_P1_12
+#define GPIO_SECONDARY_EXPANSION_PIN_6           GPIO_P1_11
+#define GPIO_SECONDARY_EXPANSION_PIN_7           GPIO_P1_7
+#define GPIO_SECONDARY_EXPANSION_PIN_8           GPIO_P1_6
+#define GPIO_SECONDARY_EXPANSION_PIN_9           GPIO_P1_5
+#define GPIO_SECONDARY_EXPANSION_PIN_10          GPIO_P1_3
+#define GPIO_SECONDARY_EXPANSION_PIN_11          GPIO_P0_1
+#define GPIO_SECONDARY_EXPANSION_PIN_12          GPIO_P0_0
+#define GPIO_SECONDARY_EXPANSION_PIN_13          GPIO_NONE // 5V0
+#define GPIO_SECONDARY_EXPANSION_PIN_14          GPIO_NONE // GND
+#define GPIO_SECONDARY_EXPANSION_PIN_15          GPIO_P0_13
+#define GPIO_SECONDARY_EXPANSION_PIN_16          GPIO_P0_12
+#define GPIO_SECONDARY_EXPANSION_PIN_17          GPIO_P0_25
+#define GPIO_SECONDARY_EXPANSION_PIN_18          GPIO_P0_24
+#define GPIO_SECONDARY_EXPANSION_PIN_19          GPIO_P0_23
+#define GPIO_SECONDARY_EXPANSION_PIN_20          GPIO_NONE // GND
+
+/*-------------------------------------------------------------------------*
+ * Expansion Connector Devices:
+ *-------------------------------------------------------------------------*/
+// Device names:
+#define PRIMARY_EXPANSION_UART_A            "UART1"     // Pins 6-9
+#define PRIMARY_EXPANSION_UART_B            "UART0"     // Pins 41-42
+#define PRIMARY_EXPANSION_I2C_A             "I2C2"      // Pins 2-3
+#define PRIMARY_EXPANSION_I2C_B             "I2C1"      // Pins 4-5
+#define PRIMARY_EXPANSION_EMAC              "EMAC"      // Pins 25-27, 30, 31, 33-37
+#define PRIMARY_EXPANSION_I2S               "I2S"       // Pins 16-21
+#define PRIMARY_EXPANSION_SPI               "SSP1"      // Pins 16-19
+#define PRIMARY_EXPANSION_USB_DEVICE        "USBDevice" // Pins 11-12, 43-45
+#define PRIMARY_EXPANSION_USB_HOST          "USBHost"   // Pins 11-15
+#define PRIMARY_EXPANSION_DAC               "DAC0"      // Pins 25
+
+#define SECONDARY_EXPANSION_UART_C          "UART4"     // Pins 2-3
+#define SECONDARY_EXPANSION_UART_D          "UART3"     // Pins 11-12
+//#define SECONDARY_EXPANSION_MCI             "MCI"       // Pins 5-10
+
+// Mapping the require routines
+#define UEZPlatform_ExpansionPrimary_I2C_A_Require              UEZPlatform_I2C2_Require
+#define UEZPlatform_ExpansionPrimary_I2C_B_Require              UEZPlatform_I2C1_Require
+#define UEZPlatform_ExpansionPrimary_EMAC_Require               UEZPlatform_EMAC_Require
+#define UEZPlatform_ExpansionPrimary_UART_A_Require             UEZPlatform_UART1_Require
+#define UEZPlatform_ExpansionPrimary_SPI_A_Require				UEZPlatform_SSP1_Require
+#define UEZPlatform_ExpansionPrimary_UART_B_Require(w, r)       UEZPlatform_FullDuplex_UART0_Require(w, r)
+#define UEZPlatform_ExpansionPrimary_USBHost_Require            UEZPlatform_USBHost_PortA_Require
+#define UEZPlatform_ExpansionPrimary_USBDevice_Require          UEZPlatform_USBDevice_Require
+
+//#define UEZPlatform_ExpansionSecondary_SDCard_MCI_Require       UEZPlatform_SDCard_MCI_Drive_Require
+
+/*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
 TBool UEZGUIIsExpansionBoardConnected(void);
@@ -113,6 +221,10 @@ void UEZPlatform_Backlight_Require(void);
 void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_UART1_Require(void);
 void UEZPlatform_Console_FullDuplex_UART_Require(
         const char *aHALSerialName,
         TUInt32 aWriteBufferSize,
@@ -148,6 +260,7 @@ void UEZPlatform_FileSystem_Require(void);
 void UEZPlatform_I2C0_Require(void);
 void UEZPlatform_I2C1_Require(void);
 void UEZPlatform_I2C2_Require(void);
+void UEZPlatform_I2S_Require(void);
 void UEZPlatform_IRTC_Require(void);
 void UEZPlatform_Flash0_Require(void);
 void UEZPlatform_GPDMA0_Require(void);
@@ -158,6 +271,10 @@ void UEZPlatform_GPDMA4_Require(void);
 void UEZPlatform_GPDMA5_Require(void);
 void UEZPlatform_GPDMA6_Require(void);
 void UEZPlatform_GPDMA7_Require(void);
+void UEZPlatform_Timer0_Require(void);
+void UEZPlatform_Timer1_Require(void);
+void UEZPlatform_Timer2_Require(void);
+void UEZPlatform_Timer3_Require(void);
 void UEZPlatform_LCD_Require(void);
 void UEZPlatform_MS0_Require(void);
 void UEZPlatform_MS1_Require(void);

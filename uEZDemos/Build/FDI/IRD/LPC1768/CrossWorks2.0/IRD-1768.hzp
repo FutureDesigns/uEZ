@@ -80,7 +80,7 @@
               <folder Name="Libraries">
                 <folder Name="NXP">
                   <folder Name="CrossWorks">
-                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_518_LPCXpresso501_M3_LE_Redlib.a"/>
+                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_520_LPCXpresso510_M3_LE_Redlib.a"/>
                   </folder>
                 </folder>
               </folder>

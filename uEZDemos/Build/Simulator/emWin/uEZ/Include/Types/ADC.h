@@ -52,15 +52,15 @@ typedef enum {
 
 typedef struct {
    
-    TUInt32 iADCChannel;  			/** Channel to read */ 
+    TUInt32 iADCChannel;              /** Channel to read */ 
 
-    TUInt8 iBitSampleSize;     		/** Number of bits in ADC */
+    TUInt8 iBitSampleSize;             /** Number of bits in ADC */
     
-    T_adcTrigger iTrigger; 			/** When to trigger (or immediately if NOW) */
+    T_adcTrigger iTrigger;             /** When to trigger (or immediately if NOW) */
 
-    TBool iTriggerOnFallingEdge;	/** Trigger type if using GPIO pin */
+    TBool iTriggerOnFallingEdge;    /** Trigger type if using GPIO pin */
 
-    TUInt32 *iCapturedData;     	/** Data when read is stored here */
+    TUInt32 *iCapturedData;         /** Data when read is stored here */
 } ADC_RequestSingle;
 
 #endif // _ADC_TYPES_H_

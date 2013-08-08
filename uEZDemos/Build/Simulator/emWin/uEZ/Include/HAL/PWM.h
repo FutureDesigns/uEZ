@@ -65,11 +65,11 @@ typedef struct {
     T_uezError (*DisableOutput)(
         void *aWorkspace,
         TUInt8 aMatchRegister);
-	T_uezError (*SetMatchCallback)(
+    T_uezError (*SetMatchCallback)(
         void *aWorkspace,
         TUInt8 aMatchRegister,
-		void (*aCallback)(void *),
-		void *aCallbackWorkspace);
+        void (*aCallback)(void *),
+        void *aCallbackWorkspace);
 } HAL_PWM;
 
 #endif // _HAL_PWM_H_

@@ -73,8 +73,8 @@ typedef struct {
     T_uezDeviceInterface iDevice;
 
    /**
-	* v1.11 uEZ Functions:
-	*/
+    * v1.11 uEZ Functions:
+    */
     T_uezError (*Open)(
         void *aWorkspace,
         TUInt16 aVenderID,

@@ -300,7 +300,7 @@
           <state>$PROJ_DIR$/../../../../../Source/App/PictureFrame</state>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -557,10 +557,10 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-70WVT/IAR6.x</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI_1788_70WVT/IAR6.x</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
@@ -657,7 +657,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-70WVT.out</state>
+          <state>uEZGUI_1788_70WVT.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1241,7 +1241,7 @@
           <state>$PROJ_DIR$/../../../../../Source/App/PictureFrame</state>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
@@ -1498,10 +1498,10 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-70WVT/IAR6.x</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI_1788_70WVT/IAR6.x</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788</state>
+          <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
@@ -1544,7 +1544,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>uEZGUI-1788-70WVT.hex</state>
+          <state>uEZGUI_1788_70WVT.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1598,7 +1598,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-70WVT.out</state>
+          <state>uEZGUI_1788_70WVT.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -2301,7 +2301,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_518_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_520_IAR650_M3_LE.a</name>
                 </file>
               </group>
             </group>
@@ -2614,15 +2614,15 @@
       <group>
         <name>FDI</name>
         <group>
-          <name>CARRIER_1788</name>
+          <name>CARRIER_LPC1788</name>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_1788\CARRIER_LPC1788.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC1788\CARRIER_LPC1788.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_1788\lwipopts.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC1788\lwipopts.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_1788\UEZPlatform.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_LPC1788\UEZPlatform.h</name>
           </file>
         </group>
       </group>

@@ -76,6 +76,9 @@ typedef TFPtr TISRFPtr;
 #if (COMPILER_TYPE==VisualC)
 typedef TFPtr TISRFPtr;
 #endif
+#if (COMPILER_TYPE==GCC)
+typedef TFPtr TISRFPtr;
+#endif
 
 /*---------------------------------------------------------------------------*
  * Prototypes:

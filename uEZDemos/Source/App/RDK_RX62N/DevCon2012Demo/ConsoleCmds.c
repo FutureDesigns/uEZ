@@ -988,33 +988,33 @@ int UEZGUICmdIPMaskAddress(void *aWorkspace, int argc, char *argv[])
 
 void IWaitTouchscreen(void)
 {
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
     T_uezDevice ts;
     T_uezQueue queue;
 
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue) == UEZ_ERROR_NONE) {
             // Wait first for the screen NOT to be touched
             while (1) {
-                if (UEZQueueReceive(queue, &reading, 10) != UEZ_ERROR_NONE) {
-                    if (!(reading.iFlags & TSFLAG_PEN_DOWN))
+                if (UEZQueueReceive(queue, &inputEvent, 10) != UEZ_ERROR_NONE) {
+                    if (inputEvent.iEvent.iXY.iAction == XY_ACTION_RELEASE)
                         break;
                 }
             }
 
             // Wait first for the screen to be touched
             while (1) {
-                if (UEZQueueReceive(queue, &reading, 10) != UEZ_ERROR_NONE) {
-                    if (reading.iFlags & TSFLAG_PEN_DOWN)
+                if (UEZQueueReceive(queue, &inputEvent, 10) != UEZ_ERROR_NONE) {
+                    if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD)
                         break;
                 }
             }
 
             // Wait first for the screen NOT to be touched
             while (1) {
-                if (UEZQueueReceive(queue, &reading, 10) != UEZ_ERROR_NONE) {
-                    if (!(reading.iFlags & TSFLAG_PEN_DOWN))
+                if (UEZQueueReceive(queue, &inputEvent, 10) != UEZ_ERROR_NONE) {
+                    if (inputEvent.iEvent.iXY.iAction == XY_ACTION_RELEASE)
                         break;
                 }
             }

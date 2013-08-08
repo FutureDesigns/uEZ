@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -32,10 +32,6 @@ Purpose     : Adapter to be able to use the display drivers with simple
 */
 
 #include "LCD_ConfDefaults.h"
-
-#if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
-#endif
 
 #if defined(LCD_CONTROLLER)
 
@@ -80,7 +76,7 @@ void     LCD_L0_On           (void);
 void     LCD_L0_Off          (void);
 int      LCD_L0_Init         (void);
 void     LCD_L0_SetLUTEntry  (U8 Pos, LCD_COLOR Color);
-void   * LCD_L0_GetDevFunc   (int Index);
+void  (* LCD_L0_GetDevFunc   (int Index))(void);
 
 /*********************************************************************
 *
@@ -243,12 +239,12 @@ static void (* _GetReadRect(void))(void) {
 *
 *       __ControlCache
 */
-static void __ControlCache(GUI_DEVICE * pDevice, int Cmd) {
-  void (* pfControlCache)(int);
+static int __ControlCache(GUI_DEVICE * pDevice, int Cmd) {
+  int (* pfControlCache)(int);
 
   GUI_USE_PARA(pDevice);
-  pfControlCache = (void (*)(int))LCD_L0_GetDevFunc(LCD_DEVFUNC_CONTROLCACHE);
-  pfControlCache(Cmd);
+  pfControlCache = (int (*)(int))LCD_L0_GetDevFunc(LCD_DEVFUNC_CONTROLCACHE);
+  return pfControlCache(Cmd);
 }
 
 /*********************************************************************
@@ -428,10 +424,6 @@ const GUI_DEVICE_API DISPLAY_DRIVER_API = {
   __GetRect,
 };
 
-#endif
-
-#if defined(__cplusplus)
-}
 #endif
 
 /*************************** End of file ****************************/

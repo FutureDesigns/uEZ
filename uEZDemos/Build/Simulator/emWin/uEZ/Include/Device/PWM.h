@@ -62,10 +62,10 @@ typedef struct {
     T_uezError (*DisableOutput)(
         void *aWorkspace,
         TUInt8 aMatchRegister);
-	T_uezError (*SetMatchCallback)(
+    T_uezError (*SetMatchCallback)(
         void *aWorkspace,
         TUInt8 aMatchRegister,
-		void (*aCallback)(void *aCallbackWorkspace),
+        void (*aCallback)(void *aCallbackWorkspace),
         void *aCallbackWorkspace);
 } DEVICE_PWM;
 

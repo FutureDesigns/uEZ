@@ -66,6 +66,17 @@
 #define EMAC_BITBANG_MDIO_DELAY_US  10 /* uSecs */
 
 /*---------------------------------------------------------------------------*
+ * Regions:
+ *---------------------------------------------------------------------------*/
+#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+    #define EMAC_MEMORY __attribute__((section(".emacmem")));
+#elif (COMPILER_TYPE==IAR)
+    #define EMAC_MEMORY @ ".emacmem"
+#else
+    #define EMAC_MEMORY // no mods
+#endif
+
+/*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
 /* EMAC Memory Buffer configuration for 16K Ethernet RAM. */
@@ -76,12 +87,14 @@
 #define ETH_MAX_FLEN        1536        /* Max. Ethernet Frame Size          */
 
 /* EMAC variables located in 16K Ethernet SRAM */
-#define RX_DESC_BASE        AHBSRAM0_BASE
+#define RX_DESC_BASE        ((TUInt32)G_emacMemory) //AHBSRAM0_BASE
 #define RX_STAT_BASE        (RX_DESC_BASE + NUM_RX_FRAG*8)
 #define TX_DESC_BASE        (RX_STAT_BASE + NUM_RX_FRAG*8)
 #define TX_STAT_BASE        (TX_DESC_BASE + NUM_TX_FRAG*8)
 #define RX_BUF_BASE         (TX_STAT_BASE + NUM_TX_FRAG*4)
 #define TX_BUF_BASE         (RX_BUF_BASE  + NUM_RX_FRAG*ETH_FRAG_SIZE)
+#define EMAC_MEMORY_SIZE    (NUM_RX_FRAG*8 + NUM_RX_FRAG*8 + NUM_TX_FRAG*8 + \
+                              NUM_TX_FRAG*4 + NUM_RX_FRAG*ETH_FRAG_SIZE)
 
 /* RX and TX descriptor and status definitions. */
 #define RX_DESC_PACKET(i)   (*(unsigned int *)(RX_DESC_BASE   + 8*i))
@@ -386,6 +399,9 @@ typedef struct {
  *---------------------------------------------------------------------------*/
 extern const HAL_EMAC EMAC_LPC1788_Interface;
 static T_LPC1788_EMAC_Workspace *G_LPC1788_EMAC;
+
+// Memory EMAC packet memory
+static TUInt8 G_emacMemory[EMAC_MEMORY_SIZE] EMAC_MEMORY;
 
 /*---------------------------------------------------------------------------*
  * Routine:  IPHYWrite

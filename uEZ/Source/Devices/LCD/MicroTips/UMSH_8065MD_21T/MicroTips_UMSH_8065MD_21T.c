@@ -83,8 +83,8 @@ static const T_LCDControllerSettings LCD_UMSH_8065MD_21T_params16bit = {
 
     ETrue,     /* Do not invert output enable */
     ETrue,      /* Invert panel clock */
-    ETrue,      /* Invert HSYNC */
-    ETrue,      /* Invert VSYNC */
+    EFalse,      /* Invert HSYNC */
+    EFalse,      /* Invert VSYNC */
 
     0,          /* AC bias frequency (not used) */
 
@@ -215,7 +215,7 @@ static const T_lcdSPICmd G_lcdStartup[] = {
     { 0x36, 0x0707 },
     { 0x37, 0x0000 },
     { 0x3A, 0x0904 },
-    { 0x3C, 0x0904 },
+    { 0x3B, 0x0904 },
     { REG_END, 0 }
 };
 
@@ -311,7 +311,7 @@ static T_uezError SPIWriteCmd(
     r.iCSGPIOPort = GPIO_TO_HAL_PORT(p->iCSGPIOPin);
     r.iCSGPIOBit = GPIO_TO_PIN_BIT(p->iCSGPIOPin);
     r.iCSPolarity = EFalse;
-    r.iDataMISO = cmd;
+    r.iDataMISO = data;
     r.iDataMOSI = cmd;
     error = UEZSPITransferPolled(p->iSPI, &r);
 
@@ -393,8 +393,11 @@ static T_uezError LCD_UMSH_8065MD_21T_Open(void *aW)
     p->aNumOpen++;
 
     if (p->aNumOpen == 1) {
-        //UEZGPIOSet(p->iResetPin);
+#if 1
+        UEZGPIOSet(p->iResetPin);
+#else
         UEZGPIOClear(p->iResetPin);
+#endif
         plcdc = p->iLCDController;
         if (!error) {
             switch (p->iConfiguration->iColorDepth) {
@@ -417,8 +420,11 @@ static T_uezError LCD_UMSH_8065MD_21T_Open(void *aW)
             (*p->iLCDController)->On(p->iLCDController);
 
             UEZTaskDelay(10);
-            //UEZGPIOClear(p->iResetPin);
+#if 0
+            UEZGPIOClear(p->iResetPin);
+#else
             UEZGPIOSet(p->iResetPin);
+#endif
             // program registers, configure the LCD over the SPI port
             error = ISPIConfigure(p);
 

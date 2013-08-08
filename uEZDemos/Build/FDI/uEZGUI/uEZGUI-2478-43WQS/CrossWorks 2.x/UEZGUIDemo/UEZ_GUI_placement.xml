@@ -11,9 +11,8 @@
     <ProgramSection alignment="4" load="Yes" runin=".fast_run" inputsections="*(.fast .fast.*)" name=".fast"/>
     <ProgramSection alignment="4" load="Yes" runin=".data_run" inputsections="*(.data .data.* .gnu.linkonce.d.*)" name=".data"/>
   </MemorySegment>
-  <MemorySegment name="External SRAM;SRAM;SDRAM;DRAM">
+  <MemorySegment name="External SRAM;SRAM;DRAM">
     <ProgramSection alignment="4" load="No" name=".data_run"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.non_init .non_init.*)" name=".non_init"/>
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack"/>
     <ProgramSection alignment="4" size="__STACKSIZE_IRQ__" load="No" name=".stack_irq"/>
@@ -33,6 +32,7 @@
     <!-- Reserved 1 Meg for loading work space at end-->
     <ProgramSection alignment="4" size="1*1024*1024" load="No" name=".loadspace"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
   </MemorySegment>
   <MemorySegment name="USB RAM">
     <ProgramSection load="No" name=".usbram"/>

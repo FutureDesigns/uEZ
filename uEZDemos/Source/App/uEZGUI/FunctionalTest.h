@@ -43,6 +43,7 @@
 #include <uEZ.h>
 #include "FuncTestFramework.h"
 #include <HAL/GPIO.h>
+#include <Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h>
 
 /*---------------------------------------------------------------------------*
  * Prototypes:
@@ -102,6 +103,15 @@ void FuncTestExternalRTC(
         TUInt16 aButton);
 void FuncTestEXP1(void);
 
+// common functions
+void TestTextLine(T_testData *aData, TUInt16 aLine, const char *aText);
+void TestShowResult(T_testData *aData, TUInt16 aLine, TUInt16 aResult, TUInt32 aDelay);
+void TestSetTestResult(T_testData *aData, TUInt16 aPass);
+void TestNext(T_testData *aData);
+void TestRemoveButtons(T_testData *aData, TUInt16 aButtonTypes);
+void TestAddButtons(T_testData *aData, TUInt16 aButtonTypes);
+void TestButtonClick(T_testData *aData, TUInt16 aButton);
+void TestDrawButtons(T_testData *aData, TUInt16 aButtons, T_pixelColor aBackground);
 HAL_GPIOPort **PortNumToPort(TUInt8 aPort);
 
 #endif // _FUNCTIONAL_TEST_H_

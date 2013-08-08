@@ -24,9 +24,9 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           04
-#define UEZ_VERSION_STRING          "2.04"
-#define UEZ_VERSION_DATE            "04/01/2013" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           05
+#define UEZ_VERSION_STRING          "2.05"
+#define UEZ_VERSION_DATE            "06/14/2013" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler
@@ -39,6 +39,7 @@
 #define Keil4			            5
 #define RenesasRX                   6
 #define VisualC                     7
+#define GCC                         8
 
 /** List of RTOS's */
 #define FreeRTOS                    1

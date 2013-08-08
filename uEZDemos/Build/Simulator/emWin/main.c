@@ -19,5 +19,5 @@ void MainTask(void)
     WM_SetCreateFlags(WM_CF_MEMDEV);
 #endif
 
-	FDI_emWin_Demo(NULL);
+    FDI_emWin_Demo(NULL);
 }

@@ -154,6 +154,9 @@ T_uezError Network_lwIP_InitializeWorkspace(void *aWorkspace)
 
     // Then create a semaphore to limit the number of accessors
     error = UEZSemaphoreCreateBinary(&p->iSem);
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(p->iSem, "Lwip", "\0");
+#endif
 
     p->iJoinStatus = UEZ_NETWORK_JOIN_STATUS_IDLE;
     p->iScanStatus = UEZ_NETWORK_SCAN_STATUS_IDLE;
@@ -463,7 +466,7 @@ static T_uezNetworkSocket ISocketCreate(
                 p->iSockets[i].iState = SOCKET_STATE_CREATED;
                 p->iSockets[i].iType = aType;
                 p->iSockets[i].iFlags = 0;
-                if (aType == UEZ_NETWORK_SOCKET_TYPE_TCP)
+                if ((aType == UEZ_NETWORK_SOCKET_TYPE_TCP) && (p->iSockets[i].iNetconn->pcb.tcp)) // TODO: Is there a better way to ensure TF_NODELAY when tcp doesn't exist yet?
                     p->iSockets[i].iNetconn->pcb.tcp->flags |= TF_NODELAY;
                 socket = i;
             }

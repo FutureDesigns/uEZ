@@ -35,10 +35,13 @@
  * 	EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *-------------------------------------------------------------------------*/
 #include <string.h>
+#include <stdio.h>
 #include <uEZ.h>
 #include <uEZStream.h>
 #include <uEZSPI.h>
 #include <Source/Library/Console/FDICmd/FDICmd.h>
+#include <Source/Library/Console/FDICmd/Commands/FDICmd_AudioDAC.h>
+#include <Source/Library/Console/FDICmd/Commands/FDICmd_WAVPlay.h>
 #include <Source/Library/Console/FDICmd/Commands/FDICmd_I2C.h>
 #include <Source/Library/Console/FDICmd/Commands/FDICmd_File.h>
 #include "FuncTestFramework.h"
@@ -49,10 +52,13 @@
 #include <Device/ToneGenerator.h>
 #include "NVSettings.h"
 #include <uEZToneGenerator.h>
+#include <uEZPlatform.h>
 #if UEZ_ENABLE_AUDIO_AMP
 #include <uEZAudioAmp.h>
+#include <uEZAudioMixer.h>
 #endif
 #include <uEZLCD.h>
+#include <uEZI2C.h>
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -106,6 +112,7 @@ extern T_uezError UEZToneGeneratorOpen(
 extern T_uezError UEZToneGeneratorPlayToneContinuous(
             T_uezDevice aDevice,
             TUInt32 aTonePeriod);
+int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[]);
 
 /*-------------------------------------------------------------------------*
  * Globals:
@@ -136,8 +143,10 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "ALIGN", UEZGUICmdAlignmentBorder },
         { "ACCEL", UEZGUICmdAccelerometer },
         { "SPEAKER", UEZGUICmdSpeaker },
-#if 0
+#if UEZ_ENABLE_AUDIO_AMP
         { "AMP", UEZGUICmdAmplifier },
+        { "AUDIODAC", UEZCmdAudioDAC },
+        { "WAVPLAY", UEZCmdWAVPlay },
 #endif
         { "MACADDR", UEZGUICmdMACAddress },
         { "IPADDR", UEZGUICmdIPAddress },
@@ -147,6 +156,7 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "I2CWRITE", UEZCmdI2CWrite },
         { "I2CREAD", UEZCmdI2CRead },
         { "FILETESTWRITE", UEZCmdFileTestWrite },
+        { "I2CBANG", UEZGUICmdI2CBang },
         { "END", UEZGUICmdEnd },
         { 0, 0 } // Place holder for the last one
 };
@@ -571,6 +581,7 @@ int UEZGUICmdAccelerometer(void *aWorkspace, int argc, char *argv[])
 #if UEZ_ENABLE_AUDIO_AMP
 int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
 {
+#if 0
     T_testData testData;
     T_uezError error;
     T_uezDevice amp;
@@ -590,6 +601,13 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
             }
             UEZAudioAmpClose(amp);
         }
+#else
+    if (argc == 2) {
+        // Got no parameters
+        // Now do the test
+        UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, FDICmdUValue(argv[1]));
+        FDICmdSendString(aWorkspace, "PASS: OK\n");
+#endif
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
@@ -991,33 +1009,36 @@ int UEZGUICmdIPMaskAddress(void *aWorkspace, int argc, char *argv[])
 
 void IWaitTouchscreen(void)
 {
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
     T_uezDevice ts;
     T_uezQueue queue;
 
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) {
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "TestCMDs", "\0");
+#endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue) == UEZ_ERROR_NONE) {
             // Wait first for the screen NOT to be touched
             while (1) {
-                if (UEZQueueReceive(queue, &reading, 10) != UEZ_ERROR_NONE) {
-                    if (!(reading.iFlags & TSFLAG_PEN_DOWN))
+                if (UEZQueueReceive(queue, &inputEvent, 10) != UEZ_ERROR_NONE) {
+                    if (inputEvent.iEvent.iXY.iAction == XY_ACTION_RELEASE)
                         break;
                 }
             }
 
             // Wait first for the screen to be touched
             while (1) {
-                if (UEZQueueReceive(queue, &reading, 10) != UEZ_ERROR_NONE) {
-                    if (reading.iFlags & TSFLAG_PEN_DOWN)
+                if (UEZQueueReceive(queue, &inputEvent, 10) != UEZ_ERROR_NONE) {
+                    if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD)
                         break;
                 }
             }
 
             // Wait first for the screen NOT to be touched
             while (1) {
-                if (UEZQueueReceive(queue, &reading, 10) != UEZ_ERROR_NONE) {
-                    if (!(reading.iFlags & TSFLAG_PEN_DOWN))
+                if (UEZQueueReceive(queue, &inputEvent, 10) != UEZ_ERROR_NONE) {
+                    if (inputEvent.iEvent.iXY.iAction == XY_ACTION_RELEASE)
                         break;
                 }
             }
@@ -1035,15 +1056,27 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
     if (argc == 1) {
         G_mmTestModeColor = RGB(255, 0, 0);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
+#if ENABLE_UEZ_BUTTON
+        UEZTaskDelay(3000);
+#else
         IWaitTouchscreen();
-
+#endif
+        
         G_mmTestModeColor = RGB(0, 255, 0);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
+#if ENABLE_UEZ_BUTTON
+        UEZTaskDelay(3000);
+#else
         IWaitTouchscreen();
-
+#endif
+        
         G_mmTestModeColor = RGB(0, 0, 255);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
+#if ENABLE_UEZ_BUTTON
+        UEZTaskDelay(3000);
+#else
         IWaitTouchscreen();
+#endif
 
         G_mmTestModeColor = RGB(255, 255, 255);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
@@ -1064,6 +1097,75 @@ int UEZGUICmdAlignmentBorder(void *aWorkspace, int argc, char *argv[])
         FDICmdSendString(aWorkspace, "PASS: OK\n");
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+    }
+    return 0;
+}
+
+
+int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
+{
+    TUInt32 I2CNumber;
+    TUInt32 speed, numBytes, i;
+    T_uezDevice I2C;
+    TUInt8 dataIn;
+    TUInt8 dataOut = 0;
+    char printString[30];
+    I2C_Request r;
+    
+    if (argc == 4) {
+        I2CNumber = FDICmdUValue(argv[1]);
+        numBytes = FDICmdUValue(argv[2]);
+        speed = FDICmdUValue(argv[3]);
+        
+        if(I2CNumber == 0) {
+            if(UEZI2COpen("I2C0", &I2C) != UEZ_ERROR_NONE)
+                FDICmdSendString(aWorkspace, "FAIL: Could not open I2C0\n");
+        } else if(I2CNumber == 1) {
+            if(UEZI2COpen("I2C1", &I2C) != UEZ_ERROR_NONE)
+                FDICmdSendString(aWorkspace, "FAIL: Could not open I2C1\n");
+        } else if(I2CNumber == 2) {
+            if(UEZI2COpen("I2C2", &I2C) != UEZ_ERROR_NONE)
+                FDICmdSendString(aWorkspace, "FAIL: Could not open I2C2\n");
+        } else {
+            FDICmdSendString(aWorkspace, "FAIL: bus number must be 0, 1, or 2\n");
+            FDICmdSendString(aWorkspace, "      Format: I2CBANG <I2C Bus #> <speed in kHz>\n");
+            return 0;
+        }
+        
+        if((speed != 100) && (speed != 400)) {
+            FDICmdSendString(aWorkspace, "FAIL: speed must be '100' or '400' in kHz\n");
+            FDICmdSendString(aWorkspace, "      Format: I2CBANG <I2C Bus #> <speed in kHz>\n");
+            return 0;
+        }
+        
+        r.iAddr = 0x48>>1;
+        r.iSpeed = speed; //kHz
+        r.iWriteData = &dataOut;
+        r.iWriteLength = 1; // send 1 byte
+        r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+        r.iReadData = &dataIn;
+        r.iReadLength = 1; // read 1 byte
+        r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
+        
+        for(i=0; i<numBytes; i++) {
+            if((i%1000)==0) {
+                FDICmdSendString(aWorkspace, ".");
+            }
+            
+            dataOut++;
+            UEZI2CTransaction(I2C, &r);
+            
+            if(dataIn != dataOut) {
+                sprintf(printString, "\nTest Failed on byte %d\n", i);
+                FDICmdSendString(aWorkspace, printString);
+            }
+        }
+        
+        UEZI2CClose(I2C);
+        
+    } else {
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters.\n");
+        FDICmdSendString(aWorkspace, "      Format: I2CBANG <I2C Bus #> <speed in kHz>\n");
     }
     return 0;
 }

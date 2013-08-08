@@ -2,7 +2,7 @@
  * File:  Okaya_RH320240T.h
  *-------------------------------------------------------------------------*
  * Description:
- *     
+ *
  *-------------------------------------------------------------------------*/
 #ifndef OKAYA_RH320240T_H_
 #define OKAYA_RH320240T_H_
@@ -62,7 +62,10 @@ extern const DEVICE_LCD LCD_OKAYA_RH320240T_Interface_8Bit;
 extern const DEVICE_LCD LCD_OKAYA_RH320240T_Interface_I15Bit;
 extern const DEVICE_LCD LCD_OKAYA_RH320240T_Interface_16Bit;
 
-void LCD_RH320240T_Create(char* aName, char* aSPIBus, T_uezGPIOPortPin aSPICSPin);
+void LCD_RH320240T_Create(char* aName, char* aSPIBus,
+                          T_uezGPIOPortPin aSPICSPin,
+                          T_uezGPIOPortPin aSHUTGPIOPin,
+                          T_uezGPIOPortPin aENBGPIOPin);
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

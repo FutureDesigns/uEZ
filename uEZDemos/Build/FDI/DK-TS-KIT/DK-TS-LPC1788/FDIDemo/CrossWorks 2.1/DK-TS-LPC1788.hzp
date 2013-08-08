@@ -1,7 +1,7 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="DK-TS-LPC1788" target="8" version="2">
   <project Name="DK-TS-LPC1788">
-    <configuration Name="Common" Target="LPC1788" arm_architecture="v7M" arm_core_type="Cortex-M3" arm_gcc_target="arm-unknown-eabi" arm_linker_heap_size="500000" arm_linker_process_stack_size="0" arm_linker_stack_size="128" arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000" arm_target_debug_interface_type="ADIv5" arm_target_loader_parameter="12000000" arm_target_monitor_mode_debug="No" build_remove_unused_symbols="Yes" c_only_additional_options="-fms-extensions" c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET" c_user_include_directories=".;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/SEGGER/emWin/GUIDemo;../../../../../../Source/App/uEZDemoCommon;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788/CrossWorks2.0/include;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Platform/emWin/Config" link_include_startup_code="No" linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)" linker_memory_map_file="$(ProjectDir)/DK-TS-LPC1788_MemoryMap.xml" linker_printf_enabled="Yes" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/DK-TS-LPC1788_placement.xml" oscillator_frequency="12MHz" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml"/>
+    <configuration Name="Common" Target="LPC1788" arm_architecture="v7M" arm_core_type="Cortex-M3" arm_gcc_target="arm-unknown-eabi" arm_linker_heap_size="2500000" arm_linker_process_stack_size="0" arm_linker_stack_size="2048" arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll" arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000" arm_target_debug_interface_type="ADIv5" arm_target_loader_parameter="12000000" arm_target_monitor_mode_debug="No" build_remove_unused_symbols="Yes" c_only_additional_options="-fms-extensions" c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET" c_user_include_directories=".;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/SEGGER/emWin/GUIDemo;../../../../../../Source/App/uEZDemoCommon;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788/CrossWorks2.0/include;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Platform/emWin/Config" link_include_startup_code="No" linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)" linker_memory_map_file="$(ProjectDir)/DK-TS-LPC1788_MemoryMap.xml" linker_printf_enabled="Yes" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/DK-TS-LPC1788_placement.xml" oscillator_frequency="12MHz" project_directory="" project_type="Executable" property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml" target_reset_script="FlashReset()"/>
     <configuration Name="Flash" Placement="Flash" arm_target_flash_loader_file_path="$(TargetsDir)/LPC1000/Release/Loader_lpc177x_8x.elf" arm_target_flash_loader_type="LIBMEM RPC Loader" linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC1000/LPC1000_LinkPatch.js\&quot;);patch(\&quot;$(TargetPath)\&quot;);&quot;" linker_section_placement_file="$(ProjectDir)/DK-TS-LPC1788_placement.xml" target_reset_script="FLASHReset()"/>
     <file file_name="Config_Build.h"/>
     <folder Name="App">
@@ -9,7 +9,6 @@
         <file file_name="../../../../../../Source/App/DKTSKit/AppDemo.h"/>
         <file file_name="../../../../../../Source/App/DKTSKit/AppTasks.c"/>
         <file file_name="../../../../../../Source/App/DKTSKit/AppTasks.h"/>
-        <file file_name="../../../../../../Source/App/DKTSKit/CANTest.c"/>
         <file file_name="../../../../../../Source/App/DKTSKit/Config_App.h"/>
         <file file_name="../../../../../../Source/App/DKTSKit/FunctionalTest.c"/>
         <file file_name="../../../../../../Source/App/DKTSKit/FunctionalTestLoop.c"/>
@@ -19,7 +18,7 @@
         </file>
         <file file_name="../../../../../../Source/App/DKTSKit/ProgramTag.h"/>
       </folder>
-      <folder Name="uEZDemoCommon">
+      <folder Name="uEZDemoCommon" file_name="">
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AppMenu.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AppMenu.h"/>
@@ -41,6 +40,11 @@
         <file file_name="../../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/YourAppMode.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/NVSettings.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/CANTest.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/NetworkStartup.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/NetworkStartup.h"/>
       </folder>
       <folder Name="Segger">
         <folder Name="emWin">
@@ -83,9 +87,9 @@
     <folder Name="Source">
       <folder Name="Platform">
         <folder Name="FDI">
-          <folder Name="CARRIER_1788">
-            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788/CARRIER_LPC1788.c"/>
-            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/CARRIER_1788/uEZPlatform.h"/>
+          <folder Name="CARRIER_LPC1788">
+            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788/CARRIER_LPC1788.c"/>
+            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788/uEZPlatform.h"/>
           </folder>
         </folder>
       </folder>
@@ -106,13 +110,12 @@
             <folder Name="Library">
               <folder Name="NXP">
                 <folder Name="CrossWorks">
-                  <file file_name="../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_518_LPCXpresso501_M3_LE_Redlib.a"/>
+                  <file file_name="../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_520_LPCXpresso510_M3_LE_Redlib.a"/>
                 </folder>
               </folder>
             </folder>
           </folder>
         </folder>
-        <file file_name="../../../../../../../uEZ/Source/Library/Web/HTTPServer/HTTPServer.c"/>
       </folder>
     </folder>
     <folder Name="Include">
@@ -244,11 +247,18 @@
     <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes"/>
     <file file_name="../../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks2.x/Debug/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks2_Debug.a">
       <configuration Name="Release" build_exclude_from_build="Yes"/>
+      <configuration Name="Debug-Trace" build_exclude_from_build="Yes"/>
     </file>
     <file file_name="../../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks2.x/Release/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks2_Release.a">
       <configuration Name="Debug" build_exclude_from_build="Yes"/>
+      <configuration Name="Debug-Trace" build_exclude_from_build="Yes"/>
     </file>
     <configuration Name="Debug" batch_build_configurations="Debug"/>
+    <file file_name="../../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks2.x/Debug-Trace/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks2_Debug-Trace.a">
+      <configuration Name="Debug" build_exclude_from_build="Yes"/>
+      <configuration Name="Release" build_exclude_from_build="Yes"/>
+    </file>
+    <configuration Name="Debug-Trace" c_preprocessor_definitions="FREERTOS_PLUS_TRACE"/>
   </project>
   <configuration Name="THUMB" Platform="ARM" arm_instruction_set="THUMB" arm_library_instruction_set="THUMB" c_preprocessor_definitions="__THUMB" hidden="Yes"/>
   <configuration Name="Debug" build_debug_information="Yes" c_preprocessor_definitions="DEBUG" gcc_optimization_level="None" hidden="Yes" link_include_startup_code="No"/>
@@ -257,4 +267,5 @@
   <configuration Name="Common" batch_build_configurations="THUMB Flash Release" build_debug_information="Yes" c_user_include_directories="." linker_output_format="hex" linker_scanf_enabled="Yes" linker_section_placement_file="$(ProjectDir)/DK-TS-LPC1788_placement.xml"/>
   <configuration Name="Debug" inherited_configurations="Flash;THUMB"/>
   <configuration Name="Release" inherited_configurations="Flash;THUMB"/>
+  <configuration Name="Debug-Trace" inherited_configurations="Flash;THUMB"/>
 </solution>

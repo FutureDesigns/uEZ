@@ -42,11 +42,11 @@
  *  T_uezDevice lcd;
  *  T_pixelColor *pixels;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
+ *        // the device opened properly
+ *     
  *      UEZLCDOn(lcd);
- * 		UEZLCDGetFrame(lcd, 0, (void **)&pixels);
- *	 	UEZLCDShowFrame(lcd, 1);
+ *         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
+ *         UEZLCDShowFrame(lcd, 1);
  *
  *      if (UEZLCDClose(lcd) != UEZ_ERROR_NONE) {
  *            // error closing the device
@@ -71,9 +71,9 @@
 /**
  *  Open up access to the LCD display (and turn on).
  *
- *  @param [in]    *aName 		Pointer to name of LCD display (usually "LCD")
+ *  @param [in]    *aName         Pointer to name of LCD display (usually "LCD")
  *
- *  @param [in]    *aLCDDevice	Pointer to device handle to be returned
+ *  @param [in]    *aLCDDevice    Pointer to device handle to be returned
  *
  *  @return        T_uezError   If the device is opened, returns 
  *                              UEZ_ERROR_NONE.  If the device cannot be 
@@ -85,8 +85,8 @@
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
+ *        // the device opened properly
+ *     
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -109,7 +109,7 @@ T_uezError UEZLCDOpen(
  *  End access to the LCD display.  May turn off LCD if no one
  *      else is using the LCD.
  *
- *  @param [in]    aLCDDevice	Device handle of LCD to close
+ *  @param [in]    aLCDDevice    Device handle of LCD to close
  *
  *  @return        T_uezError   If the device is successfully closed, returns 
  *                              UEZ_ERROR_NONE.  If the device handle is bad,
@@ -121,8 +121,8 @@ T_uezError UEZLCDOpen(
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
+ *        // the device opened properly
+ *     
  *      if (UEZLCDClose(lcd) != UEZ_ERROR_NONE) {
  *            // error closing the device
  *      }
@@ -145,11 +145,11 @@ T_uezError UEZLCDClose(T_uezDevice aLCDDevice)
 /**
  *  Get information about the LCD device.
  *
- *  @param [in]    aLCDDevice    	Handle to opened LCD device.
+ *  @param [in]    aLCDDevice        Handle to opened LCD device.
  *
  *  @param [in]    *aConfiguration  Pointer to info structure
  *
- *  @return        T_uezError     	If successful, returns UEZ_ERROR_NONE.  If 
+ *  @return        T_uezError         If successful, returns UEZ_ERROR_NONE.  If 
  *                                  the device cannot be found, returns 
  *                                  UEZ_ERROR_DEVICE_NOT_FOUND.
  *  @par Example Code:
@@ -160,19 +160,19 @@ T_uezError UEZLCDClose(T_uezDevice aLCDDevice)
  *  T_uezDevice lcd;
  *  T_uezLCDConfiguration aConfiguration;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 	UEZLCDGetInfo(lcd, &aConfiguration);
+ *        // the device opened properly
+ *         UEZLCDGetInfo(lcd, &aConfiguration);
  *      // data available in aConfiguration now
- *	//	 typedef struct {
- *  // 		TUInt32 iXResolution;
- *  // 		TUInt32 iYResolution;
- *  // 		T_uezLCDColorDepth iColorDepth;
- *  // 		T_uezLCDPixelOrder iPixelOrder;
- *  // 		TUInt32 iCurrentFrame;
- *  // 		TUInt32 iNumTotalFrames;
- *  //		TUInt32 iBytesPerVisibleRaster;
- *  //		TUInt32 iBytesPerWholeRaster;
- *  //		TUInt32 iNumBacklightLevels;
+ *    //     typedef struct {
+ *  //         TUInt32 iXResolution;
+ *  //         TUInt32 iYResolution;
+ *  //         T_uezLCDColorDepth iColorDepth;
+ *  //         T_uezLCDPixelOrder iPixelOrder;
+ *  //         TUInt32 iCurrentFrame;
+ *  //         TUInt32 iNumTotalFrames;
+ *  //        TUInt32 iBytesPerVisibleRaster;
+ *  //        TUInt32 iBytesPerWholeRaster;
+ *  //        TUInt32 iNumBacklightLevels;
  *  //   } T_uezLCDConfiguration;
  *  } else {
  *      // an error occurred opening the device
@@ -195,13 +195,13 @@ T_uezError UEZLCDGetInfo(
 /**
  *  Returns a pointer to the frame memory in the LCD display.
  *
- *  @param [in]    aLCDDevice    	Handle to opened LCD device.
+ *  @param [in]    aLCDDevice        Handle to opened LCD device.
  *
- *  @param [in]    aFrame          	Index to frame (0 based)
+ *  @param [in]    aFrame              Index to frame (0 based)
  *
  *  @param [in]    **aFrameBuffer   Pointer to base address
  *
- *  @return        T_uezError     	If successful, returns UEZ_ERROR_NONE.  If 
+ *  @return        T_uezError         If successful, returns UEZ_ERROR_NONE.  If 
  *                                  an invalid device handle, returns 
  *                                  UEZ_ERROR_HANDLE_INVALID.  If the frame is 
  *                                  incorrect, returns UEZ_ERROR_OUT_OF_RANGE
@@ -213,8 +213,8 @@ T_uezError UEZLCDGetInfo(
  *  T_uezDevice lcd;
  *  T_pixelColor *pixels;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- * 		UEZLCDGetFrame(lcd, 0, (void **)&pixels);
+ *        // the device opened properly
+ *         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -240,7 +240,7 @@ T_uezError UEZLCDGetFrame(
  *
  *  @param [in]    aLCDDevice   Handle to opened LCD device.
  *
- *  @param [in]    aFrame		Frame number
+ *  @param [in]    aFrame        Frame number
  *
  *  @return        T_uezError   If successful, returns UEZ_ERROR_NONE. If an 
  *                              invalid device handle, returns 
@@ -253,8 +253,8 @@ T_uezError UEZLCDGetFrame(
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 	UEZLCDShowFrame(lcd, 1); 
+ *        // the device opened properly
+ *         UEZLCDShowFrame(lcd, 1); 
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -288,8 +288,8 @@ T_uezError UEZLCDShowFrame(
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 	UEZLCDOn(lcd);
+ *        // the device opened properly
+ *         UEZLCDOn(lcd);
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -321,8 +321,8 @@ T_uezError UEZLCDOn(T_uezDevice aLCDDevice)
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 	UEZLCDOff(T_uezDevice aLCDDevice);
+ *        // the device opened properly
+ *         UEZLCDOff(T_uezDevice aLCDDevice);
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -349,7 +349,7 @@ T_uezError UEZLCDOff(T_uezDevice aLCDDevice)
  *
  *  @param [in]    aLevel           Level of backlight
  *
- *  @return        T_uezError     	If successful, returns UEZ_ERROR_NONE.  If 
+ *  @return        T_uezError         If successful, returns UEZ_ERROR_NONE.  If 
  *                                  the device handle is bad, returns 
  *                                  UEZ_ERROR_HANDLE_INVALID.  If the 
  *                                  backlight intensity level is invalid, 
@@ -361,8 +361,8 @@ T_uezError UEZLCDOff(T_uezDevice aLCDDevice)
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 	UEZLCDBacklight(lcd, 100);
+ *        // the device opened properly
+ *         UEZLCDBacklight(lcd, 100);
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -410,9 +410,9 @@ T_uezError UEZLCDBacklight(
  *
  *  T_uezDevice lcd;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
- *	 	UEZLCDSetPaletteColor(lcd, 0, 0x1F, 0x1F, 0x1F);
+ *        // the device opened properly
+ *     
+ *         UEZLCDSetPaletteColor(lcd, 0, 0x1F, 0x1F, 0x1F);
  *  } else {
  *      // an error occurred opening the device
  *  }
@@ -438,11 +438,11 @@ T_uezError UEZLCDSetPaletteColor(
  *  Returns the current backlight level from the LCD and optionally
  *      returns the maximum number of levels.
  *
- *  @param [in]    aLCDDevice		Handle to opened LCD device.
+ *  @param [in]    aLCDDevice        Handle to opened LCD device.
  *
  *  @param [in]    *aLevel          Level of backlight
  *
- *  @param [in]    *aNumLevels		Pointer to total number of backlight levels
+ *  @param [in]    *aNumLevels        Pointer to total number of backlight levels
  *
  *  @return        T_uezError       If successful, returns UEZ_ERROR_NONE.  If 
  *                                  the device handle is bad, returns 
@@ -456,9 +456,9 @@ T_uezError UEZLCDSetPaletteColor(
  *  TUInt32 aLevel;
  *  TUInt32 aNumLevels;
  *  if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE) {
- *    	// the device opened properly
- *	 
- *		UEZLCDGetBacklightLevel(lcd, &aLevel, &aNumLevels);
+ *        // the device opened properly
+ *     
+ *        UEZLCDGetBacklightLevel(lcd, &aLevel, &aNumLevels);
  *  } else {
  *      // an error occurred opening the device
  *  }

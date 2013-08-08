@@ -61,6 +61,20 @@ T_uezError UEZDeviceTableGetWorkspace(
  */ 
 T_uezError UEZDeviceTableFind(const char * const aName, T_uezDevice *aDevice);
 
+/**
+ *  Register a device with the given name to an already existing device.
+ *  This is done to allow mappings between different configurations.
+ *
+ *  @param[in]  *aExistingName          Unique identifier for existing device
+ *  @param[in]  *aAliasName             Unique identifier for new alias device
+ *
+ *  @return T_uezError
+ */
+T_uezError UEZDeviceTableRegisterAlias(
+                const char * const aExistingName,
+                const char * const aAliasName);
+
+
 #endif // _DEVICE_TABLE_H_
 /*-------------------------------------------------------------------------*
  * End of File:  uEZDevice.h

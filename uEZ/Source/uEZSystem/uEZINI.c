@@ -789,7 +789,11 @@ T_uezError UEZINISetInteger32(
             p_keypair = IFindOrCreateKeyPair(p, p_section, aKey);
             if (p_keypair->iData)
                 UEZMemFree(p_keypair->iData);
-            itoa(aValue, vstr, 10);
+#if (COMPILER_TYPE == GCC)
+			sprintf(vstr,"%d",aValue);
+#else
+			itoa(aValue, vstr, 10);
+#endif
             p_keypair->iData = UEZMemAlloc(strlen(vstr) + 1);
             if (!p_keypair->iData) {
                 error = UEZ_ERROR_OUT_OF_MEMORY;

@@ -98,7 +98,7 @@ static T_uezError LPC1788_Watchdog_SetMaximumTime(
     // Cannot set a maximum lower than the current minimum
     // either.
     // Is this range smaller than the maximum?
-    if (cycles <= p->iMinimumTime)
+    if (aMaxTime <= p->iMinimumTime)
         return UEZ_ERROR_INVALID_PARAMETER;
 
     // Good value, store the ms time
@@ -134,7 +134,7 @@ static T_uezError LPC1788_Watchdog_SetMinimumTime(
         return UEZ_ERROR_OUT_OF_RANGE;
 
     // Is this range smaller than the maximum?
-    if (cycles >= p->iMaximumTime)
+    if (aMinTime >= p->iMaximumTime)
         return UEZ_ERROR_INVALID_PARAMETER;
 
     // Good value, store the ms time

@@ -288,7 +288,7 @@ void UEZPlatform_I2C0_Require(void)
     // Ensure the I2C0 exists in the HAL level
     LPC1768_GPIO0_Require();
     LPC1768_I2C0_Require(GPIO_P0_27, GPIO_P0_28);
-    I2C_Generic_Create("I2C0", "I2C0");
+    I2C_Generic_Create("I2C0", "I2C0", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -304,7 +304,7 @@ void UEZPlatform_I2C1_Require(void)
     // Ensure the I2C0 exists in the HAL level
     LPC1768_GPIO2_Require();
     LPC1768_I2C1_Require(GPIO_P0_19, GPIO_P0_20);
-    I2C_Generic_Create("I2C1", "I2C1");
+    I2C_Generic_Create("I2C1", "I2C1", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1230,7 +1230,7 @@ void UEZPlatform_I2S_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC1768_I2S_Require(&settings);
-    I2C_Generic_Create("I2S", "I2S");
+    Generic_I2S_Create("I2S", "I2S");
 }
 
 /*---------------------------------------------------------------------------*

@@ -1,8 +1,8 @@
 /**
- *	@file 	uEZMemory.h
- *  @brief 	uEZ Memory Routines
+ *    @file     uEZMemory.h
+ *  @brief     uEZ Memory Routines
  *
- *	uEZ Memory Allocation (thread safe) routines
+ *    uEZ Memory Allocation (thread safe) routines
  */
 #ifndef _UEZ_MEMORY_H_
 #define _UEZ_MEMORY_H_
@@ -31,55 +31,55 @@
 #endif
 
 /**
- *	Remove all previous memory blocks (if any)
+ *    Remove all previous memory blocks (if any)
  */
 void UEZMemInit(void);
 
 /**
- *	Allocate memory from the system heap.
+ *    Allocate memory from the system heap.
  *
- *	@param [in]		aSize		Number of bytes to allocate
+ *    @param [in]        aSize        Number of bytes to allocate
  *
- *	@return	Pointer to memory allocated, or NULL if memory not available.
+ *    @return    Pointer to memory allocated, or NULL if memory not available.
  */
 void *UEZMemAlloc(TUInt32 aSize);
 
 /**
- *	Allocate a block of memory that will never be freed. The buffer is 
+ *    Allocate a block of memory that will never be freed. The buffer is 
  *  incresed in size to a power of 2 and aligned to the size boundary. This
  *  is necessary to satisfy the MPU.
  *
- *	@param [in]		aSize		Number of bytes to allocate
+ *    @param [in]        aSize        Number of bytes to allocate
  *
- *	@return	Pointer to memory allocated, or NULL if memory not available.
+ *    @return    Pointer to memory allocated, or NULL if memory not available.
  */
 void *UEZStackMemAlloc(TUInt32 aSize);
 
 /**
- *	Free a previously allocated memory block.
+ *    Free a previously allocated memory block.
  *
- *	@param [in]		*aMemory		Pointer to the memory block
+ *    @param [in]        *aMemory        Pointer to the memory block
  *
- *	@return	Pointer to memory allocated, or NULL if memory not available.
+ *    @return    Pointer to memory allocated, or NULL if memory not available.
  */
 void UEZMemFree(void *aMemory);
 
 /**
- *	Reallocate a block of memory, truncating or copying the contents.
+ *    Reallocate a block of memory, truncating or copying the contents.
  *
- *	@param [in]		*aMemory		Pointer to the memory
- *	@param [in]		aSize				Number of bytes to reallocate
+ *    @param [in]        *aMemory        Pointer to the memory
+ *    @param [in]        aSize                Number of bytes to reallocate
  *
- *	@return	Pointer to memory allocated, or NULL if memory not available.
+ *    @return    Pointer to memory allocated, or NULL if memory not available.
  */
 void *UEZMemRealloc(void *aMemory, TUInt32 aSize); //NOT IMPLEMENTED YET
 
 /**
- *	Allocate a permanent block of memory that will never be freed.
+ *    Allocate a permanent block of memory that will never be freed.
  *
- *	@param [in]		aSize				Number of bytes to reallocate
+ *    @param [in]        aSize                Number of bytes to reallocate
  *
- *	@return	Pointer to memory allocated, or NULL if memory not available.
+ *    @return    Pointer to memory allocated, or NULL if memory not available.
  */
 void *UEZMemAllocPermanent(TUInt32 aSize);
 

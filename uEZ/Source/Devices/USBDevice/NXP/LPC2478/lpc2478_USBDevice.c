@@ -884,9 +884,13 @@ dprintf("[SD %d]", aSetup->iRequest);
             *aLength = 2;
             return ETrue;
         case USB_DEVICE_REQUEST_CLEAR_FEATURE:
-            return EFalse;
+            // TBD: Not used, really needs a callback function
+            *aLength = 0;
+            return ETrue;
         case USB_DEVICE_REQUEST_SET_FEATURE:
-            return EFalse;
+            // TBD: Not used, really needs a callback function
+            *aLength = 0;
+            return ETrue;
         case USB_DEVICE_REQUEST_SET_ADDRESS:
     p->iNeedSetAddress = ETrue;
     p->iUSBAddress = aSetup->iValue&0x7F;

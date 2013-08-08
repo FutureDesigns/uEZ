@@ -28,6 +28,10 @@
 #include "uEZRTOS.h"
 #include <uEZBSP.h>
 
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#include "trcUser.h"
+#endif
+
 static xSemaphoreHandle G_startingTaskReady;
 static xSemaphoreHandle G_semTask;
 static TBool G_isRTOSRunning = EFalse;
@@ -533,6 +537,50 @@ T_uezError UEZSemaphoreDelete(T_uezSemaphore aSemaphore)
     return UEZ_ERROR_NONE;
 }
 
+T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName, const char* aInterfaceName)
+{
+    xQueueHandle Semaphore;
+    TUInt32 ulHandleType;
+    T_uezError error;
+#if FREERTOS_PLUS_TRACE
+    char name[50];
+    char data[50];
+    char interface[20];
+#endif
+
+    error = uEZHandleGet(aSemaphore, &ulHandleType, (TUInt32 *)&Semaphore, 0, 0);
+
+    if (error == UEZ_ERROR_NONE) {
+        if (pcSemaphoreName == '\0') {
+            if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_SEMAPHORE){
+                error = UEZ_ERROR_HANDLE_INVALID;
+            } else {
+                vQueueAddToRegistry(Semaphore, '\0');
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+                vTraceSetQueueName(Semaphore, '\0');
+#endif
+            }
+        } else {
+            if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_SEMAPHORE){
+                error = UEZ_ERROR_HANDLE_INVALID;
+            } else {
+                vQueueAddToRegistry(Semaphore, (signed char *)pcSemaphoreName);
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+                if(aInterfaceName[0] != '\0'){
+                    sscanf(aInterfaceName, "%s %s", data, interface);
+                    sprintf(name, "%s_%s", pcSemaphoreName, interface);
+                } else {
+                    sprintf(name, "%s", pcSemaphoreName);
+                }
+                vTraceSetQueueName(Semaphore, (const char*)name);
+#endif
+            }
+        }
+    }
+
+    return error;
+}
+
 T_uezError UEZSemaphoreGrab(
             T_uezSemaphore aSemaphore,
             TUInt32 aTimeout)
@@ -755,6 +803,50 @@ T_uezError UEZQueueDelete(T_uezQueue aQueue)
     error = uEZHandleFree(aQueue);
 
     return UEZ_ERROR_NONE;
+}
+
+T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aInterfaceName)
+{
+    xQueueHandle Queue;
+    TUInt32 ulHandleType;
+    T_uezError error;
+#if FREERTOS_PLUS_TRACE
+    char name[50];
+    char data[50];
+    char interface[20];
+#endif
+
+    error = uEZHandleGet(aQueue, &ulHandleType, (TUInt32 *)&Queue, 0, 0);
+
+    if (error == UEZ_ERROR_NONE) {
+        if (pcQueueName == '\0') {
+            if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_QUEUE){
+                error = UEZ_ERROR_HANDLE_INVALID;
+            } else {
+                vQueueAddToRegistry(Queue, '\0');
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+                vTraceSetQueueName(Queue, '\0');
+#endif
+            }
+        } else {
+            if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_QUEUE){
+                error = UEZ_ERROR_HANDLE_INVALID;
+            } else {
+                vQueueAddToRegistry(Queue, (signed char *)pcQueueName);
+#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+                if(aInterfaceName[0] != '\0'){
+                    sscanf(aInterfaceName, "%s %s", data, interface);
+                    sprintf(name, "%s_%s", pcQueueName, interface);
+                } else {
+                    sprintf(name, "%s", pcQueueName);
+                }
+                vTraceSetQueueName(Queue, (const char*)name);
+#endif
+            }
+        }
+    }
+
+    return error;
 }
 
 T_uezError UEZQueueSend(

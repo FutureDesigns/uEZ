@@ -36,6 +36,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZTypes.h>
 #include <uEZDevice.h>
+#include <uEZPlatform.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -46,7 +47,7 @@
  */
 #define TONE_GENERATOR_OFF        0
 #define TONE_GENERATOR_HZ(freq) \
-    ((TUInt32)(PROCESSOR_OSCILLATOR_FREQUENCY/(freq)))
+    ((TUInt32)(UEZPlatform_ProcessorGetFrequency()/(freq)))
 
 /*-------------------------------------------------------------------------*
  * Types:

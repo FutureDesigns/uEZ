@@ -67,6 +67,9 @@
 #if (COMPILER_TYPE==Keil4)
 #define PACKED __attribute__ ((__packed__))
 #endif
+#if (COMPILER_TYPE==GCC)
+#define PACKED __attribute__ ((__packed__))
+#endif
 
 /** Communication Structures: */
 /** Structure for splitting up 8 bit value into 3 bit fields

@@ -20,8 +20,8 @@
       <folder Name="Platform">
         <folder Name="FDI">
           <folder Name="uEZGUI_2478_70WVE">
-            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_70WVE/uEZGUI-2478-70WVE.c"/>
             <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_70WVE/UEZPlatform.h"/>
+            <file file_name="../../../../../../../uEZ/Source/Platform/FDI/uEZGUI_2478_70WVE/uEZGUI_2478_70WVE.c"/>
           </folder>
         </folder>
       </folder>
@@ -38,6 +38,17 @@
             </folder>
           </folder>
         </folder>
+        <folder Name="Scripts">
+          <folder Name="Compilers">
+            <folder Name="CrossWorks">
+              <folder Name="FreeRTOS">
+                <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+                  <configuration Name="Common" file_type="Threads Script"/>
+                </file>
+              </folder>
+            </folder>
+          </folder>
+        </folder>
         <folder Name="uEZ">
           <file file_name="../../../../../../../uEZ/Build/Generic/NXP/LPC2478/FreeRTOS/CrossWorks2.x/Debug/uEZ_NXP_LPC2478_FreeRTOS_CrossWorks2_Debug.a">
             <configuration Name="Release" build_exclude_from_build="Yes"/>
@@ -48,9 +59,17 @@
           </file>
         </folder>
       </folder>
+      <folder Name="ExpansionBoard">
+        <folder Name="FDI">
+          <folder Name="uEZGUI_EXP_DK" file_name="">
+            <file file_name="../../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.c"/>
+            <file file_name="../../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h"/>
+          </folder>
+        </folder>
+      </folder>
     </folder>
     <folder Name="App">
-      <folder Name="uEZDemoCommon">
+      <folder Name="uEZDemoCommon" file_name="">
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/AppMenu.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/Audio.c"/>
@@ -65,8 +84,12 @@
         <file file_name="../../../../../../Source/App/uEZDemoCommon/TimeDateMode.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/UDCImages.c"/>
         <file file_name="../../../../../../Source/App/uEZDemoCommon/YourAppMode.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/NetworkStartup.c"/>
+        <file file_name="../../../../../../Source/App/uEZDemoCommon/CANTest.c"/>
       </folder>
-      <folder Name="uEZGUI">
+      <folder Name="uEZGUI" file_name="">
         <file file_name="../../../../../../Source/App/uEZGUI/AppDemo.h"/>
         <file file_name="../../../../../../Source/App/uEZGUI/AppTasks.c"/>
         <file file_name="../../../../../../Source/App/uEZGUI/AppTasks.h"/>
@@ -79,6 +102,9 @@
         <file file_name="../../../../../../Source/App/uEZGUI/TestCmds.c"/>
         <file file_name="../../../../../../Source/App/uEZGUI/TestCmds.h"/>
         <file file_name="../../../../../../Source/App/uEZGUI/TestMode.c"/>
+        <file file_name="../../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.c"/>
+        <file file_name="../../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.h"/>
+        <file file_name="../../../../../../Source/App/uEZGUI/FunctionalTestLoop.c"/>
       </folder>
     </folder>
     <folder Name="Include">

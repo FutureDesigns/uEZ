@@ -162,6 +162,10 @@ static T_uezError SDCard_MS_MCI_Init(void *aWorkspace, TUInt32 aAddress)
     if (p->iStat & STA_NODISK)
         return UEZ_ERROR_DEVICE_NOT_FOUND;
 
+    // If already initialized, we are done!
+    if (p->iInitPerformed)
+        return UEZ_ERROR_NONE;
+
     (*p->iMCI)->PowerOn(p->iMCI); /* Force socket power on */
     (*p->iMCI)->SetClockRate(p->iMCI, SDCARD_MCI_RATE_FOR_ID_STATE, EFalse);
     UEZTaskDelay(2);
@@ -380,9 +384,10 @@ static T_uezError SDCard_MS_MCI_Read(
     TUInt32 count = aNumBlocks;
     TUInt32 sector = aStart;
     TUInt8 *buff = aBuffer;
+    TUInt8 *buffStart = aBuffer;
     TUInt8 retry = SDCARD_FAILED_READ_RETRY_COUNT;
     TUInt32 numTransferring;
-    TUInt32 countLeft;
+    TUInt32 countLeft = 0;
 
     IGrab();
     dprintf("SDCard Read: %d %d\n", aStart, aNumBlocks);
@@ -434,7 +439,7 @@ static T_uezError SDCard_MS_MCI_Read(
                     && !(response & 0xC0580000)) {
                     dprintf("{");
                     countLeft = numTransferring;
-                    buff = aBuffer;
+                    buff = buffStart;
                     do {
                         while (1) {
                             // Wait for a block or timeout
@@ -489,7 +494,7 @@ static T_uezError SDCard_MS_MCI_Read(
                 sector += numTransferring * 512;
             else
                 sector += numTransferring;
-            aBuffer += numTransferring * 512;
+            buffStart += numTransferring * 512;
         } while (1);
 
         error = count ? UEZ_ERROR_READ_WRITE_ERROR : UEZ_ERROR_NONE;
@@ -526,13 +531,11 @@ static T_uezError SDCard_MS_MCI_Write(
         (T_MassStorage_SDCard_MCI_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
     TUInt32 num = aNumBlocks;
-    TUInt32 block = aStart;
-    TBool isEmpty;
     TUInt16 command;
     TUInt32 response;
     TUInt32 numWriting;
-    TUInt32 numWritten;
     TUInt32 sector = aStart;
+    const TUInt8 *buffStart = aBuffer;
 
     IGrab();
 
@@ -597,8 +600,8 @@ static T_uezError SDCard_MS_MCI_Write(
             num = numWriting;
             while (num && ((*p->iMCI)->IsWriteAvailable(p->iMCI))) {
                 // Write out a block into the waiting MCI commands
-                (*p->iMCI)->Write(p->iMCI, aBuffer, 512);
-                aBuffer += 512;
+                (*p->iMCI)->Write(p->iMCI, buffStart, 512);
+                buffStart += 512;
                 num--;
             };
 

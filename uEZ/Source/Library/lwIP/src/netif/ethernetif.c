@@ -202,6 +202,9 @@ static void low_level_init(struct netif *netif)
     }
 
     UEZSemaphoreCreateBinary(&xEMACSemaphore);
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(xEMACSemaphore, "EMAC_Int", "\0");
+#endif
     if(xEMACSemaphore) {
         /* We start by 'taking' the semaphore so the ISR can 'give' it when the
         first interrupt occurs. */

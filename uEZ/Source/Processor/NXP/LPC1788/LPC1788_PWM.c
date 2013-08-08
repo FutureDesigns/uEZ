@@ -128,7 +128,7 @@ static T_uezError LPC1788_PWM_SetMaster(
     r->iTCR &= ~(PWM_TCR_PWM_ENABLE | PWM_TCR_COUNTER_ENABLE);
 
     // Set the master match register
-    LPC1788_PWM_SetMatchRegister(aWorkspace, aMatchRegister / 2, aPeriod,
+    LPC1788_PWM_SetMatchRegister(aWorkspace, aMatchRegister / (LPC_SC->PCLKSEL& 0x1F), aPeriod,
             EFalse, ETrue, EFalse);
 
     // Reset the counter
@@ -180,7 +180,7 @@ static T_uezError LPC1788_PWM_SetMatchRegister(
     r->iMCR &= ~(7 << (aMatchRegister * 3));
     r->iMCR |= (aFlags << (aMatchRegister * 3));
 
-    ISetMatchReg(r, aMatchRegister, aMatchPoint / 2);
+    ISetMatchReg(r, aMatchRegister, aMatchPoint / (LPC_SC->PCLKSEL& 0x1F));
 
     // Latch it
     r->iLER = (1 << aMatchRegister);

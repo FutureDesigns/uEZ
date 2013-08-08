@@ -1,9 +1,9 @@
 #include <uEZTypes.h>
 
-#define UEZ_LCD_DISPLAY_WIDTH				800
-#define UEZ_LCD_DISPLAY_HEIGHT				480
-#define DISPLAY_WIDTH						UEZ_LCD_DISPLAY_WIDTH
-#define DISPLAY_HEIGHT						UEZ_LCD_DISPLAY_HEIGHT
+#define UEZ_LCD_DISPLAY_WIDTH                800
+#define UEZ_LCD_DISPLAY_HEIGHT                480
+#define DISPLAY_WIDTH                        UEZ_LCD_DISPLAY_WIDTH
+#define DISPLAY_HEIGHT                        UEZ_LCD_DISPLAY_HEIGHT
 #define BUILD_NUMBER                        2
 #define BUILD_DATE                          "10/4/2012"
 

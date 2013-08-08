@@ -33,14 +33,14 @@
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      FILETESTWRITE [filename] [size] [numTimes]
+ *      FILETESTWRITE <filename> <size> <numTimes>
  *
  *  Where,
- *      [filename] Name of test file, usually including 0:/ or 1:/ prefix
- *      [size]     Size of file to write for testing
- *      [size block] Size of memory block to use per write instruction
+ *      <filename> Name of test file, usually including 0:/ or 1:/ prefix
+ *      <size>     Size of file to write for testing
+ *      <size block> Size of memory block to use per write instruction
  *                      (NOTE: This is memory limited)
- *      [numTimes] Number of times to execute this test
+ *      <numTimes> Number of times to execute this test
  *
  *  A file is written with a semi-random pattern of bytes, then read to verify
  *  the same pattern of bytes.  This process is repeated a number of times with

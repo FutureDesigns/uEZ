@@ -32,9 +32,13 @@ typedef struct {
     // uEZ v1.00
     T_HTTPCallbackGetVarFunc iGet;
     T_HTTPCallbackSetVarFunc iSet;
-
+    
     // uEZ v2.04
     T_uezDevice iNetwork;
+ 
+    // uEZ v2.05
+    const char *iDrivePrefix;
+    TUInt8 iPort; // usually Port 80
 } T_httpServerParameters;
 
 TUInt32 HTTPServer(

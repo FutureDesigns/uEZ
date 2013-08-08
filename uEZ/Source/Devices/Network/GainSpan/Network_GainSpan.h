@@ -51,6 +51,7 @@ typedef struct {
     T_uezGPIOPortPin iProgramMode;
     T_uezGPIOPortPin iSPIMode;
     T_uezGPIOPortPin iSRSTn;
+    T_uezGPIOPortPin iWIFIFactoryRestore;
 } T_GainSpan_Network_SPISettings;
 
 /*-------------------------------------------------------------------------*
@@ -59,6 +60,9 @@ typedef struct {
 void Network_GainSpan_Create(
     const char *aName,
     const T_GainSpan_Network_SPISettings *aSettings);
+static T_uezError Network_GainSpan_GetStatus(
+    void *aWorkspace,
+    T_uezNetworkStatus *aStatus);
 extern const DEVICE_Network GainSpan_Network_Interface;
 
 #endif // NETWORK_GAINSPAN_H_

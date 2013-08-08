@@ -3972,7 +3972,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDevice.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZDeviceTable.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDeviceTable.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZErrors.h</name>
@@ -4014,7 +4014,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZTickCounter.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZTimeDate.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZTimeDate.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZToneGenerator.h</name>
@@ -4116,6 +4116,30 @@
             <name>TDA8551_T</name>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\NXP\TDA8551_T\AudioAmp_8551T.c</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>TI</name>
+          <group>
+            <name>LM48100</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\TI\LM48100\AudioAmp_LM48100.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>Wolfson</name>
+          <group>
+            <name>WM8731</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\AudioAmp\Wolfson\WM8731\AudioAmp_WM8731.h</name>
             </file>
           </group>
         </group>
@@ -4250,6 +4274,18 @@
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\I2C\Generic\Generic_i2c.c</name>
           </file>
+        </group>
+        <group>
+          <name>Mux</name>
+          <group>
+            <name>PCA9546</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\I2C\Mux\PCA9546\I2C_Mux_PCA9546.h</name>
+            </file>
+          </group>
         </group>
       </group>
       <group>
@@ -4489,6 +4525,15 @@
       <group>
         <name>Network</name>
         <group>
+          <name>GainSpan</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\GainSpan\Network_GainSpan.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\GainSpan\Network_GainSpan.h</name>
+          </file>
+        </group>
+        <group>
           <name>lwIP</name>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\lwIP\Network_lwIP.c</name>
@@ -4693,6 +4738,18 @@
     </group>
     <group>
       <name>Library</name>
+      <group>
+        <name>Audio</name>
+        <group>
+          <name>DAC</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWAVFile.h</name>
+          </file>
+        </group>
+      </group>
       <group>
         <name>Console</name>
         <group>
@@ -5650,6 +5707,30 @@
       <group>
         <name>Network</name>
         <group>
+          <name>GainSpan</name>
+          <group>
+            <name>CmdLib</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Network\GainSpan\CmdLib\AtCmdLib.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Network\GainSpan\CmdLib\AtCmdLib.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Network\GainSpan\CmdLib\GainSpan_CmdLib.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Network\GainSpan\CmdLib\GainSpan_CmdLib.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Network\GainSpan\CmdLib\GainSpan_SPI.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Network\GainSpan\CmdLib\GainSpan_SPI.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
           <name>PHY</name>
           <group>
             <name>MDIOBitBang</name>
@@ -5696,6 +5777,24 @@
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\StreamIO\StdInOut\StdInOut.h</name>
           </file>
+        </group>
+      </group>
+      <group>
+        <name>Tests</name>
+        <group>
+          <name>ALS</name>
+          <group>
+            <name>Vishay</name>
+            <group>
+              <name>VCNL4010</name>
+              <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.c</name>
+              </file>
+              <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Tests\ALS\Vishay\VCNL4010\TestVCNL4010.h</name>
+              </file>
+            </group>
+          </group>
         </group>
       </group>
       <group>
@@ -7052,6 +7151,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZAudioAmp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZBSPInit.c</name>

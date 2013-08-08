@@ -236,6 +236,61 @@ T_uezError UEZDeviceTableFind(const char * const aName, T_uezDevice *aDevice)
 
     return UEZ_ERROR_NOT_FOUND;
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZDeviceTableRegisterAlias
+ *---------------------------------------------------------------------------*/
+/**
+ *  Registers another name for an existing device.
+ *
+ * @param [in] *aName  		  Unique identifier for existing device
+ *
+ * @param [in] *aAliasName    Unique identifier for device alias
+ *
+ * @return    T_uezError     Error code
+ * @par Example Code:
+ * @code
+ *  #include <uEZ.h>
+ *  #include <uEZDevice.h>
+ *
+ *   // Register the SPI0 driver also under the name of EXP-SPI
+ *   UEZDeviceTableRegisterAlias(
+ *           "SPI0",
+ *           "EXP-SPI");
+ * 
+ * @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZDeviceTableRegisterAlias(
+                const char * const aExistingName,
+                const char * const aAliasName)
+{
+    T_uezError error;
+    T_uezDeviceWorkspace *workspace;
+    T_uezDeviceInterface *interface;
+    T_uezDevice dev;
+    T_uezDevice devAlias;
+    TUInt32 type;
+
+    // Find the existing device
+    error = UEZDeviceTableFind(aExistingName, &dev);
+    if (error)
+        return error;
+
+    // Get a new handle.
+    error = uEZHandleAlloc(&devAlias);
+    if (error)
+        return error;
+
+    error = uEZHandleGet(dev, &type, (TUInt32 *)&workspace, (TUInt32 *)&interface, 0 /* name */);
+    if (error)
+        return error;
+
+    uEZHandleSet(devAlias, type, (TUInt32)workspace, (TUInt32)interface, (TUInt32)aAliasName);
+
+    return UEZ_ERROR_NONE;
+}
+
 /** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZDeviceTable.c

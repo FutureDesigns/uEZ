@@ -3087,7 +3087,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZI2C.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZLCD.h</name>
@@ -3217,6 +3217,12 @@
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\AccelDemoMode.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.c</name>
         </file>
         <file>
@@ -3241,6 +3247,9 @@
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\CANTest.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\ConsoleMode.c</name>
         </file>
         <file>
@@ -3248,6 +3257,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\MultiSlideshowMode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\NetworkStartup.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\NVSettings.c</name>
@@ -3307,6 +3319,15 @@
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZGUI\FunctionalTest_EXP_DK.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZGUI\FunctionalTestLoop.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZGUI\main.c</name>
         </file>
         <file>
@@ -3324,6 +3345,21 @@
       </group>
     </group>
     <group>
+      <name>ExpansionBoard</name>
+      <group>
+        <name>FDI</name>
+        <group>
+          <name>uEZGUI_EXP_DK</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\ExpansionBoard\FDI\uEZGUI_EXP_DK\uEZGUI_EXP_DK.h</name>
+          </file>
+        </group>
+      </group>
+    </group>
+    <group>
       <name>Library</name>
       <group>
         <name>GUI</name>
@@ -3336,7 +3372,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_518_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_520_IAR650_M3_LE.a</name>
                 </file>
               </group>
             </group>
@@ -3654,7 +3690,7 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\lwipopts.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI-1788-70WVE.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\uEZGUI_1788_70WVE.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVE\UEZPlatform.h</name>

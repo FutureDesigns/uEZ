@@ -79,6 +79,7 @@ typedef struct{
     TBool iFileOpen;
     TBool iPlayFromFile;
     TBool iPlayFromMem;
+    TBool iPause;
 
     TUInt16 iVolume;
     TUInt32 iSamplePos;
@@ -87,7 +88,7 @@ typedef struct{
 /*---------------------------------------------------------------------------*
 * Globals:
 *---------------------------------------------------------------------------*/
-T_UEZDACWAVFile_Workspace *G_DACWAV_Workspace;
+T_UEZDACWAVFile_Workspace *G_DACWAV_Workspace = 0;
 T_uezTask G_DACAudioTask=0;
 
 /*---------------------------------------------------------------------------*
@@ -133,67 +134,70 @@ T_uezTask G_DACAudioTask=0;
 T_HALTimer_Callback playDACAudio(void * workspace)
 {
     TUInt32 v;
-    if (!G_DACWAV_Workspace->iPlayFromMem) {
-        if (G_DACWAV_Workspace->iUseBuffer1) { // if use buffer1
-            if (!G_DACWAV_Workspace->iNeedFillBuffer1) {
-#if DAC_WAV_IS_8BIT
-                v = G_DACWAV_Workspace->iBuffer1[G_DACWAV_Workspace->iCount++]
-                    << 2;
-                v = (v * G_DACWAV_Workspace->iVolume) / 256;
-#else
-                v = (*((TUInt16 *)(G_DACWAV_Workspace->iBuffer1 + G_DACWAV_Workspace->iCount)) + 0x8000) & 0xFFFF;
-                v = (v * G_DACWAV_Workspace->iVolume) / 256;
-                v >>= 6;
-                G_DACWAV_Workspace->iCount+=2;
-#endif
-                (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-                G_DACWAV_Workspace->iSamplePos++;
 
-                if (G_DACWAV_Workspace->iCount
-                    >= G_DACWAV_Workspace->iBytesBuffer1) {
-                    G_DACWAV_Workspace->iNeedFillBuffer1 = ETrue;
-                    G_DACWAV_Workspace->iUseBuffer1 = EFalse;
-                    G_DACWAV_Workspace->iCount = 0;
-                    G_DACWAV_Workspace->iBytesBuffer1 = 0;
-                    _isr_UEZSemaphoreRelease(G_DACWAV_Workspace->iSemFeed);
+    if(!G_DACWAV_Workspace->iPause){
+        if (!G_DACWAV_Workspace->iPlayFromMem) {
+            if (G_DACWAV_Workspace->iUseBuffer1) { // if use buffer1
+                if (!G_DACWAV_Workspace->iNeedFillBuffer1) {
+#if DAC_WAV_IS_8BIT
+                    v = G_DACWAV_Workspace->iBuffer1[G_DACWAV_Workspace->iCount++]
+                                                     << 2;
+                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
+#else
+                    v = (*((TUInt16 *)(G_DACWAV_Workspace->iBuffer1 + G_DACWAV_Workspace->iCount)) + 0x8000) & 0xFFFF;
+                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
+                    v >>= 6;
+                    G_DACWAV_Workspace->iCount+=2;
+#endif
+                    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
+                    G_DACWAV_Workspace->iSamplePos++;
+
+                    if (G_DACWAV_Workspace->iCount
+                            >= G_DACWAV_Workspace->iBytesBuffer1) {
+                        G_DACWAV_Workspace->iNeedFillBuffer1 = ETrue;
+                        G_DACWAV_Workspace->iUseBuffer1 = EFalse;
+                        G_DACWAV_Workspace->iCount = 0;
+                        G_DACWAV_Workspace->iBytesBuffer1 = 0;
+                        _isr_UEZSemaphoreRelease(G_DACWAV_Workspace->iSemFeed);
+                    }
+                }
+            } else {
+                if (!G_DACWAV_Workspace->iNeedFillBuffer2) {
+#if DAC_WAV_IS_8BIT
+                    v = G_DACWAV_Workspace->iBuffer2[G_DACWAV_Workspace->iCount++]
+                                                     << 2;
+                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
+                    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
+                    G_DACWAV_Workspace->iSamplePos++;
+#else
+                    v = (*((TUInt16 *)(G_DACWAV_Workspace->iBuffer2 + G_DACWAV_Workspace->iCount)) + 0x8000) & 0xFFFF;
+                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
+                    v >>= 6;
+                    G_DACWAV_Workspace->iCount+=2;
+#endif
+                    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
+                    G_DACWAV_Workspace->iSamplePos++;
+
+                    if (G_DACWAV_Workspace->iCount
+                            >= G_DACWAV_Workspace->iBytesBuffer2) {
+                        G_DACWAV_Workspace->iNeedFillBuffer2 = ETrue;
+                        G_DACWAV_Workspace->iUseBuffer1 = ETrue;
+                        G_DACWAV_Workspace->iCount = 0;
+                        G_DACWAV_Workspace->iBytesBuffer2 = 0;
+                        _isr_UEZSemaphoreRelease(G_DACWAV_Workspace->iSemFeed);
+                    }
                 }
             }
         } else {
-            if (!G_DACWAV_Workspace->iNeedFillBuffer2) {
-#if DAC_WAV_IS_8BIT
-                v = G_DACWAV_Workspace->iBuffer2[G_DACWAV_Workspace->iCount++]
-                    << 2;
+            if (G_DACWAV_Workspace->iCount >= G_DACWAV_Workspace->iBytesBuffer1) {
+                (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, 0);
+                G_DACWAV_Workspace->iPlaying = EFalse;
+                (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
+            } else {
+                v = G_DACWAV_Workspace->iBuffer1[G_DACWAV_Workspace->iCount++] << 2;
                 v = (v * G_DACWAV_Workspace->iVolume) / 256;
                 (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-                G_DACWAV_Workspace->iSamplePos++;
-#else
-                v = (*((TUInt16 *)(G_DACWAV_Workspace->iBuffer2 + G_DACWAV_Workspace->iCount)) + 0x8000) & 0xFFFF;
-                v = (v * G_DACWAV_Workspace->iVolume) / 256;
-                v >>= 6;
-                G_DACWAV_Workspace->iCount+=2;
-#endif
-                (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-                G_DACWAV_Workspace->iSamplePos++;
-
-                if (G_DACWAV_Workspace->iCount
-                    >= G_DACWAV_Workspace->iBytesBuffer2) {
-                    G_DACWAV_Workspace->iNeedFillBuffer2 = ETrue;
-                    G_DACWAV_Workspace->iUseBuffer1 = ETrue;
-                    G_DACWAV_Workspace->iCount = 0;
-                    G_DACWAV_Workspace->iBytesBuffer2 = 0;
-                    _isr_UEZSemaphoreRelease(G_DACWAV_Workspace->iSemFeed);
-                }
             }
-        }
-    } else {
-        if (G_DACWAV_Workspace->iCount >= G_DACWAV_Workspace->iBytesBuffer1) {
-            (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, 0);
-            G_DACWAV_Workspace->iPlaying = EFalse;
-            (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
-        } else {
-            v = G_DACWAV_Workspace->iBuffer1[G_DACWAV_Workspace->iCount++] << 2;
-            v = (v * G_DACWAV_Workspace->iVolume) / 256;
-            (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
         }
     }
     return 0;
@@ -337,26 +341,52 @@ T_uezError UEZDACWAVConfig(const char* aTimer)
 /*---------------------------------------------------------------------------*/
 T_uezError UEZDACWAVStop()
 {
-    UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
-    if(G_DACWAV_Workspace->iPlaying){
-        (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
-        if (G_DACWAV_Workspace->iPlayFromMem) {
-            // Point to the end so the task closes out naturally
-            G_DACWAV_Workspace->iCount = G_DACWAV_Workspace->iBytesBuffer1;
-        }
-        G_DACWAV_Workspace->iPlaying = EFalse;
-        if(G_DACWAV_Workspace->iPlayFromFile){
-            if(G_DACWAV_Workspace->iFileOpen == ETrue){
-                G_DACWAV_Workspace->iFileOpen = EFalse;
-                UEZFileClose(G_DACWAV_Workspace->iFile);
+    if(G_DACWAV_Workspace){
+        UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
+        if(G_DACWAV_Workspace->iPlaying){
+            (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
+            if (G_DACWAV_Workspace->iPlayFromMem) {
+                // Point to the end so the task closes out naturally
+                G_DACWAV_Workspace->iCount = G_DACWAV_Workspace->iBytesBuffer1;
             }
-        }        
-    }    
-    G_DACWAV_Workspace->iPlayFromMem = EFalse;
-    G_DACWAV_Workspace->iPlayFromFile = EFalse;
-    UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
+            G_DACWAV_Workspace->iPlaying = EFalse;
+            if(G_DACWAV_Workspace->iPlayFromFile){
+                if(G_DACWAV_Workspace->iFileOpen == ETrue){
+                    G_DACWAV_Workspace->iFileOpen = EFalse;
+                    UEZFileClose(G_DACWAV_Workspace->iFile);
+                }
+            }
+        }
+        G_DACWAV_Workspace->iPlayFromMem = EFalse;
+        G_DACWAV_Workspace->iPlayFromFile = EFalse;
+        UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
+    }
     return UEZ_ERROR_NONE;
 }
+
+/*---------------------------------------------------------------------------*
+* Routine:  UEZDACWAVPlayPause
+ *---------------------------------------------------------------------------*/
+/**
+ *  Play the specifed WAV file
+ *
+ *  @param [in]     *aFileName      Name of file to be played eg "1:file.wav"
+ *                                       for SD or "0:file.wav" for USB Drive
+ *  @return         T_uezError      UEZ_ERROR_NONE if success
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *
+ *  TODO
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZDACWAVPlayPause(TBool aBool)
+{
+    G_DACWAV_Workspace->iPause = aBool;
+    return UEZ_ERROR_NONE;
+}
+
 /*---------------------------------------------------------------------------*
 * Routine:  UEZDACWAVPlay
  *---------------------------------------------------------------------------*/
@@ -383,6 +413,7 @@ T_uezError UEZDACWAVPlay(char* aFileName)
 
     G_DACWAV_Workspace->iPlayFromFile = ETrue;
     G_DACWAV_Workspace->iPlayFromMem = EFalse;
+    G_DACWAV_Workspace->iPause = EFalse;
         
     UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
     if (G_DACWAV_Workspace->iPlaying == ETrue) {
@@ -461,6 +492,7 @@ T_uezError UEZDACWAVPlayBuffer(TUInt8 *aBuffer, TUInt32 aSize)
 //aSize /= 5;
     G_DACWAV_Workspace->iPlayFromMem = ETrue;
     G_DACWAV_Workspace->iPlayFromFile = EFalse;
+    G_DACWAV_Workspace->iPause = EFalse;
     
     UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
     if (G_DACWAV_Workspace->iPlaying == ETrue) {
@@ -511,21 +543,24 @@ T_uezError UEZDACWAVPlayBuffer(TUInt8 *aBuffer, TUInt32 aSize)
 /*---------------------------------------------------------------------------*/
 void UEZDACWAVCleanUp()
 {
-   (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
-    UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
-    if(G_DACWAV_Workspace->iPlayFromFile){
-        UEZMemFree(G_DACWAV_Workspace->iBuffer1);    
-        UEZMemFree(G_DACWAV_Workspace->iBuffer2);
-    }   
-    
-    UEZSemaphoreDelete(G_DACWAV_Workspace->iSem);
-    UEZSemaphoreDelete(G_DACWAV_Workspace->iSemFeed);
-    G_DACWAV_Workspace->iBuffer1 = 0;
-    G_DACWAV_Workspace->iBuffer2 = 0;
-    G_DACWAV_Workspace->iPlayFromMem = EFalse;
-    G_DACWAV_Workspace->iPlayFromFile = EFalse;
-    UEZMemFree(G_DACWAV_Workspace);
-    G_DACWAV_Workspace = 0;
+    if(G_DACWAV_Workspace){
+       (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
+        UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
+        if(G_DACWAV_Workspace->iPlayFromFile){
+            UEZMemFree(G_DACWAV_Workspace->iBuffer1);
+            UEZMemFree(G_DACWAV_Workspace->iBuffer2);
+        }
+
+        UEZSemaphoreDelete(G_DACWAV_Workspace->iSem);
+        G_DACWAV_Workspace->iSem = 0;
+        UEZSemaphoreDelete(G_DACWAV_Workspace->iSemFeed);
+        G_DACWAV_Workspace->iBuffer1 = 0;
+        G_DACWAV_Workspace->iBuffer2 = 0;
+        G_DACWAV_Workspace->iPlayFromMem = EFalse;
+        G_DACWAV_Workspace->iPlayFromFile = EFalse;
+        UEZMemFree(G_DACWAV_Workspace);
+        G_DACWAV_Workspace = 0;
+    }
 }
 
 /*---------------------------------------------------------------------------*

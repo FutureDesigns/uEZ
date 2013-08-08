@@ -22,18 +22,18 @@
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_TIANMA_TM047NBH01
 
 // Use up 48K of the heap
-#define configTOTAL_HEAP_SIZE		( ( size_t ) (( 48 * 1024 ) - 64))
-#define configMINIMAL_STACK_SIZE	( 140 )
+#define configTOTAL_HEAP_SIZE        ( ( size_t ) (( 48 * 1024 ) - 64))
+#define configMINIMAL_STACK_SIZE    ( 140 )
 
 #define PROCESSOR_OSCILLATOR_FREQUENCY      96000000
-#define EXTAL_FREQUENCY		12000000
-#define ICLK_MUL        	(8)
-#define PCLK_MUL        	(4)
-#define BCLK_MUL        	(4)
+#define EXTAL_FREQUENCY        12000000
+#define ICLK_MUL            (8)
+#define PCLK_MUL            (4)
+#define BCLK_MUL            (4)
 
-#define ICLK_FREQUENCY	EXTAL_FREQUENCY * ICLK_MUL
-#define PCLK_FREQUENCY	EXTAL_FREQUENCY * PCLK_MUL
-#define BCLK_FREQUENCY	EXTAL_FREQUENCY * BCLK_MUL
+#define ICLK_FREQUENCY    EXTAL_FREQUENCY * ICLK_MUL
+#define PCLK_FREQUENCY    EXTAL_FREQUENCY * PCLK_MUL
+#define BCLK_FREQUENCY    EXTAL_FREQUENCY * BCLK_MUL
 
 // Modify the default accelerometer demo settings
 #if 0 // Set to 1 for Sekio displays
@@ -84,12 +84,12 @@
 #define APP_DEMO_COM                1
 #define APP_DEMO_DRAW               1
 #define APP_DEMO_APPS               1
-#define APP_SLIDESHOW				1
+#define APP_SLIDESHOW                1
 #define UEZ_ENABLE_TCPIP_STACK      1
 #define UEZ_ENABLE_WIRED_NETWORK    1
 #define INTERRUPT_BASED_EMAC        0
 #define UEZ_ENABLE_USB_HOST_STACK   0
-#define UEZ_ENABLE_USB_DEVICE_STACK	0
+#define UEZ_ENABLE_USB_DEVICE_STACK    0
 
 #define UEZ_SLIDESHOW_NAME        "DK-RX63N"
 

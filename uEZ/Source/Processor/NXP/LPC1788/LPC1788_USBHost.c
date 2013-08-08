@@ -34,6 +34,17 @@
 #include <Source/Processor/NXP/LPC1788/LPC1788_USBHost.h>
 
 /*---------------------------------------------------------------------------*
+ * Regions:
+ *---------------------------------------------------------------------------*/
+#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+    #define USBHOST_MEMORY __attribute__((section(".usbhostmem")));
+#elif (COMPILER_TYPE==IAR)
+    #define USBHOST_MEMORY @ ".usbhostmem"
+#else
+    #define USBHOST_MEMORY // no mods
+#endif
+
+/*---------------------------------------------------------------------------*
  * Registers:
  *---------------------------------------------------------------------------*/
 #define TIMEOUT_STANDARD        10000   // 10 SECONDS
@@ -140,6 +151,8 @@ static volatile  TUInt8  *TDBuffer;                  /* Current Buffer Pointer o
 
 static T_LPC1788_USBHost_Workspace *G_usbHostWorkspacePortA = 0;
 static T_LPC1788_USBHost_Workspace *G_usbHostWorkspacePortB = 0;
+
+static TUInt8 G_usbHostMemory[6*1024] USBHOST_MEMORY;
 
 /*
 **************************************************************************************************************
@@ -472,8 +485,8 @@ static T_uezError Host_Init(void *aWorkspace)
     T_LPC1788_USBHost_Workspace *p = (T_LPC1788_USBHost_Workspace *)aWorkspace;
 
     // Setup memory from start
-    p->iAllocBase = (TUInt8 *)(AHBSRAM1_BASE+8192+2*1024);
-    p->iAllocRemaining = 6*1024;
+    p->iAllocBase = G_usbHostMemory;
+    p->iAllocRemaining = sizeof(G_usbHostMemory);
 
     // Ensure power to the USB is on
     LPC1788PowerOn(1UL<<31);

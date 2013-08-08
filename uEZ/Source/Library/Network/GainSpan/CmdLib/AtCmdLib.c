@@ -27,7 +27,7 @@
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#define ATLIB_RESPONSE_HANDLE_TIMEOUT   100000 /* ms */
+#define ATLIB_RESPONSE_HANDLE_TIMEOUT   20000 /* ms */
 
 #ifndef ATLIBGS_TX_CMD_MAX_SIZE
 #error "ATLIBGS_TX_CMD_MAX_SIZE must be defined in platform.h"
@@ -2766,8 +2766,8 @@ ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(void)
 {
     ATLIBGS_MSG_ID_E responseMsgId;
     uint8_t rxData;
-    uint32_t timeout = MSTimerGet();
     uint8_t gotData = 0;
+    uint32_t iStart;
 
     /* Reset the message ID */
     responseMsgId = ATLIBGS_MSG_ID_NONE;
@@ -2776,9 +2776,9 @@ ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(void)
     while (ATLIBGS_MSG_ID_NONE == responseMsgId) {
         gotData = 1;
         /* Read one byte at a time - non-blocking call, block here */
-        timeout = MSTimerGet();
+        iStart = UEZTickCounterGet(); // Setup a timeout period
         while (!App_Read(&rxData, 1, 0)) {
-            if (MSTimerDelta(timeout) >= ATLIB_RESPONSE_HANDLE_TIMEOUT) {
+            if (UEZTickCounterGetDelta(iStart) >= ATLIB_RESPONSE_HANDLE_TIMEOUT) {
                 gotData = 0;
                 responseMsgId = ATLIBGS_MSG_ID_RESPONSE_TIMEOUT;
                 break;

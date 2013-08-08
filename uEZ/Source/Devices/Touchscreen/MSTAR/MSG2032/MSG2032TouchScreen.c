@@ -35,7 +35,7 @@
  *---------------------------------------------------------------------------*/
 
 #define MSG2032_I2C_SPEED         100 //kHz
-#define MSG2032_I2C_ADDRESS       (0x62)//(0x26<<1)
+#define MSG2032_I2C_ADDRESS       (0x26<<1) //(0x62)
 
 #define MSG2032_DEVICE_MODE       0x00
 #define MSG2032_GUEST_ID          0x01

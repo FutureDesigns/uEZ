@@ -55,7 +55,7 @@ TBool G_AudioIsRunning;
 T_uezTask G_playerTask;
 T_uezSemaphore G_AudioSemaphore;
 T_midiPlayParameters G_MidiParams;
-TUInt8 G_topFileIndex;
+static TUInt8 G_topFileIndex;
 
 static void AudioPlayerChoices(void);
 static void AudioPlayerDraw(void);
@@ -390,7 +390,7 @@ void AudioPlayerMode(const T_choice *aChoice)
     T_uezDevice lcd;
     T_uezQueue queue;
     T_uezDevice ts;
-    T_uezTSReading reading;
+    T_uezInputEvent inputEvent;
 	
 	UEZSemaphoreCreateCounting(&G_AudioSemaphore, 10, 1);
 
@@ -399,8 +399,11 @@ void AudioPlayerMode(const T_choice *aChoice)
         return;
     memset(G_ws, 0, sizeof(*G_ws));
 
-    if (UEZQueueCreate(1, sizeof(T_uezTSReading), &queue) == UEZ_ERROR_NONE) 
+    if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) 
 	{
+#if UEZ_REGISTER
+        UEZQueueSetName(queue, "AudioPlayer", "\0");
+#endif
         // Open up the touchscreen and pass in the queue to receive events
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  
 		{
@@ -417,7 +420,7 @@ void AudioPlayerMode(const T_choice *aChoice)
                 while (!G_ws->iExit) 
 				{
                   //Wait till we get a touchscreen event
-                  if (UEZQueueReceive(queue, &reading, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE)
+                  if (UEZQueueReceive(queue, &inputEvent, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE)
 				  {
                     ChoicesUpdate(&G_win, G_ws->iChoices, queue, 500);
                   }

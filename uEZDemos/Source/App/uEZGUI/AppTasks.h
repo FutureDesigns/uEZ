@@ -25,6 +25,7 @@
 #include <uEZ.h>
 
 T_uezError SetupTasks(void);
+TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams);
 
 #endif // _APP_TASKS_H_
 /*-------------------------------------------------------------------------*

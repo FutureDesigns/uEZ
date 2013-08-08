@@ -62,7 +62,7 @@ extern const DEVICE_I2C_BUS I2CBus_Generic_Interface;
  * Prototypes:
  *-------------------------------------------------------------------------*/
 T_uezError I2C_Generic_Configure(void *aWorkspace, const char *aI2CHALName);
-void I2C_Generic_Create(const char *aName, const char *aI2CHALName);
+void I2C_Generic_Create(const char *aName, const char *aI2CHALName, T_I2CResetCallbackFunc aCallback);
 
 #endif // GENERIC_I2C_H_
 /*-------------------------------------------------------------------------*

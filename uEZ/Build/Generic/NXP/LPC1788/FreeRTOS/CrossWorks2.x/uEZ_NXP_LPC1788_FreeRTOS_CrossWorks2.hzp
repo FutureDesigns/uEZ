@@ -42,6 +42,16 @@
               <file file_name="../../../../../../Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h"/>
             </folder>
           </folder>
+          <folder Name="TI" file_name="">
+            <folder Name="LM48100"/>
+            <file file_name="../../../../../../Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.c"/>
+            <file file_name="../../../../../../Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h"/>
+          </folder>
+          <folder Name="Wolfson">
+            <folder Name="WM8731">
+              <file file_name="../../../../../../Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.c"/>
+            </folder>
+          </folder>
         </folder>
         <folder Name="Backlight">
           <folder Name="Generic">
@@ -180,10 +190,16 @@
               <file file_name="../../../../../../Source/Devices/LCD/Toshiba/LTA057A347F/Toshiba_LTA057A347F.h"/>
             </folder>
           </folder>
+          <folder Name="Microtips">
+            <folder Name="UMSH-8596MD-20T">
+              <file file_name="../../../../../../Source/Devices/LCD/MicroTips/UMSH-8596MD-20T/Microtips_UMSH_8596MD_20T.c"/>
+            </folder>
+          </folder>
         </folder>
         <folder Name="Mass Storage">
           <folder Name="SD Card">
             <file file_name="../../../../../../Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.c"/>
+            <file file_name="../../../../../../Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.c"/>
           </folder>
           <folder Name="USB_MS">
             <file file_name="../../../../../../Source/Devices/MassStorage/USB_MS/USBMS_driver.c"/>
@@ -245,10 +261,16 @@
             </folder>
           </folder>
         </folder>
-        <folder Name="Touchscreen">
+        <folder Name="Touchscreen" file_name="">
           <folder Name="Generic">
             <folder Name="FourWireTouchResist">
               <file file_name="../../../../../../Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.c"/>
+            </folder>
+          </folder>
+          <folder Name="Sitronix">
+            <folder Name="ST1232">
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Sitronix/ST1232/ST1232TouchScreen.c"/>
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Sitronix/ST1232/ST1232TouchScreen.h"/>
             </folder>
           </folder>
         </folder>
@@ -710,11 +732,15 @@
         <folder Name="Console">
           <folder Name="FDI">
             <file file_name="../../../../../../Source/Library/Console/FDICmd/FDICmd.c"/>
-            <folder Name="Commands">
+            <folder Name="Commands" file_name="">
               <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_File.c"/>
               <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_File.h"/>
               <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_I2C.c"/>
               <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_I2C.h"/>
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_AudioDAC.c"/>
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_AudioDAC.h"/>
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_WAVPlay.c"/>
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_WAVPlay.h"/>
             </folder>
           </folder>
         </folder>
@@ -736,6 +762,10 @@
           <folder Name="BasicWeb">
             <file file_name="../../../../../../Source/Library/Web/BasicWeb/BasicWEB.c"/>
             <file file_name="../../../../../../Source/Library/Web/BasicWeb/BasicWEB.h"/>
+          </folder>
+          <folder Name="HTTPServer" file_name="">
+            <file file_name="../../../../../../Source/Library/Web/HTTPServer/HTTPServer.c"/>
+            <file file_name="../../../../../../Source/Library/Web/HTTPServer/HTTPServer.h"/>
           </folder>
         </folder>
         <folder Name="Parser">
@@ -775,6 +805,22 @@
         </folder>
         <folder Name="ScreenSaver">
           <file file_name="../../../../../../Source/Library/ScreenSaver/BouncingLogoSS.c"/>
+        </folder>
+        <folder Name="Audio">
+          <folder Name="DAC">
+            <file file_name="../../../../../../Source/Library/Audio/DAC/UEZDACWavFile.c"/>
+            <file file_name="../../../../../../Source/Library/Audio/DAC/UEZDACWAVFile.h"/>
+          </folder>
+        </folder>
+        <folder Name="Tests">
+          <folder Name="ALS">
+            <folder Name="Vishay">
+              <folder Name="VCNL4010" file_name="">
+                <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.c"/>
+                <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.h"/>
+              </folder>
+            </folder>
+          </folder>
         </folder>
       </folder>
       <folder Name="Processor">
@@ -819,6 +865,7 @@
             <file file_name="../../../../../../Source/Processor/NXP/LPC1788/LPC1788_I2S.c"/>
             <file file_name="../../../../../../Source/Processor/NXP/LPC1788/LPC1788_USBHost.c"/>
             <file file_name="../../../../../../Source/Processor/NXP/LPC1788/LPC1788_CRC.c"/>
+            <file file_name="../../../../../../Source/Processor/NXP/LPC1788/LPC1788_MCI.c"/>
           </folder>
         </folder>
       </folder>
@@ -875,7 +922,7 @@
           <configuration Name="ReleaseOptForSize" build_exclude_from_build="Yes"/>
         </folder>
       </folder>
-      <folder Name="uEZSystem">
+      <folder Name="uEZSystem" file_name="">
         <file file_name="../../../../../../Source/uEZSystem/HAL.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZADC.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZAudioAmp.c"/>
@@ -914,6 +961,7 @@
         <file file_name="../../../../../../Source/uEZSystem/uEZWAVFile.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZEEPROM.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZCRC.c"/>
+        <file file_name="../../../../../../Source/uEZSystem/uEZAudioMixer.c"/>
       </folder>
       <folder Name="Platform">
         <folder Name="emWin">

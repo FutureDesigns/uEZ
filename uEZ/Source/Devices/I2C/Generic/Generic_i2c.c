@@ -25,6 +25,7 @@
 #include <HAL/I2CBus.h>
 #include "Generic_I2C.h"
 #include <uEZDeviceTable.h>
+#include <uEZPlatform.h>
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -41,6 +42,7 @@ typedef struct {
     TUInt32 iSlaveSendIndex;
     TBool iIsSending;
     TBool iNeedSlaveEnable;
+    T_I2CResetCallbackFunc iCallback;
 } T_I2C_Generic_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -62,6 +64,9 @@ static T_uezError II2C_Generic_InitializeWorkspace(void *aWorkspace)
 
     // Then create a semaphore to limit the number of accessors
     error = UEZSemaphoreCreateBinary(&p->iSem);
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(p->iSem, "I2C", "\0");
+#endif
     if (error)
         return error;
     error = UEZSemaphoreCreateBinary(&p->iDone);
@@ -86,9 +91,18 @@ static T_uezError II2C_Generic_InitializeWorkspace(void *aWorkspace)
 T_uezError I2C_Generic_Configure(void *aWorkspace, const char *aI2CHALName)
 {
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
+    T_uezError error;
 
     // Access the I2C device and link in or return an error
-    return HALInterfaceFind(aI2CHALName, (T_halWorkspace **)&p->iI2C);
+    error = HALInterfaceFind(aI2CHALName, (T_halWorkspace **)&p->iI2C);
+
+#if UEZ_REGISTER
+    if(error == UEZ_ERROR_NONE){
+        UEZSemaphoreSetName(p->iSem, "I2C", (*(p->iI2C))->iInterface.iName);
+        UEZSemaphoreSetName(p->iDone, "Done", (*(p->iI2C))->iInterface.iName);
+    }
+#endif
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -129,9 +143,24 @@ T_uezError I2C_Generic_ProcessRequest(void *aWorkspace, I2C_Request *aRequest)
 {
     T_uezError error = UEZ_ERROR_NONE;
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
+    TBool BusHung;
 
     // Allow only one request at a time
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+
+    (*p->iI2C)->IsHung(p->iI2C, &BusHung);
+
+    if(BusHung){
+        (*p->iI2C)->ResetBus(p->iI2C);
+        (*p->iI2C)->IsHung(p->iI2C, &BusHung);
+        if(BusHung){
+            if(p->iCallback){
+                error = p->iCallback();
+            }
+            if(error != UEZ_ERROR_NONE)
+            return error;
+        }
+    }
 
     // Always do the write first (if we have a write)
     if (aRequest->iWriteData) {
@@ -310,6 +339,28 @@ T_uezError I2C_Generic_Disable(void *aWorkspace)
     return error;
 }
 
+T_uezError I2C_Generic_IsHung(void *aWorkspace, TBool *aBool)
+{
+    T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
+    T_uezError error;
+
+    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    error = (*p->iI2C)->IsHung(p->iI2C, aBool);
+    UEZSemaphoreRelease(p->iSem);
+    return error;
+}
+
+T_uezError I2C_Generic_ResetBus(void *aWorkspace)
+{
+    T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
+    T_uezError error;
+  
+    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    error = (*p->iI2C)->ResetBus(p->iI2C);
+    UEZSemaphoreRelease(p->iSem);
+    return error;
+}
+
 T_uezError I2C_Generic_SlaveWaitForEvent(
     void *aWorkspace,
     T_I2CSlaveEvent *aEvent,
@@ -363,9 +414,10 @@ T_uezError I2C_Generic_SlaveWaitForEvent(
  * Outputs:
  *      T_uezError -- Error code.
  *---------------------------------------------------------------------------*/
-void I2C_Generic_Create(const char *aName, const char *aI2CHALName)
+void I2C_Generic_Create(const char *aName, const char *aI2CHALName, T_I2CResetCallbackFunc aCallback)
 {
     T_uezDeviceWorkspace *p_dev;
+    T_I2C_Generic_Workspace *p;
 
     // Setup a generic I2C driver
     UEZDeviceTableRegister(aName,
@@ -373,6 +425,10 @@ void I2C_Generic_Create(const char *aName, const char *aI2CHALName)
 
     // Link the device driver to the HAL driver
     I2C_Generic_Configure(p_dev, aI2CHALName);
+    
+    p = (T_I2C_Generic_Workspace *)p_dev;
+
+    p->iCallback = aCallback;
 }
 
 /*---------------------------------------------------------------------------*
@@ -392,7 +448,12 @@ const DEVICE_I2C_BUS I2CBus_Generic_Interface = { {
     I2C_Generic_SlaveStart,
     I2C_Generic_SlaveWaitForEvent,
     I2C_Generic_Enable,
-    I2C_Generic_Disable };
+    I2C_Generic_Disable,
+
+    //uEZ v2.05 Functions
+    I2C_Generic_IsHung,
+    I2C_Generic_ResetBus
+};
 
 /*-------------------------------------------------------------------------*
  * End of File:  lpc2478_I2C.c

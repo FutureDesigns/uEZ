@@ -574,6 +574,93 @@ T_uezError UEZI2CDisable(T_uezDevice aDevice)
 
     return (*p)->Disable((void *)p);
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZI2CDisable
+ *---------------------------------------------------------------------------*/
+/**
+ *  Disable the specified I2C device.
+ *
+ *  @param [in]    aDevice          Handle to opened I2C device.
+ *
+ *  @return        T_uezError       If successful, returns UEZ_ERROR_NONE.  If
+ *                                  an invalid device handle, returns
+ *                                  UEZ_ERROR_HANDLE_INVALID
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZI2C.h>
+ *
+ *  T_uezDevice I2C;
+ *  if (UEZI2COpen("I2C0", &I2C) == UEZ_ERROR_NONE) {
+ *      // the device opened properly
+ *
+ *      UEZI2CDisable(I2C);
+ *      UEZI2CEnable(I2C);
+ *
+ *      if (UEZI2CClose(I2C) != UEZ_ERROR_NONE) {
+ *          //an error occurred
+ *     }
+ *  } else {
+ *     // an error occurred opening I2C
+ *  }
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZI2CIsHung(T_uezDevice aDevice, TBool *aBool)
+{
+    T_uezError error;
+    DEVICE_I2C_BUS **p;
+
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->IsHung((void *)p, aBool);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZI2CResetBus
+ *---------------------------------------------------------------------------*/
+/**
+ *  Reset the I2C Bus.
+ *
+ *  @param [in]    aDevice          Handle to opened I2C device.
+ *
+ *  @return        T_uezError       If successful, returns UEZ_ERROR_NONE.  If
+ *                                  an invalid device handle, returns
+ *                                  UEZ_ERROR_HANDLE_INVALID
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZI2C.h>
+ *
+ *  T_uezDevice I2C;
+ *  if (UEZI2COpen("I2C0", &I2C) == UEZ_ERROR_NONE) {
+ *      // the device opened properly
+ *
+ *
+ *      if (UEZI2CClose(I2C) != UEZ_ERROR_NONE) {
+ *          //an error occurred
+ *     }
+ *  } else {
+ *     // an error occurred opening I2C
+ *  }
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZI2CResetBus(T_uezDevice aDevice)
+{
+    T_uezError error;
+    DEVICE_I2C_BUS **p;
+
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->ResetBus((void *)p);
+}
+
 /** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZI2C.c

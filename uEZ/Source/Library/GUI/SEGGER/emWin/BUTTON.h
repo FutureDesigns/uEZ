@@ -3,21 +3,21 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.20 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with the following terms:
 
 The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at  1109 McKay Dr, M/S 76, San Jose, 
-CA 95131, USA  solely for  the  purposes  of  creating  libraries  for 
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
 NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
 distributed under the terms and conditions of the NXP End User License
 Agreement.
@@ -156,6 +156,7 @@ GUI_COLOR        BUTTON_GetBkColor         (BUTTON_Handle hObj, unsigned int Ind
 const GUI_BITMAP GUI_UNI_PTR * BUTTON_GetBitmap(BUTTON_Handle hObj,unsigned int Index);
 const GUI_FONT   GUI_UNI_PTR * BUTTON_GetFont  (BUTTON_Handle hObj);
 GUI_COLOR        BUTTON_GetFrameColor      (BUTTON_Handle hObj);
+WIDGET         * BUTTON_GetpWidget         (BUTTON_Handle hObj);
 void             BUTTON_GetText            (BUTTON_Handle hObj, char * pBuffer, int MaxLen);
 GUI_COLOR        BUTTON_GetTextColor       (BUTTON_Handle hObj, unsigned int Index);
 int              BUTTON_GetTextAlign       (BUTTON_Handle hObj);
@@ -178,8 +179,8 @@ int              BUTTON_SetText            (BUTTON_Handle hObj, const char* s);
 void             BUTTON_SetTextAlign       (BUTTON_Handle hObj, int Align);
 void             BUTTON_SetTextColor       (BUTTON_Handle hObj, unsigned int Index, GUI_COLOR Color);
 void             BUTTON_SetTextOffset      (BUTTON_Handle hObj, int xPos, int yPos);
-void             BUTTON_SetSelfDrawEx      (BUTTON_Handle hObj, unsigned int Index, void (*pDraw)(WM_HWIN hWin), int x, int y); /* Not to be doc. */
-void             BUTTON_SetSelfDraw        (BUTTON_Handle hObj, unsigned int Index, void (*pDraw)(WM_HWIN hWin));               /* Not to be doc. */
+void             BUTTON_SetSelfDrawEx      (BUTTON_Handle hObj, unsigned int Index, GUI_DRAW_SELF_CB * pDraw, int x, int y); /* Not to be doc. */
+void             BUTTON_SetSelfDraw        (BUTTON_Handle hObj, unsigned int Index, GUI_DRAW_SELF_CB * pDraw);               /* Not to be doc. */
 void             BUTTON_SetReactOnLevel    (void);
 void             BUTTON_SetReactOnTouch    (void);
 int              BUTTON_SetUserData        (BUTTON_Handle hObj, const void * pSrc, int NumBytes);

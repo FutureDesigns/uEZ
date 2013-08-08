@@ -46,11 +46,11 @@
 #endif
 
 #define UEZBSP_SDRAM                        1
-#define UEZBSP_SDRAM_SIZE                   (8*1024*1024)
+#define UEZBSP_SDRAM_SIZE                   (16*1024*1024)
 #define UEZBSP_SDRAM_BASE_ADDR              0x08000000
 
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  64
+    #define UEZ_DEFAULT_AUDIO_LEVEL  255
 #endif
 
 #ifndef UEZ_CONSOLE_READ_BUFFER_SIZE
@@ -77,8 +77,8 @@
     #define NOP() __no_operation()
 #endif
 
-#define SDRAM_NUM_ROWS      2048
-#define SDRAM_REFRESH_TIME  32  // ms
+#define SDRAM_NUM_ROWS      4096
+#define SDRAM_REFRESH_TIME  64  // ms
 
 //#define configKERNEL_INTERRUPT_PRIORITY     4
 

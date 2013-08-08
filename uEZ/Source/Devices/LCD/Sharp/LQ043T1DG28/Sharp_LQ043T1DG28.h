@@ -2,7 +2,7 @@
  * File:  Sharp_LQ043T1DG28.h
  *-------------------------------------------------------------------------*
  * Description:
- *     
+ *
  *-------------------------------------------------------------------------*/
 #ifndef SHARP_LQ043T1DG28_H_
 #define SHARP_LQ043T1DG28_H_
@@ -65,7 +65,6 @@ extern const T_uezDeviceInterface *LCD_SHARP_LQ043T1DG28_InterfaceArray[];
 extern const DEVICE_LCD LCD_SHARP_LQ043T1DG28_Interface_8Bit;
 extern const DEVICE_LCD LCD_SHARP_LQ043T1DG28_Interface_I15Bit;
 extern const DEVICE_LCD LCD_SHARP_LQ043T1DG28_Interface_16Bit;
-
 void LCD_LQ043T1DG28_Create(const char *aName,
                             char* aSPIBus,
                             T_uezGPIOPortPin aResetPin,

@@ -4,8 +4,8 @@
  * Description:
  *
  *-------------------------------------------------------------------------*/
-#ifndef SDCARD_MS_DRIVER_H_
-#define SDCARD_MS_DRIVER_H_
+#ifndef SDCARD_MS_DRIVER_MCI_H_
+#define SDCARD_MS_DRIVER_MCI_H_
 
 /*--------------------------------------------------------------------------
  * uEZ(tm) - Copyright (C) 2007-2011 Future Designs, Inc.

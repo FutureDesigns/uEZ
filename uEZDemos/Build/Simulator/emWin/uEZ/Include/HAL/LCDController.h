@@ -60,14 +60,14 @@ typedef enum {
 } T_lcdPanelType;
 
 typedef enum {
-	LCD_COLOR_RES_1=0,
-	LCD_COLOR_RES_2,
-	LCD_COLOR_RES_4,
-	LCD_COLOR_RES_8,
-	LCD_COLOR_RES_12_444,   /**< uses 16 bits to store 12 levels  0:R4:G4:B4 */
-	LCD_COLOR_RES_16_I555,  /**< first bit is intensity bit (1=high/0=low) */
-	LCD_COLOR_RES_16_565,
-	LCD_COLOR_RES_24,	
+    LCD_COLOR_RES_1=0,
+    LCD_COLOR_RES_2,
+    LCD_COLOR_RES_4,
+    LCD_COLOR_RES_8,
+    LCD_COLOR_RES_12_444,   /**< uses 16 bits to store 12 levels  0:R4:G4:B4 */
+    LCD_COLOR_RES_16_I555,  /**< first bit is intensity bit (1=high/0=low) */
+    LCD_COLOR_RES_16_565,
+    LCD_COLOR_RES_24,    
 } T_lcdColorResolution;
 
 typedef enum {

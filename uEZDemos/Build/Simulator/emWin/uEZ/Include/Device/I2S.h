@@ -42,7 +42,7 @@
  * Types:
  *-------------------------------------------------------------------------*/
 typedef struct {
-	// Header
+    // Header
     T_halInterface iInterface;
 
     //Functions

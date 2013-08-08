@@ -22,11 +22,13 @@
 #define UEZ_PROCESSOR       NXP_LPC1788
 #define RTOS                FreeRTOS
 
-#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_OKAYA_VGA_LCDC_3_5          //DK-57VTS with LCD Carrier 3-5
-//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_TOSHIBA_QVGA_LCDC_REV2    //DK-57VTS with LCD Carrier 5.7
-//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_TOSHIBA_QVGA_LCDC_3_5     //DK-57TS with LCD Carrier 3-5
-//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_OKAYA_QVGA_LCDC_3_5       //DK-35TS with LCD Carrier 3-5
-//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_HITACHI_TX11D06VM2APA     //DK-43WQH with LCD Carrier 4WQ
+//#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_TOSHIBA_QVGA_LCDC_REV2    //DK-57VTS with LCD Carrier 5.7
+//#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_TOSHIBA_QVGA_LCDC_3_5     //DK-57TS with LCD Carrier 3-5
+//#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_HITACHI_TX11D06VM2APA     //DK-43WQH with LCD Carrier 4WQ
+//#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_SEIKO_43WQW1T
+#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_OKAYA_VGA_LCDC_3_5          //DK-57VTS with LCD Carrier 3-5
+//#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_OKAYA_QVGA_LCDC_3_5       //DK-35TS with LCD Carrier 3-5 5.7"
+//#define UEZ_DEFAULT_LCD_CONFIG LCD_CONFIG_OKAYA_QVGA_3x5_LCDC_3_5       //DK-35TS with LCD Carrier 3-5 Okaya RH320240T
 
 // Modify the default accelerometer demo settings
 #if 0 // Set to 1 for Sekio displays
@@ -42,7 +44,7 @@
 #endif
 
 // Use up 48K of the heap
-#define configTOTAL_HEAP_SIZE		( ( size_t ) (( 48 * 1024 ) - 64))
+#define configTOTAL_HEAP_SIZE        ( ( size_t ) (( 48 * 1024 ) - 64))
 
 #define UEZ_ENABLE_WATCHDOG       0 // Turn on watchdog for testing
 
@@ -73,9 +75,23 @@
 #define APP_DEMO_COM                1
 #define APP_DEMO_DRAW               1
 #define APP_DEMO_APPS               1
-#define UEZ_ENABLE_TCPIP_STACK      1
 #define UEZ_ENABLE_USB_HOST_STACK   1
-#define UEZ_ENABLE_WIRED_NETWORK    1
+#define UEZ_ENABLE_TCPIP_STACK      1
+#define UEZ_BASIC_WEB_SERVER        0
+#define UEZ_HTTP_SERVER             UEZ_ENABLE_TCPIP_STACK
+#define UEZ_ENABLE_WIRED_NETWORK    UEZ_ENABLE_TCPIP_STACK
 #define INTERRUPT_BASED_EMAC        1
 
 #define UEZ_SLIDESHOW_NAME        "DK-LPC1788"
+
+#ifdef FREERTOS_PLUS_TRACE
+#define configUSE_TRACE_FACILITY  1
+#define configUSE_TIMERS          1
+#define SELECTED_PORT PORT_ARM_CortexM
+#endif
+
+#ifdef NDEBUG
+#define UEZ_REGISTER              0
+#else
+#define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+#endif

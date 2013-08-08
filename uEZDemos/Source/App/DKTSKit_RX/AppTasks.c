@@ -46,6 +46,7 @@
 #include <NVSettings.h>
 #include "Source/Library/Web/BasicWeb/BasicWeb.h"
 #include <HAL/GPIO.h>
+#include <AppHTTPServer.h>
 
 extern TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams);
 
@@ -55,45 +56,6 @@ extern TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams);
  * Description:
  *      Setup tasks that run besides main or the main menu.
  *---------------------------------------------------------------------------*/
-#if UEZ_HTTP_SERVER
-char G_ipAddress[80];
-static T_uezError IMainHTTPServerGetValue(
-            void *aHTTPState,
-            const char *aVarName)
-{
-    if (strcmp(aVarName, "RefreshRate") == 0) {
-        HTTPServerSetVar(aHTTPState, aVarName, "2");
-    } else {
-        HTTPServerSetVar(aHTTPState, aVarName, "Test");
-    }
-
-    return UEZ_ERROR_NONE;
-}
-
-static T_uezError IMainHTTPServerSetValue(
-            void *aHTTPState,
-            const char *aVarName,
-            const char *aValue)
-{
-    extern void MonLEDsStopAutoRunning(void);
-//    static TUInt32 piezoFreqHz = 1000;
-
-    if (strcmp(aVarName, "PIEZOFREQHTML") == 0) {
-        // Remember the last know frequency
-//        piezoFreqHz = atoi(aValue);
-    }
-    return UEZ_ERROR_NONE;
-}
-static T_httpServerParameters G_httpServerParamsWired = {
-    IMainHTTPServerGetValue,
-    IMainHTTPServerSetValue,
-};
-static T_httpServerParameters G_httpServerParamsWireless = {
-    IMainHTTPServerGetValue,
-    IMainHTTPServerSetValue,
-};
-#endif
-
 void INetworkConfigureWiredConnection(T_uezDevice network)
 {
     T_uezNetworkSettings network_settings = {
@@ -413,23 +375,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 #endif
 
 #if UEZ_HTTP_SERVER
-    // If stack is enabled, turn on web server
-    /* Create the lwIP task.  This uses the lwIP RTOS abstraction layer.*/
-    #define HTTP_SERVER_STACK_SIZE      UEZ_TASK_STACK_BYTES(1400)
-
-    G_httpServerParamsWired.iNetwork = wired_network;
-    error = UEZTaskCreate(
-        HTTPServer,
-        "HTTPSvr",
-        HTTP_SERVER_STACK_SIZE,
-        (void *)&G_httpServerParamsWired,
-        UEZ_PRIORITY_NORMAL,
-        0);
-    if (error) {
-        printf("Problem starting HTTPServer! (Error=%d)\n", error);
-    } else {
-        printf("HTTPServer started\n");
-    }
+App_HTTPServerStart(wired_network);
 #endif
 
     return 0;
