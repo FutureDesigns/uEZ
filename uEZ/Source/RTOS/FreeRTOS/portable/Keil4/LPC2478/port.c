@@ -207,7 +207,7 @@ IRQ_ROUTINE(vPreemptiveTickOld)
     IRQ_START();
 	/* Increment the RTOS tick count, then look for the highest priority 
 	task that is ready to run. */
-	vTaskIncrementTick();
+	xTaskIncrementTick();
 	vTaskSwitchContext();
 
 	/* Ready for the next interrupt. */

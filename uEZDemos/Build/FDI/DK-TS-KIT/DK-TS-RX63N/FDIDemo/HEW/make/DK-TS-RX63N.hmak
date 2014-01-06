@@ -65,14 +65,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC0="$(TC_INSTALL_DIR)\include\stdio.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -104,14 +101,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -144,14 +138,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="$(TC_INSTALL_DIR)\include\stdlib.
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -189,14 +180,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC3="$(TC_INSTALL_DIR)\include\math.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -242,14 +230,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -287,14 +272,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC5="$(TC_INSTALL_DIR)\include\stdio.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Screensaver\BouncingLogoSS.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -371,13 +353,10 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC7="$(TC_INSTALL_DIR)\include\string.
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\NVSettings.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppTasks.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -445,14 +424,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC9="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -517,14 +493,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -655,14 +628,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -694,14 +664,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -741,14 +708,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -792,14 +756,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -844,14 +805,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -892,14 +850,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -1027,14 +982,11 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -1099,11 +1051,8 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LCD\Config_LCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTypes.h" \
 	"$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
@@ -1117,8 +1066,8 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -1131,11 +1080,8 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LCD\Config_LCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTypes.h" \
 	"$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
@@ -1149,8 +1095,8 @@ DKTSRX63N_RELEASE_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2153,14 +2099,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC0="$(TC_INSTALL_DIR)\include\stdio.h" 
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2192,14 +2135,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\..\..\..\uEZ\Include
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2232,14 +2172,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="$(TC_INSTALL_DIR)\include\stdlib.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2277,14 +2214,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC3="$(TC_INSTALL_DIR)\include\math.h" "
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2330,14 +2264,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\..\..\..\uEZ\Include
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2375,14 +2306,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC5="$(TC_INSTALL_DIR)\include\stdio.h" 
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Screensaver\BouncingLogoSS.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2459,13 +2387,10 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC7="$(TC_INSTALL_DIR)\include\string.h"
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\NVSettings.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppTasks.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2533,14 +2458,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC9="..\..\..\..\..\..\..\..\uEZ\Include
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2605,14 +2527,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2743,14 +2662,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2782,14 +2698,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2829,14 +2742,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2880,14 +2790,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2932,14 +2839,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -2980,14 +2884,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_font.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim_driver.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -3115,14 +3016,11 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -3187,11 +3085,8 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LCD\Config_LCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTypes.h" \
 	"$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
@@ -3205,8 +3100,8 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
@@ -3219,11 +3114,8 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LCD\Config_LCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTypes.h" \
 	"$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
@@ -3237,8 +3129,8 @@ DKTSRX63N_DEBUG_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \

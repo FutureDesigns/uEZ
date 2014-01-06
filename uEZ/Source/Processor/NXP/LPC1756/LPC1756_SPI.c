@@ -15,8 +15,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
- /**
- *    @addtogroup LPC1756_SPI
+ /*
  *  @{
  *  @brief     uEZ LPC1756 SPI Interface
  *  @see http://www.teamfdi.com/uez/
@@ -412,7 +411,7 @@ void LPC1756_SPI0_Require(
     InterruptRegister(SPI_IRQn, ISPI0IRQ, INTERRUPT_PRIORITY_HIGH, "SPI0");
     InterruptDisable(SPI_IRQn);
 }
-/** @} */
+
 /*-------------------------------------------------------------------------*
  * End of File:  LPC1756_SPI.c
  *-------------------------------------------------------------------------*/

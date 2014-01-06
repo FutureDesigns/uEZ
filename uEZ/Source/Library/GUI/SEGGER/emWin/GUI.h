@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -393,7 +393,6 @@ U32       GUI_CalcVisColorError(GUI_COLOR color);
 *
 *       Error handler
 */
-void GUI_Error         (const char * s);
 void GUI_SetOnErrorFunc(void (* pFunc)(const char * s));
 
 /*********************************************************************
@@ -539,6 +538,41 @@ int GUI_JPEG_GetInfoEx   (GUI_GET_DATA_FUNC * pfGetData, void * p, GUI_JPEG_INFO
 
 /*********************************************************************
 *
+*       MOVIE file support
+*/
+#define GUI_MOVIE_NOTIFICATION_PREDRAW  0 // Immediately before frame is drawn
+#define GUI_MOVIE_NOTIFICATION_POSTDRAW 1 // Immediately after a frame is drawn
+#define GUI_MOVIE_NOTIFICATION_START    2 // Send when start playing a movie
+#define GUI_MOVIE_NOTIFICATION_STOP     3 // Movie has stopped
+#define GUI_MOVIE_NOTIFICATION_DELETE   4 // Movie has been deleted
+
+typedef GUI_HMEM GUI_MOVIE_HANDLE;
+
+typedef void GUI_MOVIE_FUNC(GUI_MOVIE_HANDLE hMovie, int Notification, U32 CurrentFrame);
+
+typedef struct {
+  int xSize;         // X-size of images
+  int ySize;         // Y-size of images
+  int msPerFrame;    // Default duration of 1 frame
+  U32 NumFrames;     // Number of frames
+} GUI_MOVIE_INFO;
+
+GUI_MOVIE_HANDLE GUI_MOVIE_Create       (const void * pFileData, U32 FileSize, GUI_MOVIE_FUNC * pfNotify);
+GUI_MOVIE_HANDLE GUI_MOVIE_CreateEx     (GUI_GET_DATA_FUNC * pfGetData, void * pParam, GUI_MOVIE_FUNC * pfNotify);
+int              GUI_MOVIE_Delete       (GUI_MOVIE_HANDLE hMovie);
+U32              GUI_MOVIE_GetFrameIndex(GUI_MOVIE_HANDLE hMovie);
+int              GUI_MOVIE_GetInfo      (const void * pFileData, U32 FileSize, GUI_MOVIE_INFO * pInfo);
+int              GUI_MOVIE_GetInfoEx    (GUI_GET_DATA_FUNC * pfGetData, void * pParam, GUI_MOVIE_INFO * pInfo);
+int              GUI_MOVIE_GetPos       (GUI_MOVIE_HANDLE hMovie, int * pxPos, int * pyPos, int * pxSize, int * pySize);
+int              GUI_MOVIE_GotoFrame    (GUI_MOVIE_HANDLE hMovie, U32 Frame);
+int              GUI_MOVIE_Pause        (GUI_MOVIE_HANDLE hMovie);
+int              GUI_MOVIE_Play         (GUI_MOVIE_HANDLE hMovie);
+int              GUI_MOVIE_SetPeriod    (GUI_MOVIE_HANDLE hMovie, unsigned Period);
+int              GUI_MOVIE_SetPos       (GUI_MOVIE_HANDLE hMovie, int xPos, int yPos);
+int              GUI_MOVIE_Show         (GUI_MOVIE_HANDLE hMovie, int xPos, int yPos, int DoLoop);
+
+/*********************************************************************
+*
 *       Cursor routines
 */
 #define GUI_CURSOR_SHOW 0
@@ -604,7 +638,10 @@ int         GUI_SPRITE_GetState            (GUI_HSPRITE hSprite);
 void        GUI_SPRITE_Hide                (GUI_HSPRITE hSprite);
 int         GUI_SPRITE_SetBitmap           (GUI_HSPRITE hSprite, const GUI_BITMAP GUI_UNI_PTR * pBM);
 int         GUI_SPRITE_SetBitmapAndPosition(GUI_HSPRITE hSprite, const GUI_BITMAP GUI_UNI_PTR * pBM, int x, int y);
+int         GUI_SPRITE_SetLoop             (GUI_HSPRITE hSprite, int OnOff);
 void        GUI_SPRITE_SetPosition         (GUI_HSPRITE hSprite, int x, int y);
+int         GUI_SPRITE_StartAnim           (GUI_HSPRITE hSprite);
+int         GUI_SPRITE_StopAnim            (GUI_HSPRITE hSprite);
 void        GUI_SPRITE_Show                (GUI_HSPRITE hSprite);
 
 /*********************************************************************
@@ -721,9 +758,9 @@ const char * GUI_LANG_GetText          (int IndexText);
 int          GUI_LANG_GetTextBuffered  (int IndexText, char * pBuffer, int SizeOfBuffer);
 int          GUI_LANG_GetTextBufferedEx(int IndexText, int IndexLang, char * pBuffer, int SizeOfBuffer);
 const char * GUI_LANG_GetTextEx        (int IndexText, int IndexLang);
-int          GUI_LANG_LoadCSV          (const U8 * pFileData, U32 FileSize);
+int          GUI_LANG_LoadCSV          (U8 * pFileData, U32 FileSize);
 int          GUI_LANG_LoadCSVEx        (GUI_GET_DATA_FUNC * pfGetData, void * p);
-int          GUI_LANG_LoadText         (const U8 * pFileData, U32 FileSize, int IndexLang);
+int          GUI_LANG_LoadText         (U8 * pFileData, U32 FileSize, int IndexLang);
 int          GUI_LANG_LoadTextEx       (GUI_GET_DATA_FUNC * pfGetData, void * p, int IndexLang);
 int          GUI_LANG_SetLang          (int IndexLang);
 unsigned     GUI_LANG_SetMaxNumLang    (unsigned MaxNumLang);
@@ -864,8 +901,11 @@ int  GUI_MEMDEV_GetYSize             (GUI_MEMDEV_Handle hMem);
 void GUI_MEMDEV_MarkDirty            (GUI_MEMDEV_Handle hMem, int x0, int y0, int x1, int y1);
 void GUI_MEMDEV_ReduceYSize          (GUI_MEMDEV_Handle hMem, int YSize);
 void GUI_MEMDEV_Rotate               (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, int dx, int dy, int a, int Mag);
+void GUI_MEMDEV_RotateHR             (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, I32 dx, I32 dy, int a, int Mag);
 void GUI_MEMDEV__Rotate              (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, int dx, int dy, int a, int Mag, U32 AndMask);
+void GUI_MEMDEV__RotateHR            (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, I32 dx, I32 dy, int a, int Mag, U32 AndMask);
 void GUI_MEMDEV_RotateHQ             (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, int dx, int dy, int a, int Mag);
+void GUI_MEMDEV_RotateHQHR           (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, I32 dx, I32 dy, int a, int Mag);
 void GUI_MEMDEV_RotateHQT            (GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, int dx, int dy, int a, int Mag);
 GUI_MEMDEV_Handle GUI_MEMDEV_Select  (GUI_MEMDEV_Handle hMem);  /* Select (activate) a particular memory device. */
 void  GUI_MEMDEV_SetOrg              (GUI_MEMDEV_Handle hMem, int x0, int y0);
@@ -878,13 +918,21 @@ void  GUI_MEMDEV_WriteEx             (GUI_MEMDEV_Handle hMem, int xMag, int yMag
 int   GUI_MEMDEV_Draw                (GUI_RECT * pRect, GUI_CALLBACK_VOID_P * pfDraw, void * pData, int NumLines, int Flags);
 void* GUI_MEMDEV_GetDataPtr          (GUI_MEMDEV_Handle hMem);
 void  GUI_MEMDEV_SetColorConv        (GUI_MEMDEV_Handle hMem, const LCD_API_COLOR_CONV * pColorConvAPI);
+const LCD_API_COLOR_CONV * GUI_MEMDEV_GetColorConv(GUI_MEMDEV_Handle hMemDev);
 int   GUI_MEMDEV_GetBitsPerPixel     (GUI_MEMDEV_Handle hMemDev);
 int   GUI_MEMDEV_FadeDevices         (GUI_MEMDEV_Handle hMem0, GUI_MEMDEV_Handle hMem1, int Period);
 void  GUI_MEMDEV_SerializeBMP        (GUI_MEMDEV_Handle hDev, GUI_CALLBACK_VOID_U8_P * pfSerialize, void * p);
 void  GUI_MEMDEV_SetAnimationCallback(GUI_ANIMATION_CALLBACK_FUNC * pCbAnimation, void * pVoid);
 void  GUI_MEMDEV__FadeDevice         (GUI_MEMDEV_Handle hMemWin, GUI_MEMDEV_Handle hMemBk, GUI_MEMDEV_Handle hMemDst, U8 Intens);
 void  GUI_MEMDEV__FadeDeviceEx       (GUI_MEMDEV_Handle hMemWin, GUI_MEMDEV_Handle hMemBk, GUI_MEMDEV_Handle hMemDst, U8 Intens, int xPosWin, int yPosWin);
+int   GUI_MEMDEV_PunchOutDevice      (GUI_MEMDEV_Handle hMemData, GUI_MEMDEV_Handle hMemMask);
 void  GUI_SelectLCD(void);
+
+GUI_MEMDEV_Handle GUI_MEMDEV_CreateBlurredDevice32  (GUI_MEMDEV_Handle hMem, U8 Depth);
+GUI_MEMDEV_Handle GUI_MEMDEV_CreateBlurredDevice32HQ(GUI_MEMDEV_Handle hMem, U8 Depth);
+GUI_MEMDEV_Handle GUI_MEMDEV_CreateBlurredDevice32LQ(GUI_MEMDEV_Handle hMem, U8 Depth);
+void              GUI_MEMDEV_SetBlurHQ              (void);
+void              GUI_MEMDEV_SetBlurLQ              (void);
 
 /*********************************************************************
 *
@@ -1084,16 +1132,17 @@ typedef struct {
 
 typedef void GUI_TIMER_CALLBACK(/*const*/ GUI_TIMER_MESSAGE* pTM);
 
-GUI_TIMER_HANDLE GUI_TIMER_Create   (GUI_TIMER_CALLBACK * cb, int Time,  U32 Context, int Flags);
+GUI_TIMER_HANDLE GUI_TIMER_Create   (GUI_TIMER_CALLBACK * cb, GUI_TIMER_TIME Time, U32 Context, U16 Flags);
 void             GUI_TIMER_Delete   (GUI_TIMER_HANDLE hObj);
 
 /* Methods changing properties */
-void GUI_TIMER_SetPeriod (GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Period);
-void GUI_TIMER_SetTime   (GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Period);
-void GUI_TIMER_SetDelay  (GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Delay);
-void GUI_TIMER_Restart   (GUI_TIMER_HANDLE hObj);
-int  GUI_TIMER_GetFlag   (GUI_TIMER_HANDLE hObj, int Flag); /* Not to be documented */
-int  GUI_TIMER_Exec      (void);
+GUI_TIMER_TIME GUI_TIMER_GetPeriod(GUI_TIMER_HANDLE hObj);
+void           GUI_TIMER_SetPeriod(GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Period);
+void           GUI_TIMER_SetTime  (GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Period);
+void           GUI_TIMER_SetDelay (GUI_TIMER_HANDLE hObj, GUI_TIMER_TIME Delay);
+void           GUI_TIMER_Restart  (GUI_TIMER_HANDLE hObj);
+int            GUI_TIMER_GetFlag  (GUI_TIMER_HANDLE hObj, int Flag); /* Not to be documented */
+int            GUI_TIMER_Exec     (void);
 
 /*********************************************************************
 *
@@ -1111,9 +1160,11 @@ void GUI_AA_DrawLine         (int x0, int y0, int x1, int y1);
 void GUI_AA_DrawPolyOutline  (const GUI_POINT * pSrc, int NumPoints, int Thickness, int x, int y);
 void GUI_AA_DrawPolyOutlineEx(const GUI_POINT * pSrc, int NumPoints, int Thickness, int x, int y, GUI_POINT * pBuffer);
 void GUI_AA_DrawRoundedRect  (int x0, int y0, int x1, int y1, int r);
+void GUI_AA_DrawRoundedRectEx(GUI_RECT * pRect, int r);
 void GUI_AA_FillCircle       (int x0, int y0, int r);
 void GUI_AA_FillPolygon      (GUI_POINT * pPoints, int NumPoints, int x0, int y0);
 void GUI_AA_FillRoundedRect  (int x0, int y0, int x1, int y1, int r);
+void GUI_AA_FillRoundedRectEx(GUI_RECT * pRect, int r);
 int  GUI_AA_SetDrawMode      (int Mode);
 
 /*********************************************************************

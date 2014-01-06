@@ -328,7 +328,7 @@ void xPortSysTickHandler( void )
 
 	( void ) portSET_INTERRUPT_MASK_FROM_ISR();
 	{
-		vTaskIncrementTick();
+		xTaskIncrementTick();
 	}
 	portCLEAR_INTERRUPT_MASK_FROM_ISR( 0 );
 }

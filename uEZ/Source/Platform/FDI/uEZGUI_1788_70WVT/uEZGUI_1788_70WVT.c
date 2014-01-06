@@ -28,7 +28,7 @@
 #include <HAL/GPIO.h>
 #include <HAL/EMAC.h>
 #include <HAL/Interrupt.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_USBDeviceController.c>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDeviceController.c>
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
 #include <Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h>
@@ -38,11 +38,11 @@
 #include <Source/Devices/DAC/Generic/DAC_Generic.h>
 #include <Source/Devices/EEPROM/Generic/I2C/EEPROM_Generic_I2C.h>
 #include <Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C.h>
-#include <Source/Devices/EEPROM/NXP/LPC1788/EEPROM_NXP_LPC1788.h>
+#include <Source/Devices/EEPROM/NXP/LPC17xx_40xx/EEPROM_NXP_LPC17xx_40xx.h>
 #include <Source/Devices/Flash/Spansion/S29GL/Flash_S29GL064N90_16bit.h>
 #include <Source/Devices/GPDMA/Generic/Generic_GPDMA.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
-#include <Source/Devices/Flash/NXP/LPC1788/LPC1788_IAP.h>
+#include <Source/Devices/Flash/NXP/LPC17xx_40xx/LPC17xx_40xx_IAP.h>
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
 #include <Source/Devices/I2S/Generic/Generic_I2S.h>
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
@@ -59,37 +59,37 @@
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
-#include <Source/Devices/USBDevice/NXP/LPC1788/LPC1788_USBDevice.h>
+#include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
 #include <Source/Devices/USBHost/Generic/Generic_USBHost.h>
 #include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
 #include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_RTC.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_RTC.h>
 #include <Source/Library/Web/BasicWeb/BasicWEB.h>
 #include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
 #include <Source/Library/Graphics/SWIM/lpc_swim.h>
 #include <Source/Library/Memory/MemoryTest/MemoryTest.h>
 #include <Source/Library/StreamIO/StdInOut/StdInOut.h>
-#include <Source/Processor/NXP/LPC1788/uEZProcessor_LPC1788.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_ADCBank.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_CRC.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_DAC.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_EMAC.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_EMC_Static.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_GPDMA.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_GPIO.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_I2C.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_I2S.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_LCDController.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_PWM.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_PLL.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_SDRAM.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_Serial.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_SSP.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_Timer.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_USBDeviceController.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_USBHost.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_Watchdog.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_MCI.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/uEZProcessor_LPC17xx_40xx.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_ADCBank.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CRC.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_DAC.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_EMAC.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_EMC_Static.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_GPDMA.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_GPIO.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_I2C.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_I2S.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_LCDController.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_PWM.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_PLL.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_SDRAM.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Serial.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_SSP.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Timer.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDeviceController.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBHost.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Watchdog.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_MCI.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
 #include <uEZDevice.h>
@@ -195,12 +195,12 @@ void UEZBSPDelayMS(unsigned int aMilliseconds)
  *---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
 {
-    static const T_LPC1788_SDRAM_Configuration sdramConfig_MT48LC2M32B2P = {
+    static const T_LPC17xx_40xx_SDRAM_Configuration sdramConfig_MT48LC2M32B2P = {
             UEZBSP_SDRAM_BASE_ADDR,
             UEZBSP_SDRAM_SIZE,
             SDRAM_CAS_2,
             SDRAM_CAS_3,
-            LPC1788_SDRAM_CLKOUT0,
+            LPC17xx_40xx_SDRAM_CLKOUT0,
             SDRAM_CLOCK_FREQUENCY,
             64, // ms
             8192, // cycles
@@ -215,7 +215,7 @@ void UEZBSP_RAMInit(void)
             SDRAM_CYCLES(70),
             SDRAM_CYCLES(12),
             SDRAM_CLOCKS(2) };
-    LPC1788_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P);
+    LPC17xx_40xx_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P);
 
 #if CONFIG_MEMORY_TEST_ON_SDRAM
     MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
@@ -231,7 +231,7 @@ void UEZBSP_RAMInit(void)
 void UEZBSP_ROMInit(void)
 {
 #if 1
-    const T_LPC1788_EMC_Static_Configuration norFlash_M29W128G = {
+    const T_LPC17xx_40xx_EMC_Static_Configuration norFlash_M29W128G = {
             UEZBSP_NOR_FLASH_BASE_ADDRESS,
             16*1024*1024,  // stock is 8 Megs, but setup for 16 Megs
             EMC_STATIC_MEMORY_WIDTH_16_BITS,
@@ -243,9 +243,9 @@ void UEZBSP_ROMInit(void)
             EMC_STATIC_CYCLES(0),
             EMC_STATIC_CYCLES(90),
             1, };
-    LPC1788_EMC_Static_Init(&norFlash_M29W128G);
+    LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
-    const T_LPC1788_EMC_Static_Configuration norSlowFlash_M29W128G = {
+    const T_LPC17xx_40xx_EMC_Static_Configuration norSlowFlash_M29W128G = {
         UEZBSP_NOR_FLASH_BASE_ADDRESS,
         EMC_STATIC_MEMORY_WIDTH_16_BITS,
         EFalse,
@@ -257,7 +257,7 @@ void UEZBSP_ROMInit(void)
         0x1F,
         0x0F,
     };
-    LPC1788_EMC_Static_Init(&norSlowFlash_M29W128G);
+    LPC17xx_40xx_EMC_Static_Init(&norSlowFlash_M29W128G);
 #endif
 }
 
@@ -270,7 +270,7 @@ void UEZBSP_ROMInit(void)
 void UEZBSP_PLLConfigure(void)
 {
 #if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
-    const T_LPC1788_PLL_Frequencies freq_CPU72MHz_Peripheral60Mhz_USB48MHz = {
+    const T_LPC17xx_40xx_PLL_Frequencies freq_CPU72MHz_Peripheral60Mhz_USB48MHz = {
             12000000,
 
             // Run PLL0 at 120 MHz
@@ -280,13 +280,13 @@ void UEZBSP_PLLConfigure(void)
             48000000,
 
             // Use the main oscillator of 12 MHz as a source
-            LPC1788_CLKSRC_SELECT_MAIN_OSCILLATOR,
+            LPC17xx_40xx_CLKSRC_SELECT_MAIN_OSCILLATOR,
 
             // Use PLL0 for the CCLK, PCLK, and EMC Clk source (before dividers)
-            LPC1788_CPU_CLOCK_SELECT_PLL_CLK,
+            LPC17xx_40xx_CPU_CLOCK_SELECT_PLL_CLK,
 
             // Use PPL1 (alt) for the USB
-            LPC1788_USB_CLOCK_SELECT_ALT_PLL_CLK,
+            LPC17xx_40xx_USB_CLOCK_SELECT_ALT_PLL_CLK,
 
             // CPU Clock is PLL0 / 1 or 120 MHz / 1 = 120 MHz
             1,
@@ -301,15 +301,15 @@ void UEZBSP_PLLConfigure(void)
             1,
 
             // CLKOUT is on the EMC CLK and at 60 MHz (60 MHz / 1)
-            LPC1788_CLOCK_OUT_SELECT_CPU,
+            LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
             1,
             ETrue, };
     
-    LPC1788_PLL_SetFrequencies(&freq_CPU72MHz_Peripheral60Mhz_USB48MHz);
+    LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU72MHz_Peripheral60Mhz_USB48MHz);
     
 #else // 120000000 MHz  
     
-    const T_LPC1788_PLL_Frequencies freq_CPU120MHz_Peripheral60Mhz_USB48MHz = {
+    const T_LPC17xx_40xx_PLL_Frequencies freq_CPU120MHz_Peripheral60Mhz_USB48MHz = {
             12000000,
 
             // Run PLL0 at 120 MHz
@@ -319,13 +319,13 @@ void UEZBSP_PLLConfigure(void)
             48000000,
 
             // Use the main oscillator of 12 MHz as a source
-            LPC1788_CLKSRC_SELECT_MAIN_OSCILLATOR,
+            LPC17xx_40xx_CLKSRC_SELECT_MAIN_OSCILLATOR,
 
             // Use PLL0 for the CCLK, PCLK, and EMC Clk source (before dividers)
-            LPC1788_CPU_CLOCK_SELECT_PLL_CLK,
+            LPC17xx_40xx_CPU_CLOCK_SELECT_PLL_CLK,
 
             // Use PPL1 (alt) for the USB
-            LPC1788_USB_CLOCK_SELECT_ALT_PLL_CLK,
+            LPC17xx_40xx_USB_CLOCK_SELECT_ALT_PLL_CLK,
 
             // CPU Clock is PLL0 / 1 or 120 MHz / 1 = 120 MHz
             1,
@@ -340,11 +340,11 @@ void UEZBSP_PLLConfigure(void)
             1,
 
             // CLKOUT is on the EMC CLK and at 60 MHz (60 MHz / 1)
-            LPC1788_CLOCK_OUT_SELECT_CPU,
+            LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
             1,
             ETrue, };
     
-    LPC1788_PLL_SetFrequencies(&freq_CPU120MHz_Peripheral60Mhz_USB48MHz);
+    LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU120MHz_Peripheral60Mhz_USB48MHz);
     
 #endif
 }
@@ -429,8 +429,8 @@ void UEZPlatform_I2C0_Require(void)
     DEVICE_CREATE_ONCE();
 
     // Ensure the I2C0 exists in the HAL level
-    LPC1788_GPIO5_Require();
-    LPC1788_I2C0_Require(GPIO_P5_2, GPIO_P5_3);
+    LPC17xx_40xx_GPIO5_Require();
+    LPC17xx_40xx_I2C0_Require(GPIO_P5_2, GPIO_P5_3);
     I2C_Generic_Create("I2C0", "I2C0", 0);
 }
 
@@ -445,8 +445,8 @@ void UEZPlatform_I2C1_Require(void)
     DEVICE_CREATE_ONCE();
 
     // Ensure the I2C0 exists in the HAL level
-    LPC1788_GPIO2_Require();
-    LPC1788_I2C1_Require(GPIO_P2_14, GPIO_P2_15);
+    LPC17xx_40xx_GPIO2_Require();
+    LPC17xx_40xx_I2C1_Require(GPIO_P2_14, GPIO_P2_15);
     I2C_Generic_Create("I2C1", "I2C1", 0);
 }
 
@@ -462,8 +462,8 @@ void UEZPlatform_I2C2_Require(void)
     DEVICE_CREATE_ONCE();
 
     // Ensure the I2C0 exists in the HAL level
-    LPC1788_GPIO0_Require();
-    LPC1788_I2C2_Require(GPIO_P0_10, GPIO_P0_11);
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_I2C2_Require(GPIO_P0_10, GPIO_P0_11);
     I2C_Generic_Create("I2C2", "I2C2", 0);
 
 }
@@ -507,7 +507,7 @@ void UEZPlatform_GPDMA0_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA0_Require();
+    LPC17xx_40xx_GPDMA0_Require();
     GPDMA_Generic_Create("GPDMA0", "GPDMA0");
 }
 
@@ -515,7 +515,7 @@ void UEZPlatform_GPDMA1_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA1_Require();
+    LPC17xx_40xx_GPDMA1_Require();
     GPDMA_Generic_Create("GPDMA1", "GPDMA1");
 }
 
@@ -523,7 +523,7 @@ void UEZPlatform_GPDMA2_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA2_Require();
+    LPC17xx_40xx_GPDMA2_Require();
     GPDMA_Generic_Create("GPDMA2", "GPDMA2");
 }
 
@@ -531,7 +531,7 @@ void UEZPlatform_GPDMA3_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA3_Require();
+    LPC17xx_40xx_GPDMA3_Require();
     GPDMA_Generic_Create("GPDMA3", "GPDMA3");
 }
 
@@ -539,7 +539,7 @@ void UEZPlatform_GPDMA4_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA4_Require();
+    LPC17xx_40xx_GPDMA4_Require();
     GPDMA_Generic_Create("GPDMA4", "GPDMA4");
 }
 
@@ -547,7 +547,7 @@ void UEZPlatform_GPDMA5_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA5_Require();
+    LPC17xx_40xx_GPDMA5_Require();
     GPDMA_Generic_Create("GPDMA5", "GPDMA5");
 }
 
@@ -555,7 +555,7 @@ void UEZPlatform_GPDMA6_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA6_Require();
+    LPC17xx_40xx_GPDMA6_Require();
     GPDMA_Generic_Create("GPDMA6", "GPDMA6");
 }
 
@@ -563,7 +563,7 @@ void UEZPlatform_GPDMA7_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPDMA7_Require();
+    LPC17xx_40xx_GPDMA7_Require();
     GPDMA_Generic_Create("GPDMA7", "GPDMA7");
 }
 
@@ -645,8 +645,8 @@ void UEZPlatform_FullDuplex_UART0_Require(
         TUInt32 aReadBufferSize)
 {
     // UART0 on P0.2/P0.3
-    LPC1788_GPIO0_Require();
-    LPC1788_UART0_Require(GPIO_P0_2, GPIO_P0_3);
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART0_Require(GPIO_P0_2, GPIO_P0_3);
     Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
             aWriteBufferSize, aReadBufferSize);
 }
@@ -663,8 +663,8 @@ void UEZPlatform_FullDuplex_UART0_Require(
 void UEZPlatform_UART1_Require(void)
 {
     // UART1 on P0.15/P0.16
-    LPC1788_GPIO0_Require();
-    LPC1788_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
             GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
 }
 
@@ -682,8 +682,8 @@ void UEZPlatform_Console_FullDuplex_UART0_Require(
         TUInt32 aReadBufferSize)
 {
     // UART0 on P0.2/P0.3
-    LPC1788_GPIO0_Require();
-    LPC1788_UART0_Require(GPIO_P0_2, GPIO_P0_3);
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART0_Require(GPIO_P0_2, GPIO_P0_3);
     UEZPlatform_Console_FullDuplex_UART_Require("UART0", aWriteBufferSize,
             aReadBufferSize);
 }
@@ -702,8 +702,8 @@ void UEZPlatform_Console_FullDuplex_UART1_Require(
         TUInt32 aReadBufferSize)
 {
     // UART1 on P0.15/P0.16
-    LPC1788_GPIO0_Require();
-    LPC1788_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
             GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
     UEZPlatform_Console_FullDuplex_UART_Require("UART1", aWriteBufferSize,
             aReadBufferSize);
@@ -723,8 +723,8 @@ void UEZPlatform_FullDuplex_UART1_Require(
         TUInt32 aReadBufferSize)
 {
     // UART1 on P0.15/P0.16
-    LPC1788_GPIO0_Require();
-    LPC1788_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
             GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
     Serial_Generic_FullDuplex_Stream_Create("UART1", "UART1",
             aWriteBufferSize, aReadBufferSize);
@@ -744,8 +744,8 @@ void UEZPlatform_Console_FullDuplex_UART2_Require(
         TUInt32 aReadBufferSize)
 {
     // UART2 on P0.10/P0.11
-    LPC1788_GPIO0_Require();
-    LPC1788_UART2_Require(GPIO_P0_10, GPIO_P0_11);
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART2_Require(GPIO_P0_10, GPIO_P0_11);
     UEZPlatform_Console_FullDuplex_UART_Require("UART2", aWriteBufferSize,
             aReadBufferSize);
 }
@@ -764,8 +764,8 @@ void UEZPlatform_Console_FullDuplex_UART3_Require(
         TUInt32 aReadBufferSize)
 {
     // UART3 on P0.0/P0.1
-    LPC1788_GPIO0_Require();
-    LPC1788_UART3_Require(GPIO_P0_0, GPIO_P0_1);
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART3_Require(GPIO_P0_0, GPIO_P0_1);
     UEZPlatform_Console_FullDuplex_UART_Require("UART3", aWriteBufferSize,
             aReadBufferSize);
 }
@@ -818,8 +818,8 @@ void UEZPlatform_SSP0_Require(void)
     DEVICE_CREATE_ONCE();
 
     // SCK0 is P2.22, MISO0 is P2.26, MOSI0 is P2.27, SSEL0 is not used
-    LPC1788_GPIO2_Require();
-    LPC1788_SSP0_Require(GPIO_P2_22, GPIO_P2_26, GPIO_P2_27, GPIO_NONE);
+    LPC17xx_40xx_GPIO2_Require();
+    LPC17xx_40xx_SSP0_Require(GPIO_P2_22, GPIO_P2_26, GPIO_P2_27, GPIO_NONE);
 
     SPI_Generic_Create("SSP0", "SSP0");
 }
@@ -836,8 +836,8 @@ void UEZPlatform_SSP1_Require(void)
     DEVICE_CREATE_ONCE();
 
     // SCK1 is P0.7, MISO1 is P0.8, MOSI1 is P0.9, SSEL1 is P0.6
-    LPC1788_GPIO0_Require();
-    LPC1788_SSP1_Require(GPIO_P0_7, GPIO_P0_8, GPIO_P0_9, GPIO_P0_6);
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_SSP1_Require(GPIO_P0_7, GPIO_P0_8, GPIO_P0_9, GPIO_P0_6);
 
     SPI_Generic_Create("SSP1", "SSP1");
 }
@@ -851,7 +851,7 @@ void UEZPlatform_SSP1_Require(void)
 void UEZPlatform_ADC0_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_Require();
+    LPC17xx_40xx_ADC0_Require();
     ADCBank_Generic_Create("ADC0", "ADC0");
 }
 
@@ -864,7 +864,7 @@ void UEZPlatform_ADC0_Require(void)
 void UEZPlatform_ADC0_0_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_0_Require(GPIO_P0_23);
+    LPC17xx_40xx_ADC0_0_Require(GPIO_P0_23);
     UEZPlatform_ADC0_Require();
 }
 
@@ -877,7 +877,7 @@ void UEZPlatform_ADC0_0_Require(void)
 void UEZPlatform_ADC0_1_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_1_Require(GPIO_P0_24);
+    LPC17xx_40xx_ADC0_1_Require(GPIO_P0_24);
     UEZPlatform_ADC0_Require();
 }
 
@@ -890,7 +890,7 @@ void UEZPlatform_ADC0_1_Require(void)
 void UEZPlatform_ADC0_2_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_2_Require(GPIO_P0_25);
+    LPC17xx_40xx_ADC0_2_Require(GPIO_P0_25);
     UEZPlatform_ADC0_Require();
 }
 
@@ -903,7 +903,7 @@ void UEZPlatform_ADC0_2_Require(void)
 void UEZPlatform_ADC0_3_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_3_Require(GPIO_P0_26);
+    LPC17xx_40xx_ADC0_3_Require(GPIO_P0_26);
     UEZPlatform_ADC0_Require();
 }
 
@@ -916,7 +916,7 @@ void UEZPlatform_ADC0_3_Require(void)
 void UEZPlatform_ADC0_4_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_4_Require(GPIO_P1_30);
+    LPC17xx_40xx_ADC0_4_Require(GPIO_P1_30);
     UEZPlatform_ADC0_Require();
 }
 
@@ -929,7 +929,7 @@ void UEZPlatform_ADC0_4_Require(void)
 void UEZPlatform_ADC0_5_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_5_Require(GPIO_P1_31);
+    LPC17xx_40xx_ADC0_5_Require(GPIO_P1_31);
     UEZPlatform_ADC0_Require();
 }
 
@@ -942,7 +942,7 @@ void UEZPlatform_ADC0_5_Require(void)
 void UEZPlatform_ADC0_6_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_6_Require(GPIO_P0_12);
+    LPC17xx_40xx_ADC0_6_Require(GPIO_P0_12);
     UEZPlatform_ADC0_Require();
 }
 
@@ -955,7 +955,7 @@ void UEZPlatform_ADC0_6_Require(void)
 void UEZPlatform_ADC0_7_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_ADC0_7_Require(GPIO_P0_13);
+    LPC17xx_40xx_ADC0_7_Require(GPIO_P0_13);
     UEZPlatform_ADC0_Require();
 }
 
@@ -969,7 +969,7 @@ void UEZPlatform_ADC0_7_Require(void)
 void UEZPlatform_DAC0_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_DAC0_Require(GPIO_P0_26);
+    LPC17xx_40xx_DAC0_Require(GPIO_P0_26);
     DAC_Generic_Create("DAC0", "DAC0");
 }
 
@@ -994,7 +994,7 @@ void UEZPlatform_Flash0_Require(void)
 void UEZPlatform_IAP_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    Flash_NXP_LPC1788_Create("IAP");
+    Flash_NXP_LPC17xx_40xx_Create("IAP");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1016,8 +1016,8 @@ void UEZPlatform_Backlight_Require(void)
             EFalse
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_PWM0_1_Require(GPIO_P1_2);
-    LPC1788_GPIO4_Require();
+    LPC17xx_40xx_PWM0_1_Require(GPIO_P1_2);
+    LPC17xx_40xx_GPIO4_Require();
     UEZGPIOLock(GPIO_P4_31);
     UEZGPIOOutput(GPIO_P4_31);
     Backlight_Generic_PWMControlled_Create("Backlight", &settings);
@@ -1031,7 +1031,7 @@ void UEZPlatform_Backlight_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_LCD_Require(void)
 {
-    const T_LPC1788_LCDController_Pins pins = {
+    const T_LPC17xx_40xx_LCDController_Pins pins = {
             GPIO_NONE,  // LCD_PWR -- GPIO controlled       
             GPIO_P2_2,  // LCD_DCLK
             GPIO_P2_4,  // LCD_ENAB_M
@@ -1079,10 +1079,10 @@ void UEZPlatform_LCD_Require(void)
     extern const T_uezDeviceInterface *UEZ_LCD_INTERFACE_ARRAY[];
 
     DEVICE_CREATE_ONCE();
-    LPC1788_GPIO1_Require();
-    LPC1788_GPIO2_Require();
-    LPC1788_GPIO4_Require();
-    LPC1788_LCDController_Require(&pins);
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
+    LPC17xx_40xx_GPIO4_Require();
+    LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
     // Need to register LCD device and use existing LCD Controller
@@ -1119,7 +1119,7 @@ void UEZPlatform_Speaker_Require(void)
     };
     DEVICE_CREATE_ONCE();
 
-    LPC1788_PWM1_2_Require(GPIO_P2_1);
+    LPC17xx_40xx_PWM1_2_Require(GPIO_P2_1);
 
     // Speaker is on PWM1[2]
     ToneGenerator_Generic_PWM_Create("Speaker", &settings);
@@ -1136,7 +1136,7 @@ void UEZPlatform_IRTC_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_RTC_Require(ETrue);
+    LPC17xx_40xx_RTC_Require(ETrue);
     RTC_Generic_Create("RTC", "RTC");
 }
 
@@ -1218,24 +1218,24 @@ void UEZPlatform_EEPROM_I2C_Require(void)
  * Routine:  UEZPlatform_EEPROM_I2C_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the internal EEPROM in the LPC1788
+ *      Setup the internal EEPROM in the LPC17xx_40xx
  *---------------------------------------------------------------------------*/
-void UEZPlatform_EEPROM_LPC1788_Require(void)
+void UEZPlatform_EEPROM_LPC17xx_40xx_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    EEPROM_NXP_LPC1788_Create("EEPROM0");
+    EEPROM_NXP_LPC17xx_40xx_Create("EEPROM0");
 }
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_EEPROM0_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the default EEPROM0 driver (usually internal LPC1788)
+ *      Setup the default EEPROM0 driver (usually internal LPC17xx_40xx)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_EEPROM0_Require(void)
 {
     // Pick one of these two for the type of EEPROM
-    UEZPlatform_EEPROM_LPC1788_Require();
+    UEZPlatform_EEPROM_LPC17xx_40xx_Require();
     //UEZPlatform_EEPROM_I2C_Require();
 }
 
@@ -1248,7 +1248,7 @@ void UEZPlatform_EEPROM0_Require(void)
 void UEZPlatform_Watchdog_Require(void)
 {
     DEVICE_CREATE_ONCE();
-    LPC1788_Watchdog_Require();
+    LPC17xx_40xx_Watchdog_Require();
     Watchdog_Generic_Create("Watchdog", "Watchdog");
 }
 
@@ -1260,7 +1260,7 @@ void UEZPlatform_Watchdog_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_USBHost_PortA_Require(void)
 {
-    const T_LPC1788_USBHost_Settings portASettings = {
+    const T_LPC17xx_40xx_USBHost_Settings portASettings = {
             GPIO_P0_29,     // USB_D+1          = P0.29_USB1_DP_EINT0
             GPIO_P0_30,     // USB_D-1          = P0.30_USB1_DM_EINT1
             GPIO_NONE,      // USB_CONNECT1n
@@ -1283,11 +1283,29 @@ void UEZPlatform_USBHost_PortA_Require(void)
     };
     DEVICE_CREATE_ONCE();
 
-    LPC1788_USBHost_PortA_Require(&portASettings);
+    LPC17xx_40xx_USBHost_PortA_Require(&portASettings);
     USBHost_Generic_Create("USBHost", "USBHost:PortA");
     // NOTE: USB1H_PWRD is on GPIO_P4_26 and is manually controlled
     // NOTE: USB1H_OVR  is on GPIO_P4_27 and is manually controlled
-    LPC1788_GPIO4_Require();
+    LPC17xx_40xx_GPIO4_Require();
+}
+
+TBool UEZPlatform_Host_Port_B_Detect()
+{
+    TBool IsDevice;
+ 
+    UEZGPIOLock(GPIO_P0_12);
+    UEZGPIOSet(GPIO_P0_12); // disable MIC2025
+    UEZGPIOOutput(GPIO_P0_12);
+    UEZGPIOInput(GPIO_P0_28);
+    UEZGPIOSetMux(GPIO_P0_28, 0);
+
+    IsDevice = UEZGPIORead(GPIO_P0_28);
+
+    if(!IsDevice){
+        UEZGPIOClear(GPIO_P0_12);// enable MIC2025
+    }
+    return IsDevice;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1303,7 +1321,7 @@ void UEZPlatform_USBHost_PortB_Require(void)
 //    GPIO_NONE,      // USB_D-2          = USB2_DM (not a port pin)
 //    GPIO_P0_14,     // USB_CONNECT2n    = USB2_CON
 //    GPIO_P0_13,     // USB_UP_LED2      = P0.13_USB2_UPLED_AD0.7
-    const T_LPC1788_USBHost_Settings portBSettings = {
+    const T_LPC17xx_40xx_USBHost_Settings portBSettings = {
             GPIO_P0_31,     // USB_D+2          = P0.29_USB1_DP_EINT0
             GPIO_NONE,       // USB_D-2          = P0.30_USB1_DM_EINT1
             GPIO_P0_14,      // USB_CONNECT2n
@@ -1325,11 +1343,11 @@ void UEZPlatform_USBHost_PortB_Require(void)
             GPIO_NONE,      // USB_HSTEN2
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_USBHost_PortB_Require(&portBSettings);
+    LPC17xx_40xx_USBHost_PortB_Require(&portBSettings);
     USBHost_Generic_Create("USBHost", "USBHost:PortB");
     // NOTE: USB1H_PWRD is on GPIO_P4_26 and is manually controlled
     // NOTE: USB1H_OVR  is on GPIO_P4_27 and is manually controlled
-    //LPC1788_GPIO4_Require();
+    //LPC17xx_40xx_GPIO4_Require();
     // P1.30 needs to be VBUS (USB controlled)
     UEZGPIOSetMux(GPIO_P1_30, 2); // disabled 
 }
@@ -1387,7 +1405,7 @@ void UEZPlatform_MS1_Require(void)
     DEVICE_CREATE_ONCE();
 
     UEZPlatform_SSP0_Require();
-    LPC1788_GPIO2_Require();
+    LPC17xx_40xx_GPIO2_Require();
     // MICROSD_CSn = P2.21
     MassStorage_SDCard_Create("MS1", "SSP0", GPIO_P2_21);
 }
@@ -1400,7 +1418,7 @@ void UEZPlatform_MS1_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_MCI_Require(void)
 {
-	  const T_LPC1788_MCI_Pins pins = {
+	  const T_LPC17xx_40xx_MCI_Pins pins = {
         GPIO_P1_6, // DAT0
         GPIO_P1_7, // DAT1
         GPIO_P1_11, // DAT2
@@ -1417,7 +1435,7 @@ void UEZPlatform_MCI_Require(void)
     DEVICE_CREATE_ONCE();
     
     UEZPlatform_GPDMA1_Require();
-    LPC1788_MCI_Require(&pins, "GPDMA1");
+    LPC17xx_40xx_MCI_Require(&pins, "GPDMA1");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1530,7 +1548,7 @@ void UEZPlatform_AudioAmp_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPIO0_Require();
+    LPC17xx_40xx_GPIO0_Require();
     // P2.3 = VOL_UD
     // P2.5 = AMP_MODE
     AudioAmp_8551T_Create("AMP0", GPIO_P2_3, GPIO_P2_5, GPIO_NONE, 64);
@@ -1595,7 +1613,7 @@ void UEZPlatform_CRC0_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC1788_CRC0_Require();
+    LPC17xx_40xx_CRC0_Require();
     CRC_Generic_Create("CRC0", "CRC0");
 }
 
@@ -1609,15 +1627,15 @@ void UEZPlatform_PWM0_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-   LPC1788_PWM0_Require();
+   LPC17xx_40xx_PWM0_Require();
    // Current UEZGUI does not use these, but may need one later
-   //LPC1788_PWM0_1_Require(pin?);
-   //LPC1788_PWM0_2_Require(pin?);
-   //LPC1788_PWM0_3_Require(pin?);
-   //LPC1788_PWM0_4_Require(pin?);
-   //LPC1788_PWM0_5_Require(pin?);
-   //LPC1788_PWM0_6_Require(pin?);
-   //LPC1788_PWM0_CAP0_Require(pin?);
+   //LPC17xx_40xx_PWM0_1_Require(pin?);
+   //LPC17xx_40xx_PWM0_2_Require(pin?);
+   //LPC17xx_40xx_PWM0_3_Require(pin?);
+   //LPC17xx_40xx_PWM0_4_Require(pin?);
+   //LPC17xx_40xx_PWM0_5_Require(pin?);
+   //LPC17xx_40xx_PWM0_6_Require(pin?);
+   //LPC17xx_40xx_PWM0_CAP0_Require(pin?);
    PWM_Generic_Create("PWM0", "PWM0");
 }
 
@@ -1631,16 +1649,16 @@ void UEZPlatform_PWM1_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-   LPC1788_PWM1_Require();
+   LPC17xx_40xx_PWM1_Require();
    // Current UEZGUI does not use these, but may need one later
-   //LPC1788_PWM1_1_Require(pin?);
-   //LPC1788_PWM1_2_Require(pin?);
-   //LPC1788_PWM1_3_Require(pin?);
-   //LPC1788_PWM1_4_Require(pin?);
-   //LPC1788_PWM1_5_Require(pin?);
-   //LPC1788_PWM1_6_Require(pin?);
-   //LPC1788_PWM1_CAP0_Require(pin?);
-   //LPC1788_PWM1_CAP1_Require(pin?);
+   //LPC17xx_40xx_PWM1_1_Require(pin?);
+   //LPC17xx_40xx_PWM1_2_Require(pin?);
+   //LPC17xx_40xx_PWM1_3_Require(pin?);
+   //LPC17xx_40xx_PWM1_4_Require(pin?);
+   //LPC17xx_40xx_PWM1_5_Require(pin?);
+   //LPC17xx_40xx_PWM1_6_Require(pin?);
+   //LPC17xx_40xx_PWM1_CAP0_Require(pin?);
+   //LPC17xx_40xx_PWM1_CAP1_Require(pin?);
    PWM_Generic_Create("PWM1", "PWM1");
 }
 
@@ -1688,9 +1706,9 @@ void UEZPlatform_Touchscreen_Require(void)
 
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPIO0_Require();
-    LPC1788_GPIO1_Require();
-    LPC1788_GPIO2_Require();
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
     UEZPlatform_ADC0_0_Require();
     UEZPlatform_ADC0_1_Require();
 
@@ -1707,7 +1725,7 @@ void UEZPlatform_Touchscreen_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_USBDevice_Require(void)
 {
-    const T_LPC1788_USBDevice_Settings portBSettings = {
+    const T_LPC17xx_40xx_USBDevice_Settings portBSettings = {
             GPIO_P1_30,     // USB_VBUS2        = USB2_VBUS
             GPIO_P0_31,     // USB_D+2          = USB2_DP
             GPIO_NONE,      // USB_D-2          = USB2_DM (not a port pin)
@@ -1716,8 +1734,8 @@ void UEZPlatform_USBDevice_Require(void)
     };
     DEVICE_CREATE_ONCE();
 
-    LPC1788_USBDevice_PortB_Require(&portBSettings);
-    USBDevice_LPC1788_Create("USBDevice", "USBDeviceController");
+    LPC17xx_40xx_USBDevice_PortB_Require(&portBSettings);
+    USBDevice_LPC17xx_40xx_Create("USBDevice", "USBDeviceController");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1729,7 +1747,7 @@ void UEZPlatform_USBDevice_Require(void)
 void UEZPlatform_EMAC_Require(void)
 {
     // This EMAC is RMII (less pins)
-    const T_LPC1788_EMAC_Settings emacSettings = {
+    const T_LPC17xx_40xx_EMAC_Settings emacSettings = {
             GPIO_P1_4,      // ENET_TX_ENn      = P1.4_ENET_TXEN
             GPIO_NONE,      // ENET_TX_TXD[3]   = not used for RMII
             GPIO_NONE,      // ENET_TX_TXD[2]   = not used for RMII
@@ -1751,7 +1769,7 @@ void UEZPlatform_EMAC_Require(void)
     };
     DEVICE_CREATE_ONCE();
 
-    LPC1788_EMAC_RMII_Require(&emacSettings);
+    LPC17xx_40xx_EMAC_RMII_Require(&emacSettings);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1763,7 +1781,7 @@ void UEZPlatform_EMAC_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer0_Require(void)
 {
-    static const T_LPC1788_Timer_Settings settings = {
+    static const T_LPC17xx_40xx_Timer_Settings settings = {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
             GPIO_NONE,      // T0_MAT[0]
@@ -1772,7 +1790,7 @@ void UEZPlatform_Timer0_Require(void)
             GPIO_NONE,      // T0_MAT[3]
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_Timer0_Require(&settings);
+    LPC17xx_40xx_Timer0_Require(&settings);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1784,7 +1802,7 @@ void UEZPlatform_Timer0_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer1_Require(void)
 {
-    static const T_LPC1788_Timer_Settings settings = {
+    static const T_LPC17xx_40xx_Timer_Settings settings = {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
             GPIO_NONE,      // T0_MAT[0]
@@ -1793,7 +1811,7 @@ void UEZPlatform_Timer1_Require(void)
             GPIO_NONE,      // T0_MAT[3]
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_Timer1_Require(&settings);
+    LPC17xx_40xx_Timer1_Require(&settings);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1805,7 +1823,7 @@ void UEZPlatform_Timer1_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer2_Require(void)
 {
-    static const T_LPC1788_Timer_Settings settings = {
+    static const T_LPC17xx_40xx_Timer_Settings settings = {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
             GPIO_NONE,      // T0_MAT[0]
@@ -1814,7 +1832,7 @@ void UEZPlatform_Timer2_Require(void)
             GPIO_NONE,      // T0_MAT[3]
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_Timer2_Require(&settings);
+    LPC17xx_40xx_Timer2_Require(&settings);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1826,7 +1844,7 @@ void UEZPlatform_Timer2_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer3_Require(void)
 {
-    static const T_LPC1788_Timer_Settings settings = {
+    static const T_LPC17xx_40xx_Timer_Settings settings = {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
             GPIO_NONE,      // T0_MAT[0]
@@ -1835,7 +1853,7 @@ void UEZPlatform_Timer3_Require(void)
             GPIO_NONE,      // T0_MAT[3]
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_Timer3_Require(&settings);
+    LPC17xx_40xx_Timer3_Require(&settings);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1860,7 +1878,7 @@ void UEZPlatform_WiredNetwork0_Require(void)
  * Routine:  UEZPlatform_WirelessNetwork0_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the networking for Wired connections.
+ *      Setup the networking for Wireless connections.
  *---------------------------------------------------------------------------*/
 #include <Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.h>
 void UEZPlatform_WirelessNetwork0_Require(void)
@@ -1882,8 +1900,8 @@ void UEZPlatform_WirelessNetwork0_Require(void)
 
     DEVICE_CREATE_ONCE();
 
-    LPC1788_GPIO1_Require();
-    LPC1788_GPIO2_Require();
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
     UEZPlatform_SSP0_Require();
     Network_GainSpan_Create("WirelessNetwork0", &spi_settings);
 }
@@ -1945,7 +1963,7 @@ void UEZPlatform_WiFiProgramMode(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_I2S_Require(void)
 {
-    static const T_LPC1788_I2S_Settings settings = {
+    static const T_LPC17xx_40xx_I2S_Settings settings = {
             GPIO_P0_6,  // I2S_RX_SDA   = P0.6_I2SRX_SDA_SSEL1_MAT2.0
             GPIO_P0_4,  // I2S_RX_SCK   = P0.4_I2SRX_CLK_RD2_CAP2.0
             GPIO_P0_5,  // I2S_RX_WS    = P0.5_I2SRX_WS_TD2_CAP2.1
@@ -1956,7 +1974,7 @@ void UEZPlatform_I2S_Require(void)
             GPIO_NONE,  // I2S_TX_MCLK  = not used
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_I2S_Require(&settings);
+    LPC17xx_40xx_I2S_Require(&settings);
     Generic_I2S_Create("I2S", "I2S");
 }
 
@@ -1992,7 +2010,6 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_ADC0_2_Require();
     UEZPlatform_DAC0_Require();
     UEZPlatform_Flash0_Require();
-    UEZPlatform_Speaker_Require();
     UEZPlatform_EEPROM0_Require();
 
     UEZPlatform_AudioAmp_Require();
@@ -2000,6 +2017,9 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_RTC_Require();
     UEZPlatform_Touchscreen_Require();
     UEZPlatform_AudioMixer_Require();
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    UEZPlatform_Speaker_Require();
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 }
 
 void UEZPlatform_Full_Require(void)
@@ -2011,12 +2031,12 @@ void UEZPlatform_Full_Require(void)
             UEZ_CONSOLE_READ_BUFFER_SIZE);
     UEZPlatform_LCD_Require();
 
-    LPC1788_GPIO0_Require();
-    LPC1788_GPIO1_Require();
-    LPC1788_GPIO2_Require();
-    LPC1788_GPIO3_Require();
-    LPC1788_GPIO4_Require();
-    LPC1788_GPIO5_Require();
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
+    LPC17xx_40xx_GPIO3_Require();
+    LPC17xx_40xx_GPIO4_Require();
+    LPC17xx_40xx_GPIO5_Require();
 
     UEZPlatform_CRC0_Require();
     UEZPlatform_I2C0_Require();
@@ -2075,7 +2095,7 @@ TBool UEZGUIIsLoopbackBoardConnected(void)
     TUInt32 readSet;
     TUInt32 readClear;
 
-    LPC1788_GPIO0_Require();
+    LPC17xx_40xx_GPIO0_Require();
 
     // Check to see that P0.26 goes high when P0.6 is high
     UEZGPIOSetMux(GPIO_P0_6, 0); // GPIO mode

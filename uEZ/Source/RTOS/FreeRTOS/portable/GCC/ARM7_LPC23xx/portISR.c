@@ -109,7 +109,7 @@ void vPortYieldProcessor( void )
 	void vNonPreemptiveTick( void ) __attribute__ ((interrupt ("IRQ")));
 	void vNonPreemptiveTick( void )
 	{	
-		vTaskIncrementTick();
+		xTaskIncrementTick();
 #if (configTIMER_INDEX==0)
 		T0IR = 2;
 #endif
@@ -131,7 +131,7 @@ void vPortYieldProcessor( void )
 
 		/* Increment the RTOS tick count, then look for the highest priority 
 		task that is ready to run. */
-		vTaskIncrementTick();
+		xTaskIncrementTick();
 		vTaskSwitchContext();
 
 		/* Ready for the next interrupt. */

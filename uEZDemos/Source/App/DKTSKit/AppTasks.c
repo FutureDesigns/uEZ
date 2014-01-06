@@ -94,7 +94,7 @@ T_uezError SetupTasks(void)
     // Start up the heart beat of the LED
     error = UEZTaskCreate(Heartbeat, "Heart", 64, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif
-
+#if UEZ_ENABLE_TCPIP_STACK
     error = UEZTaskCreate(
                 (T_uezTaskFunction)NetworkStartup,
                 "NetStart",
@@ -102,8 +102,9 @@ T_uezError SetupTasks(void)
                 (void *)0,
                 UEZ_PRIORITY_NORMAL,
                 0);
-
+#endif
     return error;
+    
 }
 
 /*-------------------------------------------------------------------------*

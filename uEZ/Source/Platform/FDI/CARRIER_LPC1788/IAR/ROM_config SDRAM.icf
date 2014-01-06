@@ -12,6 +12,16 @@ define symbol __ICFEDIT_region_EMWIN_start__ = 0xA0400000;
 define symbol __ICFEDIT_region_EMWIN_end__ = 0xA05FFFFF;
 define symbol __ICFEDIT_region_RAM_start__ = 0xA0600000;
 define symbol __ICFEDIT_region_RAM_end__   = 0xA07FFFFF;
+
+/*-- uEZ Defines: -----------------------------------------------------------*/
+/* USe the SRAM for the system stack and the kernel data. */
+define symbol IRAM_start        = 0x10000000;
+define symbol IRAM_end          = 0x1000FFFF;
+define symbol AHB0_start        = 0x20000000;
+define symbol AHB0_end          = 0x20003FFF;
+define symbol AHB1_start        = 0x20004000;
+define symbol AHB1_end          = 0x20007FFF;
+
 /*-Sizes-*/
 define symbol __ICFEDIT_size_FRAME__ = 0x400000;
 define symbol __emwin_ram_size__ = 0x200000;
@@ -32,7 +42,6 @@ define symbol __ICFEDIT_region_NORFlash_end__   = 0x807FFFFF;
 define symbol __load_space__ = 0xA06DD000; //may need to come back to this one
 define symbol __emwin_ram_base_addr__ = 0xA0200000;
 
-
 /* This must match the number of implemented vectors * 4 and be padded to an 8
 byte boundary (check the mapfile to ensure that the kernel function region is 
 correctly occupying the first 8K region of flash). There does not seem to be any 
@@ -45,6 +54,9 @@ define region ROM_region   = mem:[from __ICFEDIT_region_ROM_start__   to __ICFED
 define region RAM_region   = mem:[from __ICFEDIT_region_RAM_start__   to __ICFEDIT_region_RAM_end__];
 define region IRAM_region   = mem:[from __ICFEDIT_region_IRAM_start__   to __ICFEDIT_region_IRAM_end__];
 define region NORFlash_region   = mem:[from __ICFEDIT_region_NORFlash_start__   to __ICFEDIT_region_NORFlash_end__];
+define region AHB0_region = mem:[from AHB0_start to AHB0_end];
+define region AHB1_region = mem:[from AHB1_start to AHB1_end];
+
 //define region FRAME_region = mem:[from __ICFEDIT_region_FRAME_start__ to __ICFEDIT_region_FRAME_end__];
 //define region EMWIN_region = mem:[from __ICFEDIT_region_EMWIN_start__ to __ICFEDIT_region_EMWIN_end__];
 
@@ -86,7 +98,18 @@ place at address mem: __ICFEDIT_region_RAM_start__ { readwrite,
 /*place in RAM_region   { readwrite,
                         block SVC_STACK, block IRQ_STACK, block FIQ_STACK,
                         block UND_STACK, block ABT_STACK, block HEAP};
-*/                        
+*/   
+
+
+place in AHB0_region {
+    readwrite section .emacmem,
+};
+
+place in AHB1_region {
+    readwrite section .usbhostmem,
+    readwrite section .mcimem,
+};
+                     
 /* Export symbols required by c code. */
 export symbol __ICFEDIT_intvec_start__;
 export symbol __ICFEDIT_size_cstack__;

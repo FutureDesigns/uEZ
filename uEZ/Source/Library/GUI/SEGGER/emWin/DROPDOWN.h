@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : Multiple choice object include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /************************************************************
@@ -106,12 +106,10 @@ typedef struct {
 *
 **********************************************************************
 */
-DROPDOWN_Handle DROPDOWN_Create        (WM_HWIN hWinParent, int x0, int y0, int xsize, int ysize, int Flags);
+DROPDOWN_Handle DROPDOWN_Create        (WM_HWIN hWinParent, int x0, int y0, int xSize, int ySize, int Flags);
+DROPDOWN_Handle DROPDOWN_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+DROPDOWN_Handle DROPDOWN_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 DROPDOWN_Handle DROPDOWN_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK* cb);
-DROPDOWN_Handle DROPDOWN_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                        int WinFlags, int ExFlags, int Id);
-DROPDOWN_Handle DROPDOWN_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                        int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 
 /*********************************************************************
 *
@@ -197,5 +195,7 @@ GUI_COLOR                    DROPDOWN_SetDefaultScrollbarColor(int Index, GUI_CO
   }
 #endif
 
-#endif   /* GUI_WINSUPPORT */
-#endif   /* DROPDOWN_H */
+#endif  // GUI_WINSUPPORT
+#endif  // DROPDOWN_H
+
+/*************************** End of file ****************************/

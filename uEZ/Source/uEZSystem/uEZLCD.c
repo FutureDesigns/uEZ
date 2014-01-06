@@ -655,10 +655,12 @@ void UEZLCDScreensaverTask(void)
                     G_ssState++;
                 break;
             case LCD_SS_SLEEP_START:
+              // TODO: modify to turn off LCD and backlight on all units
                 //UEZLCDOff(G_ssLCD);
                 //G_ssLCD_ON = EFalse;
                 UEZLCDBacklight(G_ssLCD, 0);
                 G_ssBacklightON = EFalse;
+                G_ssInfo.iCallback_AnimationSleep(); // draw black screen to draw over image
                 G_ssState++;
                 break;
             case LCD_SS_SLEEP:

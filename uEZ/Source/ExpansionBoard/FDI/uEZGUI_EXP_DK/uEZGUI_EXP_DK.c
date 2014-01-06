@@ -445,7 +445,6 @@ void UEZGUI_EXP_DK_USBDevice_Require(void)
     UEZPlatform_ExpansionPrimary_USBDevice_Require();
 }
 
-#if (UEZ_PROCESSOR==NXP_LPC1788)//currently only supported on LPC1788
 /*---------------------------------------------------------------------------*
  * Routine:  UEZGUI_EXP_DK_SDCard_MCI_Require
  *---------------------------------------------------------------------------*
@@ -459,7 +458,6 @@ void UEZGUI_EXP_DK_SDCard_MCI_Require(TUInt32 aDriveNumber)
     //DEVICE_CREATE_ONCE();
     UEZPlatform_ExpansionSecondary_SDCard_MCI_Require(aDriveNumber);
 }
-#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2S_Require
@@ -470,8 +468,8 @@ void UEZGUI_EXP_DK_SDCard_MCI_Require(TUInt32 aDriveNumber)
 void UEZGUI_EXP_DK_I2S_Require(void)
 {
 #if (UEZ_PROCESSOR==NXP_LPC1788)
-#include <Source/Processor/NXP/LPC1788/LPC1788_I2S.h>
-    static const T_LPC1788_I2S_Settings settings = {
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_I2S.h>
+    static const T_LPC17xx_40xx_I2S_Settings settings = {
             GPIO_NONE,  // I2S_RX_SDA   = not used, conflicts
             GPIO_NONE,  // I2S_RX_SCK   = not used, conflicts
             GPIO_NONE,  // I2S_RX_WS    = not used, conflicts
@@ -482,7 +480,7 @@ void UEZGUI_EXP_DK_I2S_Require(void)
             GPIO_NONE,  // I2S_TX_MCLK  = not used
     };
     DEVICE_CREATE_ONCE();
-    LPC1788_I2S_Require(&settings);
+    LPC17xx_40xx_I2S_Require(&settings);
 #endif
 #if (UEZ_PROCESSOR==NXP_LPC2478)
 #include <Source/Processor/NXP/LPC2478/LPC2478_I2S.h>

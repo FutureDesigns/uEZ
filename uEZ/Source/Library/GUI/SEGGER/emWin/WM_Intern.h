@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -220,6 +220,18 @@ void    WM__SetLastTouched          (WM_HWIN hWin);
   void    WM__InvalidateDrawAndDescs(WM_HWIN hWin);
 #else
   #define WM__InvalidateDrawAndDescs(hWin)
+#endif
+
+/* Static memory devices */
+#if (GUI_SUPPORT_MEMDEV)
+  typedef struct {
+    int xSize, ySize; // Size of bk window
+  } EFFECT_CONTEXT;
+
+  int  GUI_MEMDEV__CalcParaFadeIn    (int Period, int TimeUsed);
+  void GUI_MEMDEV__ChangeBK          (EFFECT_CONTEXT * pContext);
+  void GUI_MEMDEV__RemoveStaticDevice(WM_HWIN hWin);
+  void GUI_MEMDEV__UndoBK            (EFFECT_CONTEXT * pContext);
 #endif
 
 void WM__InvalidateParent(const GUI_RECT * pInvalidRect, WM_HWIN hParent, WM_HWIN hStop);

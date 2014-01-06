@@ -89,7 +89,7 @@ T_uezError AudioAmp_LM48110_SetLevel(void *aWorkSpace, TUInt8 aLevel)
 
     if(!p->iIsMuted){
         if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
-            UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, UEZ_TIMEOUT_INFINITE);
+            UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
             UEZI2CClose(i2c);
         }
     }
@@ -139,7 +139,7 @@ T_uezError AudioAmp_LM48110_Mute(void *aWorkSpace)
     p->iIsMuted = ETrue;
 
     if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
-        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, UEZ_TIMEOUT_INFINITE);
+        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
         UEZI2CClose(i2c);
     }
     UEZSemaphoreRelease(p->iSem);
@@ -174,7 +174,7 @@ T_uezError AudioAmp_LM48110_UnMute(void *aWorkSpace)
     p->iIsMuted = EFalse;
 
     if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
-        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, UEZ_TIMEOUT_INFINITE);
+        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
         UEZI2CClose(i2c);
     }
     UEZSemaphoreRelease(p->iSem);
@@ -198,6 +198,7 @@ T_uezError AudioAmp_LM48110_Open(void *aWorkSpace)
 {
     T_AudioAmp_LM48110_Workspace *p = (T_AudioAmp_LM48110_Workspace *)aWorkSpace;
     T_uezDevice i2c;
+    T_uezError error = UEZ_ERROR_NONE;
     TUInt8 data[5] = { 0x1C, //Turn on both inputs
                        0x20, //Mask for Diagnostic
                        0x40, //Mask for Fault
@@ -209,13 +210,13 @@ T_uezError AudioAmp_LM48110_Open(void *aWorkSpace)
         p->iIsOn = ETrue;
         if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
             p->iNumOpen++;
-            UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, UEZ_TIMEOUT_INFINITE);
+            error = UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
             UEZI2CClose(i2c);
         }
         p->iLevel = 0;
     }
     UEZSemaphoreRelease(p->iSem);
-    return UEZ_ERROR_NONE;
+    return error;
 }
 
 /*---------------------------------------------------------------------------*

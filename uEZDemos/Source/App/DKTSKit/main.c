@@ -135,6 +135,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
      TUInt32 traceAddressInMemory = 0;
+	 vTraceInitTraceData();
 #endif
     
     UEZPlatform_Standard_Require();
@@ -172,7 +173,6 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
          
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
      uiTraceStart();
-     vTraceStartStatusMonitor();
      
      traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();
      printf("%x", traceAddressInMemory);

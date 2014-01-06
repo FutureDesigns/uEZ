@@ -29,8 +29,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -87,7 +87,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -137,13 +137,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -162,6 +162,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>LPC1700_IAR</state>
@@ -303,8 +307,8 @@
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include</state>
@@ -626,7 +630,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -795,10 +799,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -900,6 +900,16 @@
           <name>IlinkStackCallGraphFile</name>
           <state></state>
         </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -956,8 +966,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1064,13 +1074,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1089,6 +1099,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>NDEBUG</state>
@@ -1231,8 +1245,8 @@
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include</state>
@@ -1554,7 +1568,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1723,10 +1737,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -1828,6 +1838,16 @@
           <name>IlinkStackCallGraphFile</name>
           <state></state>
         </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1884,8 +1904,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1992,13 +2012,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -2017,6 +2037,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>LPC1700_IAR</state>
@@ -2159,8 +2183,8 @@
           <state>$PROJ_DIR$/../../../../../../../uEZ</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</state>
@@ -2483,7 +2507,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -2652,10 +2676,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -2756,6 +2776,16 @@
         <option>
           <name>IlinkStackCallGraphFile</name>
           <state></state>
+        </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
         </option>
       </data>
     </settings>
@@ -3084,6 +3114,9 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\DKTSKit\AppTasks.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\DKTSKit\Audio.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\DKTSKit\Config_App.h</name>
         </file>
         <file>
@@ -3195,12 +3228,6 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\Audio.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\Audio.h</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\uEZDemoCommon\BrightnessControlMode.c</name>
         </file>
         <file>
@@ -3275,7 +3302,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_520_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR650_M3_LE.a</name>
                 </file>
               </group>
             </group>

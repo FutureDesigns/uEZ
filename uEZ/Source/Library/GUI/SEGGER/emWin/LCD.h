@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -155,6 +155,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M2;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_4;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M4;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_5;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_8;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_16;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_1616I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_111;
@@ -213,6 +214,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M8888I;
 #define GUICC_4         &LCD_API_ColorConv_4
 #define GUICC_M4        &LCD_API_ColorConv_M4
 #define GUICC_5         &LCD_API_ColorConv_5
+#define GUICC_8         &LCD_API_ColorConv_8
 #define GUICC_16        &LCD_API_ColorConv_16
 #define GUICC_1616I     &LCD_API_ColorConv_1616I
 #define GUICC_111       &LCD_API_ColorConv_111
@@ -439,6 +441,8 @@ void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
 #define LCD_DEVFUNC_COPYRECT      0x23 /* ...filling a rectangular area */
 #define LCD_DEVFUNC_DRAWBMP_16BPP 0x24 /* ...drawing a 16bpp bitmap */
 #define LCD_DEVFUNC_DRAWBMP_8BPP  0x25 /* ...drawing a 8bpp bitmap */
+#define LCD_DEVFUNC_READPIXEL     0x26 /* ...reading a pixel index */
+#define LCD_DEVFUNC_READMPIXELS   0x27 /* ...reading multiple pixel indices */
 
 /*********************************************************************
 *

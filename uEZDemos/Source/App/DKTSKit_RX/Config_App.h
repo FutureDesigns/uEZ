@@ -34,9 +34,14 @@
 #ifndef UEZ_ENABLE_TCPIP_STACK
 	#define UEZ_ENABLE_TCPIP_STACK          0
 #endif
-// Choose one when stack is enabled
-#define UEZ_BASIC_WEB_SERVER                0//UEZ_ENABLE_TCPIP_STACK
-#define UEZ_HTTP_SERVER                     1
+
+#ifndef UEZ_BASIC_WEB_SERVER
+	#define UEZ_BASIC_WEB_SERVER            1 //UEZ_ENABLE_TCPIP_STACK
+#endif
+#ifndef UEZ_HTTP_SERVER
+	#define UEZ_HTTP_SERVER          		0
+#endif
+
 #define DEBUG_HTTP_SERVER                   0
 
 #ifndef UEZ_ENABLE_USB_HOST_STACK

@@ -102,12 +102,12 @@ void CANConfigure ( void )
         UEZGPIOSetMux(GPIO_P0_1, 1);
 //    unsigned int n = ((Fcclk/4)/125000)-1;
     //PCONP |= PCONP_PCAN1;
-	LPC1788PowerOn(1<<13); // CAN1 power on
+    LPC17xx_40xxPowerOn(1<<13); // CAN1 power on
     //PCLKSEL0 |= (2<<PCLKSEL0_PCLK_CAN1_BIT)|(2<<PCLKSEL0_PCLK_ACF_BIT);
     LPC_CAN1->MOD        =        0x00000001;        /* Set CAN controller into reset */
     LPC_CAN1->BTR        =        0x001C0000|(30-1);        /* Set bit timing to 125k -- old value from 2119 0x1D */
     LPC_CAN1->IER        =        0x00000000;        /* Disable the Receive interrupt */
-	LPC_CANAF->AFMR      =        0x00000002;        /* Bypass acceptance filters to receive all CAN traffic */
+    LPC_CANAF->AFMR      =        0x00000002;        /* Bypass acceptance filters to receive all CAN traffic */
     LPC_CAN1->TFI1        =        0x00080000;        /* Set DLC to transmit 8 bytes */        
     LPC_CAN1->TID1        =        0x00000555;        /* Set CAN ID to '555' */
 #if 1
@@ -139,6 +139,20 @@ int CANReceive8(unsigned int *aCANByteA, unsigned int *aCANByteB)
     }
     return (CANrdy)?1:0;
 #elif (UEZ_PROCESSOR==NXP_LPC1788)
+    {
+        CANrdy = LPC_CAN1->GSR&0x00000001;        /* Get status of receiver buffer */
+        if (CANrdy != 0) {
+          /* We have received a CAN message, so we need to process it */
+          CANRCV = pdTRUE;
+          *aCANByteA = LPC_CAN1->RDA; /* Get the first 4 bytes of the received CAN message */
+          *aCANByteB = LPC_CAN1->RDB; /* Get the last 4 bytes of the received CAN message */
+
+          LPC_CAN1->CMR =   0x00000004; /* Release the receive buffer */      
+         }
+
+    }
+    return (CANrdy)?1:0;
+#elif (UEZ_PROCESSOR==NXP_LPC4088)
     {
         CANrdy = LPC_CAN1->GSR&0x00000001;        /* Get status of receiver buffer */
         if (CANrdy != 0) {

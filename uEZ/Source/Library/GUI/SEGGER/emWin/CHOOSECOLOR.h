@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -75,7 +75,7 @@ typedef struct {
 */
 typedef struct {
   U32               LastColor;
-  GUI_COLOR       * pColor;
+  const GUI_COLOR * pColor;
   unsigned          NumColors;
   unsigned          NumColorsPerLine;
   int               SelOld;
@@ -90,17 +90,17 @@ typedef struct {
 *
 **********************************************************************
 */
-WM_HWIN CHOOSECOLOR_Create(WM_HWIN      hParent,
-                           int          xPos,
-                           int          yPos,
-                           int          xSize,
-                           int          ySize,
-                           GUI_COLOR  * pColor,
-                           unsigned     NumColors,
-                           unsigned     NumColorsPerLine,
-                           int          Sel,
-                           const char * sCaption,
-                           int          Flags);
+WM_HWIN CHOOSECOLOR_Create(WM_HWIN           hParent,
+                           int               xPos,
+                           int               yPos,
+                           int               xSize,
+                           int               ySize,
+                           const GUI_COLOR * pColor,
+                           unsigned          NumColors,
+                           unsigned          NumColorsPerLine,
+                           int               Sel,
+                           const char      * sCaption,
+                           int               Flags);
 
 int  CHOOSECOLOR_GetSel(WM_HWIN hObj);
 void CHOOSECOLOR_SetSel(WM_HWIN hObj, int Sel);

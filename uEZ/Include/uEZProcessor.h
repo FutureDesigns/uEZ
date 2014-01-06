@@ -33,6 +33,7 @@
 #define CORE_TYPE_UNDEFINED                     0
 #define CORE_TYPE_ARM7                          1
 #define CORE_TYPE_CORTEX_M3                     2
+#define CORE_TYPE_CORTEX_M4                     3
 
 /** Defines for UEZ_PROCESS_CORE_MODE */
 #define CORE_MODE_UNKNOWN                       0
@@ -69,8 +70,8 @@ TUInt32 ReadBE32U (volatile TUInt8 *pmem);
 #include "Source/Processor/Renesas/H8SX_1668RF/H8SX_1668RF.h"
 #endif
 
-#if (UEZ_PROCESSOR==NXP_LPC1788)
-#include <Source/Processor/NXP/LPC1788/uEZProcessor_LPC1788.h>
+#if (UEZ_PROCESSOR==NXP_LPC1788 || UEZ_PROCESSOR == NXP_LPC4088)
+#include <Source/Processor/NXP/LPC17xx_40xx/uEZProcessor_LPC17xx_40xx.h>
 #endif
 
 #if (UEZ_PROCESSOR==RENESAS_RX62N)

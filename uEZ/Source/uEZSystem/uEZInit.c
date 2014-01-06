@@ -72,6 +72,9 @@ T_uezError UEZSystemInit(void)
     UEZGPIOReset();
 
     // Start the task system
+#if FREERTOS_PLUS_TRACE
+    vTraceInitTraceData();
+#endif
     UEZTaskInit();
 
     return UEZ_ERROR_NONE;

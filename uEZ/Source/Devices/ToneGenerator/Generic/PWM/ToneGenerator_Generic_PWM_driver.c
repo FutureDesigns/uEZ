@@ -97,6 +97,7 @@ T_uezError ToneGenerator_Generic_PWM_SetTone(
             // Put the tone's pin back into GPIO mode
             (*p->iGPIOPort)->SetMux(p->iGPIOPort, p->iGPIOPortPinIndex,
                 p->iGPIOAsGPIOMux);
+            (*p->iGPIOPort)->SetOutputMode(p->iGPIOPort, 1<<p->iGPIOPortPinIndex);
         }
     } else {
         // Set the time for the PWM interval
@@ -179,6 +180,7 @@ void ToneGenerator_Generic_PWM_ConfigurePortPin(
     p->iGPIOPortPinIndex = aGPIOPin;
     p->iGPIOAsGPIOMux = aGPIOAsGPIOMux;
     p->iGPIOAsPWMMux = aGPIOAsPWMMux;
+    (*p->iGPIOPort)->SetOutputMode(p->iGPIOPort, 1<<p->iGPIOPortPinIndex);
 }
 
 /*---------------------------------------------------------------------------*

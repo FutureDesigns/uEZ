@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -78,7 +78,7 @@ LISTWHEEL_Handle LISTWHEEL_CreateAsChild (const GUI_ConstString * ppText, WM_HWI
 LISTWHEEL_Handle LISTWHEEL_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 LISTWHEEL_Handle LISTWHEEL_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent,
                                           int WinFlags, int ExFlags, int Id, const GUI_ConstString * ppText);
-LISTWHEEL_Handle LISTWHEEL_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
+LISTWHEEL_Handle LISTWHEEL_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent,
                                           int WinFlags, int ExFlags, int Id, const GUI_ConstString * ppText, int NumExtraBytes);
 
 /*********************************************************************
@@ -99,6 +99,7 @@ void LISTWHEEL_Callback(WM_MESSAGE * pMsg);
 void      LISTWHEEL_AddString      (LISTWHEEL_Handle hObj, const char * s);
 void *    LISTWHEEL_GetItemData    (LISTWHEEL_Handle hObj, unsigned Index); /* not to be documented */
 void      LISTWHEEL_GetItemText    (LISTWHEEL_Handle hObj, unsigned Index, char * pBuffer, int MaxSize);
+int       LISTWHEEL_GetItemFromPos (LISTWHEEL_Handle hObj, int yPos);
 int       LISTWHEEL_GetLBorder     (LISTWHEEL_Handle hObj);
 unsigned  LISTWHEEL_GetLineHeight  (LISTWHEEL_Handle hObj);
 int       LISTWHEEL_GetNumItems    (LISTWHEEL_Handle hObj);

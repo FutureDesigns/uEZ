@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : LISTBOX widget include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /*********************************************************************
@@ -107,13 +107,11 @@ typedef WM_HMEM LISTBOX_Handle;
 **********************************************************************
 */
 
-LISTBOX_Handle LISTBOX_Create        (const GUI_ConstString * ppText, int x0, int y0, int xsize, int ysize, int Flags);
-LISTBOX_Handle LISTBOX_CreateAsChild (const GUI_ConstString * ppText, WM_HWIN hWinParent, int x0, int y0, int xsize, int ysize, int Flags);
+LISTBOX_Handle LISTBOX_Create        (const GUI_ConstString * ppText, int x0, int y0, int xSize, int ySize, int Flags);
+LISTBOX_Handle LISTBOX_CreateAsChild (const GUI_ConstString * ppText, WM_HWIN hWinParent, int x0, int y0, int xSize, int ySize, int Flags);
+LISTBOX_Handle LISTBOX_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, const GUI_ConstString * ppText);
+LISTBOX_Handle LISTBOX_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, const GUI_ConstString * ppText, int NumExtraBytes);
 LISTBOX_Handle LISTBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
-LISTBOX_Handle LISTBOX_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                      int WinFlags, int ExFlags, int Id, const GUI_ConstString * ppText);
-LISTBOX_Handle LISTBOX_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                      int WinFlags, int ExFlags, int Id, const GUI_ConstString * ppText, int NumExtraBytes);
 
 /*********************************************************************
 *
@@ -204,5 +202,7 @@ void        LISTBOX_SetDefaultTextColor   (unsigned Index, GUI_COLOR Color);
   }
 #endif
 
-#endif   /* GUI_WINSUPPORT */
-#endif   /* LISTBOX_H */
+#endif  // GUI_WINSUPPORT
+#endif  // LISTBOX_H
+
+/*************************** End of file ****************************/

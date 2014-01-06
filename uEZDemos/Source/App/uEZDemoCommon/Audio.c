@@ -24,6 +24,7 @@
 #include "Audio.h"
 #include <uEZToneGenerator.h>
 #include <uEZPlatform.h>
+#include <UEZAudioMixer.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -59,7 +60,9 @@ void AudioStart(void)
  *---------------------------------------------------------------------------*/
 void PlayAudio(TUInt32 aHz, TUInt32 aMS)
 {
+    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
     UEZToneGeneratorPlayTone(G_ToneGenerator,TONE_GENERATOR_HZ(aHz), aMS);
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 }
 
 /*---------------------------------------------------------------------------*

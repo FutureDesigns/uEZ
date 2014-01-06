@@ -150,6 +150,7 @@ static void BCMScreenSaverToggle(const T_choice *aChoice)
         ssInfo.iMSAnimationRefresh = 1000;
         ssInfo.iCallback_AnimationStart = &BouncingLogoSS_Start;
         ssInfo.iCallback_AnimationUpdate = &BouncingLogoSS_Update;
+        ssInfo.iCallback_AnimationSleep = &BouncingLogoSS_Sleep;
         ssInfo.iCallback_AnimationEnd = &BouncingLogoSS_End;
         UEZLCDScreensaverStart(lcd, &ssInfo);
     }
@@ -261,10 +262,10 @@ static void BCMScreen(T_brightnessControlWorkspace *G_ws)
 
     rbottom = rtemp;
     RegionCenterLeftRight(&rbottom, &rtemp, 100);
-    RegionSplitFromBottom(&rtemp, &G_ssOptionBox, (rtemp.iBottom-rtemp.iTop)/2, 5);
+    RegionSplitFromBottom(&rtemp, &G_ssOptionBox, (rtemp.iBottom-rtemp.iTop)/2+6, 5); // location of screen saver option box
     //RegionSplitFromLeft(&rtemp, &G_ssOptionBox, (rtemp.iBottom-rtemp.iTop)/2 - swim_get_font_height(&G_win)/2, 5);
-    G_ssOptionBox.iRight = G_ssOptionBox.iLeft+swim_get_font_height(&G_win)+4;
-    G_ssOptionBox.iBottom = G_ssOptionBox.iTop+swim_get_font_height(&G_win)+4;
+    G_ssOptionBox.iRight = G_ssOptionBox.iLeft+swim_get_font_height(&G_win)+16; // size of screen saver option box
+    G_ssOptionBox.iBottom = G_ssOptionBox.iTop+swim_get_font_height(&G_win)+16;
     
     p->iLeft = G_ssOptionBox.iLeft;
     p->iRight = G_ssOptionBox.iRight;
@@ -330,8 +331,8 @@ static void BCMScreen(T_brightnessControlWorkspace *G_ws)
     DrawScreenSaverBox(G_ws);
     
     swim_put_text_xy(&G_win, "Screen Saver On/Off", 
-                     G_ssOptionBox.iLeft+swim_get_font_height(&G_win)+10,//x
-                     G_ssOptionBox.iTop+2);//y
+                     G_ssOptionBox.iLeft+swim_get_font_height(&G_win)+22,//x
+                     G_ssOptionBox.iTop+8);//y
     
     // Now do the RTC
     // Now draw the fields

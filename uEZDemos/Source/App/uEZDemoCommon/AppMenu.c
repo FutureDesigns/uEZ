@@ -116,6 +116,10 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
     UEZLCDGetFrame(aWS->iLCD, 0, (void **)&pixels);
        
     SUIHidePage0();
+    
+    // Short delay to allow the LCD to complete a refresh cycle
+    // Otherwise we may see part of the window below.
+    UEZTaskDelay(5);
 
     // setup a standard window
     swim_window_open(&aWS->iWin, DISPLAY_WIDTH, DISPLAY_HEIGHT, pixels, 0, 0,

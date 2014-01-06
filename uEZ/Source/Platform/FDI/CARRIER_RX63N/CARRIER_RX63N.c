@@ -191,6 +191,10 @@ TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
     }                    
 }
 
+#define nops5()    nop();nop();nop();nop();nop()
+#define nops10()   nops5();nops5()
+#define nops50()   nops10();nops10();nops10();nops10();nops10()
+
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPDelayMS
  *---------------------------------------------------------------------------*
@@ -198,16 +202,15 @@ TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
  *      Use a delay loop to approximate the time to delay.
  *      Should use UEZTaskDelayMS() when in a task instead.
  *---------------------------------------------------------------------------*/
-void UEZBSPDelayMS(unsigned int aMilliseconds)
+void UEZBSPDelay1US(void)
 {
-    TUInt32 i;
-    // TODO: Calibrate based on the speed of processor
-    while (aMilliseconds--) {
-        for (i = 0; i < PROCESSOR_OSCILLATOR_FREQUENCY/5000; i++) {
-        }
-    }
+    // This is a rough estimate. We need to get a more accurate measurement
+    // using a HW timer.
+    nops50();
+    nops10();
+    nops10();
 }
-
+  
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPDelayUS
  *---------------------------------------------------------------------------*
@@ -217,11 +220,22 @@ void UEZBSPDelayMS(unsigned int aMilliseconds)
  *---------------------------------------------------------------------------*/
 void UEZBSPDelayUS(unsigned int aMicroseconds)   
 {
+    while (aMicroseconds--)
+        UEZBSPDelay1US();
+}
+
+void UEZBSPDelay1MS(void)
+{
     TUInt32 i;
-    // TODO: Calibrate based on the speed of processor
-    while (aMicroseconds--) {
-        for (i = 0; i < PROCESSOR_OSCILLATOR_FREQUENCY/5000000; i++) {
-        }
+    // Approximate delays here
+    for (i = 0; i < 1000; i++)
+        UEZBSPDelay1US();
+}
+
+void UEZBSPDelayMS(unsigned int aMilliseconds)   
+{
+    while (aMilliseconds--) {
+        UEZBSPDelay1MS();
     }
 }
 
@@ -470,7 +484,7 @@ void UEZBSP_RAMInit(void)
 	PORTD.DSCR.BYTE = 0xFF;
 	PORTE.DSCR.BYTE = 0xFF;
 	
-#if 1
+#if 0
         MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
 #endif
 }
@@ -1311,7 +1325,7 @@ void SUICallbackSetLCDBase(void *aBaseAddress)
     extern TUInt16 * LCDSetActiveRaster(TUInt32 frame_request);
     extern void HandleFail(void);
 
-    //LCDSetActiveRaster((TUInt32)aBaseAddress);
+    LCDSetActiveRaster((TUInt32)aBaseAddress);
 }
 
 extern void WriteByteInFrameBufferWithAlpha(

@@ -2,7 +2,7 @@
 
             EXTERN InterruptHandlerX
 	EXTERN vTaskSwitchContext
-	EXTERN vTaskIncrementTick
+	EXTERN xTaskIncrementTick
 	EXTERN vPortPreemptiveTick
 	
 	PUBLIC vPortPreemptiveTickEntry
@@ -77,7 +77,7 @@ AsmVector MACRO vectorNum
         
         EXTERN InterruptHandlerX
 	EXTERN vTaskSwitchContext
-	EXTERN vTaskIncrementTick
+	EXTERN xTaskIncrementTick
 	EXTERN vPortPreemptiveTick
 
             PUBLIC AsmVector0

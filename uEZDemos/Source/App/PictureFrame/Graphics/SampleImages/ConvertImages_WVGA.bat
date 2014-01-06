@@ -1,1 +1,2 @@
-ImageConverter.exe "C:\FDI\uEZ\SVN\Internal\uEZDemos\Source\App\PictureFame\Graphics\sampleimages" "WVSLID" "800x480"
+ImageConverter.exe "C:\FDI\uEZ\SVN\Internal\uEZDemos\Source\App\PictureFrame\Graphics\SampleImages" "WVSLID" "800x480"
+pause

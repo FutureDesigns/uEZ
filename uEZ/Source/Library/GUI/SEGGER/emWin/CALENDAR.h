@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -38,7 +38,7 @@ Purpose     : Message box interface
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /*********************************************************************
@@ -109,15 +109,26 @@ typedef struct {
 WM_HWIN CALENDAR_Create           (WM_HWIN hParent, int xPos, int yPos, unsigned Year, unsigned Month, unsigned Day, unsigned FirstDayOfWeek, int Id, int Flags);
 void    CALENDAR_GetDate          (WM_HWIN hWin, CALENDAR_DATE * pDate);
 void    CALENDAR_GetSel           (WM_HWIN hWin, CALENDAR_DATE * pDate);
-void    CALENDAR_GetSkinFlexProps (CALENDAR_SKINFLEX_PROPS * pProps, int Index);
 void    CALENDAR_SetDate          (WM_HWIN hWin, CALENDAR_DATE * pDate);
 void    CALENDAR_SetSel           (WM_HWIN hWin, CALENDAR_DATE * pDate);
+void    CALENDAR_ShowDate         (WM_HWIN hWin, CALENDAR_DATE * pDate);
+
+/*********************************************************************
+*
+*       Default related
+*/
 void    CALENDAR_SetDefaultBkColor(unsigned Index, GUI_COLOR Color);
 void    CALENDAR_SetDefaultColor  (unsigned Index, GUI_COLOR Color);
 void    CALENDAR_SetDefaultDays   (const char ** apDays);
 void    CALENDAR_SetDefaultFont   (unsigned Index, const GUI_FONT GUI_UNI_PTR * pFont);
 void    CALENDAR_SetDefaultMonths (const char ** apMonths);
 void    CALENDAR_SetDefaultSize   (unsigned Index, unsigned Size);
+
+/*********************************************************************
+*
+*       Skinning related
+*/
+void    CALENDAR_GetSkinFlexProps (CALENDAR_SKINFLEX_PROPS * pProps, int Index);
 void    CALENDAR_SetSkinFlexProps (const CALENDAR_SKINFLEX_PROPS * pProps, int Index);
 
 /*********************************************************************
@@ -133,6 +144,7 @@ void CALENDAR_Callback(WM_MESSAGE * pMsg);
   }
 #endif
 
-#endif /* GUI_WINSUPPORT */
+#endif // GUI_WINSUPPORT
+#endif // CALENDAR_H
 
-#endif /* CALENDAR_H */
+/*************************** End of file ****************************/

@@ -29,8 +29,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -87,7 +87,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -137,13 +137,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -162,6 +162,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>LWIP_PROVIDE_ERRNO</state>
@@ -299,8 +303,8 @@
           <state>$PROJ_DIR$/../../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../../Source/App/Demos/uEZGUI-1788-43WQS</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
@@ -558,8 +562,8 @@
           <state>$PROJ_DIR$/../../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../../Source/App/Demos/uEZGUI-1788-43WQS</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
@@ -632,7 +636,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -801,10 +805,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -906,6 +906,16 @@
           <name>IlinkStackCallGraphFile</name>
           <state></state>
         </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -962,8 +972,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1070,13 +1080,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1095,6 +1105,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>NDEBUG</state>
@@ -1232,8 +1246,8 @@
           <state>$PROJ_DIR$/../../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../../Source/App/Demos/uEZGUI-1788-43WQS</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
@@ -1491,8 +1505,8 @@
           <state>$PROJ_DIR$/../../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../../Source/App/Demos/uEZGUI-1788-43WQS</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
@@ -1565,7 +1579,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1734,10 +1748,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -1839,6 +1849,16 @@
           <name>IlinkStackCallGraphFile</name>
           <state></state>
         </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1895,8 +1915,8 @@
         </option>
         <option>
           <name>Variant</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -2003,13 +2023,13 @@
         </option>
         <option>
           <name>GFPUCoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>19</version>
-          <state>37</state>
+          <version>20</version>
+          <state>38</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -2028,6 +2048,10 @@
         <version>28</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
         <option>
           <name>CCDefines</name>
           <state>LWIP_PROVIDE_ERRNO</state>
@@ -2166,8 +2190,8 @@
           <state>$PROJ_DIR$/../../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../../Source/App/Demos/uEZGUI-1788-43WQS</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</state>
@@ -2426,8 +2450,8 @@
           <state>$PROJ_DIR$/../../../../../../.</state>
           <state>$PROJ_DIR$/../../../../../../Include</state>
           <state>$PROJ_DIR$/../../../../../../Source/App/Demos/uEZGUI-1788-43WQS</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788</state>
-          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1788/IAR/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
@@ -2500,7 +2524,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>14</version>
+        <version>15</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -2669,10 +2693,6 @@
           <state>1</state>
         </option>
         <option>
-          <name>CrcAlgo</name>
-          <state>1</state>
-        </option>
-        <option>
           <name>CrcPoly</name>
           <state>0x11021</state>
         </option>
@@ -2773,6 +2793,16 @@
         <option>
           <name>IlinkStackCallGraphFile</name>
           <state></state>
+        </option>
+        <option>
+          <name>CrcAlgorithm</name>
+          <version>0</version>
+          <state>1</state>
+        </option>
+        <option>
+          <name>CrcUnitSize</name>
+          <version>0</version>
+          <state>0</state>
         </option>
       </data>
     </settings>
@@ -3121,7 +3151,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDevice.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZDeviceTable.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDeviceTable.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZEINT.h</name>
@@ -3169,7 +3199,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPacked.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPlatformAPI.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZPlatformAPI.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZProcessor.h</name>
@@ -3196,7 +3226,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZTickCounter.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZTimeDate.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZTimeDate.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZTimer.h</name>
@@ -3214,7 +3244,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWatchdog.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWAVFile.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZWAVFile.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\unistd.h</name>
@@ -3400,12 +3430,12 @@
         <group>
           <name>NXP</name>
           <group>
-            <name>LPC1788</name>
+            <name>LPC17xx_40xx</name>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\EEPROM\NXP\LPC1788\EEPROM_NXP_LPC1788.c</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\EEPROM\NXP\LPC17xx_40xx\EEPROM_NXP_LPC17xx_40xx.c</name>
             </file>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\EEPROM\NXP\LPC1788\EEPROM_NXP_LPC1788.h</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\EEPROM\NXP\LPC17xx_40xx\EEPROM_NXP_LPC17xx_40xx.h</name>
             </file>
           </group>
         </group>
@@ -3427,12 +3457,12 @@
         <group>
           <name>NXP</name>
           <group>
-            <name>LPC1788</name>
+            <name>LPC17xx_40xx</name>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC1788\LPC1788_IAP.c</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC17xx_40xx\LPC17xx_40xx_IAP.c</name>
             </file>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC1788\LPC1788_IAP.h</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC17xx_40xx\LPC17xx_40xx_IAP.h</name>
             </file>
           </group>
         </group>
@@ -3573,6 +3603,15 @@
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Inteltronic\LMIX0560NTN53V1\Inteltronic_LMIX0560NTN53V1.h</name>
             </file>
           </group>
+          <group>
+            <name>LMTDA043ZHN3</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Inteltronic\LMTDA043ZHN3\LMTDA043ZHN3.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Inteltronic\LMTDA043ZHN3\LMTDA043ZHN3.h</name>
+            </file>
+          </group>
         </group>
         <group>
           <name>Microtips</name>
@@ -3595,6 +3634,18 @@
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\NEC\NL6448BC18-03F\NEC-NL6448BC18.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>Newhaven</name>
+          <group>
+            <name>NHD43480272MF</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\NewHaven\NHD43480272MF\NewHaven_NHD43480272MF.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\NewHaven\NHD43480272MF\NewHaven_NHD43480272MF.h</name>
             </file>
           </group>
         </group>
@@ -4007,6 +4058,30 @@
           </group>
         </group>
         <group>
+          <name>Himax</name>
+          <group>
+            <name>HX8526-A</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Himax\HX8526-A\HX8526-A_TouchScreen.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Himax\HX8526-A\HX8526-A_TouchScreen.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
+          <name>Newhaven</name>
+          <group>
+            <name>FT5306DE4</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
           <name>Sitronix</name>
           <group>
             <name>ST1232</name>
@@ -4024,9 +4099,9 @@
         <group>
           <name>NXP</name>
           <group>
-            <name>LPC1788</name>
+            <name>LPC17xx_40xx</name>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\USBDevice\NXP\LPC1788\LPC1788_USBDevice.c</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\USBDevice\NXP\LPC17xx_40xx\LPC17xx_40xx_USBDevice.c</name>
             </file>
           </group>
         </group>
@@ -5213,165 +5288,165 @@
       <group>
         <name>NXP</name>
         <group>
-          <name>LPC1788</name>
+          <name>LPC17xx_40xx</name>
           <group>
             <name>IAR</name>
           </group>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\Config_Processor.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Config_Processor.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_ADCBank.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_ADCBank.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_ADCBank.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_ADCBank.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_BatteryRAM.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_BatteryRAM.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_BatteryRAM.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_BatteryRAM.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_CRC.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CRC.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_CRC.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CRC.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_DAC.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_DAC.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_DAC.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_DAC.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_EMAC.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EMAC.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_EMAC.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EMAC.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_EMC_Static.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EMC_Static.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_EMC_Static.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EMC_Static.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_ExternalBus.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_ExternalBus.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_ExternalBus.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_ExternalBus.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_GPDMA.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_GPDMA.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_GPDMA.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_GPDMA.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_GPIO.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_GPIO.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_GPIO.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_GPIO.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_HALInit.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_HALInit.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_I2C.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_I2C.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_I2C.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_I2C.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_I2S.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_I2S.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_I2S.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_I2S.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Interrupt.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Interrupt.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_LCDController.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_LCDController.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_LCDController.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_LCDController.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_MCI.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_MCI.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PLL.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_PLL.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PLL.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_PLL.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PWM.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_PWM.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_PWM.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_PWM.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_RTC.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_RTC.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_RTC.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_RTC.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_SDRAM.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_SDRAM.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_SDRAM.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_SDRAM.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Serial.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Serial.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Serial.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Serial.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_SSP.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_SSP.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_SSP.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_SSP.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Timer.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Timer.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Timer.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Timer.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_USBDeviceController.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBDeviceController.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_USBDeviceController.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBDeviceController.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_USBHost.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_USBSharedInterrupt.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBSharedInterrupt.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Watchdog.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Watchdog.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\LPC1788_Watchdog.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_Watchdog.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\IAR\include\CMSIS\startup_LPC17xx.s</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\IAR\include\CMSIS\startup_LPC17xx.s</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h</name>
           </file>
         </group>
       </group>
@@ -5467,13 +5542,16 @@
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcConfig.h</name>
             </file>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcHooks.h</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcHardwarePort.h</name>
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcKernel.h</name>
             </file>
             <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcPort.h</name>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcKernelHooks.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcKernelPort.h</name>
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\Include\trcTypes.h</name>
@@ -5486,10 +5564,13 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\trcBase.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\trcHardwarePort.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\trcKernel.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\trcPort.c</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\trcKernelPort.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\trcUser.c</name>

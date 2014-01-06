@@ -238,7 +238,10 @@ void vTickISR( void )
 {
 	/* Increment the tick, and perform any processing the new tick value
 	necessitates. */
-	vTaskIncrementTick();
+	if( xTaskIncrementTick() != pdFALSE )
+   {
+      taskYIELD();
+   }
 	
 	/* Only select a new task if the preemptive scheduler is being used. */
 	#if( configUSE_PREEMPTION == 1 )

@@ -3,12 +3,12 @@
 [DATABASE_VERSION]
 "11.0" 
 [WORKSPACE_DETAILS]
-"DK-TS-RX62N" "C:\FDI\SVN\FDI\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW" "C:\FDI\SVN\FDI\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW\DK-TS-RX62N.hws" "RX" "Renesas RX Standard" 
+"DK-TS-RX62N" "C:\FDI\uEZ\SVN\Internal\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW" "C:\FDI\uEZ\SVN\Internal\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW\DK-TS-RX62N.hws" "RX" "Renesas RX Standard" 
 [SHARED_WORKSPACE_CONTROL_STATUS]
 "" "" "" 
 "" "" "" 
 [PROJECTS]
-"DK-TS-RX62N" "C:\FDI\SVN\FDI\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW\DK-TS-RX62N" "C:\FDI\SVN\FDI\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW\DK-TS-RX62N\DK-TS-RX62N.hwp" 0 
+"DK-TS-RX62N" "C:\FDI\uEZ\SVN\Internal\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW\DK-TS-RX62N" "C:\FDI\uEZ\SVN\Internal\uEZDemos\Build\Demos\PictureFrame\DK-TS-RX62N\FDIDemo\HEW\DK-TS-RX62N\DK-TS-RX62N.hwp" 0 
 [INFORMATION]
 "No workspace information available" 
 [SCRAP]

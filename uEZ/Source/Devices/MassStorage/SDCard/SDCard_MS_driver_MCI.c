@@ -25,7 +25,7 @@
 #include <string.h>
 #include "SDCard_MS_driver_MCI.h"
 //#include <HAL/Interrupt.h>
-#include <Source/Processor/NXP/LPC1788/LPC1788_GPIO.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_GPIO.h>
 #include <HAL/MCI.h>
 #include <stdio.h>
 

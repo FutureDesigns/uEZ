@@ -63,6 +63,9 @@ static SWIM_WINDOW_T G_mmWin;
 static TUInt32 G_romChecksum;
 static TBool G_romChecksumCalculated;
 
+#if TS_TEST_DEMO
+extern void TS_Test_Demo(const T_choice *aChoice);
+#endif
 /*---------------------------------------------------------------------------*
  * Globals: Main Menu
  *---------------------------------------------------------------------------*/
@@ -70,8 +73,8 @@ static const T_appMenuEntry apps_menu_entries[] = {
     { "Accelerometer", AccelDemoMode, G_accelIcon, 0 },
     { "Time & Date", TimeDateMode, G_timeDateIcon, 0 },
     { "Temperature", TempMode, G_temperatureIcon, 0 },
-#if (APP_DEMO_EMWIN && UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_INTELTRONIC_LMIX0560NTN53V1)
-    { "emWin Demo", emWin, G_segger, 0 },
+#if TS_TEST_DEMO 
+    { "TSTest", TS_Test_Demo, G_temperatureIcon, 0 },
 #endif
     { 0 },
 };
@@ -85,7 +88,9 @@ static const T_appMenu apps_submenu = {
 static const T_appMenuEntry settings_menu_entries[] = {
     { "Brightness", BrightnessControlMode, G_contrastIcon, 0 },
     { "Calibrate", CalibrateMode, G_calibrationIcon, 0 },
+#if UEZ_DEMO_FCT
     { "Functional Test", FunctionalTest, G_funcTestIcon, 0 },
+#endif
 #if UEZGUI_EXP_DK_FCT_TEST
     { "EXP-DK Test", FunctionalTest_EXP_DK, G_funcTestIcon, 0 },
     { "EXP-DK Loopback", FunctionalTest_EXP_DK_Loopback, G_funcTestIcon, 0 },
@@ -112,27 +117,24 @@ static const T_appMenu comm_submenu = {
 #endif
 
 static const T_appMenuEntry mainmenu_entries[] = {
-        { "Slideshow", MultiSlideshowMode, G_slideshowIcon, 0 },
+   { "Slideshow", MultiSlideshowMode, G_slideshowIcon, 0 },
 #if APP_DEMO_APPS
-        { "Apps", AppSubmenu, G_appFolderIcon, (void *)&apps_submenu },
+   { "Apps", AppSubmenu, G_appFolderIcon, (void *)&apps_submenu },
 #endif
 #if APP_DEMO_COM
-        { "Communications", AppSubmenu, G_consoleIcon, (void *)&comm_submenu },
+   { "Communications", AppSubmenu, G_consoleIcon, (void *)&comm_submenu },
 #endif
-        { "Settings", AppSubmenu, G_settingsIcon, (void *)&settings_submenu },
+   { "Settings", AppSubmenu, G_settingsIcon, (void *)&settings_submenu },
 #if APP_DEMO_DRAW
-        { "Draw", DrawMode, G_drawIcon, 0 },
+   { "Draw", DrawMode, G_drawIcon, 0 },
 #endif
-#if (APP_DEMO_EMWIN && UEZ_DEFAULT_LCD_CONFIG!=LCD_CONFIG_INTELTRONIC_LMIX0560NTN53V1)
-    { "emWin Demo", emWin, G_segger, 0 },
-#endif
-#if APP_DEMO_YOUR_APP
-        { "Your App Here!", YourAppMode, G_questionIcon, 0 },
+#if APP_DEMO_EMWIN
+   { "emWin Demo", emWin, G_segger, 0 },
 #endif
 #if APP_DEMO_VIDEO_PLAYER
-        { "Video Player", VideoPlayerSelection, G_videoIcon, 0 },
+   { "Video Player", VideoPlayerSelection, G_videoIcon, 0 },
 #endif
-        { 0 },
+   { 0 },
 };
 
 static const T_appMenu mainmenu = {
@@ -210,8 +212,6 @@ void TitleScreen(void)
         UEZLCDBacklight(lcd, 0);
         UEZLCDOff(lcd);
 
-        SUIHidePage0();
-
         swim_window_open(
             &G_mmWin,
             DISPLAY_WIDTH,
@@ -233,9 +233,10 @@ void TitleScreen(void)
             (DISPLAY_WIDTH-UEZ_ICON_WIDTH)/2,
             (DISPLAY_HEIGHT-UEZ_ICON_HEIGHT)/2);
 
-        SUIShowPage0();
-
         UEZLCDOn(lcd);
+        UEZLCDBacklight(lcd, 0);
+        // Allow for LCD to fully power on before turning up the BL
+        UEZTaskDelay(100);  
 #if FAST_STARTUP
         UEZLCDBacklight(lcd, 255);
 #else
@@ -281,7 +282,7 @@ void MainMenu(void)
 #if (!FAsT_STARTUP)
         // Clear the screen
         TitleScreen();
-		//while(1);
+	
         PlayAudio(523, 100);
         PlayAudio(659, 100);
         PlayAudio(783, 100);

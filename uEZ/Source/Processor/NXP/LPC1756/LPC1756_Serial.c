@@ -15,8 +15,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
- /**
- *    @addtogroup LPC1756_Serial
+ /*
  *  @{
  *  @brief     uEZ LPC1756 Serial Interface
  *  @see http://www.teamfdi.com/uez/
@@ -870,7 +869,7 @@ void LPC1756_UART3_Require(
     LPC1756_IOCON_ConfigPinOrNone(aPinTXD3, txd3, ARRAY_COUNT(txd3));
     LPC1756_IOCON_ConfigPinOrNone(aPinRXD3, rxd3, ARRAY_COUNT(rxd3));
 }
-/** @} */
+
 /*===========================================================================*
  * END OF FILE:  LPC1756_Serial.c
  *===========================================================================*/

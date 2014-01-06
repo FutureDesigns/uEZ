@@ -13,5 +13,6 @@ void BouncingLogoSS_Setup(
 void BouncingLogoSS_Start();
 void BouncingLogoSS_Update();
 void BouncingLogoSS_End();
+void BouncingLogoSS_Sleep();
 
 #endif

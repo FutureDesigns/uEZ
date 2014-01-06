@@ -326,6 +326,8 @@ void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
 void UEZPlatform_I2S_Require(void);
 void UEZPlatform_USBHost_PortA_Require(void);
+void UEZPlatform_USBHost_PortB_Require(void);
+TBool UEZPlatform_Host_Port_B_Detect();
 
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);

@@ -37,8 +37,8 @@
 #ifndef _GFX_TEST_CMDS_H_
 #define _GFX_TEST_CMDS_H_
 
-T_uezError GFXTestCmdsInit(void);
-T_uezError GFXTestCmdsHalt(void);
+T_uezError UEZGUITestCmdsInit(void);
+T_uezError UEZGUITestCmdsInit(void);
 
 #endif // _GFX_TEST_CMDS_H_
 /*-------------------------------------------------------------------------*

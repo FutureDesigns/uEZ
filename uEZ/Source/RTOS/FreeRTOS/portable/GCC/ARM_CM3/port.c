@@ -358,7 +358,13 @@ void xPortSysTickHandler( void )
 
 	( void ) portSET_INTERRUPT_MASK_FROM_ISR();
 	{
-		vTaskIncrementTick();
+		/* Increment the RTOS tick. */
+		if( xTaskIncrementTick() != pdFALSE )
+		{
+			/* A context switch is required.  Context switching is performed in
+			the PendSV interrupt.  Pend the PendSV interrupt. */
+			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
+		}
 	}
 	portCLEAR_INTERRUPT_MASK_FROM_ISR( 0 );
 }

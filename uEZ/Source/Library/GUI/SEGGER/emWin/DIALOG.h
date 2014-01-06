@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -35,6 +35,7 @@ Purpose     : Dialog box include
 
 #include "WM.h"
 #include "BUTTON.h"
+#include "CALENDAR.h"
 #include "CHECKBOX.h"
 #include "CHOOSECOLOR.h"
 #include "CHOOSEFILE.h"
@@ -62,18 +63,21 @@ Purpose     : Dialog box include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
-WM_HWIN WINDOW_CreateEx         (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, WM_CALLBACK * cb);
-WM_HWIN WINDOW_CreateUser       (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, WM_CALLBACK * cb, int NumExtraBytes);
-WM_HWIN WINDOW_CreateIndirect   (const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
-int     WINDOW_GetUserData      (WM_HWIN hObj, void * pDest, int NumBytes);
-void    WINDOW_SetBkColor       (WM_HWIN hObj, GUI_COLOR Color);
-void    WINDOW_SetDefaultBkColor(GUI_COLOR Color);
-int     WINDOW_SetUserData      (WM_HWIN hObj, const void * pSrc, int NumBytes);
-
+/*********************************************************************
+*
+*       WINDOW API
+*/
+WM_HWIN   WINDOW_CreateEx         (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, WM_CALLBACK * cb);
+WM_HWIN   WINDOW_CreateUser       (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, WM_CALLBACK * cb, int NumExtraBytes);
+WM_HWIN   WINDOW_CreateIndirect   (const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 GUI_COLOR WINDOW_GetDefaultBkColor(void);
+int       WINDOW_GetUserData      (WM_HWIN hObj, void * pDest, int NumBytes);
+void      WINDOW_SetBkColor       (WM_HWIN hObj, GUI_COLOR Color);
+void      WINDOW_SetDefaultBkColor(GUI_COLOR Color);
+int       WINDOW_SetUserData      (WM_HWIN hObj, const void * pSrc, int NumBytes);
 
 void WINDOW_Callback(WM_MESSAGE * pMsg);
 
@@ -81,7 +85,7 @@ void WINDOW_Callback(WM_MESSAGE * pMsg);
   }
 #endif
 
-#endif
+#endif  // GUI_WINSUPPORT
+#endif  // DIALOG_H
 
-#endif
-
+/*************************** End of file ****************************/

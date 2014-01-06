@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -32,10 +32,6 @@ Purpose     : Interface definition for GUIDRV_S1D13781 driver
 
 #ifndef GUIDRV_S1D13781_H
 #define GUIDRV_S1D13781_H
-
-#if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
-#endif
 
 #define GUIDRV_S1D13781_USE_MAIN 0
 #define GUIDRV_S1D13781_USE_PIP1 1
@@ -96,10 +92,6 @@ extern const GUI_DEVICE_API GUIDRV_S1D13781_OSX_8C0_API;
 #else
   void GUIDRV_S1D13781_Config   (GUI_DEVICE * pDevice, CONFIG_S1D13781 * pConfig);
   void GUIDRV_S1D13781_SetBusSPI(GUI_DEVICE * pDevice, GUI_PORT_API * pHW_API);
-#endif
-
-#if defined(__cplusplus)
-}
 #endif
 
 #endif

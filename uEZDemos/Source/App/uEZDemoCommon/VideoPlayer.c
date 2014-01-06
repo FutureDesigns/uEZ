@@ -262,8 +262,7 @@ void VideoPlayer(const T_choice *aChoice)
     // Put the draw screen up
     VideoPlayer_Screen(&ws, 0);
     VideoPlayer_Screen(&ws, 1);
-    
-    UEZDACWAVConfig("Timer2");
+
     error = UEZDACWAVPlay(G_pVideoInfo->iAudioPath);
     if(error == UEZ_ERROR_NONE)
         isAudioPlaying = ETrue;
@@ -298,7 +297,6 @@ void VideoPlayer(const T_choice *aChoice)
     printf("Total Skip Count: %d\r\n", G_totalSkipCount);
     
     UEZDACWAVStop();
-    UEZDACWAVCleanUp();
     UEZFileClose(ws.iFile);
     UEZLCDClose(ws.iLCD);
 #if ENABLE_UEZ_BUTTON

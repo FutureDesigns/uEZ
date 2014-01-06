@@ -344,6 +344,7 @@ static T_uezError IWaitStatusDoneOrError(
     TUInt16 dq2_toggles;
     TUInt16 dq6_toggles;
     TUInt16 toggling;
+    TBool retry = ETrue;
 
     do {
         v1 = IFRead(aWordOffset);
@@ -369,7 +370,11 @@ static T_uezError IWaitStatusDoneOrError(
             // Is DQ5 set to high?
             if ((v2 & DQ5) && (v3 & DQ5)) {
                 // DQ5 is solid
-                return UEZ_ERROR_INTERNAL_ERROR;
+                if(retry){
+                    retry = EFalse;
+                } else {
+                    return UEZ_ERROR_INTERNAL_ERROR;
+                }
             }
         }
     } while (dq6_toggles);

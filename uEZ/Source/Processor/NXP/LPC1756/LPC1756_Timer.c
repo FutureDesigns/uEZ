@@ -16,8 +16,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
- /**
- *    @addtogroup LPC1756_Timer
+ /*
  *  @{
  *  @brief     uEZ LPC1756 Timer Interface
  *  @see http://www.teamfdi.com/uez/
@@ -944,7 +943,7 @@ void LPC1756_Timer3_Require(const T_LPC1756_Timer_Settings *aSettings)
     LPC1756_IOCON_ConfigPinOrNone(aSettings->iMAT[2], pinsMAT3,
             ARRAY_COUNT(pinsMAT3));
 }
-/** @} */
+
 /*-------------------------------------------------------------------------*
  * End of File:  LPC1756_Timer.c
  *-------------------------------------------------------------------------*/

@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : ICONVIEW include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /*********************************************************************
@@ -49,15 +49,33 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 **********************************************************************
 */
-/* Status- and create flags */
+//
+// Status- and create flags
+//
 #define ICONVIEW_CF_AUTOSCROLLBAR_V (1 << 1)
 #define ICONVIEW_SF_AUTOSCROLLBAR_V ICONVIEW_CF_AUTOSCROLLBAR_V
 
-/* Color indices */
-#define ICONVIEW_CI_BK       0
-#define ICONVIEW_CI_UNSEL    0
-#define ICONVIEW_CI_SEL      1
-#define ICONVIEW_CI_DISABLED 2
+//
+// Color indices
+//
+#define ICONVIEW_CI_BK              0
+#define ICONVIEW_CI_UNSEL           0
+#define ICONVIEW_CI_SEL             1
+#define ICONVIEW_CI_DISABLED        2
+
+//
+// Icon alignment flags, horizontal
+//
+#define ICONVIEW_IA_HCENTER         (0 << 0)
+#define ICONVIEW_IA_LEFT            (1 << 0)
+#define ICONVIEW_IA_RIGHT           (2 << 0)
+
+//
+// Icon alignment flags, vertical
+//
+#define ICONVIEW_IA_VCENTER         (0 << 2)
+#define ICONVIEW_IA_BOTTOM          (1 << 2)
+#define ICONVIEW_IA_TOP             (2 << 2)
 
 /*********************************************************************
 *
@@ -73,8 +91,8 @@ typedef WM_HMEM ICONVIEW_Handle;
 *
 **********************************************************************
 */
-ICONVIEW_Handle ICONVIEW_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int xSizeItems, int ySizeItem);
-ICONVIEW_Handle ICONVIEW_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int xSizeItems, int ySizeItems, int NumExtraBytes);
+ICONVIEW_Handle ICONVIEW_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int xSizeItems, int ySizeItems);
+ICONVIEW_Handle ICONVIEW_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int xSizeItems, int ySizeItems, int NumExtraBytes);
 ICONVIEW_Handle ICONVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 int  ICONVIEW_AddBitmapItem           (ICONVIEW_Handle hObj, const GUI_BITMAP * pBitmap, const char * pText);
@@ -97,6 +115,7 @@ void ICONVIEW_SetItemUserData         (ICONVIEW_Handle hObj, int Index, U32 User
 void ICONVIEW_SetSel                  (ICONVIEW_Handle hObj, int Sel);
 void ICONVIEW_SetSpace                (ICONVIEW_Handle hObj, int Coord, int Value);
 int  ICONVIEW_SetStreamedBitmapItem   (ICONVIEW_Handle hObj, int Index, const void * pStreamedBitmap);
+void ICONVIEW_SetIconAlign            (ICONVIEW_Handle hObj, int IconAlign);
 void ICONVIEW_SetTextAlign            (ICONVIEW_Handle hObj, int TextAlign);
 void ICONVIEW_SetTextColor            (ICONVIEW_Handle hObj, int Index, GUI_COLOR Color);
 int  ICONVIEW_SetUserData             (ICONVIEW_Handle hObj, const void * pSrc, int NumBytes);
@@ -108,7 +127,7 @@ void ICONVIEW_Callback(WM_MESSAGE * pMsg);
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
-#endif   /* ICONVIEW_H */
+#endif  // GUI_WINSUPPORT
+#endif  // ICONVIEW_H
 
 /*************************** End of file ****************************/

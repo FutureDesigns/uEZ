@@ -18,8 +18,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-/**
- *    @addtogroup LPC1756_USBSharedInterrupt
+/*
  *  @{
  *  @brief     uEZ LPC1756 USB Shared Interrupt Interface
  *  @see http://www.teamfdi.com/uez/
@@ -100,7 +99,7 @@ void USBSharedInterruptSetup(void)
         InterruptEnable(USB_IRQn);
     }
 }
-/** @} */
+
 /*-------------------------------------------------------------------------*
  * End of File:  LPC1756_USBSharedInterrupt.c
  *-------------------------------------------------------------------------*/

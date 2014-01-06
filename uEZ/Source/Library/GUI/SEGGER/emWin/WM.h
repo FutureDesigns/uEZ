@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -383,15 +383,15 @@ void    WM_AttachWindow              (WM_HWIN hWin, WM_HWIN hParent);
 void    WM_AttachWindowAt            (WM_HWIN hWin, WM_HWIN hParent, int x, int y);
 int     WM_CheckScrollPos            (WM_SCROLL_STATE * pScrollState, int Pos, int LowerDist, int UpperDist); /* not to be documented (may change in future version) */
 void    WM_ClrHasTrans               (WM_HWIN hWin);
-WM_HWIN WM_CreateWindow              (int x0, int y0, int xSize, int ySize, U32 Style, WM_CALLBACK* cb, int NumExtraBytes);
+WM_HWIN WM_CreateWindow              (int x0, int y0, int xSize, int ySize, U32 Style, WM_CALLBACK * cb, int NumExtraBytes);
 WM_HWIN WM_CreateWindowAsChild       (int x0, int y0, int xSize, int ySize, WM_HWIN hWinParent, U32 Style, WM_CALLBACK* cb, int NumExtraBytes);
 void    WM_DeleteWindow              (WM_HWIN hWin);
 void    WM_DetachWindow              (WM_HWIN hWin);
 int     WM_GetHasTrans               (WM_HWIN hWin);
 WM_HWIN WM_GetFocussedWindow         (void);
 void    WM_HideWindow                (WM_HWIN hWin);
-void    WM_InvalidateArea            (const GUI_RECT* pRect);
-void    WM_InvalidateRect            (WM_HWIN hWin, const GUI_RECT*pRect);
+void    WM_InvalidateArea            (const GUI_RECT * pRect);
+void    WM_InvalidateRect            (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM_InvalidateWindow          (WM_HWIN hWin);
 void    WM_InvalidateWindowAndDescsEx(WM_HWIN hWin, const GUI_RECT * pInvalidRect, U16 Flags);
 void    WM_InvalidateWindowAndDescs  (WM_HWIN hWin);    /* not to be documented (may change in future version) */
@@ -405,7 +405,7 @@ void    WM_SetHasTrans               (WM_HWIN hWin);
 void    WM_SetId                     (WM_HWIN hObj, int Id);
 void    WM_SetTransState             (WM_HWIN hWin, unsigned State);
 void    WM_ShowWindow                (WM_HWIN hWin);
-void    WM_ValidateRect              (WM_HWIN hWin, const GUI_RECT*pRect);
+void    WM_ValidateRect              (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM_ValidateWindow            (WM_HWIN hWin);
 int     WM_GetInvalidRect            (WM_HWIN hWin, GUI_RECT * pRect);
 void    WM_SetStayOnTop              (WM_HWIN hWin, int OnOff);
@@ -425,23 +425,27 @@ void     WM_MOTION_SetSpeed        (WM_HWIN hWin, int Axis, I32 Velocity);
 void     WM__SetMotionCallback (void(* cbMotion) (GUI_PID_STATE * pState));
 
 /* Static memory devices */
-#if (GUI_SUPPORT_MEMDEV && GUI_WINSUPPORT)
+#if (GUI_SUPPORT_MEMDEV)
   #define GUI_MEMDEV_EDGE_LEFT   0
   #define GUI_MEMDEV_EDGE_RIGHT  1
   #define GUI_MEMDEV_EDGE_TOP    2
   #define GUI_MEMDEV_EDGE_BOTTOM 3
 
-  void              GUI_MEMDEV_CreateStatic       (WM_HWIN hWin);
-  int               GUI_MEMDEV_FadeInWindow       (WM_HWIN hWin, int Period);
-  int               GUI_MEMDEV_FadeOutWindow      (WM_HWIN hWin, int Period);
-  GUI_MEMDEV_Handle GUI_MEMDEV_GetStaticDevice    (WM_HWIN hWin);
-  GUI_MEMDEV_Handle GUI_MEMDEV_GetWindowDevice    (WM_HWIN hWin);
-  int               GUI_MEMDEV_MoveInWindow       (WM_HWIN hWin, int x, int y, int a180, int Period);
-  int               GUI_MEMDEV_MoveOutWindow      (WM_HWIN hWin, int x, int y, int a180, int Period);
-  void              GUI_MEMDEV_Paint1Static       (WM_HWIN hWin);
-  int               GUI_MEMDEV_ShiftInWindow      (WM_HWIN hWin, int Period, int Direction);
-  int               GUI_MEMDEV_ShiftOutWindow     (WM_HWIN hWin, int Period, int Direction);
-  int               GUI_MEMDEV_SwapWindow         (WM_HWIN hWin, int Period, int Edge);
+  int               GUI_MEMDEV_BlurWinBk        (WM_HWIN hWin, int Period, U8 BlurDepth);
+  int               GUI_MEMDEV_BlurAndBlendWinBk(WM_HWIN hWin, int Period, U8 BlurDepth, U32 BlendColor, U8 BlendIntens);
+  void              GUI_MEMDEV_CreateStatic     (WM_HWIN hWin);
+  int               GUI_MEMDEV_BlendWinBk       (WM_HWIN hWin, int Period, U32 BlendColor, U8 BlendIntens);
+  int               GUI_MEMDEV_FadeInWindow     (WM_HWIN hWin, int Period);
+  int               GUI_MEMDEV_FadeOutWindow    (WM_HWIN hWin, int Period);
+  GUI_MEMDEV_Handle GUI_MEMDEV_GetStaticDevice  (WM_HWIN hWin);
+  GUI_MEMDEV_Handle GUI_MEMDEV_GetWindowDevice  (WM_HWIN hWin);
+  int               GUI_MEMDEV_MoveInWindow     (WM_HWIN hWin, int x, int y, int a180, int Period);
+  int               GUI_MEMDEV_MoveOutWindow    (WM_HWIN hWin, int x, int y, int a180, int Period);
+  void              GUI_MEMDEV_Paint1Static     (WM_HWIN hWin);
+  int               GUI_MEMDEV_ShiftInWindow    (WM_HWIN hWin, int Period, int Direction);
+  int               GUI_MEMDEV_ShiftOutWindow   (WM_HWIN hWin, int Period, int Direction);
+  int               GUI_MEMDEV_SwapWindow       (WM_HWIN hWin, int Period, int Edge);
+
 #endif
 
 /* Move/resize windows */
@@ -510,13 +514,13 @@ WM_CALLBACK * WM_SetCallback(WM_HWIN hWin, WM_CALLBACK * cb);
 WM_CALLBACK * WM_GetCallback(WM_HWIN hWin);
 
 /* Get size/origin of a window */
-void WM_GetClientRect             (GUI_RECT* pRect);
-void WM_GetClientRectEx           (WM_HWIN hWin, GUI_RECT* pRect);
-void WM_GetInsideRect             (GUI_RECT* pRect);
-void WM_GetInsideRectEx           (WM_HWIN hWin, GUI_RECT* pRect);
-void WM_GetInsideRectExScrollbar  (WM_HWIN hWin, GUI_RECT* pRect); /* not to be documented (may change in future version) */
-void WM_GetWindowRect             (GUI_RECT* pRect);
-void WM_GetWindowRectEx           (WM_HWIN hWin, GUI_RECT* pRect);
+void WM_GetClientRect             (GUI_RECT * pRect);
+void WM_GetClientRectEx           (WM_HWIN hWin, GUI_RECT * pRect);
+void WM_GetInsideRect             (GUI_RECT * pRect);
+void WM_GetInsideRectEx           (WM_HWIN hWin, GUI_RECT * pRect);
+void WM_GetInsideRectExScrollbar  (WM_HWIN hWin, GUI_RECT * pRect); /* not to be documented (may change in future version) */
+void WM_GetWindowRect             (GUI_RECT * pRect);
+void WM_GetWindowRectEx           (WM_HWIN hWin, GUI_RECT * pRect);
 int  WM_GetOrgX                   (void);
 int  WM_GetOrgY                   (void);
 int  WM_GetWindowOrgX             (WM_HWIN hWin);
@@ -555,8 +559,8 @@ WM_HWIN WM_GetDesktopWindow    (void);
 WM_HWIN WM_GetDesktopWindowEx  (unsigned int LayerIndex);
 
 /* Reduce clipping area of a window */
-const GUI_RECT* WM_SetUserClipRect(const GUI_RECT* pRect);
-void            WM_SetDefault     (void);
+const GUI_RECT * WM_SetUserClipRect(const GUI_RECT * pRect);
+void             WM_SetDefault     (void);
 
 /* Use of memory devices */
 void WM_EnableMemdev              (WM_HWIN hWin);

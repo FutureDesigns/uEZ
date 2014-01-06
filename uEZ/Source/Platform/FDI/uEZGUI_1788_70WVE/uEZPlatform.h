@@ -309,6 +309,8 @@ void UEZPlatform_WiredNetwork0_Require(void);
 void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_I2S_Require(void);
+TBool UEZPlatform_Host_Port_B_Detect();
+void UEZPlatform_USBHost_PortB_Require(void);
 
 void UEZPlatform_Require(void);
 void UEZPlatform_Standard_Require(void);

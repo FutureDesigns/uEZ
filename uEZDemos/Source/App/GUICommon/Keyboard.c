@@ -569,7 +569,7 @@ void KeyboardClose(void)
  *---------------------------------------------------------------------------*/
 TUInt16 Keyboard(char* aData, char* message, TUInt16 aNumChars, TUInt8 aShowKeys)
 {
-	TUInt8 returnCode;
+	TUInt8 returnCode = 0;
 	
     G_enteringData = ETrue;
 

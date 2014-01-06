@@ -192,14 +192,21 @@ void TestModeTouchscreenProcedure(
         { 0,    0x3C6A,                     0x4098,                     1 }, // 4
     };
 #elif (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_MICROTIPS_UMSH_8596MD_20T)
-    //TODO : update numbers
             static const T_uezTSReading G_expectedReadings[5] = {
-        { 0,    0x0C04,                     0x204C,                     1 }, // 0
-        { 0,    0x6F2A,                     0x2134,                     1 }, // 1
-        { 0,    0x0C58,                     0x6012,                     1 }, // 2
-        { 0,    0x6F2C,                     0x5DBA,                     1 }, // 3
-        { 0,    0x3C6A,                     0x4098,                     1 }, // 4
+        { 0, 50, 50, 1 },
+        { 0, 760, 50, 1 },
+        { 0, 50, 460, 1 },
+        { 0, 750, 460, 1 },
+        { 0, 480, 240, 1 },
     };
+#elif (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD43480272MF)
+       static const T_uezTSReading G_expectedReadings[5] = {
+       { 0,    0+TP_INSET,                 TP_INSET,                   1 }, // 0
+       { 0,    DISPLAY_WIDTH-TP_INSET,     TP_INSET,                   1 }, // 1
+       { 0,    0+TP_INSET,                 DISPLAY_HEIGHT-TP_INSET,    1 }, // 2
+       { 0,    DISPLAY_WIDTH-TP_INSET,     DISPLAY_HEIGHT-TP_INSET,    1 }, // 3
+       { 0,    DISPLAY_WIDTH/2,            DISPLAY_HEIGHT/2,           1 }, // 4
+       };
 #endif
 
     // The raw X range is 0x560A (left) to 0x2908 (right)
@@ -393,11 +400,11 @@ static void ITestPatternColors(SWIM_WINDOW_T *aWin)
 
     for (y=1; y<32; y++)  {
         for (x=0; x<256; x++, i++)  {
-#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ043T3DG01)
+#if (UEZ_LCD_DEFAULT_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_16_BIT)
             swim_set_pen_color(aWin, (y<<11));
 #elif  (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_INTELTRONIC_LMIX0560NTN53V1)
             swim_set_pen_color(aWin, (y<<10)+((x&128)?0x8000:0));
-#elif (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_TIANMA_TM070RBHG04 || UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SEIKO_70WVW2T)
+#elif (UEZ_LCD_DEFAULT_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_I15_BIT)
             swim_set_pen_color(aWin, (y<<10));
 #else
             swim_set_pen_color(aWin, (y<<11));

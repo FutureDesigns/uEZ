@@ -95,7 +95,7 @@
 
 #if configUSE_TRACE_FACILITY
     #if ((COMPILER_TYPE!=IAR)||(defined(__ICCARM__)))
-        #include <trcHooks.h>
+        #include <trcKernelPort.h>
     #endif
 #endif
 

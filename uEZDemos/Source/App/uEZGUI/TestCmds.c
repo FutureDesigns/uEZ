@@ -59,6 +59,7 @@
 #endif
 #include <uEZLCD.h>
 #include <uEZI2C.h>
+#include <uEZTimeDate.h>
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -82,6 +83,7 @@ int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdEEPROM(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdTemperature(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdUSBPort2(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[]);
@@ -130,6 +132,7 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
 #if LIGHT_SENSOR_ENABLED
         { "LIGHTSENSOR", UEZGUICmdLightSensor },
 #endif
+        { "RTC", UEZGUICmdRTC },
         { "USB1", UEZGUICmdUSBPort1 },
         { "USB2", UEZGUICmdUSBPort2 },
         { "BL", UEZGUICmdBacklight },
@@ -614,6 +617,41 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
     return 0;
 }
 #endif
+
+int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
+{
+    T_uezTimeDate td;
+
+    if (argc == 1) {
+        td.iDate.iMonth = 1;
+        td.iDate.iDay = 1;
+        td.iDate.iYear = 2013;
+        td.iTime.iHour = 8;
+        td.iTime.iMinute = 0;
+        td.iTime.iSecond = 0;
+        // Set the time to 1/1/2013, 8:00:00
+        UEZTimeDateSet(&td);
+        
+        UEZTaskDelay(3000);
+        
+        UEZTimeDateGet(&td);
+        if ((td.iDate.iMonth==1) &&
+                (td.iDate.iDay == 1) &&
+                (td.iDate.iYear == 2013) &&
+                (td.iTime.iHour == 8) &&
+                (td.iTime.iMinute == 0) &&
+                (td.iTime.iSecond > 1)) {
+            FDICmdSendString(aWorkspace, "PASS: OK\n");
+        } else {
+            FDICmdSendString(aWorkspace, "FAIL: Not Incrementing\n");
+        }
+        
+    } else {
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+    }
+    return 0;
+}
+
 int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[])
 {
     T_testData testData;
@@ -645,6 +683,7 @@ int UEZGUICmdUSBPort2(void *aWorkspace, int argc, char *argv[])
 int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
 {
   T_testData testData;
+  T_uezDevice lcd;
   
   if (argc == 1) {
     // Got no parameters
@@ -654,6 +693,11 @@ int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
 #else
     IUEZGUICmdRunTest(aWorkspace, FuncTestBacklightMonitor, &testData);
 #endif    
+  } else if(argc == 2){
+      if(UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE){
+          UEZLCDBacklight(lcd, FDICmdUValue(argv[1]));
+          UEZLCDClose(lcd);
+      }
   } else {
     FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
   }
@@ -679,7 +723,19 @@ int UEZGUICmdLCD(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdTouchscreen(void *aWorkspace, int argc, char *argv[])
 {
-    TestModeSendCmd(TEST_MODE_TOUCHSCREEN);
+    if (argc == 1) {
+        TestModeSendCmd(TEST_MODE_TOUCHSCREEN);
+    } else if (argc == 2) {
+        G_mmTestModeTouchscreenCalibrationBusy = ETrue;
+        TestModeSendCmd(TEST_MODE_TOUCHSCREEN);
+
+        while(G_mmTestModeTouchscreenCalibrationBusy);
+        
+        if (G_mmTestModeTouchscreenCalibrationValid)
+            FDICmdSendString(aWorkspace, "PASS: OK\n");
+        else
+            FDICmdSendString(aWorkspace, "FAIL: Invalid\n");
+    }
     return 0;
 }
 
@@ -730,9 +786,11 @@ int UEZGUICmdSpeaker(void *aWorkspace, int argc, char *argv[])
         freq = FDICmdUValue(argv[1]);
         if (freq) {
             (*p_gpio2)->SetMux(p_gpio2, 1, 1);
+            UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
             UEZToneGeneratorPlayToneContinuous(speaker, TONE_GENERATOR_HZ(freq));
         } else {
             UEZToneGeneratorPlayToneContinuous(speaker, TONE_GENERATOR_OFF);
+            UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
             (*p_gpio2)->SetMux(p_gpio2, 1, 0);
         }
         FDICmdPrintf(aWorkspace, "PASS: %d Hz\n", freq);

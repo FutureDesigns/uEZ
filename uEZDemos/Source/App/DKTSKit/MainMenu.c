@@ -269,7 +269,7 @@ void MainMenu(void)
 #if (!FAST_STARTUP)
             // Clear the screen
             TitleScreen();
-
+#if 1
             PlayAudio(523, 100);
             PlayAudio(659, 100);
             PlayAudio(783, 100);
@@ -277,7 +277,7 @@ void MainMenu(void)
             PlayAudio(783, 100);
             PlayAudio(659, 100);
             PlayAudio(523, 100);				
-
+#endif
 
 #if DKTS_BUTTON_SLIDE_SHOW_DEMO // show emwin on button 1, auto slideshow on buttons 2-4
 #include <uEZButton.h>

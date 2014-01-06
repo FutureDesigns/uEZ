@@ -209,7 +209,7 @@ static T_uezError TS_DirectDrive_ReadTouch(
 	TS_GPIO_OUTPUT_MODE(iYDrive);
 
     //ad_dtc_acquire();
-    UEZTaskDelay(1);
+    UEZBSPDelayMS(1);
 	
 	G_TS_ADCRequest.iTrigger = ADC_TRIGGER_NOW;
 
@@ -266,7 +266,7 @@ static T_uezError TS_DirectDrive_ReadY(
 	TS_GPIO_SET(iYDrive);
 
     // Wait for inputs to settle
-    UEZTaskDelay(1);
+    UEZBSPDelayMS(1);
 
     // Read Y axis inputs
 	G_TS_ADCRequest.iADCChannel = p->iConfig.iXL.iADCChannel;
@@ -277,14 +277,14 @@ static T_uezError TS_DirectDrive_ReadY(
 	G_TS_ADCRequest.iCapturedData = &xr;
 	UEZADCRequestSingle(p->iADC_XR, &G_TS_ADCRequest);
 	
-	UEZTaskDelay(1);
+	UEZBSPDelayMS(1);
 	
 	*aValue = (TInt16)xl + (TInt16)xr;
 	
     // de-assert Y axis drivers
     TS_GPIO_CLEAR(iYDrive);
       
-    UEZTaskDelay(1);
+    UEZBSPDelayMS(1);
 
     UEZSemaphoreRelease(p->iSem);
     return UEZ_ERROR_NONE;
@@ -312,7 +312,7 @@ static T_uezError TS_DirectDrive_ReadX(
     TS_GPIO_SET(iXDrive);
 
     // Wait for inputs to settle
-    UEZTaskDelay(1);
+    UEZBSPDelayMS(1);
 
     // Read X axis input
 	G_TS_ADCRequest.iADCChannel = p->iConfig.iYU.iADCChannel;
@@ -323,7 +323,7 @@ static T_uezError TS_DirectDrive_ReadX(
 	G_TS_ADCRequest.iCapturedData = &yd;
 	UEZADCRequestSingle(p->iADC_YD, &G_TS_ADCRequest);
 	
-	UEZTaskDelay(1);
+	UEZBSPDelayMS(1);
 	
 	*aValue = (TInt16)yu + (TInt16)yd;
 

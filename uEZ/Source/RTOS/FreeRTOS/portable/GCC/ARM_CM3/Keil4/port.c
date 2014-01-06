@@ -253,7 +253,7 @@ unsigned long ulDummy;
 
 	ulDummy = portSET_INTERRUPT_MASK_FROM_ISR();
 	{
-		vTaskIncrementTick();
+		xTaskIncrementTick();
 	}
 	portCLEAR_INTERRUPT_MASK_FROM_ISR( ulDummy );
 }

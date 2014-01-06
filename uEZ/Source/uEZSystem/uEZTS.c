@@ -239,7 +239,7 @@ static void IUEZTSInitialize(void)
     UEZTaskCreate(
         (T_uezTaskFunction)IUEZTSMonitorTouchscreensTask,
         "TS_Mon",
-        UEZ_TASK_STACK_BYTES( 512 ), // Might need to be 1024 for uEZGUI
+        UEZ_TASK_STACK_BYTES( 1024 ),
         0,
         UEZ_PRIORITY_HIGH,
         &G_tsMonitorTask);

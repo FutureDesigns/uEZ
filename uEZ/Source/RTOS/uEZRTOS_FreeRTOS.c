@@ -557,7 +557,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
             } else {
                 vQueueAddToRegistry(Semaphore, '\0');
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
-                vTraceSetQueueName(Semaphore, '\0');
+                vTraceSetSemaphoreName(Semaphore, '\0');
 #endif
             }
         } else {
@@ -572,7 +572,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
                 } else {
                     sprintf(name, "%s", pcSemaphoreName);
                 }
-                vTraceSetQueueName(Semaphore, (const char*)name);
+                vTraceSetSemaphoreName(Semaphore, (const char*)name);
 #endif
             }
         }

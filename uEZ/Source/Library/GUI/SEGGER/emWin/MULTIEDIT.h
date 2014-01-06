@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -39,7 +39,7 @@ Purpose     : MULTIEDIT include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 #define MULTIEDIT_CF_READONLY        (1 << 0)
@@ -76,16 +76,10 @@ typedef WM_HMEM MULTIEDIT_HANDLE;
 *
 **********************************************************************
 */
-
-MULTIEDIT_HANDLE MULTIEDIT_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags,
-                                          int Id, int BufferSize, const char * pText);
-MULTIEDIT_HANDLE MULTIEDIT_Create        (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                          int Id, int Flags, int ExFlags, const char * pText, 
-                                          int BufferSize);
-MULTIEDIT_HANDLE MULTIEDIT_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, 
-                                          WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
-MULTIEDIT_HANDLE MULTIEDIT_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags,
-                                          int Id, int BufferSize, const char * pText, int NumExtraBytes);
+MULTIEDIT_HANDLE MULTIEDIT_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags, int ExFlags, const char * pText, int MaxLen);
+MULTIEDIT_HANDLE MULTIEDIT_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int BufferSize, const char * pText);
+MULTIEDIT_HANDLE MULTIEDIT_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+MULTIEDIT_HANDLE MULTIEDIT_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int BufferSize, const char * pText, int NumExtraBytes);
 
 /*********************************************************************
 *
@@ -120,6 +114,7 @@ void MULTIEDIT_SetCursorCharPos (MULTIEDIT_HANDLE hObj, int x, int y);       /* 
 void MULTIEDIT_SetCursorPixelPos(MULTIEDIT_HANDLE hObj, int x, int y);       /* Not yet implemented */
 void MULTIEDIT_SetCursorOffset  (MULTIEDIT_HANDLE hObj, int Offset);
 void MULTIEDIT_SetHBorder       (MULTIEDIT_HANDLE hObj, unsigned HBorder);
+void MULTIEDIT_SetFocussable    (MULTIEDIT_HANDLE hObj, int State);
 void MULTIEDIT_SetFont          (MULTIEDIT_HANDLE hObj, const GUI_FONT GUI_UNI_PTR * pFont);
 void MULTIEDIT_SetInsertMode    (MULTIEDIT_HANDLE hObj, int OnOff);
 void MULTIEDIT_SetBufferSize    (MULTIEDIT_HANDLE hObj, int BufferSize);
@@ -148,6 +143,7 @@ void MULTIEDIT_SetWrapWord      (MULTIEDIT_HANDLE hObj);
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
+#endif  // GUI_WINSUPPORT
+#endif  // MULTIEDIT_H
 
-#endif   /* MULTIEDIT_H */
+/*************************** End of file ****************************/

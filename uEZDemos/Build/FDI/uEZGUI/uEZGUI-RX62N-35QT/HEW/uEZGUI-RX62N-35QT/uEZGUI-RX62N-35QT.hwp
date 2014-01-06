@@ -130,6 +130,8 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppHTTPServer.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppMenu.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppMenu.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Audio.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Audio.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AudioPlayer.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AudioPlayerMode.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\BrightnessControlMode.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
@@ -147,8 +149,6 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImagesMinimal.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\uEZDemoCommon.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\AppDemo.h" "User" "Source|App|Demos|uEZGUI-RX62N-35QT" 2 
-"R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\Audio.c" "User" "Source|App|Demos|uEZGUI-RX62N-35QT" 2 
-"R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\Audio.h" "User" "Source|App|Demos|uEZGUI-RX62N-35QT" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\Config_App.h" "User" "Source|App|Demos|uEZGUI-RX62N-35QT" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTest.c" "User" "Source|App|Demos|uEZGUI-RX62N-35QT" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTestLoop.c" "User" "Source|App|Demos|uEZGUI-RX62N-35QT" 2 
@@ -177,6 +177,8 @@
 "R:\FDI\uEZ\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "User" "Source|Platform|FDI|uEZGUI_RX62N_35QT" 2 
 "R:\FDI\uEZ\Source\RTOS\FreeRTOS\portable\MemMang\heap_2.c" "User" "Source|Platform|FDI|uEZGUI_RX62N_35QT" 2 
 [FOLDER]
+"C header file" "C header file" 
+"C source file" "C source file" 
 "Library file" "Library file" 
 "Source" "Source" 
 "Source|App" "" 
@@ -207,7 +209,7 @@
 [GENERAL_DATA_SESSION_JLink]
 [GENERAL_DATA_SESSION_nodebug]
 [OPTIONS_Debug_Renesas OptLinker]
-"Single Shot" "053f9fe90a17ec10" 5 
+"Single Shot" "0fe819a7c20fec10" 5 
 [OPTIONS_Debug_Renesas RX Assembler]
 "Assembly source file" "04137e7b9206dc10" 4 
 "Linkage symbol file" "04137e7b9206dc10" 4 
@@ -224,6 +226,7 @@
 "R:\FDI\uEZDemos\Source\App\SEGGER\emWin\emWin.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppHTTPServer.c" "0bf60ae53586ec10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppMenu.c" "0e38d24f1306dc10" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Audio.c" "000138a7c20fec10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AudioPlayerMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\BrightnessControlMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Calibration.c" "0adece3b3306dc10" 2 
@@ -233,7 +236,6 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\SingleSlideshowMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.c" "066e58f74306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImagesMinimal.c" "0e38d24f1306dc10" 2 
-"R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\Audio.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTest.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTestLoop.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\MainMenu.c" "0e38d24f1306dc10" 2 
@@ -250,7 +252,7 @@
 [OPTIONS_Debug_Renesas RX C/C++ Library Generator]
 "Single Shot" "0c96c1e69b68dc10" 1 
 [OPTIONS_Debug_Renesas RX Configurator]
-"Single Shot" "08c1dde90a17ec10" 6 
+"Single Shot" "000138a7c20fec10" 6 
 [OPTIONS_Debug]
 "" 0 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 6 
@@ -416,7 +418,7 @@
 "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT\debug\yourappmode.obj" 
 [GENERAL_DATA_CONFIGURATION_Debug]
 [OPTIONS_Release_Renesas OptLinker]
-"Single Shot" "053f9fe90a17ec10" 6 
+"Single Shot" "0fe819a7c20fec10" 6 
 [OPTIONS_Release_Renesas RX Assembler]
 "Assembly source file" "04137e7b9206dc10" 5 
 "Linkage symbol file" "04137e7b9206dc10" 5 
@@ -433,6 +435,7 @@
 "R:\FDI\uEZDemos\Source\App\SEGGER\emWin\emWin.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppHTTPServer.c" "0bf60ae53586ec10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AppMenu.c" "0e38d24f1306dc10" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Audio.c" "000138a7c20fec10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AudioPlayerMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\BrightnessControlMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Calibration.c" "0adece3b3306dc10" 2 
@@ -442,7 +445,6 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\SingleSlideshowMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.c" "066e58f74306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImagesMinimal.c" "0e38d24f1306dc10" 2 
-"R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\Audio.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTest.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTestLoop.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\MainMenu.c" "0e38d24f1306dc10" 2 
@@ -459,7 +461,7 @@
 [OPTIONS_Release_Renesas RX C/C++ Library Generator]
 "Single Shot" "0fcf3e7b9206dc10" 1 
 [OPTIONS_Release_Renesas RX Configurator]
-"Single Shot" "08c1dde90a17ec10" 7 
+"Single Shot" "000138a7c20fec10" 7 
 [OPTIONS_Release]
 "" 0 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 7 

@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -35,12 +35,12 @@ Purpose     : SLIDER include
 
 #include "WM.h"
 #include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
-#include "WIDGET.h"      /* Req. for Create indirect data structure */
+#include "WIDGET.h"
 
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /************************************************************
@@ -101,12 +101,10 @@ typedef struct {
 *
 **********************************************************************
 */
-SLIDER_Handle SLIDER_Create        (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int Id, int WinFlags, int SpecialFlags);
+SLIDER_Handle SLIDER_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int WinFlags, int SpecialFlags);
+SLIDER_Handle SLIDER_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+SLIDER_Handle SLIDER_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 SLIDER_Handle SLIDER_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
-SLIDER_Handle SLIDER_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                    int WinFlags, int ExFlags, int Id);
-SLIDER_Handle SLIDER_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                    int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 
 /*********************************************************************
 *
@@ -183,5 +181,7 @@ int SLIDER_GetValue(SLIDER_Handle hObj);
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
-#endif   /* SLIDER_H */
+#endif  // GUI_WINSUPPORT
+#endif  // SLIDER_H
+
+/*************************** End of file ****************************/

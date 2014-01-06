@@ -34,10 +34,6 @@
  *
  * File systems can be mounted dynamically in the file hierarchy.
  *
- * NOTE: In version uEZ 0.04, currently only one file system can be mounted and
- * directories are not used. The mount path is currently not used. All files
- * should be specified without directory paths.
-
  * @par Example code:
  * Example to create a file and write to it.
  * @par

@@ -115,16 +115,23 @@ static U32 _TouchTask(T_uezTask aMyTask, void *aParameters) {
 */
 void emWin(const T_choice *aChoice) {
 
-
   T_uezDevice    hLCD;
   U32            FrameBufferSize;
   T_uezTask      hTouchTask;
 
-	(void)aChoice;
+  (void)aChoice;
   FrameBufferSize = UEZ_LCD_DISPLAY_WIDTH * UEZ_LCD_DISPLAY_HEIGHT * GUI_NUM_VIRTUAL_DISPLAYS * GUI_PIXEL_WIDTH;
-    GUI_pMem    = (U32*)(GUI_VRAM_BASE_ADDR + FrameBufferSize);
+  GUI_pMem    = (U32*)(GUI_VRAM_BASE_ADDR + FrameBufferSize);
   GUI_MemSize =       (GUI_VRAM_SIZE      - FrameBufferSize);
-  memset((void*)GUI_VRAM_BASE_ADDR, 0, GUI_MemSize);//FrameBufferSize);
+
+#if EMWIN_LOAD_ONCE
+  // Clear only the frame buffer
+  memset((void*)GUI_VRAM_BASE_ADDR, 0, FrameBufferSize);
+#else
+  // Clear all emWin memory space
+  memset((void*)GUI_VRAM_BASE_ADDR, 0, GUI_VRAM_SIZE);
+#endif
+
   //
   // Check that frame buffer memory fits into VRAM memory and we have empty memory left
   //

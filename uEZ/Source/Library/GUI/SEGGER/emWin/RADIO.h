@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : RADIO include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /*********************************************************************
@@ -87,7 +87,7 @@ typedef WM_HMEM RADIO_Handle;
 
 typedef struct {
   GUI_COLOR aColorButton[4];
-  int ButtonSize;
+  int       ButtonSize;
 } RADIO_SKINFLEX_PROPS;
 
 /*********************************************************************
@@ -97,12 +97,10 @@ typedef struct {
 **********************************************************************
 */
 
-RADIO_Handle RADIO_Create        (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int Id, int Flags, unsigned Para);
-RADIO_Handle RADIO_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK* cb);
-RADIO_Handle RADIO_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                  int WinFlags, int ExFlags, int Id, int NumItems, int Spacing);
-RADIO_Handle RADIO_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent,
-                                  int WinFlags, int ExFlags, int Id, int NumItems, int Spacing, int NumExtraBytes);
+RADIO_Handle RADIO_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags, unsigned Para);
+RADIO_Handle RADIO_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumItems, int Spacing);
+RADIO_Handle RADIO_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumItems, int Spacing, int NumExtraBytes);
+RADIO_Handle RADIO_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -180,7 +178,7 @@ int RADIO_GetValue(RADIO_Handle hObj);
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
-#endif   /* RADIO_H */
+#endif  // GUI_WINSUPPORT
+#endif  // RADIO_H
 
-/************************* end of file ******************************/
+/*************************** End of file ****************************/

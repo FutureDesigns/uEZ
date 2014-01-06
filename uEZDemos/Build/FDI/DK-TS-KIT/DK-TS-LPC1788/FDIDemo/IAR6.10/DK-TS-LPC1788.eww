@@ -4,7 +4,23 @@
   <project>
     <path>$WS_DIR$\DK-TS-LPC1788.ewp</path>
   </project>
-  <batchBuild/>
+  <batchBuild>
+    <batchDefinition>
+      <name>all</name>
+      <member>
+        <project>DK-TS-LPC1788</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>DK-TS-LPC1788</project>
+        <configuration>Debug-Trace</configuration>
+      </member>
+      <member>
+        <project>DK-TS-LPC1788</project>
+        <configuration>Release</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
 </workspace>
 
 

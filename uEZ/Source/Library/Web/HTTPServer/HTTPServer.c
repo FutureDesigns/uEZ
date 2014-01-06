@@ -37,7 +37,9 @@
 #include <stdlib.h>
 #include <uEZ.h>
 #include <uEZFile.h>
+#if ( RTOS == FreeRTOS)
 #include <Source/RTOS/FreeRTOS/include/task.h>
+#endif
 #include "HTTPServer.h"
 
 #include <uEZNetwork.h>

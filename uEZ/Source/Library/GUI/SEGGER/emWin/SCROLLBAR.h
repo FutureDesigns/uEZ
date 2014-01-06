@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -37,11 +37,11 @@ Purpose     : SCROLLBAR include
 #include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
 #include "WIDGET.h"
 
-#if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
-#endif
-
 #if GUI_WINSUPPORT
+
+#if defined(__cplusplus)
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
+#endif
 
 /*********************************************************************
 *
@@ -101,13 +101,11 @@ typedef struct {
 *
 **********************************************************************
 */
-SCROLLBAR_Handle SCROLLBAR_Create        (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int Id, int WinFlags, int SpecialFlags);
-SCROLLBAR_Handle SCROLLBAR_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK* cb);
+SCROLLBAR_Handle SCROLLBAR_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int WinFlags, int SpecialFlags);
 SCROLLBAR_Handle SCROLLBAR_CreateAttached(WM_HWIN hParent, int SpecialFlags);
-SCROLLBAR_Handle SCROLLBAR_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                          int WinFlags, int ExFlags, int Id);
-SCROLLBAR_Handle SCROLLBAR_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                          int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+SCROLLBAR_Handle SCROLLBAR_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+SCROLLBAR_Handle SCROLLBAR_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+SCROLLBAR_Handle SCROLLBAR_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -187,10 +185,11 @@ int SCROLLBAR_GetValue   (SCROLLBAR_Handle hObj);
 #define SCROLLBAR_BKCOLOR1_DEFAULT SCROLLBAR_COLOR_SHAFT_DEFAULT
 #define SCROLLBAR_COLOR0_DEFAULT   SCROLLBAR_COLOR_THUMB_DEFAULT
 
-#endif   /* SCROLLBAR_H */
-
 #if defined(__cplusplus)
   }
 #endif
 
-#endif   /* SCROLLBAR_H */
+#endif  // GUI_WINSUPPORT
+#endif  // SCROLLBAR_H
+
+/*************************** End of file ****************************/

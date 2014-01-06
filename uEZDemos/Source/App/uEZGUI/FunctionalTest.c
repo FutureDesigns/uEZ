@@ -71,7 +71,6 @@
 #define DO_FULL_NOR_FLASH_TEST    0
 #define DO_EXTENSIVE_SDRAM_TEST   0
 
-#if UEZ_ENABLE_LCD
 void PlayWithBacklight(void);
 
 /*---------------------------------------------------------------------------*
@@ -1146,7 +1145,7 @@ static void ITestPatternColors(T_testData *aData)
 
     for (y=1; y<32; y++)  {
         for (x=0; x<256; x++, i++)  {
-#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ043T3DG01 || UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ043T1DG28)
+#if 0//(UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ043T3DG01 || UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ043T1DG28)
             swim_set_pen_color(&aData->iWin, (y<<11));
 #elif  (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_INTELTRONIC_LMIX0560NTN53V1)
             swim_set_pen_color(&aData->iWin, (y<<10)+((x&128)?0x8000:0));
@@ -1545,7 +1544,7 @@ typedef struct {
     TUInt32 iMapPin;
     const char *iText;
 } T_gpioMapping;
-
+#if 1
 static const T_gpioMapping G_gpioMapping[] = {
     #define FCTPIN_P1_0            (1<<0)
     { 1,    0, "P1[0]" },
@@ -1693,9 +1692,128 @@ const T_gpioTestEntry G_gpioTestArray[] = {
     { FCTPIN_P0_0,          FCTPIN_P1_12,               "P0[0] -> P1[12]"},
     //{ FCTPIN_P0_13,         FCTPIN_P5_2,                "P0[13] -> P5[2]"},
     //{ FCTPIN_P0_12,         FCTPIN_P5_3,                "P0[12] -> P5[3]"},
-    //{ FCTPIN_P0_25,         FCTPIN_P5_4,                "P0[25] -> P5[4]"},
+    //{ FCTPIN_P0_25,         FCTPIN_P5_4,                "P0[25] -> P5[4]"}
 };
 
+#else
+static const T_gpioMapping G_gpioMapping[] = {
+    #define FCTPIN_P1_4            (1<<0)
+    { 1,    4, "P1[4]" },
+    #define FCTPIN_P1_8            (1<<1)
+    { 1,    8, "P1[8]" },
+    #define FCTPIN_P1_9            (1<<2)
+    { 1,    9, "P1[9]" },
+    #define FCTPIN_P1_10           (1<<3)
+    { 1,   10, "P1[10]" },
+    #define FCTPIN_P1_14           (1<<4)
+    { 1,   14, "P1[14]" },
+    #define FCTPIN_P1_15           (1<<5)
+    { 1,   15, "P1[15]" },
+    #define FCTPIN_P1_16           (1<<6)
+    { 1,   16, "P1[16]" },
+    #define FCTPIN_P1_17           (1<<7)
+    { 1,   17, "P1[17]" },
+    #define FCTPIN_P1_31           (1<<8)
+    { 1,   31, "P1[31]" },
+    #define FCTPIN_P0_26           (1<<9)
+    { 0,   26, "P0[26]" },
+    #define FCTPIN_P0_4            (1<<10)
+    { 0,    4, "P0[4]" },
+    #define FCTPIN_P0_5            (1<<11)
+    { 0,    5, "P0[5]" },
+    #define FCTPIN_P0_6            (1<<12)
+    { 0,    6, "P0[6]" },
+    #define FCTPIN_P0_7            (1<<13)
+    { 0,    7, "P0[7]" },
+    #define FCTPIN_P0_8            (1<<14)
+    { 0,    8, "P0[8]" },
+    #define FCTPIN_P0_9            (1<<15)
+    { 0,    9, "P0[9]" },
+   #define FCTPIN_P1_19           (1<<16)
+    { 1,   19, "P1[19]" },
+    #define FCTPIN_P4_27           (1<<17)
+    { 4,   27, "P4[27]" },
+    #define FCTPIN_P4_26           (1<<18)
+    { 4,   26, "P4[26]" },
+    #define FCTPIN_P0_29           (1<<19)
+    { 0,   29, "P0[29]" },
+    #define FCTPIN_P0_30           (1<<20)
+    { 0,   30, "P0[30]" },
+    #define FCTPIN_P4_22           (1<<21)
+    { 4,   22, "P4[22]" },
+    #define FCTPIN_P4_23           (1<<22)
+    { 4,   23, "P4[23]" },
+    #define FCTPIN_P4_20           (1<<23)
+    { 4,   20, "P4[20]" },
+    #define FCTPIN_P4_21           (1<<24)
+    { 4,   21, "P4[21]" },
+    #define FCTPIN_P5_4             (((TUInt64)1)<<25)
+    { 5,    4, "P5[4]" },
+    #define FCTPIN_P5_3             (((TUInt64)1)<<26)
+    { 5,    3, "P5[3]" },
+    #define FCTPIN_P5_2             (((TUInt64)1)<<27)
+    { 5,    2, "P5[2]" },
+    #define FCTPIN_P0_13            (((TUInt64)1)<<28)
+    { 0,   13, "P0[13]" },
+    #define FCTPIN_P0_12            (((TUInt64)1)<<29)
+    { 0,   12, "P0[12]" },
+    #define FCTPIN_P0_25            (((TUInt64)1)<<30)
+    { 0,   25, "P0[25]" },
+};
+
+const T_gpioTestEntry G_gpioTestArray[] = {
+//    { FCTPIN_P0_2,          FCTPIN_P0_11,               "P0[2] -> P0[11]" },
+//    { FCTPIN_P0_3,          FCTPIN_P0_10,               "P0[3] -> P0[10]" },
+//    { FCTPIN_P0_10,         FCTPIN_P1_16|FCTPIN_P4_26,  "P0[10] -> P1[16]/P4[26]" },
+//    { FCTPIN_P1_0,          FCTPIN_P0_20,               "P1[0] -> P0[20]" },
+//    { FCTPIN_P1_1,          FCTPIN_P0_19,               "P1[1] -> P0[19]" },
+//    { FCTPIN_P1_4,          FCTPIN_P4_21,               "P1[4] -> P4[21]" },
+    { FCTPIN_P1_8,          FCTPIN_P4_20,               "P1[8] -> P4[20]" },
+    { FCTPIN_P1_9,          FCTPIN_P4_23,               "P1[9] -> P4[23]" },
+    { FCTPIN_P1_10,         FCTPIN_P4_22,               "P1[10] -> P4[22]" },
+//    { FCTPIN_P1_14,         FCTPIN_P0_30,               "P1[14] -> P0[30]" },
+//    { FCTPIN_P1_15,         FCTPIN_P0_29,               "P1[15] -> P0[29]" },
+    { FCTPIN_P1_16,         FCTPIN_P4_26,               "P1[16] -> P4[26]" },
+    { FCTPIN_P1_17,         FCTPIN_P4_27,               "P1[17] -> P4[27]" },
+    { FCTPIN_P1_31,         FCTPIN_P1_19,               "P1[31] -> P1[19]" },  // Sharp DG28
+//    { FCTPIN_P0_26,         FCTPIN_P0_6|FCTPIN_P0_9,    "P0[26] -> P0[6]/P0[9]" },
+    { FCTPIN_P0_4,          FCTPIN_P0_8,                "P0[4] -> P0[8]" },
+//    { FCTPIN_P0_5,          FCTPIN_P0_7,                "P0[5] -> P0[7]" },
+//    { FCTPIN_P0_6,          FCTPIN_P0_9|FCTPIN_P0_26,   "P0[6] -> P0[9]/P0[26]" },
+    { FCTPIN_P0_7,          FCTPIN_P0_5,                "P0[7] -> P0[5]" },
+    { FCTPIN_P0_8,          FCTPIN_P0_4,                "P0[8] -> P0[4]" },
+//    { FCTPIN_P0_9,          FCTPIN_P0_6|FCTPIN_P0_26,   "P0[6] -> P0[26]/P0[9]" },
+    { FCTPIN_P1_19,         FCTPIN_P1_31,               "P1[19] -> P1[31]" },
+    { FCTPIN_P4_27,         FCTPIN_P1_17,               "P4[27] -> P1[17]" },
+    { FCTPIN_P4_26,         FCTPIN_P1_16,               "P4[26] -> P1[16]" },
+//    { FCTPIN_P0_29,         FCTPIN_P1_15,               "P0[29] -> P1[15]" },
+//    { FCTPIN_P0_30,         FCTPIN_P1_14,               "P0[30] -> P1[14]" },
+    { FCTPIN_P4_22,         FCTPIN_P1_10,               "P4[22] -> P1[10]" },
+    { FCTPIN_P4_23,         FCTPIN_P1_9,                "P4[23] -> P1[9]" },
+    { FCTPIN_P4_20,         FCTPIN_P1_8,                "P4[20] -> P1[8]" },
+//    { FCTPIN_P4_21,         FCTPIN_P1_4,                "P4[21] -> P1[4]" },
+//    { FCTPIN_P0_19,         FCTPIN_P1_1,                "P0[19] -> P1[1]" },
+//    { FCTPIN_P0_20,         FCTPIN_P1_0,                "P0[20] -> P1[0]" },
+//    { FCTPIN_P0_10,         FCTPIN_P0_3,                "P0[10] -> P0[3]" },
+//    { FCTPIN_P0_11,         FCTPIN_P0_2,                "P0[11] -> P0[2]" },
+
+     //Secondary Connector:
+//    { FCTPIN_P5_4,          FCTPIN_P0_25,               "P5[4] -> P0[25]"},
+//    { FCTPIN_P5_3,          FCTPIN_P0_12,               "P5[3] -> P0[12]"},
+    { FCTPIN_P5_2,          FCTPIN_P0_13,               "P5[2] -> P0[13]"},
+//    { FCTPIN_P1_12,         FCTPIN_P0_0,                "P1[12] -> P0[0]"},
+//    { FCTPIN_P1_11,         FCTPIN_P0_1,                "P1[11] -> P0[1]"},
+//    { FCTPIN_P1_7,          FCTPIN_P1_3,                "P1[7] -> P1[3]"},
+//    { FCTPIN_P1_6,          FCTPIN_P1_5,                "P1[6] -> P1[5]"},
+//    { FCTPIN_P1_5,          FCTPIN_P1_6,                "P1[5] -> P1[6]"},
+//    { FCTPIN_P1_3,          FCTPIN_P1_7,                "P1[3] -> P1[7]"},
+//    { FCTPIN_P0_1,          FCTPIN_P1_11,               "P0[1] -> P1[11]"},
+//    { FCTPIN_P0_0,          FCTPIN_P1_12,               "P0[0] -> P1[12]"},
+    { FCTPIN_P0_13,         FCTPIN_P5_2,                "P0[13] -> P5[2]"},
+//    { FCTPIN_P0_12,         FCTPIN_P5_3,                "P0[12] -> P5[3]"},
+//    { FCTPIN_P0_25,         FCTPIN_P5_4,                "P0[25] -> P5[4]"},
+};
+#endif
 HAL_GPIOPort **PortNumToPort(TUInt8 aPort)
 {
     HAL_GPIOPort **p=0;
@@ -2700,8 +2818,6 @@ void FunctionalTestScreen(T_testData *aData)
 void FuncTestPageHit(void)
 {
 }
-
-#endif
 
 /*-------------------------------------------------------------------------*
  * File:  FunctionalTest.c

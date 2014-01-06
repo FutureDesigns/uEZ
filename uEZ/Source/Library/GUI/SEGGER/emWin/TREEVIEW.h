@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : TREEVIEW include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /*********************************************************************
@@ -139,8 +139,8 @@ typedef struct {
 *
 **********************************************************************
 */
-TREEVIEW_Handle      TREEVIEW_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
-TREEVIEW_Handle      TREEVIEW_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+TREEVIEW_Handle      TREEVIEW_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+TREEVIEW_Handle      TREEVIEW_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 TREEVIEW_Handle      TREEVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
@@ -166,6 +166,7 @@ int                  TREEVIEW_GetUserData    (TREEVIEW_Handle hObj, void * pDest
 void                 TREEVIEW_IncSel         (TREEVIEW_Handle hObj);
 TREEVIEW_ITEM_Handle TREEVIEW_InsertItem     (TREEVIEW_Handle hObj, int IsNode, TREEVIEW_ITEM_Handle hItemPrev, int Position, const char * s);
 int                  TREEVIEW_OwnerDraw      (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+void                 TREEVIEW_ScrollToSel    (TREEVIEW_Handle hObj);
 void                 TREEVIEW_SetAutoScrollH (TREEVIEW_Handle hObj, int State);
 void                 TREEVIEW_SetAutoScrollV (TREEVIEW_Handle hObj, int State);
 void                 TREEVIEW_SetBitmapOffset(TREEVIEW_Handle hObj, int Index, int xOff, int yOff);
@@ -222,7 +223,7 @@ void                         TREEVIEW_SetDefaultTextColor(int Index, GUI_COLOR C
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
-#endif   /* TREEVIEW_H */
+#endif  // GUI_WINSUPPORT
+#endif  // TREEVIEW_H
 
 /*************************** End of file ****************************/

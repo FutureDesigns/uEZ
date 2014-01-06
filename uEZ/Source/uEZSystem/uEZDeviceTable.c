@@ -55,6 +55,7 @@
  * @endcode
  */
 #include <string.h>
+#include <stdio.h>
 #include <Config.h>
 #include <uEZ.h>
 #include <Source/uEZSystem/uEZHandles.h>
@@ -82,7 +83,7 @@ static TUInt32 G_deviceWorkspaceAllocated=0;
  * @par Example Code:
  * @code
  *  #include <uEZ.h>
- *  #include <uEZDevice.h>
+ *  #include <uEZDeviceTable.h>
  *  #include <Generic_SPI.h>
  *
  *   T_uezDeviceWorkspace *p_ssp0;
@@ -149,6 +150,47 @@ T_uezError UEZDeviceTableRegister(
 
     return UEZ_ERROR_NONE;
 }
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZDeviceTableIsRegistered
+ *---------------------------------------------------------------------------*/
+/**
+ *  Returns if the given device name is registered in the Device Table.
+ *
+ *  @param [in]    *aName 			Pointer to device name to find.
+ *
+ *  @return        T_uezError   	Error code
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZDeviceTable.h>
+ *
+ *   if (UEZDeviceTableIsRegistered("SPI0") == ETrue) {
+ *       // device is registered
+ *   }
+ * @endcode
+ */
+/*---------------------------------------------------------------------------*/
+TBool UEZDeviceTableIsRegistered(const char * const aName)
+{
+    T_uezError error;
+    TUInt32 index = UEZ_HANDLE_FIND_START;
+    char *handleName;
+    T_uezDevice device;
+
+    // Search until we hit the end
+    do {
+        error = uEZHandleFindOfType(UEZ_HANDLE_DEVICE, &device, &index);
+        if (error == UEZ_ERROR_NONE)  {
+            // We found a match of type.
+            // Does the name match?
+            uEZHandleGet(device, 0, 0, 0, (TUInt32 *)&handleName);
+            if (strcmp(handleName, aName) == 0)
+                return ETrue;
+        }
+    } while (error == UEZ_ERROR_NONE);
+
+    return EFalse;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZDeviceTableGetWorkspace
@@ -165,12 +207,17 @@ T_uezError UEZDeviceTableRegister(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  #include <uEZDevice.h>
+ *  #include <uEZSPI.h>
+ *  #include <uEZDeviceTable.h>
  *
- *   T_uezDevice SPI;
- *   if (UEZDeviceTableFind("SPI0", &SPI) == UEZ_ERROR_NONE) {
- *       // found device handle and stored in SPI
- *   }
+ *  T_uezDevice flash;
+ *  DEVICE_Flash **p_flash;
+ *
+ *  UEZDeviceTableFind("Flash0", &flash);
+ *  if (UEZDeviceTableGetWorkspace(flash, (T_uezDeviceWorkspace **)&p_flash)
+ *      = UEZ_ERROR_NONE) {
+ *      // found workspace and can be accessed by p_flash
+ *  }
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
@@ -202,7 +249,7 @@ T_uezError UEZDeviceTableGetWorkspace(
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  #include <uEZDevice.h>
+ *  #include <uEZDeviceTable.h>
  *
  *   T_uezDevice SPI;
  *   if (UEZDeviceTableFind("SPI0", &SPI) == UEZ_ERROR_NONE) {
@@ -216,6 +263,9 @@ T_uezError UEZDeviceTableFind(const char * const aName, T_uezDevice *aDevice)
     T_uezError error;
     TUInt32 index = UEZ_HANDLE_FIND_START;
     char *handleName;
+#ifndef NDEBUG
+    static char errorString[50];
+#endif
 
     // Search until we hit the end
     *aDevice = UEZ_NULL_HANDLE;
@@ -231,7 +281,8 @@ T_uezError UEZDeviceTableFind(const char * const aName, T_uezDevice *aDevice)
     } while (error == UEZ_ERROR_NONE);
 
 #ifndef NDEBUG
-    UEZFailureMsg("Device not found!");
+    sprintf(errorString, "%s device not found!", aName);
+    UEZFailureMsg(errorString);
 #endif
 
     return UEZ_ERROR_NOT_FOUND;

@@ -112,6 +112,25 @@ void BouncingLogoSS_Update() {
     SUISetDrawWindow(&lastWin);
     UEZTaskSchedulerResume();
 }
+// fill screen with black to turn picture off.
+void BouncingLogoSS_Sleep() {
+    T_uezDevice lcd;
+    SWIM_WINDOW_T lastWin;
+    UEZTaskSchedulerSuspend();
+    
+    if (UEZLCDOpen("LCD", &lcd) != UEZ_ERROR_NONE) {
+        UEZFailureMsg("AppScreensaverStart Failed to open lcd device 'LCD'");
+    }
+    
+    UEZLCDShowFrame(lcd, 2);
+    lastWin = *SUIGetDrawWindow();
+    SUISetDrawWindow(&G_ssWin);
+   
+    SUIFillRect((T_pixelColor *)FRAME(2), 0,0,G_displayWidth,G_displayHeight, RGB(0, 0, 0));
+        
+    SUISetDrawWindow(&lastWin);
+    UEZTaskSchedulerResume();
+}
 
 void BouncingLogoSS_End() {
     T_uezDevice lcd;

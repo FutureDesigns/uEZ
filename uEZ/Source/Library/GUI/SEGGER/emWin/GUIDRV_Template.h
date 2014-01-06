@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -33,10 +33,6 @@ Purpose     : Interface definition for GUIDRV_Template driver
 #ifndef GUIDRV_TEMPLATE_H
 #define GUIDRV_TEMPLATE_H
 
-#if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
-#endif
-
 /*********************************************************************
 *
 *       Display drivers
@@ -59,10 +55,6 @@ extern const GUI_DEVICE_API GUIDRV_Template_API;
 
   #define GUIDRV_TEMPLATE            &GUIDRV_Template_API
 
-#endif
-
-#if defined(__cplusplus)
-}
 #endif
 
 #endif

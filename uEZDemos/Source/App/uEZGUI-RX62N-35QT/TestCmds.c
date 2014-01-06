@@ -474,12 +474,18 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
 int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
 {
     T_testData testData;
+    T_uezDevice lcd;
 
     if (argc == 1) {
         // Got no parameters
         // Now do the test
         IUEZGUICmdRunTest(aWorkspace, FuncTestBacklightMonitor, &testData);
-    } else {
+    }  else if(argc == 2){
+        if(UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE){
+            UEZLCDBacklight(lcd, FDICmdUValue(argv[1]));
+            UEZLCDClose(lcd);
+        }
+    }else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
     return 0;

@@ -114,6 +114,8 @@ int MainTask(void)
 	// Setup any additional misc. tasks (such as the heartbeat task)
     SetupTasks();
 
+    AudioStart();
+
 	// initialize command console for test commands
     UEZGUITestCmdsInit();
 

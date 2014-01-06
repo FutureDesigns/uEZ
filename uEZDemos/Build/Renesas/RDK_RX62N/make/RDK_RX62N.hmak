@@ -102,10 +102,9 @@ RDK_RX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h" "
 	"..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
 	"..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX62N\uEZPlatform.h" "..\..\..\..\..\uEZ\Include\UEZNetwork.h" \
 	"..\..\..\..\..\uEZ\Include\Types\Network.h" "..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" \
-	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
@@ -141,18 +140,17 @@ RDK_RX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config.h
 	"..\..\..\..\..\uEZ\Include\uEZBSP.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZGPIO.h" \
-	"..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Include\uEZStream.h" "..\..\..\..\..\uEZ\Include\Device\Stream.h" \
-	"..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" "..\..\..\..\..\uEZ\Include\UEZI2C.h" \
-	"..\..\..\..\..\uEZ\Include\Types\I2C.h" "..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
+	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZStream.h" \
+	"..\..\..\..\..\uEZ\Include\Device\Stream.h" "..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" \
+	"..\..\..\..\..\uEZ\Include\UEZI2C.h" "..\..\..\..\..\uEZ\Include\Types\I2C.h" "..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
 	"..\..\..\..\..\uEZ\Include\HAL\SPI.h" "..\..\..\..\..\uEZ\Include\Types\SPI.h" "..\..\..\..\..\uEZ\Include\Device\ADCBank.h" \
 	"..\..\..\..\..\uEZ\Include\Device\AudioAmp.h" "..\..\..\..\..\uEZ\Include\Device\FileSystem.h" \
 	"..\..\..\..\..\uEZ\Include\Device\Flash.h" "..\..\..\..\..\uEZ\Include\Types\Flash.h" \
@@ -471,10 +469,9 @@ RDK_RX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h"
 	"..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
 	"..\..\..\..\..\uEZ\Source\Platform\Renesas\RDK_RX62N\uEZPlatform.h" "..\..\..\..\..\uEZ\Include\UEZNetwork.h" \
 	"..\..\..\..\..\uEZ\Include\Types\Network.h" "..\..\..\..\..\uEZ\Source\Library\lwIP\include\lwipopts.h" \
-	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
@@ -510,18 +507,17 @@ RDK_RX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config
 	"..\..\..\..\..\uEZ\Include\uEZBSP.h" "..\..\..\..\..\uEZ\Include\uEZDevice.h" "..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\uEZ\Include\Types\Network.h" \
-	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\uEZProcessor_LPC2478.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478.h" "..\..\..\..\..\uEZ\Include\Types\GPIO.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC2478\LPC2478_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZGPIO.h" \
-	"..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\uEZProcessor_LPC1788.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\LPC1788_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
-	"..\..\..\..\..\uEZ\Include\uEZStream.h" "..\..\..\..\..\uEZ\Include\Device\Stream.h" \
-	"..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" "..\..\..\..\..\uEZ\Include\UEZI2C.h" \
-	"..\..\..\..\..\uEZ\Include\Types\I2C.h" "..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
+	"..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
+	"..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\uEZ\Include\HAL\GPIO.h" "..\..\..\..\..\uEZ\Include\HAL\HAL.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\uEZProcessor_LPC17xx_40xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_UtilityFuncs.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZStream.h" \
+	"..\..\..\..\..\uEZ\Include\Device\Stream.h" "..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" \
+	"..\..\..\..\..\uEZ\Include\UEZI2C.h" "..\..\..\..\..\uEZ\Include\Types\I2C.h" "..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
 	"..\..\..\..\..\uEZ\Include\HAL\SPI.h" "..\..\..\..\..\uEZ\Include\Types\SPI.h" "..\..\..\..\..\uEZ\Include\Device\ADCBank.h" \
 	"..\..\..\..\..\uEZ\Include\Device\AudioAmp.h" "..\..\..\..\..\uEZ\Include\Device\FileSystem.h" \
 	"..\..\..\..\..\uEZ\Include\Device\Flash.h" "..\..\..\..\..\uEZ\Include\Types\Flash.h" \

@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : Image include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" { // Make sure we have C-declarations in C++ programs
+  extern "C" { // Make sure we have C-declarations in C++ programs
 #endif
 
 /*********************************************************************
@@ -69,8 +69,8 @@ typedef WM_HMEM IMAGE_Handle;
 *
 **********************************************************************
 */
-IMAGE_Handle IMAGE_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
-IMAGE_Handle IMAGE_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+IMAGE_Handle IMAGE_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+IMAGE_Handle IMAGE_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 IMAGE_Handle IMAGE_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 void IMAGE_Callback(WM_MESSAGE * pMsg);
@@ -95,8 +95,9 @@ void IMAGE_SetPNGEx (IMAGE_Handle hObj, GUI_GET_DATA_FUNC * pfGetData, void * pV
 
 #if defined(__cplusplus)
   }
-#endif // defined(__cplusplus)
-#endif // IF GUI_WINSUPPORT
+#endif
+
+#endif // GUI_WINSUPPORT
 #endif // IMAGE_H
 
 /*************************** End of file ****************************/

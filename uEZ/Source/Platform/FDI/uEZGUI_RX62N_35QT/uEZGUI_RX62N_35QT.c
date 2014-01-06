@@ -859,12 +859,14 @@ void UEZPlatform_Standard_Require(void)
     
 	UEZPlatform_Touchscreen_Require();
 	UEZPlatform_DataFlash_Require();
-	UEZPlatform_Speaker_Require();
 	UEZPlatform_AudioAmp_Require();
 	UEZPlatform_SDCard_Drive_Require(1);
 	UEZPlatform_WiredNetwork0_Require();
 	UEZPlatform_IRTC_Require();
 	UEZPlatform_AudioMixer_Require();
+	UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    UEZPlatform_Speaker_Require();
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 } 
 
 /*---------------------------------------------------------------------------*

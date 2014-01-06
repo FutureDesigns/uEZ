@@ -162,7 +162,7 @@ static void IBasicWebProcessConnection(
 #endif
             /* ... Then the list of tasks and their status... */
 #if (RTOS == FreeRTOS && configUSE_TRACE_FACILITY == 1)
-            vTaskList((signed char *)cDynamicPage + strlen(cDynamicPage));
+            UEZGetTaskList(cDynamicPage); //vTaskList((signed char *)cDynamicPage + strlen(cDynamicPage)); // causes new compile error in Debug-Trace Build
 #else
             UEZGetTaskList(cDynamicPage);
 #endif            

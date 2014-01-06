@@ -226,7 +226,7 @@ void vPortEndScheduler( void )
 		/* Increment the tick count - which may wake some tasks but as the
 		preemptive scheduler is not being used any woken task is not given
 		processor time no matter what its priority. */
-		vTaskIncrementTick();
+		xTaskIncrementTick();
 		
 		/* Ready for the next interrupt. */
 		T0IR = portTIMER_MATCH_ISR_BIT;
@@ -241,7 +241,7 @@ void vPortEndScheduler( void )
 	void vPortPreemptiveTick( void )
 	{
 		/* Increment the tick counter. */
-		vTaskIncrementTick();
+		xTaskIncrementTick();
 	
 		/* The new tick value might unblock a task.  Ensure the highest task that
 		is ready to execute is the task that will execute when the tick ISR
@@ -261,7 +261,7 @@ IRQ_ROUTINE(vPreemptiveTick)
     IRQ_START();
 	/* Increment the RTOS tick count, then look for the highest priority 
 	task that is ready to run. */
-	vTaskIncrementTick();
+	xTaskIncrementTick();
 	vTaskSwitchContext();
 
 	/* Ready for the next interrupt. */

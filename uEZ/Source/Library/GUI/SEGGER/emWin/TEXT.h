@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -35,13 +35,13 @@ Purpose     : TEXT include
 
 #include "WM.h"
 #include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
-#include "WIDGET.h"      /* Req. for Create indirect data structure */
+#include "WIDGET.h"
 #include "GUI_Debug.h"
 
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /************************************************************
@@ -92,14 +92,11 @@ typedef WM_HMEM TEXT_Handle;
 *
 **********************************************************************
 */
-
-TEXT_Handle TEXT_Create        (int x0, int y0, int xsize, int ysize, int Id, int Flags, const char * s, int Align);
-TEXT_Handle TEXT_CreateAsChild (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int Id, int Flags, const char * s, int Align);
-TEXT_Handle TEXT_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK* cb);
-TEXT_Handle TEXT_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                int WinFlags, int ExFlags, int Id, const char* pText);
-TEXT_Handle TEXT_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                int WinFlags, int ExFlags, int Id, const char * pText, int NumExtraBytes);
+TEXT_Handle TEXT_Create        (int x0, int y0, int xSize, int ySize, int Id, int Flags, const char * s, int Align);
+TEXT_Handle TEXT_CreateAsChild (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags, const char * s, int Align);
+TEXT_Handle TEXT_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, const char * pText);
+TEXT_Handle TEXT_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, const char * pText, int NumExtraBytes);
+TEXT_Handle TEXT_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -122,11 +119,11 @@ void TEXT_Callback(WM_MESSAGE * pMsg);
 int  TEXT_GetNumLines (TEXT_Handle hObj);
 int  TEXT_GetText     (TEXT_Handle hObj, char * pDest, U32 BufferSize);
 int  TEXT_GetUserData (TEXT_Handle hObj, void * pDest, int NumBytes);
-void TEXT_SetBkColor  (TEXT_Handle pObj, GUI_COLOR Color); /* Obsolete. Left in GUI for compatibility to older versions */
-void TEXT_SetFont     (TEXT_Handle pObj, const GUI_FONT GUI_UNI_PTR * pFont);
-int  TEXT_SetText     (TEXT_Handle pObj, const char* s);
-void TEXT_SetTextAlign(TEXT_Handle pObj, int Align);
-void TEXT_SetTextColor(TEXT_Handle pObj, GUI_COLOR Color);
+void TEXT_SetBkColor  (TEXT_Handle hObj, GUI_COLOR Color); /* Obsolete. Left in GUI for compatibility to older versions */
+void TEXT_SetFont     (TEXT_Handle hObj, const GUI_FONT GUI_UNI_PTR * pFont);
+int  TEXT_SetText     (TEXT_Handle hObj, const char * s);
+void TEXT_SetTextAlign(TEXT_Handle hObj, int Align);
+void TEXT_SetTextColor(TEXT_Handle hObj, GUI_COLOR Color);
 int  TEXT_SetUserData (TEXT_Handle hObj, const void * pSrc, int NumBytes);
 void TEXT_SetWrapMode (TEXT_Handle hObj, GUI_WRAPMODE WrapMode);
 
@@ -146,5 +143,7 @@ GUI_WRAPMODE                 TEXT_SetDefaultWrapMode (GUI_WRAPMODE WrapMode);
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
-#endif   /* TEXT_H */
+#endif  // GUI_WINSUPPORT
+#endif  // TEXT_H
+
+/*************************** End of file ****************************/

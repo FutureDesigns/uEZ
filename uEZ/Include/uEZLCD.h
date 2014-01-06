@@ -52,6 +52,7 @@ typedef struct {
     TUInt32 iDimBacklightLevel;
     void (*iCallback_AnimationStart)();
     void (*iCallback_AnimationUpdate)();
+    void (*iCallback_AnimationSleep)();
     void (*iCallback_AnimationEnd)();
 } T_uezLCDScreenSaverInfo;
 

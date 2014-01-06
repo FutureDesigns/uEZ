@@ -260,7 +260,10 @@ void vTickISR( void )
 	necessitates. */
 	set_ipl( configMAX_SYSCALL_INTERRUPT_PRIORITY );
 	{
-		vTaskIncrementTick();
+		if( xTaskIncrementTick() != pdFALSE )
+		{
+			taskYIELD();
+		}
 	}
 	set_ipl( configKERNEL_INTERRUPT_PRIORITY );
 	

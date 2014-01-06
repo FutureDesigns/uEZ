@@ -128,18 +128,7 @@ int MainTask(void)
 #endif
 
     printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
-
-#if 0 // code to force the IP number to 192.168.50.7
-NVSettingsInit();
-NVSettingsLoad();
-        G_nonvolatileSettings.iIPAddr[0] = 192;
-        G_nonvolatileSettings.iIPAddr[1] = 168;
-        G_nonvolatileSettings.iIPAddr[2] = 50;
-        G_nonvolatileSettings.iIPAddr[3] = 7;
-NVSettingsSave();        
-#endif
-
-	NVSettingsInit();
+	
     // Load the settings from non-volatile memory
     if (NVSettingsLoad() != UEZ_ERROR_NONE) {
         printf("Error Loading NVSettings: Re-Initializing\n");
@@ -148,6 +137,13 @@ NVSettingsSave();
     } else {
 		printf("NVSettings Loaded Successfully\n");
 	}
+#if 0 // code to force the IP address to 192.168.50.7
+        G_nonvolatileSettings.iIPAddr[0] = 192;
+        G_nonvolatileSettings.iIPAddr[1] = 168;
+        G_nonvolatileSettings.iIPAddr[2] = 50;
+        G_nonvolatileSettings.iIPAddr[3] = 7;
+		NVSettingsSave();        
+#endif
 
 #if COMPILE_OPTION_USB_SDCARD_DISK
     // Setup the USB MassStorage device to connect to MS1 (the SD Card)

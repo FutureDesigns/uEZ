@@ -22,58 +22,22 @@
 
 #include <uEZDevice.h>
 
-/**
- *	Register a device with the given interface and handle.  Creates
- *  a workspace for the device.
- *
- *	@param[in]	*aName					Unique identifier for device
- *	@param[in]	*aInterface			Interface to the device
- *	@param[in]	*aDeviceHandle	Pointer to recently created device's handle.
- *	@param[out]	**aWorkspace		Pointer to pointer to recently created workspace.
- *
- *	@return	T_uezError
- */
+
 T_uezError UEZDeviceTableRegister(
                 const char * const aName, 
                 T_uezDeviceInterface *aInterface, 
                 T_uezDevice *aDeviceHandle, 
                 T_uezDeviceWorkspace **aWorkspace);
-								
-/**
- *	Retrieve a workspace from the given device handle
- *
- *	@param[in]	aDevice				Device with workspace to get
- *	@param[out]	**aWorkspace	Pointer to pointer to returned workspace.
- *
- *	@return	T_uezError
- */ 
 T_uezError UEZDeviceTableGetWorkspace(
                 T_uezDevice aDevice, 
                 T_uezDeviceWorkspace **aWorkspace);
-								
-/**
- *	Search device table for existing device and return device handle.
- *
- *	@param[in]	*aName		Pointer to device name to find.
- *  @param[out]	*aDevice	Pointer to device to return
- *
- *	@return	T_uezError
- */ 
-T_uezError UEZDeviceTableFind(const char * const aName, T_uezDevice *aDevice);
-
-/**
- *  Register a device with the given name to an already existing device.
- *  This is done to allow mappings between different configurations.
- *
- *  @param[in]  *aExistingName          Unique identifier for existing device
- *  @param[in]  *aAliasName             Unique identifier for new alias device
- *
- *  @return T_uezError
- */
+T_uezError UEZDeviceTableFind(
+                const char * const aName,
+                T_uezDevice *aDevice);
 T_uezError UEZDeviceTableRegisterAlias(
                 const char * const aExistingName,
                 const char * const aAliasName);
-
+TBool UEZDeviceTableIsRegistered(const char * const aName);
 
 #endif // _DEVICE_TABLE_H_
 /*-------------------------------------------------------------------------*

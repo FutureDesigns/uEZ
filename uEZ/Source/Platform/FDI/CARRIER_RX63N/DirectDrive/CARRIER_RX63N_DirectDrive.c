@@ -573,7 +573,6 @@ Parameters: frame_request - selection of which frame to have ExDMA display.
 Returns:  Address of raster that is being used for frame.     
 Description: setActiveFrame defines which frame buffer to display
 *****************************************************************************/
-/*
 TUInt16 * LCDSetActiveRaster(TUInt32 frame_request)
 {
   if (frame_request < 5) {
@@ -584,4 +583,3 @@ TUInt16 * LCDSetActiveRaster(TUInt32 frame_request)
 
   return 0;
 }
-*/

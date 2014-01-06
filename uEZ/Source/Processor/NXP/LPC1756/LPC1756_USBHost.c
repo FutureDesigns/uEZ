@@ -15,8 +15,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-/**
- *    @addtogroup LPC1756_USBHost
+/*
  *  @{
  *  @brief     uEZ USB Host Interface
  *  @see http://www.teamfdi.com/uez/
@@ -1192,7 +1191,7 @@ void LPC1756_USBHost_Require(const T_LPC1756_USBHost_Settings *aSettings)
     LPC1756_IOCON_ConfigPinOrNone(aSettings->iPWRDn, pinsPWRD1,
             ARRAY_COUNT(pinsPWRD1));
 }
-/** @} */
+
 /*-------------------------------------------------------------------------*
  * End of File:  LPC1756_USBHost.c
  *-------------------------------------------------------------------------*/

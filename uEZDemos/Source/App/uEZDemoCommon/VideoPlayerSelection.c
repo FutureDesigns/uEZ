@@ -435,10 +435,6 @@ void VideoPlayerSelection(const T_choice *aChoice)
 #if ENABLE_UEZ_BUTTON
     T_uezDevice keypadDevice;
 #endif
-    if(UEZGUI_EXP_DK_Detect())
-    {
-        UEZGUI_EXP_DK_I2S_Require();
-    }
     
     G_ws = UEZMemAlloc(sizeof(T_VideoPlayerSelectWorkspace));
     if (!G_ws)

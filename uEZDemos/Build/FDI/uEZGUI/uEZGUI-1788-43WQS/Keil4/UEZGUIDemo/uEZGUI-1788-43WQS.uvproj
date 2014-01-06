@@ -351,7 +351,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQS;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQS;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -511,11 +511,6 @@
               <FileName>AudioPlayer.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayer.h</FilePath>
-            </File>
-            <File>
-              <FileName>AudioPlayerMode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayerMode.c</FilePath>
             </File>
             <File>
               <FileName>BrightnessControlMode.c</FileName>
@@ -824,9 +819,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_520_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_520_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1192,7 +1187,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG, FREERTOS_PLUS_TRACE</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQS;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\include</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQS;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1352,11 +1347,6 @@
               <FileName>AudioPlayer.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayer.h</FilePath>
-            </File>
-            <File>
-              <FileName>AudioPlayerMode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayerMode.c</FilePath>
             </File>
             <File>
               <FileName>BrightnessControlMode.c</FileName>
@@ -1665,9 +1655,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_520_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_520_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -2033,7 +2023,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQS;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1788\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQS;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2193,11 +2183,6 @@
               <FileName>AudioPlayer.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayer.h</FilePath>
-            </File>
-            <File>
-              <FileName>AudioPlayerMode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\App\uEZDemoCommon\AudioPlayerMode.c</FilePath>
             </File>
             <File>
               <FileName>BrightnessControlMode.c</FileName>
@@ -2506,9 +2491,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_520_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_520_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
             </File>
           </Files>
         </Group>

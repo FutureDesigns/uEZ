@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -40,7 +40,7 @@ Purpose     : GRAPH include
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 /*********************************************************************
@@ -97,8 +97,8 @@ typedef WM_HMEM GRAPH_SCALE_Handle;
 **********************************************************************
 */
 
-GRAPH_Handle GRAPH_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
-GRAPH_Handle GRAPH_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+GRAPH_Handle GRAPH_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+GRAPH_Handle GRAPH_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
 GRAPH_Handle GRAPH_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 GRAPH_DATA_Handle  GRAPH_DATA_XY_Create(GUI_COLOR Color, unsigned MaxNumItems, GUI_POINT * pData, unsigned NumItems);
@@ -131,7 +131,7 @@ void      GRAPH_AttachData             (GRAPH_Handle hObj, GRAPH_DATA_Handle hDa
 void      GRAPH_AttachScale            (GRAPH_Handle hObj, GRAPH_SCALE_Handle hScale);
 void      GRAPH_DetachData             (GRAPH_Handle hObj, GRAPH_DATA_Handle hData);
 void      GRAPH_DetachScale            (GRAPH_Handle hObj, GRAPH_SCALE_Handle hScale);
-U32       GRAPH_GetScrollValue         (GRAPH_Handle hObj, U8 Coord);
+I32       GRAPH_GetScrollValue         (GRAPH_Handle hObj, U8 Coord);
 int       GRAPH_GetUserData            (GRAPH_Handle hObj, void * pDest, int NumBytes);
 void      GRAPH_SetAutoScrollbar       (GRAPH_Handle hObj, U8 Coord, U8 OnOff);
 void      GRAPH_SetBorder              (GRAPH_Handle hObj, unsigned BorderL, unsigned BorderT, unsigned BorderR, unsigned BorderB);
@@ -184,5 +184,7 @@ unsigned                     GRAPH_SCALE_SetTickDist (GRAPH_SCALE_Handle hScaleO
   }
 #endif
 
-#endif   /* if GUI_WINSUPPORT */
-#endif   /* GRAPH_H */
+#endif  // GUI_WINSUPPORT
+#endif  // GRAPH_H
+
+/*************************** End of file ****************************/

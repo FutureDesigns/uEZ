@@ -350,7 +350,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>.;../../../../../../.;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/RVDS/ARM_CM3;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Platform/emWin/;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Processor/NXP/LPC1788/Keil4/include</IncludePath>
+              <IncludePath>.;../../../../../../.;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/RVDS/ARM_CM3;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Platform/emWin/;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Keil4/include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -950,7 +950,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3</Define>
               <Undefine></Undefine>
-              <IncludePath>.;../../../../../../.;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/RVDS/ARM_CM3;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Platform/emWin/;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Processor/NXP/LPC1788/Keil4/include</IncludePath>
+              <IncludePath>.;../../../../../../.;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/RVDS/ARM_CM3;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Platform/emWin/;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Keil4/include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1243,14 +1243,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\Debug\</OutputDirectory>
+          <OutputDirectory>.\Debug-Trace\</OutputDirectory>
           <OutputName>DK-TS-LPC1788</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\Debug\</ListingPath>
+          <ListingPath>.\Debug-Trace\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -1550,7 +1550,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG,FREERTOS_PLUS_TRACE</Define>
               <Undefine></Undefine>
-              <IncludePath>.;../../../../../../.;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC1788;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/RVDS/ARM_CM3;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Platform/emWin/;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Processor/NXP/LPC1788/Keil4/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</IncludePath>
+              <IncludePath>.;../../../../../../.;../../../../../../Source/App/DKTSKit;../../../../../../Source/App/uEZDemoCommon;../../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../../uEZ;../../../../../../../uEZ/Include;../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788;../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/RVDS/ARM_CM3;../../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../../uEZ/Source/Platform/emWin/;../../../../../../../uEZ/Source/Platform/emWin/Config;../../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Keil4/include;../../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

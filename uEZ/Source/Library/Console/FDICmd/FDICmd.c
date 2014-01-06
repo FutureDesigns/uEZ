@@ -448,9 +448,12 @@ TUInt32 FDICmdTask(T_uezTask aMyTask, void *aWorkspace)
 
         // Try to get a character (wait up to 50 ms)
         if (UEZStreamRead(p->iStream, &c, 1, &numRead, 50) != UEZ_ERROR_TIMEOUT) {
-        		
-			// If '?' is received, print a the list of commands
-			if(c=='?') {
+
+            if(c=='\0') {
+                // Do Nothing
+            }
+            else if(c=='?') {
+                // If '?' is received, print a the list of commands
 				FDICmdSendString(aWorkspace, "\r\n\r\n");
 				FDICmdPrintCmds(aWorkspace);
 				p->iCmd[p->iCmdLen] = '\0';

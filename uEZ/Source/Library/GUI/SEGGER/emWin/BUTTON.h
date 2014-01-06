@@ -9,7 +9,7 @@
 *                                                                    *
 **********************************************************************
 
-** emWin V5.20 - Graphical user interface for embedded applications **
+** emWin V5.22 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -37,11 +37,11 @@ Purpose     : BUTTON public header file (API)
 #include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
 #include "WIDGET.h"
 
-#if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
-#endif
-
 #if GUI_WINSUPPORT
+
+#if defined(__cplusplus)
+  extern "C" {     /* Make sure we have C-declarations in C++ programs */
+#endif
 
 /*********************************************************************
 *
@@ -107,13 +107,11 @@ typedef struct {
          Some widgets may have multiple create functions
 */
 
-BUTTON_Handle BUTTON_Create        (int x0, int y0, int xsize, int ysize, int ID, int Flags);
-BUTTON_Handle BUTTON_CreateAsChild (int x0, int y0, int xsize, int ysize, WM_HWIN hParent, int Id, int Flags);
-BUTTON_Handle BUTTON_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK* cb);
-BUTTON_Handle BUTTON_CreateEx      (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                    int WinFlags, int ExFlags, int Id);
-BUTTON_Handle BUTTON_CreateUser    (int x0, int y0, int xsize, int ysize, WM_HWIN hParent,
-                                    int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+BUTTON_Handle BUTTON_Create        (int x0, int y0, int xSize, int ySize, int ID, int Flags);
+BUTTON_Handle BUTTON_CreateAsChild (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags);
+BUTTON_Handle BUTTON_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+BUTTON_Handle BUTTON_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+BUTTON_Handle BUTTON_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -201,10 +199,11 @@ WIDGET_DRAW_ITEM_FUNC * BUTTON_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSkin
 
 #define BUTTON_SKIN_FLEX    BUTTON_DrawSkinFlex
 
-#endif   /* BUTTON_H */
-
 #if defined(__cplusplus)
   }
 #endif
 
-#endif   /* BUTTON_H */
+#endif   // GUI_WINSUPPORT
+#endif   // BUTTON_H
+
+/*************************** End of file ****************************/

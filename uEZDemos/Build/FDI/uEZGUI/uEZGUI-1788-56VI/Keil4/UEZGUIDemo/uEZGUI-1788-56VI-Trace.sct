@@ -15,7 +15,7 @@ LR_IROM1 0x00000000 0x00080000  {    ; load region size_region
   }
   RW_IRAM1 0x10000000 0x00010000  {  ; RW data, 64K
    *.o (STACK, +First) ; Put the initial stack in internal memory since SDRAM is not initialized yet
-   LPC1788_PLL.o (+RW)
+   LPC17xx_40xx_PLL.o (+RW)
    .ANY (+RW +ZI)
   }
   ;EW_ERAM_LOADSPACE 0xA05DD000 0x00100000 { ; RW data for loadspace

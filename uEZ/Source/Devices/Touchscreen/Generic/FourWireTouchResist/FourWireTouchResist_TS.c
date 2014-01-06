@@ -21,10 +21,19 @@
 
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
-#include <uEZADC.h>
-#include <uEZGPIO.h>
 #include "FourWireTouchResist_TS.h"
-
+#include <uEZGPIO.h>
+#include <uEZADC.h>
+#include <stdio.h>
+#include <string.h>
+#include <Device/Stream.h>
+#include <uEZStream.h>
+#include <Types/Serial.h>
+ 
+#ifndef TOUCHSCREEN_TEST
+    #define TOUCHSCREEN_TEST 0
+#endif
+ 
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -681,6 +690,21 @@ static T_uezError TS_FourWireTouchResist_Poll(
                     p, x, y,
                     (TUInt32 *) &aReading->iX,
                     (TUInt32 *) &aReading->iY);
+#if TOUCHSCREEN_TEST          
+            T_uezDevice iDevice;
+            DEVICE_STREAM **iStream;
+            TUInt8 sendbuf[16];
+            T_uezError error;
+            TUInt32 num = 0;
+            error = UEZDeviceTableFind("Console", &iDevice);
+            if (!error)
+                 error = UEZDeviceTableGetWorkspace(iDevice, (T_uezDeviceWorkspace **)&iStream);
+            if (error){
+			} else {         
+            sprintf((char*)sendbuf,"%03d,%03d,%03d,\n\r", aReading->iX, aReading->iY, aReading->iPressure);
+            error = (*iStream)->Write(iStream, sendbuf, 16, &num, 100);
+            }
+#endif
         }
     } else {
         // Pen is not down

@@ -30,6 +30,16 @@
 #include <uEZGPIO.h>
 #include <uEZProcessor.h>
 #include <UEZPlatform.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <Device/Stream.h>
+#include <uEZStream.h>
+#include <Types/Serial.h>
+ 
+#ifndef TOUCHSCREEN_TEST
+    #define TOUCHSCREEN_TEST 0
+#endif
+
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -224,30 +234,34 @@ static void TS_ST1232_ApplyCalibration(
 {
 #if 0
     TInt32 v;
-
+	
     v = x - p->iPenOffsetX;
     v *= p->iPenXScaleTop;
     v /= p->iPenXScaleBottom;
     v += p->iPenBaseX;
+#if 0
     if (v < 0)
         v = 0;
     if (v >= DISPLAY_WIDTH)
         v = DISPLAY_WIDTH-1;
 #endif
-    *newX = (TUInt32)x;
+    *newX = (TUInt32)v;
 
-#if 0
     v = y - p->iPenOffsetY;
     v *= p->iPenYScaleTop;
     v /= p->iPenYScaleBottom;
     v += p->iPenBaseY;
-
+#if 0
     if (v < 0)
         v = 0;
     if (v >= DISPLAY_HEIGHT)
         v = DISPLAY_HEIGHT-1;
 #endif
+    *newY = (TUInt32)v;
+#else
+    *newX = (TUInt32)x;
     *newY = (TUInt32)y;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -266,15 +280,14 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
     T_ST1232Workspace *p =
             (T_ST1232Workspace *) aWorkspace;
     T_uezError error;
-    T_uezDevice i2c0;
+    T_uezDevice i2c;
     TUInt8 dataIn[0x20];
     TUInt8 dataOut[5];
     TUInt32 Read = 0;
     TUInt32 x;
     TUInt32 y;
-    TUInt32 z;
     
-    error = UEZI2COpen(p->iI2CBus, &i2c0);
+    error = UEZI2COpen(p->iI2CBus, &i2c);
 
     // Try to grab the semaphore -- do we have new data?
     if (UEZSemaphoreGrab(p->iSemWaitForTouch, 0) == UEZ_ERROR_NONE) {
@@ -283,8 +296,6 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
     } else {
         Read = 0;
     }
-
-
     while (1){
         if(UEZGPIORead(p->iInteruptPin)){
             Read = 0;
@@ -299,21 +310,22 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
                     p, (p->iLastX), (p->iLastY),
                     (TUInt32 *) &aReading->iX,
                     (TUInt32 *) &aReading->iY);
+            UEZI2CClose(i2c);
             return UEZ_ERROR_NONE;
         }else{
-            dataOut[0] = 0x00;
-            error = UEZI2CWrite(i2c0,
+            dataOut[0] = 0x12;
+            error = UEZI2CWrite(i2c,
                     ST1232_I2C_ADDRESS,
                     ST1232_I2C_SPEED,
                     dataOut,
                     1,
                     50);
 
-            error = UEZI2CRead(i2c0,
+            error = UEZI2CRead(i2c,
                     ST1232_I2C_ADDRESS,
                     ST1232_I2C_SPEED,
                     dataIn,
-                    0x20,
+                    0x07,
                     50);
             if(error != UEZ_ERROR_NONE){
                 UEZGPIOClearIRQ(p->iInteruptPin);
@@ -323,15 +335,13 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
                 break;
             }
 
-            x = (((dataIn[0x12] & 0x70)<<4) | dataIn[0x13]);
+            x = (((dataIn[0x0] & 0x70)<<4) | dataIn[0x1]);
 
-            y = (((dataIn[0x12] & 0x07)<<8) | dataIn[0x14]);
+            y = (((dataIn[0x0] & 0x07)<<8) | dataIn[0x2]);
 
             y = (UEZ_LCD_DISPLAY_HEIGHT) - y;
 
-            z = dataIn[0x18];
-
-            if((dataIn[0x12] & 0x80) == 0x80 && (z > 5) && (dataIn[0x10] != 0)){
+            if((dataIn[0x0] & 0x80) == 0x80 ){//&& (z > 5) && (dataIn[0x10] != 0)){
                 (aReading->iFlags) = (p->iLastTouch) = TSFLAG_PEN_DOWN;
                 (aReading->iX) = (p->iLastX)= x;
                 (aReading->iY) = (p->iLastY)= y;
@@ -341,6 +351,22 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
                             p, x, y,
                             (TUInt32 *) &aReading->iX,
                             (TUInt32 *) &aReading->iY);
+#if TOUCHSCREEN_TEST          
+                    T_uezDevice iDevice;
+                    DEVICE_STREAM **iStream;
+                    TUInt8 sendbuf[16];
+                    T_uezError error;
+                    TUInt32 num = 0;
+                    error = UEZDeviceTableFind("Console", &iDevice);
+                    if (!error)
+                         error = UEZDeviceTableGetWorkspace(iDevice, (T_uezDeviceWorkspace **)&iStream);
+                    if (error){
+                    } else {         
+                         sprintf((char*)sendbuf,"%03d,%03d,%03d,\n\r", aReading->iX, aReading->iY, aReading->iPressure);
+                         error = (*iStream)->Write(iStream, sendbuf, 16, &num, 100);
+                    }
+#endif
+
                 }
             }else {
                 (aReading->iFlags) = (p->iLastTouch)= 0;
@@ -355,6 +381,7 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
             UEZGPIOClearIRQ(p->iInteruptPin);
         }
     }
+    UEZI2CClose(i2c);
     return error;
 }
 

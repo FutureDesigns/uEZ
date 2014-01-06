@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<flash_board>
+  <pass>
+    <loader>$PROJ_DIR$\..\..\..\..\..\Utilities\Flashloader\uEZGUI_1788\flash_loader\uEZGUI_1788.flash</loader>
+    <range>CODE 0x0 0x7ffff</range>
+  </pass>
+  <pass>
+    <loader>$PROJ_DIR$\..\..\..\..\..\Utilities\Flashloader\uEZGUI_1788\flash_loader_NOR\uEZGUI_1788_NOR.flash</loader>
+    <range>CODE 0x80000000 0x8fffffff</range>
+  </pass>
+</flash_board>
+
+
