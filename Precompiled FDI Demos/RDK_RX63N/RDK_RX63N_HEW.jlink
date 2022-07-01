@@ -1,8 +1,0 @@
-exec device = RX63N
-speed 4000
-
-loadbin "RDK_RX63N_HEW.bin", 0
-
-rx 200
-g
-q

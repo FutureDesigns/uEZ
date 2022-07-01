@@ -518,6 +518,23 @@ T_uezError LPC1756_Serial_SetSerialSettings(
     p_info->iUART->u1.DLL = divider & 0x00ff;
     p_info->iUART->u2.DLM = (divider >> 8) & 0x00ff;
     p_info->iUART->LCR &= ~0x80;
+	
+	switch (aSettings->iFlowControl) {
+        case SERIAL_FLOW_CONTROL_NONE:
+            // default register settings are for none, need to figure out how to set it back
+            //p_info->iUART->MCR |= (0 << 6); // Disable auto RTS
+            //p_info->iUART->MCR |= (0 << 7); // Disable auto CTS
+            break;
+        case SERIAL_FLOW_CONTROL_XON_XOFF:
+            return UEZ_ERROR_NOT_SUPPORTED; // TODO
+        case SERIAL_FLOW_CONTROL_HARDWARE:
+			return UEZ_ERROR_NOT_SUPPORTED; // TODO, example config from 43xx
+            //p_info->iUART->MCR |= (1 << 6); // Auto RTS enable bit
+            //p_info->iUART->MCR |= (1 << 7); // Auto CTS enable bit
+            //break;			
+        default:
+            return UEZ_ERROR_NOT_SUPPORTED;
+    }
 
     return UEZ_ERROR_NONE;
 }

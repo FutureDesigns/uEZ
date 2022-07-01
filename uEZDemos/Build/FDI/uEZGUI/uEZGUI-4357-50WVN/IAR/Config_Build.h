@@ -8,8 +8,9 @@
 #define EMC_CLOCK_FREQUENCY                 PROCESSOR_OSCILLATOR_FREQUENCY/2
 
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
-
-#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF
+// For rev 2 units and later Newhaven updated to the LCD (but kept the same PN) so use the Rev2 option for correct alignment.
+#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF // Original version of LCD
+//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2 // Rev 2 version of LCD
 #define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
@@ -19,20 +20,24 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
+#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_SYSTEM_VIEW           0
+
 #ifdef NDEBUG
-#define UEZ_REGISTER              	        0
+#define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER              	        1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        1  //Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #define UEZ_ENABLE_AUDIO_AMP                1
-
+#define SEC_TO_ENABLED                      0 // TO136 security (not loaded yet)
+#define SEC_MC_ENABLED                      0 // MC security (not loaded yet)
 #define UEZ_ENABLE_USB_HOST_STACK           1
 #define USB_PORT_B_HOST_DETECT_ENABLED      1
 
 #define UEZ_ENABLE_USB_DEVICE_STACK         1
-#define COMPILE_OPTION_USB_SDCARD_DISK      UEZ_ENABLE_USB_DEVICE_STACK
-#define UEZ_ENABLE_VIRTUAL_COM_PORT         0//UEZ_ENABLE_USB_DEVICE_STACK
+#define COMPILE_OPTION_USB_SDCARD_DISK      0//UEZ_ENABLE_USB_DEVICE_STACK // not working yet
+#define UEZ_ENABLE_VIRTUAL_COM_PORT         UEZ_ENABLE_USB_DEVICE_STACK // use ? driver for VCOM
 
 #define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
@@ -59,7 +64,7 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
-#define APP_DEMO_SLIDESHOW             		1
+#define APP_DEMO_SLIDESHOW             	    1
 #define APP_DEMO_VIDEO_PLAYER               1
 
 #define INCLUDE_EMWIN                       0

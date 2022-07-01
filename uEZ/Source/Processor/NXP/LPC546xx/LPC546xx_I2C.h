@@ -56,12 +56,9 @@
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-extern const HAL_I2CBus I2C_LPC546xx_Bus0_Interface;
-extern const HAL_I2CBus I2C_LPC546xx_Bus1_Interface;
 extern const HAL_I2CBus I2C_LPC546xx_Bus2_Interface;
 
-void LPC546xx_I2C0_Require();
-void LPC546xx_I2C1_Require(T_uezGPIOPortPin aPinSDA0, T_uezGPIOPortPin aPinSCL0);
+void LPC546xx_I2C2_Require(T_uezGPIOPortPin aPinSDA0, T_uezGPIOPortPin aPinSCL0);
 
 #endif // LPC546xx_I2C_H_
 /*-------------------------------------------------------------------------*

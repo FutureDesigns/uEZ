@@ -6,9 +6,11 @@
       Placement="Flash A"
       Target="LPC4357"
       arm_architecture="v7EM"
+      arm_compiler_variant="gcc"
       arm_core_type="Cortex-M4"
       arm_fp_abi="Hard"
       arm_fpu_type="FPv4-SP-D16"
+      arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
       arm_linker_heap_size="128"
       arm_linker_jtag_pad_post_dr="0"
@@ -23,15 +25,17 @@
       arm_target_interface_type="SWD"
       arm_target_loader_applicable_loaders="Flash"
       arm_target_loader_default_loader="Flash"
-      batch_build_configurations="Debug;Debug-Trace;Release;ReleaseOptForSize"
+      batch_build_configurations="Debug;Debug-Trace;Debug-Trace CLANG;Release"
       build_output_directory="$(Configuration)"
       build_output_file_name="$(OutDir)/$(ProjectName)_$(Configuration)$(LIB)"
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
-      c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;UEZ_LIBRARY"
-      c_user_include_directories=".;../../../../../../.;../../../../../../Include;../../../../../../Source/RTOS/FreeRTOS/include;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../Source/Processor/NXP/LPC43xx;../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks;../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/CMSIS;../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/include;../../../../../../Source/Library/lwIP/src/include;../../../../../../Source/Library/lwIP/src;../../../../../../Source/Library/lwIP/Include;../../../../../../Source/Library/lwIP/src/include/ipv4;../../../../../../Source/Library/GUI/SEGGER/emWin;../../../../../../Source/Library/LPCOpen;../../../../../../Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../Source/Platform/emWin/Inc;../../../../../../Source/Platform/emWin/Config;../../../../../../Source/Library/Encryption/CyaSSL;../../../../../../Source/Library/Encryption/CyaSSL/cyassl;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/ctaocrypt;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/openssl"
+      c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;__FLASH_BUILD;__THUMB;UEZ_LIBRARY;LWIP_2_0_x"
+      c_user_include_directories=".;../../../../../../.;../../../../../../Include;../../../../../../Source/RTOS/FreeRTOS/include;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../Source/Processor/NXP/LPC43xx;../../../../../../Source/Processor/NXP/LPC43xx/GCC;../../../../../../Source/Processor/NXP/LPC43xx/Common/include;../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS;../../../../../../Source/Library/lwip_2.0.x/src/include;../../../../../../Source/Library/lwIP_2.0.x/src;../../../../../../Source/Library/lwIP_2.0.x/Include;../../../../../../Source/Library/lwIP_2.0.x/src/include/ipv4;../../../../../../Source/Library/lwIP_2.0.x/system;../../../../../../Source/Library/lwIP_2.0.x/system/arch;../../../../../../Source/Library/GUI/SEGGER/emWin;../../../../../../Source/Library/LPCOpen;../../../../../../Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../Source/Platform/emWin/Inc;../../../../../../Source/Platform/emWin/Config;../../../../../../Source/Library/Encryption/CyaSSL;../../../../../../Source/Library/Encryption/CyaSSL/cyassl;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/ctaocrypt;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/openssl"
       debug_register_definition_file="$(TargetsDir)/LPC4300/LPC4300_Peripherals.xml"
       debug_startup_completion_point="main"
+      gcc_c_language_standard="c11"
+      gcc_cplusplus_language_standard="c++11"
       gcc_wchar_size="32-Bit"
       link_include_startup_code="No"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-4357-50WVN_MemoryMap.xml"
@@ -596,162 +600,169 @@
             </folder>
           </folder>
         </folder>
-        <folder Name="lwIP">
+        <folder Name="lwIP2.0">
           <folder Name="src">
             <folder Name="api">
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/tcpip.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/api_lib.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/api_msg.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/err.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/netbuf.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/netdb.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/netifapi.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/api/sockets.c">
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/tcpip.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/api_lib.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/api_msg.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/err.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/netbuf.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/netdb.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/netifapi.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/api/sockets.c">
                 <configuration Name="Common" c_only_additional_options="-w" />
               </file>
             </folder>
-            <folder Name="arch">
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/sys_arch.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/bpstruct.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/cc.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/clock.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/epstruct.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/ethernetif.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/lwIP_EMAC.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/perf.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/sys_arch.h" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/arch/clock.c" />
-            </folder>
             <folder Name="core">
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/udp.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/dhcp.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/dns.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/init.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/mem.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/memp.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/netif.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/pbuf.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/raw.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/stats.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/sys.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/tcp.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/tcp_in.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/core/tcp_out.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/udp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/dns.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/init.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/mem.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/memp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/netif.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/pbuf.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/raw.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/stats.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/sys.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/tcp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/tcp_in.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/tcp_out.c" />
               <folder Name="ipv4">
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/ip_frag.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/autoip.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/icmp.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/igmp.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/inet.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/inet_chksum.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/ip.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/ip_addr.c" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/ipv4/autoip.c" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/ipv4/icmp.c" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/core/ipv4/igmp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv4/dhcp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv4/etharp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv4/ip4.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv4/ip4_addr.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv4/ip4_frag.c" />
               </folder>
-              <folder Name="snmp">
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/msg_out.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/asn1_dec.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/asn1_enc.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/mib2.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/mib_structs.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/msg_in.c" />
-              </folder>
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/def.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/inet_chksum.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ip.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/timeouts.c" />
             </folder>
             <folder Name="include">
-              <folder Name="ipv4">
-                <folder Name="lwip">
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/autoip.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/icmp.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/igmp.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/inet.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/inet_chksum.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/ip.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/ip_addr.h" />
-                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/ip_frag.h" />
-                </folder>
-              </folder>
               <folder Name="lwip">
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/udp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/api.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/api_msg.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/arch.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/debug.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/def.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/dhcp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/dns.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/err.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/init.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/mem.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/memp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/memp_std.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netbuf.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netdb.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netif.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netifapi.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/opt.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/pbuf.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/raw.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/sio.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp_asn1.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp_msg.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp_structs.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/sockets.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/stats.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/sys.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/tcp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/tcpip.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/udp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/api.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/api_msg.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/arch.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/debug.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/def.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/dhcp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/dns.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/err.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/init.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/mem.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/memp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/memp_std.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/netbuf.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/netdb.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/netif.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/netifapi.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/opt.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/pbuf.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/raw.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/sio.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/snmp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/snmp_asn1.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/snmp_msg.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/snmp_structs.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/sockets.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/stats.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/sys.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/tcp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/lwip/tcpip.h" />
               </folder>
               <folder Name="netif">
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/etharp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/loopif.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/ppp_oe.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/slipif.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/netif/etharp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/netif/loopif.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/netif/ppp_oe.h" />
+                <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/include/netif/slipif.h" />
               </folder>
             </folder>
             <folder Name="netif">
               <folder Name="ppp">
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/vj.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/auth.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chap.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chpms.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/fsm.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ipcp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/lcp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/magic.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/md5.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/pap.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ppp.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/pppdebug.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/randm.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/vj.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/vjbsdhdr.h" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/auth.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chap.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chpms.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/fsm.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ipcp.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/lcp.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/magic.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/md5.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/pap.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ppp.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ppp_oe.c" />
-                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/randm.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/auth.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/ccp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/chap_ms.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/chap-md5.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/chap-new.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/demand.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/eap.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/ecp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/eui64.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/fsm.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/ipcp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/ipv6cp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/lcp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/magic.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/mppe.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/multilink.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/ppp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/pppapi.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/pppcrypt.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/PPPD_FOLLOWUP" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/pppoe.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/pppol2tp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/pppos.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/upap.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/utils.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ppp/vj.c" />
               </folder>
-              <file file_name="../../../../../../Source/Library/lwIP/src/netif/etharp.c">
-                <configuration
-                  Name="Common"
-                  c_only_additional_options="-Wno-strict-aliasing" />
-              </file>
-              <file file_name="../../../../../../Source/Library/lwIP/src/netif/ethernetif.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/netif/loopif.c" />
-              <file file_name="../../../../../../Source/Library/lwIP/src/netif/slipif.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/netif/ethernetif.c" />
+              <file file_name="../../../../../../Source/Library/lwIP_2.0.x/src/netif/slipif.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/netif/ethernet.c" />
+            </folder>
+            <folder Name="apps">
+              <folder Name="snmp">
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_asn1.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_asn1.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_core.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_core_priv.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_icmp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_interfaces.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_ip.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_snmp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_system.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_tcp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_mib2_udp.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_msg.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_msg.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_netconn.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_pbuf_stream.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_pbuf_stream.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_raw.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_scalar.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_table.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_threadsync.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_traps.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3_dummy.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3_mbedtls.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3_priv.h" />
+              </folder>
             </folder>
           </folder>
-          <file file_name="../../../../../../Source/Library/lwIP/uEZEMAC_lwIP.c" />
-          <configuration
-            Name="Debug"
-            gcc_optimization_level="Optimize For Size" />
+          <file file_name="../../../../../../Source/Library/lwIP_2.0.x/uEZEMAC_lwIP.c" />
+          <folder Name="system">
+            <folder Name="arch">
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/bpstruct.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/cc.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/cpu.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/epstruct.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/init.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/lib.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/perf.h" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/arch/sys_arch.h" />
+            </folder>
+            <folder Name="OS">
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/OS/sys_arch.c" />
+            </folder>
+          </folder>
         </folder>
         <folder Name="USBDevice">
           <folder Name="LPCUSBLib">
@@ -855,6 +866,37 @@
                 <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.h" />
               </folder>
             </folder>
+          </folder>
+        </folder>
+        <folder Name="SEGGER">
+          <folder Name="RTT">
+            <file file_name="../../../../../../Source/Library/SEGGER/RTT/SEGGER_RTT.c" />
+            <file file_name="../../../../../../Source/Library/SEGGER/RTT/SEGGER_RTT.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/RTT/SEGGER_RTT_Conf.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/RTT/SEGGER_RTT_Printf.c" />
+          </folder>
+          <folder Name="SystemView">
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.c" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_Conf.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_ConfDefaults.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_Config_FreeRTOS.c" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.c" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h" />
+            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_Int.h" />
+            <configuration
+              Name="THUMB Flash Release"
+              build_exclude_from_build="No" />
+            <configuration
+              Name="THUMB Flash Debug"
+              build_exclude_from_build="No" />
+            <configuration
+              Name="THUMB Flash Debug-Trace"
+              build_exclude_from_build="Yes" />
+            <configuration
+              Name="THUMB Flash Debug-Trace CLANG"
+              build_exclude_from_build="Yes" />
           </folder>
         </folder>
         <folder Name="Encryption">
@@ -1036,10 +1078,24 @@
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.c" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Watchdog.c" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/uEZProcessor_LPC43xx.h" />
-            <folder Name="CrossWorks">
-              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/thumb_crt0.s" />
-              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/LPC4300_Startup.s" />
-              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/LPC4300_Target.js">
+            <folder Name="CMSIS">
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_common_tables.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_const_structs.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_math.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0plus.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4_simd.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmFunc.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmInstr.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/LPC43xx.h" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.c" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.h" />
+            </folder>
+            <folder Name="GCC">
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/GCC/thumb_crt0.s" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/GCC/LPC4300_Startup.s" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/GCC/LPC4300_Target.js">
                 <configuration Name="Common" file_type="Target Script" />
               </file>
             </folder>
@@ -1165,38 +1221,38 @@
       <folder Name="Device">
         <folder Name="LCD">
           <file file_name="../../../../../../Include/Device/LCD/Config_LCD.h" />
-          <file file_name="../../../../../../Include/Device/Watchdog.h" />
-          <file file_name="../../../../../../Include/Device/Accelerometer.h" />
-          <file file_name="../../../../../../Include/Device/ADCBank.h" />
-          <file file_name="../../../../../../Include/Device/AudioAmp.h" />
-          <file file_name="../../../../../../Include/Device/AudioCodec.h" />
-          <file file_name="../../../../../../Include/Device/Backlight.h" />
-          <file file_name="../../../../../../Include/Device/ButtonBank.h" />
-          <file file_name="../../../../../../Include/Device/CharDisplay.h" />
-          <file file_name="../../../../../../Include/Device/DAC.h" />
-          <file file_name="../../../../../../Include/Device/EEPROM.h" />
-          <file file_name="../../../../../../Include/Device/ExternalInterrupt.h" />
-          <file file_name="../../../../../../Include/Device/FileSystem.h" />
-          <file file_name="../../../../../../Include/Device/Flash.h" />
-          <file file_name="../../../../../../Include/Device/GPDMA.h" />
-          <file file_name="../../../../../../Include/Device/I2CBus.h" />
-          <file file_name="../../../../../../Include/Device/I2S.h" />
-          <file file_name="../../../../../../Include/Device/Keypad.h" />
-          <file file_name="../../../../../../Include/Device/LCD.h" />
-          <file file_name="../../../../../../Include/Device/LEDBank.h" />
-          <file file_name="../../../../../../Include/Device/LightSensor.h" />
-          <file file_name="../../../../../../Include/Device/MassStorage.h" />
-          <file file_name="../../../../../../Include/Device/Network.h" />
-          <file file_name="../../../../../../Include/Device/PWM.h" />
-          <file file_name="../../../../../../Include/Device/RTC.h" />
-          <file file_name="../../../../../../Include/Device/SPIBus.h" />
-          <file file_name="../../../../../../Include/Device/Stream.h" />
-          <file file_name="../../../../../../Include/Device/Temperature.h" />
-          <file file_name="../../../../../../Include/Device/ToneGenerator.h" />
-          <file file_name="../../../../../../Include/Device/Touchscreen.h" />
-          <file file_name="../../../../../../Include/Device/USBDevice.h" />
-          <file file_name="../../../../../../Include/Device/USBHost.h" />
         </folder>
+        <file file_name="../../../../../../Include/Device/Watchdog.h" />
+        <file file_name="../../../../../../Include/Device/Accelerometer.h" />
+        <file file_name="../../../../../../Include/Device/ADCBank.h" />
+        <file file_name="../../../../../../Include/Device/AudioAmp.h" />
+        <file file_name="../../../../../../Include/Device/AudioCodec.h" />
+        <file file_name="../../../../../../Include/Device/Backlight.h" />
+        <file file_name="../../../../../../Include/Device/ButtonBank.h" />
+        <file file_name="../../../../../../Include/Device/CharDisplay.h" />
+        <file file_name="../../../../../../Include/Device/DAC.h" />
+        <file file_name="../../../../../../Include/Device/EEPROM.h" />
+        <file file_name="../../../../../../Include/Device/ExternalInterrupt.h" />
+        <file file_name="../../../../../../Include/Device/FileSystem.h" />
+        <file file_name="../../../../../../Include/Device/Flash.h" />
+        <file file_name="../../../../../../Include/Device/GPDMA.h" />
+        <file file_name="../../../../../../Include/Device/I2CBus.h" />
+        <file file_name="../../../../../../Include/Device/I2S.h" />
+        <file file_name="../../../../../../Include/Device/Keypad.h" />
+        <file file_name="../../../../../../Include/Device/LCD.h" />
+        <file file_name="../../../../../../Include/Device/LEDBank.h" />
+        <file file_name="../../../../../../Include/Device/LightSensor.h" />
+        <file file_name="../../../../../../Include/Device/MassStorage.h" />
+        <file file_name="../../../../../../Include/Device/Network.h" />
+        <file file_name="../../../../../../Include/Device/PWM.h" />
+        <file file_name="../../../../../../Include/Device/RTC.h" />
+        <file file_name="../../../../../../Include/Device/SPIBus.h" />
+        <file file_name="../../../../../../Include/Device/Stream.h" />
+        <file file_name="../../../../../../Include/Device/Temperature.h" />
+        <file file_name="../../../../../../Include/Device/ToneGenerator.h" />
+        <file file_name="../../../../../../Include/Device/Touchscreen.h" />
+        <file file_name="../../../../../../Include/Device/USBDevice.h" />
+        <file file_name="../../../../../../Include/Device/USBHost.h" />
       </folder>
       <folder Name="HAL">
         <file file_name="../../../../../../Include/HAL/Watchdog.h" />
@@ -1291,19 +1347,24 @@
     <configuration
       Name="Debug-Trace CLANG"
       arm_compiler_variant="clang"
-      batch_build_configurations="Debug;Debug-Trace;Debug-Trace CLANG;Release;ReleaseOptForSize" />
+      build_debug_information="Yes" />
+    <configuration
+      Name="Debug-Trace"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
+    <configuration Name="Debug" build_debug_information="Yes" />
+    <configuration Name="Release" gcc_optimization_level="Level 2" />
+    <configuration
+      Name="ReleaseOptForSize"
+      gcc_optimization_level="Optimize For Size" />
   </project>
   <configuration
     Name="THUMB"
     Platform="ARM"
     arm_instruction_set="Thumb"
     arm_library_instruction_set="Thumb"
-    c_preprocessor_definitions="__THUMB"
     hidden="Yes" />
-  <configuration
-    Name="Flash"
-    c_preprocessor_definitions="__FLASH_BUILD"
-    hidden="Yes" />
+  <configuration Name="Flash" hidden="Yes" />
   <configuration
     Name="Debug"
     c_preprocessor_definitions="DEBUG"
@@ -1316,18 +1377,10 @@
     gcc_debugging_level="Level 1"
     gcc_optimization_level="Level 1"
     hidden="Yes" />
-  <configuration
-    Name="ReleaseOptForSize"
-    gcc_optimization_level="Optimize For Size" />
-  <configuration
-    Name="Debug-Trace"
-    build_output_file_name="$(OutDir)/$(ProjectName)_$(Configuration)$(LIB)"
-    c_preprocessor_definitions="FREERTOS_PLUS_TRACE"
-    inherited_configurations="THUMB;Flash" />
+  <configuration Name="Debug-Trace" inherited_configurations="THUMB;Flash" />
   <configuration Name="Debug" inherited_configurations="Flash;THUMB" />
   <configuration Name="Release" inherited_configurations="Flash;THUMB" />
   <configuration
     Name="Debug-Trace CLANG"
-    batch_build_configurations="Debug;Debug-Trace;Debug-Trace CLANG;Release;ReleaseOptForSize"
     inherited_configurations="Flash;THUMB" />
 </solution>

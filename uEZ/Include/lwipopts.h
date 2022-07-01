@@ -33,13 +33,13 @@
 #define __LWIPOPTS_H__
 
 #define TCPIP_THREAD_NAME               "lwIP"
-#define TCPIP_THREAD_STACKSIZE          2048
+#define TCPIP_THREAD_STACKSIZE          16384
 #define TCPIP_THREAD_PRIO               3
 
-#define DEFAULT_THREAD_STACKSIZE        256
+#define DEFAULT_THREAD_STACKSIZE        2048
 #define DEFAULT_THREAD_PRIO             1
 
-#define LWIP_DEBUG                      0
+#define LWIP_DEBUG                      LWIP_DBG_ON
 #define DBG_TYPES_ON                    0xff
 #ifdef DEG
 #define ETHARP_DEBUG                    LWIP_DBG_OFF
@@ -113,7 +113,7 @@
 #define DNS_DEBUG                       LWIP_DBG_OFF
 //#endif
 
-#define LWIP_NOASSERT                   0
+#define LWIP_NOASSERT                   0 // removing this creates lots of warnings
 
 /**
  * SYS_LIGHTWEIGHT_PROT==1: if you want inter-task protection for certain
@@ -145,33 +145,31 @@
  * If the application sends a lot of data out of ROM (or other static memory),
  * this should be set high.
  */
-#define MEMP_NUM_PBUF                   20
+#define MEMP_NUM_PBUF                   100//40
 
 /**
  * MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One
  * per active UDP "connection".
  * (requires the LWIP_UDP option)
  */
-#define MEMP_NUM_UDP_PCB                4
+#define MEMP_NUM_UDP_PCB                8
 
 /**
  * MEMP_NUM_TCP_PCB: the number of simulatenously active TCP connections.
  * (requires the LWIP_TCP option)
- */ 
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define MEMP_NUM_TCP_PCB                8
-#else
-#define MEMP_NUM_TCP_PCB                16     
+ */
+//For RX builds define in Config_Build.h as 8
+#ifndef MEMP_NUM_TCP_PCB
+#define MEMP_NUM_TCP_PCB                60
 #endif
 
 /**
  * MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP connections.
  * (requires the LWIP_TCP option)
  */
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define MEMP_NUM_TCP_PCB_LISTEN         4
-#else
-#define MEMP_NUM_TCP_PCB_LISTEN         16     
+//For RX builds define in Config_Build.h as 4
+#ifndef MEMP_NUM_TCP_PCB_LISTEN
+#define MEMP_NUM_TCP_PCB_LISTEN         20
 #endif
 
 /**
@@ -184,52 +182,54 @@
  * MEMP_NUM_SYS_TIMEOUT: the number of simulateously active timeouts.
  * (requires NO_SYS==0)
  */
-#define MEMP_NUM_SYS_TIMEOUT            5
+#define MEMP_NUM_SYS_TIMEOUT            20
 
 /**
  * MEMP_NUM_NETBUF: the number of struct netbufs.
  * (only needed if you use the sequential API, like api_lib.c)
  */
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define MEMP_NUM_NETBUF                 3 
-#else
-#define MEMP_NUM_NETBUF                 6 // 4
+//For RX builds define in Config_Build.h as 3
+#ifndef MEMP_NUM_NETBUF
+#define MEMP_NUM_NETBUF                 20 // 4
 #endif
 
 /**
  * MEMP_NUM_NETCONN: the number of struct netconns.
  * (only needed if you use the sequential API, like api_lib.c)
  */
-#define MEMP_NUM_NETCONN                8
+#define MEMP_NUM_NETCONN                50
 
 /**
  * MEMP_NUM_TCPIP_MSG_API: the number of struct tcpip_msg, which are used
  * for callback/timeout API communication. 
  * (only needed if you use tcpip.c)
  */
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define MEMP_NUM_TCPIP_MSG_API          4
-#else
-#define MEMP_NUM_TCPIP_MSG_API          8  
+//For RX builds define in Config_Build.h as 4
+#ifndef MEMP_NUM_TCPIP_MSG_API
+#define MEMP_NUM_TCPIP_MSG_API          20
 #endif
 
 /**
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool. 
- */
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define PBUF_POOL_SIZE                  12
-#else
-#define PBUF_POOL_SIZE                  20
+// */
+//For RX builds define in Config_Build.h as 12
+#ifndef PBUF_POOL_SIZE
+#define PBUF_POOL_SIZE                  MEMP_NUM_PBUF
 #endif
+
+#ifndef TCPIP_MBOX_SIZE
+#define TCPIP_MBOX_SIZE                 MEMP_NUM_PBUF
+#endif
+
+#define MEMP_NUM_TCPIP_MSG_INPKT        MEMP_NUM_PBUF
 
 /**
  * PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. The default is
  * designed to accomodate single full size TCP frame in one pbuf, including
  * TCP_MSS, IP header, and link header.
  */
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define PBUF_POOL_BUFSIZE               256
-#else
+//For RX builds define in Config_Build.h as 256
+#ifndef PBUF_POOL_BUFSIZE
 #define PBUF_POOL_BUFSIZE               1514
 #endif
 
@@ -241,18 +241,19 @@
 /**
  * LWIP_TCP==1: Turn on TCP.
  */
+#define TCP_TMR_INTERVAL                250
 #define LWIP_TCP                        1
 
 /* TCP Maximum segment size. */
-#define TCP_MSS                         1500
+#define TCP_MSS                         1500//1000
 
 /* TCP sender buffer space (bytes). */
-#define TCP_SND_BUF                     1500
+#define TCP_SND_BUF                     TCP_MSS*2
 
 /**
  * TCP_WND: The size of a TCP window.
  */
-#define TCP_WND                         1500
+#define TCP_WND                         TCP_MSS*2
 
 /**
  * TCP_MAXRTX: Maximum number of retransmissions of data segments.
@@ -264,21 +265,67 @@
  */
 #define TCP_SYNMAXRTX                   4
                                  
-#define LWIP_PROVIDE_ERRNO 1
+#define MEMP_OVERFLOW_CHECK             0 // This flag should be 0 for releases!
+//#define MEMP_SANITY_CHECK             0 // for testing
 
-#define MEM_USE_POOLS                   1
-#define MEMP_USE_CUSTOM_POOLS           1
-#define MEMP_OVERFLOW_CHECK             0  // This flag should be 0 for releases!
-
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define LWIP_DNS                        0
-#else
+//For RX builds define in Config_Build.h as 0
+#ifndef LWIP_DNS
 #define LWIP_DNS                        1
+#endif
 
 // Turn on SNMP, say we are using the .private section, and declare some memory for it
-#define LWIP_SNMP                       0
+#define LWIP_SNMP                       0//1
 #define SNMP_PRIVATE_MIB                1
 #define LWIP_SNMP_NUM_VARS              200
+
+#define LWIP_SO_RCVTIMEO                1
+
+#define LWIP_PROVIDE_ERRNO              1
+
+#define BYTE_ORDER                      LITTLE_ENDIAN
+
+#define NO_SYS                          0
+
+#define LWIP_SOCKET                     1
+
+#define LWIP_DHCP                       1
+#define LWIP_UDP                        1
+
+#if LWIP_2_0_x
+// for LWIP2 you need both normal and custom pools enabled!
+#define MEM_USE_POOLS                   1 
+#define MEMP_USE_CUSTOM_POOLS           1
+
+#define htons(x)                        lwip_htons(x)
+#include "sys_arch.h"
+#define LWIP_RAND()                     ((u32_t)GetRandomNumber())
+/*----- Value in opt.h for CHECKSUM_GEN_UDP: 1 -----*/
+#define CHECKSUM_GEN_UDP                0
+/*----- Value in opt.h for CHECKSUM_GEN_ICMP: 1 -----*/
+#define CHECKSUM_GEN_ICMP               0
+/*----- Value in opt.h for CHECKSUM_CHECK_IP: 1 -----*/
+#define CHECKSUM_CHECK_IP               0
+/*----- Value in opt.h for CHECKSUM_CHECK_UDP: 1 -----*/
+#define CHECKSUM_CHECK_UDP              0
+/*----- Value in opt.h for CHECKSUM_CHECK_TCP: 1 -----*/
+#define CHECKSUM_CHECK_TCP              0
+
+#define LWIP_CHKSUM_ALGORITHM           3
+
+#define LWIP_ETHERNET                   1
+#define LWIP_NETCONN                    1
+
+/** ETH_PAD_SIZE: number of bytes added before the ethernet header to ensure
+ * alignment of payload after that header. Since the header is 14 bytes long,
+ * without this padding e.g. addresses in the IP header will not be aligned
+ * on a 32-bit boundary, so setting this to 2 can speed up 32-bit-platforms.
+ */
+//#define ETH_PAD_SIZE                    2 //Currently broken
+#else
+// for LWIP1 you can only enable 1 or the other pool setting depending on config
+#define MEM_USE_POOLS                   1 
+#define MEMP_USE_CUSTOM_POOLS           1 
+
 #endif
 
 #endif /* __LWIPOPTS_H__ */

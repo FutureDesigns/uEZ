@@ -29,7 +29,7 @@
 #include <HAL/Interrupt.h>
 #include "LPC43xx_SD_MMC.h"
 #include "LPC43xx_GPIO.h"
-#include "IAR/include/CMSIS/LPC43xx.h"
+#include "CMSIS/LPC43xx.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -416,6 +416,12 @@ void ISetupDMA(LPC43xx_SD_MMC_DMAArea *aDMAArea, TUInt32 addr, TUInt32 size)
     int i = 0;
     TUInt32 ctrl, maxs;
 
+    /* // Enable this code to check for unaligned Read/Write buffer pointers
+       // so that you can remove them from the application.
+    if (addr & 0x03) {
+       UEZFailureMsg("LPC43xx_SD_MMC.c:ISetupDMA requires 32-bit aligned address!");
+    }*/
+    
     // Reset DMA
     LPC_SDMMC->CTRL |= MCI_CTRL_DMA_RESET | MCI_CTRL_FIFO_RESET;
     while (LPC_SDMMC->CTRL & MCI_CTRL_DMA_RESET) {

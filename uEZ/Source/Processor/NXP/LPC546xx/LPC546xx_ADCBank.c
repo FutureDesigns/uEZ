@@ -30,17 +30,29 @@
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_ADCBank.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_GPIO.h>
 
+//TODO: remove
+#include "iar/Include/CMSIS/LPC54608.h"
+
+//TODO: Clean up
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
 typedef struct {
-    TVUInt32 iCR; // 0x00 - A/D Control Register
-    TVUInt32 iGDR; // 0x04 - A/D Global Data Register
-    TVUInt32 reserved; // 0x08
-    TVUInt32 iINTEN; // 0x0C - A/D Interrupt Enable
-    TVUInt32 iDR[8]; // 0x10-0x2C - A/D Channel 0 through 7 Data Registers
-    TVUInt32 iSTAT; // 0x30 - A/D Status Register
-    TVUInt32 iADTRM; // 0x34 -
+    TVUInt32 iCTRL;
+    TVUInt32 iINSEL;
+    TVUInt32 iSEQ_CTRL[2];
+    TVUInt32 iSEQ_GDAT[2];
+    TVUInt8 iRESERVED_0[8];
+    TVUInt32 iDAT[12];
+    TVUInt32 iTHR0_LOW;
+    TVUInt32 iTHR1_LOW;
+    TVUInt32 iTHR0_HIGH;
+    TVUInt32 iTHR1_HIGH;
+    TVUInt32 iCHAN_THRSEL;
+    TVUInt32 iINTEN;
+    TVUInt32 iFLAGS;
+    TVUInt32 iSTARTUP;
+    TVUInt32 iCALIB;
 } T_LPC546xx_ADC_Registers;
 
 typedef struct {
@@ -52,21 +64,11 @@ typedef struct {
     TUInt32 iInterruptChannel;
 } T_LPC546xx_ADC_Workspace;
 
-#define IOCON_A_AD(func) \
-    SCU_NORMAL_DRIVE(func, \
-                    SCU_EPD_DISABLE, \
-                    SCU_EPUN_DISABLE, \
-                    SCU_EHS_SLOW, \
-                    SCU_EZI_DISABLE, \
-                    SCU_ZIF_ENABLE)
-
-    // IOCON_A(func, IOCON_NO_PULL, IOCON_HYS_DISABLE, IOCON_INVERT_OFF, /
-    //    IOCON_ANALOG, IOCON_FILTER_OFF, IOCON_PUSH_PULL, IOCON_DAC_DISABLE)
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-T_LPC546xx_ADC_Workspace *G_adc0Workspace = 0;
-T_LPC546xx_ADC_Workspace *G_adc1Workspace = 0;
+static T_LPC546xx_ADC_Workspace *G_adc0Workspace = 0;
+static TUInt32 G_ADC_CLK_Hz = 0;
 
 /*---------------------------------------------------------------------------*
  * Routine:  ILPC546xx_ADC_ADC0_ISR
@@ -80,33 +82,13 @@ T_LPC546xx_ADC_Workspace *G_adc1Workspace = 0;
  *---------------------------------------------------------------------------*/
 static void ILPC546xx_ADC_ADC_ISR(T_LPC546xx_ADC_Workspace *p)
 {
-    TVUInt32 *p_dregs;
-//    TVUInt32 stats;
-    TUInt32 gdr;
-    TUInt32 channel;
     TUInt32 v;
 
-    // We got a group of readings.  Copy over the data
-    gdr = p->iReg->iGDR;
-    channel = (gdr >> 24) & 0x7;
-    p_dregs = p->iReg->iDR;
+    v = p->iReg->iDAT[p->iRequest.iADCChannel];
 
-    // The bit size is always 12 bits from the LPC546xx, but
-    // raised by 4 bites of zeros, so it's like a 16 bit reading.
-    // What we do here is shift the value up or down based on the
-    // requested bit size
-    v = p_dregs[channel] & 0xFFF0;
+    *p->iRequest.iCapturedData = (v >> 4) & 0xFF;
 
-    // Shift up or down depending on requested bit size
-    if (p->iRequest.iBitSampleSize < 16) {
-        v >>= (16 - p->iRequest.iBitSampleSize);
-    } else {
-        v <<= (p->iRequest.iBitSampleSize - 16);
-    }
-    *p->iRequest.iCapturedData = v;
-
-//    stats = p->iReg->iSTAT;
-//    stats++;
+    p->iReg->iFLAGS = (1<<28);
 
     // Tell the callback routine the data is ready
     p->iCallbackAPI->CaptureComplete(p->iCallbackWorkspace, &p->iRequest);
@@ -123,24 +105,32 @@ static void ILPC546xx_ADC_ADC_ISR(T_LPC546xx_ADC_Workspace *p)
  *---------------------------------------------------------------------------*/
 static void IADCConfig(T_LPC546xx_ADC_Workspace *p, ADC_RequestSingle *aRequest)
 {
+    T_LPC546xx_ADC_Registers *reg = p->iReg;
+    TUInt32 temp = 1; //Default to ClockSynchronousMode, div 2
 
-    // Ensure the power is on
-    LPC546xxPowerOn(1 << 12);
+    reg->iINTEN = 0x00; //Disable Interrupts
 
-    // Setup control register
-    p->iReg->iCR =
-    // Which channels to activate
-            (1 << aRequest->iADCChannel) |
-            // Rate of sampling clock.  Less than or equal to 12.4 MHz
-                    (((((PCLK_FREQUENCY - 1) / 12400000) + 1) & 0x7F) << 8) |
-            // Continuous readings or just one?  Just one
-                    0 |
-            // Number of bits per sample (less bits equals faster sampling)
-                    // operational, not powerdown
-                    (1 << 21) |
-            // When to start (mapping is one to one) ... for now, force no triggering
-                    (0 << 24) | ((aRequest->iTriggerOnFallingEdge) ? (1 << 27)
-                    : 0);
+    //Expecting the ADC clock source to be configured below 80MHz in the create function
+
+    switch(aRequest->iBitSampleSize){
+        case 12:
+            temp |= ADC_CTRL_RESOL(3);
+            break;
+        case 10:
+            temp |= ADC_CTRL_RESOL(2);
+            break;
+        case 8:
+            temp |= ADC_CTRL_RESOL(1);
+            break;
+        case 6:
+            temp |= ADC_CTRL_RESOL(0);
+            break;
+        default:
+            temp |= ADC_CTRL_RESOL(2);//Default to 10
+            break;
+    }
+
+    reg->iCTRL = temp;
 }
 
 /*---------------------------------------------------------------------------*
@@ -160,6 +150,7 @@ T_uezError ADC_LPC546xx_RequestSingle(
         ADC_RequestSingle *aRequest)
 {
     T_LPC546xx_ADC_Workspace *p = (T_LPC546xx_ADC_Workspace *)aWorkspace;
+    TUInt32 temp;
 
     // Ensure the interrupt is disabled
     InterruptDisable(p->iInterruptChannel);
@@ -173,14 +164,22 @@ T_uezError ADC_LPC546xx_RequestSingle(
     // At this point, nothing is enabled.
     // Are we starting or stopping?
     if (aRequest->iTrigger != ADC_TRIGGER_STOP) {
-        // Setup the interrupts for these
-        p->iReg->iINTEN = (1 << aRequest->iADCChannel);
+        temp =  (1<<p->iRequest.iADCChannel);
+
+        temp |= ADC_SEQ_CTRL_MODE_MASK;
+
+        //Setup the SEQA CTRL
+        p->iReg->iSEQ_CTRL[0] = temp;
+
+        p->iReg->iSEQ_CTRL[0] |= (TUInt32)(1<<31); //Enable
+
+        p->iReg->iINTEN = (1 << 0); //Using only SEQA
 
         // Allow interrupt to be enabled (but it won't at this point)
         InterruptEnable(p->iInterruptChannel);
 
-        // Start trigger (by filling in the trigger type)
-        p->iReg->iCR |= (aRequest->iTrigger << 24);
+        UEZBSPDelay1MS();
+        p->iReg->iSEQ_CTRL[0] |= ADC_SEQ_CTRL_START_MASK;
     }
 
     return UEZ_ERROR_NONE;
@@ -196,19 +195,6 @@ IRQ_ROUTINE(ILPC546xx_ADC_ADC0_Interrupt)
 {
     IRQ_START();
     ILPC546xx_ADC_ADC_ISR(G_adc0Workspace);
-    IRQ_END();
-}
-
-/*---------------------------------------------------------------------------*
- * Interrupt Routine:  ILPC546xx_ADC_ADC1_Interrupt
- *---------------------------------------------------------------------------*
- * Description:
- *      Catch ADC0 interrupt and use the ISR routine for it
- *---------------------------------------------------------------------------*/
-IRQ_ROUTINE(ILPC546xx_ADC_ADC1_Interrupt)
-{
-    IRQ_START();
-    ILPC546xx_ADC_ADC_ISR(G_adc1Workspace);
     IRQ_END();
 }
 
@@ -237,43 +223,13 @@ T_uezError ADC_LPC546xx_Configure_ADC0(
 T_uezError LPC546xx_ADC_ADC0_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC546xx_ADC_Workspace *p = (T_LPC546xx_ADC_Workspace *)aWorkspace;
-    p->iReg = (T_LPC546xx_ADC_Registers *)LPC_ADC0_BASE;
+    p->iReg = (T_LPC546xx_ADC_Registers *)ADC0_BASE;
     G_adc0Workspace = p;
-    p->iInterruptChannel = ADC0_IRQn;
-
-    //Turn on peripheral clock
-    LPC_CGU->BASE_VADC_CLK = (9<<24) | (1<<11) | (0<<0);
+    p->iInterruptChannel = ADC0_SEQA_IRQn;
 
     // Register an interrupt for this ADC but don't start it.
-    InterruptRegister(ADC0_IRQn, ILPC546xx_ADC_ADC0_Interrupt,
+    InterruptRegister(p->iInterruptChannel, ILPC546xx_ADC_ADC0_Interrupt,
             INTERRUPT_PRIORITY_NORMAL, "ADC0");
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LPC546xx_ADC_ADC0_InitializeWorkspace
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the LPC546xx ADC0 workspace.
- * Inputs:
- *      void *aW                    -- Particular ADC workspace
- * Outputs:
- *      T_uezError                   -- Error code
- *---------------------------------------------------------------------------*/
-T_uezError LPC546xx_ADC_ADC1_InitializeWorkspace(void *aWorkspace)
-{
-    T_LPC546xx_ADC_Workspace *p = (T_LPC546xx_ADC_Workspace *)aWorkspace;
-    p->iReg = (T_LPC546xx_ADC_Registers *)LPC_ADC1_BASE;
-    G_adc1Workspace = p;
-    p->iInterruptChannel = ADC1_IRQn;
-
-    //Turn on peripheral clock
-    LPC_CGU->BASE_VADC_CLK = (9<<24) | (1<<11) | (0<<0);
-
-    // Register an interrupt for this ADC but don't start it.
-    InterruptRegister(ADC1_IRQn, ILPC546xx_ADC_ADC1_Interrupt,
-            INTERRUPT_PRIORITY_NORMAL, "ADC1");
 
     return UEZ_ERROR_NONE;
 }
@@ -292,277 +248,284 @@ const HAL_ADCBank ADC_LPC546xx_ADC0_Interface = {
         ADC_LPC546xx_Configure_ADC0,
         ADC_LPC546xx_RequestSingle, };
 
-const HAL_ADCBank ADC_LPC546xx_ADC1_Interface = {
-        {
-        "ADC:LPC546xx:ADC1",
-        0x0100,
-        LPC546xx_ADC_ADC1_InitializeWorkspace,
-        sizeof(T_LPC546xx_ADC_Workspace),
-        },
-
-        ADC_LPC546xx_Configure_ADC0,
-        ADC_LPC546xx_RequestSingle, };
-
 /*---------------------------------------------------------------------------*
  * Requirement routines:
  *---------------------------------------------------------------------------*/
 void LPC546xx_ADC0_Require(void)
 {
+    T_LPC546xx_ADC_Workspace *p;
     HAL_DEVICE_REQUIRE_ONCE();
     HALInterfaceRegister("ADC0", (T_halInterface *)&ADC_LPC546xx_ADC0_Interface,
-            0, 0);
+            0, (T_halWorkspace **)&p);
+
+    LPC546xxPowerOn(kCLOCK_Adc0);
+    POWER_DisablePD(kPDRUNCFG_PD_VDDA);    /* Power on VDDA. */
+    POWER_DisablePD(kPDRUNCFG_PD_ADC0);    /* Power on the ADC converter. */
+    POWER_DisablePD(kPDRUNCFG_PD_VD2_ANA); /* Power on the analog power supply. */
+    POWER_DisablePD(kPDRUNCFG_PD_VREFP);   /* Power on the reference voltage source. */
+
+    if(((SYSCON->MAINCLKSELB & 0x3) == 0) && ((SYSCON->MAINCLKSELA & 0x03) == 0x03)){
+        SYSCON->ADCCLKSEL = 0x00;
+        if(PROCESSOR_OSCILLATOR_FREQUENCY == 96000000){
+            SYSCON->ADCCLKDIV = 1;
+            G_ADC_CLK_Hz = PROCESSOR_OSCILLATOR_FREQUENCY / 2;
+        } else {
+            SYSCON->ADCCLKDIV = 0;
+            G_ADC_CLK_Hz = PROCESSOR_OSCILLATOR_FREQUENCY; //Get below 80MHZ
+        }
+    } else if(((SYSCON->MAINCLKSELB & 0x3) == 0x02)){
+        SYSCON->ADCCLKSEL = 0x01; //Main PLL
+        if(PROCESSOR_OSCILLATOR_FREQUENCY <= 80000000){
+            SYSCON->ADCCLKDIV = 0;
+            G_ADC_CLK_Hz = PROCESSOR_OSCILLATOR_FREQUENCY;
+        } else if(PROCESSOR_OSCILLATOR_FREQUENCY <= 160000000){
+            SYSCON->ADCCLKDIV = 1;
+            G_ADC_CLK_Hz = PROCESSOR_OSCILLATOR_FREQUENCY/2;
+        } else {
+            SYSCON->ADCCLKDIV = 2;
+            G_ADC_CLK_Hz = PROCESSOR_OSCILLATOR_FREQUENCY/3;
+        }
+
+    } else {
+        UEZFailureMsg("Unknown clock configuration for ADC!");
+    }
+    
+#if 1
+    uint32_t i;
+
+    /* Enable the converter. */
+    /* This bit acn only be set 1 by software. It is cleared automatically whenever the ADC is powered down.
+       This bit should be set after at least 10 ms after the ADC is powered on. */
+    p->iReg->iSTARTUP = ADC_STARTUP_ADC_ENA_MASK;
+    for (i = 0U; i < 0x10; i++) /* Wait a few clocks to startup up. */
+    {
+        __ASM("NOP");
+    }
+    if (!(p->iReg->iSTARTUP & ADC_STARTUP_ADC_ENA_MASK))
+    {
+        //return false; /* ADC is not powered up. */
+    }
+
+    /* If not in by-pass mode, do the calibration. */
+    if ((ADC_CALIB_CALREQD_MASK == (p->iReg->iCALIB & ADC_CALIB_CALREQD_MASK)) &&
+        (0U == (p->iReg->iCTRL & ADC_CTRL_BYPASSCAL_MASK)))
+    {
+        /* Calibration is needed, do it now. */
+        p->iReg->iCALIB = ADC_CALIB_CALIB_MASK;
+        i = 0xF0000;
+        while ((ADC_CALIB_CALIB_MASK == (p->iReg->iCALIB & ADC_CALIB_CALIB_MASK)) && (--i))
+        {
+        }
+        if (i == 0U)
+        {
+            //return false; /* Calibration timeout. */
+        }
+    }
+
+    /* A dummy conversion cycle will be performed. */
+    p->iReg->iSTARTUP |= ADC_STARTUP_ADC_INIT_MASK;
+    i = 0x7FFFF;
+    while ((ADC_STARTUP_ADC_INIT_MASK == (p->iReg->iSTARTUP & ADC_STARTUP_ADC_INIT_MASK)) && (--i))
+    {
+    }
+    if (i == 0U)
+    {
+        //return false;
+    }
+
+   //return true;
+#endif
 }
 
-void LPC546xx_ADC1_Require(void)
-{
-    HAL_DEVICE_REQUIRE_ONCE();
-    HALInterfaceRegister("ADC1", (T_halInterface *)&ADC_LPC546xx_ADC1_Interface,
-            0, 0);
-}
+#define ICON_A_AM(n)        (IOCON_A(n, IOCON_NO_PULL, \
+                                        IOCON_INVERT_DISABLE, \
+                                        IOCON_ANALOG, \
+                                        IOCON_FILTER_ON, \
+                                        IOCON_NORMAL))
 
 void LPC546xx_ADC0_0_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_0[] = {
-            {GPIO_P2_3, IOCON_A_AD(0)}, // ADC0.0
+    static const T_LPC546xx_ICON_ConfigList adc0_0[] = {
+            {GPIO_P0_10, ICON_A_AM(0)}, // ADC0.0
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
         LPC546xx_GPIO2_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_0, ARRAY_COUNT(adc0_0));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_0, ARRAY_COUNT(adc0_0));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 0);
+        //LPC_SCU->ENAIO0 |= (1 << 0);
     }
 }
 void LPC546xx_ADC0_1_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_1[] = {
-            {GPIO_P2_1, IOCON_A_AD(0)}, // ADC0.1
+    static const T_LPC546xx_ICON_ConfigList adc0_1[] = {
+            {GPIO_P0_11, ICON_A_AM(0)}, // ADC0.1
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
         LPC546xx_GPIO2_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_1, ARRAY_COUNT(adc0_1));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_1, ARRAY_COUNT(adc0_1));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 1);
+        //LPC_SCU->ENAIO0 |= (1 << 1);
     }
 }
 void LPC546xx_ADC0_2_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_2[] = {
-            {GPIO_P7_22, IOCON_A_AD(4)}, // ADC0.2
+    static const T_LPC546xx_ICON_ConfigList adc0_2[] = {
+            {GPIO_P0_12, ICON_A_AM(4)}, // ADC0.2
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
+        LPC546xx_GPIO0_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_2, ARRAY_COUNT(adc0_2));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_2, ARRAY_COUNT(adc0_2));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 2);
+        //LPC_SCU->ENAIO0 |= (1 << 2);
     }
 }
 void LPC546xx_ADC0_3_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_3[] = {
-            {GPIO_P3_13, IOCON_A_AD(0)}, // ADC0.3
+    static const T_LPC546xx_ICON_ConfigList adc0_3[] = {
+            {GPIO_P0_15, ICON_A_AM(0)}, // ADC0.3
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO3_Require();
+        LPC546xx_GPIO0_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_3, ARRAY_COUNT(adc0_3));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_3, ARRAY_COUNT(adc0_3));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 3);
+        //LPC_SCU->ENAIO0 |= (1 << 3);
     }
 }
 void LPC546xx_ADC0_4_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_4[] = {
-            {GPIO_P3_12, IOCON_A_AD(0)}, // ADC0.4
+    static const T_LPC546xx_ICON_ConfigList adc0_4[] = {
+            {GPIO_P0_16, ICON_A_AM(0)}, // ADC0.4
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO3_Require();
+        LPC546xx_GPIO0_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_4, ARRAY_COUNT(adc0_4));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_4, ARRAY_COUNT(adc0_4));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 4);
+        //LPC_SCU->ENAIO0 |= (1 << 4);
     }
 }
 void LPC546xx_ADC0_5_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_5[] = {
-            {GPIO_P7_24, IOCON_A_AD(4)}, // ADC0.5
+    static const T_LPC546xx_ICON_ConfigList adc0_5[] = {
+            {GPIO_P0_31, ICON_A_AM(0)}, // ADC0.5
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
+        LPC546xx_GPIO0_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_5, ARRAY_COUNT(adc0_5));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_5, ARRAY_COUNT(adc0_5));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 5);
+        //LPC_SCU->ENAIO0 |= (1 << 5);
     }
 }
 void LPC546xx_ADC0_6_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_6[] = {
-            {GPIO_P5_26, IOCON_A_AD(4)}, // ADC0.6
+    static const T_LPC546xx_ICON_ConfigList adc0_6[] = {
+            {GPIO_P1_0, ICON_A_AM(0)}, // ADC0.6
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO5_Require();
+        LPC546xx_GPIO1_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_6, ARRAY_COUNT(adc0_6));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_6, ARRAY_COUNT(adc0_6));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 6);
+        //LPC_SCU->ENAIO0 |= (1 << 6);
     }
 }
 void LPC546xx_ADC0_7_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc0_7[] = {
-            {GPIO_P5_26, IOCON_A_AD(4)}, // ADC0.7
+    static const T_LPC546xx_ICON_ConfigList adc0_7[] = {
+            {GPIO_P2_0, ICON_A_AM(0)}, // ADC0.7
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO5_Require();
+        LPC546xx_GPIO2_Require();
     }
     LPC546xx_ADC0_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc0_7, ARRAY_COUNT(adc0_7));
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_7, ARRAY_COUNT(adc0_7));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO0 |= (1 << 6);
-    }
-}
-void LPC546xx_ADC1_0_Require(T_uezGPIOPortPin aPin)
-{
-    static const T_LPC546xx_SCU_ConfigList adc1_0[] = {
-            {GPIO_P6_2, IOCON_A_AD(4)}, // ADC1.0
-    };
-    HAL_DEVICE_REQUIRE_ONCE();
-    if(aPin != GPIO_NONE){
-        LPC546xx_GPIO6_Require();
-    }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_0, ARRAY_COUNT(adc1_0));
-    if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 0);
-    }
-}
-void LPC546xx_ADC1_1_Require(T_uezGPIOPortPin aPin)
-{
-    static const T_LPC546xx_SCU_ConfigList adc1_1[] = {
-            {GPIO_PZ_Z_PC_0, IOCON_A_AD(1)}, // ADC1.1
-    };
-    HAL_DEVICE_REQUIRE_ONCE();
-    if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
-    }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_1, ARRAY_COUNT(adc1_1));
-    if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 1);
-    }
-}
-void LPC546xx_ADC1_2_Require(T_uezGPIOPortPin aPin)
-{
-    static const T_LPC546xx_SCU_ConfigList adc1_2[] = {
-            {GPIO_P7_23, IOCON_A_AD(4)}, // ADC1.2
-    };
-    HAL_DEVICE_REQUIRE_ONCE();
-    if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
-    }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_2, ARRAY_COUNT(adc1_2));
-    if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 2);
-    }
-}
-void LPC546xx_ADC1_3_Require(T_uezGPIOPortPin aPin)
-{
-    static const T_LPC546xx_SCU_ConfigList adc1_3[] = {
-            {GPIO_P7_20, IOCON_A_AD(4)}, // ADC1.3
-    };
-    HAL_DEVICE_REQUIRE_ONCE();
-    if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
-    }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_3, ARRAY_COUNT(adc1_3));
-    if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 3);
+        //LPC_SCU->ENAIO0 |= (1 << 6);
     }
 }
 
-void LPC546xx_ADC1_4_Require(T_uezGPIOPortPin aPin)
+void LPC546xx_ADC0_8_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc1_4[] = {
-            {GPIO_P7_19, IOCON_A_AD(4)}, // ADC1.4
+    static const T_LPC546xx_ICON_ConfigList adc0_8[] = {
+            {GPIO_P2_1, ICON_A_AM(0)}, // ADC0.8
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
+        LPC546xx_GPIO2_Require();
     }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_4, ARRAY_COUNT(adc1_4));
+    LPC546xx_ADC0_Require();
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_8, ARRAY_COUNT(adc0_8));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 4);
+        //LPC_SCU->ENAIO0 |= (1 << 6);
     }
 }
 
-void LPC546xx_ADC1_5_Require(T_uezGPIOPortPin aPin)
+void LPC546xx_ADC0_9_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc1_5[] = {
-            {GPIO_P7_25, IOCON_A_AD(4)}, // ADC1.4
-    };
-    HAL_DEVICE_REQUIRE_ONCE();
-    if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
-    }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_5, ARRAY_COUNT(adc1_5));
-    if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 5);
-    }
-}
-
-void LPC546xx_ADC1_6_Require(T_uezGPIOPortPin aPin)
-{
-    static const T_LPC546xx_SCU_ConfigList adc1_6[] = {
-            {GPIO_P3_15, IOCON_A_AD(0)}, // ADC1.6
+    static const T_LPC546xx_ICON_ConfigList adc0_9[] = {
+            {GPIO_P3_21, ICON_A_AM(0)}, // ADC0.9
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
         LPC546xx_GPIO3_Require();
     }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_6, ARRAY_COUNT(adc1_6));
+    LPC546xx_ADC0_Require();
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_9, ARRAY_COUNT(adc0_9));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 6);
+        //LPC_SCU->ENAIO0 |= (1 << 6);
     }
 }
 
-void LPC546xx_ADC1_7_Require(T_uezGPIOPortPin aPin)
+void LPC546xx_ADC0_10_Require(T_uezGPIOPortPin aPin)
 {
-    static const T_LPC546xx_SCU_ConfigList adc1_7[] = {
-            {GPIO_P7_21, IOCON_A_AD(4)}, // ADC1.7
+    static const T_LPC546xx_ICON_ConfigList adc0_10[] = {
+            {GPIO_P3_22, ICON_A_AM(0)}, // ADC0.10
     };
     HAL_DEVICE_REQUIRE_ONCE();
     if(aPin != GPIO_NONE){
-        LPC546xx_GPIO7_Require();
+        LPC546xx_GPIO3_Require();
     }
-    LPC546xx_ADC1_Require();
-    LPC546xx_SCU_ConfigPinOrNone(aPin, adc1_7, ARRAY_COUNT(adc1_7));
+    LPC546xx_ADC0_Require();
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_10, ARRAY_COUNT(adc0_10));
     if(aPin != GPIO_NONE){
-        LPC_SCU->ENAIO1 |= (1 << 7);
+        //LPC_SCU->ENAIO0 |= (1 << 6);
+    }
+}
+
+void LPC546xx_ADC0_11_Require(T_uezGPIOPortPin aPin)
+{
+    static const T_LPC546xx_ICON_ConfigList adc0_11[] = {
+            {GPIO_P0_23, ICON_A_AM(0)}, // ADC0.11
+    };
+    HAL_DEVICE_REQUIRE_ONCE();
+    if(aPin != GPIO_NONE){
+        LPC546xx_GPIO0_Require();
+    }
+    LPC546xx_ADC0_Require();
+    LPC546xx_ICON_ConfigPinOrNone(aPin, adc0_11, ARRAY_COUNT(adc0_11));
+    if(aPin != GPIO_NONE){
+        //LPC_SCU->ENAIO0 |= (1 << 6);
     }
 }
 

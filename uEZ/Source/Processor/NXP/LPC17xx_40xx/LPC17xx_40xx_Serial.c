@@ -557,6 +557,23 @@ T_uezError LPC17xx_40xx_Serial_SetSerialSettings(
         default:
             return UEZ_ERROR_NOT_SUPPORTED;
     }
+	
+	switch (aSettings->iFlowControl) {
+        case SERIAL_FLOW_CONTROL_NONE:
+            // default register settings are for none, need to figure out how to set it back
+            //p_info->iUART->MCR |= (0 << 6); // Disable auto RTS
+            //p_info->iUART->MCR |= (0 << 7); // Disable auto CTS
+            break;
+        case SERIAL_FLOW_CONTROL_XON_XOFF:
+            return UEZ_ERROR_NOT_SUPPORTED; // TODO
+        case SERIAL_FLOW_CONTROL_HARDWARE:
+			return UEZ_ERROR_NOT_SUPPORTED; // TODO, example config from 43xx
+            //p_info->iUART->MCR |= (1 << 6); // Auto RTS enable bit
+            //p_info->iUART->MCR |= (1 << 7); // Auto CTS enable bit
+            //break;			
+        default:
+            return UEZ_ERROR_NOT_SUPPORTED;
+    }    
 
     return UEZ_ERROR_NONE;
 }
@@ -661,7 +678,7 @@ T_serialStatusByte LPC17xx_40xx_Serial_GetStatus(void *aWorkspace)
 // List of serial port HAL interfaces
 const HAL_Serial G_LPC17xx_40xx_Serial_UART0 = {
         {
-        "Serial:LCP1788 UART0",
+        "Serial:LPC1788 UART0",
         0x0100,
         LPC17xx_40xx_Serial_InitializeWorkspace_UART0,
         sizeof(T_Serial_LPC17xx_40xx_Workspace),
@@ -679,7 +696,7 @@ const HAL_Serial G_LPC17xx_40xx_Serial_UART0 = {
 
 const HAL_Serial G_LPC17xx_40xx_Serial_UART1 = {
         {
-        "Serial:LCP1788 UART1",
+        "Serial:LPC1788 UART1",
         0x0100,
         LPC17xx_40xx_Serial_InitializeWorkspace_UART1,
         sizeof(T_Serial_LPC17xx_40xx_Workspace),
@@ -697,7 +714,7 @@ const HAL_Serial G_LPC17xx_40xx_Serial_UART1 = {
 
 const HAL_Serial G_LPC17xx_40xx_Serial_UART2 = {
         {
-        "Serial:LCP1788 UART2",
+        "Serial:LPC1788 UART2",
         0x0100,
         LPC17xx_40xx_Serial_InitializeWorkspace_UART2,
         sizeof(T_Serial_LPC17xx_40xx_Workspace),
@@ -715,7 +732,7 @@ const HAL_Serial G_LPC17xx_40xx_Serial_UART2 = {
 
 const HAL_Serial G_LPC17xx_40xx_Serial_UART3 = {
         {
-        "Serial:LCP1788 UART3",
+        "Serial:LPC1788 UART3",
         0x0100,
         LPC17xx_40xx_Serial_InitializeWorkspace_UART3,
         sizeof(T_Serial_LPC17xx_40xx_Workspace),
@@ -733,7 +750,7 @@ const HAL_Serial G_LPC17xx_40xx_Serial_UART3 = {
 	
 const HAL_Serial G_LPC17xx_40xx_Serial_UART4 = {
         {
-        "Serial:LCP1788 UART4",
+        "Serial:LPC1788 UART4",
         0x0100,
         LPC17xx_40xx_Serial_InitializeWorkspace_UART4,
         sizeof(T_Serial_LPC17xx_40xx_Workspace),

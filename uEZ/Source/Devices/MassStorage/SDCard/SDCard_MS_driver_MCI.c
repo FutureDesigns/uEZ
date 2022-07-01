@@ -32,8 +32,16 @@
 /*---------------------------------------------------------------------------*
  * Options:
  *---------------------------------------------------------------------------*/
-#ifndef SDCARD_INIT_TIMEOUT
-#define SDCARD_INIT_TIMEOUT                 4000    // ms, approximate
+/** Per SDSimple part1_410 4.2.3 Card Initialization and Identification Process
+ * Card initialization shall be completed within 1 second from the first 
+ * ACMD41. The host repeatedly issues ACMD41 for at least 1 second or until the
+ * busy bit are set to 1. The card checks the operational conditions and the
+ * HCS bit in the OCR only at the first ACMD41 with setting voltage window in
+ * the argument. While repeating ACMD41, the host shall not issue another 
+ * command except CMD0.
+ */
+#ifndef SDCARD_INIT_TIMEOUT    
+#define SDCARD_INIT_TIMEOUT    1000    // ms, approximate
 #endif
 #ifndef SDCARD_DEBUG_OUTPUT
 #define SDCARD_DEBUG_OUTPUT 0
@@ -185,7 +193,7 @@ static T_uezError SDCard_MS_MCI_Init(void *aWorkspace, TUInt32 aAddress)
 
         /* Wait while card is busy state (use MCI_ACMD41 with HCS bit) */
         do {
-            /* This loop will take a time. Insert task rotation here for multitask envilonment. */
+            /* This loop will take time. Insert task rotation here for multitask environment. */
             UEZTaskDelay(1);
             if (UEZTickCounterGetDelta(timeStart) >= SDCARD_INIT_TIMEOUT)
                 goto di_fail;

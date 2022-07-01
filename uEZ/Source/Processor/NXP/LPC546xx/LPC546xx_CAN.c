@@ -555,20 +555,20 @@ void LPC546xx_CAN0_Require(
     T_uezGPIOPortPin aPinTD)
 {
     static const T_LPC546xx_SCU_ConfigList rd0[] = {
-            {GPIO_P5_8,  SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_2,  SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P5_8,  IOCON_D_DEFAULT(2)},
+            {GPIO_P7_2,  IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList td0[] = {
-            {GPIO_P5_9,  SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_3,  SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P5_9,  IOCON_D_DEFAULT(2)},
+            {GPIO_P7_3,  IOCON_D_DEFAULT(1)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
 
     HALInterfaceRegister("CAN0", (T_halInterface *)&LPC546xx_CAN_CAN0_Interface, 0, 0);
 
-    LPC546xx_SCU_ConfigPinOrNone(aPinRD, rd0, ARRAY_COUNT(rd0));
-    LPC546xx_SCU_ConfigPinOrNone(aPinTD, td0, ARRAY_COUNT(td0));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRD, rd0, ARRAY_COUNT(rd0));
+    LPC546xx_ICON_ConfigPinOrNone(aPinTD, td0, ARRAY_COUNT(td0));
     LPC546xxPowerOn(1<<13);
 }
 
@@ -577,22 +577,22 @@ void LPC546xx_CAN1_Require(
     T_uezGPIOPortPin aPinTD)
 {
     static const T_LPC546xx_SCU_ConfigList rd1[] = {
-            {GPIO_P0_13,  SCU_NORMAL_DRIVE_DEFAULT(5)},
-            {GPIO_P5_13,  SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P7_1 ,  SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P0_13,  IOCON_D_DEFAULT(5)},
+            {GPIO_P5_13,  IOCON_D_DEFAULT(6)},
+            {GPIO_P7_1 ,  IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList td1[] = {
-            {GPIO_P0_12,  SCU_NORMAL_DRIVE_DEFAULT(5)},
-            {GPIO_P5_12,  SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P7_0 ,  SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P0_12,  IOCON_D_DEFAULT(5)},
+            {GPIO_P5_12,  IOCON_D_DEFAULT(6)},
+            {GPIO_P7_0 ,  IOCON_D_DEFAULT(5)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
 
     HALInterfaceRegister("CAN1", (T_halInterface *)&LPC546xx_CAN_CAN1_Interface, 0, 0);
 
-    LPC546xx_SCU_ConfigPinOrNone(aPinRD, rd1, ARRAY_COUNT(rd1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinTD, td1, ARRAY_COUNT(td1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRD, rd1, ARRAY_COUNT(rd1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinTD, td1, ARRAY_COUNT(td1));
 }
 
 /*-------------------------------------------------------------------------*

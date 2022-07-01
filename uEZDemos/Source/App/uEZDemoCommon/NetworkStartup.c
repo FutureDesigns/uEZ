@@ -29,6 +29,7 @@
 #include <uEZPlatform.h>
 #include <NVSettings.h>
 #include "AppHTTPServer.h"
+//#include "ModbusTCPIPTask.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -219,7 +220,8 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
         UEZ_NETWORK_TRANSMITTER_POWER_HIGH,
 
         // DHCP Enabled?
-        EFalse,
+        //ETrue, // Enable DHCP Client
+        EFalse, // Disable DHCP Client and use static IP
 
         // Security mode
         UEZ_NETWORK_SECURITY_MODE_OPEN,
@@ -268,7 +270,11 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
 }
 
 TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
-{
+{	
+#if 1//LWIP_DHCP && UEZ_ENABLE_WIRELESS_NETWORK
+    TBool wait = ETrue;
+    T_uezNetworkStatus status;
+#endif
 #if UEZ_ENABLE_WIRELESS_NETWORK || UEZ_ENABLE_WIRED_NETWORK
     T_uezError error = UEZ_ERROR_NONE;
 #endif
@@ -356,6 +362,27 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
         printf("Bringing up wireless network: Done\n");
     }
 #endif
+    
+#if (UEZ_ENABLE_TCPIP_STACK == 1) // TODO fix DHCP for runtime on or static settings
+#if 1//LWIP_DHCP && UEZ_ENABLE_WIRELESS_NETWORK
+
+    while(wait){
+        UEZNetworkGetStatus(wired_network, &status);
+
+        if(status.iIPAddr.v4[0] != 0){
+            wait = EFalse;
+            printf("IP Addr: %d.%d.%d.%d\n",
+                    status.iIPAddr.v4[0],
+                    status.iIPAddr.v4[1],
+                    status.iIPAddr.v4[2],
+                    status.iIPAddr.v4[3]);
+        }
+        UEZTaskDelay(1000);
+    }
+#endif
+#endif
+
+//ModbusTCPIPTask_Start();
 
 #if UEZ_BASIC_WEB_SERVER
     printf("Webserver starting\n");

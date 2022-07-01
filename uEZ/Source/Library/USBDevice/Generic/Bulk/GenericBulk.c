@@ -22,7 +22,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include <UEZDeviceTable.h>
+#include <uEZDeviceTable.h>
 #include <Device/USBDevice.h>
 #include <Source/Library/USBDevice/Generic/Bulk/GenericBulk.h>
 

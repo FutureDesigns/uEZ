@@ -80,6 +80,7 @@ define block __kernel_data_block__ with alignment = 0x400, size = 0x400 { sectio
 
 /* Place the main stack at the start of IRAM, followed by the kernel's data. */
 place at address mem:IRAM_start  { 
+    readwrite section ".rtt", /*SEGGER_RTT_SECTION*/
     block CSTACK, 
     block __kernel_data_block__, 
     rw object LPC17xx_40xx_PLL.o 
@@ -87,9 +88,10 @@ place at address mem:IRAM_start  {
 
 place in ROM_region   { readonly };
 
-place in NORFlash_region   { readonly object UDCImages.o};
+/*place in NORFlash_region   { readonly object UDCImages.o};*/
 
 place in RAM_region { 
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
     readwrite,
     block SVC_STACK, 
     block IRQ_STACK, 

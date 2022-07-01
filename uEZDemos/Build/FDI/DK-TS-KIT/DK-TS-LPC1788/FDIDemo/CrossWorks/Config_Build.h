@@ -26,6 +26,9 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
+#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_SYSTEM_VIEW           0
+
 #ifdef NDEBUG
 #define UEZ_REGISTER                        0
 #else

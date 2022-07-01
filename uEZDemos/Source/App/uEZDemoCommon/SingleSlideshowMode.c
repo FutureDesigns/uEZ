@@ -33,7 +33,7 @@
 #include "SingleSlideshowMode.h"
 #include <uEZLCD.h>
 #include <uEZKeypad.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 /*---------------------------------------------------------------------------*
  * Defines:
  *---------------------------------------------------------------------------*/

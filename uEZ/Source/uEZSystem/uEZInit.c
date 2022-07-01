@@ -71,10 +71,21 @@ T_uezError UEZSystemInit(void)
     // Setup the GPIO table
     UEZGPIOReset();
 
-    // Start the task system
+    // Start FreeRTOS plus trace if enabled
 #if FREERTOS_PLUS_TRACE
     vTraceInitTraceData();
+    #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+      #error "Cannot use SystemView with FreeRTOS+Trace!"
+    #endif
 #endif
+    // Start SystemView if enabled
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+  #if (SEGGER_ENABLE_RTT == 0)
+    #error "RTT Must be enabled to use SystemView!"
+  #endif
+    SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init and SEGGER_RTT_Init
+#endif
+    // Start the task system
     UEZTaskInit();
 
     return UEZ_ERROR_NONE;

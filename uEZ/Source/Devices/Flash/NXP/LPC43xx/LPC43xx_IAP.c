@@ -202,31 +202,6 @@ static TUInt32 G_parameters[5] IN_INTERNAL_RAM;
 static TUInt32 G_results[4] IN_INTERNAL_RAM;
 static TUInt32 G_lastBlock;
 
-/*-------------------------------------------------------------------------*
- * Function:  CPUDisableInterrupts
- *-------------------------------------------------------------------------*
- * Description:
- *      Disables all standard CPU interrupts (IRQ).
- *-------------------------------------------------------------------------*/
-void CPUDisableInterrupts(void)
-{
-    portDISABLE_INTERRUPTS();
-    return;
-}
-
-/*-------------------------------------------------------------------------*
- * Function:  CPUEnableInterrupts
- *-------------------------------------------------------------------------*
- * Description:
- *      Enables all standard CPU interrupts (IRQ).
- *-------------------------------------------------------------------------*/
-void CPUEnableInterrupts(void)
-{
-    portENABLE_INTERRUPTS();
-
-    return;
-}
-
 static TIAPResult IIAPCmd(TUInt8 aCmd)
 {
     // Pass on the command

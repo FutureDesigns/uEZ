@@ -31,24 +31,6 @@
 #include <uEZPlatformAPI.h>
 #include <Source/Library/LPCOpen/LPCUSBLib/LPCUSBLib_uEZ.h>
 
-
-#define LCD_GPIO_LCD_3V3_EN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 0)
-#define LCD_GPIO_LCD_5V_EN          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 1)
-#define LCD_GPIO_LCD_2              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 2)
-#define LCD_GPIO_LCD_3              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 3)
-#define LCD_GPIO_LCD_DISP_EN        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 4)
-#define LCD_GPIO_LCD_3V3_IN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 5)
-#define LCD_GPIO_LCD_RESET          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6)
-#define LCD_GPIO_LCD_BL_CON2        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7)
-#define LCD_GPIO_LCD_BL_CON         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 8)
-#define LCD_GPIO_LCD_9              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 9)
-#define LCD_GPIO_LCD_10             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 10)
-#define LCD_GPIO_LCD_11             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 11)
-#define LCD_GPIO_LCD_12             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 12)
-#define LCD_GPIO_LCD_13             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 13)
-#define LCD_GPIO_LCD_14             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 14)
-#define LCD_GPIO_LCD_15             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 15)
-
 /*-------------------------------------------------------------------------*
  * Platform Settings:
  *-------------------------------------------------------------------------*/
@@ -105,6 +87,36 @@
  * Types:
  *-------------------------------------------------------------------------*/
 
+ 
+/*-------------------------------------------------------------------------*
+ * General Purpose Pin Mappings to CPU:
+ *-------------------------------------------------------------------------*/
+// HW Reset pin in Rev 1 PCB
+#define PIN_HW_RESET  				GPIO_P4_6 
+
+// LED pin(s)
+#define GPIO_HEARTBEAT_LED  		GPIO_P3_14
+
+// TODO add GPIOs on ALT PWR COM, PMOD here
+ 
+// LCD Pins
+#define LCD_GPIO_LCD_3V3_EN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 0)
+#define LCD_GPIO_LCD_5V_EN          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 1)
+#define LCD_GPIO_LCD_2              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 2)
+#define LCD_GPIO_LCD_3              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 3)
+#define LCD_GPIO_LCD_DISP_EN        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 4)
+#define LCD_GPIO_LCD_3V3_IN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 5)
+#define LCD_GPIO_LCD_RESET          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6)
+#define LCD_GPIO_LCD_BL_CON2        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7)
+#define LCD_GPIO_LCD_BL_CON         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 8)
+#define LCD_GPIO_LCD_9              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 9)
+#define LCD_GPIO_LCD_10             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 10)
+#define LCD_GPIO_LCD_11             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 11)
+#define LCD_GPIO_LCD_12             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 12)
+#define LCD_GPIO_LCD_13             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 13)
+#define LCD_GPIO_LCD_14             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 14)
+#define LCD_GPIO_LCD_15             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 15)
+ 
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -172,7 +184,6 @@ void UEZPlatform_Console_ISPHeader_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
 void UEZPlatform_CRC0_Require(void);
-void UEZPlatform_DAC0_Require(void);
 void UEZPlatform_EEPROM_I2C_Require(void);
 void UEZPlatform_EEPROM_LPC1788_Require(void);
 void UEZPlatform_EEPROM0_Require(void);
@@ -224,6 +235,7 @@ void UEZPlatform_AudioCodec_Require(void);
 void UEZPlatform_LED_Require(void);
 void UEZPlatform_Button_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
+void UEZPlatform_System_Reset(void);
 
 TBool UEZPlatform_Host_Port_B_Detect(void);
 

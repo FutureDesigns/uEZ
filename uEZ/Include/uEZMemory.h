@@ -148,6 +148,48 @@ TUInt32 UEZMemGetNumBlocks(void);
 #define UEZMemWrite8(addr, value)      *((TVUInt8 *)(addr)) = (value)
 #endif
 
+// Macros for memory placement and alignment. Tested on GCC/IAR
+#ifndef   UEZ_BUFFER_ALIGNMENT
+  #define UEZ_BUFFER_ALIGNMENT                     0
+#endif
+
+#if (defined __ICCARM__) || (defined __ICCRX__)
+  #define UEZ_PRAGMA(P) _Pragma(#P)
+#endif
+
+#if UEZ_BUFFER_ALIGNMENT
+  #define UEZ_BUFFER_ALIGN(Var)  UEZ_ALIGN(Var, UEZ_BUFFER_ALIGNMENT)
+#else
+  #define UEZ_BUFFER_ALIGN(Var)  Var
+#endif
+
+#if UEZ_BUFFER_ALIGNMENT
+  #if (defined __GNUC__)
+    #define UEZ_ALIGN(Var, Alignment) Var __attribute__ ((aligned (Alignment)))
+  #elif (defined __ICCARM__) || (defined __ICCRX__)
+    #define PRAGMA(A) _Pragma(#A)
+#define UEZ_ALIGN(Var, Alignment) UEZ_PRAGMA(data_alignment=Alignment) \
+                                  Var
+  #elif (defined __CC_ARM)
+    #define UEZ_ALIGN(Var, Alignment) Var __attribute__ ((aligned (Alignment)))
+  #else
+    #error "Alignment not supported for this compiler."
+  #endif
+#else
+  #define UEZ_ALIGN(Var, Alignment) Var
+#endif
+
+  #if (defined __GNUC__)
+    #define UEZ_PUT_SECTION(Var, Section) __attribute__ ((section (Section))) __attribute__ ((__used__)) Var
+  #elif (defined __ICCARM__) || (defined __ICCRX__)
+#define UEZ_PUT_SECTION(Var, Section)  UEZ_PRAGMA(location=Section) __root \
+                                          Var
+  #elif (defined __CC_ARM)
+    #define UEZ_PUT_SECTION(Var, Section) __attribute__ ((section (Section), zero_init))  Var
+  #else
+    #error "Section placement not supported for this compiler."
+  #endif
+
 #ifdef __cplusplus
 }
 #endif

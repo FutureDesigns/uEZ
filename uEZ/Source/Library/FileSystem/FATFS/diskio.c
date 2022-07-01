@@ -29,55 +29,55 @@ static TBool G_init = EFalse;
 
 static void IEnsureInit(void)
 {
-    if (!G_init) {
-        G_fatfs = UEZMemAllocPermanent(sizeof(FATFS)*FATFS_MAX_MASS_STORAGE_DEVICES);
-      // TESTING
-//      G_fatfs = (void *)0x7FD02000; // hard coded!
-        memset(G_fatfsMassStorageDevices, 0, sizeof(G_fatfsMassStorageDevices));
-        G_init = ETrue;
-    }
+  if (!G_init) {
+    G_fatfs = UEZMemAllocPermanent(sizeof(FATFS)*FATFS_MAX_MASS_STORAGE_DEVICES);
+    // TESTING
+    //      G_fatfs = (void *)0x7FD02000; // hard coded!
+    memset(G_fatfsMassStorageDevices, 0, sizeof(G_fatfsMassStorageDevices));
+    G_init = ETrue;
+  }
 }
 
 T_uezError FATFS_RegisterMassStorageDevice(
-        TUInt32 aSlot,
-        DEVICE_MassStorage **aMS)
+                                           TUInt32 aSlot,
+                                           DEVICE_MassStorage **aMS)
 {
-    char message[10];
-    IEnsureInit();
-    if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
-        return UEZ_ERROR_OUT_OF_RANGE;
-
-    if (G_fatfsMassStorageDevices[aSlot] != 0)
-        return UEZ_ERROR_NOT_AVAILABLE;
-
-    G_fatfsMassStorageDevices[aSlot] = aMS;
-//    f_mount(aSlot, &G_fatfs[aSlot]);
-    sprintf(message, "%d:", aSlot);
-    f_mount(G_fatfs+aSlot, message, 1);
-
-    return UEZ_ERROR_NONE;
+  char message[10];
+  IEnsureInit();
+  if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
+    return UEZ_ERROR_OUT_OF_RANGE;
+  
+  if (G_fatfsMassStorageDevices[aSlot] != 0)
+    return UEZ_ERROR_NOT_AVAILABLE;
+  
+  G_fatfsMassStorageDevices[aSlot] = aMS;
+  //    f_mount(aSlot, &G_fatfs[aSlot]);
+  sprintf(message, "%d:", aSlot);
+  f_mount(G_fatfs+aSlot, message, 1);
+  
+  return UEZ_ERROR_NONE;
 }
 
 T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
 {
-    char message[10];
-    IEnsureInit();
-    if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
-        return UEZ_ERROR_OUT_OF_RANGE;
-
-    // Is there anything registered there?
-    if (G_fatfsMassStorageDevices[aSlot] == 0)
-        return UEZ_ERROR_NONE;
-
-    sprintf(message, "%d:", aSlot);
-    f_mount(G_fatfs+aSlot, message, 0);
-    // Clear the slot for the next drive
-    memset(G_fatfs+aSlot, 0, sizeof(G_fatfs[aSlot]));
-
-    // Ok, clear it out
-    G_fatfsMassStorageDevices[aSlot] = 0;
-
+  char message[10];
+  IEnsureInit();
+  if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
+    return UEZ_ERROR_OUT_OF_RANGE;
+  
+  // Is there anything registered there?
+  if (G_fatfsMassStorageDevices[aSlot] == 0)
     return UEZ_ERROR_NONE;
+  
+  sprintf(message, "%d:", aSlot);
+  f_mount(G_fatfs+aSlot, message, 0);
+  // Clear the slot for the next drive
+  memset(G_fatfs+aSlot, 0, sizeof(G_fatfs[aSlot]));
+  
+  // Ok, clear it out
+  G_fatfsMassStorageDevices[aSlot] = 0;
+  
+  return UEZ_ERROR_NONE;
 }
 
 
@@ -86,21 +86,21 @@ T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
 
 DSTATUS disk_initialize(BYTE drv)
 {
-    T_uezError error;
-    DEVICE_MassStorage **p_ms;
-
-    IEnsureInit();
-	p_ms = G_fatfsMassStorageDevices[drv];
-    if (p_ms) {
-        error = (*p_ms)->Init(p_ms, 0);
-        if (error == UEZ_ERROR_NONE) {
-            return disk_status(drv);
-        } else {
-            return STA_NOINIT;
-        }
+  T_uezError error;
+  DEVICE_MassStorage **p_ms;
+  
+  IEnsureInit();
+  p_ms = G_fatfsMassStorageDevices[drv];
+  if (p_ms) {
+    error = (*p_ms)->Init(p_ms, 0);
+    if (error == UEZ_ERROR_NONE) {
+      return disk_status(drv);
+    } else {
+      return STA_NOINIT;
     }
-
-    return STA_NOINIT;
+  }
+  
+  return STA_NOINIT;
 }
 
 
@@ -110,35 +110,35 @@ DSTATUS disk_initialize(BYTE drv)
 
 DSTATUS disk_status (BYTE drv)
 {
-    T_uezError error;
-    DSTATUS dstatus;
-    T_msStatus status;
-	DEVICE_MassStorage **p_ms;
-
-    IEnsureInit();
-    p_ms = G_fatfsMassStorageDevices[drv];
-    if (p_ms) {
-        error = (*p_ms)->GetStatus(p_ms, &status);
-        if (error != UEZ_ERROR_NONE)
-            return STA_NOINIT;
-
-        if ((status & MASS_STORAGE_STATUS_NO_MEDIUM) || (status & MASS_STORAGE_STATUS_NEED_INIT)) {
-            // No Medium?  Mark as not mounted and try again
-            G_fatfs[drv].fs_type = 0;
-            error = (*p_ms)->GetStatus(p_ms, &status);
-        }
-        dstatus = 0;
-        if (status & MASS_STORAGE_STATUS_NEED_INIT)
-            dstatus |= STA_NOINIT;
-        if (status & MASS_STORAGE_STATUS_NO_MEDIUM)
-            dstatus |= STA_NODISK;
-        if (status & MASS_STORAGE_STATUS_WRITE_PROTECTED)
-            dstatus |= STA_PROTECT;
-
-        return dstatus;
+  T_uezError error;
+  DSTATUS dstatus;
+  T_msStatus status;
+  DEVICE_MassStorage **p_ms;
+  
+  IEnsureInit();
+  p_ms = G_fatfsMassStorageDevices[drv];
+  if (p_ms) {
+    error = (*p_ms)->GetStatus(p_ms, &status);
+    if (error != UEZ_ERROR_NONE)
+      return STA_NOINIT;
+    
+    if ((status & MASS_STORAGE_STATUS_NO_MEDIUM) || (status & MASS_STORAGE_STATUS_NEED_INIT)) {
+      // No Medium?  Mark as not mounted and try again
+      G_fatfs[drv].fs_type = 0;
+      error = (*p_ms)->GetStatus(p_ms, &status);
     }
-
-    return STA_NOINIT;
+    dstatus = 0;
+    if (status & MASS_STORAGE_STATUS_NEED_INIT)
+      dstatus |= STA_NOINIT;
+    if (status & MASS_STORAGE_STATUS_NO_MEDIUM)
+      dstatus |= STA_NODISK;
+    if (status & MASS_STORAGE_STATUS_WRITE_PROTECTED)
+      dstatus |= STA_PROTECT;
+    
+    return dstatus;
+  }
+  
+  return STA_NOINIT;
 }
 
 
@@ -146,27 +146,49 @@ DSTATUS disk_status (BYTE drv)
 /* Read Sector(s)                                                        */
 
 DRESULT disk_read (
-	BYTE drv,		/* Physical drive nmuber (0..) */
-	BYTE *buff,		/* Data buffer to store read data */
-	DWORD sector,	/* Sector address (LBA) */
-	BYTE count		/* Number of sectors to read (1..255) */
-)
+                   BYTE drv,		/* Physical drive nmuber (0..) */
+                   BYTE *buff,		/* Data buffer to store read data */
+                   DWORD sector,	/* Sector address (LBA) */
+                   BYTE count		/* Number of sectors to read (1..255) */
+                     )
 {
-    T_uezError error;
-
-    DEVICE_MassStorage **p_ms = G_fatfsMassStorageDevices[drv];
-    if (p_ms) {
-        error = (*p_ms)->Read(p_ms, sector, count, buff);
+  T_uezError error;
+  
+  DEVICE_MassStorage **p_ms = G_fatfsMassStorageDevices[drv];
+  if (p_ms) {
+    // Are we on a 32-bit boundary?
+    if ((((int)buff) & 3) != 0) {
+      // If the pointer is NOT on a 32-bit boundary, do it the slow way
+      // Determine 32-bit aligned memory pointer to scratch area
+      char *p_scratch = (char *)(((int)(G_fatfs[drv].scratch+3)) & ~3);
+      
+      while (count--) {
+        error = (*p_ms)->Read(p_ms, sector++, 1, p_scratch); // read data into scratch buffer first
         if ((error == UEZ_ERROR_TIMEOUT) || (error == UEZ_ERROR_NAK)) {
-            return RES_NOTRDY;
+          return RES_NOTRDY;
         } if (error == UEZ_ERROR_NONE) {
+          memcpy(buff, p_scratch, 512); // Then copy data back into standard buffer
+          buff += 512;
+          if (count == 0)
             return RES_OK;
         } else {
-            return RES_ERROR;
+          return RES_ERROR;
         }
+      }
+    } else {
+      // If the pointer is on a 32-bit boundary, do it the fast way
+      error = (*p_ms)->Read(p_ms, sector, count, buff);
+      if ((error == UEZ_ERROR_TIMEOUT) || (error == UEZ_ERROR_NAK)) {
+        return RES_NOTRDY;
+      } if (error == UEZ_ERROR_NONE) {
+        return RES_OK;
+      } else {
+        return RES_ERROR;
+      }
     }
-
-    return RES_PARERR;
+  }
+  
+  return RES_PARERR;
 }
 
 
@@ -176,27 +198,50 @@ DRESULT disk_read (
 
 #if _READONLY == 0
 DRESULT disk_write (
-	BYTE drv,			/* Physical drive nmuber (0..) */
-	const BYTE *buff,	/* Data to be written */
-	DWORD sector,		/* Sector address (LBA) */
-	BYTE count			/* Number of sectors to write (1..255) */
-)
+                    BYTE drv,			/* Physical drive nmuber (0..) */
+                    const BYTE *buff,	/* Data to be written */
+                    DWORD sector,		/* Sector address (LBA) */
+                    BYTE count			/* Number of sectors to write (1..255) */
+                      )
 {
-    T_uezError error;
-
-    DEVICE_MassStorage **p_ms = G_fatfsMassStorageDevices[drv];
-    if (p_ms) {
-        error = (*p_ms)->Write(p_ms, sector, count, buff);
+  T_uezError error;
+  BYTE *buffPtr = (BYTE *)buff;
+  
+  DEVICE_MassStorage **p_ms = G_fatfsMassStorageDevices[drv];
+  if (p_ms) {
+    // Are we on a 32-bit boundary?
+    if ((((int)buff) & 3) != 0) {
+      // If the pointer is NOT on a 32-bit boundary, do it the slow way
+      // Determine 32-bit aligned memory pointer to scratch area
+      char *p_scratch = (char *)(((int)(G_fatfs[drv].scratch+3)) & ~3);
+      
+      while (count--) {
+        memcpy(p_scratch, buffPtr, 512); // copy data to write into aligned buffer first			    
+        error = (*p_ms)->Write(p_ms, sector++, 1, p_scratch);
         if ((error == UEZ_ERROR_TIMEOUT) || (error == UEZ_ERROR_NAK)) {
-            return RES_NOTRDY;
+          return RES_NOTRDY;
         } if (error == UEZ_ERROR_NONE) {
+          buffPtr += 512;
+          if (count == 0)
             return RES_OK;
         } else {
-            return RES_ERROR;
+          return RES_ERROR;
         }
+      }
+    } else {
+      // If the pointer is on a 32-bit boundary, do it the fast way
+      error = (*p_ms)->Write(p_ms, sector, count, buff);
+      if ((error == UEZ_ERROR_TIMEOUT) || (error == UEZ_ERROR_NAK)) {
+        return RES_NOTRDY;
+      } if (error == UEZ_ERROR_NONE) {
+        return RES_OK;
+      } else {
+        return RES_ERROR;
+      }
     }
-
-    return RES_PARERR;
+  }
+  
+  return RES_PARERR;
 }
 #endif /* _READONLY */
 
@@ -206,36 +251,36 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 
 DRESULT disk_ioctl (
-	BYTE drv,		/* Physical drive nmuber (0..) */
-	BYTE ctrl,		/* Control code */
-	void *buff		/* Buffer to send/receive control data */
-)
+                    BYTE drv,		/* Physical drive nmuber (0..) */
+                    BYTE ctrl,		/* Control code */
+                    void *buff		/* Buffer to send/receive control data */
+                      )
 {
-	DRESULT stat = RES_PARERR;
-	if (ctrl == CTRL_SYNC) {
-	    // Sync command current does nothing since all mass storage
-	    // media currently does everything on block by block basis
-	    return RES_OK;
-	}
-	return stat;
+  DRESULT stat = RES_PARERR;
+  if (ctrl == CTRL_SYNC) {
+    // Sync command current does nothing since all mass storage
+    // media currently does everything on block by block basis
+    return RES_OK;
+  }
+  return stat;
 }
 
 #if 0
 BYTE VerifyActiveDisk(BYTE rRequestedDisk) {
-   switch (rRequestedDisk) {
-   case MMC:
-      xprintf("MMC drive selected\n");
-      break;
-
-   case USB:
-      xprintf("USB drive selected\n");
-      break;
-
-   default:
-      rRequestedDisk = 0;
-      xprintf("No or invalid drive selected\n");
-      break;
-   }
-   return rRequestedDisk;
+  switch (rRequestedDisk) {
+  case MMC:
+    xprintf("MMC drive selected\n");
+    break;
+    
+  case USB:
+    xprintf("USB drive selected\n");
+    break;
+    
+  default:
+    rRequestedDisk = 0;
+    xprintf("No or invalid drive selected\n");
+    break;
+  }
+  return rRequestedDisk;
 }
 #endif

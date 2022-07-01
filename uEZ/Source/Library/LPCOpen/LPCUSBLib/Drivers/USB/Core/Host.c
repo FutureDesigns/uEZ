@@ -75,7 +75,7 @@ void USB_Host_ProcessNextHostState(uint8_t corenum)
 
 	case HOST_STATE_Powered_WaitForDeviceSettle:
 		if (WaitMSRemaining--) {
-			Delay_MS(1);
+			UEZTaskDelay(1);//Delay_MS(1);
 			break;
 		}
 		else {

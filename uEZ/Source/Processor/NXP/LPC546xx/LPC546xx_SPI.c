@@ -783,7 +783,8 @@ void LPC546xx_SPI6_Require(
     //Setup and lock the Flexcomm for SPI mode
     LPC546xxPowerOn(kCLOCK_FlexComm6);
     SYSCON->FCLKSEL[6] = 0x03; //Main clock
-    FLEXCOMM6->PID = (1<<3) | 0x02; //Lock, SPI mode
+    FLEXCOMM6->PSELID = 0x02; //Lock, SPI mode
+     FLEXCOMM6->PSELID |= (1<<3);
 
     // Setup interrupt, but do not enable
     InterruptRegister(FLEXCOMM6_IRQn, ISPI6IRQ, INTERRUPT_PRIORITY_HIGH, "SPI6");

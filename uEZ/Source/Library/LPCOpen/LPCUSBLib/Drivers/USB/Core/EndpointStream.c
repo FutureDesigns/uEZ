@@ -53,8 +53,8 @@ uint8_t Endpoint_Null_Stream(uint8_t corenum,
 {
 	uint32_t i;
 
-	while ( !Endpoint_IsINReady(corenum) ) {	/*-- Wait until ready --*/
-		Delay_MS(2);
+	while ( !Endpoint_IsINReady(corenum) ) {	/*-- Wait until ready --*/		
+              UEZTaskDelay(2);//Delay_MS(2);
 	}
 	for (i = 0; i < Length; i++)
 		Endpoint_Write_8(corenum, 0);
@@ -69,7 +69,7 @@ uint8_t Endpoint_Write_Stream_LE(uint8_t corenum,
 	uint16_t i;
 
 	while ( !Endpoint_IsINReady(corenum) ) {	/*-- Wait until ready --*/
-		Delay_MS(2);
+		UEZTaskDelay(2);//Delay_MS(2);
 	}
 	for (i = 0; i < Length; i++)
 		Endpoint_Write_8(corenum, ((uint8_t *) Buffer)[i]);

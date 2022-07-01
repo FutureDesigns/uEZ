@@ -1050,19 +1050,20 @@ T_uezError RX63N_I2C2_InitializeWorkspace(void *aWorkspace)
     G_RX63N_i2c2Workspace = p;
 
     // Setup interrupt vectors
-    InterruptRegister(VECT_RIIC2_EEI2, IRX63N_I2C1InterruptHandler_ICEEI,
+    InterruptRegister(VECT_RIIC2_EEI2, IRX63N_I2C2InterruptHandler_ICEEI,
             INTERRUPT_PRIORITY_NORMAL, "I2C2:EEI");
+
     InterruptEnable(VECT_RIIC2_EEI2);
 
-    InterruptRegister(VECT_RIIC2_RXI2, IRX63N_I2C1InterruptHandler_ICRXI,
+    InterruptRegister(VECT_RIIC2_RXI2, IRX63N_I2C2InterruptHandler_ICRXI,
             INTERRUPT_PRIORITY_NORMAL, "I2C2:RXI");
     InterruptEnable(VECT_RIIC2_RXI2);
 
-    InterruptRegister(VECT_RIIC2_TXI2, IRX63N_I2C1InterruptHandler_ICTXI,
+    InterruptRegister(VECT_RIIC2_TXI2, IRX63N_I2C2InterruptHandler_ICTXI,
             INTERRUPT_PRIORITY_NORMAL, "I2C2:TXI");
     InterruptEnable(VECT_RIIC2_TXI2);
 
-    InterruptRegister(VECT_RIIC2_TEI2, IRX63N_I2C1InterruptHandler_ICTEI,
+    InterruptRegister(VECT_RIIC2_TEI2, IRX63N_I2C2InterruptHandler_ICTEI,
             INTERRUPT_PRIORITY_NORMAL, "I2C2:TEI");
     InterruptEnable(VECT_RIIC2_TEI2);
 

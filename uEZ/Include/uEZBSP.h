@@ -52,8 +52,8 @@
 extern "C" {
 #endif
 
-
 void UEZBSP_Startup(void);
+void UEZBSP_Pre_PLL_SystemInit();
 void UEZBSP_PLLConfigure(void);
 void UEZBSP_CPU_PinConfigInit(void);
 void UEZBSP_InterruptsReset(void);

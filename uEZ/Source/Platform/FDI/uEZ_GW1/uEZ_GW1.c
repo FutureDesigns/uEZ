@@ -100,6 +100,8 @@ extern int MainTask(void);
 
 #define PRINTF_IS_SWO       (0)
 
+#define SD_LOW_POWER_SUPP   (0) // set to 1 to enable the power pin on SD card
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -544,14 +546,74 @@ void UEZPlatform_SD_MMC_Require(void)
         GPIO_P6_9,      // CMD
         GPIO_P6_7,      // Card Detect
         GPIO_NONE,      // Write Protect Detect
-        GPIO_P6_15,     // Power Output
+#if (defined SD_LOW_POWER_SUPP && SD_LOW_POWER_SUPP == 1)
+        GPIO_P6_15,     // Power Output Control, High On
     };
 
     DEVICE_CREATE_ONCE();
 
     LPC43xx_GPIO6_Require();
     LPC43xx_GPIOZ_Require();
+#else    
+        GPIO_NONE, //GPIO_P6_15 // Power Output Control, High On
+    };
 
+    TUInt32 value;
+    DEVICE_CREATE_ONCE();
+    
+    LPC43xx_GPIO6_Require();
+    LPC43xx_GPIOZ_Require();
+
+    //dprintf("Reboot SD card\n");
+    
+    // Make sure that DAT0 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_3); 
+    UEZGPIOSetMux(GPIO_P6_3, (GPIO_P6_3 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_3 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_3, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_3);
+    // Make sure that DAT1 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_4); 
+    UEZGPIOSetMux(GPIO_P6_4, (GPIO_P6_4 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_4 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_4, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_4);
+    // Make sure that DAT2 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_5); 
+    UEZGPIOSetMux(GPIO_P6_5, (GPIO_P6_5 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_5 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_5, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_5);
+    // Make sure that DAT3 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_6); 
+    UEZGPIOSetMux(GPIO_P6_6, (GPIO_P6_6 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_6 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_6, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_6);
+    // Make sure that CLK does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_PZ_Z_PC_0); 
+    UEZGPIOSetMux(GPIO_PZ_Z_PC_0, (GPIO_PZ_Z_PC_0 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_PZ_Z_PC_0 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_PZ_Z_PC_0, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_PZ_Z_PC_0);
+    // Make sure that CMD does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_9); 
+    UEZGPIOSetMux(GPIO_P6_9, (GPIO_P6_9 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_9 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_9, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_9);   
+    // First hold SD card power low for 200 ms to allow for full power down.
+    UEZGPIOOutput(GPIO_P6_15); 
+    UEZGPIOSetMux(GPIO_P6_15, (GPIO_P6_15 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_15 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_15, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_15);
+    UEZTaskDelay(200); // Power off delay
+    // Manually turn SDcard power on and keep it on
+    UEZGPIOSet(GPIO_P6_15);
+    UEZGPIOLock(GPIO_P6_15); // Prevent pin from being re-configured.
+    UEZTaskDelay(50); // MMC spec said to wait 35ms after power on before CMD.
+#endif        
     LPC43xx_SD_MMC_Require(&pins);
 }
 
@@ -1305,6 +1367,115 @@ void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_LED_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the LEDs
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_LED_Require(void) {
+    LPC43xx_GPIO6_Require();
+
+    UEZGPIOSetMux(LEDENABLEn, 4);
+    UEZGPIOClear(LEDENABLEn);
+    UEZGPIOOutput(LEDENABLEn);
+
+    UEZGPIOSetMux(LED_GREEN, 4);
+    UEZGPIOClear(LED_GREEN);
+    UEZGPIOOutput(LED_GREEN);
+
+    UEZGPIOSetMux(LED_RED, 4);
+    UEZGPIOClear(LED_RED);
+    UEZGPIOOutput(LED_RED);
+
+    UEZGPIOSetMux(LED_BLUE, 4);
+    UEZGPIOSet(LED_BLUE);
+    UEZGPIOOutput(LED_BLUE);
+
+    UEZGPIOSetMux(LED_AMBER, 4);
+    UEZGPIOSet(LED_AMBER);
+    UEZGPIOOutput(LED_AMBER);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Set_LED
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Set the LEDs
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Set_LED(T_uezGPIOPortPin ledPortPin, TBool on){
+
+    switch(ledPortPin){        
+        case LED_GREEN:
+            if(on){
+                UEZGPIOSet(LED_GREEN);
+                UEZGPIOClear(LED_RED);
+            } else {
+                UEZGPIOClear(LED_GREEN);
+            }
+            break;
+        case LED_RED:
+            if(on){
+                UEZGPIOSet(LED_RED);
+                UEZGPIOClear(LED_GREEN);
+            } else {
+                UEZGPIOClear(LED_RED);                    
+            }
+            break;
+        case LED_BLUE:
+            if(on){
+                UEZGPIOClear(LED_BLUE);
+            } else {
+                UEZGPIOSet(LED_BLUE);
+            }
+            break;
+        case LED_AMBER:
+            if(on){
+                UEZGPIOClear(LED_AMBER);
+            } else {
+                UEZGPIOSet(LED_AMBER);
+            }
+            break;
+        default:
+            printf("Unsupported LED\n"); 
+            break;
+    }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {  
+    // Turn off LED before init clocks. 
+    // Then it will only start blinking after RTOS
+    // TODO need to test this code. It most likely doesn't work.
+    LPC_SCU->SFSP1_4 = (0x3 << 3) | 0;
+    LPC_GPIO_PORT->DIR[0] |= (1<<11);
+    LPC_GPIO_PORT->CLR[0] |= 1 << 11;// off
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    // By default use HW reset pin on this board.
+	// TODO rewrite to using lower level pin code
+    UEZGPIOSetMux(PIN_HW_RESET, 4);
+    UEZGPIOClear(PIN_HW_RESET);
+    UEZGPIOOutput(PIN_HW_RESET);
+    //NVIC_SystemReset();
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
  *---------------------------------------------------------------------------*
  * Description:
@@ -1323,12 +1494,22 @@ void UEZPlatform_USBHost_Serial_Require(void)
 
 void UEZPlatform_Standard_Require(void)
 {
+    LPC43xx_GPIO0_Require();
+    LPC43xx_GPIO1_Require();
+    LPC43xx_GPIO2_Require();
+    LPC43xx_GPIO3_Require();
+    LPC43xx_GPIO4_Require();
+    LPC43xx_GPIO5_Require();
+    LPC43xx_GPIO6_Require();
+    LPC43xx_GPIO7_Require();
+    LPC43xx_GPIOZ_Require();
     UEZPlatform_I2C0_Require();
+    UEZPlatform_ADC0_6_Require();
+    UEZPlatform_LED_Require();
 
     UEZPlatform_Flash0_Require();
     UEZPlatform_EEPROM_LPC43xx_Require();
     UEZPlatform_EEPROM_I2C_Require();//MAC configuration EEPROM, should not be used for application storage
-
 
     //Laird WiFi
     LPC43xx_GPIO4_Require(); //Shared BLE Wifi power pin
@@ -1339,23 +1520,21 @@ void UEZPlatform_Standard_Require(void)
     LPC43xx_GPIO4_Require();//CTS
     LPC43xx_GPIO5_Require();//RTS
 
-    LPC43xx_GPIO2_Require();
-    LPC43xx_GPIO3_Require();
-    LPC43xx_GPIO4_Require();
-    LPC43xx_GPIO5_Require();
-    LPC43xx_GPIO7_Require();
-
     //Console Debug port
-#if PRINTF_IS_SWO
-    Stream_SWO_CortexM_Create("Console");
+#if (PRINTF_ON_RTT == 1)
+    RTT_enable_additional_buffers(); // enable additional buffers        
+    Stream_RTT_Create("Console");
     // Set standard output to console
     UEZStreamOpen("Console", &G_stdout);
     G_stdin = G_stdout;
     StdinRedirect(G_stdin);
     StdoutRedirect(G_stdout);
+#elif (PRINTF_ON_UART_2 == 1)
+    UEZPlatform_Console_FullDuplex_UART2_Require(1024, 1024); //J6 pins 8/10    
+#elif (PRINTF_ON_UART_3 == 1)
+    UEZPlatform_Console_FullDuplex_UART3_Require(1024, 1024); // J6 pins 3/5
 #else
-    UEZPlatform_Console_FullDuplex_UART2_Require(1024, 1024);
-    //UEZPlatform_Console_FullDuplex_UART3_Require(1024, 1024);
+    #error Choose a printf output source!
 #endif
 
     UEZPlatform_IRTC_Require();

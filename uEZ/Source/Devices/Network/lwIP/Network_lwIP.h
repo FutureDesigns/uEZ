@@ -58,11 +58,8 @@ extern "C" {
 #endif
 
 #ifndef NETWORK_LWIP_MAX_NUM_SOCKETS
-#if ((UEZ_PROCESSOR==RENESAS_RX62N) || (UEZ_PROCESSOR==RENESAS_RX63N))
-#define NETWORK_LWIP_MAX_NUM_SOCKETS          2
-#else
-#define NETWORK_LWIP_MAX_NUM_SOCKETS          20 // 4
-#endif
+//Reduce for RX builds, or define in Config_Build.h
+#define NETWORK_LWIP_MAX_NUM_SOCKETS          6
 #endif
 
 // Aux Commands:

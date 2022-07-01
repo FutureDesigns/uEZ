@@ -27,6 +27,15 @@
 #include <SafeRTOSConfig.h>
 #endif
 
+#if (COMPILER_TYPE == RowleyARM)
+#include <intrinsics.h>
+
+#elif (COMPILER_TYPE == Keil4)
+#define __disable_interrupt __disable_irq
+#define __enable_interrupt	__enable_irq
+
+#endif
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
@@ -52,7 +61,7 @@ static T_irqHandleStruct G_isrArray[UEZ_MAX_IRQ_CHANNELS];
 void InterruptFatalError(void)
 {
     // Disable all interrupts
-    __disable_irq();
+    __disable_interrupt();
     while(1)  {
         //TBD: Report error in some form
     }
@@ -170,11 +179,7 @@ DEFAULT_IRQ_HANDLER(SSP2_IRQHandler, SSP2_IRQn);
 DEFAULT_IRQ_HANDLER(LCD_IRQHandler, LCD_IRQn);
 DEFAULT_IRQ_HANDLER(GPIO_IRQHandler, GPIO_IRQn);
 DEFAULT_IRQ_HANDLER(PWM0_IRQHandler, PWM0_IRQn);
-#if (UEZ_PROCESSOR == NXP_LPC4088)
-DEFAULT_IRQ_HANDLER(KFLASH_IRQHandler, EEPROM_IRQn);
-#else
-DEFAULT_IRQ_HANDLER(KFLASH_IRQHandler, KFLASH_IRQn);
-#endif
+DEFAULT_IRQ_HANDLER(KFLASH_IRQHandler, EEPROM_IRQn);  // Now using EEPROM name instead of KFLASH name on both parts
 
 /*---------------------------------------------------------------------------*
  * Routine:  InterruptUnregister

@@ -312,7 +312,7 @@ static T_uezError TS_FourWireTouchResist_ReadTouch(
     adcRequestYPlus.iADCChannel = p->iConfig.iYPlus.iADCChannel;
     adcRequestYPlus.iCapturedData = &touchReading;
 
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 100);
 
     // Set XPlus to output low (GND)
     TS_GPIO_MUX_AS_GPIO(iXPlus);
@@ -393,7 +393,7 @@ static T_uezError TS_FourWireTouchResist_ReadTouch_GPIO(
 {
     TUInt32 xPlus;
 
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 100);
 
     // Set XPlus to output low (GND)
     TS_GPIO_INPUT_MODE(iXPlus);
@@ -451,7 +451,7 @@ static T_uezError TS_FourWireTouchResist_ReadX(
         EFalse,
         0,
     };
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 100);
 
     adcRequestYPlus.iCapturedData = &reading;
 
@@ -523,7 +523,7 @@ static T_uezError TS_FourWireTouchResist_ReadY(
 
     adcReq.iCapturedData = &yPlus;
 
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 100);
 
     // Setup iXPlus as ADC
     TS_GPIO_MUX_AS_ADC(iXPlus);
@@ -895,7 +895,7 @@ static T_uezError TS_FourWireTouchResist_SetTouchDetectSensitivity(
     T_TS_FourWireTouchResist_Workspace *p =
             (T_TS_FourWireTouchResist_Workspace *) aWorkspace;
 
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 100);
     // Shift down the sensitivity to be a 10 bit reading
     // then multiply by the number of readings.
     p->iTDSLow = (aLowLevel >> 6) * NUM_SAMPLES_PER_READING;
@@ -945,7 +945,7 @@ static T_uezError TS_FourWireTouchResist_WaitForTouch(
     TUInt32 sense;
 
     // Grab the touch screen
-    error = UEZSemaphoreGrab(p->iSem, aTimeout);
+    error = UEZSemaphoreGrab(p->iSem, 100);
     if (error)
             return error;
 
@@ -963,7 +963,7 @@ static T_uezError TS_FourWireTouchResist_WaitForTouch(
     if (sense) {
         if (p->iConfig.iIRQBased) {
             // Wait for interrupt on pin going low
-            error = UEZSemaphoreGrab(p->iSemWaitForTouch, aTimeout);
+            error = UEZSemaphoreGrab(p->iSemWaitForTouch, 100);
             UEZGPIODisableIRQ(p->iConfig.iYMinus.iGPIO, GPIO_INTERRUPT_FALLING_EDGE);
         } else {
             // Wait for pin to go low

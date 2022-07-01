@@ -308,6 +308,9 @@ const HAL_CRC CRC_LPC546xx_Interface = {
 void LPC546xx_CRC0_Require(void)
 {
     HAL_DEVICE_REQUIRE_ONCE();
+
+    LPC546xxPowerOn(kCLOCK_Crc);
+
     HALInterfaceRegister("CRC0", (T_halInterface *)&CRC_LPC546xx_Interface, 0, 0);
 }
 

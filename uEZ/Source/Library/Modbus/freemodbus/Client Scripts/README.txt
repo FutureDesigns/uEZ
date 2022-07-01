@@ -13,10 +13,16 @@ sudo apt-get install curl
 
 user$ \curl -sSL https://get.rvm.io | bash -s stable --ruby
 
+May have to run this command if it fails, and then try again
+command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+
 user$ source ~/.rvm/scripts/rvm
 
 Find the current list of rubies
 user$ rvm list known
+
+If not show run the following command
+user$ rvm install "ruby-2.1.10"
 
 Use the newly installed ruby
 user$ rvm use 2.1
@@ -42,6 +48,9 @@ This will generate the config.yml file
 
 To execute the other scripts it is simply
 user$ ./script_to_run.rb
+
+May requrie running the following command to make the files executable
+chmod +c *.rb
 
 Current scripts:
 mbc_config.rb

@@ -207,6 +207,11 @@ T_uezError I2C_Generic_ProcessRequest(void *aWorkspace, I2C_Request *aRequest)
         }
     }
 
+    //Disable the controller if required
+    if((*p->iI2C)->Disable && error != UEZ_ERROR_NONE){
+        (*p->iI2C)->Disable(p->iI2C);
+    }
+
     // Done with this request, allow the next one to occur.
     UEZSemaphoreRelease(p->iSem);
 

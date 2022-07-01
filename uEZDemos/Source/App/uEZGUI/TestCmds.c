@@ -43,8 +43,8 @@
 #include <uEZLCD.h>
 #include <uEZI2C.h>
 #include <uEZTimeDate.h>
-#include <UEZEEPROM.h>
-#include <UEZFile.h>
+#include <uEZEEPROM.h>
+#include <uEZFile.h>
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -90,6 +90,13 @@ int UEZGUICmdLightSensor(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdAccelerometer(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdSpeaker(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[]);
+#if SEC_TO_ENABLED //Trusted Objects enabled
+int UEZGUICmdSETO(void *aWorkspace, int argc, char *argv[]);
+#endif
+#if SEC_MC_ENABLED //Microchip enabled
+int UEZGUICmdSEMC(void *aWorkspace, int argc, char *argv[]);
+#endif
+int UEZGUICmdReset(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdMACAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdIPAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdIPMaskAddress(void *aWorkspace, int argc, char *argv[]);
@@ -118,6 +125,13 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "3VERR", UEZGUICmd3VERR },
         { "EEPROM", UEZGUICmdEEPROM },
         { "TEMP", UEZGUICmdTemperature },
+#if SEC_TO_ENABLED //Trusted Objects enabled
+        { "SETO", UEZGUICmdSETO },
+#endif
+#if SEC_MC_ENABLED //Microchip enabled
+        { "SEMC", UEZGUICmdSEMC },
+#endif
+        { "RESET", UEZGUICmdReset },
         { "SDCARD", UEZGUICmdSDCard },
 #if LIGHT_SENSOR_ENABLED
         { "LIGHTSENSOR", UEZGUICmdLightSensor },
@@ -943,18 +957,193 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
 }
 #endif
 
+#if SEC_TO_ENABLED //Trusted Objects enabled
+int UEZGUICmdSETO(void *aWorkspace, int argc, char *argv[])
+{  
+    //T_uezError error;
+    //TUInt32 value;
+    //TUInt32 reading;
+    //char printString[30];
+    
+    /*TUInt32 numBytes;
+    T_uezDevice I2C;
+    TUInt8 dataIn[4];
+    TUInt8 dataOut[5] = {0};
+    I2C_Request r;
+
+    dataOut[0] = ;
+    dataOut[1] = ;
+    dataOut[2] = ;
+    dataOut[3] = ;
+    dataOut[4] = ;
+    
+    numBytes = 5;
+
+    if(UEZI2COpen("I2C1", &I2C) != UEZ_ERROR_NONE){
+        FDICmdSendString(aWorkspace, "FAIL: Could not open I2C1\n");
+    }
+
+    r.iAddr = 0x50;
+    r.iSpeed = 400; //kHz
+    r.iWriteData = &dataOut[0];
+    r.iWriteLength = numBytes; 
+    r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+    r.iReadData = &dataIn[0];
+    r.iReadLength = 4; 
+    r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
+    
+    UEZI2CTransaction(I2C, &r);*/
+        
+    FDICmdSendString(aWorkspace, "FAIL: No Driver\n");
+    // 
+    // 
+    //error = UEZSETOOpen("I2C0", &I2C);
+    /*if (error) {
+        FDICmdSendString(aWorkspace, "FAIL: No Driver\n");
+    }  else {
+        //error = UEZSecCalc(I2C, );
+        if (error) {
+              FDICmdSendString(aWorkspace, "FAIL: \n");
+          } else {
+              FDICmdSendString(aWorkspace, "PASS: OK\n");
+          }
+      //    UEZSETOClose(I2C);
+    }*/
+    return 0;
+}
+#endif
+
+#if SEC_MC_ENABLED //Microchip enabled
+int UEZGUICmdSEMC(void *aWorkspace, int argc, char *argv[])
+{  
+    //T_uezError error;
+    TUInt32 value;
+    //TUInt32 reading;
+    //char printString[30];
+    
+    TUInt32 numBytes;
+    T_uezDevice I2C;
+    TUInt8 dataIn[8] = {0};
+    TUInt8 dataOut[8] = {0};
+    I2C_Request r;
+    
+    UEZPlatform_I2C1_Require();
+    UEZPlatform_CRC0_Require();
+    
+#include <uEZCRC.h>
+   T_uezDevice crc;
+    
+    FDICmdPrintf(aWorkspace, "Set pins high\n");
+     
+    UEZGPIOOutput(GPIO_P4_13); 
+    UEZGPIOSetMux(GPIO_P4_13, (GPIO_P4_13 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P4_13 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P4_13, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOSet(GPIO_P4_13);
+        
+    UEZGPIOOutput(GPIO_P4_14); 
+    UEZGPIOSetMux(GPIO_P4_14, (GPIO_P4_14 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P4_14 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P4_14, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOSet(GPIO_P4_14);
+    
+    UEZTaskDelay(10); // Power on delay
+    
+    if(UEZI2COpen("I2C1", &I2C) != UEZ_ERROR_NONE){
+        FDICmdSendString(aWorkspace, "FAIL: Could not open I2C1\n");
+    }
+    UEZI2CResetBus(I2C);    
+    dataOut[0] = 0x00;
+    dataOut[1] = 0x00;    
+    r.iAddr = 0x60;
+    r.iSpeed = 100; //kHz
+    r.iWriteData = dataOut;
+    r.iWriteLength = 2; 
+    r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+    r.iReadData = dataIn;
+    r.iReadLength = 0; 
+    r.iReadTimeout = UEZ_TIMEOUT_INFINITE;    
+    UEZI2CTransaction(I2C, &r); // we only get ACK on write if we do this reset command first to wake it up. But this may not be the proper wake sequence.
+
+    numBytes = 8;
+    dataOut[0] = 0x03; // command mode
+    dataOut[1] = 7; // There will be seven bytes sent. 4 bytes of command from above, 2 checksum bytes, and the 1 byte which is this length byte
+    dataOut[2] = 0x30; // info command
+    dataOut[3] = 0x00; // revision mode
+    dataOut[4] = 0x00;
+    dataOut[5] = 0x00;
+    
+    // use UEZ_CRC_16_IBM polynomial 0x8005
+   if(UEZCRCOpen("CRC0", &crc) == UEZ_ERROR_NONE){
+     	// the device opened properly
+      UEZCRCSetComputationType(crc, UEZ_CRC_16_IBM); // poly not supported
+      UEZCRCComputeData(crc, &dataOut[0], UEZ_CRC_DATA_SIZE_UINT16, 5); // size not supported
+      UEZCRCReadChecksum(crc, &value); // must calculate using some other mechanism
+      // See http://www.zorc.breitbandkatze.de/crc.html CRC-16, uncheck reverse crc result before final XOR
+      value = 0x5D03; 
+      dataOut[6] = (TUInt8) (value & 0xFF);
+      dataOut[7] = (TUInt8) (value >> 8);      
+           
+      UEZCRCClose(crc);
+   }else{
+       FDICmdSendString(aWorkspace, "FAIL: Could not open CRC0\n");
+   }
+    
+    FDICmdPrintf(aWorkspace, "TX: %X,%X,%X,%X,%X,%X,%X,%X\n", dataOut[0], dataOut[1], dataOut[2], 
+                     dataOut[3], dataOut[4], dataOut[5], dataOut[6], dataOut[7]);    
+    r.iAddr = 0x60;
+    r.iSpeed = 400; //kHz
+    r.iWriteData = dataOut;
+    r.iWriteLength = numBytes; 
+    r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+    r.iReadData = dataIn;
+    r.iReadLength = 7; 
+    r.iReadTimeout = UEZ_TIMEOUT_INFINITE;    
+    UEZI2CTransaction(I2C, &r);        
+    FDICmdPrintf(aWorkspace, "RX: %X,%X,%X,%X,%X,%X,%X\n", dataIn[0], dataIn[1], dataIn[2], dataIn[3]
+                 , dataIn[4], dataIn[5], dataIn[6]);    
+    UEZI2CClose(I2C);
+    
+    //FDICmdSendString(aWorkspace, "FAIL: No Driver\n");
+    // 
+    // 
+    //error = UEZSEMCOpen("I2C0", &I2C);
+    /*if (error) {
+        FDICmdSendString(aWorkspace, "FAIL: No Driver\n");
+    }  else {
+        //error = UEZSecCalc(I2C, );
+        if (error) {
+              FDICmdSendString(aWorkspace, "FAIL: \n");
+          } else {
+              FDICmdSendString(aWorkspace, "PASS: OK\n");
+          }
+      //    UEZSEMCClose(I2C);
+    }*/
+    return 0;
+}
+#endif
+
+int UEZGUICmdReset(void *aWorkspace, int argc, char *argv[])
+{  
+    FDICmdSendString(aWorkspace, "PASS: OK\n");
+    UEZTaskDelay(500);         
+    UEZPlatform_System_Reset();
+    return 0;
+}
+
 int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
 {
-    T_uezTimeDate td;
+    T_uezTimeDate td;    
+    char *p;
 
     if (argc == 1) {
         td.iDate.iMonth = 1;
         td.iDate.iDay = 1;
-        td.iDate.iYear = 2013;
+        td.iDate.iYear = 2018;
         td.iTime.iHour = 8;
         td.iTime.iMinute = 0;
         td.iTime.iSecond = 0;
-        // Set the time to 1/1/2013, 8:00:00
+        // Set the time to 1/1/2018, 8:00:00
         UEZTimeDateSet(&td);
 
         UEZTaskDelay(5000);
@@ -962,7 +1151,7 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
         UEZTimeDateGet(&td);
         if ((td.iDate.iMonth==1) &&
                 (td.iDate.iDay == 1) &&
-                (td.iDate.iYear == 2013) &&
+                (td.iDate.iYear == 2018) &&
                 (td.iTime.iHour == 8) &&
                 (td.iTime.iMinute == 0) &&
                 (td.iTime.iSecond > 1)) {
@@ -970,7 +1159,39 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
         } else {
             FDICmdSendString(aWorkspace, "FAIL: Not Incrementing\n");
         }
-
+    } else if (argc == 2) {
+        p = argv[1];
+        if (strcmp(p, "set")==0) {        
+          td.iDate.iMonth = 1;
+          td.iDate.iDay = 1;
+          td.iDate.iYear = 2018;
+          td.iTime.iHour = 8;
+          td.iTime.iMinute = 0;
+          td.iTime.iSecond = 0;
+          // Set the time to 1/1/2018, 8:00:00
+          if(UEZTimeDateSet(&td)) { // takes some time on LPC43XXX
+            FDICmdSendString(aWorkspace, "FAIL: Not Set\n");
+          } else {
+            FDICmdSendString(aWorkspace, "PASS: OK\n");
+          }          
+        } else if (strcmp(p, "test")==0) {
+          UEZTimeDateGet(&td);
+          if ((td.iDate.iMonth==1) &&
+                  (td.iDate.iDay == 1) &&
+                  (td.iDate.iYear == 2018) &&
+                  (td.iTime.iHour == 8) &&
+                  (td.iTime.iMinute == 0) &&
+                  (td.iTime.iSecond > 2) &&
+                  (td.iTime.iSecond < 6)) {
+                  FDICmdSendString(aWorkspace, "PASS: OK");
+                  FDICmdPrintf(aWorkspace, ", Seconds: %u\n", td.iTime.iSecond);
+          } else {
+            FDICmdSendString(aWorkspace, "FAIL: Not Incrementing");
+            FDICmdPrintf(aWorkspace, ", Seconds: %u\n", td.iTime.iSecond);
+          }
+        } else {
+          FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+        }        
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
@@ -1054,6 +1275,7 @@ int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
       if(UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE){
           UEZLCDBacklight(lcd, FDICmdUValue(argv[1]));
           UEZLCDClose(lcd);
+          FDICmdSendString(aWorkspace, "PASS: OK\n");
       }
   } else {
     FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");

@@ -48,8 +48,8 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           09
-#define UEZ_VERSION_STRING          "2.09"
+#define UEZ_VERSION_MINOR           10
+#define UEZ_VERSION_STRING          "2.10"
 #define UEZ_VERSION_DATE            "09/01/2017" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
@@ -59,11 +59,15 @@
 #define RowleyARM                   1
 #define IAR                         2
 #define CodeRed                     3
-#define HEW			                4
-#define Keil4			            5
+#define HEW			    4
+#define Keil4			    5
 #define RenesasRX                   6
 #define VisualC                     7
 #define GCC                         8
+// Hopefully we don't need to differentiate between GCC and Clang
+// So for right now don't use the CLANG define here, but use #ifdef __clang__ 
+// for any compatibility issues that crop up.
+//#define CLANG    9 
 
 /** List of RTOS's */
 #define FreeRTOS                    1
@@ -120,7 +124,7 @@ extern "C" {
 /** List of processor types */
 #define NXP_LPC2478                             1
 #define NXP_LPC1768                             2
-#define RENESAS_H8SX_1668RF	                    3
+#define RENESAS_H8SX_1668RF                     3
 #define NXP_LPC1788                             4
 #define RENESAS_RX62N                           5
 #define STMICRO_STM32F105_7                     6

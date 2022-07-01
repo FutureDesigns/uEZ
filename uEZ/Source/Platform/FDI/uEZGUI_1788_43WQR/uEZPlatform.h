@@ -125,7 +125,18 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+ 
+/*-------------------------------------------------------------------------*
+ * General Purpose Pin Mappings to CPU:
+ *-------------------------------------------------------------------------*/
+// HW Reset pin in Rev X PCB
+#define PIN_HW_RESET  GPIO_NONE 
 
+// LED pin(s)
+#define GPIO_HEARTBEAT_LED  		GPIO_P1_13
+
+// TODO add GPIOs on ALT PWR COM, PMOD here
+ 
 /*-------------------------------------------------------------------------*
  * Expansion Connector Header Pin Mappings to CPU:
  *-------------------------------------------------------------------------*/
@@ -352,6 +363,7 @@ void UEZPlatform_Require(void);
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);
 void UEZPlatform_Minimal_Require(void);
+void UEZPlatform_System_Reset(void);
 
 // Utility function to connect to the Wired Network
 T_uezError UEZPlatform_WiredNetwork0_Connect(

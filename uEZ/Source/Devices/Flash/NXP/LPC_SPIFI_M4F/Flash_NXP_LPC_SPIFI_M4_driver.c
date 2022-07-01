@@ -36,9 +36,14 @@
  *---------------------------------------------------------------------------*/
 #if (UEZ_PROCESSOR == NXP_LPC4088)
 #define SPIFLASH_BASE_ADDRESS           (0x28000000)
+#define SPIFI_BASE                      LPC_SPIFI_BASE
 #define LPC_SPIFI_BASE                  (0x20080000  + 0x14000)
 #elif (UEZ_PROCESSOR == NXP_LPC4357)
 #define SPIFLASH_BASE_ADDRESS           (0x14000000)
+#define SPIFI_BASE                      LPC_SPIFI_BASE
+#elif (UEZ_PROCESSOR == NXP_LPC546xx)
+#define SPIFLASH_BASE_ADDRESS           (0x10000000)
+#define SPIFI_BASE                      SPIFI0_BASE
 #else
 #error "MCU not supported!"
 #endif
@@ -233,12 +238,19 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_BlockErase(
 {
     T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
     TUInt32 spifiResult = 0;
+    TUInt32 firstSubBlock, lastsubBlock;
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
 
     spifiDevSetMemMode(p->iPSPIFI, 0);
-    spifiResult = spifiEraseByAddr(p->iPSPIFI, SPIFLASH_BASE_ADDRESS + aOffset,
-            SPIFLASH_BASE_ADDRESS + aOffset + aNumBytes);
+    firstSubBlock = spifiGetSubBlockFromAddr(p->iPSPIFI, SPIFLASH_BASE_ADDRESS + aOffset);
+    lastsubBlock  = spifiGetSubBlockFromAddr(p->iPSPIFI, SPIFLASH_BASE_ADDRESS + aOffset + aNumBytes - 1);
+
+    /* Limit to legal address range */
+    if ((firstSubBlock != ~0UL) && (lastsubBlock != ~0UL)) {
+        spifiResult = spifiEraseSubBlocks(p->iPSPIFI, firstSubBlock, ((lastsubBlock - firstSubBlock) + 1));
+    }
+
     spifiDevSetMemMode(p->iPSPIFI, 1);
 
     // Done erasing, resume normal control
@@ -372,13 +384,26 @@ static void I_SPIFI_IO_CLK_Init()
     LPC_IOCON->P0_17 |= 0x5;    /* SPIFI_IO1 @ P0.17 */
     LPC_IOCON->P0_18 &= ~0x07;
     LPC_IOCON->P0_18 |= 0x5;    /* SPIFI_IO0 @ P0.18 */
-#elif (UEZ_PROCESSOR == NXP_LPC4357)
+#elif(UEZ_PROCESSOR == NXP_LPC4357)
     LPC_SCU->SFSP3_8 = ((1 << 7) | (1 << 6) | (1 << 5) | (2 << 3)) | 3;
     LPC_SCU->SFSP3_3 = ((1 << 7) | (1 << 6) | (1 << 5) | (2 << 3)) | 3;
     LPC_SCU->SFSP3_7 = ((1 << 7) | (1 << 6) | (1 << 5) | (2 << 3)) | 3;
     LPC_SCU->SFSP3_6 = ((1 << 7) | (1 << 6) | (1 << 5) | (2 << 3)) | 3;
     LPC_SCU->SFSP3_5 = ((1 << 7) | (1 << 6) | (1 << 5) | (2 << 3)) | 3;
     LPC_SCU->SFSP3_4 = ((1 << 7) | (1 << 6) | (1 << 5) | (2 << 3)) | 3;
+#elif(UEZ_PROCESSOR == NXP_LPC546xx)
+    LPC546xxPowerOn(kCLOCK_Spifi);
+    SYSCON->SPIFICLKSEL = 0; //main clock
+    SYSCON->SPIFICLKDIV = 1;  //divide by 0 TODO: change when clock rate goes higher
+
+    IOCON->PIO[0][23] = (1<<8) | (2<<4) | 6; //CS
+
+    IOCON->PIO[0][24] = (1<<8) | (2<<4) | 6; //0
+    IOCON->PIO[0][25] = (1<<8) | (2<<4) | 6; //0
+    IOCON->PIO[0][28] = (1<<8) | (2<<4) | 6; //2
+    IOCON->PIO[0][27] = (1<<8) | (2<<4) | 6; //3
+
+    IOCON->PIO[0][26] = (1<<8) | (2<<4) | 6; //CLK
 #else
 #error "MCU not supported!"
 #endif
@@ -404,7 +429,7 @@ void Flash_NXP_LPC_SPIFI_M4_Configure(
 
     I_SPIFI_IO_CLK_Init();
 
-    spifiError = spifiInit(LPC_SPIFI_BASE, ETrue);
+    spifiError = spifiInit(SPIFI_BASE, ETrue);
     if(spifiError != 0){
       return;
     }
@@ -414,9 +439,9 @@ void Flash_NXP_LPC_SPIFI_M4_Configure(
     //TUInt32 idx = 
     spifiGetSuppFamilyCount();
 
-    memSize = spifiGetHandleMemSize(LPC_SPIFI_BASE);
+    memSize = spifiGetHandleMemSize(SPIFI_BASE);
     if(memSize != 0){
-        p->iPSPIFI = spifiInitDevice(&lmem, sizeof(lmem), LPC_SPIFI_BASE, SPIFLASH_BASE_ADDRESS);
+        p->iPSPIFI = spifiInitDevice(&lmem, sizeof(lmem), SPIFI_BASE, SPIFLASH_BASE_ADDRESS);
 
         //spifiDevUnlockDevice(p->iPSPIFI);
         spifiDevSetMemMode(p->iPSPIFI, 1);

@@ -105,8 +105,8 @@ static const T_LCDControllerSettings LCD_NHD50800480TF_paramsI15bit = {
     48,         // HSYNC pulse width, must be 48!
     800,        // Pixels per line
 
-    36,         // Vertical back porch, must be 36!
-    16,         // Vertical front porch
+    36,         // Vertical back porch, must be 36! - Rev 1 Only!
+    16,         // Vertical front porch - Rev 1 Only!
     3,          // VSYNC pulse width, must be 3!
     480,        // Lines per panel
 

@@ -36,6 +36,21 @@
 
 #define LCD_CLOCK_RATE      9000000
 
+#define HORZ_BACK_PORCH         2
+#define HORZ_FRONT_PORCH        2
+#define HORZ_PULSE_WIDTH        41
+#define HORZ_PIXELS_PER_LINE    RESOLUTION_X
+
+#define VERT_BACK_PORCH         1
+#define VERT_FRONT_PORCH        1
+#define VERT_PULSE_WIDTH        11
+#define VERT_LINES_PER_PANEL    RESOLUTION_Y
+
+#define OUTPUT_ENABLE_INVERT    EFalse
+#define OUTPUT_PCLK_INVERT      EFalse
+#define OUTPUT_HSYNC_INVERT     ETrue
+#define OUTPUT_VSYNC_INVERT     ETrue
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
@@ -67,28 +82,28 @@ static const T_LCDControllerSettings LCD_NHD43480272MF_params16bit = {
     LCD_ADVANCED_TFT,
     LCD_COLOR_RES_16_565,
 
-    2,         /* Horizontal back porch */
-    2,         /* Horizontal front porch */
-    41,          /* HSYNC pulse width */
-    480,        /* Pixels per line */
+    HORZ_BACK_PORCH,      /* Horizontal back porch */
+    HORZ_FRONT_PORCH,     /* Horizontal front porch */
+    HORZ_PULSE_WIDTH,     /* HSYNC pulse width */
+    HORZ_PIXELS_PER_LINE, /* Pixels per line */
 
-    2,          /* Vertical back porch */
-    2,          /* Vertical front porch */
-    10,         /* VSYNC pulse width */
-    272,        /* Lines per panel */
+    VERT_BACK_PORCH,      /* Vertical back porch */
+    VERT_FRONT_PORCH,     /* Vertical front porch */
+    VERT_PULSE_WIDTH,     /* VSYNC pulse width */
+    VERT_LINES_PER_PANEL, /* Lines per panel */
 
-    0,          // Line end delay disabled
+    0,                    // Line end delay disabled
 
-    EFalse,     /* Do not invert output enable */
-    EFalse,      /* Invert panel clock */
-    ETrue,      /* Invert HSYNC */
-    ETrue,      /* Invert VSYNC */
+    OUTPUT_ENABLE_INVERT, /* Invert Output enable*/
+    OUTPUT_PCLK_INVERT,   /* Invert panel clock */
+    OUTPUT_HSYNC_INVERT,  /* Invert HSYNC */
+    OUTPUT_VSYNC_INVERT,  /* Invert VSYNC */
 
     0,          /* AC bias frequency (not used) */
 
     EFalse,     // Not dual panel
     EFalse,     // Little endian (NOT big endian)
-    EFalse,     //    Left to Right pixels (NOT right to left)
+    EFalse,     // Left to Right pixels (NOT right to left)
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
@@ -100,28 +115,28 @@ static const T_LCDControllerSettings LCD_NHD43480272MF_paramsI15bit = {
     LCD_ADVANCED_TFT,
     LCD_COLOR_RES_16_I555,
 
-    2,         /* Horizontal back porch */
-    2,         /* Horizontal front porch */
-    41,          /* HSYNC pulse width */
-    480,        /* Pixels per line */
+    HORZ_BACK_PORCH,      /* Horizontal back porch */
+    HORZ_FRONT_PORCH,     /* Horizontal front porch */
+    HORZ_PULSE_WIDTH,     /* HSYNC pulse width */
+    HORZ_PIXELS_PER_LINE, /* Pixels per line */
 
-    1,          /* Vertical back porch */
-    1,          /* Vertical front porch */
-    11,         /* VSYNC pulse width */
-    272,        /* Lines per panel */
+    VERT_BACK_PORCH,      /* Vertical back porch */
+    VERT_FRONT_PORCH,     /* Vertical front porch */
+    VERT_PULSE_WIDTH,     /* VSYNC pulse width */
+    VERT_LINES_PER_PANEL, /* Lines per panel */
 
-    0,          // Line end delay disabled
+    0,                    // Line end delay disabled
 
-    EFalse,     /* Do not invert output enable */
-    EFalse,      /* Invert panel clock */
-    ETrue,      /* Invert HSYNC */
-    ETrue,      /* Invert VSYNC */
+    OUTPUT_ENABLE_INVERT, /* Invert Output enable*/
+    OUTPUT_PCLK_INVERT,   /* Invert panel clock */
+    OUTPUT_HSYNC_INVERT,  /* Invert HSYNC */
+    OUTPUT_VSYNC_INVERT,  /* Invert VSYNC */
 
     0,          /* AC bias frequency (not used) */
 
     EFalse,     // Not dual panel
     EFalse,     // Little endian (NOT big endian)
-    EFalse,     //    Left to Right pixels (NOT right to left)
+    EFalse,     // Left to Right pixels (NOT right to left)
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
@@ -133,28 +148,28 @@ static const T_LCDControllerSettings LCD_NHD43480272MF_params8bit = {
     LCD_ADVANCED_TFT,
     LCD_COLOR_RES_8,
 
-    2,         /* Horizontal back porch */
-    2,         /* Horizontal front porch */
-    41,          /* HSYNC pulse width */
-    480,        /* Pixels per line */
+    HORZ_BACK_PORCH,      /* Horizontal back porch */
+    HORZ_FRONT_PORCH,     /* Horizontal front porch */
+    HORZ_PULSE_WIDTH,     /* HSYNC pulse width */
+    HORZ_PIXELS_PER_LINE, /* Pixels per line */
 
-    2,          /* Vertical back porch */
-    2,          /* Vertical front porch */
-    10,         /* VSYNC pulse width */
-    272,        /* Lines per panel */
+    VERT_BACK_PORCH,      /* Vertical back porch */
+    VERT_FRONT_PORCH,     /* Vertical front porch */
+    VERT_PULSE_WIDTH,     /* VSYNC pulse width */
+    VERT_LINES_PER_PANEL, /* Lines per panel */
 
-    0,          // Line end delay disabled
+    0,                    // Line end delay disabled
 
-    EFalse,     /* Do not invert output enable */
-    ETrue,      /* Invert panel clock */
-    ETrue,      /* Invert HSYNC */
-    ETrue,      /* Invert VSYNC */
+    OUTPUT_ENABLE_INVERT, /* Invert Output enable*/
+    OUTPUT_PCLK_INVERT,   /* Invert panel clock */
+    OUTPUT_HSYNC_INVERT,  /* Invert HSYNC */
+    OUTPUT_VSYNC_INVERT,  /* Invert VSYNC */
 
     0,          /* AC bias frequency (not used) */
 
     EFalse,     // Not dual panel
     EFalse,     // Little endian (NOT big endian)
-    EFalse,     //    Left to Right pixels (NOT right to left)
+    EFalse,     // Left to Right pixels (NOT right to left)
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 

@@ -224,6 +224,7 @@ void UEZPlatform_AudioCodec_Require(void);
 void UEZPlatform_LED_Require(void);
 void UEZPlatform_Button_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
+void UEZPlatform_System_Reset(void);
 
 // Utility function to connect to the Wired Network
 T_uezError UEZPlatform_WiredNetwork0_Connect(

@@ -432,8 +432,8 @@ void LPC546xx_PWM2_Require(void)
 void LPC546xx_PWM0_A_Require(T_uezGPIOPortPin aPortPin)
 {
     static const T_LPC546xx_SCU_ConfigList pins[] = {
-            {GPIO_P2_0,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P4_15, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P2_0,  IOCON_D_DEFAULT(1)},
+            {GPIO_P4_15, IOCON_D_DEFAULT(1)},
     };
     HAL_DEVICE_REQUIRE_ONCE();
     LPC546xx_PWM0_Require();
@@ -443,8 +443,8 @@ void LPC546xx_PWM0_A_Require(T_uezGPIOPortPin aPortPin)
 void LPC546xx_PWM0_B_Require(T_uezGPIOPortPin aPortPin)
 {
     static const T_LPC546xx_SCU_ConfigList pins[] = {
-            {GPIO_P2_13,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P5_17, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P2_13,  IOCON_D_DEFAULT(1)},
+            {GPIO_P5_17, IOCON_D_DEFAULT(1)},
     };
     HAL_DEVICE_REQUIRE_ONCE();
     LPC546xx_PWM0_Require();
@@ -454,8 +454,8 @@ void LPC546xx_PWM0_B_Require(T_uezGPIOPortPin aPortPin)
 void LPC546xx_PWM1_A_Require(T_uezGPIOPortPin aPortPin)
 {
     static const T_LPC546xx_SCU_ConfigList pins[] = {
-            {GPIO_P2_14,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P5_18, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P2_14,  IOCON_D_DEFAULT(1)},
+            {GPIO_P5_18, IOCON_D_DEFAULT(1)},
     };
     HAL_DEVICE_REQUIRE_ONCE();
     LPC546xx_PWM1_Require();
@@ -465,8 +465,8 @@ void LPC546xx_PWM1_A_Require(T_uezGPIOPortPin aPortPin)
 void LPC546xx_PWM1_B_Require(T_uezGPIOPortPin aPortPin)
 {
     static const T_LPC546xx_SCU_ConfigList pins[] = {
-            {GPIO_P2_15,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P4_11, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P2_15,  IOCON_D_DEFAULT(1)},
+            {GPIO_P4_11, IOCON_D_DEFAULT(1)},
     };
     HAL_DEVICE_REQUIRE_ONCE();
     LPC546xx_PWM1_Require();
@@ -476,8 +476,8 @@ void LPC546xx_PWM1_B_Require(T_uezGPIOPortPin aPortPin)
 void LPC546xx_PWM2_A_Require(T_uezGPIOPortPin aPortPin)
 {
     static const T_LPC546xx_SCU_ConfigList pins[] = {
-            {GPIO_P2_7,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P4_13, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P2_7,  IOCON_D_DEFAULT(1)},
+            {GPIO_P4_13, IOCON_D_DEFAULT(1)},
     };
     HAL_DEVICE_REQUIRE_ONCE();
     LPC546xx_PWM2_Require();
@@ -487,8 +487,8 @@ void LPC546xx_PWM2_A_Require(T_uezGPIOPortPin aPortPin)
 void LPC546xx_PWM2_B_Require(T_uezGPIOPortPin aPortPin)
 {
     static const T_LPC546xx_SCU_ConfigList pins[] = {
-            {GPIO_P2_9,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P4_14, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P2_9,  IOCON_D_DEFAULT(1)},
+            {GPIO_P4_14, IOCON_D_DEFAULT(1)},
     };
     HAL_DEVICE_REQUIRE_ONCE();
     LPC546xx_PWM2_Require();

@@ -63,7 +63,7 @@ extern "C" {
  * Globals:
  *-------------------------------------------------------------------------*/
 extern const DEVICE_ExternalInterrupt ExternalInterrupt_NXP_LPC1756_Interface;
-T_uezError ExternalInterrupt_Generic_Create(const char *aName);
+//T_uezError ExternalInterrupt_Generic_Create(const char *aName);
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

@@ -441,14 +441,14 @@ T_uezError ExternalInterrupt_NXP_LPC1768_Enable(
 /*---------------------------------------------------------------------------*
  * Creation routines:
  *---------------------------------------------------------------------------*/
-T_uezError ExternalInterrupt_Generic_Create(const char *aName)
+/*T_uezError ExternalInterrupt_Generic_Create(const char *aName)
 {
     T_uezDeviceWorkspace *p;
 
     // Initialize the DAC0 device
     return UEZDeviceTableRegister(aName,
         (T_uezDeviceInterface *)&ExternalInterrupt_NXP_LPC1768_Interface, 0, &p);
-}
+}*/
 
 /*---------------------------------------------------------------------------*
  * Device Interface table:

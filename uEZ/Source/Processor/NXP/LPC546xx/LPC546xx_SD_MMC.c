@@ -29,7 +29,9 @@
 #include <HAL/Interrupt.h>
 #include "LPC546xx_SD_MMC.h"
 #include "LPC546xx_GPIO.h"
-#include "IAR/include/CMSIS/LPC546xx.h"
+
+//TODO: Remove
+#include "iar/Include/CMSIS/LPC54608.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -237,9 +239,9 @@ void LPC546xx_SD_MMC_ProcessInterrupt(T_LPC546xx_SD_MMC_Workspace *p)
     InterruptDisable(SDIO_IRQn);
 
     // Did we finish a DMA?
-    if (LPC_SDMMC->RINTSTS & MCI_INT_DATA_OVER) {
+    if (SDIF->RINTSTS & MCI_INT_DATA_OVER) {
         // Clear the data transfer complete flag
-        LPC_SDMMC->RINTSTS = MCI_INT_DATA_OVER;
+        SDIF->RINTSTS = MCI_INT_DATA_OVER;
         // We doing a reception callback?  You only get one
         if (p->iReceptionCompleteCallback) {
             p->iReceptionCompleteCallback(p->iReceptionCompleteCallbackWorkspace);
@@ -252,8 +254,8 @@ void LPC546xx_SD_MMC_ProcessInterrupt(T_LPC546xx_SD_MMC_Workspace *p)
             p->iTransmissionCompleteCallback = 0;
         }
     }
-    if (LPC_SDMMC->RINTSTS & MCI_INT_CMD_DONE) {
-        //LPC_SDMMC->RINTSTS = MCI_INT_CMD_DONE;
+    if (SDIF->RINTSTS & MCI_INT_CMD_DONE) {
+        //SDIF->RINTSTS = MCI_INT_CMD_DONE;
         if (p->sdio_wait_exit != 0) {
             // Set this interrupt for SDIO commands
             p->sdio_wait_exit = 2;
@@ -304,7 +306,7 @@ T_uezError LPC546xx_SD_MMC_PowerOn(void *aWorkspace)
 {
     // Turn on the power (if not already on), wait 10 ms minimum,
     // and then enable the signals
-    LPC_SDMMC->PWREN = 0x01;
+    SDIF->PWREN = 0x01;
     UEZTaskDelay(10);
 
     return UEZ_ERROR_NONE;
@@ -322,13 +324,13 @@ T_uezError LPC546xx_SD_MMC_PowerOn(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError LPC546xx_SD_MMC_PowerOff(void *aWorkspace)
 {
-    LPC_SDMMC->INTMASK = 0;
-    LPC_SDMMC->CTRL   &= ~(1<<4);
-    LPC_SDMMC->CTRL = 1;
-    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
+    SDIF->INTMASK = 0;
+    SDIF->CTRL   &= ~(1<<4);
+    SDIF->CTRL = 1;
+    SDIF->RINTSTS = 0xFFFFFFFF;
 
-    LPC_SDMMC->PWREN = 0x00;
-    LPC_SDMMC->CLKENA = 0;
+    SDIF->PWREN = 0x00;
+    SDIF->CLKENA = 0;
 
     return UEZ_ERROR_NONE;
 }
@@ -346,32 +348,33 @@ T_uezError LPC546xx_SD_MMC_PowerOff(void *aWorkspace)
 T_uezError LPC546xx_SD_MMC_Reset(void *aWorkspace)
 {
     /* Software reset */
-    LPC_SDMMC->BMOD = MCI_BMOD_SWR;
+    SDIF->BMOD = MCI_BMOD_SWR;
 
     /* reset all blocks */
-    LPC_SDMMC->CTRL = MCI_CTRL_RESET | MCI_CTRL_FIFO_RESET | MCI_CTRL_DMA_RESET;
-    while (LPC_SDMMC->CTRL & (MCI_CTRL_RESET | MCI_CTRL_FIFO_RESET | MCI_CTRL_DMA_RESET))
+    SDIF->CTRL = MCI_CTRL_RESET | MCI_CTRL_FIFO_RESET | MCI_CTRL_DMA_RESET;
+    while (SDIF->CTRL & (MCI_CTRL_RESET | MCI_CTRL_FIFO_RESET | MCI_CTRL_DMA_RESET))
         {}
 
     /* Internal DMA setup for control register */
-    LPC_SDMMC->CTRL = MCI_CTRL_USE_INT_DMAC | MCI_CTRL_INT_ENABLE;
-    LPC_SDMMC->INTMASK = 0;
+    SDIF->CTRL = MCI_CTRL_USE_INT_DMAC | MCI_CTRL_INT_ENABLE;
+    SDIF->INTMASK = 0;
 
     /* Clear the interrupts for the host controller */
-    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
+    SDIF->RINTSTS = 0xFFFFFFFF;
 
     /* Put in max timeout */
-    LPC_SDMMC->TMOUT = 0xFFFFFFFF;
+    SDIF->TMOUT = 0xFFFFFFFF;
 
     /* FIFO threshold settings for DMA, DMA burst of 4,   FIFO watermark at 16 */
-    LPC_SDMMC->FIFOTH = MCI_FIFOTH_DMA_MTS_4 | MCI_FIFOTH_RX_WM((SD_FIFO_SZ / 2) - 1) | MCI_FIFOTH_TX_WM(SD_FIFO_SZ / 2);
+    SDIF->FIFOTH = MCI_FIFOTH_DMA_MTS_4 | MCI_FIFOTH_RX_WM((SD_FIFO_SZ / 2) - 1) | MCI_FIFOTH_TX_WM(SD_FIFO_SZ / 2);
 
     /* Enable internal DMA, burst size of 4, fixed burst */
-    LPC_SDMMC->BMOD = MCI_BMOD_DE | MCI_BMOD_PBL4 | MCI_BMOD_DSL(4);
+    SDIF->BMOD = MCI_BMOD_DE | MCI_BMOD_PBL4 | MCI_BMOD_DSL(4);
 
     /* disable clock to CIU (needs latch) */
-    LPC_SDMMC->CLKENA = 0;
-    LPC_SDMMC->CLKSRC = 0;
+    SDIF->CLKENA = 0;
+    //SDIF->CLKSRC = 0;
+    SYSCON->SDIOCLKSEL = 0;
 
     return UEZ_ERROR_NONE;
 }
@@ -382,11 +385,11 @@ static int ISendCommand(unsigned int aCommand, unsigned int aArgument)
     volatile int delay; // very fast delays
 
     // Set command argument
-    LPC_SDMMC->CMDARG = aArgument;
-    LPC_SDMMC->CMD = MCI_CMD_START | aCommand;
+    SDIF->CMDARG = aArgument;
+    SDIF->CMD = MCI_CMD_START | aCommand;
 
     // Poll until accepted
-    while (--timeout && (LPC_SDMMC->CMD & MCI_CMD_START)) {
+    while (--timeout && (SDIF->CMD & MCI_CMD_START)) {
         if (timeout & 1) {
             delay = 50;
         }
@@ -404,10 +407,10 @@ static int ISendCommand(unsigned int aCommand, unsigned int aArgument)
 static void IGetResponse(uint32_t *resp)
 {
     /* on this chip response is not a fifo so read all 4 regs */
-    resp[0] = LPC_SDMMC->RESP0;
-    resp[1] = LPC_SDMMC->RESP1;
-    resp[2] = LPC_SDMMC->RESP2;
-    resp[3] = LPC_SDMMC->RESP3;
+    resp[0] = SDIF->RESP[0];
+    resp[1] = SDIF->RESP[1];
+    resp[2] = SDIF->RESP[2];
+    resp[3] = SDIF->RESP[3];
 }
 
 /* Setup DMA descriptors */
@@ -417,8 +420,8 @@ void ISetupDMA(LPC546xx_SD_MMC_DMAArea *aDMAArea, TUInt32 addr, TUInt32 size)
     TUInt32 ctrl, maxs;
 
     // Reset DMA
-    LPC_SDMMC->CTRL |= MCI_CTRL_DMA_RESET | MCI_CTRL_FIFO_RESET;
-    while (LPC_SDMMC->CTRL & MCI_CTRL_DMA_RESET) {
+    SDIF->CTRL |= MCI_CTRL_DMA_RESET | MCI_CTRL_FIFO_RESET;
+    while (SDIF->CTRL & MCI_CTRL_DMA_RESET) {
     }
 
     // Build a descriptor list using the chained DMA method
@@ -456,20 +459,20 @@ void ISetupDMA(LPC546xx_SD_MMC_DMAArea *aDMAArea, TUInt32 addr, TUInt32 size)
     }
 
     // Set DMA descriptor base address
-    LPC_SDMMC->DBADDR = (uint32_t)&aDMAArea->mci_dma_dd[0];
+    SDIF->DBADDR = (uint32_t)&aDMAArea->mci_dma_dd[0];
 }
 
 /* Function to clear interrupt & FIFOs */
 static void ISetClearIntFifo(void)
 {
     /* reset all blocks */
-    LPC_SDMMC->CTRL |= MCI_CTRL_FIFO_RESET;
+    SDIF->CTRL |= MCI_CTRL_FIFO_RESET;
 
     /* wait till resets clear */
-    while (LPC_SDMMC->CTRL & MCI_CTRL_FIFO_RESET) {}
+    while (SDIF->CTRL & MCI_CTRL_FIFO_RESET) {}
 
     /* Clear interrupt status */
-    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
+    SDIF->RINTSTS = 0xFFFFFFFF;
 }
 
 /*---------------------------------------------------------------------------*
@@ -511,7 +514,7 @@ T_uezError LPC546xx_SD_MMC_ReadyTransmission(
     //p->iNumWriting = *aNumWriting;
 
     numBytes = aBlockSize * aNumBlocks;
-    LPC_SDMMC->BYTCNT = numBytes;
+    SDIF->BYTCNT = numBytes;
 
     // Set the callback routine (if any)
     p->iTransmissionCompleteCallback = aTransmissionCallback;
@@ -575,27 +578,28 @@ T_uezError ISetClockRate(
         uint32_t div;
 
         div = ((clk_rate / aHz)) >> 1;
-        if ((div == LPC_SDMMC->CLKDIV) && LPC_SDMMC->CLKENA) {
+        if ((div == SDIF->CLKDIV) && SDIF->CLKENA) {
             return UEZ_ERROR_NONE; /* Closest speed is already set */
 
         }
         /* disable clock */
-        LPC_SDMMC->CLKENA = 0;
+        SDIF->CLKENA = 0;
 
         /* User divider 0 */
-        LPC_SDMMC->CLKSRC = MCI_CLKSRC_CLKDIV0;
+        //SDIF->CLKSRC = MCI_CLKSRC_CLKDIV0;
+        SYSCON->SDIOCLKSEL = 0;
 
         /* inform CIU */
         ISendCommand(MCI_CMD_UPD_CLK | MCI_CMD_PRV_DAT_WAIT, 0);
 
         /* set divider 0 to desired value */
-        LPC_SDMMC->CLKDIV = MCI_CLOCK_DIVIDER(0, div);
+        SDIF->CLKDIV = MCI_CLOCK_DIVIDER(0, div);
 
         /* inform CIU */
         ISendCommand(MCI_CMD_UPD_CLK | MCI_CMD_PRV_DAT_WAIT, 0);
 
         /* enable clock */
-        LPC_SDMMC->CLKENA = MCI_CLKEN_ENABLE;
+        SDIF->CLKENA = MCI_CLKEN_ENABLE;
 
         /* inform CIU */
         ISendCommand(MCI_CMD_UPD_CLK | MCI_CMD_PRV_DAT_WAIT, 0);
@@ -623,7 +627,7 @@ static void IEventSetup(T_LPC546xx_SD_MMC_Workspace *p, void *bits)
     /* Wait for IRQ - for an RTOS, you would pend on an event here with a IRQ based wakeup. */
     NVIC_ClearPendingIRQ(SDIO_IRQn);
     p->sdio_wait_exit = 1;
-    LPC_SDMMC->INTMASK = bit_mask;
+    SDIF->INTMASK = bit_mask;
     InterruptEnable(SDIO_IRQn);
 }
 
@@ -638,9 +642,9 @@ static uint32_t IIRQWait(T_LPC546xx_SD_MMC_Workspace *p)
     }
 
     /* Get status and clear interrupts */
-    status = LPC_SDMMC->RINTSTS;
-    LPC_SDMMC->RINTSTS = status;
-    LPC_SDMMC->INTMASK = 0;
+    status = SDIF->RINTSTS;
+    SDIF->RINTSTS = status;
+    SDIF->INTMASK = 0;
 
     return status;
 }
@@ -710,7 +714,7 @@ TUInt32 LPC546xx_SD_MMC_ExecuteCommand(
         ISetClockRate(aWorkspace, p->iSpeed);
 
         /* Clear the interrupts */
-        LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
+        SDIF->RINTSTS = 0xFFFFFFFF;
 
         IEventSetup(p, (void *)&aWaitStatus);
 
@@ -784,12 +788,12 @@ TUInt32 LPC546xx_SD_MMC_ExecuteCommand(
 void LPC546xx_SD_MMC_SetCardType(void *aWorkspace, TUInt32 aType)
 {
     PARAM_NOT_USED(aWorkspace);
-    LPC_SDMMC->CTYPE = aType;
+    SDIF->CTYPE = aType;
 }
 void LPC546xx_SD_MMC_SetBlockSize(void *aWorkspace, TUInt32 bytes)
 {
     PARAM_NOT_USED(aWorkspace);
-    LPC_SDMMC->BLKSIZ = bytes;
+    SDIF->BLKSIZ = bytes;
 }
 
 void LPC546xx_SD_MMC_PrepreExtCSDTransfer(void *aWorkspace, TUInt8 *aAddress, TUInt32 aTransferSize)
@@ -797,8 +801,8 @@ void LPC546xx_SD_MMC_PrepreExtCSDTransfer(void *aWorkspace, TUInt8 *aAddress, TU
     T_LPC546xx_SD_MMC_Workspace *p = (T_LPC546xx_SD_MMC_Workspace *)aWorkspace;
 
     // Prepare the size
-    LPC_SDMMC->BLKSIZ = aTransferSize;
-    LPC_SDMMC->BYTCNT = aTransferSize;
+    SDIF->BLKSIZ = aTransferSize;
+    SDIF->BYTCNT = aTransferSize;
 
     // Setup the DMA
     ISetupDMA(&p->iDMAArea, (TUInt32)aAddress, aTransferSize);
@@ -846,7 +850,7 @@ T_uezError LPC546xx_SD_MMC_ReadyReception(
     byteCount = aNumBlocks * aBlockSize;
 
     // Set the number of bytes to read
-    LPC_SDMMC->BYTCNT = byteCount;
+    SDIF->BYTCNT = byteCount;
 
     ISetupDMA(&p->iDMAArea, (TUInt32) aBuffer, aNumBlocks * aBlockSize);
 
@@ -884,49 +888,63 @@ void LPC546xx_SD_MMC_Require(const T_LPC546xx_SD_MMC_Pins *aPins)
     T_halWorkspace *p_SD_MMC;
     T_LPC546xx_SD_MMC_Workspace *p;
 
-    static const T_LPC546xx_SCU_ConfigList sd_cd[] = {
-            {GPIO_P1_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
-            {GPIO_P6_7     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
+    static const T_LPC546xx_ICON_ConfigList sd_cd[] = {
+            {GPIO_P0_17     , IOCON_D_DEFAULT(2)}, //SD_CD    SD/MMC card detect input.
+            {GPIO_P2_10     , IOCON_D_DEFAULT(2)},
+            {GPIO_P4_22     , IOCON_D_DEFAULT(2)},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_cmd[] = {
-            {GPIO_P1_9     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CMD   SD/MMC command signal.
-            {GPIO_P6_9     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CMD   SD/MMC command signal.
+    static const T_LPC546xx_ICON_ConfigList sd_cmd[] = {
+            {GPIO_P0_8      , IOCON_D_DEFAULT(2)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P1_15     , IOCON_D_DEFAULT(4)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P1_22     , IOCON_D_DEFAULT(2)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P2_4      , IOCON_D_DEFAULT(2)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P4_20     , IOCON_D_DEFAULT(2)},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_dat0[] = {
-            {GPIO_P1_2     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT0  SD/MMC data bus line 0.
-            {GPIO_P6_3     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT0  SD/MMC data bus line 0.
+    static const T_LPC546xx_ICON_ConfigList sd_dat0[] = {
+            {GPIO_P0_24     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST}, //SD_DAT0  SD/MMC data bus line 0.
+            {GPIO_P1_4      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST}, //SD_DAT0  SD/MMC data bus line 0.
+            {GPIO_P2_6      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P4_25     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_dat1[] = {
-            {GPIO_P1_3     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT1  SD/MMC data bus line 1.
-            {GPIO_P6_4     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT1  SD/MMC data bus line 1.
+    static const T_LPC546xx_ICON_ConfigList sd_dat1[] = {
+            {GPIO_P0_25     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST}, //SD_DAT1  SD/MMC data bus line 1.
+            {GPIO_P1_7      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P2_7      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P4_26     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_dat2[] = {
-            {GPIO_P1_4     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT2  SD/MMC data bus line 2.
-            {GPIO_P6_5     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT2  SD/MMC data bus line 2.
+    static const T_LPC546xx_ICON_ConfigList sd_dat2[] = {
+            {GPIO_P0_31     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST}, //SD_DAT2  SD/MMC data bus line 2.
+            {GPIO_P1_5      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P2_8      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P4_27     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_dat3[] = {
-            {GPIO_P1_5     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT3  SD/MMC data bus line 3.
-            {GPIO_P6_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT3  SD/MMC data bus line 3.
+    static const T_LPC546xx_ICON_ConfigList sd_dat3[] = {
+            {GPIO_P1_0      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST}, //SD_DAT3  SD/MMC data bus line 3.
+            {GPIO_P1_6      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P2_9      , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
+            {GPIO_P4_28     , IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_pow[] = {
-            {GPIO_P1_8     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_POW   SD/MMC power monitor output.
-            {GPIO_P6_8     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_POW   SD/MMC power monitor output.
-            {GPIO_P6_15    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_POW   SD/MMC power monitor output.
+    static const T_LPC546xx_ICON_ConfigList sd_pow[] = {
+            {GPIO_P0_9      , IOCON_D_DEFAULT(2)},
+            {GPIO_P2_5      , IOCON_D_DEFAULT(7)},
+            {GPIO_P4_21     , IOCON_D_DEFAULT(2)},
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_wp[] = {
-            {GPIO_P6_29    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
-            {GPIO_P7_24    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
+    static const T_LPC546xx_ICON_ConfigList sd_wp[] = {
+            {GPIO_P4_23     , IOCON_D_DEFAULT(2)}, //SD_WP    SD/MMC card write protect input.
     };
 
-    static const T_LPC546xx_SCU_ConfigList sd_clk[] = {
-            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_FAST, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CLK   SD/MMC card clock.
+    static const T_LPC546xx_ICON_ConfigList sd_clk[] = {
+            {GPIO_P0_7      , IOCON_D_DEFAULT(2)}, //SD_CLK   SD/MMC card clock.
+            {GPIO_P1_8      , IOCON_D_DEFAULT(2)}, //SD_CLK   SD/MMC card clock.
+            {GPIO_P2_3      , IOCON_D_DEFAULT(2)},
+            {GPIO_P4_19     , IOCON_D_DEFAULT(2)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
@@ -939,18 +957,21 @@ void LPC546xx_SD_MMC_Require(const T_LPC546xx_SD_MMC_Pins *aPins)
     // Turn on the SD_MMC Controller
     //clock based on PCLK
     G_SourceClkFrequency = UEZPlatform_GetPCLKFrequency();
-    LPC_CGU->BASE_SDIO_CLK = (9<<24) | (1<<11); //Use PLL1 clock
-    LPC_CCU1->CLK_M4_SDIO_CFG = 3;
 
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iCardDetect, sd_cd, ARRAY_COUNT(sd_cd));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iCMD, sd_cmd, ARRAY_COUNT(sd_cmd));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iDAT0, sd_dat0, ARRAY_COUNT(sd_dat0));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iDAT1, sd_dat1, ARRAY_COUNT(sd_dat1));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iDAT2, sd_dat2, ARRAY_COUNT(sd_dat2));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iDAT3, sd_dat3, ARRAY_COUNT(sd_dat3));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iPOW, sd_pow, ARRAY_COUNT(sd_pow));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iWriteProtect, sd_wp, ARRAY_COUNT(sd_wp));
-    LPC546xx_SCU_ConfigPinOrNone(aPins->iCLK, sd_clk, ARRAY_COUNT(sd_clk));
+    //Turn on SDIO Interface
+    LPC546xxPowerOn(kCLOCK_Sdio);
+    SYSCON->SDIOCLKSEL = 0;
+    SYSCON->SDIOCLKDIV = 0;
+
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iCardDetect, sd_cd, ARRAY_COUNT(sd_cd));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iCMD, sd_cmd, ARRAY_COUNT(sd_cmd));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iDAT0, sd_dat0, ARRAY_COUNT(sd_dat0));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iDAT1, sd_dat1, ARRAY_COUNT(sd_dat1));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iDAT2, sd_dat2, ARRAY_COUNT(sd_dat2));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iDAT3, sd_dat3, ARRAY_COUNT(sd_dat3));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iPOW, sd_pow, ARRAY_COUNT(sd_pow));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iWriteProtect, sd_wp, ARRAY_COUNT(sd_wp));
+    LPC546xx_ICON_ConfigPinOrNone(aPins->iCLK, sd_clk, ARRAY_COUNT(sd_clk));
 
     // Reset SD_MMC Registers
     LPC546xx_SD_MMC_Reset((void *)p);

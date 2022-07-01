@@ -6,12 +6,13 @@
       Placement="Flash A"
       Target="LPC4357"
       arm_architecture="v7EM"
+      arm_compiler_variant="gcc"
       arm_core_type="Cortex-M4"
       arm_fp_abi="Hard"
       arm_fpu_type="FPv4-SP-D16"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
-      arm_linker_heap_size="500000"
+      arm_linker_heap_size="2000000"
       arm_linker_jtag_pad_post_dr="0"
       arm_linker_jtag_pad_post_ir="0"
       arm_linker_jtag_pad_pre_dr="1"
@@ -29,22 +30,27 @@
       batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug-Trace;THUMB Flash Debug-Trace CLANG;THUMB Flash Release"
       build_debug_information="Yes"
       build_output_directory="$(Configuration)"
-      build_output_file_name="$(OutDir)/$(ProjectName)$(LIB)"
+      build_output_file_name="$(OutDir)/$(ProjectName).bin"
       build_remove_unused_symbols="Yes"
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
-      c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET"
-      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN;../../../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/CrossWorks;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/CrossWorks/CMSIS;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/CrossWorks/include;../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Library/LPCOpen;../../../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
+      c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;__THUMB;LWIP_2_0_x"
+      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN;../../../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwIP_2.0.x/src;../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include;../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwIP_2.0.x/system;../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Library/LPCOpen;../../../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
       debug_register_definition_file="$(TargetsDir)/LPC4300/LPC4300_Peripherals.xml"
       debug_startup_completion_point="main"
+      gcc_c_language_standard="c11"
+      gcc_cplusplus_language_standard="c++11"
       gcc_short_enum="Minimal Container Size"
       gcc_wchar_size="32-Bit"
       link_include_startup_code="No"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-4357-50WVN_MemoryMap.xml"
-      linker_memory_map_macros="CS0_NAME=EMC;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;SPIFI_SIZE=0x1000000;CS0_CM0_SIZE=0x200000;SPIFI_CM0_SIZE=0x80000;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;DYCS0_CM0_SIZE=0x100000"
+      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x1000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x1000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x1000;CS0_CM0_SIZE=0x200000"
       linker_output_format="hex"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
-      linker_printf_fp_enabled="Yes"
+      linker_printf_fmt_level="long"
+      linker_printf_fp_enabled="Float"
+      linker_scanf_fmt_level="long"
+      linker_scanf_fp_enabled="Yes"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-4357-50WVN_placement.xml"
       linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM"
       oscillator_frequency="12MHz"
@@ -71,6 +77,7 @@
       arm_target_loader_can_unlock_range="No"
       arm_target_loader_default_loader="Flash"
       arm_target_loader_parameter="12000000"
+      c_preprocessor_definitions="__FLASH_BUILD"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-4357-50WVN_placement.xml"
       linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM"
@@ -242,9 +249,25 @@
       <folder Name="Processor">
         <folder Name="NXP">
           <folder Name="LPC43xx">
-            <folder Name="CrossWorks">
-              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Crossworks/LPC4300_Target.js">
-                <configuration Name="Common" file_type="Reset Script" />
+            <folder Name="CMSIS">
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_common_tables.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_const_structs.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_math.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0plus.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4_simd.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmFunc.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmInstr.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/LPC43xx.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.c" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.h" />
+            </folder>
+            <folder Name="GCC">
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/thumb_crt0.s" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/LPC4300_Startup.s" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/LPC4300_Target.js">
+                <configuration Name="Common" file_type="Target Script" />
               </file>
             </folder>
           </folder>
@@ -319,39 +342,32 @@
     </file>
     <file file_name="Config_Build.h" />
     <configuration
-      Name="THUMB Flash Release"
+      Name="Release"
+      c_preprocessor_definitions="NDEBUG"
+      gcc_debugging_level="Level 1"
       gcc_optimization_level="Level 2" />
-    <configuration Name="Release" gcc_optimization_level="Level 2" />
     <configuration
       Name="THUMB Flash Debug-Trace"
       c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
     <configuration
       Name="THUMB Flash Debug-Trace CLANG"
       arm_compiler_variant="clang" />
+    <configuration
+      Name="Debug"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="DEBUG"
+      gcc_debugging_level="Level 3"
+      gcc_optimization_level="None" />
   </project>
   <configuration
     Name="THUMB"
     Platform="ARM"
     arm_instruction_set="THUMB"
     arm_library_instruction_set="THUMB"
-    c_preprocessor_definitions="__THUMB"
     hidden="Yes" />
-  <configuration
-    Name="Flash"
-    c_preprocessor_definitions="__FLASH_BUILD"
-    hidden="Yes" />
-  <configuration
-    Name="Debug"
-    c_preprocessor_definitions="DEBUG"
-    gcc_debugging_level="Level 2"
-    gcc_optimization_level="None"
-    hidden="Yes" />
-  <configuration
-    Name="Release"
-    c_preprocessor_definitions="NDEBUG"
-    gcc_debugging_level="Level 1"
-    gcc_optimization_level="Level 1"
-    hidden="Yes" />
+  <configuration Name="Flash" hidden="Yes" />
+  <configuration Name="Debug" hidden="Yes" />
+  <configuration Name="Release" hidden="Yes" />
   <configuration
     Name="THUMB Flash Debug"
     inherited_configurations="THUMB;Flash;Debug" />

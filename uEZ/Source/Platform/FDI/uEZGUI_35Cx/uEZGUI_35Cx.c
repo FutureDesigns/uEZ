@@ -57,11 +57,10 @@
 #endif
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
 #include <Source/Devices/Button/NXP/PCA9551/Button_PCA9551.h>
-#include <Source/Devices/CRC/Software/CRC_Software.h>
-#include <Source/Devices/DAC/Generic/DAC_Generic.h>
+#include <Source/Devices/CRC/Generic/CRC_Generic.h>
 #include <Source/Devices/EEPROM/Generic/I2C/EEPROM_Generic_I2C.h>
 #include <Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C.h>
-//#include <Source/Devices/EEPROM/NXP/LPC546xx/EEPROM_NXP_LPC546xx.h>
+#include <Source/Devices/EEPROM/NXP/LPC546xx/EEPROM_NXP_LPC546xx.h>
 #include <Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4.h>
 #include <Source/Devices/GPDMA/Generic/Generic_GPDMA.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
@@ -80,26 +79,27 @@
 #include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/Timer/ToneGenerator_Generic_Timer.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
+#include <Source/Devices/Touchscreen/Himax/HX8526-A/HX8526-A_Touchscreen.h>
 #include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
 #include <Source/Library/Web/BasicWeb/BasicWEB.h>
 #include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
 #include <Source/Library/Graphics/SWIM/lpc_swim.h>
 #include <Source/Library/Memory/MemoryTest/MemoryTest.h>
 #include <Source/Library/StreamIO/StdInOut/StdInOut.h>
-//#include <Source/Processor/NXP/LPC546xx/uEZProcessor_LPC546xx.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_ADCBank.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_DAC.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_EMAC.h>
+#include <Source/Processor/NXP/LPC546xx/uEZProcessor_LPC546xx.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_ADCBank.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_CRC.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_EMAC.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_EMC_Static.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_GPDMA.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_GPIO.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_I2C.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_I2C.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_I2S.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_LCDController.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_SD_MMC.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_SD_MMC.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_PWM.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_PLL.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_RTC.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_RTC.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SDRAM.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_Serial.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SPI.h>
@@ -132,8 +132,8 @@ extern int MainTask(void);
 static T_uezDevice G_stdout = 0;
 static T_uezDevice G_stdin = 0;
 T_uezTask G_mainTask;
-static TUInt8 G_ms0_driveNum = 0;
-static TUInt32 G_USBHostDriveNumber = 0xFF;
+//static TUInt8 G_ms0_driveNum = 0;
+//static TUInt32 G_USBHostDriveNumber = 0xFF;
 
 /*---------------------------------------------------------------------------*
  * Macros:
@@ -350,37 +350,31 @@ void UEZBSP_CPU_PinConfigInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_FatalError(int aErrorCode)
 {
-//    register TUInt32 i;
-//    register TUInt32 count;
-//    // Ensure interrupts are turned off
-//    portDISABLE_INTERRUPTS();
-//
-//    LPC_SCU->SFSP1_4 = (0x3 << 3) | 0;
-//
-//    LPC_GPIO_PORT->DIR[0] |= (1<<11);
-//
-//    LPC_GPIO_PORT->CLR[0] |= 1 << 11; //Failed turn off the LED
-//    // Blink our status led in a pattern, forever
-//
-//    count = 0;
-//    while (1) {
-//        LPC_GPIO_PORT->SET[0] |= 1 << 11; // on
-//        for (i = 0; i < 15000000; i++)
-//            nop();
-//        //__nop();//asm ( "nop" );
-//        LPC_GPIO_PORT->CLR[0] |= 1 << 11;// off
-//        for (i = 0; i < 15000000; i++)
-//            nop();
-//        //__nop();//asm ( "nop" );
-//        count++;
-//        if (count >= aErrorCode) {
-//            // Long pause
-//            for (i = 0; i < 80000000; i++)
-//                nop();
-//            //__nop();//asm ( "nop" );
-//            count = 0;
-//        }
-//    }
+    register TUInt32 i;
+    register TUInt32 count;
+    // Ensure interrupts are turned off
+    portDISABLE_INTERRUPTS();
+
+    SYSCON->AHBCLKCTRLSET[0] = (1U << CLK_GATE_ABSTRACT_BITS_SHIFT(17));
+    IOCON->PIO[3][14] = ((0 <<3) | (0x03 << 8) | (1 << 0x07) | (0x00));
+    GPIO->DIR[3] |= (1 << 14);
+
+    count = 0;
+    while (1) {
+        GPIO->SET[3] |= (1<<14);
+        for (i = 0; i < 15000000; i++)
+            nop();
+        GPIO->CLR[3] |= (1<<14);
+        for (i = 0; i < 15000000; i++)
+            nop();
+        count++;
+        if (count >= aErrorCode) {
+            // Long pause
+            for (i = 0; i < 80000000; i++)
+                nop();
+            count = 0;
+        }
+    }
 }
 
 /*---------------------------------------------------------------------------*
@@ -391,82 +385,10 @@ void UEZBSP_FatalError(int aErrorCode)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_ADC0_Require();
-//    ADCBank_Generic_Create("ADC0", "ADC0");
+    DEVICE_CREATE_ONCE();
+    LPC546xx_ADC0_Require();
+    ADCBank_Generic_Create("ADC0", "ADC0");
 }
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC1 device driver.
- *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC1_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_ADC1_Require();
-//    ADCBank_Generic_Create("ADC1", "ADC1");
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC0_0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_0 channel on the ADC0 device driver
- *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC0_0_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_ADC0_0_Require(GPIO_NONE);//Uses dedicated pin
-//    UEZPlatform_ADC0_Require();
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC0_1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_1 channel on the ADC0 device driver
- *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC0_1_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO2_Require();
-//
-//    LPC546xx_ADC0_1_Require(GPIO_P2_1);
-//    UEZPlatform_ADC0_Require();
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC0_2_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_2 channel on the ADC0 device driver
- *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC0_2_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO7_Require();
-//
-//    LPC546xx_ADC0_2_Require(GPIO_P7_22);
-//    UEZPlatform_ADC0_Require();
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC0_3_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_3 channel on the ADC0 device driver
- *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC0_3_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO3_Require();
-//
-//    LPC546xx_ADC0_3_Require(GPIO_P3_13);
-//    UEZPlatform_ADC0_Require();
-}
-
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_4_Require
@@ -476,11 +398,11 @@ void UEZPlatform_ADC0_3_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_4_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO3_Require();
-//
-//    LPC546xx_ADC0_4_Require(GPIO_P3_12);
-//    UEZPlatform_ADC0_Require();
+    DEVICE_CREATE_ONCE();
+    LPC546xx_GPIO3_Require();
+
+    LPC546xx_ADC0_4_Require(GPIO_P0_16);
+    UEZPlatform_ADC0_Require();
 }
 
 /*---------------------------------------------------------------------------*
@@ -491,24 +413,11 @@ void UEZPlatform_ADC0_4_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_5_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO5_Require();
-//
-//    LPC546xx_ADC0_5_Require(GPIO_NONE);//Uses dedicated pin
-//    UEZPlatform_ADC0_Require();
-}
+    DEVICE_CREATE_ONCE();
+    LPC546xx_GPIO5_Require();
 
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC0_6_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_6 channel on the ADC0 device driver
- *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC0_6_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_ADC0_6_Require(GPIO_NONE);//Uses dedicated pin
-//    UEZPlatform_ADC0_Require();
+    LPC546xx_ADC0_5_Require(GPIO_P0_31);//Uses dedicated pin
+    UEZPlatform_ADC0_Require();
 }
 
 /*---------------------------------------------------------------------------*
@@ -519,53 +428,63 @@ void UEZPlatform_ADC0_6_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_7_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_ADC0_7_Require(GPIO_NONE);//Uses dedicated pin
-//    UEZPlatform_ADC0_Require();
+    DEVICE_CREATE_ONCE();
+    LPC546xx_ADC0_7_Require(GPIO_P2_0);//Uses dedicated pin
+    UEZPlatform_ADC0_Require();
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC1_0_Require
+ * Routine:  UEZPlatform_ADC0_8_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the ADC1_0 channel on the ADC1 device driver
+ *      Setup the ADC0_8 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC1_0_Require(void)
+void UEZPlatform_ADC0_8_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO7_Require();
-//
-//    LPC546xx_ADC1_0_Require(GPIO_P7_24);
-//    UEZPlatform_ADC1_Require();
+    DEVICE_CREATE_ONCE();
+    LPC546xx_ADC0_8_Require(GPIO_P2_1);//Uses dedicated pin
+    UEZPlatform_ADC0_Require();
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_ADC1_3_Require
+ * Routine:  UEZPlatform_ADC0_9_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the ADC1_3 channel on the ADC1 device driver
+ *      Setup the ADC0_9 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
-void UEZPlatform_ADC1_3_Require(void)
+void UEZPlatform_ADC0_9_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO7_Require();
-//
-//    LPC546xx_ADC1_3_Require(GPIO_P7_20);
-//    UEZPlatform_ADC1_Require();
+    DEVICE_CREATE_ONCE();
+    LPC546xx_ADC0_9_Require(GPIO_P3_21);//Uses dedicated pin
+    UEZPlatform_ADC0_Require();
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_I2C0_Require
+ * Routine:  UEZPlatform_ADC0_10_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the I2C0 device driver
+ *      Setup the ADC0_10 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
-void UEZPlatform_I2C0_Require(void)
+void UEZPlatform_ADC0_10_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    LPC546xx_I2C0_Require(GPIO_NONE, GPIO_NONE);
-//    I2C_Generic_Create("I2C0", "I2C0", 0);
+    DEVICE_CREATE_ONCE();
+    LPC546xx_ADC0_10_Require(GPIO_P3_22);//Uses dedicated pin
+    UEZPlatform_ADC0_Require();
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_I2C2_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the I2C2 device driver
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_I2C2_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+
+    LPC546xx_GPIO4_Require();
+    LPC546xx_I2C2_Require(GPIO_P4_20, GPIO_P4_21);
+    I2C_Generic_Create("I2C2", "I2C2", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -612,14 +531,14 @@ void UEZPlatform_GPDMA1_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_FileSystem_Require(void)
 {
-//    T_uezDevice dev_fs;
-//
-//    DEVICE_CREATE_ONCE();
-//
-//    FileSystem_FATFS_Create("FATFS");
-//    UEZDeviceTableFind("FATFS", &dev_fs);
-//    UEZFileSystemInit();
-//    UEZFileSystemMount(dev_fs, "/");
+    T_uezDevice dev_fs;
+
+    DEVICE_CREATE_ONCE();
+
+    FileSystem_FATFS_Create("FATFS");
+    UEZDeviceTableFind("FATFS", &dev_fs);
+    UEZFileSystemInit();
+    UEZFileSystemMount(dev_fs, "/");
 }
 
 /*---------------------------------------------------------------------------*
@@ -630,25 +549,49 @@ void UEZPlatform_FileSystem_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_SD_MMC_Require(void)
 {
-//    // Using the defaults for now
-//    const T_LPC546xx_SD_MMC_Pins pins = {
-//        GPIO_P6_3,      // DAT0
-//        GPIO_P6_4,      // DAT1
-//        GPIO_P6_5,      // DAT2
-//        GPIO_P6_6,      // DAT3
-//        GPIO_PZ_Z_PC_0, // CLK
-//        GPIO_P6_9,      // CMD
-//        GPIO_P6_7,      // Card Detect
-//        GPIO_NONE,      // Write Protect Detect
-//        GPIO_P6_15,     // Power Output
-//    };
-//
-//    DEVICE_CREATE_ONCE();
-//
-//    LPC546xx_GPIO6_Require();
-//    LPC546xx_GPIOZ_Require();
-//
-//    LPC546xx_SD_MMC_Require(&pins);
+    // Using the defaults for now
+    const T_LPC546xx_SD_MMC_Pins pins = {
+        GPIO_P2_6,      // DAT0
+        GPIO_P2_7,      // DAT1
+        GPIO_P2_8,      // DAT2
+        GPIO_P2_9,      // DAT3
+        GPIO_P2_3,      // CLK
+        GPIO_P2_4,      // CMD
+        GPIO_P4_22,     // Card Detect
+        GPIO_NONE,      // Write Protect Detect
+        GPIO_P2_5,      // Power Output
+    };
+
+    DEVICE_CREATE_ONCE();
+
+    LPC546xx_GPIO2_Require();
+    LPC546xx_GPIO4_Require();
+
+    //All 8 data pins need to be configured for 4-bit mode to work
+    LPC546xx_GPIO3_Require();
+
+#define SD_4        GPIO_P3_16 //EXP UART
+#define SD_5        GPIO_P3_17 //EXP UART
+#define SD_6        GPIO_P3_18 //Unused
+#define SD_7        GPIO_P3_19 //Unused
+
+    UEZGPIOLock(SD_4);
+    UEZGPIOControl(SD_4, GPIO_CONTROL_SET_CONFIG_BITS,
+            IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST);
+
+    UEZGPIOLock(SD_5);
+    UEZGPIOControl(SD_5, GPIO_CONTROL_SET_CONFIG_BITS,
+            IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST);
+
+    UEZGPIOLock(SD_6);
+    UEZGPIOControl(SD_6, GPIO_CONTROL_SET_CONFIG_BITS,
+            IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST);
+
+    UEZGPIOLock(SD_7);
+    UEZGPIOControl(SD_7, GPIO_CONTROL_SET_CONFIG_BITS,
+            IOCON_D_DEFAULT(2) | IOCON_SLEW_FAST);
+
+    LPC546xx_SD_MMC_Require(&pins);
 }
 
 /*---------------------------------------------------------------------------*
@@ -659,9 +602,10 @@ void UEZPlatform_SD_MMC_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_CRC0_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    Software_CRC_Create("CRC0");
+    DEVICE_CREATE_ONCE();
+
+    LPC546xx_CRC0_Require();
+    CRC_Generic_Create("CRC0", "CRC0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -751,6 +695,7 @@ void UEZPlatform_LCD_Require(void)
     LPC546xx_GPIO2_Require();
     LPC546xx_GPIO3_Require();
 
+    //TODO: Add BL driver when PWM is implemented.
     //Testing, Turn BL on 100%
     LPC546xx_GPIO4_Require();
     UEZGPIOSetMux(GPIO_P4_30, 0); //BL_PWM
@@ -800,18 +745,18 @@ void UEZPlatform_LCD_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Touchscreen_Require(char *aName)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    LPC546xx_GPIO0_Require();
-//
-//    UEZPlatform_I2C0_Require();
-//
-//    //PCAP IRQ, P6_6, GPIO0[5]
-//    UEZGPIOControl(GPIO_P0_5, GPIO_CONTROL_SET_CONFIG_BITS, ((1 << 7) | (1 << 6)));
-//    UEZGPIOSetMux(GPIO_P0_5, 0);
-//    UEZGPIOInput(GPIO_P0_5);
-//
-//    Touchscreen_FT5306DE4_Create(aName, "I2C0", GPIO_P0_5, GPIO_P5_15);
+    DEVICE_CREATE_ONCE();
+
+    LPC546xx_GPIO2_Require();
+
+    UEZPlatform_I2C2_Require();
+
+    //PCAP IRQ, P2_26
+    UEZGPIOControl(GPIO_P2_26, GPIO_CONTROL_SET_CONFIG_BITS, ((1 << 7) | (1 << 6)));
+    UEZGPIOSetMux(GPIO_P2_26, 0);
+    UEZGPIOInput(GPIO_P2_26);
+
+    Touchscreen_HX8526A_Create(aName, "I2C2", GPIO_P2_26, GPIO_P2_27);
 }
 
 /*---------------------------------------------------------------------------*
@@ -822,8 +767,8 @@ void UEZPlatform_Touchscreen_Require(char *aName)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Flash0_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    Flash_NXP_LPC_SPIFI_M4_Create("Flash0");
+    DEVICE_CREATE_ONCE();
+    Flash_NXP_LPC_SPIFI_M4_Create("Flash0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -983,23 +928,7 @@ void UEZPlatform_PWM2_Require(void)
 //   PWM_Generic_Create("PWM1", "PWM1");
 }
 
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_DAC0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the DAC0 device driver
- *      NOTE: Goes to
- *---------------------------------------------------------------------------*/
-void UEZPlatform_DAC0_Require(void)
-{
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_GPIO2_Require();
-//
-//    LPC546xx_DAC0_Require(GPIO_P2_4);
-//    DAC_Generic_Create("DAC0", "DAC0");
-}
-
-static T_uezDevice G_Amp;
+//static T_uezDevice G_Amp;
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioAmp_Require
  *---------------------------------------------------------------------------*
@@ -1022,11 +951,11 @@ void UEZPlatform_AudioAmp_Require(void)
  * Description:
  *
  *---------------------------------------------------------------------------*/
-static T_uezError UEZGUI43WQR_AudioMixerCallback(
-        T_uezAudioMixerOutput aChangedOutput,
-            TBool aMute,
-            TUInt8 aLevel)
-{
+//static T_uezError UEZGUI43WQR_AudioMixerCallback(
+//        T_uezAudioMixerOutput aChangedOutput,
+//            TBool aMute,
+//            TUInt8 aLevel)
+//{
 //    T_uezError error = UEZ_ERROR_NONE;
 //
 //    switch(aChangedOutput){
@@ -1044,7 +973,7 @@ static T_uezError UEZGUI43WQR_AudioMixerCallback(
 //            break;
 //    }
 //    return error;
-}
+//}
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioMixer_Require
@@ -1070,8 +999,8 @@ void UEZPlatform_AudioMixer_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_EEPROM_LPC546xx_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//    EEPROM_NXP_LPC546xx_Create("EEPROM0");
+    DEVICE_CREATE_ONCE();
+    EEPROM_NXP_LPC546xx_Create("EEPROM0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1269,10 +1198,10 @@ void UEZPlatform_Speaker_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_IRTC_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    LPC546xx_RTC_Require(ETrue);
-//    RTC_Generic_Create("RTC", "RTC");
+    DEVICE_CREATE_ONCE();
+
+    LPC546xx_RTC_Require(ETrue);
+    RTC_Generic_Create("RTC", "RTC");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1284,9 +1213,9 @@ void UEZPlatform_IRTC_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_RTC_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    UEZPlatform_IRTC_Require();
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_IRTC_Require();
 }
 
 /*---------------------------------------------------------------------------*
@@ -1297,10 +1226,10 @@ void UEZPlatform_RTC_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Temp0_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    UEZPlatform_I2C0_Require();
-//    Temp_NXP_LM75A_Create("Temp0", "I2C0", 0x92 >> 1);
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_I2C2_Require();
+    Temp_NXP_LM75A_Create("Temp0", "I2C2", 0x92 >> 1);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1364,14 +1293,14 @@ void UEZPlatform_EMAC_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_WiredNetwork0_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    // Wired network needs an EMAC
-//    UEZPlatform_EMAC_Require();
-//
-//    // Create the network driver for talking to lwIP on a wired
-//    // network.
-//    Network_lwIP_Create("WiredNetwork0");
+    DEVICE_CREATE_ONCE();
+
+    // Wired network needs an EMAC
+    UEZPlatform_EMAC_Require();
+
+    // Create the network driver for talking to lwIP on a wired
+    // network.
+    Network_lwIP_Create("WiredNetwork0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1493,10 +1422,10 @@ void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_MS1_SD_MMC_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    UEZPlatform_SD_MMC_Require();
-//    MassStorage_SDCard_SD_MMC_Create("MS1", "SD_MMC");
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_SD_MMC_Require();
+    MassStorage_SDCard_SD_MMC_Create("MS1", "SD_MMC");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1507,17 +1436,46 @@ void UEZPlatform_MS1_SD_MMC_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
 {
-//    T_uezDevice ms1;
-//    T_uezDeviceWorkspace *p_ms1;
-//
-//    DEVICE_CREATE_ONCE();
-//
-//    UEZPlatform_MS1_SD_MMC_Require();
-//    UEZPlatform_FileSystem_Require();
-//
-//    UEZDeviceTableFind("MS1", &ms1);
-//    UEZDeviceTableGetWorkspace(ms1, (T_uezDeviceWorkspace **)&p_ms1);
-//    FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms1);
+    T_uezDevice ms1;
+    T_uezDeviceWorkspace *p_ms1;
+
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_MS1_SD_MMC_Require();
+    UEZPlatform_FileSystem_Require();
+
+    UEZDeviceTableFind("MS1", &ms1);
+    UEZDeviceTableGetWorkspace(ms1, (T_uezDeviceWorkspace **)&p_ms1);
+    FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms1);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+	//TODO
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+	//  TODO test reset pin and code
+    // By default use HW reset pin on this board.
+    /*UEZGPIOSetMux(PIN_HW_RESET, 4);
+    UEZGPIOClear(PIN_HW_RESET);
+    UEZGPIOOutput(PIN_HW_RESET);*/
+    NVIC_SystemReset();
 }
 
 /*---------------------------------------------------------------------------*
@@ -1646,15 +1604,15 @@ void UEZPlatform_Standard_Require(void)
     //Testing
     LPC546xx_GPIO2_Require();
     LPC546xx_GPIO3_Require();
-//    UEZPlatform_I2C0_Require();
+    UEZPlatform_I2C2_Require();
 //
     UEZPlatform_LCD_Require();
-//    UEZPlatform_Touchscreen_Require("Touchscreen");
+    UEZPlatform_Touchscreen_Require("Touchscreen");
 //
-//    //5v Monitor
-//    UEZPlatform_ADC0_7_Require();
+    //Testing
+    UEZPlatform_ADC0_7_Require();
 //
-//    UEZPlatform_Flash0_Require();
+    UEZPlatform_Flash0_Require();
 //    UEZPlatform_Timer0_Require();
 //    UEZPlatform_Timer1_Require();
 //    UEZPlatform_Timer2_Require();
@@ -1662,18 +1620,17 @@ void UEZPlatform_Standard_Require(void)
 //    UEZPlatform_AudioMixer_Require();
 //    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 //    UEZPlatform_Speaker_Require();
-//    UEZPlatform_DAC0_Require();
-//    UEZPlatform_EEPROM_LPC546xx_Require();
-//    UEZPlatform_Temp0_Require();
+    UEZPlatform_EEPROM_LPC546xx_Require();
+    UEZPlatform_Temp0_Require();
 //    UEZPlatform_Accel0_Require();
 //
 //    UEZPlatform_Console_FullDuplex_UART0_Require(1024, 1024);
-//    UEZPlatform_IRTC_Require();
+    UEZPlatform_IRTC_Require();
 }
 
 TBool UEZPlatform_Host_Port_B_Detect(void)
 {
-//    TBool IsDevice;
+    TBool IsDevice = ETrue;
 //
 //    UEZGPIOSetMux(GPIO_P3_2, 0);
 //    UEZGPIOSet(GPIO_P3_2); // disable MIC2025
@@ -1684,7 +1641,7 @@ TBool UEZPlatform_Host_Port_B_Detect(void)
 //    if(!IsDevice){
 //        UEZGPIOClear(GPIO_P3_2);// enable MIC2025
 //    }
-//    return IsDevice;
+    return IsDevice;
 }
 
 TUInt16 UEZPlatform_LCDGetHeight(void)
@@ -1756,12 +1713,12 @@ const void *UEZPlatform_GUIDisplayDriver()
 
 void SUICallbackSetLCDBase(void *aAddress)
 {
-//    LPC_LCD->UPBASE = (TUInt32)aAddress;
+    LCD->UPBASE = (TUInt32)aAddress;
 }
 
 TUInt32 SUICallbackGetLCDBase()
 {
-//    return LPC_LCD->UPBASE;
+    return LCD->UPBASE;
 }
 
 void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha aAlpha)
@@ -1829,7 +1786,7 @@ unsigned long ulStacked_pc = 0UL;
 /*---------------------------------------------------------------------------*/
 int main(void)
 {
-#if 0
+#if 0 //TODO: Remove
     SYSCON->AHBCLKCTRLSET[0] = (1U << CLK_GATE_ABSTRACT_BITS_SHIFT(17));
     IOCON->PIO[3][14] = ((0 <<3) | (0x03 << 8) | (1 << 0x07) | (0x00));
     GPIO->DIR[3] |= (1 << 14);

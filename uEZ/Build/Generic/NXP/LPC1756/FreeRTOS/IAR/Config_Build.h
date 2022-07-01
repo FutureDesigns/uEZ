@@ -24,3 +24,11 @@
 #define UEZ_NUM_HANDLES 100
 #endif
 
+#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_SYSTEM_VIEW           0
+
+#ifdef NDEBUG
+#define UEZ_REGISTER              0
+#else
+#define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+#endif

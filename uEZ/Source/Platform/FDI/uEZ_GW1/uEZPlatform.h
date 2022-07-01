@@ -30,24 +30,6 @@
 #include <Types/GPIO.h>
 #include <uEZPlatformAPI.h>
 
-
-#define LCD_GPIO_LCD_3V3_EN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 0)
-#define LCD_GPIO_LCD_5V_EN          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 1)
-#define LCD_GPIO_LCD_2              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 2)
-#define LCD_GPIO_LCD_3              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 3)
-#define LCD_GPIO_LCD_DISP_EN        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 4)
-#define LCD_GPIO_LCD_3V3_IN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 5)
-#define LCD_GPIO_LCD_RESET          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6)
-#define LCD_GPIO_LCD_BL_CON2        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7)
-#define LCD_GPIO_LCD_BL_CON         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 8)
-#define LCD_GPIO_LCD_9              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 9)
-#define LCD_GPIO_LCD_10             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 10)
-#define LCD_GPIO_LCD_11             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 11)
-#define LCD_GPIO_LCD_12             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 12)
-#define LCD_GPIO_LCD_13             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 13)
-#define LCD_GPIO_LCD_14             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 14)
-#define LCD_GPIO_LCD_15             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 15)
-
 /*-------------------------------------------------------------------------*
  * Platform Settings:
  *-------------------------------------------------------------------------*/
@@ -106,7 +88,41 @@
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+ 
+/*-------------------------------------------------------------------------*
+ * General Purpose Pin Mappings to CPU:
+ *-------------------------------------------------------------------------*/
+// HW Reset pin in Rev 1,2 PCB
+#define PIN_HW_RESET  				GPIO_P7_14
 
+// LED pin(s)
+#define GPIO_HEARTBEAT_LED  		GPIO_P1_4
+
+// LED pins in Rev 1,2 PCB
+#define LEDENABLEn  				GPIO_P6_26
+#define LED_GREEN   				GPIO_P6_27
+#define LED_RED     				GPIO_P6_28
+#define LED_BLUE    				GPIO_P6_29
+#define LED_AMBER   				GPIO_P6_30
+
+// LCD Pins
+#define LCD_GPIO_LCD_3V3_EN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 0)
+#define LCD_GPIO_LCD_5V_EN          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 1)
+#define LCD_GPIO_LCD_2              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 2)
+#define LCD_GPIO_LCD_3              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 3)
+#define LCD_GPIO_LCD_DISP_EN        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 4)
+#define LCD_GPIO_LCD_3V3_IN         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 5)
+#define LCD_GPIO_LCD_RESET          UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6)
+#define LCD_GPIO_LCD_BL_CON2        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7)
+#define LCD_GPIO_LCD_BL_CON         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 8)
+#define LCD_GPIO_LCD_9              UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 9)
+#define LCD_GPIO_LCD_10             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 10)
+#define LCD_GPIO_LCD_11             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 11)
+#define LCD_GPIO_LCD_12             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 12)
+#define LCD_GPIO_LCD_13             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 13)
+#define LCD_GPIO_LCD_14             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 14)
+#define LCD_GPIO_LCD_15             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 15)
+ 
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -216,6 +232,7 @@ void UEZPlatform_USBHost_PortB_Require(void);
 void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
+void UEZPlatform_Set_LED(T_uezGPIOPortPin ledPortPin, TBool on);
 
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);
@@ -224,6 +241,7 @@ void UEZPlatform_AudioCodec_Require(void);
 void UEZPlatform_LED_Require(void);
 void UEZPlatform_Button_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
+void UEZPlatform_System_Reset(void);
 
 // Utility function to connect to the Wired Network
 T_uezError UEZPlatform_WiredNetwork0_Connect(

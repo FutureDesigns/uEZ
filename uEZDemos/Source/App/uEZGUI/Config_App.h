@@ -155,37 +155,43 @@
 
 #define APP_ENABLE_HEARTBEAT_LED_ON 1
 
-#define DISPLAY_WIDTH               UEZ_LCD_DISPLAY_WIDTH
-#define DISPLAY_HEIGHT              UEZ_LCD_DISPLAY_HEIGHT
-
+// Display and frames section
+#define MAX_NUM_FRAMES          2
+#define DISPLAY_WIDTH           UEZ_LCD_DISPLAY_WIDTH
+#define DISPLAY_HEIGHT          UEZ_LCD_DISPLAY_HEIGHT
 #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
-
 #define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
-#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + 0x5DCFFF)
-#define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
-
-#if (COMPILER_TYPE==RowleyARM)
-#if __ASSEMBLER__
-#else
-extern unsigned char __loadspace_start__;
-extern unsigned char __loadspace_end__;
-extern unsigned char __frames_start__;
-extern unsigned char __frames_end__;
-extern unsigned char __demoframe_start__;
-extern unsigned char __demoframe_end__;
-#endif
-
-#define LCD_FRAME_BUFFER        ((unsigned char *)&__frames_start__)
-#define FRAMES_MEMORY           ((&__frames_end__)-(&__frames_start__))
-#define MAX_NUM_FRAMES          (FRAMES_MEMORY / FRAME_SIZE)
-#define DEMO_RESERVE_FRAME      ((unsigned char *)&__demoframe_start__)
-
-#else
-
+#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + (FRAME_SIZE*MAX_NUM_FRAMES))
+#define LCD_FRAMES_SIZE         (FRAME_SIZE*MAX_NUM_FRAMES)
+#define FRAME(n)                ((char *)(LCD_FRAMES_START+FRAME_SIZE*(n)))
 #define LCD_FRAME_BUFFER        LCD_FRAMES_START
-#define FRAMES_MEMORY           LCD_FRAMES_SIZE
-#define LCD_FRAMES_SIZE         (LCD_FRAMES_END-LCD_FRAME_BUFFER)
-#endif
+
+// emWin settings section
+// TODO: Note define this size close to the actual amount needed by the application.
+// It appears that about 100 KB for GUI elements 
+// (depending on the GUI design and num GUI widgets total)
+// plus 2x LCD buffers should be a sufficient minimum.
+// So 1 MB should be plenty for typical GUI on 480x272x2 bytes per pixel size
+// Then 2 MB would be good for 800x480x2 bytes per pixel size
+// See https://www.segger.com/products/user-interface/emwin/technology/emwin-resource-usage/
+// 16+16+14+32+20+32+16+52+44+56+32+48+12+28+52+52+40+16+(17+38+7+5)*1024+80+20
+// +2*800*480*2 = 1,605,286 bytes
+//#define EMWIN_RAM_SIZE          0x00200000
+#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*576) // 2 frames plus 576KB
+
+// Network Settings for future implementation
+#define NETWORK_STACK_RAM_SIZE  4 // This is the number for the section allocation
+// TODO Implement per application configurable settings for the primary network stack (LWIP2)
+// Will be allocated with section placement into SDRAM, so that you can see total RAM usage.
+/* Placeholder defines for now as an example
+#define MAX_NUM_SOCKETS          20
+#define MAX_NUM_PACKET_BUFS      20
+#define PACKET_BUFFER_SIZE       1536
+#define SOCKET_BUFFER_SIZE       2000
+#define SOCKET_BUFFER_START      ((TUInt8 *)SOCKET_BUFFER_BASE_ADDRESS)
+#define SOCKET_BUFFERS_SIZE      (SOCKET_BUFFER_SIZE*MAX_NUM_SOCKETs)
+#define SOCKET(n)                ((char *)(SOCKET_BUFFER_START+SOCKET_BUFFER_SIZE*(n)))
+*/
 
 #ifndef SLIDESHOW_PREFETCH_AHEAD
 #define SLIDESHOW_PREFETCH_AHEAD 5

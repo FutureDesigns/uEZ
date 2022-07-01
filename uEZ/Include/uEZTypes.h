@@ -112,13 +112,14 @@ typedef T_uezHandle T_uezDevice;
 #define CPUReg32(addr)      *((TVUInt32 *)(addr))
 #define CPUReg16(addr)      *((TVUInt16 *)(addr))
 #define CPUReg8(addr)       *((TVUInt8 *)(addr))
+#define UEZ_PARAMETER_NOT_USED(p) (void) ((p))
 
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==RowleyARM) // TODO can probably remove rowley specific now
     #define PARAM_NOT_USED(p)     (p)=(p)
     #define VARIABLE_NOT_USED(v)  (v)=(v)
 #else
-    #define PARAM_NOT_USED(p)
-    #define VARIABLE_NOT_USED(v)
+    #define PARAM_NOT_USED(p) (void) ((p))
+    #define VARIABLE_NOT_USED(v) (void) ((v))
 #endif
 
 #ifdef __cplusplus

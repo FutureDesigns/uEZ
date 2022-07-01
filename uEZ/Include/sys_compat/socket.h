@@ -61,23 +61,43 @@
  */
 #include "Config.h"
 
-#include <Source/Library/lwIP/src/include/lwip/opt.h>
-#include <Source/Library/lwIP/src/include/lwip/init.h>
-#include <Source/Library/lwIP/src/include/lwip/stats.h>
-#include <Source/Library/lwIP/src/include/lwip/sys.h>
-#include <Source/Library/lwIP/src/include/lwip/mem.h>
-#include <Source/Library/lwIP/src/include/lwip/memp.h>
-#include <Source/Library/lwIP/src/include/lwip/pbuf.h>
-#include <Source/Library/lwIP/src/include/lwip/netif.h>
-#include <Source/Library/lwIP/src/include/lwip/sockets.h>
-#include <Source/Library/lwIP/src/include/ipv4/lwip/ip.h>
-#include <Source/Library/lwIP/src/include/lwip/raw.h>
-#include <Source/Library/lwIP/src/include/lwip/udp.h>
-#include <Source/Library/lwIP/src/include/lwip/tcp.h>
-#include <Source/Library/lwIP/src/include/ipv4/lwip/autoip.h>
-#include <Source/Library/lwIP/src/include/ipv4/lwip/igmp.h>
-#include <Source/Library/lwIP/src/include/lwip/dns.h>
-#include <Source/Library/lwIP/src/include/netif/etharp.h>
+#if LWIP_2_0_x
+#include <lwip/opt.h>
+#include <lwip/init.h>
+#include <lwip/stats.h>
+#include <lwip/sys.h>
+#include <lwip/mem.h>
+#include <lwip/memp.h>
+#include <lwip/pbuf.h>
+#include <lwip/netif.h>
+#include <lwip/sockets.h>
+#include <lwip/prot/ip.h>
+#include <lwip/raw.h>
+#include <lwip/udp.h>
+#include <lwip/tcp.h>
+#include <lwip/prot/autoip.h>
+#include <lwip/prot/igmp.h>
+#include <lwip/dns.h>
+#include <netif/etharp.h>
+#else
+#include <lwip/opt.h>
+#include <lwip/init.h>
+#include <lwip/stats.h>
+#include <lwip/sys.h>
+#include <lwip/mem.h>
+#include <lwip/memp.h>
+#include <lwip/pbuf.h>
+#include <lwip/netif.h>
+#include <lwip/sockets.h>
+#include <ipv4/lwip/ip.h>
+#include <lwip/raw.h>
+#include <lwip/udp.h>
+#include <lwip/tcp.h>
+#include <ipv4/lwip/autoip.h>
+#include <ipv4/lwip/igmp.h>
+#include <lwip/dns.h>
+#include <netif/etharp.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

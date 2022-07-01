@@ -29,7 +29,7 @@
 		<ProgramSection alignment="4" load="Yes" name=".eeprom" />
   </MemorySegment>
   <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(DYCS0_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
-  <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(DYCS0_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(DYCS0_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />  
+  <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />  
   <MemorySegment start="0x30000000" name="$(DYCS1_NAME:DYCS1)" size="$(DYCS1_SIZE:0)-$(DYCS0_CM1_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />
   <MemorySegment start="0x30000000+$(DYCS1_SIZE:0)-$(DYCS1_CM0_SIZE:0)" name="$(DYCS1_NAME:DYCS1)_CM0" size="$(DYCS1_CM0_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />
   <MemorySegment start="0x40045000" name="OTP" size="0x40" access="ReadOnly" />

@@ -27,7 +27,6 @@ define symbol __size_vectors__              = 0xE8;
 define symbol IRAM_start        = 0x10000000;
 define symbol IRAM_end          = 0x10007FFF;
 
-
 /********** Flash BankB Region **********/
 define symbol __ICFEDIT_region_ROM_BANKB_start__ = 0x1B000000;
 define symbol __ICFEDIT_region_ROM_BANKB_end__   = 0x1B07FFFF;
@@ -60,7 +59,8 @@ define symbol __EE_start__   = 0x20040000;
 define symbol __EE_end__     = 0x20044000;
 
 define memory mem with size = 4G;
-define region ROM_region           = mem:[from __ICFEDIT_region_ROM_start__   to __ICFEDIT_region_ROM_end__] - mem:[from  __CRP_start__ to __CRP_end__];
+define region ROM_region           = mem:[from __ICFEDIT_region_ROM_start__   to __ICFEDIT_region_ROM_end__] - mem:[from  __CRP_start__ to __CRP_end__]|
+                                     mem:[from __ICFEDIT_region_ROM_BANKB_start__ to __ICFEDIT_region_ROM_BANKB_end__];
 define region ROM_BANKB_region     = mem:[from __ICFEDIT_region_ROM_BANKB_start__ to __ICFEDIT_region_ROM_BANKB_end__];
 define region IRAM_region          = mem:[from IRAM_start to IRAM_end];
 define region RAM_region           = mem:[from __ICFEDIT_region_RAM_start__   to __ICFEDIT_region_RAM_end__];
@@ -109,9 +109,14 @@ place at address mem:IRAM_start  {
     rw object LPC43xx_IAP.o
 };
 
+place in LOCAL_SRAM_region { 
+    readwrite section ".rtt", /*SEGGER_RTT_SECTION*/
+};
+
 place in ROM_region   { readonly };
 
 place in RAM_region { 
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
     readwrite,
     block SVC_STACK, 
     block IRQ_STACK, 

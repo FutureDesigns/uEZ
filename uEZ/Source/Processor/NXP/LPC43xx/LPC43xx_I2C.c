@@ -195,10 +195,14 @@ void ILPC43xx_I2CSetSpeed(LPC_I2Cn_Type *aRegs, TUInt16 aSpeed)
     	// Set 46%/54% duty cycle to satisfy 0.5us low pulse width requirement for fast mode plus, currently untested
     	aRegs->SCLL = ((v / 2) + 8);
     	aRegs->SCLH = ((v / 2) - 8);
-    } else {
+    } else if (aSpeed == 100){
+        // Set 46%/54% duty cycle 
+        aRegs->SCLL = ((v / 2) + 120);
+    	aRegs->SCLH = ((v / 2) - 100);
+    }else {
     	// Set 50% duty cycle
-    	aRegs->SCLL = (v / 2);
-    	aRegs->SCLH = (v / 2);
+        aRegs->SCLL = ((v / 2) + 0);
+    	aRegs->SCLH = ((v / 2) - 0);
     }
 }
 
@@ -675,6 +679,7 @@ void LPC43xx_I2C0_Require()
 
 void LPC43xx_I2C1_Require(T_uezGPIOPortPin aPinSDA1, T_uezGPIOPortPin aPinSCL1)
 {
+    T_LPC43xx_I2C_Workspace *p;
     static const T_LPC43xx_SCU_ConfigList sda1[] = {
             {GPIO_P5_3     ,SCU_NORMAL_DRIVE_DEFAULT(1)},
     };
@@ -683,7 +688,10 @@ void LPC43xx_I2C1_Require(T_uezGPIOPortPin aPinSDA1, T_uezGPIOPortPin aPinSCL1)
     };
 
     HALInterfaceRegister("I2C1",
-            (T_halInterface *)&I2C_LPC43xx_Bus1_Interface, 0, 0);
+            (T_halInterface *)&I2C_LPC43xx_Bus1_Interface, 0, (T_halWorkspace **)&p);
+    
+    p->iSCLPin = aPinSCL1;
+    p->iSDAPin = aPinSDA1;
 
     LPC43xx_SCU_ConfigPinOrNone(aPinSDA1, sda1, ARRAY_COUNT(sda1));
     LPC43xx_SCU_ConfigPinOrNone(aPinSCL1, scl1, ARRAY_COUNT(scl1));

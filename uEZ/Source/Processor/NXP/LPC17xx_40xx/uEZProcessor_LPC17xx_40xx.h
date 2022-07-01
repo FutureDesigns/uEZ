@@ -42,9 +42,9 @@
 
 #include <Config.h>
 #if (UEZ_PROCESSOR == NXP_LPC1788)
-#include <CMSIS/LPC1788.h>
+#include <CMSIS/LPC407x_8x_177x_8x.h>
 #elif (UEZ_PROCESSOR == NXP_LPC4088)
-#include <CMSIS/LPC407x_8x.h>
+#include <CMSIS/LPC407x_8x_177x_8x.h>
 #endif
 #include <Types/GPIO.h>
 #include "LPC17xx_40xx_UtilityFuncs.h"
@@ -120,7 +120,7 @@ extern "C" {
                     funcname(param);\
                     IRQ_END()
 #define     __packed        __attribute__((packed))
-#define     INLINE          inline
+#define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
 #endif // (COMPILER_TYPE==RowleyARM)
 
@@ -135,7 +135,7 @@ extern "C" {
                     funcname(param);\
                     IRQ_END()
 #define     __packed        __attribute__((packed))
-#define     INLINE          inline
+#define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
 #endif // (COMPILER_TYPE==GCC)
 
