@@ -1,5 +1,0 @@
-The uEZ(TM) GUI Software is part of the general uEZ(TM) software release.
-
-The uEZ(TM) source code, slideshow files, schematics, tools, and documents 
-are available at https://sourceforge.net/projects/uez/
-

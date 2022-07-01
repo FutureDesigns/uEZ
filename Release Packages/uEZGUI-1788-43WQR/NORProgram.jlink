@@ -1,0 +1,14 @@
+exec device = LPC1788
+speed 4000
+rx 200
+h
+loadbin "ProgramNORFlash1788.prog", 0
+rx 200
+g
+sleep 2000
+h
+loadbin "uEZGUI-1788-43WQR_IAR_DATA.BIN", 0xA0100000
+w1 0x1000FF00 1
+g
+sleep 20000
+q

@@ -1,9 +1,0 @@
-SCC = This is a Source Code Control file
-
-[GenBulkConsole.dsp]
-SCC_Aux_Path = "H:\ENG_SS_DB\Software\uEZ"
-SCC_Project_Name = "$/uEZ/Utilities/USB/GenBulkConsole", RAIAAAAA
-
-[GenBulkConsole.dsw]
-SCC_Aux_Path = "H:\ENG_SS_DB\Software\uEZ"
-SCC_Project_Name = "$/uEZ/Utilities/USB/GenBulkConsole", RAIAAAAA

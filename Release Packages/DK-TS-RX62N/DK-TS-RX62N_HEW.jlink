@@ -1,0 +1,8 @@
+exec device = RX62N
+speed 4000
+
+loadbin "DK-TS-RX62N_HEW.bin", 0xFFF80000
+
+rx 200
+g
+q
