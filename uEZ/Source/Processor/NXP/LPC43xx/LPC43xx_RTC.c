@@ -160,7 +160,9 @@ T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
 
 	// 2-Second delay after enabling RTC clock per datasheet
 	LPC_ATIMER->DOWNCOUNTER = 2048;
-	while (LPC_ATIMER->DOWNCOUNTER);
+	while (LPC_ATIMER->DOWNCOUNTER) {
+          ;
+    }
 
 	// Disable RTC
     LPC_RTC->CCR = (LPC_RTC->CCR & ~RTC_CCR_CLKEN_Msk) & RTC_CCR_BITMASK;

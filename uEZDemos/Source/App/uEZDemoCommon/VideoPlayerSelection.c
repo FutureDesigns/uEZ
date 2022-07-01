@@ -436,7 +436,7 @@ void VideoPlayerSelection(const T_choice *aChoice)
     T_uezQueue queue;
     T_uezDevice ts;
     T_uezInputEvent inputEvent;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
 
@@ -446,7 +446,7 @@ void VideoPlayerSelection(const T_choice *aChoice)
     memset(G_ws, 0, sizeof(*G_ws));
 
     if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
 #if UEZ_REGISTER
@@ -481,7 +481,7 @@ void VideoPlayerSelection(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
         UEZQueueDelete(queue);

@@ -167,9 +167,9 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 #endif
      UEZPlatform_WirelessNetwork0_Require();
 #endif
-     
-#if ENABLE_UEZ_BUTTON
-    UEZPlatform_Keypad_Require();
+    
+#if UEZ_ENABLE_BUTTON_BOARD
+     UEZPlatform_ButtonBoard_Require();
 #endif
          
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04

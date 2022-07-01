@@ -27,12 +27,16 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-
+#ifndef UEZ_DISABLE_AUDIO
+#define UEZ_DISABLE_AUDIO   0
+#endif
 
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
+#if !UEZ_DISABLE_AUDIO
 static T_uezDevice G_ToneGenerator;
+#endif
 TBool G_audioIsStarted = EFalse;
 
 /*---------------------------------------------------------------------------*
@@ -46,6 +50,9 @@ TBool G_audioIsStarted = EFalse;
  *---------------------------------------------------------------------------*/
 void PlayAudio(TUInt32 aHz, TUInt32 aMS)
 {
+#if UEZ_DISABLE_AUDIO
+    return;
+#else    
     if(!G_audioIsStarted) {
         UEZToneGeneratorOpen("Speaker", &G_ToneGenerator);
         G_audioIsStarted = ETrue;
@@ -54,6 +61,7 @@ void PlayAudio(TUInt32 aHz, TUInt32 aMS)
     UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
     UEZToneGeneratorPlayTone(G_ToneGenerator,TONE_GENERATOR_HZ(aHz), aMS);
     UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+#endif
 }
 
 /*---------------------------------------------------------------------------*

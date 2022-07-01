@@ -82,7 +82,7 @@ define block __kernel_data_block__ with alignment = 0x400, size = 0x400 { sectio
 place at address mem:IRAM_start  { 
     block CSTACK, 
     block __kernel_data_block__, 
-    rw object LPC1788_PLL.o 
+    rw object LPC17xx_40xx_PLL.o 
 };
 
 place in ROM_region   { readonly };

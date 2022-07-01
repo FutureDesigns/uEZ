@@ -50,6 +50,7 @@
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
 #include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
+#include <Source/Devices/CRC/Generic/CRC_Generic.h>
 #include <Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h>
 #include <Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.h>
 #include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
@@ -63,6 +64,7 @@
 #include <Source/Devices/EEPROM/Generic/I2C/EEPROM_Generic_I2C.h>
 #include <Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C.h>
 #include <Source/Devices/EEPROM/NXP/LPC43xx/EEPROM_NXP_LPC43xx.h>
+#include <Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.h>
 #include <Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4.h>
 #include <Source/Devices/GPDMA/Generic/Generic_GPDMA.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
@@ -79,6 +81,7 @@
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
+#include <Source/Devices/Stream/SWO/Stream_SWO_CortexM.h>
 #include <Source/Devices/Serial/LPCUSBLib/SerialHost_FTDI/Stream_LPCUSBLib_SerialHost_FTDI.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
@@ -133,7 +136,6 @@ extern int MainTask(void);
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-#define NOR_FLASH_BASE_ADDR             0x80000000
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
 
 /*---------------------------------------------------------------------------*
@@ -205,8 +207,11 @@ void UEZBSPDelay1MS(void)
  *          LPC_GPIO_PORT->SET[5] = 8; 
  *          UEZBSPDelay1MS();        
  *          LPC_GPIO_PORT->CLR[5] = 8; 
- */
-    for (TUInt32 i = 0; i < 995; i++)
+ */  
+    TUInt32 i;
+
+    // Approximate delays here    
+    for (i = 0; i < 995; i++)
         UEZBSPDelay1US();
 }
 
@@ -805,6 +810,18 @@ void UEZPlatform_Flash0_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_IAP_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the IAP flash device driver for the internal flash
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_IAP_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+    Flash_NXP_LPC43xx_Create("IAP");
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Timer0_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -947,10 +964,10 @@ void UEZPlatform_PWM1_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_PWM1_Require
+ * Routine:  UEZPlatform_PWM2_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the PWM1 driver
+ *      Setup the PWM2 driver
  *---------------------------------------------------------------------------*/
 void UEZPlatform_PWM2_Require(void)
 {
@@ -958,7 +975,7 @@ void UEZPlatform_PWM2_Require(void)
 
    LPC43xx_PWM2_Require();
 
-   PWM_Generic_Create("PWM1", "PWM1");
+   PWM_Generic_Create("PWM2", "PWM2");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1050,6 +1067,23 @@ void UEZPlatform_EEPROM_LPC43xx_Require(void)
 {
     DEVICE_CREATE_ONCE();
     EEPROM_NXP_LPC43xx_Create("EEPROM0");
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_EEPROM_I2C_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the external EEPROM over I2C.
+ *      MAC address EEPROM, this EEPROM should not be used by the application
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_EEPROM_I2C_Require(void)
+{
+    const T_EEPROMConfig eeprom_config = {EEPROM_CONFIG_R1EX24512ASAS0A};
+
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_I2C0_Require();
+    EEPROM16_Generic_I2C_Create("EEPROM1", "I2C0", 0xA0>>1, &eeprom_config);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1374,111 +1408,6 @@ void UEZPlatform_WiredNetwork0_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_USBHost_PortA_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Host on Port on USB1, off board USB
- *---------------------------------------------------------------------------*/
-void UEZPlatform_USBHost_PortA_Require(void)
-{
-    extern void LPCUSBLib_USB1_IRQHandler(void);
-    DEVICE_CREATE_ONCE();
-
-    G_USBHostDriveNumber = 1;
-
-    LPC43xx_GPIO5_Require();
-
-    UEZGPIOSetMux(GPIO_P5_18, 2); // Turn on USB0_PPWR USB1
-    InterruptRegister(USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
-        INTERRUPT_PRIORITY_NORMAL, "USB1");
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_USBHost_PortB_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Host on Port on USB0, on board USB
- *---------------------------------------------------------------------------*/
-void UEZPlatform_USBHost_PortB_Require(void)
-{
-    extern void LPCUSBLib_USB0_IRQHandler(void);
-    DEVICE_CREATE_ONCE();
-
-    G_USBHostDriveNumber = 0;
-
-    LPC43xx_GPIO3_Require();
-
-    UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on USB0_PPWR USB 0
-    InterruptRegister(USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
-        INTERRUPT_PRIORITY_NORMAL, "USB0");
-}
-
-void UEZPlatform_MS0_Connected(void *aWorkspace)
-{
-    TUInt32 driveNum = G_ms0_driveNum;
-    T_uezDevice ms0;
-    T_uezDeviceWorkspace *p_ms0;
-
-    printf("UEZGUI MS0 Connected drive %d\n", driveNum);
-    UEZDeviceTableFind("MS0", &ms0);
-    UEZDeviceTableGetWorkspace(ms0, (T_uezDeviceWorkspace **)&p_ms0);
-    // Reregister the device (doing a mount)
-    FATFS_RegisterMassStorageDevice(driveNum, (DEVICE_MassStorage **)p_ms0);
-}
-
-void UEZPlatform_MS0_Disconnected(void *aWorkspace)
-{
-    TUInt32 driveNum = G_ms0_driveNum;
-
-    printf("UEZGUI MS0 Disconnected drive %d\n", driveNum);
-    // Unregister the device (doing a unmount)
-    FATFS_UnregisterMassStorageDevice(driveNum);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_MS0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Mass Storage device MS0 using USBHost flash drive.
- *---------------------------------------------------------------------------*/
-void UEZPlatform_MS0_Require(TUInt32 aUSBNumber)
-{
-    DEVICE_CREATE_ONCE();
-    T_MassStorage_LPCUSBLib_Callbacks ms0Callbacks = {
-            UEZPlatform_MS0_Connected,
-            UEZPlatform_MS0_Disconnected
-    };
-
-    MassStorage_LPCUSBLib_Create("MS0", aUSBNumber, &ms0Callbacks, 0);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_USBFlash_Drive_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Flash drive using MS0 on the given drive number
- *---------------------------------------------------------------------------*/
-void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
-{
-    T_uezDevice ms0;
-    T_uezDeviceWorkspace *p_ms0;
-
-    DEVICE_CREATE_ONCE();
-
-    if(G_USBHostDriveNumber == 0xFF){
-        UEZFailureMsg("Must Require Port A or B before the FlashDrive\n");
-    }
-
-    // Now put the MS0 in the filesystem using the USB
-    UEZPlatform_MS0_Require(G_USBHostDriveNumber);
-    UEZPlatform_FileSystem_Require();
-
-    UEZDeviceTableFind("MS0", &ms0);
-    UEZDeviceTableGetWorkspace(ms0, (T_uezDeviceWorkspace **)&p_ms0);
-    FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms0);
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_MS1_SD_MMC_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -1511,6 +1440,117 @@ void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
     UEZDeviceTableFind("MS1", &ms1);
     UEZDeviceTableGetWorkspace(ms1, (T_uezDeviceWorkspace **)&p_ms1);
     FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms1);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_USBHost_PortA_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the USB Host on Port on USB1, off board USB
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_USBHost_PortA_Require(void)
+{
+#if UEZ_ENABLE_USB_HOST_STACK
+    extern void LPCUSBLib_USB1_IRQHandler(void);
+    DEVICE_CREATE_ONCE();
+
+    G_USBHostDriveNumber = 1;
+
+    LPC43xx_GPIO5_Require();
+
+    UEZGPIOSetMux(GPIO_P5_18, 2); // Turn on USB0_PPWR USB1
+    InterruptRegister(USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
+        INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_USBHost_PortB_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the USB Host on Port on USB0, on board USB
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_USBHost_PortB_Require(void)
+{
+#if UEZ_ENABLE_USB_HOST_STACK
+    extern void LPCUSBLib_USB0_IRQHandler(void);
+    DEVICE_CREATE_ONCE();
+
+    G_USBHostDriveNumber = 0;
+
+    LPC43xx_GPIO3_Require();
+
+    UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on USB0_PPWR USB 0
+    InterruptRegister(USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
+        INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
+}
+
+void UEZPlatform_MS0_Connected(void *aWorkspace)
+{
+    TUInt32 driveNum = G_ms0_driveNum;
+    T_uezDevice ms0;
+    T_uezDeviceWorkspace *p_ms0;
+
+    //printf("UEZGUI MS0 Connected drive %d\n", driveNum);
+    UEZDeviceTableFind("MS0", &ms0);
+    UEZDeviceTableGetWorkspace(ms0, (T_uezDeviceWorkspace **)&p_ms0);
+    // Reregister the device (doing a mount)
+    FATFS_RegisterMassStorageDevice(driveNum, (DEVICE_MassStorage **)p_ms0);
+}
+
+void UEZPlatform_MS0_Disconnected(void *aWorkspace)
+{
+    TUInt32 driveNum = G_ms0_driveNum;
+
+    //printf("UEZGUI MS0 Disconnected drive %d\n", driveNum);
+    // Unregister the device (doing a unmount)
+    FATFS_UnregisterMassStorageDevice(driveNum);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MS0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Mass Storage device MS0 using USBHost flash drive.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_MS0_Require(TUInt32 aUSBNumber)
+{
+#if UEZ_ENABLE_USB_HOST_STACK
+    T_MassStorage_LPCUSBLib_Callbacks ms0Callbacks = {
+            UEZPlatform_MS0_Connected,
+            UEZPlatform_MS0_Disconnected
+    };
+    DEVICE_CREATE_ONCE();
+
+    MassStorage_LPCUSBLib_Create("MS0", aUSBNumber, &ms0Callbacks, 0);
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_USBFlash_Drive_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the USB Flash drive using MS0 on the given drive number
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
+{
+    T_uezDevice ms0;
+    T_uezDeviceWorkspace *p_ms0;
+
+    DEVICE_CREATE_ONCE();
+
+    if(G_USBHostDriveNumber == 0xFF){
+        UEZFailureMsg("Must Require Port A or B before the FlashDrive\n");
+    }
+
+    // Now put the MS0 in the filesystem using the USB
+    UEZPlatform_MS0_Require(G_USBHostDriveNumber);
+    UEZPlatform_FileSystem_Require();
+
+    UEZDeviceTableFind("MS0", &ms0);
+    UEZDeviceTableGetWorkspace(ms0, (T_uezDeviceWorkspace **)&p_ms0);
+    FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1592,19 +1632,60 @@ void UEZPlatform_WirelessNetwork0_Require(void)
 
 void UEZPlatform_USBHost_USB0_Serial_Require(void)
 {
-    //Stream_LPCUSBLib_SerialHost_Create("SerialHost", 1); // USB0
-    UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on USB0_PPWR USB 0
+#if UEZ_ENABLE_USB_HOST_STACK
+    UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on USB0_PPWR USB 0  
+    Stream_LPCUSBLib_SerialHost_Create("SerialHost", 1); // USB0
     Stream_LPCUSBLib_SerialHost_FTDI_Create("USB0Serial", 0, 1024, 1024); // USB0
+#endif  
 }
 
 void UEZPlatform_USBHost_USB1_Serial_Require(void)
 {
+#if UEZ_ENABLE_USB_HOST_STACK
     UEZGPIOSetMux(GPIO_P5_18, 2); // Turn on USB0_PPWR USB1
     Stream_LPCUSBLib_SerialHost_FTDI_Create("USB1Serial", 1, 1024, 1024); // USB1
+#endif  
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_ButtonBoard_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2C GPIO drivers for talking to the button board
+ */
+/*---------------------------------------------------------------------------*/
+/*void UEZPlatform_ButtonBoard_Require(void)
+{
+    static const T_GPIOKeypadAssignment keyAssignment[] = {
+        { 0, KEY_ENTER },
+        { 1, KEY_ARROW_LEFT },
+        { 2, KEY_ARROW_RIGHT },
+        { 3, KEY_ARROW_DOWN },
+        { 4, KEY_ARROW_UP },
+        { 0, 0 },
+    };
+
+    DEVICE_CREATE_ONCE();
+    UEZPlatform_I2C0_Require();
+    GPIO_PCF8574T_Create("GPIO:PCF8574T", UEZ_GPIO_PORT_EXT1, "I2C0", 0x48>>1);
+    Keypad_Generic_GPIO_Create("BBKeypad", UEZ_GPIO_PORT_EXT1, keyAssignment, 5,
+        KEYPAD_LOW_TRUE_SIGNALS, 
+        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7), 
+        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6));
+}*/
 
 void UEZPlatform_Standard_Require(void)
 {
+    LPC43xx_GPIO0_Require();
+    LPC43xx_GPIO1_Require();
+    LPC43xx_GPIO2_Require();
+    LPC43xx_GPIO3_Require();
+    LPC43xx_GPIO4_Require();
+    LPC43xx_GPIO5_Require();
+    LPC43xx_GPIO6_Require();
+    LPC43xx_GPIO7_Require();
+    LPC43xx_GPIOZ_Require();
+    
     UEZPlatform_I2C0_Require();
 
     UEZPlatform_LCD_Require();
@@ -1687,7 +1768,7 @@ T_pixelColor SUICallbackRGBConvert(int r, int g, int b)
 
 TUInt32 UEZPlatform_GetBaseAddress(void)
 {
-    return 0x28000000;//LCD_DISPLAY_BASE_ADDRESS;
+    return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
 #include <Source/Library/GUI/SEGGER/emWin/LCD.h>

@@ -48,9 +48,9 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           08
-#define UEZ_VERSION_STRING          "2.08"
-#define UEZ_VERSION_DATE            "06/09/2016" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           09
+#define UEZ_VERSION_STRING          "2.09"
+#define UEZ_VERSION_DATE            "09/01/2017" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler
@@ -128,6 +128,7 @@ extern "C" {
 #define RENESAS_RX63N                           8
 #define NXP_LPC4088                             9
 #define NXP_LPC4357                             10
+#define NXP_LPC546xx                            11
 
 // Select processor:
 #ifndef UEZ_PROCESSOR

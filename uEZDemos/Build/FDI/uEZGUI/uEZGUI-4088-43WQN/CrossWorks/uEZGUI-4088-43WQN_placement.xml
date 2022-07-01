@@ -10,6 +10,7 @@
     <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata .rodata.* .gnu.linkonce.r.*)" name=".rodata"/>
     <ProgramSection alignment="4" load="Yes" runin=".fast_run" inputsections="*(.fast .fast.*)" name=".fast"/>
     <ProgramSection alignment="4" load="Yes" runin=".data_run" inputsections="*(.data .data.* .gnu.linkonce.d.*)" name=".data"/>
+    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
   </MemorySegment>
   <MemorySegment name="SDRAM">
     <!-- 9 frames of graphics reserved -->

@@ -37,7 +37,7 @@
  ******************************************************************************/
 
 #include <Config.h>
-#include "trcHardwarePort.h"
+#include "Include/trcHardwarePort.h"
 #include "trcKernelPort.h"
 
 #if (USE_TRACEALYZER_RECORDER == 1)

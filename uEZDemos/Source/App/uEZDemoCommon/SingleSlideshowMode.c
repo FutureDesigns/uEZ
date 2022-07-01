@@ -465,7 +465,7 @@ static T_uezError IDoLoad(TUInt32 aSlideNum, TUInt32 aFrame, TBool *aAbortFlag)
 
     //printf("Load: %s (%d, %d)\n", filename, SLIDESHOW_PREFETCH_AHEAD, SLIDESHOW_PREFETCH_BEHIND);
     // Use the LoadPicture routine
-    if (SUILoadPicture(filename, aFrame, aAbortFlag, (TUInt8 *)LOAD_SPACE))
+    if (SUILoadPicture(filename, aFrame, aAbortFlag, ((TUInt8 *)LCD_FRAMES_END + 0x1)))
         return UEZ_ERROR_CANCELLED;
 
     return UEZ_ERROR_NONE;
@@ -800,7 +800,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
     T_slideLoadResponse slideResponse;
     TUInt32 time = 0;
     TInt32 diffY;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
 #if UEZ_ENABLE_I2S_AUDIO
@@ -855,7 +855,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
                 &G_slideshowEventQueue);
 
     if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         // Open up the touchscreen and pass in the queue to receive events
@@ -988,7 +988,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
         UEZQueueDelete(queue);

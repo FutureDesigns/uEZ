@@ -567,10 +567,25 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
         // Now do the test
         (*p_portA)->SetOutputMode(p_portA, 1 << pinA); // set to Output
         (*p_portA)->SetMux(p_portA, pinA, 0); // set to GPIO
-
+#if(UEZ_PROCESSOR != NXP_LPC4357)
+        (*p_portA)->SetMux(p_portA, pinA, 0); // set to GPIO
+#else
+        (*p_portA)->SetMux(p_portA, pinA, (pinA > 4)? 4 : 0); // set to GPIO
+        TUInt32 value = SCU_NORMAL_DRIVE_DEFAULT(0);
+        value |= (pinA > 4)? 4 :0;
+        (*p_portA)->Control(p_portA, pinA, GPIO_CONTROL_SET_CONFIG_BITS, value);
+#endif
         (*p_portB)->SetPull(p_portB, pinB, GPIO_PULL_UP); // set to Pull up
         (*p_portB)->SetInputMode(p_portB, 1 << pinB); // set to Input
         (*p_portB)->SetMux(p_portB, pinB, 0); // set to GPIO
+#if(UEZ_PROCESSOR != NXP_LPC4357)
+        (*p_portB)->SetMux(p_portB, pinA, 0); // set to GPIO
+#else
+        (*p_portB)->SetMux(p_portB, pinB, (pinB > 4)? 4 : 0); // set to GPIO
+        value = SCU_NORMAL_DRIVE_DEFAULT(0);
+        value |= (pinB > 4)? 4 :0;
+        (*p_portB)->Control(p_portB, pinB, GPIO_CONTROL_SET_CONFIG_BITS, value);
+#endif
 
         // Drive 1 on this pin
         (*p_portA)->Set(p_portA, 1 << pinA);
@@ -1456,7 +1471,7 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
     if (argc == 1) {
         G_mmTestModeColor = RGB(255, 0, 0);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZTaskDelay(3000);
 #else
         IWaitTouchscreen();
@@ -1464,7 +1479,7 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
 
         G_mmTestModeColor = RGB(0, 255, 0);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZTaskDelay(3000);
 #else
         IWaitTouchscreen();
@@ -1472,7 +1487,7 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
 
         G_mmTestModeColor = RGB(0, 0, 255);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZTaskDelay(3000);
 #else
         IWaitTouchscreen();

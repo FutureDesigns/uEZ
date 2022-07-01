@@ -29,14 +29,14 @@
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_EMAC.h>
 #include <uEZBSP.h>
 #include <uEZGPIO.h>
-#include <UEZErrors.h>
+#include <uEZErrors.h>
 #include <Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.h>
 
 /*---------------------------------------------------------------------------*
  * Options:
  *---------------------------------------------------------------------------*/
 #ifndef DEBUG_LPC43xx_EMAC_STARTUP
-#define DEBUG_LPC43xx_EMAC_STARTUP  1
+#define DEBUG_LPC43xx_EMAC_STARTUP  0
 #endif
 
 #ifndef DEBUG_LPC43xx_EMAC_PACKETS

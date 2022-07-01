@@ -126,6 +126,10 @@ TUInt32 ReadBE32U (volatile TUInt8 *pmem);
 #include <Source/Processor/NXP/LPC43xx/uEZProcessor_LPC43xx.h>
 #endif
 
+#if (UEZ_PROCESSOR == NXP_LPC546xx)
+#include <Source/Processor/NXP/LPC546xx/uEZProcessor_LPC546xx.h>
+#endif
+
 #ifdef __cplusplus
 }
 #endif

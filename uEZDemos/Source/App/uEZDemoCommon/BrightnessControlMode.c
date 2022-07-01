@@ -421,7 +421,7 @@ void BrightnessControlMode(const T_choice *aChoice)
     static T_brightnessControlWorkspace *G_ws = NULL;
     INT_32 winX, winY;
     T_uezInputEvent inputEvent;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
 #if UEZ_ENABLE_LIGHT_SENSOR
@@ -476,7 +476,7 @@ void BrightnessControlMode(const T_choice *aChoice)
         UEZQueueSetName(queue, "Brightness", "\0");
 #endif
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
 
@@ -553,7 +553,7 @@ void BrightnessControlMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	

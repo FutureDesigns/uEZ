@@ -13,6 +13,7 @@ unsigned char G_memory[1500000];
 int G_VideoHeight;
 int G_VideoWidth;
 
+#if 0 //NXP Based
 void render(void)
 {
     char *p_pixel = G_imageTGA+18;
@@ -23,8 +24,8 @@ void render(void)
         p_pixel = G_imageTGA + 18 + ((G_VideoHeight-1-y) * G_VideoWidth * 3);
         for (x=0; x<G_VideoWidth; x++, p_pixel+=3) {
             b = (p_pixel[0] & 0xF8) >> 3; // 5 bits
-            //g = (p_pixel[1] & 0xFC) >> 2; // 6 bits
-			g = (p_pixel[1] & 0xF8) >> 3; // 5 bits
+            g = (p_pixel[1] & 0xFC) >> 2; // 6 bits
+			//g = (p_pixel[1] & 0xF8) >> 3; // 5 bits
             r = (p_pixel[2] & 0xF8) >> 3; // 5 bits
             p = (r<<10)|(g<<5)|(b<<0);
             G_memory[m++] = p & 0xFF;
@@ -32,6 +33,27 @@ void render(void)
         }
     }
 }
+#else //Synergy Bases
+void render(void)
+{
+    char *p_pixel = G_imageTGA+18;
+    unsigned int p, r, g, b;
+    unsigned int m=0;
+    int x, y;
+    for (y=0; y<G_VideoHeight; y++) {
+        p_pixel = G_imageTGA + 18 + ((G_VideoHeight-1-y) * G_VideoWidth * 3);
+        for (x=0; x<G_VideoWidth; x++, p_pixel+=3) {
+            b = (p_pixel[0] & 0xF8) >> 3; // 5 bits
+            g = (p_pixel[1] & 0xFC) >> 2; // 6 bits
+			//g = (p_pixel[1] & 0xF8) >> 3; // 5 bits
+            r = (p_pixel[2] & 0xF8) >> 3; // 5 bits
+            p = (r<<11)|(g<<5)|(b<<0);
+            G_memory[m++] = p & 0xFF;
+            G_memory[m++] = (p>>8) & 0xFF;
+        }
+    }
+}
+#endif
 
 void renderGray(void)
 {

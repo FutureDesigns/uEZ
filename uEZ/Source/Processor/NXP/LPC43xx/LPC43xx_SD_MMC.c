@@ -926,7 +926,7 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_clk[] = {
-            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CLK   SD/MMC card clock.
+            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_FAST, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CLK   SD/MMC card clock.
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
@@ -937,17 +937,10 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     p = (T_LPC43xx_SD_MMC_Workspace *)p_SD_MMC;
 
     // Turn on the SD_MMC Controller
-#ifdef LPC4357_40MHZ_SDCLK
-    //clock based on divider B
-    //Not constantly working on all units yet
-    G_SourceClkFrequency = 40000000; //40MHz (needs a class 10 SDCard)
-    LPC_CGU->BASE_SDIO_CLK = (0x0D<<24) | (1<<11); //Use DivB clock
-    LPC_CCU1->CLK_M4_SDIO_CFG = 3;
-#else
     //clock based on PCLK
     G_SourceClkFrequency = UEZPlatform_GetPCLKFrequency();
     LPC_CGU->BASE_SDIO_CLK = (9<<24) | (1<<11); //Use PLL1 clock
-#endif
+    LPC_CCU1->CLK_M4_SDIO_CFG = 3;
 
     LPC43xx_SCU_ConfigPinOrNone(aPins->iCardDetect, sd_cd, ARRAY_COUNT(sd_cd));
     LPC43xx_SCU_ConfigPinOrNone(aPins->iCMD, sd_cmd, ARRAY_COUNT(sd_cmd));

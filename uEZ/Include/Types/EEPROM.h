@@ -78,15 +78,16 @@ typedef struct {
 } T_EEPROMConfig;
 
 /** The following table is a growing list of eeprom types for easy config: */
-//                                  kHz   bytes     ms
-#define EEPROM_CONFIG_PCA24S08      400,    16,     10
-#define EEPROM_CONFIG_M24C08        400,    8,      10
-#define EEPROM_CONFIG_M24C32        400,    32,     10
-#define EEPROM_CONFIG_M24LC256      400,    64,     5
-#define EEPROM_CONFIG_M24LC64       400,    1,      5
-#define EEPROM_CONFIG_PCF85102C     100,    8,      85
-#define EEPROM_CONFIG_PCF8582C_2    100,    8,      85
-#define EEPROM_CONFIG_M24M01        400,    128,    10
+//                                      kHz   bytes     ms
+#define EEPROM_CONFIG_PCA24S08          400,    16,     10
+#define EEPROM_CONFIG_M24C08            400,    8,      10
+#define EEPROM_CONFIG_M24C32            400,    32,     10
+#define EEPROM_CONFIG_M24LC256          400,    64,     5
+#define EEPROM_CONFIG_M24LC64           400,    1,      5
+#define EEPROM_CONFIG_PCF85102C         100,    8,      85
+#define EEPROM_CONFIG_PCF8582C_2        100,    8,      85
+#define EEPROM_CONFIG_M24M01            400,    128,    10
+#define EEPROM_CONFIG_R1EX24512ASAS0A   400,    128,    10
 
 #ifdef __cplusplus
 }

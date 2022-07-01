@@ -46,6 +46,7 @@
 #include "FreeRTOS.h"
 #endif
 #include "task.h"
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.h>
@@ -79,24 +80,6 @@ void PlayWithBacklight(void);
 /*---------------------------------------------------------------------------*
 * Constants:
 *---------------------------------------------------------------------------*/
-#if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_8_BIT)
-#define RGB(r, g, b) \
-((((r>>5)&7)<<5)| \
-     (((g>>5)&7)<<2)| \
-          (((b>>6)&3)<<0))
-#endif
-#if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_16_BIT)
-#define RGB(r, g, b)      \
-( (((r>>3)&0x1F)<<11)| \
-     (((g>>2)&0x3F)<<5)| \
-          (((b>>3)&0x1F)<<0) )
-#endif
-#if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_I15_BIT)
-#define RGB(r, g, b)      \
-( (((r>>3)&0x1F)<<10)| \
-     (((g>>3)&0x1F)<<5)| \
-          (((b>>3)&0x1F)<<0) )
-#endif
 #define ICON_TEXT_COLOR         YELLOW
 #define SELECT_ICON_COLOR       YELLOW
 
@@ -1305,7 +1288,7 @@ void FunctionalTest_EXP_DK(const T_choice *aChoice)
      TBool isCancelled = EFalse;
      TBool isPausing = EFalse;
      
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
      T_uezDevice keypadDevice;
 #endif
      
@@ -1320,7 +1303,7 @@ void FunctionalTest_EXP_DK(const T_choice *aChoice)
      
      // Setup queue to receive touchscreen events
      if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
           UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
           // Open up the touchscreen and pass in the queue to receive events
@@ -1463,7 +1446,7 @@ void FunctionalTest_EXP_DK(const T_choice *aChoice)
                }
                UEZTSClose(ts, queue);
           }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
           UEZKeypadClose(keypadDevice, &queue);
 #endif
           UEZQueueDelete(queue);

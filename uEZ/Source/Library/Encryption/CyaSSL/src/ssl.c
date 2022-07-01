@@ -2040,12 +2040,13 @@ int PemToDer(const unsigned char* buff, long longSz, int type,
     headerEnd += XSTRLEN(header);
 
     /* eat end of line */
-    if (headerEnd[0] == '\n')
+    if (headerEnd[0] == '\n') {
         headerEnd++;
-    else if (headerEnd[1] == '\n')
+    } else if (headerEnd[1] == '\n') {
         headerEnd += 2;
-    else
+    } else {
         return SSL_BAD_FILE;
+    }
 
 	if (type == PRIVATEKEY_TYPE) {
 		if (eccKey)

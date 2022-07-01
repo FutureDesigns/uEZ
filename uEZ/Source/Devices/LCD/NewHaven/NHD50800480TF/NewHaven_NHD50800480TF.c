@@ -55,7 +55,7 @@ typedef struct {
     T_uezSemaphore iVSyncSem;
     T_uezDevice itimer;
     T_uezTimerCallback icallback;
-    TBool itimerDone;
+    volatile TBool itimerDone;
 } T_NHD50800480TFWorkspace;
 
 /*---------------------------------------------------------------------------*

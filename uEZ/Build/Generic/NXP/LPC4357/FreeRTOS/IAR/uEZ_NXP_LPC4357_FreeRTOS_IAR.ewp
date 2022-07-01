@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.60.2.11347</state>
+          <state>7.70.2.11707</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -224,7 +224,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Go005</state>
+          <state>Go005, Go004</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -266,7 +266,6 @@
         <option>
           <name>IExtraOptions</name>
           <state>--no_unaligned_access</state>
-          <state>--enum_is_int</state>
         </option>
         <option>
           <name>CCLangConformance</name>
@@ -1068,7 +1067,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.60.2.11347</state>
+          <state>7.70.2.11707</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1216,7 +1215,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Go005</state>
+          <state>Go005, Go004</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -2074,7 +2073,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.60.2.11347</state>
+          <state>7.70.2.11707</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -2222,7 +2221,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Go005</state>
+          <state>Go005, Go004</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -3067,7 +3066,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>7.60.2.11347</state>
+          <state>7.70.2.11707</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -3215,7 +3214,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Go005</state>
+          <state>Go005, Go004</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -4625,15 +4624,6 @@
         <name>Flash</name>
         <group>
           <name>NXP</name>
-          <group>
-            <name>LPC43xx</name>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC43xx\LPC43xx_IAP.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC43xx\LPC43xx_IAP.h</name>
-            </file>
-          </group>
           <group>
             <name>LPC_SPIFI_M4F</name>
             <file>

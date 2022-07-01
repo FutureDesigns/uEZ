@@ -34,7 +34,7 @@
 #define COMPILE_OPTION_USB_SDCARD_DISK      UEZ_ENABLE_USB_DEVICE_STACK
 #define UEZ_ENABLE_VIRTUAL_COM_PORT         0//UEZ_ENABLE_USB_DEVICE_STACK
 
-#define UEZ_ENABLE_TCPIP_STACK              0 //Not supported at this time
+#define UEZ_ENABLE_TCPIP_STACK              0 // Currently Ethernet does not work on this project.
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
@@ -44,7 +44,7 @@
 
 // Expansion Options, set to 1 to enable an expansion board
 #define UEZGUI_EXPANSION_DEVKIT             0 //not currently supported on 50WMN
-#define ENABLE_UEZ_BUTTON                   0
+#define UEZ_ENABLE_BUTTON_BOARD             0 // Turn on for button board
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
 #define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS

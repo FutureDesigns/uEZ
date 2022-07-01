@@ -352,7 +352,7 @@ T_uezError MultiSlideshowCheckAvailableINI(TUInt32 aDrive)
 T_uezError IMSLoadDirectoryINI(TUInt32 aDrive)
 {
     T_uezINISession ini;
-    TInt32 numShows;
+    TInt32 numShows = 0;
     char filename[40];
     char title[7];
     char dir[5];
@@ -474,7 +474,7 @@ void MultiSlideshowMode(const T_choice *aChoice)
     T_uezQueue queue;
     T_uezDevice ts;
     T_uezInputEvent inputEvent;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
     G_ws = UEZMemAlloc(sizeof(T_MSMWorkspace));
@@ -483,7 +483,7 @@ void MultiSlideshowMode(const T_choice *aChoice)
     memset(G_ws, 0, sizeof(*G_ws));
 
     if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
 #if UEZ_REGISTER
@@ -570,7 +570,7 @@ void MultiSlideshowMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
         UEZQueueDelete(queue);

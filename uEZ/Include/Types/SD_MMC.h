@@ -274,14 +274,12 @@
 /**
  * @brief Max MMC clock rate
  */
-#if(UEZ_PROCESSOR != NXP_LPC4357)
-#define MMC_MAX_CLOCK           20000000
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define MMC_MAX_READ_CLOCK           51000000
+#define MMC_MAX_WRITE_CLOCK          34000000
 #else
-#ifdef LPC4357_40MHZ_SDCLK
-#define MMC_MAX_CLOCK           40000000
-#else
-#define MMC_MAX_CLOCK           34000000
-#endif
+#define MMC_MAX_READ_CLOCK           20000000
+#define MMC_MAX_WRITE_CLOCK          20000000
 #endif
 
 /**
@@ -300,11 +298,7 @@
 #if(UEZ_PROCESSOR != NXP_LPC4357)
 #define SD_MAX_CLOCK            25000000
 #else
-#ifdef LPC4357_40MHZ_SDCLK
-#define SD_MAX_CLOCK            40000000
-#else
 #define SD_MAX_CLOCK            34000000
-#endif
 #endif
 
 #define CMD_MASK_RESP       (0x3UL << 28)

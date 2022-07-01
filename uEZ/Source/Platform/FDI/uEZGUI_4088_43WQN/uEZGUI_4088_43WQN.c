@@ -460,9 +460,25 @@ void UEZPlatform_I2C1_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    // Ensure the I2C0 exists in the HAL level
+    // Ensure the I2C1 exists in the HAL level
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_I2C1_Require(GPIO_P2_14, GPIO_P2_15);
+    I2C_Generic_Create("I2C1", "I2C1", 0);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_I2C1_ALT_COM_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the I2C1 device driver on the alternate set of pins
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_I2C1_ALT_COM_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+
+    // Ensure the I2C1 exists in the HAL level
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_I2C1_Require(GPIO_P0_0, GPIO_P0_1);
     I2C_Generic_Create("I2C1", "I2C1", 0);
 }
 
@@ -2146,10 +2162,21 @@ void UEZPlatform_I2S_Require(void)
  * Routine:  UEZPlatform_ButtonBoard_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the I2C GPIO drivers for talking to the button board
+ *      Setup the bitbanged I2C drivers for talking to the button board
  *---------------------------------------------------------------------------*/
-void UEZPlatform_ButtonBoard_Require(void)
-{
+void UEZPlatform_ButtonBoard_Require(void) {
+    // Use one of the following to turn the buttonboard on:
+    //BitBang_ButtonBoard_Start(GPIO_P0_0, GPIO_P0_1); //bitbang I2C
+    //UEZPlatform_ButtonBoard_I2C1_Require(); // uncomment to use real I2C
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_ButtonBoard_I2C1_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the real I2C driver for talking to the button board
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_ButtonBoard_I2C1_Require(void) {        
     static const T_GPIOKeypadAssignment keyAssignment[] = {
         { 0, KEY_ENTER },
         { 1, KEY_ARROW_LEFT },
@@ -2160,8 +2187,9 @@ void UEZPlatform_ButtonBoard_Require(void)
     };
 
     DEVICE_CREATE_ONCE();
-    UEZPlatform_I2C2_Require();
-    GPIO_PCF8574T_Create("GPIO:PCF8574T", UEZ_GPIO_PORT_EXT1, "I2C2", 0x48>>1);
+    // I2C1 on ALT COM port, must disable normal I2C1 and require routine!
+    UEZPlatform_I2C1_ALT_COM_Require(); 
+    GPIO_PCF8574T_Create("GPIO:PCF8574T", UEZ_GPIO_PORT_EXT1, "I2C1", 0x48>>1);
     Keypad_Generic_GPIO_Create("BBKeypad", UEZ_GPIO_PORT_EXT1, keyAssignment, 5,
         KEYPAD_LOW_TRUE_SIGNALS, 
         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7), 
@@ -2182,7 +2210,7 @@ void uEZPlatformInit(void)
 
 void UEZPlatform_Standard_Require(void)
 {
-    #if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
+#if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
     LPC17xx_40xx_GPIO2_Require();
     UEZGPIOSetMux(GPIO_P2_0, 0);
     UEZGPIOOutput(GPIO_P2_0);
@@ -2208,7 +2236,7 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_LCD_Require();
 
     UEZPlatform_I2C0_Require();
-    UEZPlatform_I2C1_Require();
+    UEZPlatform_I2C1_Require();    
     UEZPlatform_I2C2_Require();
     UEZPlatform_Temp0_Require();
     UEZPlatform_GPDMA0_Require();

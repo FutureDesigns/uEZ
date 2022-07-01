@@ -32,26 +32,19 @@
  * @par
  * @code
  * #include <uEZ.h>
- * #include <uEZWatchdog.h>
- * 
- *  TUInt32 watchdogTest(T_uezTask aMyTask, void *aParams)
- *  {
- *      T_uezDevice WD;
- *      if (UEZWatchdogOpen("Watchdog0", &WD) == UEZ_ERROR_NONE) {
- *	  	
- *          UEZWatchdogSetMinTime(WD, 50);
- *          UEZWatchdogSetMaxTime(WD, 2000); // 2 sec time till reset
- *          UEZWatchdogStart(WD);
- *          if (UEZWatchdogClose(WD) != UEZ_ERROR_NONE) {
- *              // error closing the device
- *          }
- *
- *      } else {
- *          // an error occurred opening the device
- *      }
- *      return 0;
- *  }
- *  @endcode
+ * #include <uEZWatchdog.h> *  
+ * T_uezDevice WD;
+ * UEZPlatform_Watchdog_Require();
+ * if (UEZWatchdogOpen("Watchdog", &WD) == UEZ_ERROR_NONE) {
+ *    UEZWatchdogSetMinTime(WD,0xFF);
+ *    UEZWatchdogSetMaxTime(WD,0xFFFF);
+ *    UEZWatchdogStart(WD);
+ *    UEZWatchdogFeed(WD); 
+ *    UEZWatchdogTrip(WD); // use this line to immeidately trip and reset
+ * } else { 
+ *   // an error occurred opening the device, check the "Watchdog" name in the platform.
+ * } 
+ * @endcode
  */
 #include "Config.h"
 #include "Device/Watchdog.h"

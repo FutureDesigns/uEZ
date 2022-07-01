@@ -474,7 +474,7 @@ void ConsoleMode(const T_choice *aChoice)
     T_uezDevice ts;
     static T_uezQueue queue = (TUInt32)NULL;
     T_pixelColor *pixels;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
     
@@ -500,7 +500,7 @@ void ConsoleMode(const T_choice *aChoice)
         UEZQueueSetName(queue, "Console", "\0");
 #endif
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         // Open up the touchscreen and pass in the queue to receive events
@@ -550,7 +550,7 @@ void ConsoleMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	

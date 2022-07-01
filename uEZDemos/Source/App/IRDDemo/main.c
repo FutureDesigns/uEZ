@@ -301,7 +301,7 @@ void MainDrawCharDisplay(T_uezDevice aDisplay, TInt32 aTemperature, TBool aShowB
     if (aShowBottom)
         UEZCharDisplayDrawString(aDisplay, 3, 0, "uEZ / IRD " VERSION_AS_TEXT);
 }
-
+/*
 static void ShowButtonPressedOnCharDisplay(
         T_uezDevice aDisplay,
         T_uezInputEvent event)
@@ -349,7 +349,7 @@ static void ShowButtonPressedOnCharDisplay(
             break;
         }
     }
-}
+}*/
 
 T_uezError UEZPlatform_WiredNetwork0_Connect(
         T_uezDevice *aNetwork,
@@ -410,7 +410,7 @@ int MainTask(void)
     TUInt32 value;
     char buffer[1024];
     T_uezDevice keypad;
-    T_uezInputEvent event;
+    //T_uezInputEvent event;
 #if COMPILE_OPTION_USB_KEYBOARD && UEZ_ENABLE_USB_DEVICE_STACK
 	static T_GenHIDCallbacks genHIDCallbacks = {
 		0

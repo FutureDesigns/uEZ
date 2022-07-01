@@ -215,28 +215,28 @@ static void GainSpan_SPI_ProcessIncomingChar(char c)
         if (c == GAINSPAN_SPI_CHAR_INACTIVE_LINK) {
             G_GainSpan_SPI_IsLinkActive = false;
             storeChar = false;
-        } else if (c == GAINSPAN_SPI_CHAR_INACTIVE_LINK2) {
+        } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_INACTIVE_LINK2) {
             G_GainSpan_SPI_IsLinkActive = false;
             storeChar = false;
         } else {
             // Got an active link worth of data
             G_GainSpan_SPI_IsLinkActive = true;
-            if (c == GAINSPAN_SPI_CHAR_ESC) {
+            if (((uint8_t) c) == GAINSPAN_SPI_CHAR_ESC) {
                 /* Don't use this character, go into escape mode */
                 G_GainSpan_SPI_EscapeCode = true;
                 storeChar = false;
-            } else if (c == GAINSPAN_SPI_CHAR_IDLE) {
+            } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_IDLE) {
                 storeChar = false;
-            } else if (c == GAINSPAN_SPI_CHAR_UNKNOWN_F1) {
+            } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_UNKNOWN_F1) {
                 storeChar = false;
-            } else if (c == GAINSPAN_SPI_CHAR_UNKNOWN_F4) {
+            } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_UNKNOWN_F4) {
                 storeChar = false;
-            } else if (c == GAINSPAN_SPI_CHAR_UNKNOWN_F7) {
+            } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_UNKNOWN_F7) {
                 storeChar = false;
-            } else if (c == GAINSPAN_SPI_CHAR_FLOW_CONTROL_ON) {
+            } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_FLOW_CONTROL_ON) {
                 G_GainSpan_SPI_CanTransmit = true;
                 storeChar = false;
-            } else if (c == GAINSPAN_SPI_CHAR_FLOW_CONTROL_OFF) {
+            } else if (((uint8_t) c) == GAINSPAN_SPI_CHAR_FLOW_CONTROL_OFF) {
                 G_GainSpan_SPI_CanTransmit = false;
                 storeChar = false;
             }

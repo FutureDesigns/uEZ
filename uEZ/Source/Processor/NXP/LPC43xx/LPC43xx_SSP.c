@@ -202,14 +202,16 @@ static void ISSPProcessInterrupt(T_LPC43xx_SSP_Workspace *aW)
  *---------------------------------------------------------------------------*/
 static void ISSPStart(SPI_Request *aRequest)
 {
+    if(aRequest->iCSGPIOPort == NULL){
+        //GPIO not implemented, assume controlled by app.
+        return;
+    }
     if (aRequest->iCSPolarity) {
         (*aRequest->iCSGPIOPort)->Set(aRequest->iCSGPIOPort,
                 aRequest->iCSGPIOBit);
-//        LPC_GPIO_PORT->SET[aRequest->iCSGPIOPort] |= 1<<aRequest->iCSGPIOBit;
     } else {
         (*aRequest->iCSGPIOPort)->Clear(aRequest->iCSGPIOPort,
                 aRequest->iCSGPIOBit);
-//        LPC_GPIO_PORT->CLR[aRequest->iCSGPIOPort] |= 1<<aRequest->iCSGPIOBit;
     }
 }
 
@@ -223,6 +225,10 @@ static void ISSPStart(SPI_Request *aRequest)
  *---------------------------------------------------------------------------*/
 static void ISSPEnd(SPI_Request *aRequest)
 {
+    if(aRequest->iCSGPIOPort == NULL){
+        //GPIO not implemented, assume controlled by app.
+        return;
+    }
     if (aRequest->iCSPolarity) {
         (*(aRequest->iCSGPIOPort))->Clear(aRequest->iCSGPIOPort,
                 aRequest->iCSGPIOBit);
@@ -811,7 +817,7 @@ const HAL_SPI SSP_LPC43xx_Port1_Interface = {
         {
         "NXP:LPC43xx:SSP1",
         0x0202,
-        LPC43xx_SSP_SSP0_InitializeWorkspace,
+        LPC43xx_SSP_SSP1_InitializeWorkspace,
         sizeof(T_LPC43xx_SSP_Workspace),
         },
 
@@ -897,6 +903,7 @@ void LPC43xx_SSP1_Require(
     };
     static const T_LPC43xx_SCU_ConfigList sck1[] = {
             {GPIO_PZ_0_P1_19 ,SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_PZ_9_PF_4 ,SCU_NORMAL_DRIVE_DEFAULT(0)},
     };
     static const T_LPC43xx_SCU_ConfigList ssel1[] = {
             {GPIO_P1_8     ,SCU_NORMAL_DRIVE_DEFAULT(5)},

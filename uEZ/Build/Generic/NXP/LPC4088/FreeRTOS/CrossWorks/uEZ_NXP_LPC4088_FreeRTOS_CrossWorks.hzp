@@ -426,7 +426,7 @@
           <folder Name="NXP">
             <folder Name="PCA9551">
               <file file_name="../../../../../../Source/Devices/Button/NXP/PCA9551/Button_NXP_PCA9551_driver.c" />
-            </folder>
+            </folder>            
           </folder>
         </folder>
         <folder Name="CRC">

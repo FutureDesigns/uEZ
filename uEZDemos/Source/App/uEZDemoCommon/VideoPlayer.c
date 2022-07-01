@@ -242,7 +242,7 @@ void VideoPlayer(const T_choice *aChoice)
     T_uezInputEvent inputEvent;
     T_uezError error;
     TBool isAudioPlaying;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
     PARAM_NOT_USED(aChoice);
@@ -261,7 +261,7 @@ void VideoPlayer(const T_choice *aChoice)
 #if UEZ_REGISTER
         UEZQueueSetName(queue, "VideoPlayer", "\0");
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
     UEZTSOpen("Touchscreen", &tsDevice, &queue);
@@ -311,7 +311,7 @@ void VideoPlayer(const T_choice *aChoice)
     UEZDACWAVStop();
     UEZFileClose(ws.iFile);
     UEZLCDClose(ws.iLCD);
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     UEZKeypadClose(keypadDevice, &queue);
 #endif
     UEZTSClose(tsDevice, queue);

@@ -307,7 +307,7 @@ void AppMenu(const T_appMenu *aMenu)
     T_uezDevice ts;
     T_uezQueue queue;
 	T_appMenuWorkspace *p_ws;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
     
@@ -321,7 +321,7 @@ void AppMenu(const T_appMenu *aMenu)
     // Setup queue to receive touchscreen events
     if (queue != NULL) {
         
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         
@@ -360,7 +360,7 @@ void AppMenu(const T_appMenu *aMenu)
             UEZTSClose(ts, queue);
         }
         
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
         

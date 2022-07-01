@@ -419,9 +419,9 @@ TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
     // Blink
     for (;;) {
-      GPIO0->FIOSET = (1<<7);
+      LPC_GPIO0->FIOSET = (1<<7);
       UEZTaskDelay(250);
-      GPIO0->FIOCLR = (1<<7);
+      LPC_GPIO0->FIOCLR = (1<<7);
       UEZTaskDelay(250);
     }
 }

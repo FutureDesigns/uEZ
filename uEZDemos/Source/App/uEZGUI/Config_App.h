@@ -158,7 +158,12 @@
 #define DISPLAY_WIDTH               UEZ_LCD_DISPLAY_WIDTH
 #define DISPLAY_HEIGHT              UEZ_LCD_DISPLAY_HEIGHT
 
-#define FRAME_SIZE                  (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
+#define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
+
+#define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
+#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + 0x5DCFFF)
+#define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
+
 #if (COMPILER_TYPE==RowleyARM)
 #if __ASSEMBLER__
 #else
@@ -171,25 +176,15 @@ extern unsigned char __demoframe_end__;
 #endif
 
 #define LCD_FRAME_BUFFER        ((unsigned char *)&__frames_start__)
-#define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define FRAMES_MEMORY           ((&__frames_end__)-(&__frames_start__))
 #define MAX_NUM_FRAMES          (FRAMES_MEMORY / FRAME_SIZE)
 #define DEMO_RESERVE_FRAME      ((unsigned char *)&__demoframe_start__)
-#define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
-
-#define LOAD_SPACE              ((unsigned char *)&__loadspace_start__)
 
 #else
-// Use hard code location if we don't know what compiler is used
-#define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
-#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + 0x5DCFFF)
-#define LOAD_SPACE              ((unsigned char *)(LCD_DISPLAY_BASE_ADDRESS + 0x5DD000))
 
-#define LCD_FRAMES_SIZE         (LCD_FRAMES_END-LCD_FRAME_BUFFER)
 #define LCD_FRAME_BUFFER        LCD_FRAMES_START
-#define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define FRAMES_MEMORY           LCD_FRAMES_SIZE
-#define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
+#define LCD_FRAMES_SIZE         (LCD_FRAMES_END-LCD_FRAME_BUFFER)
 #endif
 
 #ifndef SLIDESHOW_PREFETCH_AHEAD
@@ -201,6 +196,15 @@ extern unsigned char __demoframe_end__;
 #ifndef SLIDESHOW_NUM_CACHED_SLIDES
 #define SLIDESHOW_NUM_CACHED_SLIDES 5
 #endif
+
+
+//#define DEBUG   1 // Uncomment to enable debug printf
+/* 
+#ifdef DEBUG
+#define dprintf printf
+#else
+#define dprintf(...)
+#endif*/
 
 #endif // _CONFIG_APP_H_
 /*-------------------------------------------------------------------------*

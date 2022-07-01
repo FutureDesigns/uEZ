@@ -1,5 +1,5 @@
 #define UEZ_LIBRARY                 1
-#define UEZ_PROCESSOR               NXP_LPC4088//NXP_LPC1788
+#define UEZ_PROCESSOR               NXP_LPC1788
 #define COMPILER_TYPE               IAR
 
 #define FATFS_MAX_MASS_STORAGE_DEVICES      2

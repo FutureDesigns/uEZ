@@ -68,14 +68,26 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 
 /** Several transmitter power modes to allow */ 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_TRANSMITTER_POWER_LOW,
     UEZ_NETWORK_TRANSMITTER_POWER_MEDIUM,
     UEZ_NETWORK_TRANSMITTER_POWER_HIGH
 } T_uezNetworkPower;
 
 /** Types of networks to configure between */ 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_TYPE_INFRASTRUCTURE=0,
     UEZ_NETWORK_TYPE_WIRED=0,
     UEZ_NETWORK_TYPE_IBSS=1,
@@ -86,13 +98,25 @@ typedef enum {
 } T_uezNetworkType;
 
 /** Types of IBSS (peer to peer) network roles (create or join?) */ 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_IBSS_ROLE_CREATE,
     UEZ_NETWORK_IBSS_ROLE_JOIN,
     UEZ_NETWORK_IBSS_ROLE_NONE
 } T_uezNetworkIBSSRole;
 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_SECURITY_MODE_OPEN,
     UEZ_NETWORK_SECURITY_MODE_WPA,
     UEZ_NETWORK_SECURITY_MODE_WPA2,
@@ -124,20 +148,38 @@ typedef union {
 /** Network socket id (always non-zero, zero means bad socket) */
 typedef TUInt16 T_uezNetworkSocket;
 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_SOCKET_TYPE_TCP,
 	UEZ_NETWORK_SOCKET_TYPE_UDP,
 /** TODO: UDP has not been tested! */
 } T_uezNetworkSocketType;
 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_SCAN_STATUS_IDLE,
     UEZ_NETWORK_SCAN_STATUS_BUSY,
     UEZ_NETWORK_SCAN_STATUS_FAIL,
     UEZ_NETWORK_SCAN_STATUS_COMPLETE,
 } T_uezNetworkScanStatus;
 
+#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
 typedef enum {
+#elif (COMPILER_TYPE==Keil4)
+typedef enum {
+#else
+typedef enum __attribute__ ((__packed__)) {
+#endif
     UEZ_NETWORK_JOIN_STATUS_IDLE,
     UEZ_NETWORK_JOIN_STATUS_BUSY,
     UEZ_NETWORK_JOIN_STATUS_FAIL,

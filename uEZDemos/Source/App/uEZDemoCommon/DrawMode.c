@@ -569,7 +569,7 @@ void DrawMode(const T_choice *aChoice)
     TBool isDrawing = EFalse;
     INT_32 lastWinX = 0, lastWinY = 0;
     G_drExit = EFalse;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
@@ -591,7 +591,7 @@ void DrawMode(const T_choice *aChoice)
 #endif
 
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         // Open up the touchscreen and pass in the queue to receive events
@@ -655,7 +655,7 @@ void DrawMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC
