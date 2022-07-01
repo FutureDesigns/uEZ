@@ -191,7 +191,7 @@
  *  separate instance, just like the main USB maintenance routine @ref USB_USBTask():
  *
  *  \code
- *  int main(void)
+ *  int32_t main(void)
  *  {
  *      SetupHardware();
  *
@@ -315,7 +315,7 @@
  *  separate instance, just like the main USB maintenance routine @ref USB_USBTask():
  *
  *  \code
- *  int main(void)
+ *  int32_t main(void)
  *  {
  *      SetupHardware();
  *

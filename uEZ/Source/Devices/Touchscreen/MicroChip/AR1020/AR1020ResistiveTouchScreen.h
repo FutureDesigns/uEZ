@@ -52,7 +52,7 @@ extern "C" {
  typedef struct {
      
     const DEVICE_TOUCHSCREEN *iDevice;
-    int aNumOpen;
+    int32_t aNumOpen;
 
     // Calibration information
     TBool iIsCalibrating;

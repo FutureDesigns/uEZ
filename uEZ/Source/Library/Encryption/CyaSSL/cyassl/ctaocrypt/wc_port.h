@@ -79,7 +79,7 @@
 
 
 #ifdef SINGLE_THREADED
-    typedef int CyaSSL_Mutex;
+    typedef int32_t CyaSSL_Mutex;
 #else /* MULTI_THREADED */
     /* FREERTOS comes first to enable use of FreeRTOS Windows simulator only */
     #ifdef FREERTOS
@@ -118,17 +118,17 @@
     #endif /* USE_WINDOWS_API */
 #endif /* SINGLE_THREADED */
 
-CYASSL_LOCAL int InitMutex(CyaSSL_Mutex*);
-CYASSL_LOCAL int FreeMutex(CyaSSL_Mutex*);
-CYASSL_LOCAL int LockMutex(CyaSSL_Mutex*);
-CYASSL_LOCAL int UnLockMutex(CyaSSL_Mutex*);
+CYASSL_LOCAL int32_t InitMutex(CyaSSL_Mutex*);
+CYASSL_LOCAL int32_t FreeMutex(CyaSSL_Mutex*);
+CYASSL_LOCAL int32_t LockMutex(CyaSSL_Mutex*);
+CYASSL_LOCAL int32_t UnLockMutex(CyaSSL_Mutex*);
 
 
 /* filesystem abstraction layer, used by ssl.c */
 #ifndef NO_FILESYSTEM
 
 #if defined(EBSNET)
-    #define XFILE                    int
+    #define XFILE                    int32_t
     #define XFOPEN(NAME, MODE)       vf_open((const char *)NAME, VO_RDONLY, 0);
     #define XFSEEK                   vf_lseek
     #define XFTELL                   vf_tell

@@ -31,6 +31,7 @@
 #include <NetworkStartup.h>
 #include <AppHTTPServer.h>
 
+#define HEARTBEAT_BLINK_DELAY			 250
 /*---------------------------------------------------------------------------*
  * Task:  Heartbeat
  *---------------------------------------------------------------------------*
@@ -44,19 +45,23 @@
  *---------------------------------------------------------------------------*/
 TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
-    HAL_GPIOPort **p_gpio;
-    const TUInt32 pin = 23;
+    UEZGPIOOutput(GPIO_HEARTBEAT_LED);
+    UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);
 
-    HALInterfaceFind("GPIO4", (T_halWorkspace **)&p_gpio);
+    // initial quick blink at bootup
+    for (int i = 0; i < 20; i++) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY/5);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY/5);
+    }
 
-    (*p_gpio)->SetOutputMode(p_gpio, 1<<pin);
-    (*p_gpio)->SetMux(p_gpio, pin, 0); // set to GPIO
     // Blink
-    for (;;) {
-        (*p_gpio)->Set(p_gpio, 1<<pin);
-        UEZTaskDelay(250);
-        (*p_gpio)->Clear(p_gpio, 1<<pin);
-        UEZTaskDelay(250);
+    while(1) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY);
     }
 }
 
@@ -72,7 +77,7 @@ T_uezError SetupTasks(void)
 
 #if APP_ENABLE_HEARTBEAT_LED_ON
     // Start up the heart beat of the LED
-    error = UEZTaskCreate(Heartbeat, "Heart", 64, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+    error = UEZTaskCreate(Heartbeat, "Heart", 80, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif
 #if UEZ_ENABLE_TCPIP_STACK
     error = UEZTaskCreate(

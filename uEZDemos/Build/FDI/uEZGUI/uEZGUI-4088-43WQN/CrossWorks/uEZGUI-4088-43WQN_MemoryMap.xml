@@ -1,6 +1,8 @@
 <!DOCTYPE Board_Memory_Definition_File>
-<Root name="LPC1778">
-  <MemorySegment size="0x80000" access="ReadOnly" start="0x00000000" name="FLASH"/>
+<Root name="LPC4088">
+  <MemorySegment start="$(FLASH_START:0)" size="$(FLASH_SIZE:0)-$(FLASH_START:0x0)" access="ReadOnly"name="FLASH"/>
+  <MemorySegment size="$(SDRAM_SIZE:0)" access="Read/Write" start="0xA0000000" name="SDRAM"/>
+  <MemorySegment size="$(QSPI_SIZE:0)" start="0x28000000" name="QSPI"  access="ReadOnly" />
   <MemorySegment size="0x1000" access="Read/Write" start="0x00200000" name="EEPROM">
     <RegisterGroup start="0x00200000" name="EEPROM">
       <Register start="0x00200000+0x080" size="0x4" name="EECMD">
@@ -6097,7 +6099,6 @@
       </Register>
     </RegisterGroup>
   </MemorySegment>
-  <MemorySegment size="0x00800000" access="Read/Write" start="0xA0000000" name="SDRAM"/>
   <MemorySegment size="0x1000" access="Read/Write" start="0xE000E000" name="CM3_System_Control_Space">
     <RegisterGroup size="0x10" start="0xE000E000" name="InterruptType">
       <Register start="0xE000E004" name="InterruptType_ICTR" aka="Interrupt_Control_Type" access="ReadOnly">

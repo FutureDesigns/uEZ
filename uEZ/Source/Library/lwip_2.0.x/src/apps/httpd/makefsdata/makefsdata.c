@@ -39,7 +39,7 @@
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;
-typedef unsigned int uint;
+typedef uint32_t uint;
 
 #define my_max(a,b) (((a) > (b)) ? (a) : (b))
 #define my_min(a,b) (((a) < (b)) ? (a) : (b))
@@ -59,7 +59,7 @@ static uint8 s_checkbuf[OUT_BUF_SIZE];
 tdefl_compressor g_deflator;
 tinfl_decompressor g_inflator;
 
-int deflate_level = 10; /* default compression level, can be changed via command line */
+int32_t deflate_level = 10; /* default compression level, can be changed via command line */
 #define USAGE_ARG_DEFLATE " [-defl<:compr_level>]"
 #else /* MAKEFS_SUPPORT_DEFLATE */
 #define USAGE_ARG_DEFLATE ""
@@ -89,7 +89,7 @@ int deflate_level = 10; /* default compression level, can be changed via command
 #define FIND_T_FILENAME(fInfo)        (fInfo.ff_name)
 #define FIND_T_IS_DIR(fInfo)          ((fInfo.ff_attrib & FA_DIREC) == FA_DIREC)
 #define FIND_T_IS_FILE(fInfo)         (1)
-#define FIND_RET_T                    int
+#define FIND_RET_T                    int32_t
 #define FINDFIRST_FILE(path, result)  findfirst(path, result, FA_ARCH)
 #define FINDFIRST_DIR(path, result)   findfirst(path, result, FA_DIREC)
 #define FINDNEXT(ff_res, result)      FindNextFileA(ff_res, result)
@@ -124,8 +124,8 @@ char serverIDBuffer[1024];
 /* set this to 0 to prevent aligning payload */
 #define ALIGN_PAYLOAD 1
 /* define this to a type that has the required alignment */
-#define PAYLOAD_ALIGN_TYPE "unsigned int"
-static int payload_alingment_dummy_counter = 0;
+#define PAYLOAD_ALIGN_TYPE "uint32_t"
+static int32_t payload_alingment_dummy_counter = 0;
 
 #define HEX_BYTES_PER_LINE 16
 
@@ -137,14 +137,14 @@ struct file_entry
    const char* filename_c;
 };
 
-int process_sub(FILE *data_file, FILE *struct_file);
-int process_file(FILE *data_file, FILE *struct_file, const char *filename);
-int file_write_http_header(FILE *data_file, const char *filename, int file_size, u16_t *http_hdr_len,
-                           u16_t *http_hdr_chksum, u8_t provide_content_len, int is_compressed);
-int file_put_ascii(FILE *file, const char *ascii_string, int len, int *i);
-int s_put_ascii(char *buf, const char *ascii_string, int len, int *i);
+int32_t process_sub(FILE *data_file, FILE *struct_file);
+int32_t process_file(FILE *data_file, FILE *struct_file, const char *filename);
+int32_t file_write_http_header(FILE *data_file, const char *filename, int32_t file_size, u16_t *http_hdr_len,
+                           u16_t *http_hdr_chksum, u8_t provide_content_len, int32_t is_compressed);
+int32_t file_put_ascii(FILE *file, const char *ascii_string, int32_t len, int32_t *i);
+int32_t s_put_ascii(char *buf, const char *ascii_string, int32_t len, int32_t *i);
 void concat_files(const char *file1, const char *file2, const char *targetfile);
-int check_path(char* path, size_t size);
+int32_t check_path(char* path, size_t size);
 
 /* 5 bytes per char + 3 bytes per line */
 static char file_buffer_c[COPY_BUFSIZE * 5 + ((COPY_BUFSIZE / HEX_BYTES_PER_LINE) * 3)];
@@ -188,14 +188,14 @@ static void print_usage(void)
   printf("   process files in subdirectory 'fs'" NEWLINE);
 }
 
-int main(int argc, char *argv[])
+int32_t main(int32_t argc, char *argv[])
 {
   char path[MAX_PATH_LEN];
   char appPath[MAX_PATH_LEN];
   FILE *data_file;
   FILE *struct_file;
-  int filesProcessed;
-  int i;
+  int32_t filesProcessed;
+  int32_t i;
   char targetfile[MAX_PATH_LEN];
   strcpy(targetfile, "fsdata.c");
 
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
         char* colon = strstr(argv[i], ":");
         if (colon) {
           if (colon[1] != 0) {
-            int defl_level = atoi(&colon[1]);
+            int32_t defl_level = atoi(&colon[1]);
             if ((defl_level >= 0) && (defl_level <= 10)) {
               deflate_level = defl_level;
             } else {
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
 #if MAKEFS_SUPPORT_DEFLATE
   if (deflateNonSsiFiles) {
     printf("(Deflated total byte reduction: %d bytes -> %d bytes (%.02f%%)" NEWLINE,
-      (int)overallDataBytes, (int)deflatedBytesReduced, (float)((deflatedBytesReduced*100.0)/overallDataBytes));
+      (int32_t)overallDataBytes, (int32_t)deflatedBytesReduced, (float)((deflatedBytesReduced*100.0)/overallDataBytes));
   }
 #endif
   printf(NEWLINE);
@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-int check_path(char* path, size_t size)
+int32_t check_path(char* path, size_t size)
 {
   size_t slen;
   if (path[0] == 0) {
@@ -423,11 +423,11 @@ void concat_files(const char *file1, const char *file2, const char *targetfile)
   fclose(fout);
 }
 
-int process_sub(FILE *data_file, FILE *struct_file)
+int32_t process_sub(FILE *data_file, FILE *struct_file)
 {
   FIND_T fInfo;
   FIND_RET_T fret;
-  int filesProcessed = 0;
+  int32_t filesProcessed = 0;
 
   if (processSubs) {
     /* process subs recursively */
@@ -478,13 +478,13 @@ int process_sub(FILE *data_file, FILE *struct_file)
   return filesProcessed;
 }
 
-u8_t* get_file_data(const char* filename, int* file_size, int can_be_compressed, int* is_compressed)
+u8_t* get_file_data(const char* filename, int32_t* file_size, int32_t can_be_compressed, int32_t* is_compressed)
 {
   FILE *inFile;
   size_t fsize = 0;
   u8_t* buf;
   size_t r;
-  int rs;
+  int32_t rs;
   inFile = fopen(filename, "rb");
   if (inFile == NULL) {
     printf("Failed to open file \"%s\"\n", filename);
@@ -554,11 +554,11 @@ u8_t* get_file_data(const char* filename, int* file_size, int can_be_compressed,
           free(buf);
           buf = ret_buf;
           *file_size = out_bytes;
-          printf(" - deflate: %d bytes -> %d bytes (%.02f%%)" NEWLINE, (int)fsize, (int)out_bytes, (float)((out_bytes*100.0)/fsize));
+          printf(" - deflate: %d bytes -> %d bytes (%.02f%%)" NEWLINE, (int32_t)fsize, (int32_t)out_bytes, (float)((out_bytes*100.0)/fsize));
           deflatedBytesReduced += (size_t)(fsize - out_bytes);
           *is_compressed = 1;
         } else {
-          printf(" - uncompressed: (would be %d bytes larger using deflate)" NEWLINE, (int)(out_bytes - fsize));
+          printf(" - uncompressed: (would be %d bytes larger using deflate)" NEWLINE, (int32_t)(out_bytes - fsize));
         }
       } else {
         printf(" - uncompressed: (file is larger than deflate bufer)" NEWLINE);
@@ -598,13 +598,13 @@ void process_file_data(FILE* data_file, u8_t* file_data, size_t file_size)
   LWIP_ASSERT("written == off", written == off);
 }
 
-int write_checksums(FILE *struct_file, const char *varname,
+int32_t write_checksums(FILE *struct_file, const char *varname,
                     u16_t hdr_len, u16_t hdr_chksum, const u8_t* file_data, size_t file_size)
 {
-  int chunk_size = TCP_MSS;
-  int offset, src_offset;
+  int32_t chunk_size = TCP_MSS;
+  int32_t offset, src_offset;
   size_t len;
-  int i = 0;
+  int32_t i = 0;
 #if LWIP_TCP_TIMESTAMPS
   /* when timestamps are used, usable space is 12 bytes less per segment */
   chunk_size -= 12;
@@ -622,7 +622,7 @@ int write_checksums(FILE *struct_file, const char *varname,
   for (offset = hdr_len; ; offset += len) {
     unsigned short chksum;
     void* data = (void*)&file_data[src_offset];
-    len = LWIP_MIN(chunk_size, (int)file_size - src_offset);
+    len = LWIP_MIN(chunk_size, (int32_t)file_size - src_offset);
     if (len == 0) {
       break;
     }
@@ -636,7 +636,7 @@ int write_checksums(FILE *struct_file, const char *varname,
   return i;
 }
 
-static int is_valid_char_for_c_var(char x)
+static int32_t is_valid_char_for_c_var(char x)
 {
    if (((x >= 'A') && (x <= 'Z')) ||
        ((x >= 'a') && (x <= 'z')) ||
@@ -652,8 +652,8 @@ static void fix_filename_for_c(char* qualifiedName, size_t max_len)
    struct file_entry* f;
    size_t len = strlen(qualifiedName);
    char *new_name = (char*)malloc(len + 2);
-   int filename_ok;
-   int cnt = 0;
+   int32_t filename_ok;
+   int32_t cnt = 0;
    size_t i;
    if (len + 3 == max_len) {
       printf("File name too long: \"%s\"\n", qualifiedName);
@@ -698,7 +698,7 @@ static void register_filename(const char* qualifiedName)
    }
 }
 
-int is_ssi_file(const char* filename)
+int32_t is_ssi_file(const char* filename)
 {
   size_t loop;
   for (loop = 0; loop < NUM_SHTML_EXTENSIONS; loop++) {
@@ -709,20 +709,20 @@ int is_ssi_file(const char* filename)
   return 0;
 }
 
-int process_file(FILE *data_file, FILE *struct_file, const char *filename)
+int32_t process_file(FILE *data_file, FILE *struct_file, const char *filename)
 {
   char varname[MAX_PATH_LEN];
-  int i = 0;
+  int32_t i = 0;
   char qualifiedName[MAX_PATH_LEN];
-  int file_size;
+  int32_t file_size;
   u16_t http_hdr_chksum = 0;
   u16_t http_hdr_len = 0;
-  int chksum_count = 0;
+  int32_t chksum_count = 0;
   u8_t flags = 0;
   const char* flags_str;
   u8_t has_content_len;
   u8_t* file_data;
-  int is_compressed = 0;
+  int32_t is_compressed = 0;
 
   /* create qualified name (@todo: prepend slash or not?) */
   sprintf(qualifiedName,"%s/%s", curSubdir, filename);
@@ -802,19 +802,19 @@ int process_file(FILE *data_file, FILE *struct_file, const char *filename)
   return 0;
 }
 
-int file_write_http_header(FILE *data_file, const char *filename, int file_size, u16_t *http_hdr_len,
-                           u16_t *http_hdr_chksum, u8_t provide_content_len, int is_compressed)
+int32_t file_write_http_header(FILE *data_file, const char *filename, int32_t file_size, u16_t *http_hdr_len,
+                           u16_t *http_hdr_chksum, u8_t provide_content_len, int32_t is_compressed)
 {
-  int i = 0;
-  int response_type = HTTP_HDR_OK;
+  int32_t i = 0;
+  int32_t response_type = HTTP_HDR_OK;
   const char* file_type;
   const char *cur_string;
   size_t cur_len;
-  int written = 0;
+  int32_t written = 0;
   size_t hdr_len = 0;
   u16_t acc;
   const char *file_ext;
-  int j;
+  int32_t j;
   u8_t provide_last_modified = includeLastModified;
 
   memset(hdr_buf, 0, sizeof(hdr_buf));
@@ -889,7 +889,7 @@ int file_write_http_header(FILE *data_file, const char *filename, int file_size,
      @todo: just use a big-enough buffer and let the HTTPD send spaces? */
   if (provide_content_len) {
     char intbuf[MAX_PATH_LEN];
-    int content_len = file_size;
+    int32_t content_len = file_size;
     memset(intbuf, 0, sizeof(intbuf));
     cur_string = g_psHTTPHeaderStrings[HTTP_HDR_CONTENT_LENGTH];
     cur_len = strlen(cur_string);
@@ -1003,9 +1003,9 @@ int file_write_http_header(FILE *data_file, const char *filename, int file_size,
   return written;
 }
 
-int file_put_ascii(FILE *file, const char* ascii_string, int len, int *i)
+int32_t file_put_ascii(FILE *file, const char* ascii_string, int32_t len, int32_t *i)
 {
-  int x;
+  int32_t x;
   for (x = 0; x < len; x++) {
     unsigned char cur = ascii_string[x];
     fprintf(file, "0x%02.2x,", cur);
@@ -1016,10 +1016,10 @@ int file_put_ascii(FILE *file, const char* ascii_string, int len, int *i)
   return len;
 }
 
-int s_put_ascii(char *buf, const char *ascii_string, int len, int *i)
+int32_t s_put_ascii(char *buf, const char *ascii_string, int32_t len, int32_t *i)
 {
-  int x;
-  int idx = 0;
+  int32_t x;
+  int32_t idx = 0;
   for (x = 0; x < len; x++) {
     unsigned char cur = ascii_string[x];
     sprintf(&buf[idx], "0x%02.2x,", cur);

@@ -32,8 +32,8 @@ BAD, 26, 27, 28,  29, 30, 31, 32,  33, 34, 35, 36,  37, 38, 39, 40,
 41, 42, 43, 44,  45, 46, 47, 48,  49, 50, 51,BAD, BAD,BAD,BAD,BAD
 };
 
-void HTTPBase64Encoder(unsigned char *out, const unsigned char *in, int inlen);
-int  HTTPBase64Decoder(char *out, const char *in);
+void HTTPBase64Encoder(unsigned char *out, const unsigned char *in, int32_t inlen);
+int32_t  HTTPBase64Decoder(char *out, const char *in);
 
 
 // Digest Related
@@ -42,13 +42,13 @@ void HTTPDigestGenerateCNonce(char *outbuff);
 
 // Calculate H(A1) as per HTTP Digest spec 
 void HTTPDigestCalcHA1(
-                   IN int    nAlg,     /* 0 = MD5, 1 = MD5-Sess */
+                   IN int32_t    nAlg,     /* 0 = MD5, 1 = MD5-Sess */
                    IN char * pszUserName,
                    IN char * pszRealm,
-                   IN int    nRealmLength,
+                   IN int32_t    nRealmLength,
                    IN char * pszPassword,
                    IN char * pszNonce,
-                   IN int    nNonceLength,
+                   IN int32_t    nNonceLength,
                    IN char * pszCNonce,
                    OUT HASHHEX SessionKey
                    );
@@ -57,15 +57,15 @@ void HTTPDigestCalcHA1(
 void HTTPDigestCalcResponse(
                         IN HASHHEX HA1,             // H(A1) 
                         IN char * pszNonce,         // nonce from server 
-                        IN int    nNonceLength,     // Length of nonce
+                        IN int32_t    nNonceLength,     // Length of nonce
                         IN char * pszNonceCount,    // 8 hex digits 
                         IN char * pszCNonce,        // client nonce 
-                        IN char * pszQop,           // qop-value: "", "auth", "auth-int" 
-                        IN int    nQopLength,       // qop param length
+                        IN char * pszQop,           // qop-value: "", "auth", "auth-int32_t" 
+                        IN int32_t    nQopLength,       // qop param length
                         IN char * pszMethod,        // method from the request 
                         IN char * pszDigestUri,     // requested URL 
-                        IN int    nDigestUriLebgth, // Uri Length
-                        IN HASHHEX HEntity,         // H(entity body) if qop="auth-int"
+                        IN int32_t    nDigestUriLebgth, // Uri Length
+                        IN HASHHEX HEntity,         // H(entity body) if qop="auth-int32_t"
                         OUT HASHHEX Response        // request-digest or response-digest 
                         );
 

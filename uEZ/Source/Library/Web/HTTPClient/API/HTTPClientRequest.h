@@ -27,9 +27,9 @@ typedef struct _HTTPParameters
 
 #ifdef _HTTP_CLIENT_REQUEST_TEST
 // test function
-int HTTPClientRequestDoTest(void);
+int32_t HTTPClientRequestDoTest(void);
 #endif // _HTTP_CLIENT_REQUEST_TEST
 
-int HTTPClientRequestDoGet(HTTPParameters *pClientParams, CHAR *pBuffer, UINT32 *pSize);
+int32_t HTTPClientRequestDoGet(HTTPParameters *pClientParams, CHAR *pBuffer, UINT32 *pSize);
  
 #endif  // _HTTP_CLIENT_REQUEST

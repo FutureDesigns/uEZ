@@ -89,7 +89,7 @@
  *---------------------------------------------------------------------------*/
 typedef struct {
     const DEVICE_TOUCHSCREEN *iDevice;
-    int aNumOpen;
+    int32_t aNumOpen;
 
     // Hardware linkage
     TS_FourWireTouchResist_Configuration iConfig;

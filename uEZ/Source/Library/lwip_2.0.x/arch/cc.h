@@ -19,10 +19,10 @@ typedef unsigned char   u8_t;
 typedef signed char     s8_t;
 typedef unsigned short  u16_t;
 typedef signed short    s16_t;
-typedef unsigned int    u32_t;
-typedef signed int      s32_t;
-typedef unsigned int    mem_ptr_t;
-typedef int sys_prot_t;
+typedef uint32_t    u32_t;
+//typedef signed int32_t      s32_t; //already defined
+typedef uint32_t    mem_ptr_t;
+typedef int32_t sys_prot_t;
 
 /* Define (sn)printf formatters for these lwIP types */
 #if (COMPILER_TYPE==RenesasRX)

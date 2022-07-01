@@ -31,7 +31,9 @@
 #include <HAL/GPDMA.h>
 #include <Device/GPDMA.h>
 #include <uEZDemoCommon.h>
+#include <uEZPlatform.h>
 #include <uEZLCD.h>
+#include <uEZAudioMixer.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -55,6 +57,9 @@
     #define UEZ_ICON_HEIGHT 64
     #define UEZ_ICON_WIDTH 111
 #endif
+
+#define SPEAKER_RELIABILITY_TEST  0
+#define ACCELEROMETER_TEST        0
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -147,7 +152,6 @@ static const T_appMenu mainmenu = {
     EFalse, // cannot exit
 };
 
-
 /*---------------------------------------------------------------------------*
  * Routine:  ROMChecksumCalculate
  *---------------------------------------------------------------------------*
@@ -171,7 +175,7 @@ TUInt32 ROMChecksumCalculate()
         checksum += *(p++);
     }
 
-    return checksum;
+    return checksum; // Don't use this for anything important! Does not check the full memory size of the application!
 }
 
 /*---------------------------------------------------------------------------*
@@ -210,7 +214,7 @@ void TitleScreen(void)
     UEZTaskCreate(
         (T_uezTaskFunction)CalcChecksumTask,
         "Chksum",
-        UEZ_TASK_STACK_BYTES(256),
+        UEZ_TASK_STACK_BYTES(512),
         (void *)0,
         UEZ_PRIORITY_NORMAL,
         0);
@@ -281,6 +285,9 @@ void MainMenu(void)
     if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
 
+        // Example of how to properly change volume to 50% in an application.
+        //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 128);
+
 #if (!FAST_STARTUP)
         // Clear the screen
         TitleScreen();
@@ -294,22 +301,62 @@ void MainMenu(void)
         PlayAudio(523, 100);
 
         // Force calibration?
+#if (SPEAKER_RELIABILITY_TEST == 0)
         Calibrate(CalibrateTestIfTouchscreenHeld());
-
+#endif
         UEZTaskDelay(1000);
 
 #else
         UEZLCDBacklight(lcd, 255);
         Calibrate(FALSE);
 #endif
-        
+
+#if (ACCELEROMETER_TEST == 1)
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
+#include <Device/Accelerometer.h>
+#include <uEZDeviceTable.h>
+    (void)_SEGGER_RTT; // GCC complains if we don't use this.
+    T_uezDevice acdevice;
+    T_uezError error;
+    char buffer[40] = {0}; 
+    AccelerometerReading reading;
+    AccelerometerReadingFloat readingF;
+    DEVICE_Accelerometer **g_accel0;
+    error = UEZDeviceTableFind("Accel0", &acdevice);
+    if (!error) {
+      error = UEZDeviceTableGetWorkspace(acdevice,
+             (T_uezDeviceWorkspace **)&g_accel0);
+      if(!error) {
+         while (1) {
+          error = (*g_accel0)->ReadXYZ(g_accel0, &reading, 100);
+          error = (*g_accel0)->ReadXYZFloat(g_accel0, &readingF, 100);
+    
+          sprintf(buffer,"%+010d:%+010i:%+010d\n",reading.iX, reading.iY, reading.iZ); // Must print some special specifiers using standard buffer print
+          SEGGER_RTT_WriteString(0, buffer); //int only output
+
+          sprintf(buffer, "%010F:%010F:%010F\n",(float)readingF.iX,(float)readingF.iY,(float)readingF.iZ); // Must print float using standard buffer print
+          SEGGER_RTT_WriteString(0, buffer); // float output
+
+          UEZTaskDelay(50); //slow down for readability
+        }
+      }
+    }
+#endif
+
+#if (UEZ_ENABLE_TOUCHSCREEN_NOISE_TEST == 1) // start touch screen noise detect test
+        TS_NoiseDetect();
+#endif
+#if (UEZ_ENABLE_TOUCH_SENSITIVITY_TEST == 1) // start touch verification test
+        //TODO
+ #endif
+
         // Set the screen saver icon
-        //BouncingLogoSS_Setup(
-        //    (TUInt8 *)G_uEZLogo,
-        //    UEZ_ICON_WIDTH,
-        //    UEZ_ICON_HEIGHT,
-        //    DISPLAY_WIDTH,
-        //    DISPLAY_HEIGHT);
+        BouncingLogoSS_Setup(
+            (TUInt8 *)G_uEZLogo,
+            UEZ_ICON_WIDTH,
+            UEZ_ICON_HEIGHT,
+            DISPLAY_WIDTH,
+            DISPLAY_HEIGHT);
         
         AppMenu(&mainmenu);
         UEZLCDClose(lcd);

@@ -71,7 +71,7 @@ static unsigned char pc2[48] = {
 
 void deskey(unsigned char *key, short edf)	/* Thanks to James Gillogly & Phil Karn! */
 {
-	register int i, j, l, m, n;
+	register int32_t i, j, l, m, n;
 	unsigned char pc1m[56], pcr[56];
 	unsigned long kn[32];
 
@@ -109,7 +109,7 @@ register unsigned long *raw1;
 {
 	register unsigned long *cook, *raw0;
 	unsigned long dough[32];
-	register int i;
+	register int32_t i;
 
 	cook = dough;
 	for( i = 0; i < 16; i++, raw1++ ) {
@@ -336,7 +336,7 @@ static void desfunc(block, keys)
 register unsigned long *block, *keys;
 {
 	register unsigned long fval, work, right, leftt;
-	register int round;
+	register int32_t round;
 
 	leftt = block[0];
 	right = block[1];

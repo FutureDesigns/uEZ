@@ -25,7 +25,7 @@
 #ifndef CTAOCRYPT_BLAKE2_H
 #define CTAOCRYPT_BLAKE2_H
 
-#include <cyassl/ctaocrypt/blake2-int.h>
+#include <cyassl/ctaocrypt/blake2-int32_t.h>
 
 #ifdef __cplusplus
     extern "C" {
@@ -45,9 +45,9 @@ typedef struct Blake2b {
 } Blake2b;
 
 
-CYASSL_API int InitBlake2b(Blake2b*, word32);
-CYASSL_API int Blake2bUpdate(Blake2b*, const byte*, word32);
-CYASSL_API int Blake2bFinal(Blake2b*, byte*, word32);
+CYASSL_API int32_t InitBlake2b(Blake2b*, word32);
+CYASSL_API int32_t Blake2bUpdate(Blake2b*, const byte*, word32);
+CYASSL_API int32_t Blake2bFinal(Blake2b*, byte*, word32);
 
 
 

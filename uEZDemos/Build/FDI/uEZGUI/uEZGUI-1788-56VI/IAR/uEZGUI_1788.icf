@@ -84,7 +84,8 @@ place at address mem:IRAM_start  {
     readwrite section ".rtt", /*SEGGER_RTT_SECTION*/
     block CSTACK, 
     block __kernel_data_block__, 
-    rw object LPC17xx_40xx_PLL.o 
+    rw object LPC17xx_40xx_PLL.o, 
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
 };
 
 place in ROM_region   { readonly };
@@ -92,7 +93,6 @@ place in ROM_region   { readonly };
 /*place in NORFlash_region   { readonly object UDCImages.o};*/
 
 place in RAM_region { 
-    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
     readwrite,
     block SVC_STACK, 
     block IRQ_STACK, 

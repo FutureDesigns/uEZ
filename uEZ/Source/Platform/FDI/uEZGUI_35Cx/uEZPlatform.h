@@ -31,6 +31,9 @@
 #include <uEZPlatformAPI.h>
 #include <Source/Library/LPCOpen/LPCUSBLib/LPCUSBLib_uEZ.h>
 
+// HW Reset pin in Rev 1 PCB
+#define PIN_HW_RESET  GPIO_P4_6
+   
 /*-------------------------------------------------------------------------*
  * Platform Settings:
  *-------------------------------------------------------------------------*/
@@ -58,9 +61,38 @@
     #define UEZBSP_SDRAM_BASE_ADDR              0xA0000000
 #endif
 
+/*-------------------------------------------------------------------------*
+ * Platform Volume Settings:
+ *-------------------------------------------------------------------------*/
+#define AUDIO_AMP_NONE                        0   // Unique number per AMP
+#define AUDIO_AMP_TDA8551                     1
+#define AUDIO_AMP_WOLFSON                     2
+#define AUDIO_AMP_LM48110                     3
+
+// Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  175
+    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level // will lower OB speaker level
 #endif
+
+#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  140 // Limit audio to 0.5W output
+#endif
+
+// Max output limit changes based on AMP
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output
+
+// Define these for your own speakers or headphones.
+#ifndef UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL  255
+#endif
+#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL  255
+#endif
+#ifndef UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL
+    #define UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL  255
+#endif
+/*-------------------------------------------------------------------------*/
 
 #ifndef UEZ_CONSOLE_READ_BUFFER_SIZE
     #define UEZ_CONSOLE_READ_BUFFER_SIZE        128 // bytes
@@ -140,37 +172,13 @@ void UEZPlatform_ADC1_5_Require(void);
 void UEZPlatform_ADC1_6_Require(void);
 void UEZPlatform_ADC1_7_Require(void);
 void UEZPlatform_AudioAmp_Require(void);
+void UEZPlatform_AudioMixer_Require(void);
 void UEZPlatform_Backlight_Require(void);
+
 void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
-void UEZPlatform_Console_ALT_PWR_COM_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize);
-void UEZPlatform_Console_FullDuplex_UART_Require(
-        const char *aHALSerialName,
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize);
-void UEZPlatform_Console_FullDuplex_UART0_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize);
-void UEZPlatform_Console_FullDuplex_UART1_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize);
-void UEZPlatform_Console_FullDuplex_UART2_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize);
-void UEZPlatform_Console_FullDuplex_UART3_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize);
-void UEZPlatform_Console_HalfDuplex_UART_Require(
-        const char *aHALSerialName,
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize,
-        T_uezGPIOPortPin aDriveEnablePortPin,
-        TBool aDriveEnablePolarity,
-        TUInt32 aDriveEnableReleaseTime);
-void UEZPlatform_Console_HalfDuplex_RS485_Require(
+void UEZPlatform_HalfDuplex_RS485_UART0_Require(
         const char *aHALSerialName,
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize,
@@ -180,6 +188,38 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
         T_uezGPIOPortPin aReceiveEnablePortPin,
         TBool aReceiveEnablePolarity,
         TUInt32 aReceiveEnableReleaseTime);
+void UEZPlatform_HalfDuplex_RS485_UART5_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize,
+        T_uezGPIOPortPin aDriveEnablePortPin,
+        TBool aDriveEnablePolarity,
+        TUInt32 aDriveEnableReleaseTime,
+        T_uezGPIOPortPin aReceiveEnablePortPin,
+        TBool aReceiveEnablePolarity,
+        TUInt32 aReceiveEnableReleaseTime);
+void UEZPlatform_Console_FullDuplex_UART_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_Console_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_Console_FullDuplex_UART6_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART5_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART6_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART8_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
 void UEZPlatform_Console_ISPHeader_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
@@ -217,6 +257,8 @@ void UEZPlatform_Timer3_Require(void);
 void UEZPlatform_Speaker_Require(void);
 void UEZPlatform_Temp0_Require(void);
 void UEZPlatform_Touchscreen_Require(char* aName);
+void UEZPlatform_TouchscreenRT_Require(char * aName);
+void UEZPlatform_TouchscreenPCAP_Require(char * aName);
 void UEZPlatform_USBDevice_Require(void);
 void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_USBHost_PortA_Require(void);

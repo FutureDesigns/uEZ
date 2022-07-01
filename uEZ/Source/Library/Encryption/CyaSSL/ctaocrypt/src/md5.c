@@ -363,7 +363,7 @@ void Md5Final(Md5* md5, byte* hash)
 #endif /* STM32F2_HASH */
 
 
-int Md5Hash(const byte* data, word32 len, byte* hash)
+int32_t Md5Hash(const byte* data, word32 len, byte* hash)
 {
 #ifdef CYASSL_SMALL_STACK
     Md5* md5;

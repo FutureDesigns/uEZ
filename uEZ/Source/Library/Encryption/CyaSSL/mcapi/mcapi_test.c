@@ -71,26 +71,26 @@ static byte* iv  = NULL;
 static CRYPT_RNG_CTX mcRng;
 static RNG           defRng;
 
-static int check_md5(void);
-static int check_sha(void);
-static int check_sha256(void);
-static int check_sha384(void);
-static int check_sha512(void);
-static int check_hmac(void);
-static int check_compress(void);
-static int check_rng(void);
-static int check_des3(void);
-static int check_aescbc(void);
-static int check_aesctr(void);
-static int check_aesdirect(void);
-static int check_rsa(void);
-static int check_ecc(void);
+static int32_t check_md5(void);
+static int32_t check_sha(void);
+static int32_t check_sha256(void);
+static int32_t check_sha384(void);
+static int32_t check_sha512(void);
+static int32_t check_hmac(void);
+static int32_t check_compress(void);
+static int32_t check_rng(void);
+static int32_t check_des3(void);
+static int32_t check_aescbc(void);
+static int32_t check_aesctr(void);
+static int32_t check_aesdirect(void);
+static int32_t check_rsa(void);
+static int32_t check_ecc(void);
 
 
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 {
-    int ret;
-    int i;
+    int32_t ret;
+    int32_t i;
 
     (void)argc;
     (void)argv;
@@ -209,7 +209,7 @@ int main(int argc, char** argv)
 
 
 /* check mcapi md5 against internal */
-static int check_md5(void)
+static int32_t check_md5(void)
 {
     CRYPT_MD5_CTX mcMd5;
     Md5           defMd5;
@@ -236,11 +236,11 @@ static int check_md5(void)
 
 
 /* check mcapi sha against internal */
-static int check_sha(void)
+static int32_t check_sha(void)
 {
     CRYPT_SHA_CTX mcSha;
     Sha           defSha;
-    int           ret = 0;
+    int32_t           ret = 0;
     byte          mcDigest[CRYPT_SHA_DIGEST_SIZE];
     byte          defDigest[SHA_DIGEST_SIZE];
 
@@ -268,11 +268,11 @@ static int check_sha(void)
 
 
 /* check mcapi sha256 against internal */
-static int check_sha256(void)
+static int32_t check_sha256(void)
 {
     CRYPT_SHA256_CTX mcSha256;
     Sha256           defSha256;
-    int              ret;
+    int32_t              ret;
     byte             mcDigest[CRYPT_SHA256_DIGEST_SIZE];
     byte             defDigest[SHA256_DIGEST_SIZE];
 
@@ -308,11 +308,11 @@ static int check_sha256(void)
 
 
 /* check mcapi sha384 against internal */
-static int check_sha384(void)
+static int32_t check_sha384(void)
 {
     CRYPT_SHA384_CTX mcSha384;
     Sha384           defSha384;
-    int              ret;
+    int32_t              ret;
     byte             mcDigest[CRYPT_SHA384_DIGEST_SIZE];
     byte             defDigest[SHA384_DIGEST_SIZE];
 
@@ -348,11 +348,11 @@ static int check_sha384(void)
 
 
 /* check mcapi sha512 against internal */
-static int check_sha512(void)
+static int32_t check_sha512(void)
 {
     CRYPT_SHA512_CTX mcSha512;
     Sha512           defSha512;
-    int              ret;
+    int32_t              ret;
     byte             mcDigest[CRYPT_SHA512_DIGEST_SIZE];
     byte             defDigest[SHA512_DIGEST_SIZE];
 
@@ -388,11 +388,11 @@ static int check_sha512(void)
 
 
 /* check mcapi hmac against internal */
-static int check_hmac(void)
+static int32_t check_hmac(void)
 {
     CRYPT_HMAC_CTX mcHmac;
     Hmac           defHmac;
-    int            ret;
+    int32_t            ret;
     byte           mcDigest[CRYPT_SHA512_DIGEST_SIZE];
     byte           defDigest[SHA512_DIGEST_SIZE];
 
@@ -515,7 +515,7 @@ static int check_hmac(void)
 
 
 /* check mcapi compress against internal */
-static int check_compress(void)
+static int32_t check_compress(void)
 {
     const unsigned char text[] =
     "Biodiesel cupidatat marfa, cliche aute put a bird on it incididunt elit\n"
@@ -534,12 +534,12 @@ static int check_compress(void)
     "readymade. Mumblecore brunch lomo odd future, portland organic terry\n"
     "four loko whatever street art yr farm-to-table.\n";
 
-    unsigned int inSz  = sizeof(text);
-    unsigned int outSz;
+    uint32_t inSz  = sizeof(text);
+    uint32_t outSz;
     unsigned char cBuffer[1024];
     unsigned char dBuffer[1024];
 
-    int ret1, ret2;
+    int32_t ret1, ret2;
 
     /* dynamic */
     ret1 = CRYPT_HUFFMAN_Compress(cBuffer, sizeof(cBuffer), text, inSz, 0);
@@ -617,10 +617,10 @@ static int check_compress(void)
 #define RANDOM_BYTE_SZ 32
 
 /* check mcapi rng */
-static int check_rng(void)
+static int32_t check_rng(void)
 {
-    int           ret;
-    int           i; 
+    int32_t           ret;
+    int32_t           i; 
     byte          in[RANDOM_BYTE_SZ];
     byte          out[RANDOM_BYTE_SZ];
 
@@ -668,11 +668,11 @@ static int check_rng(void)
 #define TDES_TEST_SIZE 32
 
 /* check mcapi des3 */
-static int check_des3(void)
+static int32_t check_des3(void)
 {
     CRYPT_TDES_CTX mcDes3;
     Des3           defDes3;
-    int            ret;
+    int32_t            ret;
     byte           out1[TDES_TEST_SIZE];
     byte           out2[TDES_TEST_SIZE];
 
@@ -749,11 +749,11 @@ static int check_des3(void)
 #define AES_TEST_SIZE 32
 
 /* check mcapi aes cbc */
-static int check_aescbc(void)
+static int32_t check_aescbc(void)
 {
     CRYPT_AES_CTX mcAes;
     Aes           defAes;
-    int           ret;
+    int32_t           ret;
     byte          out1[AES_TEST_SIZE];
     byte          out2[AES_TEST_SIZE];
 
@@ -926,11 +926,11 @@ static int check_aescbc(void)
 
 
 /* check mcapi aes ctr */
-static int check_aesctr(void)
+static int32_t check_aesctr(void)
 {
     CRYPT_AES_CTX mcAes;
     Aes           defAes;
-    int           ret;
+    int32_t           ret;
     byte          out1[AES_TEST_SIZE];
     byte          out2[AES_TEST_SIZE];
 
@@ -1085,11 +1085,11 @@ static int check_aesctr(void)
 
 
 /* check mcapi aes direct */
-static int check_aesdirect(void)
+static int32_t check_aesdirect(void)
 {
     CRYPT_AES_CTX mcAes;
     Aes           defAes;
-    int           ret;
+    int32_t           ret;
     byte          out1[CRYPT_AES_BLOCK_SIZE];
     byte          out2[16];  /* one block at a time */
 
@@ -1264,14 +1264,14 @@ static int check_aesdirect(void)
 #define RSA_TEST_SIZE 64
 
 /* check mcapi rsa */
-static int check_rsa(void)
+static int32_t check_rsa(void)
 {
     CRYPT_RSA_CTX mcRsa;
     RsaKey        defRsa;
-    int           ret;
-    int           ret2;
-    unsigned int  keySz = (unsigned int)sizeof(client_key_der_1024);
-    unsigned int  idx   = 0;
+    int32_t           ret;
+    int32_t           ret2;
+    uint32_t  keySz = (uint32_t)sizeof(client_key_der_1024);
+    uint32_t  idx   = 0;
     byte          out1[256];
     byte          out2[256];
 
@@ -1349,20 +1349,20 @@ static int check_rsa(void)
 
 
 /* check mcapi ecc */
-static int check_ecc(void)
+static int32_t check_ecc(void)
 {
     CRYPT_ECC_CTX userA; 
     CRYPT_ECC_CTX userB;
-    int           ret;
+    int32_t           ret;
     byte          sharedA[100];
     byte          sharedB[100];
     byte          sig[100];
-    unsigned int  aSz   = (unsigned int)sizeof(sharedA);
-    unsigned int  bSz   = (unsigned int)sizeof(sharedB);
-    unsigned int  sigSz = (unsigned int)sizeof(sig);
-    unsigned int  usedA = 0;
-    unsigned int  usedB = 0;
-    int verifyStatus = 0;
+    uint32_t  aSz   = (uint32_t)sizeof(sharedA);
+    uint32_t  bSz   = (uint32_t)sizeof(sharedB);
+    uint32_t  sigSz = (uint32_t)sizeof(sig);
+    uint32_t  usedA = 0;
+    uint32_t  usedB = 0;
+    int32_t verifyStatus = 0;
 
     /* init */
     ret = CRYPT_ECC_Initialize(&userA);

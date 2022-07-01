@@ -44,7 +44,7 @@ void bench_des(void);
 void bench_arc4(void);
 void bench_hc128(void);
 void bench_rabbit(void);
-void bench_aes(int);
+void bench_aes(int32_t);
 void bench_aesgcm(void);
 
 void bench_md5(void);
@@ -64,9 +64,9 @@ void bench_eccKeyAgree(void);
 /*
  * Main driver for CTaoCrypt benchmarks.
  */
-int main(int argc, char** argv) {
-    volatile int i ;
-    int j ;
+int32_t main(int32_t argc, char** argv) {
+    volatile int32_t i ;
+    int32_t j ;
 
     PRECONbits.PFMWS = 2;
     PRECONbits.PREFEN = 0b11;

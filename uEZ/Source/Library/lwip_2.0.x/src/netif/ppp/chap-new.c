@@ -51,10 +51,10 @@
 
 #if 0 /* UNUSED */
 /* Hook for a plugin to validate CHAP challenge */
-int (*chap_verify_hook)(const char *name, const char *ourname, int id,
+int32_t (*chap_verify_hook)(const char *name, const char *ourname, int32_t id,
 			const struct chap_digest_type *digest,
 			const unsigned char *challenge, const unsigned char *response,
-			char *message, int message_space) = NULL;
+			char *message, int32_t message_space) = NULL;
 #endif /* UNUSED */
 
 #if PPP_OPTIONS
@@ -90,21 +90,21 @@ static void chap_lowerdown(ppp_pcb *pcb);
 #if PPP_SERVER
 static void chap_timeout(void *arg);
 static void chap_generate_challenge(ppp_pcb *pcb);
-static void chap_handle_response(ppp_pcb *pcb, int code,
-		unsigned char *pkt, int len);
-static int chap_verify_response(ppp_pcb *pcb, const char *name, const char *ourname, int id,
+static void chap_handle_response(ppp_pcb *pcb, int32_t code,
+		unsigned char *pkt, int32_t len);
+static int32_t chap_verify_response(ppp_pcb *pcb, const char *name, const char *ourname, int32_t id,
 		const struct chap_digest_type *digest,
 		const unsigned char *challenge, const unsigned char *response,
-		char *message, int message_space);
+		char *message, int32_t message_space);
 #endif /* PPP_SERVER */
-static void chap_respond(ppp_pcb *pcb, int id,
-		unsigned char *pkt, int len);
-static void chap_handle_status(ppp_pcb *pcb, int code, int id,
-		unsigned char *pkt, int len);
+static void chap_respond(ppp_pcb *pcb, int32_t id,
+		unsigned char *pkt, int32_t len);
+static void chap_handle_status(ppp_pcb *pcb, int32_t code, int32_t id,
+		unsigned char *pkt, int32_t len);
 static void chap_protrej(ppp_pcb *pcb);
-static void chap_input(ppp_pcb *pcb, unsigned char *pkt, int pktlen);
+static void chap_input(ppp_pcb *pcb, unsigned char *pkt, int32_t pktlen);
 #if PRINTPKT_SUPPORT
-static int chap_print_pkt(const unsigned char *p, int plen,
+static int32_t chap_print_pkt(const unsigned char *p, int32_t plen,
 		void (*printer) (void *, const char *, ...), void *arg);
 #endif /* PRINTPKT_SUPPORT */
 
@@ -161,9 +161,9 @@ static void chap_lowerdown(ppp_pcb *pcb) {
  * If the lower layer is already up, we start sending challenges,
  * otherwise we wait for the lower layer to come up.
  */
-void chap_auth_peer(ppp_pcb *pcb, const char *our_name, int digest_code) {
+void chap_auth_peer(ppp_pcb *pcb, const char *our_name, int32_t digest_code) {
 	const struct chap_digest_type *dp;
-	int i;
+	int32_t i;
 
 	if (pcb->chap_server.flags & AUTH_STARTED) {
 		ppp_error("CHAP: peer authentication already started!");
@@ -190,9 +190,9 @@ void chap_auth_peer(ppp_pcb *pcb, const char *our_name, int digest_code) {
  * chap_auth_with_peer - Prepare to authenticate ourselves to the peer.
  * There isn't much to do until we receive a challenge.
  */
-void chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, int digest_code) {
+void chap_auth_with_peer(ppp_pcb *pcb, const char *our_name, int32_t digest_code) {
 	const struct chap_digest_type *dp;
-	int i;
+	int32_t i;
 
 	if(NULL == our_name)
 		return;
@@ -255,7 +255,7 @@ static void chap_timeout(void *arg) {
  * the challenge packet in pcb->chap_server.challenge_pkt.
  */
 static void chap_generate_challenge(ppp_pcb *pcb) {
-	int clen = 1, nlen, len;
+	int32_t clen = 1, nlen, len;
 	unsigned char *p;
 
 	p = pcb->chap_server.challenge;
@@ -279,16 +279,16 @@ static void chap_generate_challenge(ppp_pcb *pcb) {
 /*
  * chap_handle_response - check the response to our challenge.
  */
-static void  chap_handle_response(ppp_pcb *pcb, int id,
-		     unsigned char *pkt, int len) {
-	int response_len, ok, mlen;
+static void  chap_handle_response(ppp_pcb *pcb, int32_t id,
+		     unsigned char *pkt, int32_t len) {
+	int32_t response_len, ok, mlen;
 	const unsigned char *response;
 	unsigned char *outp;
 	struct pbuf *p;
 	const char *name = NULL;	/* initialized to shut gcc up */
 #if 0 /* UNUSED */
-	int (*verifier)(const char *, const char *, int, const struct chap_digest_type *,
-		const unsigned char *, const unsigned char *, char *, int);
+	int32_t (*verifier)(const char *, const char *, int32_t, const struct chap_digest_type *,
+		const unsigned char *, const unsigned char *, char *, int32_t);
 #endif /* UNUSED */
 	char rname[MAXNAMELEN+1];
 	char message[256];
@@ -408,13 +408,13 @@ static void  chap_handle_response(ppp_pcb *pcb, int id,
  * what we think it should be.  Returns 1 if it does (authentication
  * succeeded), or 0 if it doesn't.
  */
-static int chap_verify_response(ppp_pcb *pcb, const char *name, const char *ourname, int id,
+static int32_t chap_verify_response(ppp_pcb *pcb, const char *name, const char *ourname, int32_t id,
 		     const struct chap_digest_type *digest,
 		     const unsigned char *challenge, const unsigned char *response,
-		     char *message, int message_space) {
-	int ok;
+		     char *message, int32_t message_space) {
+	int32_t ok;
 	unsigned char secret[MAXSECRETLEN];
-	int secret_len;
+	int32_t secret_len;
 
 	/* Get the secret that the peer is supposed to know */
 	if (!get_secret(pcb, name, ourname, (char *)secret, &secret_len, 1)) {
@@ -432,10 +432,10 @@ static int chap_verify_response(ppp_pcb *pcb, const char *name, const char *ourn
 /*
  * chap_respond - Generate and send a response to a challenge.
  */
-static void chap_respond(ppp_pcb *pcb, int id,
-	     unsigned char *pkt, int len) {
-	int clen, nlen;
-	int secret_len;
+static void chap_respond(ppp_pcb *pcb, int32_t id,
+	     unsigned char *pkt, int32_t len) {
+	int32_t clen, nlen;
+	int32_t secret_len;
 	struct pbuf *p;
 	u_char *outp;
 	char rname[MAXNAMELEN+1];
@@ -494,8 +494,8 @@ static void chap_respond(ppp_pcb *pcb, int id,
 	ppp_write(pcb, p);
 }
 
-static void chap_handle_status(ppp_pcb *pcb, int code, int id,
-		   unsigned char *pkt, int len) {
+static void chap_handle_status(ppp_pcb *pcb, int32_t code, int32_t id,
+		   unsigned char *pkt, int32_t len) {
 	const char *msg = NULL;
 	LWIP_UNUSED_ARG(id);
 
@@ -532,9 +532,9 @@ static void chap_handle_status(ppp_pcb *pcb, int code, int id,
 	}
 }
 
-static void chap_input(ppp_pcb *pcb, unsigned char *pkt, int pktlen) {
+static void chap_input(ppp_pcb *pcb, unsigned char *pkt, int32_t pktlen) {
 	unsigned char code, id;
-	int len;
+	int32_t len;
 
 	if (pktlen < CHAP_HDRLEN)
 		return;
@@ -590,10 +590,10 @@ static const char* const chap_code_names[] = {
 	"Challenge", "Response", "Success", "Failure"
 };
 
-static int chap_print_pkt(const unsigned char *p, int plen,
+static int32_t chap_print_pkt(const unsigned char *p, int32_t plen,
 	       void (*printer) (void *, const char *, ...), void *arg) {
-	int code, id, len;
-	int clen, nlen;
+	int32_t code, id, len;
+	int32_t clen, nlen;
 	unsigned char x;
 
 	if (plen < CHAP_HDRLEN)
@@ -604,7 +604,7 @@ static int chap_print_pkt(const unsigned char *p, int plen,
 	if (len < CHAP_HDRLEN || len > plen)
 		return 0;
 
-	if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(chap_code_names))
+	if (code >= 1 && code <= (int32_t)LWIP_ARRAYSIZE(chap_code_names))
 		printer(arg, " %s", chap_code_names[code-1]);
 	else
 		printer(arg, " code=0x%x", code);

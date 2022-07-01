@@ -9,7 +9,8 @@
 
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 
-// For rev 2 units and later Newhaven updated to the LCD (but kept the same PN) so use the Rev2 option for correct alignment.
+// For Rev 2.1 units and later Newhaven updated the LCD (but kept the same PN) so use the Rev2 option for correct alignment.
+// You cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF // Original version of LCD
 //#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2 // Rev 2 version of LCD
 #define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
@@ -21,7 +22,7 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_RTT                   0
 #define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
@@ -73,11 +74,11 @@
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
-#define SHOW_GUIDEMO_AUTOMOTIVE             0
-#define SHOW_GUIDEMO_GRAPH                  0
-#define SHOW_GUIDEMO_LISTVIEW               1
-#define SHOW_GUIDEMO_SPEED                  1
-#define SHOW_GUIDEMO_TREEVIEW               1
+#define SHOW_GUIDEMO_AUTOMOTIVE             1
+#define SHOW_GUIDEMO_GRAPH                  1
+#define SHOW_GUIDEMO_LISTVIEW               0
+#define SHOW_GUIDEMO_SPEED                  0
+#define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-4357-50WVN"
 #define SLIDESHOW_PREFETCH_AHEAD            5

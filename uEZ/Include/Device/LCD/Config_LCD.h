@@ -94,6 +94,7 @@
 #define LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2      35
 #define LCD_CONFIG_TIANMA_TM035NBH02_09             36
 #define LCD_CONFIG_ORIENT_AFY480272B0_43N12NTM      37
+#define LCD_CONFIG_KYOCERA_T55343GD035JU_3_5        38
 
 #define LCD_RES_VGA                                 1
 #define LCD_RES_QVGA                                2
@@ -961,6 +962,38 @@
         { 0,    0x3C6A,                     0x4098,                     1 },
 #endif
 
+#if (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_KYOCERA_T55343GD035JU_3_5)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+
+    #define UEZ_LCD_INTERFACE_ARRAY         Kyocera_T55343GD035JU_3_5_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           320
+    #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+
+//TODO: Confirm
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+//TODO: Confirm
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
 #ifndef UEZ_LCD_COLOR_DEPTH
     #define UEZ_LCD_COLOR_DEPTH                 UEZ_LCD_DEFAULT_COLOR_DEPTH
 #endif
@@ -996,8 +1029,6 @@
 #else
     #define UEZ_DEFAULT_LCD_RES_WVGA            0
 #endif
-
-
 
 #endif // _CONFIG_LCD_H_
 /*-------------------------------------------------------------------------*

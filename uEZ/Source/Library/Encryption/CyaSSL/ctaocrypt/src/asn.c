@@ -121,15 +121,15 @@
     */
 
     struct tm {
-	int	tm_sec;		/* seconds after the minute [0-60] */
-	int	tm_min;		/* minutes after the hour [0-59] */
-	int	tm_hour;	/* hours since midnight [0-23] */
-	int	tm_mday;	/* day of the month [1-31] */
-	int	tm_mon;		/* months since January [0-11] */
-	int	tm_year;	/* years since 1900 */
-	int	tm_wday;	/* days since Sunday [0-6] */
-	int	tm_yday;	/* days since January 1 [0-365] */
-	int	tm_isdst;	/* Daylight Savings Time flag */
+	int32_t	tm_sec;		/* seconds after the minute [0-60] */
+	int32_t	tm_min;		/* minutes after the hour [0-59] */
+	int32_t	tm_hour;	/* hours since midnight [0-23] */
+	int32_t	tm_mday;	/* day of the month [1-31] */
+	int32_t	tm_mon;		/* months since January [0-11] */
+	int32_t	tm_year;	/* years since 1900 */
+	int32_t	tm_wday;	/* days since Sunday [0-6] */
+	int32_t	tm_yday;	/* days since January 1 [0-365] */
+	int32_t	tm_isdst;	/* Daylight Savings Time flag */
 	long	tm_gmtoff;	/* offset from CUT in seconds */
 	char	*tm_zone;	/* timezone abbreviation */
     };
@@ -199,7 +199,7 @@ struct tm* gmtime(const time_t* timer)
     #define LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) %400)))
     #define YEARSIZE(year) (LEAPYEAR(year) ? 366 : 365)
 
-    static const int _ytab[2][12] =
+    static const int32_t _ytab[2][12] =
     {
         {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
         {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
@@ -209,15 +209,15 @@ struct tm* gmtime(const time_t* timer)
     struct tm* ret = &st_time;
     time_t secs = *timer;
     unsigned long dayclock, dayno;
-    int year = EPOCH_YEAR;
+    int32_t year = EPOCH_YEAR;
 
     dayclock = (unsigned long)secs % SECS_DAY;
     dayno    = (unsigned long)secs / SECS_DAY;
 
-    ret->tm_sec  = (int) dayclock % 60;
-    ret->tm_min  = (int)(dayclock % 3600) / 60;
-    ret->tm_hour = (int) dayclock / 3600;
-    ret->tm_wday = (int) (dayno + 4) % 7;        /* day 0 a Thursday */
+    ret->tm_sec  = (int32_t) dayclock % 60;
+    ret->tm_min  = (int32_t)(dayclock % 3600) / 60;
+    ret->tm_hour = (int32_t) dayclock / 3600;
+    ret->tm_wday = (int32_t) (dayno + 4) % 7;        /* day 0 a Thursday */
 
     while(dayno >= (unsigned long)YEARSIZE(year)) {
         dayno -= YEARSIZE(year);
@@ -225,7 +225,7 @@ struct tm* gmtime(const time_t* timer)
     }
 
     ret->tm_year = year - YEAR0;
-    ret->tm_yday = (int)dayno;
+    ret->tm_yday = (int32_t)dayno;
     ret->tm_mon  = 0;
 
     while(dayno >= (unsigned long)_ytab[LEAPYEAR(year)][ret->tm_mon]) {
@@ -233,7 +233,7 @@ struct tm* gmtime(const time_t* timer)
         ret->tm_mon++;
     }
 
-    ret->tm_mday  = (int)++dayno;
+    ret->tm_mday  = (int32_t)++dayno;
     ret->tm_isdst = 0;
 
     return ret;
@@ -347,9 +347,9 @@ static INLINE word32 btoi(byte b)
 
 
 /* two byte date/time, add to value */
-static INLINE void GetTime(int* value, const byte* date, int* idx)
+static INLINE void GetTime(int32_t* value, const byte* date, int32_t* idx)
 {
-    int i = *idx;
+    int32_t i = *idx;
 
     *value += btoi(date[i++]) * 10;
     *value += btoi(date[i++]);
@@ -417,10 +417,10 @@ CPU_INT32S NetSecure_ValidateDateHandler(CPU_INT08U *date, CPU_INT08U format,
 #endif /* MICRIUM */
 
 
-CYASSL_LOCAL int GetLength(const byte* input, word32* inOutIdx, int* len,
+CYASSL_LOCAL int32_t GetLength(const byte* input, word32* inOutIdx, int32_t* len,
                            word32 maxIdx)
 {
-    int     length = 0;
+    int32_t     length = 0;
     word32  i = *inOutIdx;
     byte    b;
 
@@ -461,10 +461,10 @@ CYASSL_LOCAL int GetLength(const byte* input, word32* inOutIdx, int* len,
 }
 
 
-CYASSL_LOCAL int GetSequence(const byte* input, word32* inOutIdx, int* len,
+CYASSL_LOCAL int32_t GetSequence(const byte* input, word32* inOutIdx, int32_t* len,
                            word32 maxIdx)
 {
-    int    length = -1;
+    int32_t    length = -1;
     word32 idx    = *inOutIdx;
 
     if (input[idx++] != (ASN_SEQUENCE | (uint32_t)ASN_CONSTRUCTED) ||
@@ -478,10 +478,10 @@ CYASSL_LOCAL int GetSequence(const byte* input, word32* inOutIdx, int* len,
 }
 
 
-CYASSL_LOCAL int GetSet(const byte* input, word32* inOutIdx, int* len,
+CYASSL_LOCAL int32_t GetSet(const byte* input, word32* inOutIdx, int32_t* len,
                         word32 maxIdx)
 {
-    int    length = -1;
+    int32_t    length = -1;
     word32 idx    = *inOutIdx;
 
     if (input[idx++] != ((uint32_t)ASN_SET | (uint32_t)ASN_CONSTRUCTED) ||
@@ -496,7 +496,7 @@ CYASSL_LOCAL int GetSet(const byte* input, word32* inOutIdx, int* len,
 
 
 /* winodws header clash for WinCE using GetVersion */
-CYASSL_LOCAL int GetMyVersion(const byte* input, word32* inOutIdx, int* version)
+CYASSL_LOCAL int32_t GetMyVersion(const byte* input, word32* inOutIdx, int32_t* version)
 {
     word32 idx = *inOutIdx;
 
@@ -517,7 +517,7 @@ CYASSL_LOCAL int GetMyVersion(const byte* input, word32* inOutIdx, int* version)
 
 #ifndef NO_PWDBASED
 /* Get small count integer, 32 bits or less */
-static int GetShortInt(const byte* input, word32* inOutIdx, int* number)
+static int32_t GetShortInt(const byte* input, word32* inOutIdx, int32_t* number)
 {
     word32 idx = *inOutIdx;
     word32 len;
@@ -543,7 +543,7 @@ static int GetShortInt(const byte* input, word32* inOutIdx, int* number)
 
 
 /* May not have one, not an error */
-static int GetExplicitVersion(const byte* input, word32* inOutIdx, int* version)
+static int32_t GetExplicitVersion(const byte* input, word32* inOutIdx, int32_t* version)
 {
     word32 idx = *inOutIdx;
 
@@ -560,12 +560,12 @@ static int GetExplicitVersion(const byte* input, word32* inOutIdx, int* version)
 }
 
 
-CYASSL_LOCAL int GetInt(mp_int* mpi, const byte* input, word32* inOutIdx,
+CYASSL_LOCAL int32_t GetInt(mp_int* mpi, const byte* input, word32* inOutIdx,
                   word32 maxIdx)
 {
     word32 i = *inOutIdx;
     byte   b = input[i++];
-    int    length;
+    int32_t    length;
 
     if (b != ASN_INTEGER)
         return ASN_PARSE_E;
@@ -591,10 +591,10 @@ CYASSL_LOCAL int GetInt(mp_int* mpi, const byte* input, word32* inOutIdx,
 }
 
 
-static int GetObjectId(const byte* input, word32* inOutIdx, word32* oid,
+static int32_t GetObjectId(const byte* input, word32* inOutIdx, word32* oid,
                      word32 maxIdx)
 {
-    int    length;
+    int32_t    length;
     word32 i = *inOutIdx;
     byte   b;
     *oid = 0;
@@ -616,10 +616,10 @@ static int GetObjectId(const byte* input, word32* inOutIdx, word32* oid,
 }
 
 
-CYASSL_LOCAL int GetAlgoId(const byte* input, word32* inOutIdx, word32* oid,
+CYASSL_LOCAL int32_t GetAlgoId(const byte* input, word32* inOutIdx, word32* oid,
                      word32 maxIdx)
 {
-    int    length;
+    int32_t    length;
     word32 i = *inOutIdx;
     byte   b;
     *oid = 0;
@@ -665,12 +665,12 @@ CYASSL_LOCAL int GetAlgoId(const byte* input, word32* inOutIdx, word32* oid,
 
 #ifdef HAVE_CAVIUM
 
-static int GetCaviumInt(byte** buff, word16* buffSz, const byte* input,
+static int32_t GetCaviumInt(byte** buff, word16* buffSz, const byte* input,
                         word32* inOutIdx, word32 maxIdx, void* heap)
 {
     word32 i = *inOutIdx;
     byte   b = input[i++];
-    int    length;
+    int32_t    length;
 
     if (b != ASN_INTEGER)
         return ASN_PARSE_E;
@@ -694,10 +694,10 @@ static int GetCaviumInt(byte** buff, word16* buffSz, const byte* input,
     return 0;
 }
 
-static int CaviumRsaPrivateKeyDecode(const byte* input, word32* inOutIdx,
+static int32_t CaviumRsaPrivateKeyDecode(const byte* input, word32* inOutIdx,
                                      RsaKey* key, word32 inSz)
 {
-    int   version, length;
+    int32_t   version, length;
     void* h = key->heap;
 
     if (GetSequence(input, inOutIdx, &length, inSz) < 0)
@@ -724,10 +724,10 @@ static int CaviumRsaPrivateKeyDecode(const byte* input, word32* inOutIdx,
 
 #endif /* HAVE_CAVIUM */
 
-int RsaPrivateKeyDecode(const byte* input, word32* inOutIdx, RsaKey* key,
+int32_t RsaPrivateKeyDecode(const byte* input, word32* inOutIdx, RsaKey* key,
                         word32 inSz)
 {
-    int    version, length;
+    int32_t    version, length;
 
 #ifdef HAVE_CAVIUM
     if (key->magic == CYASSL_RSA_CAVIUM_MAGIC)
@@ -757,10 +757,10 @@ int RsaPrivateKeyDecode(const byte* input, word32* inOutIdx, RsaKey* key,
 #endif /* NO_RSA */
 
 /* Remove PKCS8 header, move beginning of traditional to beginning of input */
-int ToTraditional(byte* input, word32 sz)
+int32_t ToTraditional(byte* input, word32 sz)
 {
     word32 inOutIdx = 0, oid;
-    int    version, length;
+    int32_t    version, length;
 
     if (GetSequence(input, &inOutIdx, &length, sz) < 0)
         return ASN_PARSE_E;
@@ -795,7 +795,7 @@ int ToTraditional(byte* input, word32 sz)
 
 /* Check To see if PKCS version algo is supported, set id if it is return 0
    < 0 on error */
-static int CheckAlgo(int first, int second, int* id, int* version)
+static int32_t CheckAlgo(int32_t first, int32_t second, int32_t* id, int32_t* version)
 {
     *id      = ALGO_ID_E;
     *version = PKCS5;   /* default */
@@ -839,7 +839,7 @@ static int CheckAlgo(int first, int second, int* id, int* version)
 
 /* Check To see if PKCS v2 algo is supported, set id if it is return 0
    < 0 on error */
-static int CheckAlgoV2(int oid, int* id)
+static int32_t CheckAlgoV2(int32_t oid, int32_t* id)
 {
     switch (oid) {
     case 69:
@@ -856,14 +856,14 @@ static int CheckAlgoV2(int oid, int* id)
 
 
 /* Decrypt intput in place from parameters based on id */
-static int DecryptKey(const char* password, int passwordSz, byte* salt,
-                      int saltSz, int iterations, int id, byte* input,
-                      int length, int version, byte* cbcIv)
+static int32_t DecryptKey(const char* password, int32_t passwordSz, byte* salt,
+                      int32_t saltSz, int32_t iterations, int32_t id, byte* input,
+                      int32_t length, int32_t version, byte* cbcIv)
 {
-    int typeH;
-    int derivedLen;
-    int decryptionType;
-    int ret = 0;
+    int32_t typeH;
+    int32_t derivedLen;
+    int32_t decryptionType;
+    int32_t ret = 0;
 #ifdef CYASSL_SMALL_STACK
     byte* key;
 #else
@@ -912,10 +912,10 @@ static int DecryptKey(const char* password, int passwordSz, byte* salt,
         ret = PBKDF1(key, (byte*)password, passwordSz, salt, saltSz, iterations,
                derivedLen, typeH);
     else if (version == PKCS12) {
-        int  i, idx = 0;
+        int32_t  i, idx = 0;
         byte unicodePasswd[MAX_UNICODE_SZ];
 
-        if ( (passwordSz * 2 + 2) > (int)sizeof(unicodePasswd)) {
+        if ( (passwordSz * 2 + 2) > (int32_t)sizeof(unicodePasswd)) {
 #ifdef CYASSL_SMALL_STACK
             XFREE(key, NULL, DYNAMIC_TYPE_TMP_BUFFER);
 #endif
@@ -1024,11 +1024,11 @@ static int DecryptKey(const char* password, int passwordSz, byte* salt,
 
 /* Remove Encrypted PKCS8 header, move beginning of traditional to beginning
    of input */
-int ToTraditionalEnc(byte* input, word32 sz,const char* password,int passwordSz)
+int32_t ToTraditionalEnc(byte* input, word32 sz,const char* password,int32_t passwordSz)
 {
     word32 inOutIdx = 0, oid;
-    int    first, second, length, version, saltSz, id;
-    int    iterations = 0;
+    int32_t    first, second, length, version, saltSz, id;
+    int32_t    iterations = 0;
 #ifdef CYASSL_SMALL_STACK
     byte*  salt = NULL;
     byte*  cbcIv = NULL;
@@ -1173,10 +1173,10 @@ int ToTraditionalEnc(byte* input, word32 sz,const char* password,int passwordSz)
 
 #ifndef NO_RSA
 
-int RsaPublicKeyDecode(const byte* input, word32* inOutIdx, RsaKey* key,
+int32_t RsaPublicKeyDecode(const byte* input, word32* inOutIdx, RsaKey* key,
                        word32 inSz)
 {
-    int    length;
+    int32_t    length;
 
     if (GetSequence(input, inOutIdx, &length, inSz) < 0)
         return ASN_PARSE_E;
@@ -1237,7 +1237,7 @@ int RsaPublicKeyDecode(const byte* input, word32* inOutIdx, RsaKey* key,
     return 0;
 }
 
-int RsaPublicKeyDecodeRaw(const byte* n, word32 nSz, const byte* e, word32 eSz,
+int32_t RsaPublicKeyDecodeRaw(const byte* n, word32 nSz, const byte* e, word32 eSz,
                           RsaKey* key)
 {
     if (n == NULL || e == NULL || key == NULL)
@@ -1271,9 +1271,9 @@ int RsaPublicKeyDecodeRaw(const byte* n, word32 nSz, const byte* e, word32 eSz,
 
 #ifndef NO_DH
 
-int DhKeyDecode(const byte* input, word32* inOutIdx, DhKey* key, word32 inSz)
+int32_t DhKeyDecode(const byte* input, word32* inOutIdx, DhKey* key, word32 inSz)
 {
-    int    length;
+    int32_t    length;
 
     if (GetSequence(input, inOutIdx, &length, inSz) < 0)
         return ASN_PARSE_E;
@@ -1284,7 +1284,7 @@ int DhKeyDecode(const byte* input, word32* inOutIdx, DhKey* key, word32 inSz)
     return 0;
 }
 
-int DhSetKey(DhKey* key, const byte* p, word32 pSz, const byte* g, word32 gSz)
+int32_t DhSetKey(DhKey* key, const byte* p, word32 pSz, const byte* g, word32 gSz)
 {
     if (key == NULL || p == NULL || g == NULL || pSz == 0 || gSz == 0)
         return BAD_FUNC_ARG;
@@ -1319,12 +1319,12 @@ int DhSetKey(DhKey* key, const byte* p, word32 pSz, const byte* g, word32 gSz)
 }
 
 
-int DhParamsLoad(const byte* input, word32 inSz, byte* p, word32* pInOutSz,
+int32_t DhParamsLoad(const byte* input, word32 inSz, byte* p, word32* pInOutSz,
                  byte* g, word32* gInOutSz)
 {
     word32 i = 0;
     byte   b;
-    int    length;
+    int32_t    length;
 
     if (GetSequence(input, &i, &length, inSz) < 0)
         return ASN_PARSE_E;
@@ -1341,7 +1341,7 @@ int DhParamsLoad(const byte* input, word32 inSz, byte* p, word32* pInOutSz,
     else
         i--;
 
-    if (length <= (int)*pInOutSz) {
+    if (length <= (int32_t)*pInOutSz) {
         XMEMCPY(p, &input[i], length);
         *pInOutSz = length;
     }
@@ -1357,7 +1357,7 @@ int DhParamsLoad(const byte* input, word32 inSz, byte* p, word32* pInOutSz,
     if (GetLength(input, &i, &length, inSz) < 0)
         return ASN_PARSE_E;
 
-    if (length <= (int)*gInOutSz) {
+    if (length <= (int32_t)*gInOutSz) {
         XMEMCPY(g, &input[i], length);
         *gInOutSz = length;
     }
@@ -1372,10 +1372,10 @@ int DhParamsLoad(const byte* input, word32 inSz, byte* p, word32* pInOutSz,
 
 #ifndef NO_DSA
 
-int DsaPublicKeyDecode(const byte* input, word32* inOutIdx, DsaKey* key,
+int32_t DsaPublicKeyDecode(const byte* input, word32* inOutIdx, DsaKey* key,
                         word32 inSz)
 {
-    int    length;
+    int32_t    length;
 
     if (GetSequence(input, inOutIdx, &length, inSz) < 0)
         return ASN_PARSE_E;
@@ -1390,10 +1390,10 @@ int DsaPublicKeyDecode(const byte* input, word32* inOutIdx, DsaKey* key,
 }
 
 
-int DsaPrivateKeyDecode(const byte* input, word32* inOutIdx, DsaKey* key,
+int32_t DsaPrivateKeyDecode(const byte* input, word32* inOutIdx, DsaKey* key,
                         word32 inSz)
 {
-    int    length, version;
+    int32_t    length, version;
 
     if (GetSequence(input, inOutIdx, &length, inSz) < 0)
         return ASN_PARSE_E;
@@ -1587,9 +1587,9 @@ void FreeDecodedCert(DecodedCert* cert)
 }
 
 
-static int GetCertHeader(DecodedCert* cert)
+static int32_t GetCertHeader(DecodedCert* cert)
 {
-    int ret = 0, len;
+    int32_t ret = 0, len;
     byte serialTmp[EXTERNAL_SERIAL_SIZE];
 #if defined(CYASSL_SMALL_STACK) && defined(USE_FAST_MATH)
     mp_int* mpi = NULL;
@@ -1624,7 +1624,7 @@ static int GetCertHeader(DecodedCert* cert)
     }
 
     len = mp_unsigned_bin_size(mpi);
-    if (len < (int)sizeof(serialTmp)) {
+    if (len < (int32_t)sizeof(serialTmp)) {
         if ( (ret = mp_to_unsigned_bin(mpi, serialTmp)) == MP_OKAY) {
             XMEMCPY(cert->serial, serialTmp, len);
             cert->serialSz = len;
@@ -1641,9 +1641,9 @@ static int GetCertHeader(DecodedCert* cert)
 
 #if !defined(NO_RSA)
 /* Store Rsa Key, may save later, Dsa could use in future */
-static int StoreRsaKey(DecodedCert* cert)
+static int32_t StoreRsaKey(DecodedCert* cert)
 {
-    int    length;
+    int32_t    length;
     word32 recvd = cert->srcIdx;
 
     if (GetSequence(cert->source, &cert->srcIdx, &length, cert->maxIdx) < 0)
@@ -1667,7 +1667,7 @@ static int StoreRsaKey(DecodedCert* cert)
 #ifdef HAVE_ECC
 
     /* return 0 on sucess if the ECC curve oid sum is supported */
-    static int CheckCurve(word32 oid)
+    static int32_t CheckCurve(word32 oid)
     {
         if (oid != ECC_256R1 && oid != ECC_384R1 && oid != ECC_521R1 && oid !=
                    ECC_160R1 && oid != ECC_192R1 && oid != ECC_224R1)
@@ -1679,11 +1679,11 @@ static int StoreRsaKey(DecodedCert* cert)
 #endif /* HAVE_ECC */
 
 
-static int GetKey(DecodedCert* cert)
+static int32_t GetKey(DecodedCert* cert)
 {
-    int length;
+    int32_t length;
 #ifdef HAVE_NTRU
-    int tmpIdx = cert->srcIdx;
+    int32_t tmpIdx = cert->srcIdx;
 #endif
 
     if (GetSequence(cert->source, &cert->srcIdx, &length, cert->maxIdx) < 0)
@@ -1753,7 +1753,7 @@ static int GetKey(DecodedCert* cert)
                 return ASN_NTRU_KEY_E;
             }
 
-            cert->srcIdx = tmpIdx + (int)(next - key);
+            cert->srcIdx = tmpIdx + (int32_t)(next - key);
 
             cert->publicKey = (byte*) XMALLOC(keyLen, cert->heap,
                                               DYNAMIC_TYPE_PUBLIC_KEY);
@@ -1777,7 +1777,7 @@ static int GetKey(DecodedCert* cert)
     #ifdef HAVE_ECC
         case ECDSAk:
         {
-            int    oidSz = 0;
+            int32_t    oidSz = 0;
             byte   b = cert->source[cert->srcIdx++];
 
             if (b != ASN_OBJECT_ID)
@@ -1826,12 +1826,12 @@ static int GetKey(DecodedCert* cert)
 
 
 /* process NAME, either issuer or subject */
-static int GetName(DecodedCert* cert, int nameType)
+static int32_t GetName(DecodedCert* cert, int32_t nameType)
 {
     Sha    sha;     /* MUST have SHA-1 hash for cert names */
-    int    length;  /* length of all distinguished names */
-    int    dummy;
-    int    ret;
+    int32_t    length;  /* length of all distinguished names */
+    int32_t    dummy;
+    int32_t    ret;
     char* full = (nameType == ISSUER) ? cert->issuer : cert->subject;
     word32 idx;
     #ifdef OPENSSL_EXTRA
@@ -1888,7 +1888,7 @@ static int GetName(DecodedCert* cert, int nameType)
         byte   b;
         byte   joint[2];
         byte   tooBig = FALSE;
-        int    oidSz;
+        int32_t    oidSz;
 
         if (GetSet(cert->source, &cert->srcIdx, &dummy, cert->maxIdx) < 0) {
             CYASSL_MSG("Cert name lacks set header, trying sequence");
@@ -1910,7 +1910,7 @@ static int GetName(DecodedCert* cert, int nameType)
         if (joint[0] == 0x55 && joint[1] == 0x04) {
             byte   id;
             byte   copy = FALSE;
-            int    strLen;
+            int32_t    strLen;
 
             cert->srcIdx += 2;
             id = cert->source[cert->srcIdx++];
@@ -1920,7 +1920,7 @@ static int GetName(DecodedCert* cert, int nameType)
                           cert->maxIdx) < 0)
                 return ASN_PARSE_E;
 
-            if ( (strLen + 14) > (int)(ASN_NAME_MAX - idx)) {
+            if ( (strLen + 14) > (int32_t)(ASN_NAME_MAX - idx)) {
                 /* include biggest pre fix header too 4 = "/serialNumber=" */
                 CYASSL_MSG("ASN Name too big, skipping");
                 tooBig = TRUE;
@@ -2074,7 +2074,7 @@ static int GetName(DecodedCert* cert, int nameType)
             /* skip */
             byte email = FALSE;
             byte uid   = FALSE;
-            int  adv;
+            int32_t  adv;
 
             if (joint[0] == 0x2a && joint[1] == 0x86)  /* email id hdr */
                 email = TRUE;
@@ -2087,13 +2087,13 @@ static int GetName(DecodedCert* cert, int nameType)
             if (GetLength(cert->source, &cert->srcIdx, &adv, cert->maxIdx) < 0)
                 return ASN_PARSE_E;
 
-            if (adv > (int)(ASN_NAME_MAX - idx)) {
+            if (adv > (int32_t)(ASN_NAME_MAX - idx)) {
                 CYASSL_MSG("ASN name too big, skipping");
                 tooBig = TRUE;
             }
 
             if (email) {
-                if ( (14 + adv) > (int)(ASN_NAME_MAX - idx)) {
+                if ( (14 + adv) > (int32_t)(ASN_NAME_MAX - idx)) {
                     CYASSL_MSG("ASN name too big, skipping");
                     tooBig = TRUE;
                 }
@@ -2143,7 +2143,7 @@ static int GetName(DecodedCert* cert, int nameType)
             }
 
             if (uid) {
-                if ( (5 + adv) > (int)(ASN_NAME_MAX - idx)) {
+                if ( (5 + adv) > (int32_t)(ASN_NAME_MAX - idx)) {
                     CYASSL_MSG("ASN name too big, skipping");
                     tooBig = TRUE;
                 }
@@ -2167,7 +2167,7 @@ static int GetName(DecodedCert* cert, int nameType)
 
     #ifdef OPENSSL_EXTRA
     {
-        int totalLen = 0;
+        int32_t totalLen = 0;
 
         if (dName->cnLen != 0)
             totalLen += dName->cnLen + 4;
@@ -2297,7 +2297,7 @@ static int GetName(DecodedCert* cert, int nameType)
 #ifndef NO_TIME_H
 
 /* to the second */
-static int DateGreaterThan(const struct tm* a, const struct tm* b)
+static int32_t DateGreaterThan(const struct tm* a, const struct tm* b)
 {
     if (a->tm_year > b->tm_year)
         return 1;
@@ -2327,7 +2327,7 @@ static int DateGreaterThan(const struct tm* a, const struct tm* b)
 }
 
 
-static INLINE int DateLessThan(const struct tm* a, const struct tm* b)
+static INLINE int32_t DateLessThan(const struct tm* a, const struct tm* b)
 {
     return DateGreaterThan(b,a);
 }
@@ -2335,12 +2335,12 @@ static INLINE int DateLessThan(const struct tm* a, const struct tm* b)
 
 /* like atoi but only use first byte */
 /* Make sure before and after dates are valid */
-int ValidateDate(const byte* date, byte format, int dateType)
+int32_t ValidateDate(const byte* date, byte format, int32_t dateType)
 {
     time_t ltime;
     struct tm  certTime;
     struct tm* localTime;
-    int    i = 0;
+    int32_t    i = 0;
 
     ltime = XTIME(0);
     XMEMSET(&certTime, 0, sizeof(certTime));
@@ -2357,12 +2357,12 @@ int ValidateDate(const byte* date, byte format, int dateType)
     }
 
     /* adjust tm_year, tm_mon */
-    GetTime((int*)&certTime.tm_year, date, &i); certTime.tm_year -= 1900;
-    GetTime((int*)&certTime.tm_mon,  date, &i); certTime.tm_mon  -= 1;
-    GetTime((int*)&certTime.tm_mday, date, &i);
-    GetTime((int*)&certTime.tm_hour, date, &i);
-    GetTime((int*)&certTime.tm_min,  date, &i);
-    GetTime((int*)&certTime.tm_sec,  date, &i);
+    GetTime((int32_t*)&certTime.tm_year, date, &i); certTime.tm_year -= 1900;
+    GetTime((int32_t*)&certTime.tm_mon,  date, &i); certTime.tm_mon  -= 1;
+    GetTime((int32_t*)&certTime.tm_mday, date, &i);
+    GetTime((int32_t*)&certTime.tm_hour, date, &i);
+    GetTime((int32_t*)&certTime.tm_min,  date, &i);
+    GetTime((int32_t*)&certTime.tm_sec,  date, &i);
 
         if (date[i] != 'Z') {     /* only Zulu supported for this profile */
         CYASSL_MSG("Only Zulu time supported for this profile");
@@ -2385,9 +2385,9 @@ int ValidateDate(const byte* date, byte format, int dateType)
 #endif /* NO_TIME_H */
 
 
-static int GetDate(DecodedCert* cert, int dateType)
+static int32_t GetDate(DecodedCert* cert, int32_t dateType)
 {
-    int    length;
+    int32_t    length;
     byte   date[MAX_DATE_SIZE];
     byte   b;
     word32 startIdx = 0;
@@ -2427,10 +2427,10 @@ static int GetDate(DecodedCert* cert, int dateType)
 }
 
 
-static int GetValidity(DecodedCert* cert, int verify)
+static int32_t GetValidity(DecodedCert* cert, int32_t verify)
 {
-    int length;
-    int badDate = 0;
+    int32_t length;
+    int32_t badDate = 0;
 
     if (GetSequence(cert->source, &cert->srcIdx, &length, cert->maxIdx) < 0)
         return ASN_PARSE_E;
@@ -2448,10 +2448,10 @@ static int GetValidity(DecodedCert* cert, int verify)
 }
 
 
-int DecodeToKey(DecodedCert* cert, int verify)
+int32_t DecodeToKey(DecodedCert* cert, int32_t verify)
 {
-    int badDate = 0;
-    int ret;
+    int32_t badDate = 0;
+    int32_t ret;
 
     if ( (ret = GetCertHeader(cert)) < 0)
         return ret;
@@ -2487,9 +2487,9 @@ int DecodeToKey(DecodedCert* cert, int verify)
 }
 
 
-static int GetSignature(DecodedCert* cert)
+static int32_t GetSignature(DecodedCert* cert)
 {
-    int    length;
+    int32_t    length;
     byte   b = cert->source[cert->srcIdx++];
 
     if (b != ASN_BIT_STRING)
@@ -2605,9 +2605,9 @@ static word32 SetCurve(ecc_key* key, byte* output)
     static const byte ECC_521r1_AlgoID[] = { 0x2b, 0x81, 0x04, 0x00,
                                              0x23};
 
-    int    oidSz = 0;
-    int    idx = 0;
-    int    lenSz = 0;
+    int32_t    oidSz = 0;
+    int32_t    idx = 0;
+    int32_t    lenSz = 0;
     const  byte* oid = 0;
 
     output[0] = ASN_OBJECT_ID;
@@ -2659,7 +2659,7 @@ static word32 SetCurve(ecc_key* key, byte* output)
 #endif /* HAVE_ECC && CYASSL_CERT_GEN */
 
 
-CYASSL_LOCAL word32 SetAlgoID(int algoOID, byte* output, int type, int curveSz)
+CYASSL_LOCAL word32 SetAlgoID(int32_t algoOID, byte* output, int32_t type, int32_t curveSz)
 {
     /* adding TAG_NULL and 0 to end */
 
@@ -2721,8 +2721,8 @@ CYASSL_LOCAL word32 SetAlgoID(int algoOID, byte* output, int type, int curveSz)
                                            0x02, 0x01};
     #endif /* HAVE_ECC */
 
-    int    algoSz = 0;
-    int    tagSz  = 2;   /* tag null and terminator */
+    int32_t    algoSz = 0;
+    int32_t    tagSz  = 2;   /* tag null and terminator */
     word32 idSz, seqSz;
     const  byte* algoName = 0;
     byte ID_Length[MAX_LENGTH_SZ];
@@ -2875,7 +2875,7 @@ CYASSL_LOCAL word32 SetAlgoID(int algoOID, byte* output, int type, int curveSz)
 }
 
 
-word32 EncodeSignature(byte* out, const byte* digest, word32 digSz, int hashOID)
+word32 EncodeSignature(byte* out, const byte* digest, word32 digSz, int32_t hashOID)
 {
     byte digArray[MAX_ENCODED_DIG_SZ];
     byte algoArray[MAX_ALGO_SZ];
@@ -2894,7 +2894,7 @@ word32 EncodeSignature(byte* out, const byte* digest, word32 digSz, int hashOID)
 }
 
 
-int GetCTC_HashOID(int type)
+int32_t GetCTC_HashOID(int32_t type)
 {
     switch (type) {
 #ifdef CYASSL_MD2
@@ -2928,12 +2928,12 @@ int GetCTC_HashOID(int type)
 
 
 /* return true (1) or false (0) for Confirmation */
-static int ConfirmSignature(const byte* buf, word32 bufSz,
+static int32_t ConfirmSignature(const byte* buf, word32 bufSz,
     const byte* key, word32 keySz, word32 keyOID,
     const byte* sig, word32 sigSz, word32 sigOID,
     void* heap)
 {
-    int  typeH = 0, digestSz = 0, ret = 0;
+    int32_t  typeH = 0, digestSz = 0, ret = 0;
 #ifdef CYASSL_SMALL_STACK
     byte* digest;
 #else
@@ -3022,7 +3022,7 @@ static int ConfirmSignature(const byte* buf, word32 bufSz,
         case RSAk:
         {
             word32 idx = 0;
-            int    encodedSigSz, verifySz;
+            int32_t    encodedSigSz, verifySz;
             byte*  out;
 #ifdef CYASSL_SMALL_STACK
             RsaKey* pubKey;
@@ -3085,7 +3085,7 @@ static int ConfirmSignature(const byte* buf, word32 bufSz,
 
                     #ifdef CYASSL_DEBUG_ENCODING
                     {
-                        int x;
+                        int32_t x;
 
                         printf("cyassl encodedSig:\n");
 
@@ -3126,7 +3126,7 @@ static int ConfirmSignature(const byte* buf, word32 bufSz,
     #ifdef HAVE_ECC
         case ECDSAk:
         {
-            int verify = 0;
+            int32_t verify = 0;
 #ifdef CYASSL_SMALL_STACK
             ecc_key* pubKey;
 #else
@@ -3177,8 +3177,8 @@ static int ConfirmSignature(const byte* buf, word32 bufSz,
 
 #ifndef IGNORE_NAME_CONSTRAINTS
 
-static int MatchBaseName(int type, const char* name, int nameSz,
-                                                   const char* base, int baseSz)
+static int32_t MatchBaseName(int32_t type, const char* name, int32_t nameSz,
+                                                   const char* base, int32_t baseSz)
 {
     if (base == NULL || baseSz <= 0 || name == NULL || nameSz <= 0 ||
             name[0] == '.' || nameSz < baseSz ||
@@ -3189,7 +3189,7 @@ static int MatchBaseName(int type, const char* name, int nameSz,
      * a domain, or is an email address itself. */
     if (type == ASN_RFC822_TYPE) {
         const char* p = NULL;
-        int count = 0;
+        int32_t count = 0;
 
         if (base[0] != '.') {
             p = base;
@@ -3224,7 +3224,7 @@ static int MatchBaseName(int type, const char* name, int nameSz,
     }
 
     if ((type == ASN_DNS_TYPE || type == ASN_RFC822_TYPE) && base[0] == '.') {
-        int szAdjust = nameSz - baseSz;
+        int32_t szAdjust = nameSz - baseSz;
         name += szAdjust;
         nameSz -= szAdjust;
     }
@@ -3239,7 +3239,7 @@ static int MatchBaseName(int type, const char* name, int nameSz,
 }
 
 
-static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
+static int32_t ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
 {
     if (signer == NULL || cert == NULL)
         return 0;
@@ -3253,7 +3253,7 @@ static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
                 DNS_entry* name = cert->altNames;
                 while (name != NULL) {
                     if (MatchBaseName(ASN_DNS_TYPE,
-                                          name->name, (int)XSTRLEN(name->name),
+                                          name->name, (int32_t)XSTRLEN(name->name),
                                           base->name, base->nameSz))
                         return 0;
                     name = name->next;
@@ -3263,7 +3263,7 @@ static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
                 DNS_entry* name = cert->altEmailNames;
                 while (name != NULL) {
                     if (MatchBaseName(ASN_RFC822_TYPE,
-                                          name->name, (int)XSTRLEN(name->name),
+                                          name->name, (int32_t)XSTRLEN(name->name),
                                           base->name, base->nameSz))
                         return 0;
 
@@ -3283,12 +3283,12 @@ static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
 
     /* Check against the permitted list */
     if (signer->permittedNames != NULL) {
-        int needDns = 0;
-        int matchDns = 0;
-        int needEmail = 0;
-        int matchEmail = 0;
-        int needDir = 0;
-        int matchDir = 0;
+        int32_t needDns = 0;
+        int32_t matchDns = 0;
+        int32_t needEmail = 0;
+        int32_t matchEmail = 0;
+        int32_t needDir = 0;
+        int32_t matchDir = 0;
         Base_entry* base = signer->permittedNames;
 
         while (base != NULL) {
@@ -3300,7 +3300,7 @@ static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
 
                 while (name != NULL) {
                     matchDns = MatchBaseName(ASN_DNS_TYPE,
-                                          name->name, (int)XSTRLEN(name->name),
+                                          name->name, (int32_t)XSTRLEN(name->name),
                                           base->name, base->nameSz);
                     name = name->next;
                 }
@@ -3313,7 +3313,7 @@ static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
 
                 while (name != NULL) {
                     matchEmail = MatchBaseName(ASN_DNS_TYPE,
-                                          name->name, (int)XSTRLEN(name->name),
+                                          name->name, (int32_t)XSTRLEN(name->name),
                                           base->name, base->nameSz);
                     name = name->next;
                 }
@@ -3343,10 +3343,10 @@ static int ConfirmNameConstraints(Signer* signer, DecodedCert* cert)
 #endif /* IGNORE_NAME_CONSTRAINTS */
 
 
-static int DecodeAltNames(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeAltNames(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length = 0;
+    int32_t length = 0;
 
     CYASSL_ENTER("DecodeAltNames");
 
@@ -3364,7 +3364,7 @@ static int DecodeAltNames(byte* input, int sz, DecodedCert* cert)
         /* Save Other Type names in the cert's OidMap */
         if (b == ((uint32_t)ASN_CONTEXT_SPECIFIC | (uint32_t)ASN_DNS_TYPE)) {
             DNS_entry* dnsEntry;
-            int strLen;
+            int32_t strLen;
             word32 lenStartIdx = idx;
 
             if (GetLength(input, &idx, &strLen, sz) < 0) {
@@ -3400,7 +3400,7 @@ static int DecodeAltNames(byte* input, int sz, DecodedCert* cert)
 #ifndef IGNORE_NAME_CONSTRAINTS
         else if (b == ((uint32_t)ASN_CONTEXT_SPECIFIC | (uint32_t)ASN_RFC822_TYPE)) {
             DNS_entry* emailEntry;
-            int strLen;
+            int32_t strLen;
             word32 lenStartIdx = idx;
 
             if (GetLength(input, &idx, &strLen, sz) < 0) {
@@ -3437,7 +3437,7 @@ static int DecodeAltNames(byte* input, int sz, DecodedCert* cert)
 #ifdef CYASSL_SEP
         else if (b == (ASN_CONTEXT_SPECIFIC | ASN_CONSTRUCTED | ASN_OTHER_TYPE))
         {
-            int strLen;
+            int32_t strLen;
             word32 lenStartIdx = idx;
             word32 oid = 0;
 
@@ -3516,7 +3516,7 @@ static int DecodeAltNames(byte* input, int sz, DecodedCert* cert)
         }
 #endif /* CYASSL_SEP */
         else {
-            int strLen;
+            int32_t strLen;
             word32 lenStartIdx = idx;
 
             CYASSL_MSG("\tUnsupported name type, skipping");
@@ -3533,10 +3533,10 @@ static int DecodeAltNames(byte* input, int sz, DecodedCert* cert)
 }
 
 
-static int DecodeBasicCaConstraint(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeBasicCaConstraint(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length = 0;
+    int32_t length = 0;
 
     CYASSL_ENTER("DecodeBasicCaConstraint");
     if (GetSequence(input, &idx, &length, sz) < 0) {
@@ -3594,10 +3594,10 @@ static int DecodeBasicCaConstraint(byte* input, int sz, DecodedCert* cert)
 #define GENERALNAME_URI 6
     /* From RFC3280 SS4.2.1.7, GeneralName */
 
-static int DecodeCrlDist(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeCrlDist(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length = 0;
+    int32_t length = 0;
 
     CYASSL_ENTER("DecodeCrlDist");
 
@@ -3674,14 +3674,14 @@ static int DecodeCrlDist(byte* input, int sz, DecodedCert* cert)
 }
 
 
-static int DecodeAuthInfo(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeAuthInfo(byte* input, int32_t sz, DecodedCert* cert)
 /*
  *  Read the first of the Authority Information Access records. If there are
  *  any issues, return without saving the record.
  */
 {
     word32 idx = 0;
-    int length = 0;
+    int32_t length = 0;
     byte b;
     word32 oid;
 
@@ -3719,10 +3719,10 @@ static int DecodeAuthInfo(byte* input, int sz, DecodedCert* cert)
 }
 
 
-static int DecodeAuthKeyId(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeAuthKeyId(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length = 0, ret = 0;
+    int32_t length = 0, ret = 0;
 
     CYASSL_ENTER("DecodeAuthKeyId");
 
@@ -3762,10 +3762,10 @@ static int DecodeAuthKeyId(byte* input, int sz, DecodedCert* cert)
 }
 
 
-static int DecodeSubjKeyId(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeSubjKeyId(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length = 0, ret = 0;
+    int32_t length = 0, ret = 0;
 
     CYASSL_ENTER("DecodeSubjKeyId");
 
@@ -3800,10 +3800,10 @@ static int DecodeSubjKeyId(byte* input, int sz, DecodedCert* cert)
 }
 
 
-static int DecodeKeyUsage(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeKeyUsage(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length;
+    int32_t length;
     byte unusedBits;
     CYASSL_ENTER("DecodeKeyUsage");
 
@@ -3831,10 +3831,10 @@ static int DecodeKeyUsage(byte* input, int sz, DecodedCert* cert)
 }
 
 
-static int DecodeExtKeyUsage(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeExtKeyUsage(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0, oid;
-    int length;
+    int32_t length;
 
     CYASSL_ENTER("DecodeExtKeyUsage");
 
@@ -3877,14 +3877,14 @@ static int DecodeExtKeyUsage(byte* input, int sz, DecodedCert* cert)
 
 
 #ifndef IGNORE_NAME_CONSTRAINTS
-static int DecodeSubtree(byte* input, int sz, Base_entry** head, void* heap)
+static int32_t DecodeSubtree(byte* input, int32_t sz, Base_entry** head, void* heap)
 {
     word32 idx = 0;
 
     (void)heap;
 
     while (idx < (word32)sz) {
-        int seqLength, strLength;
+        int32_t seqLength, strLength;
         word32 nameIdx;
         byte b;
 
@@ -3933,10 +3933,10 @@ static int DecodeSubtree(byte* input, int sz, Base_entry** head, void* heap)
 }
 
 
-static int DecodeNameConstraints(byte* input, int sz, DecodedCert* cert)
+static int32_t DecodeNameConstraints(byte* input, int32_t sz, DecodedCert* cert)
 {
     word32 idx = 0;
-    int length = 0;
+    int32_t length = 0;
 
     CYASSL_ENTER("DecodeNameConstraints");
 
@@ -3974,10 +3974,10 @@ static int DecodeNameConstraints(byte* input, int sz, DecodedCert* cert)
 
 
 #ifdef CYASSL_SEP
-    static int DecodeCertPolicy(byte* input, int sz, DecodedCert* cert)
+    static int32_t DecodeCertPolicy(byte* input, int32_t sz, DecodedCert* cert)
     {
         word32 idx = 0;
-        int length = 0;
+        int32_t length = 0;
 
         CYASSL_ENTER("DecodeCertPolicy");
 
@@ -4018,16 +4018,16 @@ static int DecodeNameConstraints(byte* input, int sz, DecodedCert* cert)
 #endif /* CYASSL_SEP */
 
 
-static int DecodeCertExtensions(DecodedCert* cert)
+static int32_t DecodeCertExtensions(DecodedCert* cert)
 /*
  *  Processing the Certificate Extensions. This does not modify the current
  *  index. It is works starting with the recorded extensions pointer.
  */
 {
     word32 idx = 0;
-    int sz = cert->extensionsSz;
+    int32_t sz = cert->extensionsSz;
     byte* input = cert->extensions;
-    int length;
+    int32_t length;
     word32 oid;
     byte critical = 0;
     byte criticalFail = 0;
@@ -4061,7 +4061,7 @@ static int DecodeCertExtensions(DecodedCert* cert)
         /* check for critical flag */
         critical = 0;
         if (input[idx] == ASN_BOOLEAN) {
-            int boolLength = 0;
+            int32_t boolLength = 0;
             idx++;
             if (GetLength(input, &idx, &boolLength, sz) < 0) {
                 CYASSL_MSG("\tfail: critical boolean length");
@@ -4190,9 +4190,9 @@ static int DecodeCertExtensions(DecodedCert* cert)
 }
 
 
-int ParseCert(DecodedCert* cert, int type, int verify, void* cm)
+int32_t ParseCert(DecodedCert* cert, int32_t type, int32_t verify, void* cm)
 {
-    int   ret;
+    int32_t   ret;
     char* ptr;
 
     ret = ParseCertRelative(cert, type, verify, cm);
@@ -4238,12 +4238,12 @@ int ParseCert(DecodedCert* cert, int type, int verify, void* cm)
 #endif
 
 
-int ParseCertRelative(DecodedCert* cert, int type, int verify, void* cm)
+int32_t ParseCertRelative(DecodedCert* cert, int32_t type, int32_t verify, void* cm)
 {
     word32 confirmOID;
-    int    ret;
-    int    badDate     = 0;
-    int    criticalExt = 0;
+    int32_t    ret;
+    int32_t    badDate     = 0;
+    int32_t    criticalExt = 0;
 
     if ((ret = DecodeToKey(cert, verify)) < 0) {
         if (ret == ASN_BEFORE_DATE_E || ret == ASN_AFTER_DATE_E)
@@ -4399,9 +4399,9 @@ void FreeSigner(Signer* signer, void* heap)
 
 
 /* Free the whole singer table with number of rows */
-void FreeSignerTable(Signer** table, int rows, void* heap)
+void FreeSignerTable(Signer** table, int32_t rows, void* heap)
 {
-    int i;
+    int32_t i;
 
     for (i = 0; i < rows; i++) {
         Signer* signer = table[i];
@@ -4415,9 +4415,9 @@ void FreeSignerTable(Signer** table, int rows, void* heap)
 }
 
 
-CYASSL_LOCAL int SetMyVersion(word32 version, byte* output, int header)
+CYASSL_LOCAL int32_t SetMyVersion(word32 version, byte* output, int32_t header)
 {
-    int i = 0;
+    int32_t i = 0;
 
     if (header) {
         output[i++] = ASN_CONTEXT_SPECIFIC | ASN_CONSTRUCTED;
@@ -4431,9 +4431,9 @@ CYASSL_LOCAL int SetMyVersion(word32 version, byte* output, int header)
 }
 
 
-CYASSL_LOCAL int SetSerialNumber(const byte* sn, word32 snSz, byte* output)
+CYASSL_LOCAL int32_t SetSerialNumber(const byte* sn, word32 snSz, byte* output)
 {
-    int result = 0;
+    int32_t result = 0;
 
     CYASSL_ENTER("SetSerialNumber");
 
@@ -4464,8 +4464,8 @@ CYASSL_LOCAL int SetSerialNumber(const byte* sn, word32 snSz, byte* output)
 
 /* convert der buffer to pem into output, can't do inplace, der and output
    need to be different */
-int DerToPem(const byte* der, word32 derSz, byte* output, word32 outSz,
-             int type)
+int32_t DerToPem(const byte* der, word32 derSz, byte* output, word32 outSz,
+             int32_t type)
 {
 #ifdef CYASSL_SMALL_STACK
     char* header = NULL;
@@ -4475,11 +4475,11 @@ int DerToPem(const byte* der, word32 derSz, byte* output, word32 outSz,
     char footer[80];
 #endif
 
-    int headerLen = 80;
-    int footerLen = 80;
-    int i;
-    int err;
-    int outLen;   /* return length or error */
+    int32_t headerLen = 80;
+    int32_t footerLen = 80;
+    int32_t i;
+    int32_t err;
+    int32_t outLen;   /* return length or error */
 
     if (der == output)      /* no in place conversion */
         return BAD_FUNC_ARG;
@@ -4526,8 +4526,8 @@ int DerToPem(const byte* der, word32 derSz, byte* output, word32 outSz,
         return BAD_FUNC_ARG;
     }
 
-    headerLen = (int)XSTRLEN(header);
-    footerLen = (int)XSTRLEN(footer);
+    headerLen = (int32_t)XSTRLEN(header);
+    footerLen = (int32_t)XSTRLEN(footer);
 
     if (!der || !output) {
 #ifdef CYASSL_SMALL_STACK
@@ -4565,7 +4565,7 @@ int DerToPem(const byte* der, word32 derSz, byte* output, word32 outSz,
     i += outLen;
 
     /* footer */
-    if ( (i + footerLen) > (int)outSz) {
+    if ( (i + footerLen) > (int32_t)outSz) {
 #ifdef CYASSL_SMALL_STACK
         XFREE(footer, NULL, DYNAMIC_TYPE_TMP_BUFFER);
 #endif
@@ -4587,7 +4587,7 @@ int DerToPem(const byte* der, word32 derSz, byte* output, word32 outSz,
 #if defined(CYASSL_KEY_GEN) && !defined(NO_RSA)
 
 
-static mp_int* GetRsaInt(RsaKey* key, int idx)
+static mp_int* GetRsaInt(RsaKey* key, int32_t idx)
 {
     if (idx == 0)
         return &key->n;
@@ -4613,7 +4613,7 @@ static mp_int* GetRsaInt(RsaKey* key, int idx)
 /* Release Tmp RSA resources */
 static INLINE void FreeTmpRsas(byte** tmps, void* heap)
 {
-    int i;
+    int32_t i;
 
     (void)heap;
 
@@ -4624,11 +4624,11 @@ static INLINE void FreeTmpRsas(byte** tmps, void* heap)
 
 /* Convert RsaKey key to DER format, write to output (inLen), return bytes
    written */
-int RsaKeyToDer(RsaKey* key, byte* output, word32 inLen)
+int32_t RsaKeyToDer(RsaKey* key, byte* output, word32 inLen)
 {
     word32 seqSz, verSz, rawLen, intTotalLen = 0;
     word32 sizes[RSA_INTS];
-    int    i, j, outLen, ret = 0;
+    int32_t    i, j, outLen, ret = 0;
 
     byte  seq[MAX_SEQ_SZ];
     byte  ver[MAX_VERSION_SZ];
@@ -4655,10 +4655,10 @@ int RsaKeyToDer(RsaKey* key, byte* output, word32 inLen)
         }
 
         tmps[i][0] = ASN_INTEGER;
-        sizes[i] = SetLength(rawLen, tmps[i] + 1) + 1;  /* int tag */
+        sizes[i] = SetLength(rawLen, tmps[i] + 1) + 1;  /* int32_t tag */
 
         if (sizes[i] <= MAX_SEQ_SZ) {
-            int err = mp_to_unsigned_bin(keyInt, tmps[i] + sizes[i]);
+            int32_t err = mp_to_unsigned_bin(keyInt, tmps[i] + sizes[i]);
             if (err == MP_OKAY) {
                 sizes[i] += rawLen;
                 intTotalLen += sizes[i];
@@ -4684,7 +4684,7 @@ int RsaKeyToDer(RsaKey* key, byte* output, word32 inLen)
     seqSz = SetSequence(verSz + intTotalLen, seq);
 
     outLen = seqSz + verSz + intTotalLen;
-    if (outLen > (int)inLen)
+    if (outLen > (int32_t)inLen)
         return BAD_FUNC_ARG;
 
     /* write to output */
@@ -4796,19 +4796,19 @@ typedef struct DerCert {
 #ifdef CYASSL_CERT_REQ
     byte attrib[MAX_ATTRIB_SZ];        /* Cert req attributes encoded */
 #endif
-    int  sizeSz;                       /* encoded size length */
-    int  versionSz;                    /* encoded version length */
-    int  serialSz;                     /* encoded serial length */
-    int  sigAlgoSz;                    /* enocded sig alog length */
-    int  issuerSz;                     /* encoded issuer length */
-    int  subjectSz;                    /* encoded subject length */
-    int  validitySz;                   /* encoded validity length */
-    int  publicKeySz;                  /* encoded public key length */
-    int  caSz;                         /* encoded CA extension length */
-    int  extensionsSz;                 /* encoded extensions total length */
-    int  total;                        /* total encoded lengths */
+    int32_t  sizeSz;                       /* encoded size length */
+    int32_t  versionSz;                    /* encoded version length */
+    int32_t  serialSz;                     /* encoded serial length */
+    int32_t  sigAlgoSz;                    /* enocded sig alog length */
+    int32_t  issuerSz;                     /* encoded issuer length */
+    int32_t  subjectSz;                    /* encoded subject length */
+    int32_t  validitySz;                   /* encoded validity length */
+    int32_t  publicKeySz;                  /* encoded public key length */
+    int32_t  caSz;                         /* encoded CA extension length */
+    int32_t  extensionsSz;                 /* encoded extensions total length */
+    int32_t  total;                        /* total encoded lengths */
 #ifdef CYASSL_CERT_REQ
-    int  attribSz;
+    int32_t  attribSz;
 #endif
 } DerCert;
 
@@ -4826,9 +4826,9 @@ static word32 SetUTF8String(word32 len, byte* output)
 
 
 /* Write a serial number to output */
-static int SetSerial(const byte* serial, byte* output)
+static int32_t SetSerial(const byte* serial, byte* output)
 {
-    int length = 0;
+    int32_t length = 0;
 
     output[length++] = ASN_INTEGER;
     length += SetLength(CTC_SERIAL_SIZE, &output[length]);
@@ -4842,13 +4842,13 @@ static int SetSerial(const byte* serial, byte* output)
 
 
 /* Write a public ECC key to output */
-static int SetEccPublicKey(byte* output, ecc_key* key)
+static int32_t SetEccPublicKey(byte* output, ecc_key* key)
 {
     byte len[MAX_LENGTH_SZ + 1];  /* trailing 0 */
-    int  algoSz;
-    int  curveSz;
-    int  lenSz;
-    int  idx;
+    int32_t  algoSz;
+    int32_t  curveSz;
+    int32_t  lenSz;
+    int32_t  idx;
     word32 pubSz = ECC_BUFSIZE;
 #ifdef CYASSL_SMALL_STACK
     byte* algo = NULL;
@@ -4866,7 +4866,7 @@ static int SetEccPublicKey(byte* output, ecc_key* key)
         return MEMORY_E;
 #endif
 
-    int ret = ecc_export_x963(key, pub, &pubSz);
+    int32_t ret = ecc_export_x963(key, pub, &pubSz);
     if (ret != 0) {
 #ifdef CYASSL_SMALL_STACK
         XFREE(pub, NULL, DYNAMIC_TYPE_TMP_BUFFER);
@@ -4937,7 +4937,7 @@ static int SetEccPublicKey(byte* output, ecc_key* key)
 
 
 /* Write a public RSA key to output */
-static int SetRsaPublicKey(byte* output, RsaKey* key)
+static int32_t SetRsaPublicKey(byte* output, RsaKey* key)
 {
 #ifdef CYASSL_SMALL_STACK
     byte* n = NULL;
@@ -4950,15 +4950,15 @@ static int SetRsaPublicKey(byte* output, RsaKey* key)
 #endif
     byte seq[MAX_SEQ_SZ];
     byte len[MAX_LENGTH_SZ + 1];  /* trailing 0 */
-    int  nSz;
-    int  eSz;
-    int  algoSz;
-    int  seqSz;
-    int  lenSz;
-    int  idx;
-    int  rawLen;
-    int  leadingBit;
-    int  err;
+    int32_t  nSz;
+    int32_t  eSz;
+    int32_t  algoSz;
+    int32_t  seqSz;
+    int32_t  lenSz;
+    int32_t  idx;
+    int32_t  rawLen;
+    int32_t  leadingBit;
+    int32_t  err;
 
     /* n */
 #ifdef CYASSL_SMALL_STACK
@@ -4970,7 +4970,7 @@ static int SetRsaPublicKey(byte* output, RsaKey* key)
     leadingBit = mp_leading_bit(&key->n);
     rawLen = mp_unsigned_bin_size(&key->n) + leadingBit;
     n[0] = ASN_INTEGER;
-    nSz  = SetLength(rawLen, n + 1) + 1;  /* int tag */
+    nSz  = SetLength(rawLen, n + 1) + 1;  /* int32_t tag */
 
     if ( (nSz + rawLen) < MAX_RSA_INT_SZ) {
         if (leadingBit)
@@ -5006,7 +5006,7 @@ static int SetRsaPublicKey(byte* output, RsaKey* key)
     leadingBit = mp_leading_bit(&key->e);
     rawLen = mp_unsigned_bin_size(&key->e) + leadingBit;
     e[0] = ASN_INTEGER;
-    eSz  = SetLength(rawLen, e + 1) + 1;  /* int tag */
+    eSz  = SetLength(rawLen, e + 1) + 1;  /* int32_t tag */
 
     if ( (eSz + rawLen) < MAX_RSA_E_SZ) {
         if (leadingBit)
@@ -5076,7 +5076,7 @@ static int SetRsaPublicKey(byte* output, RsaKey* key)
 }
 
 
-static INLINE byte itob(int number)
+static INLINE byte itob(int32_t number)
 {
     return (byte)number + 0x30;
 }
@@ -5085,7 +5085,7 @@ static INLINE byte itob(int number)
 /* write time to output, format */
 static void SetTime(struct tm* date, byte* output)
 {
-    int i = 0;
+    int32_t i = 0;
 
     output[i++] = itob((date->tm_year % 10000) / 1000);
     output[i++] = itob((date->tm_year % 1000)  /  100);
@@ -5114,9 +5114,9 @@ static void SetTime(struct tm* date, byte* output)
 #ifdef CYASSL_ALT_NAMES
 
 /* Copy Dates from cert, return bytes written */
-static int CopyValidity(byte* output, Cert* cert)
+static int32_t CopyValidity(byte* output, Cert* cert)
 {
-    int seqSz;
+    int32_t seqSz;
 
     CYASSL_ENTER("CopyValidity");
 
@@ -5132,14 +5132,14 @@ static int CopyValidity(byte* output, Cert* cert)
 
 
 /* Set Date validity from now until now + daysValid */
-static int SetValidity(byte* output, int daysValid)
+static int32_t SetValidity(byte* output, int32_t daysValid)
 {
     byte before[MAX_DATE_SIZE];
     byte  after[MAX_DATE_SIZE];
 
-    int beforeSz;
-    int afterSz;
-    int seqSz;
+    int32_t beforeSz;
+    int32_t afterSz;
+    int32_t seqSz;
 
     time_t     ticks;
     struct tm* now;
@@ -5191,16 +5191,16 @@ static int SetValidity(byte* output, int daysValid)
 
 /* ASN Encoded Name field */
 typedef struct EncodedName {
-    int  nameLen;                /* actual string value length */
-    int  totalLen;               /* total encoded length */
-    int  type;                   /* type of name */
-    int  used;                   /* are we actually using this one */
+    int32_t  nameLen;                /* actual string value length */
+    int32_t  totalLen;               /* total encoded length */
+    int32_t  type;                   /* type of name */
+    int32_t  used;                   /* are we actually using this one */
     byte encoded[CTC_NAME_SIZE * 2]; /* encoding */
 } EncodedName;
 
 
 /* Get Which Name from index */
-static const char* GetOneName(CertName* name, int idx)
+static const char* GetOneName(CertName* name, int32_t idx)
 {
     switch (idx) {
     case 0:
@@ -5234,7 +5234,7 @@ static const char* GetOneName(CertName* name, int idx)
 
 
 /* Get Which Name Encoding from index */
-static char GetNameType(CertName* name, int idx)
+static char GetNameType(CertName* name, int32_t idx)
 {
     switch (idx) {
     case 0:
@@ -5265,7 +5265,7 @@ static char GetNameType(CertName* name, int idx)
 
 
 /* Get ASN Name from index */
-static byte GetNameId(int idx)
+static byte GetNameId(int32_t idx)
 {
     switch (idx) {
     case 0:
@@ -5300,16 +5300,16 @@ static byte GetNameId(int idx)
 
 
 /* encode all extensions, return total bytes written */
-static int SetExtensions(byte* output, const byte* ext, int extSz, int header)
+static int32_t SetExtensions(byte* output, const byte* ext, int32_t extSz, int32_t header)
 {
     byte sequence[MAX_SEQ_SZ];
     byte len[MAX_LENGTH_SZ];
 
-    int sz = 0;
-    int seqSz = SetSequence(extSz, sequence);
+    int32_t sz = 0;
+    int32_t seqSz = SetSequence(extSz, sequence);
 
     if (header) {
-        int lenSz = SetLength(seqSz + extSz, len);
+        int32_t lenSz = SetLength(seqSz + extSz, len);
         output[0] = ASN_EXTENSIONS; /* extensions id */
         sz++;
         XMEMCPY(&output[sz], len, lenSz);  /* length */
@@ -5325,21 +5325,21 @@ static int SetExtensions(byte* output, const byte* ext, int extSz, int header)
 
 
 /* encode CA basic constraint true, return total bytes written */
-static int SetCa(byte* output)
+static int32_t SetCa(byte* output)
 {
     static const byte ca[] = { 0x30, 0x0c, 0x06, 0x03, 0x55, 0x1d, 0x13, 0x04,
                                0x05, 0x30, 0x03, 0x01, 0x01, 0xff };
 
     XMEMCPY(output, ca, sizeof(ca));
 
-    return (int)sizeof(ca);
+    return (int32_t)sizeof(ca);
 }
 
 
 /* encode CertName into output, return total bytes written */
-static int SetName(byte* output, CertName* name)
+static int32_t SetName(byte* output, CertName* name)
 {
-    int          totalBytes = 0, i, idx;
+    int32_t          totalBytes = 0, i, idx;
 #ifdef CYASSL_SMALL_STACK
     EncodedName* names = NULL;
 #else
@@ -5362,10 +5362,10 @@ static int SetName(byte* output, CertName* name)
             byte sequence[MAX_SEQ_SZ];
             byte set[MAX_SET_SZ];
 
-            int email = i == (NAME_ENTRIES - 1) ? 1 : 0;
-            int strLen  = (int)XSTRLEN(nameStr);
-            int thisLen = strLen;
-            int firstSz, secondSz, seqSz, setSz;
+            int32_t email = i == (NAME_ENTRIES - 1) ? 1 : 0;
+            int32_t strLen  = (int32_t)XSTRLEN(nameStr);
+            int32_t thisLen = strLen;
+            int32_t firstSz, secondSz, seqSz, setSz;
 
             if (strLen == 0) { /* no user data for this item */
                 names[i].used = 0;
@@ -5393,7 +5393,7 @@ static int SetName(byte* output, CertName* name)
             setSz = SetSet(thisLen, set);
             thisLen += setSz;
 
-            if (thisLen > (int)sizeof(names[i].encoded)) {
+            if (thisLen > (int32_t)sizeof(names[i].encoded)) {
 #ifdef CYASSL_SMALL_STACK
                 XFREE(names, NULL, DYNAMIC_TYPE_TMP_BUFFER);
 #endif
@@ -5418,7 +5418,7 @@ static int SetName(byte* output, CertName* name)
                                            0x01, 0x09, 0x01, 0x16 };
                 /* email joint id */
                 XMEMCPY(names[i].encoded + idx, EMAIL_OID, sizeof(EMAIL_OID));
-                idx += (int)sizeof(EMAIL_OID);
+                idx += (int32_t)sizeof(EMAIL_OID);
             }
             else {
                 /* joint id */
@@ -5470,10 +5470,10 @@ static int SetName(byte* output, CertName* name)
 }
 
 /* encode info from cert into DER encoded format */
-static int EncodeCert(Cert* cert, DerCert* der, RsaKey* rsaKey, ecc_key* eccKey,
+static int32_t EncodeCert(Cert* cert, DerCert* der, RsaKey* rsaKey, ecc_key* eccKey,
                       RNG* rng, const byte* ntruKey, word16 ntruSz)
 {
-    int ret;
+    int32_t ret;
 
     (void)eccKey;
     (void)ntruKey;
@@ -5603,9 +5603,9 @@ static int EncodeCert(Cert* cert, DerCert* der, RsaKey* rsaKey, ecc_key* eccKey,
 
 
 /* write DER encoded cert to buffer, size already checked */
-static int WriteCertBody(DerCert* der, byte* buffer)
+static int32_t WriteCertBody(DerCert* der, byte* buffer)
 {
-    int idx;
+    int32_t idx;
 
     /* signed part header */
     idx = SetSequence(der->total, buffer);
@@ -5642,11 +5642,11 @@ static int WriteCertBody(DerCert* der, byte* buffer)
 
 
 /* Make RSA signature from buffer (sz), write to sig (sigSz) */
-static int MakeSignature(const byte* buffer, int sz, byte* sig, int sigSz,
+static int32_t MakeSignature(const byte* buffer, int32_t sz, byte* sig, int32_t sigSz,
                          RsaKey* rsaKey, ecc_key* eccKey, RNG* rng,
-                         int sigAlgoType)
+                         int32_t sigAlgoType)
 {
-    int encSigSz, digestSz, typeH = 0, ret = 0;
+    int32_t encSigSz, digestSz, typeH = 0, ret = 0;
     byte digest[SHA256_DIGEST_SIZE]; /* max size */
 #ifdef CYASSL_SMALL_STACK
     byte* encSig;
@@ -5740,11 +5740,11 @@ static int MakeSignature(const byte* buffer, int sz, byte* sig, int sigSz,
 
 /* add signature to end of buffer, size of buffer assumed checked, return
    new length */
-static int AddSignature(byte* buffer, int bodySz, const byte* sig, int sigSz,
-                        int sigAlgoType)
+static int32_t AddSignature(byte* buffer, int32_t bodySz, const byte* sig, int32_t sigSz,
+                        int32_t sigAlgoType)
 {
     byte seq[MAX_SEQ_SZ];
-    int  idx = bodySz, seqSz;
+    int32_t  idx = bodySz, seqSz;
 
     /* algo */
     idx += SetAlgoID(sigAlgoType, buffer + idx, sigType, 0);
@@ -5767,11 +5767,11 @@ static int AddSignature(byte* buffer, int bodySz, const byte* sig, int sigSz,
 
 
 /* Make an x509 Certificate v3 any key type from cert input, write to buffer */
-static int MakeAnyCert(Cert* cert, byte* derBuffer, word32 derSz,
+static int32_t MakeAnyCert(Cert* cert, byte* derBuffer, word32 derSz,
                        RsaKey* rsaKey, ecc_key* eccKey, RNG* rng,
                        const byte* ntruKey, word16 ntruSz)
 {
-    int ret;
+    int32_t ret;
 #ifdef CYASSL_SMALL_STACK
     DerCert* der;
 #else
@@ -5789,7 +5789,7 @@ static int MakeAnyCert(Cert* cert, byte* derBuffer, word32 derSz,
     ret = EncodeCert(cert, der, rsaKey, eccKey, rng, ntruKey, ntruSz);
 
     if (ret == 0) {
-        if (der->total + MAX_SEQ_SZ * 2 > (int)derSz)
+        if (der->total + MAX_SEQ_SZ * 2 > (int32_t)derSz)
             ret = BUFFER_E;
         else
             ret = cert->bodySz = WriteCertBody(der, derBuffer);
@@ -5804,7 +5804,7 @@ static int MakeAnyCert(Cert* cert, byte* derBuffer, word32 derSz,
 
 
 /* Make an x509 Certificate v3 RSA or ECC from cert input, write to buffer */
-int MakeCert(Cert* cert, byte* derBuffer, word32 derSz, RsaKey* rsaKey,
+int32_t MakeCert(Cert* cert, byte* derBuffer, word32 derSz, RsaKey* rsaKey,
              ecc_key* eccKey, RNG* rng)
 {
     return MakeAnyCert(cert, derBuffer, derSz, rsaKey, eccKey, rng, NULL, 0);
@@ -5813,7 +5813,7 @@ int MakeCert(Cert* cert, byte* derBuffer, word32 derSz, RsaKey* rsaKey,
 
 #ifdef HAVE_NTRU
 
-int  MakeNtruCert(Cert* cert, byte* derBuffer, word32 derSz,
+int32_t  MakeNtruCert(Cert* cert, byte* derBuffer, word32 derSz,
                   const byte* ntruKey, word16 keySz, RNG* rng)
 {
     return MakeAnyCert(cert, derBuffer, derSz, NULL, NULL, rng, ntruKey, keySz);
@@ -5824,7 +5824,7 @@ int  MakeNtruCert(Cert* cert, byte* derBuffer, word32 derSz,
 
 #ifdef CYASSL_CERT_REQ
 
-static int SetReqAttrib(byte* output, char* pw, int extSz)
+static int32_t SetReqAttrib(byte* output, char* pw, int32_t extSz)
 {
     static const byte cpOid[] =
         { ASN_OBJECT_ID, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01,
@@ -5833,15 +5833,15 @@ static int SetReqAttrib(byte* output, char* pw, int extSz)
         { ASN_OBJECT_ID, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01,
                          0x09, 0x0e };
 
-    int sz      = 0; /* overall size */
-    int cpSz    = 0; /* Challenge Password section size */
-    int cpSeqSz = 0;
-    int cpSetSz = 0;
-    int cpStrSz = 0;
-    int pwSz    = 0;
-    int erSz    = 0; /* Extension Request section size */
-    int erSeqSz = 0;
-    int erSetSz = 0;
+    int32_t sz      = 0; /* overall size */
+    int32_t cpSz    = 0; /* Challenge Password section size */
+    int32_t cpSeqSz = 0;
+    int32_t cpSetSz = 0;
+    int32_t cpStrSz = 0;
+    int32_t pwSz    = 0;
+    int32_t erSz    = 0; /* Extension Request section size */
+    int32_t erSeqSz = 0;
+    int32_t erSetSz = 0;
     byte cpSeq[MAX_SEQ_SZ];
     byte cpSet[MAX_SET_SZ];
     byte cpStr[MAX_PRSTR_SZ];
@@ -5852,7 +5852,7 @@ static int SetReqAttrib(byte* output, char* pw, int extSz)
     sz++;
 
     if (pw && pw[0]) {
-        pwSz = (int)XSTRLEN(pw);
+        pwSz = (int32_t)XSTRLEN(pw);
         cpStrSz = SetUTF8String(pwSz, cpStr);
         cpSetSz = SetSet(cpStrSz + pwSz, cpSet);
         cpSeqSz = SetSequence(sizeof(cpOid) + cpSetSz + cpStrSz + pwSz, cpSeq);
@@ -5896,7 +5896,7 @@ static int SetReqAttrib(byte* output, char* pw, int extSz)
 
 
 /* encode info from cert into DER encoded format */
-static int EncodeCertReq(Cert* cert, DerCert* der,
+static int32_t EncodeCertReq(Cert* cert, DerCert* der,
                          RsaKey* rsaKey, ecc_key* eccKey)
 {
     (void)eccKey;
@@ -5963,9 +5963,9 @@ static int EncodeCertReq(Cert* cert, DerCert* der,
 
 
 /* write DER encoded cert req to buffer, size already checked */
-static int WriteCertReqBody(DerCert* der, byte* buffer)
+static int32_t WriteCertReqBody(DerCert* der, byte* buffer)
 {
-    int idx;
+    int32_t idx;
 
     /* signed part header */
     idx = SetSequence(der->total, buffer);
@@ -5992,10 +5992,10 @@ static int WriteCertReqBody(DerCert* der, byte* buffer)
 }
 
 
-int MakeCertReq(Cert* cert, byte* derBuffer, word32 derSz,
+int32_t MakeCertReq(Cert* cert, byte* derBuffer, word32 derSz,
                 RsaKey* rsaKey, ecc_key* eccKey)
 {
-    int ret;
+    int32_t ret;
 #ifdef CYASSL_SMALL_STACK
     DerCert* der;
 #else
@@ -6013,7 +6013,7 @@ int MakeCertReq(Cert* cert, byte* derBuffer, word32 derSz,
     ret = EncodeCertReq(cert, der, rsaKey, eccKey);
 
     if (ret == 0) {
-        if (der->total + MAX_SEQ_SZ * 2 > (int)derSz)
+        if (der->total + MAX_SEQ_SZ * 2 > (int32_t)derSz)
             ret = BUFFER_E;
         else
             ret = cert->bodySz = WriteCertReqBody(der, derBuffer);
@@ -6029,10 +6029,10 @@ int MakeCertReq(Cert* cert, byte* derBuffer, word32 derSz,
 #endif /* CYASSL_CERT_REQ */
 
 
-int SignCert(int requestSz, int sType, byte* buffer, word32 buffSz,
+int32_t SignCert(int32_t requestSz, int32_t sType, byte* buffer, word32 buffSz,
              RsaKey* rsaKey, ecc_key* eccKey, RNG* rng)
 {
-    int sigSz;
+    int32_t sigSz;
 #ifdef CYASSL_SMALL_STACK
     byte* sig;
 #else
@@ -6052,7 +6052,7 @@ int SignCert(int requestSz, int sType, byte* buffer, word32 buffSz,
                           eccKey, rng, sType);
 
     if (sigSz >= 0) {
-        if (requestSz + MAX_SEQ_SZ * 2 + sigSz > (int)buffSz)
+        if (requestSz + MAX_SEQ_SZ * 2 + sigSz > (int32_t)buffSz)
             sigSz = BUFFER_E;
         else
             sigSz = AddSignature(buffer, requestSz, sig, sigSz, sType);
@@ -6066,9 +6066,9 @@ int SignCert(int requestSz, int sType, byte* buffer, word32 buffSz,
 }
 
 
-int MakeSelfCert(Cert* cert, byte* buffer, word32 buffSz, RsaKey* key, RNG* rng)
+int32_t MakeSelfCert(Cert* cert, byte* buffer, word32 buffSz, RsaKey* key, RNG* rng)
 {
-    int ret = MakeCert(cert, buffer, buffSz, key, NULL, rng);
+    int32_t ret = MakeCert(cert, buffer, buffSz, key, NULL, rng);
 
     if (ret < 0)
         return ret;
@@ -6080,9 +6080,9 @@ int MakeSelfCert(Cert* cert, byte* buffer, word32 buffSz, RsaKey* key, RNG* rng)
 #ifdef CYASSL_ALT_NAMES
 
 /* Set Alt Names from der cert, return 0 on success */
-static int SetAltNamesFromCert(Cert* cert, const byte* der, int derSz)
+static int32_t SetAltNamesFromCert(Cert* cert, const byte* der, int32_t derSz)
 {
-    int ret;
+    int32_t ret;
 #ifdef CYASSL_SMALL_STACK
     DecodedCert* decoded;
 #else
@@ -6107,7 +6107,7 @@ static int SetAltNamesFromCert(Cert* cert, const byte* der, int derSz)
     }
     else if (decoded->extensions) {
         byte   b;
-        int    length;
+        int32_t    length;
         word32 maxExtensionsIdx;
 
         decoded->srcIdx = decoded->extensionsIdx;
@@ -6150,7 +6150,7 @@ static int SetAltNamesFromCert(Cert* cert, const byte* der, int derSz)
                 if (oid == ALT_NAMES_OID) {
                     cert->altNamesSz = length + (tmpIdx - startIdx);
 
-                    if (cert->altNamesSz < (int)sizeof(cert->altNames))
+                    if (cert->altNamesSz < (int32_t)sizeof(cert->altNames))
                         XMEMCPY(cert->altNames, &decoded->source[startIdx],
                                 cert->altNamesSz);
                     else {
@@ -6175,9 +6175,9 @@ static int SetAltNamesFromCert(Cert* cert, const byte* der, int derSz)
 
 
 /* Set Dates from der cert, return 0 on success */
-static int SetDatesFromCert(Cert* cert, const byte* der, int derSz)
+static int32_t SetDatesFromCert(Cert* cert, const byte* der, int32_t derSz)
 {
-    int ret;
+    int32_t ret;
 #ifdef CYASSL_SMALL_STACK
     DecodedCert* decoded;
 #else
@@ -6232,9 +6232,9 @@ static int SetDatesFromCert(Cert* cert, const byte* der, int derSz)
 
 
 /* Set cn name from der buffer, return 0 on success */
-static int SetNameFromCert(CertName* cn, const byte* der, int derSz)
+static int32_t SetNameFromCert(CertName* cn, const byte* der, int32_t derSz)
 {
-    int ret, sz;
+    int32_t ret, sz;
 #ifdef CYASSL_SMALL_STACK
     DecodedCert* decoded;
 #else
@@ -6328,10 +6328,10 @@ static int SetNameFromCert(CertName* cn, const byte* der, int derSz)
 #ifndef NO_FILESYSTEM
 
 /* Set cert issuer from issuerFile in PEM */
-int SetIssuer(Cert* cert, const char* issuerFile)
+int32_t SetIssuer(Cert* cert, const char* issuerFile)
 {
-    int         ret;
-    int         derSz;
+    int32_t         ret;
+    int32_t         derSz;
     byte*       der = (byte*)XMALLOC(EIGHTK_BUF, NULL, DYNAMIC_TYPE_CERT);
 
     if (der == NULL) {
@@ -6348,10 +6348,10 @@ int SetIssuer(Cert* cert, const char* issuerFile)
 
 
 /* Set cert subject from subjectFile in PEM */
-int SetSubject(Cert* cert, const char* subjectFile)
+int32_t SetSubject(Cert* cert, const char* subjectFile)
 {
-    int         ret;
-    int         derSz;
+    int32_t         ret;
+    int32_t         derSz;
     byte*       der = (byte*)XMALLOC(EIGHTK_BUF, NULL, DYNAMIC_TYPE_CERT);
 
     if (der == NULL) {
@@ -6369,10 +6369,10 @@ int SetSubject(Cert* cert, const char* subjectFile)
 #ifdef CYASSL_ALT_NAMES
 
 /* Set atl names from file in PEM */
-int SetAltNames(Cert* cert, const char* file)
+int32_t SetAltNames(Cert* cert, const char* file)
 {
-    int         ret;
-    int         derSz;
+    int32_t         ret;
+    int32_t         derSz;
     byte*       der = (byte*)XMALLOC(EIGHTK_BUF, NULL, DYNAMIC_TYPE_CERT);
 
     if (der == NULL) {
@@ -6391,7 +6391,7 @@ int SetAltNames(Cert* cert, const char* file)
 #endif /* NO_FILESYSTEM */
 
 /* Set cert issuer from DER buffer */
-int SetIssuerBuffer(Cert* cert, const byte* der, int derSz)
+int32_t SetIssuerBuffer(Cert* cert, const byte* der, int32_t derSz)
 {
     cert->selfSigned = 0;
     return SetNameFromCert(&cert->issuer, der, derSz);
@@ -6399,7 +6399,7 @@ int SetIssuerBuffer(Cert* cert, const byte* der, int derSz)
 
 
 /* Set cert subject from DER buffer */
-int SetSubjectBuffer(Cert* cert, const byte* der, int derSz)
+int32_t SetSubjectBuffer(Cert* cert, const byte* der, int32_t derSz)
 {
     return SetNameFromCert(&cert->subject, der, derSz);
 }
@@ -6408,13 +6408,13 @@ int SetSubjectBuffer(Cert* cert, const byte* der, int derSz)
 #ifdef CYASSL_ALT_NAMES
 
 /* Set cert alt names from DER buffer */
-int SetAltNamesBuffer(Cert* cert, const byte* der, int derSz)
+int32_t SetAltNamesBuffer(Cert* cert, const byte* der, int32_t derSz)
 {
     return SetAltNamesFromCert(cert, der, derSz);
 }
 
 /* Set cert dates from DER buffer */
-int SetDatesBuffer(Cert* cert, const byte* der, int derSz)
+int32_t SetDatesBuffer(Cert* cert, const byte* der, int32_t derSz)
 {
     return SetDatesFromCert(cert, der, derSz);
 }
@@ -6427,7 +6427,7 @@ int SetDatesBuffer(Cert* cert, const byte* der, int derSz)
 #ifdef HAVE_ECC
 
 /* Der Encode r & s ints into out, outLen is (in/out) size */
-int StoreECC_DSA_Sig(byte* out, word32* outLen, mp_int* r, mp_int* s)
+int32_t StoreECC_DSA_Sig(byte* out, word32* outLen, mp_int* r, mp_int* s)
 {
     word32 idx = 0;
     word32 rSz;                           /* encoding size */
@@ -6435,11 +6435,11 @@ int StoreECC_DSA_Sig(byte* out, word32* outLen, mp_int* r, mp_int* s)
     word32 headerSz = 4;   /* 2*ASN_TAG + 2*LEN(ENUM) */
 
     /* If the leading bit on the INTEGER is a 1, add a leading zero */
-    int rLeadingZero = mp_leading_bit(r);
-    int sLeadingZero = mp_leading_bit(s);
-    int rLen = mp_unsigned_bin_size(r);   /* big int size */
-    int sLen = mp_unsigned_bin_size(s);
-    int err;
+    int32_t rLeadingZero = mp_leading_bit(r);
+    int32_t sLeadingZero = mp_leading_bit(s);
+    int32_t rLen = mp_unsigned_bin_size(r);   /* big int32_t size */
+    int32_t sLen = mp_unsigned_bin_size(s);
+    int32_t err;
 
     if (*outLen < (rLen + rLeadingZero + sLen + sLeadingZero +
                    headerSz + 2))  /* SEQ_TAG + LEN(ENUM) */
@@ -6474,10 +6474,10 @@ int StoreECC_DSA_Sig(byte* out, word32* outLen, mp_int* r, mp_int* s)
 
 
 /* Der Decode ECC-DSA Signautre, r & s stored as big ints */
-int DecodeECC_DSA_Sig(const byte* sig, word32 sigLen, mp_int* r, mp_int* s)
+int32_t DecodeECC_DSA_Sig(const byte* sig, word32 sigLen, mp_int* r, mp_int* s)
 {
     word32 idx = 0;
-    int    len = 0;
+    int32_t    len = 0;
 
     if (GetSequence(sig, &idx, &len, sigLen) < 0)
         return ASN_ECC_KEY_E;
@@ -6495,14 +6495,14 @@ int DecodeECC_DSA_Sig(const byte* sig, word32 sigLen, mp_int* r, mp_int* s)
 }
 
 
-int EccPrivateKeyDecode(const byte* input, word32* inOutIdx, ecc_key* key,
+int32_t EccPrivateKeyDecode(const byte* input, word32* inOutIdx, ecc_key* key,
                         word32 inSz)
 {
     word32 oid = 0;
-    int    version, length;
-    int    privSz, pubSz;
+    int32_t    version, length;
+    int32_t    privSz, pubSz;
     byte   b;
-    int    ret = 0;
+    int32_t    ret = 0;
 #ifdef CYASSL_SMALL_STACK
     byte* priv;
     byte* pub;
@@ -6635,17 +6635,17 @@ int EccPrivateKeyDecode(const byte* input, word32* inOutIdx, ecc_key* key,
 #ifdef CYASSL_KEY_GEN
 
 /* Write a Private ecc key to DER format, length on success else < 0 */
-int EccKeyToDer(ecc_key* key, byte* output, word32 inLen)
+int32_t EccKeyToDer(ecc_key* key, byte* output, word32 inLen)
 {
     byte   curve[MAX_ALGO_SZ];
     byte   ver[MAX_VERSION_SZ];
     byte   seq[MAX_SEQ_SZ];
-    int    ret;
-    int    curveSz;
-    int    verSz;
-    int    privHdrSz  = ASN_ECC_HEADER_SZ;
-    int    pubHdrSz   = ASN_ECC_CONTEXT_SZ + ASN_ECC_HEADER_SZ;
-    int    curveHdrSz = ASN_ECC_CONTEXT_SZ;
+    int32_t    ret;
+    int32_t    curveSz;
+    int32_t    verSz;
+    int32_t    privHdrSz  = ASN_ECC_HEADER_SZ;
+    int32_t    pubHdrSz   = ASN_ECC_CONTEXT_SZ + ASN_ECC_HEADER_SZ;
+    int32_t    curveHdrSz = ASN_ECC_CONTEXT_SZ;
     word32 seqSz;
     word32 idx = 0;
     word32 pubSz = ECC_BUFSIZE;
@@ -6727,10 +6727,10 @@ int EccKeyToDer(ecc_key* key, byte* output, word32 inLen)
 #if defined(HAVE_OCSP) || defined(HAVE_CRL)
 
 /* Get raw Date only, no processing, 0 on success */
-static int GetBasicDate(const byte* source, word32* idx, byte* date,
-                        byte* format, int maxIdx)
+static int32_t GetBasicDate(const byte* source, word32* idx, byte* date,
+                        byte* format, int32_t maxIdx)
 {
-    int    length;
+    int32_t    length;
 
     CYASSL_ENTER("GetBasicDate");
 
@@ -6756,7 +6756,7 @@ static int GetBasicDate(const byte* source, word32* idx, byte* date,
 
 #ifdef HAVE_OCSP
 
-static int GetEnumerated(const byte* input, word32* inOutIdx, int *value)
+static int32_t GetEnumerated(const byte* input, word32* inOutIdx, int32_t *value)
 {
     word32 idx = *inOutIdx;
     word32 len;
@@ -6782,11 +6782,11 @@ static int GetEnumerated(const byte* input, word32* inOutIdx, int *value)
 }
 
 
-static int DecodeSingleResponse(byte* source,
+static int32_t DecodeSingleResponse(byte* source,
                             word32* ioIndex, OcspResponse* resp, word32 size)
 {
     word32 idx = *ioIndex, prevIndex, oid;
-    int length, wrapperSz;
+    int32_t length, wrapperSz;
     CertStatus* cs = resp->status;
 
     CYASSL_ENTER("DecodeSingleResponse");
@@ -6878,7 +6878,7 @@ static int DecodeSingleResponse(byte* source,
     /* The following items are optional. Only check for them if there is more
      * unprocessed data in the singleResponse wrapper. */
 
-    if (((int)(idx - prevIndex) < wrapperSz) &&
+    if (((int32_t)(idx - prevIndex) < wrapperSz) &&
         (source[idx] == (ASN_CONSTRUCTED | ASN_CONTEXT_SPECIFIC | 0)))
     {
         idx++;
@@ -6888,7 +6888,7 @@ static int DecodeSingleResponse(byte* source,
                                                 &cs->nextDateFormat, size) < 0)
             return ASN_PARSE_E;
     }
-    if (((int)(idx - prevIndex) < wrapperSz) &&
+    if (((int32_t)(idx - prevIndex) < wrapperSz) &&
         (source[idx] == (ASN_CONSTRUCTED | ASN_CONTEXT_SPECIFIC | 1)))
     {
         idx++;
@@ -6902,12 +6902,12 @@ static int DecodeSingleResponse(byte* source,
     return 0;
 }
 
-static int DecodeOcspRespExtensions(byte* source,
+static int32_t DecodeOcspRespExtensions(byte* source,
                             word32* ioIndex, OcspResponse* resp, word32 sz)
 {
     word32 idx = *ioIndex;
-    int length;
-    int ext_bound; /* boundary index for the sequence of extensions */
+    int32_t length;
+    int32_t ext_bound; /* boundary index for the sequence of extensions */
     word32 oid;
 
     CYASSL_ENTER("DecodeOcspRespExtensions");
@@ -6963,12 +6963,12 @@ static int DecodeOcspRespExtensions(byte* source,
 }
 
 
-static int DecodeResponseData(byte* source,
+static int32_t DecodeResponseData(byte* source,
                             word32* ioIndex, OcspResponse* resp, word32 size)
 {
     word32 idx = *ioIndex, prev_idx;
-    int length;
-    int version;
+    int32_t length;
+    int32_t version;
     word32 responderId = 0;
 
     CYASSL_ENTER("DecodeResponseData");
@@ -7018,7 +7018,7 @@ static int DecodeResponseData(byte* source,
 }
 
 
-static int DecodeCerts(byte* source,
+static int32_t DecodeCerts(byte* source,
                             word32* ioIndex, OcspResponse* resp, word32 size)
 {
     word32 idx = *ioIndex;
@@ -7027,7 +7027,7 @@ static int DecodeCerts(byte* source,
 
     if (source[idx++] == (ASN_CONSTRUCTED | ASN_CONTEXT_SPECIFIC))
     {
-        int length;
+        int32_t length;
 
         if (GetLength(source, &idx, &length, size) < 0)
             return ASN_PARSE_E;
@@ -7044,10 +7044,10 @@ static int DecodeCerts(byte* source,
     return 0;
 }
 
-static int DecodeBasicOcspResponse(byte* source,
+static int32_t DecodeBasicOcspResponse(byte* source,
                             word32* ioIndex, OcspResponse* resp, word32 size)
 {
-    int length;
+    int32_t length;
     word32 idx = *ioIndex;
     word32 end_index;
 
@@ -7070,7 +7070,7 @@ static int DecodeBasicOcspResponse(byte* source,
     /* Obtain pointer to the start of the signature, and save the size */
     if (source[idx++] == ASN_BIT_STRING)
     {
-        int sigLength = 0;
+        int32_t sigLength = 0;
         if (GetLength(source, &idx, &sigLength, size) < 0)
             return ASN_PARSE_E;
         resp->sigSz = sigLength;
@@ -7085,7 +7085,7 @@ static int DecodeBasicOcspResponse(byte* source,
     if (idx < end_index)
     {
         DecodedCert cert;
-        int ret;
+        int32_t ret;
 
         if (DecodeCerts(source, &idx, resp, size) < 0)
             return ASN_PARSE_E;
@@ -7134,9 +7134,9 @@ void InitOcspResponse(OcspResponse* resp, CertStatus* status,
 }
 
 
-int OcspResponseDecode(OcspResponse* resp)
+int32_t OcspResponseDecode(OcspResponse* resp)
 {
-    int length = 0;
+    int32_t length = 0;
     word32 idx = 0;
     byte* source = resp->source;
     word32 size = resp->maxIdx;
@@ -7238,7 +7238,7 @@ static word32 SetOcspReqExtensions(word32 extSz, byte* output,
 }
 
 
-int EncodeOcspRequest(OcspRequest* req)
+int32_t EncodeOcspRequest(OcspRequest* req)
 {
     byte seqArray[5][MAX_SEQ_SZ];
     /* The ASN.1 of the OCSP Request is an onion of sequences */
@@ -7249,7 +7249,7 @@ int EncodeOcspRequest(OcspRequest* req)
     byte extArray[MAX_OCSP_EXT_SZ];
     byte* output = req->dest;
     word32 seqSz[5], algoSz, issuerSz, issuerKeySz, snSz, extSz, totalSz;
-    int i;
+    int32_t i;
 
     CYASSL_ENTER("EncodeOcspRequest");
 
@@ -7326,9 +7326,9 @@ void InitOcspRequest(OcspRequest* req, DecodedCert* cert, byte useNonce,
 }
 
 
-int CompareOcspReqResp(OcspRequest* req, OcspResponse* resp)
+int32_t CompareOcspReqResp(OcspRequest* req, OcspResponse* resp)
 {
-    int cmp;
+    int32_t cmp;
 
     CYASSL_ENTER("CompareOcspReqResp");
 
@@ -7397,12 +7397,12 @@ int CompareOcspReqResp(OcspRequest* req, OcspResponse* resp)
 
 
 /* store SHA1 hash of NAME */
-CYASSL_LOCAL int GetNameHash(const byte* source, word32* idx, byte* hash,
-                             int maxIdx)
+CYASSL_LOCAL int32_t GetNameHash(const byte* source, word32* idx, byte* hash,
+                             int32_t maxIdx)
 {
     Sha    sha;
-    int    length;  /* length of all distinguished names */
-    int    ret = 0;
+    int32_t    length;  /* length of all distinguished names */
+    int32_t    ret = 0;
     word32 dummy;
 
     CYASSL_ENTER("GetNameHash");
@@ -7468,10 +7468,10 @@ void FreeDecodedCRL(DecodedCRL* dcrl)
 
 
 /* Get Revoked Cert list, 0 on success */
-static int GetRevoked(const byte* buff, word32* idx, DecodedCRL* dcrl,
-                      int maxIdx)
+static int32_t GetRevoked(const byte* buff, word32* idx, DecodedCRL* dcrl,
+                      int32_t maxIdx)
 {
-    int    len;
+    int32_t    len;
     word32 end;
     byte   b;
     RevokedCert* rc;
@@ -7539,10 +7539,10 @@ static int GetRevoked(const byte* buff, word32* idx, DecodedCRL* dcrl,
 
 
 /* Get CRL Signature, 0 on success */
-static int GetCRL_Signature(const byte* source, word32* idx, DecodedCRL* dcrl,
-                            int maxIdx)
+static int32_t GetCRL_Signature(const byte* source, word32* idx, DecodedCRL* dcrl,
+                            int32_t maxIdx)
 {
-    int    length;
+    int32_t    length;
     byte   b;
 
     CYASSL_ENTER("GetCRL_Signature");
@@ -7572,9 +7572,9 @@ static int GetCRL_Signature(const byte* source, word32* idx, DecodedCRL* dcrl,
 
 
 /* prase crl buffer into decoded state, 0 on success */
-int ParseCRL(DecodedCRL* dcrl, const byte* buff, word32 sz, void* cm)
+int32_t ParseCRL(DecodedCRL* dcrl, const byte* buff, word32 sz, void* cm)
 {
-    int     version, len;
+    int32_t     version, len;
     word32  oid, idx = 0;
     Signer* ca = NULL;
 

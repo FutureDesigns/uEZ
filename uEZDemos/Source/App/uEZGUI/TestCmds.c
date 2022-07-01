@@ -929,7 +929,7 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
     T_uezDevice amp;
 
     if (argc == 2) {
-        // Got no parameters
+        // Got parameters
         // Now do the test
         error = UEZAudioAmpOpen("AMP0", &amp);
         if (error) {
@@ -945,8 +945,8 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
         }
 #else
     if (argc == 2) {
-        // Got no parameters
-        // Now do the test
+        // Got parameters
+        // Now do the test. This insures we use the mixer to scale the correct maximum volume for the onboard speaker.
         UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, FDICmdUValue(argv[1]));
         FDICmdSendString(aWorkspace, "PASS: OK\n");
 #endif

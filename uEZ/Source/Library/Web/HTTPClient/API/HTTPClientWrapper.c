@@ -11,7 +11,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperIsAscii(int c)
+int32_t HTTPWrapperIsAscii(int32_t c)
 {
     return (!(c & ~0177));
 }
@@ -24,7 +24,7 @@ int HTTPWrapperIsAscii(int c)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperToUpper(int c)
+int32_t HTTPWrapperToUpper(int32_t c)
 {
     // -32
     if(HTTPWrapperIsAscii(c) > 0)
@@ -46,7 +46,7 @@ int HTTPWrapperToUpper(int c)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperToLower(int c)
+int32_t HTTPWrapperToLower(int32_t c)
 {
     // +32
     if(HTTPWrapperIsAscii(c) > 0)
@@ -69,7 +69,7 @@ int HTTPWrapperToLower(int c)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperIsAlpha(int c)
+int32_t HTTPWrapperIsAlpha(int32_t c)
 {
 
     if(HTTPWrapperIsAscii(c) > 0)
@@ -90,7 +90,7 @@ int HTTPWrapperIsAlpha(int c)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperIsAlNum(int c)
+int32_t HTTPWrapperIsAlNum(int32_t c)
 {
     if(HTTPWrapperIsAscii(c) > 0)
     {
@@ -118,9 +118,9 @@ int HTTPWrapperIsAlNum(int c)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-char* HTTPWrapperItoa(char *s,int a)
+char* HTTPWrapperItoa(char *s,int32_t a)
 {
-    unsigned int b;
+    uint32_t b;
 
     if(a > 2147483647)
     {
@@ -142,7 +142,7 @@ char* HTTPWrapperItoa(char *s,int a)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperShutDown (int s,int how) 
+int32_t HTTPWrapperShutDown (int32_t s,int32_t how) 
 {
 #ifdef _UEZ_RTOS
     return 0;
@@ -159,7 +159,7 @@ int HTTPWrapperShutDown (int s,int how)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperGetSocketError (int s)
+int32_t HTTPWrapperGetSocketError (int32_t s)
 {
 #ifdef _WIN32
     return WSAGetLastError();
@@ -177,13 +177,13 @@ int HTTPWrapperGetSocketError (int s)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperGetHostByName(int s, char *name, T_uezNetworkAddr *address)
+int32_t HTTPWrapperGetHostByName(int32_t s, char *name, T_uezNetworkAddr *address)
 {
-    int     iPos = 0, iLen = 0,iNumPos = 0,iDots =0;
+    int32_t     iPos = 0, iLen = 0,iNumPos = 0,iDots =0;
     long    iIPElement;
     char    c = 0;
     char    Num[4];
-    int     iHostType = 0; // 0 : numeric IP
+    int32_t     iHostType = 0; // 0 : numeric IP
     P_HTTP_SESSION pHTTPSession = (P_HTTP_SESSION)s;
 
     // Check if the name is an IP or host 
@@ -276,11 +276,11 @@ unsigned long HTTPWrapperGetHostByName(char *name,unsigned long *address)
 {
 #ifndef _UEZ_RTOS
     HTTP_HOSTNET     *HostEntry;
-    int     iPos = 0, iLen = 0,iNumPos = 0,iDots =0;
+    int32_t     iPos = 0, iLen = 0,iNumPos = 0,iDots =0;
     long    iIPElement;
     char    c = 0;
     char    Num[4];
-    int     iHostType = 0; // 0 : numeric IP
+    int32_t     iHostType = 0; // 0 : numeric IP
 
     // Check if the name is an IP or host 
     iLen = strlen(name);
@@ -371,13 +371,13 @@ unsigned long HTTPWrapperGetHostByName(char *name,unsigned long *address)
 
 void HTTPWrapperInitRandomeNumber()
 {
-    srand((unsigned int)time(NULL));
+    srand((uint32_t)time(NULL));
 }
 
-int HTTPWrapperGetRandomeNumber()
+int32_t HTTPWrapperGetRandomeNumber()
 {
-    int num;
-    num = (int)(((double) rand()/ ((double)RAND_MAX+1)) * 16);
+    int32_t num;
+    num = (int32_t)(((double) rand()/ ((double)RAND_MAX+1)) * 16);
     return num;
 }
 
@@ -415,9 +415,9 @@ long HTTPWrapperGetUpTime()
 
 #ifdef _UEZ_CYA_SSL
 
-int UEZCyaSSL_Send(CYASSL *ssl, char *buf, int sz, void *ctx)
+int32_t UEZCyaSSL_Send(CYASSL *ssl, char *buf, int32_t sz, void *ctx)
 {    
-    HTTP_SESSION *pHTTPSession = *(int*)ctx;
+    HTTP_SESSION *pHTTPSession = *(int32_t*)ctx;
     T_uezError error;
 
     error = UEZNetworkSocketWrite(pHTTPSession->HttpConnection.HttpNetwork, 
@@ -440,9 +440,9 @@ int UEZCyaSSL_Send(CYASSL *ssl, char *buf, int sz, void *ctx)
     return sz;
 }
 
-int UEZCyaSSL_Receive(CYASSL *ssl, char *buf, int sz, void *ctx)
+int32_t UEZCyaSSL_Receive(CYASSL *ssl, char *buf, int32_t sz, void *ctx)
 {
-    P_HTTP_SESSION pHTTPSession =*(int*)ctx;
+    P_HTTP_SESSION pHTTPSession =*(int32_t*)ctx;
     T_uezError error;
     TUInt32 num = 0;
 
@@ -479,7 +479,7 @@ int UEZCyaSSL_Receive(CYASSL *ssl, char *buf, int sz, void *ctx)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLNegotiate(int s, char *hostname)
+int32_t HTTPWrapperSSLNegotiate(int32_t s, char *hostname)
 {
 #ifdef _UEZ_CYA_SSL
     static CYASSL_METHOD* method = 0;
@@ -516,7 +516,7 @@ int HTTPWrapperSSLNegotiate(int s, char *hostname)
 
     if (CyaSSL_connect(pHTTPSession->HttpConnection.ssl) != SSL_SUCCESS) 
     { 
-        int err = CyaSSL_get_error(pHTTPSession->HttpConnection.ssl, 0);
+        int32_t err = CyaSSL_get_error(pHTTPSession->HttpConnection.ssl, 0);
         char buffer[80];
         printf("err = %d, %s\n", err, CyaSSL_ERR_error_string(err, buffer));
         printf("SSL_negotiate failed"); /* if you're getting an error here  */
@@ -530,12 +530,12 @@ int HTTPWrapperSSLNegotiate(int s, char *hostname)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLSend(int s,char *buf, int len,int flags)
+int32_t HTTPWrapperSSLSend(int32_t s,char *buf, int32_t len,int32_t flags)
 {
 #ifdef _UEZ_CYA_SSL
     P_HTTP_SESSION pHTTPSession = (P_HTTP_SESSION)s;
-//extern unsigned int G_numAlloc;
-//extern unsigned int G_totalAlloc;
+//extern uint32_t G_numAlloc;
+//extern uint32_t G_totalAlloc;
 
     //printf("Start Memory: Num: %d, Total: %d bytes\n", G_numAlloc, G_totalAlloc);    
 
@@ -551,11 +551,11 @@ int HTTPWrapperSSLSend(int s,char *buf, int len,int flags)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLRecv(int s,char *buf, int len,int flags)
+int32_t HTTPWrapperSSLRecv(int32_t s,char *buf, int32_t len,int32_t flags)
 {
 #ifdef _UEZ_CYA_SSL
     P_HTTP_SESSION pHTTPSession = (P_HTTP_SESSION)s;
-    int nRet;
+    int32_t nRet;
     
     // Wait to receive, nRet = NumberOfBytesReceived
     nRet = CyaSSL_read(pHTTPSession->HttpConnection.ssl, buf, len);
@@ -570,12 +570,12 @@ int HTTPWrapperSSLRecv(int s,char *buf, int len,int flags)
 #endif
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int HTTPWrapperSSLRecvPending(int s)
+int32_t HTTPWrapperSSLRecvPending(int32_t s)
 {
     return -1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int HTTPWrapperSSLClose(int s)
+int32_t HTTPWrapperSSLClose(int32_t s)
 {
 #ifdef _UEZ_CYA_SSL
     P_HTTP_SESSION pHTTPSession = (P_HTTP_SESSION)s;
@@ -599,35 +599,35 @@ int HTTPWrapperSSLClose(int s)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLConnect(int s,const struct sockaddr *name,int namelen,char *hostname)
+int32_t HTTPWrapperSSLConnect(int32_t s,const struct sockaddr *name,int32_t namelen,char *hostname)
 {
     return -1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLNegotiate(int s,const struct sockaddr *name,int namelen,char *hostname)
+int32_t HTTPWrapperSSLNegotiate(int32_t s,const struct sockaddr *name,int32_t namelen,char *hostname)
 {
     return -1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLSend(int s,char *buf, int len,int flags)
+int32_t HTTPWrapperSSLSend(int32_t s,char *buf, int32_t len,int32_t flags)
 {
     return -1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPWrapperSSLRecv(int s,char *buf, int len,int flags)
+int32_t HTTPWrapperSSLRecv(int32_t s,char *buf, int32_t len,int32_t flags)
 {
     return -1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int HTTPWrapperSSLRecvPending(int s)
+int32_t HTTPWrapperSSLRecvPending(int32_t s)
 {
     return -1;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int HTTPWrapperSSLClose(int s)
+int32_t HTTPWrapperSSLClose(int32_t s)
 {
     return -1;
 

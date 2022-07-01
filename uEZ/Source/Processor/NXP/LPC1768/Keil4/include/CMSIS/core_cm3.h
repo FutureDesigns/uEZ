@@ -61,7 +61,7 @@
  *     \n
  *    --- Error 528: --- \n
  *    static __INLINE void NVIC_DisableIRQ(uint32_t IRQn) \n
- *    Warning 528: Symbol 'NVIC_DisableIRQ(unsigned int)' (line 419, file ./cm3_core.h) not referenced \n
+ *    Warning 528: Symbol 'NVIC_DisableIRQ(uint32_t)' (line 419, file ./cm3_core.h) not referenced \n
  *     \n
  *    --- Error 751: --- \n
  *    } InterruptType_Type; \n
@@ -329,14 +329,14 @@ typedef struct
 #define __RBIT                            __rbit
 #define __LDREXB(ptr)                     ((unsigned char ) __ldrex(ptr))
 #define __LDREXH(ptr)                     ((unsigned short) __ldrex(ptr))
-#define __LDREXW(ptr)                     ((unsigned int  ) __ldrex(ptr))
+#define __LDREXW(ptr)                     ((uint32_t  ) __ldrex(ptr))
 #define __STREXB(value, ptr)              __strex(value, ptr)
 #define __STREXH(value, ptr)              __strex(value, ptr)
 #define __STREXW(value, ptr)              __strex(value, ptr)
 
 
 /* intrinsic unsigned long long __ldrexd(volatile void *ptr) */
-/* intrinsic int __strexd(unsigned long long val, volatile void *ptr) */
+/* intrinsic int32_t __strexd(unsigned long long val, volatile void *ptr) */
 /* intrinsic void __enable_irq();     */
 /* intrinsic void __disable_irq();    */
 

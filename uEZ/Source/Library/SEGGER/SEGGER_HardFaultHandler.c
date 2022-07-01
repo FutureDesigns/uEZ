@@ -21,13 +21,13 @@ Purpose : Generic SEGGER HardFault handler for Cortex-M
 *
 **********************************************************************
 */
-#define SYSHND_CTRL  (*(volatile unsigned int*)  (0xE000ED24u))  // System Handler Control and State Register
+#define SYSHND_CTRL  (*(volatile uint32_t*)  (0xE000ED24u))  // System Handler Control and State Register
 #define NVIC_MFSR    (*(volatile unsigned char*) (0xE000ED28u))  // Memory Management Fault Status Register
 #define NVIC_BFSR    (*(volatile unsigned char*) (0xE000ED29u))  // Bus Fault Status Register
 #define NVIC_UFSR    (*(volatile unsigned short*)(0xE000ED2Au))  // Usage Fault Status Register
 #define NVIC_HFSR    (*(volatile unsigned short*)(0xE000ED2Cu))  // Hard Fault Status Register
 #define NVIC_DFSR    (*(volatile unsigned short*)(0xE000ED30u))  // Debug Fault Status Register
-#define NVIC_BFAR    (*(volatile unsigned int*)  (0xE000ED38u))  // Bus Fault Manage Address Register
+#define NVIC_BFAR    (*(volatile uint32_t*)  (0xE000ED38u))  // Bus Fault Manage Address Register
 #define NVIC_AFSR    (*(volatile unsigned short*)(0xE000ED3Cu))  // Auxiliary Fault Status Register
 
 /*********************************************************************
@@ -37,47 +37,47 @@ Purpose : Generic SEGGER HardFault handler for Cortex-M
 **********************************************************************
 */
 
-static volatile unsigned int _Continue;  // Set this variable to 1 to run further
+static volatile uint32_t _Continue;  // Set this variable to 1 to run further
 
 static struct {
   struct {
-    volatile unsigned int r0;            // Register R0
-    volatile unsigned int r1;            // Register R1
-    volatile unsigned int r2;            // Register R2
-    volatile unsigned int r3;            // Register R3
-    volatile unsigned int r12;           // Register R12
-    volatile unsigned int lr;            // Link register
-    volatile unsigned int pc;            // Program counter
+    volatile uint32_t r0;            // Register R0
+    volatile uint32_t r1;            // Register R1
+    volatile uint32_t r2;            // Register R2
+    volatile uint32_t r3;            // Register R3
+    volatile uint32_t r12;           // Register R12
+    volatile uint32_t lr;            // Link register
+    volatile uint32_t pc;            // Program counter
     union {
-      volatile unsigned int byte;
+      volatile uint32_t byte;
       struct {
-        unsigned int IPSR : 8;           // Interrupt Program Status register (IPSR)
-        unsigned int EPSR : 19;          // Execution Program Status register (EPSR)
-        unsigned int APSR : 5;           // Application Program Status register (APSR)
+        uint32_t IPSR : 8;           // Interrupt Program Status register (IPSR)
+        uint32_t EPSR : 19;          // Execution Program Status register (EPSR)
+        uint32_t APSR : 5;           // Application Program Status register (APSR)
       } bits;
     } psr;                               // Program status register.
   } SavedRegs;
 
   union {
-    volatile unsigned int byte;
+    volatile uint32_t byte;
     struct {
-      unsigned int MEMFAULTACT    : 1;   // Read as 1 if memory management fault is active
-      unsigned int BUSFAULTACT    : 1;   // Read as 1 if bus fault exception is active
-      unsigned int UnusedBits1    : 1;
-      unsigned int USGFAULTACT    : 1;   // Read as 1 if usage fault exception is active
-      unsigned int UnusedBits2    : 3;
-      unsigned int SVCALLACT      : 1;   // Read as 1 if SVC exception is active
-      unsigned int MONITORACT     : 1;   // Read as 1 if debug monitor exception is active
-      unsigned int UnusedBits3    : 1;
-      unsigned int PENDSVACT      : 1;   // Read as 1 if PendSV exception is active
-      unsigned int SYSTICKACT     : 1;   // Read as 1 if SYSTICK exception is active
-      unsigned int USGFAULTPENDED : 1;   // Usage fault pended; usage fault started but was replaced by a higher-priority exception
-      unsigned int MEMFAULTPENDED : 1;   // Memory management fault pended; memory management fault started but was replaced by a higher-priority exception
-      unsigned int BUSFAULTPENDED : 1;   // Bus fault pended; bus fault handler was started but was replaced by a higher-priority exception
-      unsigned int SVCALLPENDED   : 1;   // SVC pended; SVC was started but was replaced by a higher-priority exception
-      unsigned int MEMFAULTENA    : 1;   // Memory management fault handler enable
-      unsigned int BUSFAULTENA    : 1;   // Bus fault handler enable
-      unsigned int USGFAULTENA    : 1;   // Usage fault handler enable
+      uint32_t MEMFAULTACT    : 1;   // Read as 1 if memory management fault is active
+      uint32_t BUSFAULTACT    : 1;   // Read as 1 if bus fault exception is active
+      uint32_t UnusedBits1    : 1;
+      uint32_t USGFAULTACT    : 1;   // Read as 1 if usage fault exception is active
+      uint32_t UnusedBits2    : 3;
+      uint32_t SVCALLACT      : 1;   // Read as 1 if SVC exception is active
+      uint32_t MONITORACT     : 1;   // Read as 1 if debug monitor exception is active
+      uint32_t UnusedBits3    : 1;
+      uint32_t PENDSVACT      : 1;   // Read as 1 if PendSV exception is active
+      uint32_t SYSTICKACT     : 1;   // Read as 1 if SYSTICK exception is active
+      uint32_t USGFAULTPENDED : 1;   // Usage fault pended; usage fault started but was replaced by a higher-priority exception
+      uint32_t MEMFAULTPENDED : 1;   // Memory management fault pended; memory management fault started but was replaced by a higher-priority exception
+      uint32_t BUSFAULTPENDED : 1;   // Bus fault pended; bus fault handler was started but was replaced by a higher-priority exception
+      uint32_t SVCALLPENDED   : 1;   // SVC pended; SVC was started but was replaced by a higher-priority exception
+      uint32_t MEMFAULTENA    : 1;   // Memory management fault handler enable
+      uint32_t BUSFAULTENA    : 1;   // Bus fault handler enable
+      uint32_t USGFAULTENA    : 1;   // Usage fault handler enable
     } bits;
   } syshndctrl;                          // System Handler Control and State Register (0xE000ED24)
 
@@ -95,18 +95,18 @@ static struct {
   } mfsr;                                // Memory Management Fault Status Register (0xE000ED28)
 
   union {
-    volatile unsigned int byte;
+    volatile uint32_t byte;
     struct {
-      unsigned int IBUSERR    : 1;       // Instruction access violation
-      unsigned int PRECISERR  : 1;       // Precise data access violation
-      unsigned int IMPREISERR : 1;       // Imprecise data access violation
-      unsigned int UNSTKERR   : 1;       // Unstacking error
-      unsigned int STKERR     : 1;       // Stacking error
-      unsigned int UnusedBits : 2;
-      unsigned int BFARVALID  : 1;       // Indicates BFAR is valid
+      uint32_t IBUSERR    : 1;       // Instruction access violation
+      uint32_t PRECISERR  : 1;       // Precise data access violation
+      uint32_t IMPREISERR : 1;       // Imprecise data access violation
+      uint32_t UNSTKERR   : 1;       // Unstacking error
+      uint32_t STKERR     : 1;       // Stacking error
+      uint32_t UnusedBits : 2;
+      uint32_t BFARVALID  : 1;       // Indicates BFAR is valid
     } bits;
   } bfsr;                                // Bus Fault Status Register (0xE000ED29)
-  volatile unsigned int bfar;            // Bus Fault Manage Address Register (0xE000ED38)
+  volatile uint32_t bfar;            // Bus Fault Manage Address Register (0xE000ED38)
 
   union {
     volatile unsigned short byte;
@@ -122,28 +122,28 @@ static struct {
   } ufsr;                                // Usage Fault Status Register (0xE000ED2A)
 
   union {
-    volatile unsigned int byte;
+    volatile uint32_t byte;
     struct {
-      unsigned int UnusedBits  : 1;
-      unsigned int VECTBL      : 1;      // Indicates hard fault is caused by failed vector fetch
-      unsigned int UnusedBits2 : 27;
-      unsigned int FORCED      : 1;      // Indicates hard fault is taken because of bus fault/memory management fault/usage fault
-      unsigned int DEBUGEVT    : 1;      // Indicates hard fault is triggered by debug event
+      uint32_t UnusedBits  : 1;
+      uint32_t VECTBL      : 1;      // Indicates hard fault is caused by failed vector fetch
+      uint32_t UnusedBits2 : 27;
+      uint32_t FORCED      : 1;      // Indicates hard fault is taken because of bus fault/memory management fault/usage fault
+      uint32_t DEBUGEVT    : 1;      // Indicates hard fault is triggered by debug event
     } bits;
   } hfsr;                                // Hard Fault Status Register (0xE000ED2C)
 
   union {
-    volatile unsigned int byte;
+    volatile uint32_t byte;
     struct {
-      unsigned int HALTED   : 1;         // Halt requested in NVIC
-      unsigned int BKPT     : 1;         // BKPT instruction executed
-      unsigned int DWTTRAP  : 1;         // DWT match occurred
-      unsigned int VCATCH   : 1;         // Vector fetch occurred
-      unsigned int EXTERNAL : 1;         // EDBGRQ signal asserted
+      uint32_t HALTED   : 1;         // Halt requested in NVIC
+      uint32_t BKPT     : 1;         // BKPT instruction executed
+      uint32_t DWTTRAP  : 1;         // DWT match occurred
+      uint32_t VCATCH   : 1;         // Vector fetch occurred
+      uint32_t EXTERNAL : 1;         // EDBGRQ signal asserted
     } bits;
   } dfsr;                                // Debug Fault Status Register (0xE000ED30)
 
-  volatile unsigned int afsr;            // Auxiliary Fault Status Register (0xE000ED3C), Vendor controlled (optional)
+  volatile uint32_t afsr;            // Auxiliary Fault Status Register (0xE000ED3C), Vendor controlled (optional)
 } HardFaultRegs;
 
 /*********************************************************************
@@ -161,8 +161,8 @@ static struct {
 *    C part of the hard fault handler which is called by the assembler
 *    function HardFault_Handler
 */
-void HardFaultHandler(unsigned int* pStack);
-void HardFaultHandler(unsigned int* pStack) {
+void HardFaultHandler(uint32_t* pStack);
+void HardFaultHandler(uint32_t* pStack) {
   //
   // In case we received a hard fault because of a breakpoint
   // instruction, we return. This may happen with the IAR compiler

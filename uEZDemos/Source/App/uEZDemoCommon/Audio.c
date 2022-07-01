@@ -30,12 +30,16 @@
 #ifndef UEZ_DISABLE_AUDIO
 #define UEZ_DISABLE_AUDIO   0
 #endif
+#ifndef UEZ_SPEAKER_TEST
+#define UEZ_SPEAKER_TEST    0
+#endif
 
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
 #if !UEZ_DISABLE_AUDIO
 static T_uezDevice G_ToneGenerator;
+extern volatile TBool G_mmTestMode;
 #endif
 TBool G_audioIsStarted = EFalse;
 
@@ -52,15 +56,44 @@ void PlayAudio(TUInt32 aHz, TUInt32 aMS)
 {
 #if UEZ_DISABLE_AUDIO
     return;
-#else    
+#else
     if(!G_audioIsStarted) {
         UEZToneGeneratorOpen("Speaker", &G_ToneGenerator);
         G_audioIsStarted = ETrue;
     }
     
-    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    if (UEZ_SPEAKER_TEST == 0 || G_mmTestMode == ETrue)
+    {
+        UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    }
+    
     UEZToneGeneratorPlayTone(G_ToneGenerator,TONE_GENERATOR_HZ(aHz), aMS);
-    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    
+    if (UEZ_SPEAKER_TEST == 0 || G_mmTestMode == ETrue)
+    {
+        UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    }
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  PlayAudioContinuous
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Play a tone indefinitely.
+ * Inptus:
+ *      TUInt32 aHz                 -- Tone in Hz
+ *---------------------------------------------------------------------------*/
+void PlayAudioContinuous(TUInt32 aHz)
+{
+#if UEZ_DISABLE_AUDIO
+    return;
+#else
+    if(!G_audioIsStarted) {
+        UEZToneGeneratorOpen("Speaker", &G_ToneGenerator);
+        G_audioIsStarted = ETrue;
+    }
+    UEZToneGeneratorPlayToneContinuous(G_ToneGenerator,TONE_GENERATOR_HZ(aHz));
 #endif
 }
 

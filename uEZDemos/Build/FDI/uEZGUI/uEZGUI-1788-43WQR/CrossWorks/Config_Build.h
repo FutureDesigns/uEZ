@@ -14,7 +14,7 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_RTT                   0
 #define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
@@ -52,7 +52,7 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
-#define APP_DEMO_SLIDESHOW             		1
+#define APP_DEMO_SLIDESHOW             	    1
 #define APP_DEMO_VIDEO_PLAYER               0
 
 #define INCLUDE_EMWIN                       0
@@ -61,13 +61,16 @@
 #define APP_DEMO_COM                        1
 #endif
 #define APP_DEMO_YOUR_APP                   0
-#define SHOW_GUIDEMO_AUTOMOTIVE             1
-#define SHOW_GUIDEMO_GRAPH                  1
-#define SHOW_GUIDEMO_LISTVIE                1
-#define SHOW_GUIDEMO_SPEED                  1
-#define SHOW_GUIDEMO_TREEVIEW               1
+#define SHOW_GUIDEMO_AUTOMOTIVE             0
+#define SHOW_GUIDEMO_GRAPH                  0
+#define SHOW_GUIDEMO_LISTVIE                0
+#define SHOW_GUIDEMO_SPEED                  0
+#define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-1788-43WQR"
 #define SLIDESHOW_PREFETCH_AHEAD            5
 #define SLIDESHOW_PREFETCH_BEHIND           1
 #define SLIDESHOW_NUM_CACHED_SLIDES         5
+
+
+// TODO add FCT specifc speaker test flag for certain uezguis

@@ -43,7 +43,9 @@ static T_uezError IMainHTTPServerGetValue(
 {
     T_uezTimeDate TimeDate;
     char line[16];
-    
+    // In a real application you should check the clock periodically then just 
+    // retrieve the values here. Right now we call the timedate api twice per
+    // page load which isn't ideal. The same would apply to other dyamic data.
     if (UEZTimeDateGet(&TimeDate) == UEZ_ERROR_NONE) {
         // success on retriving time from RTC
         // current time value stored in TimeDate        

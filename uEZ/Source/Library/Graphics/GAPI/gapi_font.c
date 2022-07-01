@@ -94,7 +94,7 @@ static uI32 LCDBMP_UTF8decode(uI08 const ** pS)
   if((0xC2  <= *s ) && (*s <= 0xF4))
   {
     uI32 value;
-    int index;
+    int32_t index;
     if(*s < 0xE0)
     {
       /* two byte sequence*/

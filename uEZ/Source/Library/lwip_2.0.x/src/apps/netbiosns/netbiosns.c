@@ -145,13 +145,13 @@ static char netbiosns_local_name[NETBIOS_NAME_LEN];
 struct udp_pcb *netbiosns_pcb;
 
 /** Decode a NetBIOS name (from packet to string) */
-static int
-netbiosns_name_decode(char *name_enc, char *name_dec, int name_dec_len)
+static int32_t
+netbiosns_name_decode(char *name_enc, char *name_dec, int32_t name_dec_len)
 {
   char *pname;
   char  cname;
   char  cnbname;
-  int   idx = 0;
+  int32_t   idx = 0;
 
   LWIP_UNUSED_ARG(name_dec_len);
 
@@ -200,13 +200,13 @@ netbiosns_name_decode(char *name_enc, char *name_dec, int name_dec_len)
 #if 0 /* function currently unused */
 /** Encode a NetBIOS name (from string to packet) - currently unused because
     we don't ask for names. */
-static int
-netbiosns_name_encode(char *name_enc, char *name_dec, int name_dec_len)
+static int32_t
+netbiosns_name_encode(char *name_enc, char *name_dec, int32_t name_dec_len)
 {
   char         *pname;
   char          cname;
   unsigned char ucname;
-  int           idx = 0;
+  int32_t           idx = 0;
 
   /* Start encoding netbios name. */
   pname = name_enc;

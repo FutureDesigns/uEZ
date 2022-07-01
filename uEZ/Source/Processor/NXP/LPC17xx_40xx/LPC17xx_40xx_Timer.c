@@ -275,7 +275,7 @@ static void LPC17xx_40xx_Timer_Reset(void *aWorkspace)
 {
     T_LPC17xx_40xx_Timer_Workspace *p = (T_LPC17xx_40xx_Timer_Workspace *)aWorkspace;
     T_LPC17xx_40xx_Timer_Registers *r = p->iReg;
-    int i;
+    int32_t i;
 
     // Reset the counter
     r->iTCR |= (1 << 1);

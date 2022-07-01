@@ -55,13 +55,13 @@
 #ifdef HAVE_CAVIUM
     static void HmacCaviumFinal(Hmac* hmac, byte* hash);
     static void HmacCaviumUpdate(Hmac* hmac, const byte* msg, word32 length);
-    static void HmacCaviumSetKey(Hmac* hmac, int type, const byte* key,
+    static void HmacCaviumSetKey(Hmac* hmac, int32_t type, const byte* key,
                                  word32 length);
 #endif
 
-static int InitHmac(Hmac* hmac, int type)
+static int32_t InitHmac(Hmac* hmac, int32_t type)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     hmac->innerHashKeyed = 0;
     hmac->macType = (byte)type;
@@ -115,12 +115,12 @@ static int InitHmac(Hmac* hmac, int type)
 }
 
 
-int HmacSetKey(Hmac* hmac, int type, const byte* key, word32 length)
+int32_t HmacSetKey(Hmac* hmac, int32_t type, const byte* key, word32 length)
 {
     byte*  ip = (byte*) hmac->ipad;
     byte*  op = (byte*) hmac->opad;
     word32 i, hmac_block_size = 0;
-    int    ret;
+    int32_t    ret;
 
 #ifdef HAVE_CAVIUM
     if (hmac->magic == CYASSL_HMAC_CAVIUM_MAGIC)
@@ -271,9 +271,9 @@ int HmacSetKey(Hmac* hmac, int type, const byte* key, word32 length)
 }
 
 
-static int HmacKeyInnerHash(Hmac* hmac)
+static int32_t HmacKeyInnerHash(Hmac* hmac)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     switch (hmac->macType) {
         #ifndef NO_MD5
@@ -334,9 +334,9 @@ static int HmacKeyInnerHash(Hmac* hmac)
 }
 
 
-int HmacUpdate(Hmac* hmac, const byte* msg, word32 length)
+int32_t HmacUpdate(Hmac* hmac, const byte* msg, word32 length)
 {
-    int ret;
+    int32_t ret;
 
 #ifdef HAVE_CAVIUM
     if (hmac->magic == CYASSL_HMAC_CAVIUM_MAGIC)
@@ -402,9 +402,9 @@ int HmacUpdate(Hmac* hmac, const byte* msg, word32 length)
 }
 
 
-int HmacFinal(Hmac* hmac, byte* hash)
+int32_t HmacFinal(Hmac* hmac, byte* hash)
 {
-    int ret;
+    int32_t ret;
 
 #ifdef HAVE_CAVIUM
     if (hmac->magic == CYASSL_HMAC_CAVIUM_MAGIC)
@@ -556,7 +556,7 @@ int HmacFinal(Hmac* hmac, byte* hash)
 #ifdef HAVE_CAVIUM
 
 /* Initiliaze Hmac for use with Nitrox device */
-int HmacInitCavium(Hmac* hmac, int devId)
+int32_t HmacInitCavium(Hmac* hmac, int32_t devId)
 {
     if (hmac == NULL)
         return -1;
@@ -640,7 +640,7 @@ static void HmacCaviumUpdate(Hmac* hmac, const byte* msg, word32 length)
 }
 
 
-static void HmacCaviumSetKey(Hmac* hmac, int type, const byte* key,
+static void HmacCaviumSetKey(Hmac* hmac, int32_t type, const byte* key,
                              word32 length)
 {
     hmac->macType = (byte)type;
@@ -663,7 +663,7 @@ static void HmacCaviumSetKey(Hmac* hmac, int type, const byte* key,
 
 #endif /* HAVE_CAVIUM */
 
-int CyaSSL_GetHmacMaxSize(void)
+int32_t CyaSSL_GetHmacMaxSize(void)
 {
     return MAX_DIGEST_SIZE;
 }
@@ -680,7 +680,7 @@ int CyaSSL_GetHmacMaxSize(void)
 #endif /* min */
 
 
-static INLINE int GetHashSizeByType(int type)
+static INLINE int32_t GetHashSizeByType(int32_t type)
 {
     if (!(type == MD5 || type == SHA    || type == SHA256 || type == SHA384
                       || type == SHA512 || type == BLAKE2B_ID))
@@ -731,7 +731,7 @@ static INLINE int GetHashSizeByType(int type)
 
 
 /* HMAC-KDF with hash type, optional salt and info, return 0 on success */
-int HKDF(int type, const byte* inKey, word32 inKeySz,
+int32_t HKDF(int32_t type, const byte* inKey, word32 inKeySz,
                    const byte* salt,  word32 saltSz,
                    const byte* info,  word32 infoSz,
                    byte* out,         word32 outSz)
@@ -745,10 +745,10 @@ int HKDF(int type, const byte* inKey, word32 inKeySz,
     byte   prk[MAX_DIGEST_SIZE];
 #endif
     const  byte* localSalt;  /* either points to user input or tmp */
-    int    hashSz = GetHashSizeByType(type);
+    int32_t    hashSz = GetHashSizeByType(type);
     word32 outIdx = 0;
     byte   n = 0x1;
-    int    ret;
+    int32_t    ret;
 
     if (hashSz < 0)
         return BAD_FUNC_ARG;
@@ -784,7 +784,7 @@ int HKDF(int type, const byte* inKey, word32 inKeySz,
 
     if (ret == 0) {
         while (outIdx < outSz) {
-            int    tmpSz = (n == 1) ? 0 : hashSz;
+            int32_t    tmpSz = (n == 1) ? 0 : hashSz;
             word32 left = outSz - outIdx;
 
             ret = HmacSetKey(&myHmac, type, prk, hashSz);

@@ -47,7 +47,7 @@ extern "C" {
 #endif
 
 
-int SUIDrawBitmap(const TUInt8 *aBitmapImage, TUInt32 aX, TUInt32 aY);
+int32_t SUIDrawBitmap(const TUInt8 *aBitmapImage, TUInt32 aX, TUInt32 aY);
 
 #ifdef __cplusplus
 }

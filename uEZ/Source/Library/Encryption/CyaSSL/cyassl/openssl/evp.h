@@ -122,7 +122,7 @@ enum {
 
 
 typedef struct CYASSL_EVP_CIPHER_CTX {
-    int            keyLen;         /* user may set for variable */
+    int32_t            keyLen;         /* user may set for variable */
     unsigned char  enc;            /* if encrypt side, then true */
     unsigned char  cipherType;
     unsigned char  iv[AES_BLOCK_SIZE];    /* working iv pointer into cipher */
@@ -130,56 +130,56 @@ typedef struct CYASSL_EVP_CIPHER_CTX {
 } CYASSL_EVP_CIPHER_CTX;
 
 
-CYASSL_API int  CyaSSL_EVP_MD_size(const CYASSL_EVP_MD* md);
+CYASSL_API int32_t  CyaSSL_EVP_MD_size(const CYASSL_EVP_MD* md);
 CYASSL_API void CyaSSL_EVP_MD_CTX_init(CYASSL_EVP_MD_CTX* ctx);
-CYASSL_API int  CyaSSL_EVP_MD_CTX_cleanup(CYASSL_EVP_MD_CTX* ctx);
+CYASSL_API int32_t  CyaSSL_EVP_MD_CTX_cleanup(CYASSL_EVP_MD_CTX* ctx);
 
-CYASSL_API int CyaSSL_EVP_DigestInit(CYASSL_EVP_MD_CTX* ctx,
+CYASSL_API int32_t CyaSSL_EVP_DigestInit(CYASSL_EVP_MD_CTX* ctx,
                                      const CYASSL_EVP_MD* type);
-CYASSL_API int CyaSSL_EVP_DigestUpdate(CYASSL_EVP_MD_CTX* ctx, const void* data,
+CYASSL_API int32_t CyaSSL_EVP_DigestUpdate(CYASSL_EVP_MD_CTX* ctx, const void* data,
                                        unsigned long sz);
-CYASSL_API int CyaSSL_EVP_DigestFinal(CYASSL_EVP_MD_CTX* ctx, unsigned char* md,
-                                      unsigned int* s);
-CYASSL_API int CyaSSL_EVP_DigestFinal_ex(CYASSL_EVP_MD_CTX* ctx,
-                                            unsigned char* md, unsigned int* s);
-CYASSL_API int CyaSSL_EVP_BytesToKey(const CYASSL_EVP_CIPHER*,
+CYASSL_API int32_t CyaSSL_EVP_DigestFinal(CYASSL_EVP_MD_CTX* ctx, unsigned char* md,
+                                      uint32_t* s);
+CYASSL_API int32_t CyaSSL_EVP_DigestFinal_ex(CYASSL_EVP_MD_CTX* ctx,
+                                            unsigned char* md, uint32_t* s);
+CYASSL_API int32_t CyaSSL_EVP_BytesToKey(const CYASSL_EVP_CIPHER*,
                               const CYASSL_EVP_MD*, const unsigned char*,
-                              const unsigned char*, int, int, unsigned char*,
+                              const unsigned char*, int32_t, int32_t, unsigned char*,
                               unsigned char*);
 
 CYASSL_API void CyaSSL_EVP_CIPHER_CTX_init(CYASSL_EVP_CIPHER_CTX* ctx);
-CYASSL_API int  CyaSSL_EVP_CIPHER_CTX_cleanup(CYASSL_EVP_CIPHER_CTX* ctx);
+CYASSL_API int32_t  CyaSSL_EVP_CIPHER_CTX_cleanup(CYASSL_EVP_CIPHER_CTX* ctx);
 
-CYASSL_API int  CyaSSL_EVP_CIPHER_CTX_iv_length(const CYASSL_EVP_CIPHER_CTX*);
+CYASSL_API int32_t  CyaSSL_EVP_CIPHER_CTX_iv_length(const CYASSL_EVP_CIPHER_CTX*);
 
 
-CYASSL_API int  CyaSSL_EVP_CipherInit(CYASSL_EVP_CIPHER_CTX* ctx,
+CYASSL_API int32_t  CyaSSL_EVP_CipherInit(CYASSL_EVP_CIPHER_CTX* ctx,
                                     const CYASSL_EVP_CIPHER* type,
                                     unsigned char* key, unsigned char* iv,
-                                    int enc);
-CYASSL_API int  CyaSSL_EVP_CIPHER_CTX_key_length(CYASSL_EVP_CIPHER_CTX* ctx);
-CYASSL_API int  CyaSSL_EVP_CIPHER_CTX_set_key_length(CYASSL_EVP_CIPHER_CTX* ctx,
-                                                     int keylen);
-CYASSL_API int  CyaSSL_EVP_Cipher(CYASSL_EVP_CIPHER_CTX* ctx,
+                                    int32_t enc);
+CYASSL_API int32_t  CyaSSL_EVP_CIPHER_CTX_key_length(CYASSL_EVP_CIPHER_CTX* ctx);
+CYASSL_API int32_t  CyaSSL_EVP_CIPHER_CTX_set_key_length(CYASSL_EVP_CIPHER_CTX* ctx,
+                                                     int32_t keylen);
+CYASSL_API int32_t  CyaSSL_EVP_Cipher(CYASSL_EVP_CIPHER_CTX* ctx,
                           unsigned char* dst, unsigned char* src,
-                          unsigned int len);
+                          uint32_t len);
 
-CYASSL_API const CYASSL_EVP_MD* CyaSSL_EVP_get_digestbynid(int);
+CYASSL_API const CYASSL_EVP_MD* CyaSSL_EVP_get_digestbynid(int32_t);
 
 CYASSL_API CYASSL_RSA* CyaSSL_EVP_PKEY_get1_RSA(CYASSL_EVP_PKEY*);
 CYASSL_API CYASSL_DSA* CyaSSL_EVP_PKEY_get1_DSA(CYASSL_EVP_PKEY*);
 
 /* these next ones don't need real OpenSSL type, for OpenSSH compat only */
 CYASSL_API void* CyaSSL_EVP_X_STATE(const CYASSL_EVP_CIPHER_CTX* ctx);
-CYASSL_API int   CyaSSL_EVP_X_STATE_LEN(const CYASSL_EVP_CIPHER_CTX* ctx);
+CYASSL_API int32_t   CyaSSL_EVP_X_STATE_LEN(const CYASSL_EVP_CIPHER_CTX* ctx);
 
-CYASSL_API void  CyaSSL_3des_iv(CYASSL_EVP_CIPHER_CTX* ctx, int doset,
-                                unsigned char* iv, int len);
-CYASSL_API void  CyaSSL_aes_ctr_iv(CYASSL_EVP_CIPHER_CTX* ctx, int doset,
-                                unsigned char* iv, int len);
+CYASSL_API void  CyaSSL_3des_iv(CYASSL_EVP_CIPHER_CTX* ctx, int32_t doset,
+                                unsigned char* iv, int32_t len);
+CYASSL_API void  CyaSSL_aes_ctr_iv(CYASSL_EVP_CIPHER_CTX* ctx, int32_t doset,
+                                unsigned char* iv, int32_t len);
 
-CYASSL_API int  CyaSSL_StoreExternalIV(CYASSL_EVP_CIPHER_CTX* ctx);
-CYASSL_API int  CyaSSL_SetInternalIV(CYASSL_EVP_CIPHER_CTX* ctx);
+CYASSL_API int32_t  CyaSSL_StoreExternalIV(CYASSL_EVP_CIPHER_CTX* ctx);
+CYASSL_API int32_t  CyaSSL_SetInternalIV(CYASSL_EVP_CIPHER_CTX* ctx);
 
 
 /* end OpenSSH compat */

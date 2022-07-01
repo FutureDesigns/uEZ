@@ -5,10 +5,11 @@
 #ifndef _INTEGER
 #define _INTEGER
 
+#include <stdint.h> /* for int types */
 
 /* These types MUST be 16-bit or 32-bit */
-typedef int				INT;
-typedef unsigned int	UINT;
+//typedef int32_t		int32_t; // already defined
+typedef uint32_t	UINT;
 
 /* This type MUST be 8-bit */
 typedef unsigned char	BYTE;
@@ -29,7 +30,7 @@ typedef unsigned long long QWORD;
 #ifndef FALSE
     typedef enum { FALSE = 0, TRUE } BOOL;
 #else
-    typedef int BOOL;
+    typedef int32_t BOOL;
 #endif
 
 #endif

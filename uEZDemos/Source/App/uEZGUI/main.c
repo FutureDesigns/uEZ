@@ -136,6 +136,15 @@ int MainTask(void)
      // initialize command console for test commands
      UEZGUITestCmdsInit();
 #endif
+   
+    T_uezError error;
+    T_uezFile file;
+
+    // Open file on SD card to force init
+    error=UEZFileOpen("1:/TESTSD.TXT", FILE_FLAG_READ_ONLY, &file);
+    if (error == UEZ_ERROR_NONE) {
+        UEZFileClose(file);
+    }
 
      // Pass control to the main menu
      MainMenu();
@@ -356,6 +365,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
      return 0;
 }
 
+// TODO remove and cleanup like in project maker, need to setup EMWIN_BASE_ADDRESS and EMWIN_RAM_SIZE macros
 #if (UEZ_PROCESSOR != NXP_LPC4357)
 #define EMWIN_BASE_ADDRESS  0xA0200000
 #else

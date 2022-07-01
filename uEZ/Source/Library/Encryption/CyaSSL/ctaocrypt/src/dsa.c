@@ -80,10 +80,10 @@ void FreeDsaKey(DsaKey* key)
 }
 
 
-int DsaSign(const byte* digest, byte* out, DsaKey* key, RNG* rng)
+int32_t DsaSign(const byte* digest, byte* out, DsaKey* key, RNG* rng)
 {
     mp_int k, kInv, r, s, H;
-    int    ret, sz;
+    int32_t    ret, sz;
     byte   buffer[DSA_HALF_SIZE];
 
     sz = min(sizeof(buffer), mp_unsigned_bin_size(&key->q)); 
@@ -131,8 +131,8 @@ int DsaSign(const byte* digest, byte* out, DsaKey* key, RNG* rng)
 
     /* write out */
     if (ret == 0)  {
-        int rSz = mp_unsigned_bin_size(&r);
-        int sSz = mp_unsigned_bin_size(&s);
+        int32_t rSz = mp_unsigned_bin_size(&r);
+        int32_t sSz = mp_unsigned_bin_size(&s);
 
         if (rSz == DSA_HALF_SIZE - 1) {
             out[0] = 0;
@@ -160,10 +160,10 @@ int DsaSign(const byte* digest, byte* out, DsaKey* key, RNG* rng)
 }
 
 
-int DsaVerify(const byte* digest, const byte* sig, DsaKey* key, int* answer)
+int32_t DsaVerify(const byte* digest, const byte* sig, DsaKey* key, int32_t* answer)
 {
     mp_int w, u1, u2, v, r, s;
-    int    ret = 0;
+    int32_t    ret = 0;
 
     if (mp_init_multi(&w, &u1, &u2, &v, &r, &s) != MP_OKAY)
         return MP_INIT_E;

@@ -203,7 +203,7 @@ extern "C" {
 #define ENSRCNAMELOOP 177 /* Domain name is too long */
 
 #ifndef errno
-extern int errno;
+extern int32_t errno;
 #endif
 
 #endif /* LWIP_PROVIDE_ERRNO */

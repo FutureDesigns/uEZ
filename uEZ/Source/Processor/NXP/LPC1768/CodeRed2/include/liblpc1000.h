@@ -71,7 +71,7 @@ unsigned long liblpc1000_configure_pll(unsigned long fosc, unsigned long cclk);
  *  \param cclk_frequency The the freqency of CCLK in Hz.
  *  \return The LIBMEM status result.
  */
-int liblpc1000_register_libmem_driver(libmem_driver_handle_t *h, uint32_t cclk_frequency);
+int32_t liblpc1000_register_libmem_driver(libmem_driver_handle_t *h, uint32_t cclk_frequency);
 
 /*! \brief Register a driver for the LPC1000 internal FLASH with the libmem library.
  *  You should use this version of the driver register function when memory is at a premium,
@@ -86,7 +86,7 @@ int liblpc1000_register_libmem_driver(libmem_driver_handle_t *h, uint32_t cclk_f
  *  \param cclk_frequency The the freqency of CCLK in Hz.
  *  \return The LIBMEM status result.
  */
-int liblpc1000_register_libmem_driver_ex(libmem_driver_handle_t *h, size_t size, const libmem_geometry_t *geometry, uint8_t *write_buffer, uint32_t write_buffer_size, uint32_t cclk_frequency);
+int32_t liblpc1000_register_libmem_driver_ex(libmem_driver_handle_t *h, size_t size, const libmem_geometry_t *geometry, uint8_t *write_buffer, uint32_t write_buffer_size, uint32_t cclk_frequency);
 
 #ifdef __cplusplus
 }

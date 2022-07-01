@@ -46,9 +46,9 @@ static BOOL bLogSemInit = FALSE;
 void
 prvvMBTCPLogFrame( UCHAR * pucMsg, UCHAR * pucFrame, USHORT usFrameLen )
 {
-    int             i;
-    int             res;
-    int             iBufPos = 0;
+    int32_t             i;
+    int32_t             res;
+    int32_t             iBufPos = 0;
     size_t          iBufLeft = MB_FRAME_LOG_BUFSIZE;
     static CHAR     arcBuffer[MB_FRAME_LOG_BUFSIZE];
 

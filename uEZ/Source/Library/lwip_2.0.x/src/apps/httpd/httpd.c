@@ -242,7 +242,7 @@ struct http_state {
 
 #if LWIP_HTTPD_DYNAMIC_FILE_READ
   char *buf;        /* File read buffer. */
-  int buf_len;      /* Size of file read buffer, buf. */
+  int32_t buf_len;      /* Size of file read buffer, buf. */
 #endif /* LWIP_HTTPD_DYNAMIC_FILE_READ */
   u32_t left;       /* Number of unsent bytes in buf. */
   u8_t retries;
@@ -296,8 +296,8 @@ LWIP_MEMPOOL_DECLARE(HTTPD_SSI_STATE, MEMP_NUM_PARALLEL_HTTPD_SSI_CONNS, sizeof(
 
 static err_t http_close_conn(struct tcp_pcb *pcb, struct http_state *hs);
 static err_t http_close_or_abort_conn(struct tcp_pcb *pcb, struct http_state *hs, u8_t abort_conn);
-static err_t http_find_file(struct http_state *hs, const char *uri, int is_09);
-static err_t http_init_file(struct http_state *hs, struct fs_file *file, int is_09, const char *uri, u8_t tag_check, char* params);
+static err_t http_find_file(struct http_state *hs, const char *uri, int32_t is_09);
+static err_t http_init_file(struct http_state *hs, struct fs_file *file, int32_t is_09, const char *uri, u8_t tag_check, char* params);
 static err_t http_poll(void *arg, struct tcp_pcb *pcb);
 static u8_t http_check_eof(struct tcp_pcb *pcb, struct http_state *hs);
 #if LWIP_HTTPD_FS_ASYNC_READ
@@ -308,7 +308,7 @@ static void http_continue(void *connection);
 /* SSI insert handler function pointer. */
 tSSIHandler g_pfnSSIHandler;
 #if !LWIP_HTTPD_SSI_RAW
-int g_iNumTags;
+int32_t g_iNumTags;
 const char **g_ppcTags;
 #endif /* !LWIP_HTTPD_SSI_RAW */
 
@@ -322,8 +322,8 @@ const char * const g_pcTagLeadOut = "-->";
 #if LWIP_HTTPD_CGI
 /* CGI handler information */
 const tCGI *g_pCGIs;
-int g_iNumCGIs;
-int http_cgi_paramcount;
+int32_t g_iNumCGIs;
+int32_t http_cgi_paramcount;
 #define http_cgi_params     hs->params
 #define http_cgi_param_vals hs->param_vals
 #elif LWIP_HTTPD_CGI_SSI
@@ -670,12 +670,12 @@ http_eof(struct tcp_pcb *pcb, struct http_state *hs)
  * @param params pointer to the NULL-terminated parameter string from the URI
  * @return number of parameters extracted
  */
-static int
+static int32_t
 extract_uri_parameters(struct http_state *hs, char *params)
 {
   char *pair;
   char *equals;
-  int loop;
+  int32_t loop;
 
   LWIP_UNUSED_ARG(hs);
 
@@ -747,7 +747,7 @@ get_tag_insert(struct http_state *hs)
 #if LWIP_HTTPD_SSI_RAW
   const char* tag;
 #else /* LWIP_HTTPD_SSI_RAW */
-  int tag;
+  int32_t tag;
 #endif /* LWIP_HTTPD_SSI_RAW */
   size_t len;
   struct http_ssi_state *ssi;
@@ -1061,11 +1061,11 @@ http_send_headers(struct tcp_pcb *pcb, struct http_state *hs)
 static u8_t
 http_check_eof(struct tcp_pcb *pcb, struct http_state *hs)
 {
-  int bytes_left;
+  int32_t bytes_left;
 #if LWIP_HTTPD_DYNAMIC_FILE_READ
-  int count;
+  int32_t count;
 #ifdef HTTPD_MAX_WRITE_LEN
-  int max_write_len;
+  int32_t max_write_len;
 #endif /* HTTPD_MAX_WRITE_LEN */
 #endif /* LWIP_HTTPD_DYNAMIC_FILE_READ */
 
@@ -1218,7 +1218,7 @@ http_send_data_ssi(struct tcp_pcb *pcb, struct http_state *hs)
     }
   }
 
-  LWIP_DEBUGF(HTTPD_DEBUG, ("State %d, %d left\n", ssi->tag_state, (int)ssi->parse_left));
+  LWIP_DEBUGF(HTTPD_DEBUG, ("State %d, %d left\n", ssi->tag_state, (int32_t)ssi->parse_left));
 
   /* We have sent all the data that was already parsed so continue parsing
    * the buffer contents looking for SSI tags. */
@@ -1514,7 +1514,7 @@ http_send(struct tcp_pcb *pcb, struct http_state *hs)
   u8_t data_to_send = HTTP_NO_DATA_TO_SEND;
 
   LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("http_send: pcb=%p hs=%p left=%d\n", (void*)pcb,
-    (void*)hs, hs != NULL ? (int)hs->left : 0));
+    (void*)hs, hs != NULL ? (int32_t)hs->left : 0));
 
 #if LWIP_HTTPD_SUPPORT_POST && LWIP_HTTPD_POST_MANUAL_WND
   if (hs->unrecved_bytes != 0) {
@@ -1748,7 +1748,7 @@ http_post_request(struct pbuf *inp, struct http_state *hs,
     if (scontent_len != NULL) {
       char *scontent_len_end = lwip_strnstr(scontent_len + HTTP_HDR_CONTENT_LEN_LEN, CRLF, HTTP_HDR_CONTENT_LEN_DIGIT_MAX_LEN);
       if (scontent_len_end != NULL) {
-        int content_len;
+        int32_t content_len;
         char *content_len_num = scontent_len + HTTP_HDR_CONTENT_LEN_LEN;
         content_len = atoi(content_len_num);
         if (content_len == 0) {
@@ -1958,9 +1958,9 @@ http_parse_request(struct pbuf *inp, struct http_state *hs, struct tcp_pcb *pcb)
     crlf = lwip_strnstr(data, CRLF, data_len);
     if (crlf != NULL) {
 #if LWIP_HTTPD_SUPPORT_POST
-      int is_post = 0;
+      int32_t is_post = 0;
 #endif /* LWIP_HTTPD_SUPPORT_POST */
-      int is_09 = 0;
+      int32_t is_09 = 0;
       char *sp1, *sp2;
       u16_t left_len, uri_len;
       LWIP_DEBUGF(HTTPD_DEBUG | LWIP_DBG_TRACE, ("CRLF received, parsing request\n"));
@@ -2079,14 +2079,14 @@ badrequest:
  *         another err_t otherwise
  */
 static err_t
-http_find_file(struct http_state *hs, const char *uri, int is_09)
+http_find_file(struct http_state *hs, const char *uri, int32_t is_09)
 {
   size_t loop;
   struct fs_file *file = NULL;
   char *params = NULL;
   err_t err;
 #if LWIP_HTTPD_CGI
-  int i;
+  int32_t i;
 #endif /* LWIP_HTTPD_CGI */
 #if !LWIP_HTTPD_SSI
   const
@@ -2225,7 +2225,7 @@ http_find_file(struct http_state *hs, const char *uri, int is_09)
  *         another err_t otherwise
  */
 static err_t
-http_init_file(struct http_state *hs, struct fs_file *file, int is_09, const char *uri,
+http_init_file(struct http_state *hs, struct fs_file *file, int32_t is_09, const char *uri,
                u8_t tag_check, char* params)
 {
   if (file != NULL) {
@@ -2280,7 +2280,7 @@ http_init_file(struct http_state *hs, struct fs_file *file, int is_09, const cha
 #if LWIP_HTTPD_CGI_SSI
     if (params != NULL) {
       /* URI contains parameters, call generic CGI handler */
-      int count;
+      int32_t count;
 #if LWIP_HTTPD_CGI
       if (http_cgi_paramcount >= 0) {
         count = http_cgi_paramcount;
@@ -2588,7 +2588,7 @@ httpd_init(void)
  * @param num_tags number of tags in the 'tags' array
  */
 void
-http_set_ssi_handler(tSSIHandler ssi_handler, const char **tags, int num_tags)
+http_set_ssi_handler(tSSIHandler ssi_handler, const char **tags, int32_t num_tags)
 {
   LWIP_DEBUGF(HTTPD_DEBUG, ("http_set_ssi_handler\n"));
 
@@ -2616,7 +2616,7 @@ http_set_ssi_handler(tSSIHandler ssi_handler, const char **tags, int num_tags)
  * @param num_handlers number of elements in the 'cgis' array
  */
 void
-http_set_cgi_handlers(const tCGI *cgis, int num_handlers)
+http_set_cgi_handlers(const tCGI *cgis, int32_t num_handlers)
 {
   LWIP_ASSERT("no cgis given", cgis != NULL);
   LWIP_ASSERT("invalid number of handlers", num_handlers > 0);

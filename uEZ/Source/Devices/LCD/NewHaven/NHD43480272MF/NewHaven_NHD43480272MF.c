@@ -446,7 +446,7 @@ static T_uezError LCD_NHD43480272MF_MSTimerStart(void *aW, float milliseconds){
   p->itimerDone = EFalse; // set to true when timer finishes
   error = UEZTimerSetupOneShot(p->itimer,
                                1,
-                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+                               ((int32_t)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
                                &p->icallback);
   if(error == UEZ_ERROR_NONE) {
     error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);

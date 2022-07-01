@@ -1,0 +1,15 @@
+ExitOnError 1
+usb 0
+device LPC4357_M4
+si SWD
+speed 1000
+
+rx 200
+h
+
+erase
+loadfile "uEZGUI-4357-50WVN.hex"
+
+rx 200
+g
+qc

@@ -1154,7 +1154,7 @@ static __INLINE HCD_STATUS EHciHostInit(uint8_t HostID)
 	/*---------- USBINT ----------*/
 	USB_REG(HostID)->USBINTR_H &= ~EHC_USBINTR_ALL;	/* Disable All Interrupt */
 	USB_REG(HostID)->USBSTS_H  &= ~EHC_USBINTR_ALL;	/* Clear All Interrupt Status */
-	USB_REG(HostID)->USBINTR_H =    EHC_USBINTR_UsbAsyncEnable | EHC_USBINTR_UsbPeriodEnable |	/* Enable necessary interrupt source: Async Advance, System Error, Port Change, USB Error, USB Int */
+	USB_REG(HostID)->USBINTR_H =    EHC_USBINTR_UsbAsyncEnable | EHC_USBINTR_UsbPeriodEnable |	/* Enable necessary interrupt source: Async Advance, System Error, Port Change, USB Error, USB int32_t */
 								 EHC_USBINTR_PortChangeIntEnable | EHC_USBINTR_UsbErroIntEnable |
 								 EHC_USBINTR_IntAsyncAdvanceEnable |
 								 (INT_FRAME_ROLL_OVER_ENABLE ? EHC_USBINTR_FrameListRolloverEnable : 0);

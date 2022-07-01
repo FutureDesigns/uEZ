@@ -1435,7 +1435,7 @@ void GUIDEMO_IconView(void) {
   for (i = 0; i < GUI_COUNTOF(_aBitmapItem); i++) {
     ICONVIEW_AddBitmapItem(hIcon, _aBitmapItem[i].pBitmap, _aBitmapItem[i].pText);
   }
-  ICONVIEW_SetBkColor(hIcon, ICONVIEW_CI_SEL, GUI_MAKE_COLOR(0x880000FF));
+  ICONVIEW_SetBkColor(hIcon, ICONVIEW_CI_SEL, GUI_MAKE_COLOR(0x880032FF));
   ICONVIEW_SetSpace(hIcon, GUI_COORD_X, 17);
   ICONVIEW_SetIconAlign(hIcon, ICONVIEW_IA_TOP);
   ICONVIEW_SetFont(hIcon, &GUI_Font13_ASCII);

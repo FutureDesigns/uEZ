@@ -110,33 +110,33 @@ extern "C" {
 #endif
 
     // STDC Wrapper implimentation
-    int                                 HTTPWrapperIsAscii              (int c);
-    int                                 HTTPWrapperToUpper              (int c);
-    int                                 HTTPWrapperToLower              (int c);
-    int                                 HTTPWrapperIsAlpha              (int c);
-    int                                 HTTPWrapperIsAlNum              (int c);
-    char*                               HTTPWrapperItoa                 (char *buff,int i);
+    int32_t                                 HTTPWrapperIsAscii              (int32_t c);
+    int32_t                                 HTTPWrapperToUpper              (int32_t c);
+    int32_t                                 HTTPWrapperToLower              (int32_t c);
+    int32_t                                 HTTPWrapperIsAlpha              (int32_t c);
+    int32_t                                 HTTPWrapperIsAlNum              (int32_t c);
+    char*                               HTTPWrapperItoa                 (char *buff,int32_t i);
     void                                HTTPWrapperInitRandomeNumber    ();
     long                                HTTPWrapperGetUpTime            ();
-    int                                 HTTPWrapperGetRandomeNumber     ();
-    int                                 HTTPWrapperGetSocketError       (int s);
+    int32_t                                 HTTPWrapperGetRandomeNumber     ();
+    int32_t                                 HTTPWrapperGetSocketError       (int32_t s);
 #ifdef _UEZ_RTOS
-    int                                 HTTPWrapperGetHostByName        (int s,char *name,T_uezNetworkAddr *address);
+    int32_t                                 HTTPWrapperGetHostByName        (int32_t s,char *name,T_uezNetworkAddr *address);
 #else
     unsigned long                       HTTPWrapperGetHostByName        (char *name,unsigned long *address);
 #endif
-    int                                 HTTPWrapperShutDown             (int s,int in);  
+    int32_t                                 HTTPWrapperShutDown             (int32_t s,int32_t in);  
     // SSL Wrapper prototypes
 #ifndef _UEZ_RTOS
-    int                                 HTTPWrapperSSLConnect           (int s,const struct sockaddr *name,int namelen,char *hostname);
-    int                                 HTTPWrapperSSLNegotiate         (int s,const struct sockaddr *name,int namelen,char *hostname);
+    int32_t                                 HTTPWrapperSSLConnect           (int32_t s,const struct sockaddr *name,int32_t namelen,char *hostname);
+    int32_t                                 HTTPWrapperSSLNegotiate         (int32_t s,const struct sockaddr *name,int32_t namelen,char *hostname);
 #else
-    int                                 HTTPWrapperSSLNegotiate         (int s,char *hostname);
+    int32_t                                 HTTPWrapperSSLNegotiate         (int32_t s,char *hostname);
 #endif
-    int                                 HTTPWrapperSSLSend              (int s,char *buf, int len,int flags);
-    int                                 HTTPWrapperSSLRecv              (int s,char *buf, int len,int flags);
-    int                                 HTTPWrapperSSLClose             (int s);
-    int                                 HTTPWrapperSSLRecvPending       (int s);
+    int32_t                                 HTTPWrapperSSLSend              (int32_t s,char *buf, int32_t len,int32_t flags);
+    int32_t                                 HTTPWrapperSSLRecv              (int32_t s,char *buf, int32_t len,int32_t flags);
+    int32_t                                 HTTPWrapperSSLClose             (int32_t s);
+    int32_t                                 HTTPWrapperSSLRecvPending       (int32_t s);
     // Global wrapper Functions
 #define                             IToA                            HTTPWrapperItoa
 #define                             GetUpTime                       HTTPWrapperGetUpTime
@@ -168,7 +168,7 @@ extern "C" {
 #endif
 typedef char                         CHAR;
 typedef unsigned short               UINT16;
-typedef int                          BOOL;
+typedef int32_t                          BOOL;
 //typedef unsigned long                ULONG;
 
 // Global socket structures and definitions

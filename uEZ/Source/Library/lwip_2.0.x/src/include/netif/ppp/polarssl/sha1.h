@@ -68,7 +68,7 @@ void sha1_starts( sha1_context *ctx );
  * \param input    buffer holding the  data
  * \param ilen     length of the input data
  */
-void sha1_update( sha1_context *ctx, const unsigned char *input, int ilen );
+void sha1_update( sha1_context *ctx, const unsigned char *input, int32_t ilen );
 
 /**
  * \brief          SHA-1 final digest
@@ -85,7 +85,7 @@ void sha1_finish( sha1_context *ctx, unsigned char output[20] );
  * \param ilen     length of the input data
  * \param output   SHA-1 checksum result
  */
-void sha1( unsigned char *input, int ilen, unsigned char output[20] );
+void sha1( unsigned char *input, int32_t ilen, unsigned char output[20] );
 
 #ifdef __cplusplus
 }

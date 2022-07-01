@@ -47,18 +47,18 @@ static T_uezSemaphore _RSema;
 *
 *      Timing:
 *                 GUI_GetTime()
-*                 GUI_Delay(int)
+*                 GUI_Delay(int32_t)
 
   Some timing dependent routines require a GetTime
   and delay funtion. Default time unit (tick), normally is
   1 ms.
 */
 
-int GUI_X_GetTime(void) {
+int32_t GUI_X_GetTime(void) {
   return UEZTickCounterGet();
 }
 
-void GUI_X_Delay(int Period) {
+void GUI_X_Delay(int32_t Period) {
   UEZTaskDelay(Period);
 }
 

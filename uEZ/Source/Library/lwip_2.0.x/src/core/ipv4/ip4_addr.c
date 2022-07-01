@@ -151,7 +151,7 @@ ipaddr_addr(const char *cp)
  * @param addr pointer to which to save the ip address in network order
  * @return 1 if cp could be converted to addr, 0 on failure
  */
-int
+int32_t
 ip4addr_aton(const char *cp, ip4_addr_t *addr)
 {
   u32_t val;
@@ -290,7 +290,7 @@ ip4addr_ntoa(const ip4_addr_t *addr)
  *         representation of addr or NULL if buf was too small
  */
 char*
-ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen)
+ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int32_t buflen)
 {
   u32_t s_addr;
   char inv[3];
@@ -299,7 +299,7 @@ ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen)
   u8_t rem;
   u8_t n;
   u8_t i;
-  int len = 0;
+  int32_t len = 0;
 
   s_addr = ip4_addr_get_u32(addr);
 

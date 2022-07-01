@@ -168,7 +168,7 @@ T_uezError LPC43xx_LCDController_Configure(
     TUInt32 regValue = 0;
     TUInt32* pPal = 0;
     TUInt32 dotClockDivider;
-    int i = 0;
+    int32_t i = 0;
     T_workspace *p = (T_workspace *)aWorkspace;
     TUInt32 calcDiv;
 

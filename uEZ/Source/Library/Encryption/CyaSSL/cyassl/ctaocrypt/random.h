@@ -57,13 +57,13 @@ typedef struct OS_Seed {
     #elif defined(USE_WINDOWS_API)
         ProviderHandle handle;
     #else
-        int fd;
+        int32_t fd;
     #endif
 } OS_Seed;
 
 
 CYASSL_LOCAL
-int GenerateSeed(OS_Seed* os, byte* seed, word32 sz);
+int32_t GenerateSeed(OS_Seed* os, byte* seed, word32 sz);
 
 #if defined(CYASSL_MDK_ARM)
 #undef RNG
@@ -100,28 +100,28 @@ typedef struct RNG {
     OS_Seed seed;
     Arc4    cipher;
 #ifdef HAVE_CAVIUM
-    int    devId;           /* nitrox device id */
+    int32_t    devId;           /* nitrox device id */
     word32 magic;           /* using cavium magic */
 #endif
 } RNG;
 
 
 #ifdef HAVE_CAVIUM
-    CYASSL_API int  InitRngCavium(RNG*, int);
+    CYASSL_API int32_t  InitRngCavium(RNG*, int32_t);
 #endif
 
 
 #endif /* HAVE_HASH_DRBG || NO_RC4 */
 
 
-CYASSL_API int  InitRng(RNG*);
-CYASSL_API int  RNG_GenerateBlock(RNG*, byte*, word32 sz);
-CYASSL_API int  RNG_GenerateByte(RNG*, byte*);
+CYASSL_API int32_t  InitRng(RNG*);
+CYASSL_API int32_t  RNG_GenerateBlock(RNG*, byte*, word32 sz);
+CYASSL_API int32_t  RNG_GenerateByte(RNG*, byte*);
 
 
 #if defined(HAVE_HASHDRBG) || defined(NO_RC4)
-    CYASSL_API int FreeRng(RNG*);
-    CYASSL_API int RNG_HealthTest(int reseed,
+    CYASSL_API int32_t FreeRng(RNG*);
+    CYASSL_API int32_t RNG_HealthTest(int32_t reseed,
                                         const byte* entropyA, word32 entropyASz,
                                         const byte* entropyB, word32 entropyBSz,
                                         byte* output, word32 outputSz);
@@ -130,10 +130,10 @@ CYASSL_API int  RNG_GenerateByte(RNG*, byte*);
 
 #ifdef HAVE_FIPS
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int InitRng_fips(RNG* rng);
-    CYASSL_API int FreeRng_fips(RNG* rng);
-    CYASSL_API int RNG_GenerateBlock_fips(RNG* rng, byte* buf, word32 bufSz);
-    CYASSL_API int RNG_HealthTest_fips(int reseed,
+    CYASSL_API int32_t InitRng_fips(RNG* rng);
+    CYASSL_API int32_t FreeRng_fips(RNG* rng);
+    CYASSL_API int32_t RNG_GenerateBlock_fips(RNG* rng, byte* buf, word32 bufSz);
+    CYASSL_API int32_t RNG_HealthTest_fips(int32_t reseed,
                                         const byte* entropyA, word32 entropyASz,
                                         const byte* entropyB, word32 entropyBSz,
                                         byte* output, word32 outputSz);

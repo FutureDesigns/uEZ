@@ -188,7 +188,7 @@ TUInt32 TestVCNL4010Task(T_uezTask aMyTask, void *aParameters)
     TUInt8 data[4];
     TUInt32 ambient;
     TUInt32 proximity;
-    int count = 0;
+    int32_t count = 0;
 
 // Set Current to 20
     cmd[0] = REGISTER_PROX_CURRENT;

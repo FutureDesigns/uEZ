@@ -118,11 +118,11 @@ struct lwip_sock;
  * functions running in tcpip_thread context (only a void* is allowed) */
 struct lwip_setgetsockopt_data {
   /** socket index for which to change options */
-  int s;
+  int32_t s;
   /** level of the option to process */
-  int level;
+  int32_t level;
   /** name of the option to process */
-  int optname;
+  int32_t optname;
   /** set: value to set the option to
     * get: value of the option is stored here */
 #if LWIP_MPU_COMPATIBLE
@@ -153,10 +153,10 @@ struct msghdr {
   void         *msg_name;
   socklen_t     msg_namelen;
   struct iovec *msg_iov;
-  int           msg_iovlen;
+  int32_t           msg_iovlen;
   void         *msg_control;
   socklen_t     msg_controllen;
-  int           msg_flags;
+  int32_t           msg_flags;
 };
 
 /* Socket protocol types (TCP/UDP/RAW) */
@@ -180,7 +180,7 @@ struct msghdr {
 #define SO_DONTROUTE   0x0010 /* Unimplemented: just use interface addresses */
 #define SO_USELOOPBACK 0x0040 /* Unimplemented: bypass hardware when possible */
 #define SO_LINGER      0x0080 /* linger on close if data present */
-#define SO_DONTLINGER  ((int)(~SO_LINGER))
+#define SO_DONTLINGER  ((int32_t)(~SO_LINGER))
 #define SO_OOBINLINE   0x0100 /* Unimplemented: leave received OOB data in line */
 #define SO_REUSEPORT   0x0200 /* Unimplemented: allow local address & port reuse */
 #define SO_SNDBUF      0x1001 /* Unimplemented: send buffer size */
@@ -199,8 +199,8 @@ struct msghdr {
  * Structure used for manipulating linger option.
  */
 struct linger {
-       int l_onoff;                /* option on/off */
-       int l_linger;               /* linger time in seconds */
+       int32_t l_onoff;                /* option on/off */
+       int32_t l_linger;               /* linger time in seconds */
 };
 
 /*
@@ -390,7 +390,7 @@ typedef struct ip_mreq {
 #endif
 
 /* File status flags and file access modes for fnctl,
-   these are bits in an int. */
+   these are bits in an int32_t. */
 #ifndef O_NONBLOCK
 #define O_NONBLOCK  1 /* nonblocking I/O */
 #endif
@@ -410,9 +410,9 @@ typedef struct ip_mreq {
 /* Make FD_SETSIZE match NUM_SOCKETS in socket.c */
 #define FD_SETSIZE    MEMP_NUM_NETCONN
 #define FDSETSAFESET(n, code) do { \
-  if (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int)(n) - LWIP_SOCKET_OFFSET) >= 0)) { \
+  if (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int32_t)(n) - LWIP_SOCKET_OFFSET) >= 0)) { \
   code; }} while(0)
-#define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int)(n) - LWIP_SOCKET_OFFSET) >= 0) ?\
+#define FDSETSAFEGET(n, code) (((n) - LWIP_SOCKET_OFFSET < MEMP_NUM_NETCONN) && (((int32_t)(n) - LWIP_SOCKET_OFFSET) >= 0) ?\
   (code) : 0)
 #define FD_SET(n, p)  FDSETSAFESET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] |=  (1 << (((n)-LWIP_SOCKET_OFFSET) & 7)))
 #define FD_CLR(n, p)  FDSETSAFESET(n, (p)->fd_bits[((n)-LWIP_SOCKET_OFFSET)/8] &= ~(1 << (((n)-LWIP_SOCKET_OFFSET) & 7)))
@@ -480,31 +480,31 @@ void lwip_socket_thread_cleanup(void); /* LWIP_NETCONN_SEM_PER_THREAD==1: destro
 #endif /* LWIP_POSIX_SOCKETS_IO_NAMES */
 #endif /* LWIP_COMPAT_SOCKETS == 2 */
 
-int lwip_accept(int s, struct sockaddr *addr, socklen_t *addrlen);
-int lwip_bind(int s, const struct sockaddr *name, socklen_t namelen);
-int lwip_shutdown(int s, int how);
-int lwip_getpeername (int s, struct sockaddr *name, socklen_t *namelen);
-int lwip_getsockname (int s, struct sockaddr *name, socklen_t *namelen);
-int lwip_getsockopt (int s, int level, int optname, void *optval, socklen_t *optlen);
-int lwip_setsockopt (int s, int level, int optname, const void *optval, socklen_t optlen);
-int lwip_close(int s);
-int lwip_connect(int s, const struct sockaddr *name, socklen_t namelen);
-int lwip_listen(int s, int backlog);
-int lwip_recv(int s, void *mem, size_t len, int flags);
-int lwip_read(int s, void *mem, size_t len);
-int lwip_recvfrom(int s, void *mem, size_t len, int flags,
+int32_t lwip_accept(int32_t s, struct sockaddr *addr, socklen_t *addrlen);
+int32_t lwip_bind(int32_t s, const struct sockaddr *name, socklen_t namelen);
+int32_t lwip_shutdown(int32_t s, int32_t how);
+int32_t lwip_getpeername (int32_t s, struct sockaddr *name, socklen_t *namelen);
+int32_t lwip_getsockname (int32_t s, struct sockaddr *name, socklen_t *namelen);
+int32_t lwip_getsockopt (int32_t s, int32_t level, int32_t optname, void *optval, socklen_t *optlen);
+int32_t lwip_setsockopt (int32_t s, int32_t level, int32_t optname, const void *optval, socklen_t optlen);
+int32_t lwip_close(int32_t s);
+int32_t lwip_connect(int32_t s, const struct sockaddr *name, socklen_t namelen);
+int32_t lwip_listen(int32_t s, int32_t backlog);
+int32_t lwip_recv(int32_t s, void *mem, size_t len, int32_t flags);
+int32_t lwip_read(int32_t s, void *mem, size_t len);
+int32_t lwip_recvfrom(int32_t s, void *mem, size_t len, int32_t flags,
       struct sockaddr *from, socklen_t *fromlen);
-int lwip_send(int s, const void *dataptr, size_t size, int flags);
-int lwip_sendmsg(int s, const struct msghdr *message, int flags);
-int lwip_sendto(int s, const void *dataptr, size_t size, int flags,
+int32_t lwip_send(int32_t s, const void *dataptr, size_t size, int32_t flags);
+int32_t lwip_sendmsg(int32_t s, const struct msghdr *message, int32_t flags);
+int32_t lwip_sendto(int32_t s, const void *dataptr, size_t size, int32_t flags,
     const struct sockaddr *to, socklen_t tolen);
-int lwip_socket(int domain, int type, int protocol);
-int lwip_write(int s, const void *dataptr, size_t size);
-int lwip_writev(int s, const struct iovec *iov, int iovcnt);
-int lwip_select(int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
+int32_t lwip_socket(int32_t domain, int32_t type, int32_t protocol);
+int32_t lwip_write(int32_t s, const void *dataptr, size_t size);
+int32_t lwip_writev(int32_t s, const struct iovec *iov, int32_t iovcnt);
+int32_t lwip_select(int32_t maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
                 struct timeval *timeout);
-int lwip_ioctl(int s, long cmd, void *argp);
-int lwip_fcntl(int s, int cmd, int val);
+int32_t lwip_ioctl(int32_t s, long cmd, void *argp);
+int32_t lwip_fcntl(int32_t s, int32_t cmd, int32_t val);
 
 #if LWIP_COMPAT_SOCKETS
 #if LWIP_COMPAT_SOCKETS != 2

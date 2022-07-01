@@ -143,7 +143,7 @@ static void RabbitSetIV(Rabbit* ctx, const byte* inIv)
 
 
 /* Key setup */
-static INLINE int DoKey(Rabbit* ctx, const byte* key, const byte* iv)
+static INLINE int32_t DoKey(Rabbit* ctx, const byte* key, const byte* iv)
 {
     /* Temporary variables */
     word32 k0, k1, k2, k3, i;
@@ -199,11 +199,11 @@ static INLINE int DoKey(Rabbit* ctx, const byte* key, const byte* iv)
 
 
 /* Key setup */
-int RabbitSetKey(Rabbit* ctx, const byte* key, const byte* iv)
+int32_t RabbitSetKey(Rabbit* ctx, const byte* key, const byte* iv)
 {
 #ifdef XSTREAM_ALIGN
     if ((cyassl_word)key % 4) {
-        int alignKey[4];
+        int32_t alignKey[4];
 
         /* iv aligned in SetIV */
         CYASSL_MSG("RabbitSetKey unaligned key");
@@ -219,7 +219,7 @@ int RabbitSetKey(Rabbit* ctx, const byte* key, const byte* iv)
 
 
 /* Encrypt/decrypt a message of any size */
-static INLINE int DoProcess(Rabbit* ctx, byte* output, const byte* input,
+static INLINE int32_t DoProcess(Rabbit* ctx, byte* output, const byte* input,
                             word32 msglen)
 {
     /* Encrypt/decrypt all full blocks */
@@ -279,7 +279,7 @@ static INLINE int DoProcess(Rabbit* ctx, byte* output, const byte* input,
 
 
 /* Encrypt/decrypt a message of any size */
-int RabbitProcess(Rabbit* ctx, byte* output, const byte* input, word32 msglen)
+int32_t RabbitProcess(Rabbit* ctx, byte* output, const byte* input, word32 msglen)
 {
 #ifdef XSTREAM_ALIGN
     if ((cyassl_word)input % 4 || (cyassl_word)output % 4) {

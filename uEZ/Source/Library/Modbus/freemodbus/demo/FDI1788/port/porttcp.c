@@ -60,7 +60,7 @@ static USHORT usPort;
 
 typedef struct {
   T_uezDevice         aNetwork;
-  int  aSocket;
+  int32_t  aSocket;
   T_uEZNetworkConnectionInfo aConnection;
   T_uezSemaphore      aSemaphore;
   T_uezTask           aTask;
@@ -77,7 +77,7 @@ static pxMBTCPConnectionCloseCB pxConnectionCloseCB = NULL;
 
 /* ----------------------- Static functions ---------------------------------*/
 static void     prvvMBPortReleaseClient( xMBTCPClient *pClientHandle );
-static void     prvvMBPortReleaseSocket( int aSocket );
+static void     prvvMBPortReleaseSocket( int32_t aSocket );
 
 /* ----------------------- Begin implementation -----------------------------*/
 
@@ -128,7 +128,7 @@ mb_tcp_receive_buffer_parsing:
             {
                 UEZTaskDelay(1);
                 usTimeouts++;
-                int sock_err = 0;
+                int32_t sock_err = 0;
 
                 if (usTimeouts > ((MB_TCP_CONNECTION_TIMEOUT*1000)/MB_TCP_CONNECTION_READ_TIMEOUT) ||
                    ((sock_err = lwip_getsockopt(pClientHandle->aSocket, 0, 0, 0, 0)) < 0))
@@ -258,7 +258,7 @@ mb_tcp_receive_buffer_parsing:
 }
 
 static xMBTCPClient *
-prvvMBPortNewClient(int aSocket)
+prvvMBPortNewClient(int32_t aSocket)
 {
   USHORT  index;
 
@@ -308,7 +308,7 @@ prvvMBPortFreeClient(xMBTCPClient *pClientHandle)
 }
 
 static void
-prvvMBPortReleaseSocket(int aSocket )
+prvvMBPortReleaseSocket(int32_t aSocket )
 {
     close(aSocket);
 }
@@ -377,7 +377,7 @@ vMBTCPPortDisable( void )
 }
 
 static void
-prvMBTCPProcessConnection(int aSocket)
+prvMBTCPProcessConnection(int32_t aSocket)
 {
     xMBTCPClient    *pClientHandle;
 
@@ -559,8 +559,8 @@ xMBTCPPortGetUnitAddress( void )
 static void
 prvMBTCPServerTask( T_uezTask aMyTask, void *arg )
 {
-    int socket_fd;
-    int accept_fd;
+    int32_t socket_fd;
+    int32_t accept_fd;
     socklen_t addr_size;
     struct sockaddr_in sa,isa;
     TUInt32 index = 0;

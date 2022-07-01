@@ -34,6 +34,7 @@
 
 #include "cpu.h"
 #include <stdlib.h>
+#include <stdint.h> /* for int types */
 
 typedef unsigned   char    u8_t;
 typedef signed     char    s8_t;
@@ -42,7 +43,7 @@ typedef signed     short   s16_t;
 typedef unsigned   long    u32_t;
 typedef signed     long    s32_t;
 typedef u32_t mem_ptr_t;
-typedef int sys_prot_t;
+typedef int32_t sys_prot_t;
 
 
 #define U16_F "hu"

@@ -3,6 +3,7 @@
  *-------------------------------------------------------------------------*
  * Description:
  *      HAL implementation of the NewHaven_NHD50800480TF_Rev2.
+ * This LCD replaces NHD50800480TF but kept the same model number and appearance!
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
@@ -105,8 +106,8 @@ static const T_LCDControllerSettings LCD_NHD50800480TF_Rev2_paramsI15bit = {
     48,         // HSYNC pulse width, must be 48!
     800,        // Pixels per line
 
-    29, //36,         // Vertical back porch - changed from rev 1 to this
-    23, //16,         // Vertical front porch - changed from rev 1 to this
+    29, //36,   // Vertical back porch - New LCDs require different backporch.
+    23, //16,   // Vertical front porch -
     3,          // VSYNC pulse width, must be 3!
     480,        // Lines per panel
 
@@ -431,7 +432,7 @@ static T_uezError LCD_NHD50800480TF_Rev2_MSTimerStart(void *aW, float millisecon
   p->itimerDone = EFalse; // set to true when timer finishes
   error = UEZTimerSetupOneShot(p->itimer,
                                1,
-                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+                               ((int32_t)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
                                &p->icallback);
   if(error == UEZ_ERROR_NONE) {
     error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);

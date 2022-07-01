@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : MULTIEDIT.h
 Purpose     : MULTIEDIT include
@@ -58,6 +59,7 @@ Purpose     : MULTIEDIT include
 #define MULTIEDIT_CF_AUTOSCROLLBAR_V (1 << 3)
 #define MULTIEDIT_CF_AUTOSCROLLBAR_H (1 << 4)
 #define MULTIEDIT_CF_PASSWORD        (1 << 5)
+#define MULTIEDIT_CF_SHOWCURSOR      (1 << 6)
 
 #define MULTIEDIT_SF_READONLY        MULTIEDIT_CF_READONLY
 #define MULTIEDIT_SF_INSERT          MULTIEDIT_CF_INSERT
@@ -87,10 +89,10 @@ typedef WM_HMEM MULTIEDIT_HANDLE;
 *
 **********************************************************************
 */
-MULTIEDIT_HANDLE MULTIEDIT_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags, int ExFlags, const char * pText, int MaxLen);
-MULTIEDIT_HANDLE MULTIEDIT_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int BufferSize, const char * pText);
-MULTIEDIT_HANDLE MULTIEDIT_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
-MULTIEDIT_HANDLE MULTIEDIT_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int BufferSize, const char * pText, int NumExtraBytes);
+MULTIEDIT_HANDLE MULTIEDIT_Create        (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t Id, int32_t Flags, int32_t ExFlags, const char * pText, int32_t MaxLen);
+MULTIEDIT_HANDLE MULTIEDIT_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t BufferSize, const char * pText);
+MULTIEDIT_HANDLE MULTIEDIT_CreateIndirect(const GUI_WIDGET_CREATE_INFO* pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
+MULTIEDIT_HANDLE MULTIEDIT_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t BufferSize, const char * pText, int32_t NumExtraBytes);
 
 /*********************************************************************
 *
@@ -108,37 +110,43 @@ void MULTIEDIT_Callback(WM_MESSAGE * pMsg);
 **********************************************************************
 */
 
-int  MULTIEDIT_AddKey           (MULTIEDIT_HANDLE hObj, U16 Key);
-int  MULTIEDIT_AddText          (MULTIEDIT_HANDLE hObj, const char * s);
-void MULTIEDIT_EnableBlink      (MULTIEDIT_HANDLE hObj, int Period, int OnOff);
-int  MULTIEDIT_GetCursorCharPos (MULTIEDIT_HANDLE hObj);
-void MULTIEDIT_GetCursorPixelPos(MULTIEDIT_HANDLE hObj, int * pxPos, int * pyPos);
-void MULTIEDIT_GetPrompt        (MULTIEDIT_HANDLE hObj, char* sDest, int MaxNumChars);
-int  MULTIEDIT_GetTextSize      (MULTIEDIT_HANDLE hObj);
-void MULTIEDIT_GetText          (MULTIEDIT_HANDLE hObj, char* sDest, int MaxNumChars);
-int  MULTIEDIT_GetUserData      (MULTIEDIT_HANDLE hObj, void * pDest, int NumBytes);
-void MULTIEDIT_SetTextAlign     (MULTIEDIT_HANDLE hObj, int Align);
-void MULTIEDIT_SetAutoScrollH   (MULTIEDIT_HANDLE hObj, int OnOff);
-void MULTIEDIT_SetAutoScrollV   (MULTIEDIT_HANDLE hObj, int OnOff);
-void MULTIEDIT_SetBkColor       (MULTIEDIT_HANDLE hObj, unsigned Index, GUI_COLOR color);
-void MULTIEDIT_SetCursorCharPos (MULTIEDIT_HANDLE hObj, int x, int y);       /* Not yet implemented */
-void MULTIEDIT_SetCursorPixelPos(MULTIEDIT_HANDLE hObj, int x, int y);       /* Not yet implemented */
-void MULTIEDIT_SetCursorOffset  (MULTIEDIT_HANDLE hObj, int Offset);
-void MULTIEDIT_SetHBorder       (MULTIEDIT_HANDLE hObj, unsigned HBorder);
-void MULTIEDIT_SetFocussable    (MULTIEDIT_HANDLE hObj, int State);
-void MULTIEDIT_SetFont          (MULTIEDIT_HANDLE hObj, const GUI_FONT * pFont);
-void MULTIEDIT_SetInsertMode    (MULTIEDIT_HANDLE hObj, int OnOff);
-void MULTIEDIT_SetBufferSize    (MULTIEDIT_HANDLE hObj, int BufferSize);
-void MULTIEDIT_SetMaxNumChars   (MULTIEDIT_HANDLE hObj, unsigned MaxNumChars);
-void MULTIEDIT_SetPrompt        (MULTIEDIT_HANDLE hObj, const char* sPrompt);
-void MULTIEDIT_SetReadOnly      (MULTIEDIT_HANDLE hObj, int OnOff);
-void MULTIEDIT_SetPasswordMode  (MULTIEDIT_HANDLE hObj, int OnOff);
-void MULTIEDIT_SetText          (MULTIEDIT_HANDLE hObj, const char* s);
-void MULTIEDIT_SetTextColor     (MULTIEDIT_HANDLE hObj, unsigned Index, GUI_COLOR color);
-int  MULTIEDIT_SetUserData      (MULTIEDIT_HANDLE hObj, const void * pSrc, int NumBytes);
-void MULTIEDIT_SetWrapNone      (MULTIEDIT_HANDLE hObj);
-void MULTIEDIT_SetWrapChar      (MULTIEDIT_HANDLE hObj);
-void MULTIEDIT_SetWrapWord      (MULTIEDIT_HANDLE hObj);
+int32_t              MULTIEDIT_AddKey           (MULTIEDIT_HANDLE hObj, U16 Key);
+int32_t              MULTIEDIT_AddText          (MULTIEDIT_HANDLE hObj, const char * s);
+void             MULTIEDIT_EnableBlink      (MULTIEDIT_HANDLE hObj, int32_t Period, int32_t OnOff);
+GUI_COLOR        MULTIEDIT_GetBkColor       (MULTIEDIT_HANDLE hObj, unsigned Index);
+int32_t              MULTIEDIT_GetCursorCharPos (MULTIEDIT_HANDLE hObj);
+void             MULTIEDIT_GetCursorPixelPos(MULTIEDIT_HANDLE hObj, int32_t * pxPos, int32_t * pyPos);
+const GUI_FONT * MULTIEDIT_GetFont          (MULTIEDIT_HANDLE hObj);
+void             MULTIEDIT_GetPrompt        (MULTIEDIT_HANDLE hObj, char* sDest, int32_t MaxNumChars);
+void             MULTIEDIT_GetText          (MULTIEDIT_HANDLE hObj, char* sDest, int32_t MaxNumChars);
+GUI_COLOR        MULTIEDIT_GetTextColor     (MULTIEDIT_HANDLE hObj, unsigned Index);
+int32_t              MULTIEDIT_GetTextSize      (MULTIEDIT_HANDLE hObj);
+int32_t              MULTIEDIT_GetUserData      (MULTIEDIT_HANDLE hObj, void * pDest, int32_t NumBytes);
+void             MULTIEDIT_SetTextAlign     (MULTIEDIT_HANDLE hObj, int32_t Align);
+void             MULTIEDIT_SetAutoScrollH   (MULTIEDIT_HANDLE hObj, int32_t OnOff);
+void             MULTIEDIT_SetAutoScrollV   (MULTIEDIT_HANDLE hObj, int32_t OnOff);
+void             MULTIEDIT_SetBkColor       (MULTIEDIT_HANDLE hObj, unsigned Index, GUI_COLOR color);
+void             MULTIEDIT_SetCursorCharPos (MULTIEDIT_HANDLE hObj, int32_t x, int32_t y);       /* Not yet implemented */
+void             MULTIEDIT_SetCursorPixelPos(MULTIEDIT_HANDLE hObj, int32_t x, int32_t y);       /* Not yet implemented */
+void             MULTIEDIT_SetCursorOffset  (MULTIEDIT_HANDLE hObj, int32_t Offset);
+void             MULTIEDIT_SetHBorder       (MULTIEDIT_HANDLE hObj, unsigned HBorder);
+void             MULTIEDIT_SetFocusable     (MULTIEDIT_HANDLE hObj, int32_t State);
+void             MULTIEDIT_SetFont          (MULTIEDIT_HANDLE hObj, const GUI_FONT * pFont);
+void             MULTIEDIT_SetInsertMode    (MULTIEDIT_HANDLE hObj, int32_t OnOff);
+void             MULTIEDIT_SetBufferSize    (MULTIEDIT_HANDLE hObj, int32_t BufferSize);
+void             MULTIEDIT_SetMaxNumChars   (MULTIEDIT_HANDLE hObj, unsigned MaxNumChars);
+void             MULTIEDIT_SetPrompt        (MULTIEDIT_HANDLE hObj, const char* sPrompt);
+void             MULTIEDIT_SetReadOnly      (MULTIEDIT_HANDLE hObj, int32_t OnOff);
+void             MULTIEDIT_SetPasswordMode  (MULTIEDIT_HANDLE hObj, int32_t OnOff);
+void             MULTIEDIT_SetText          (MULTIEDIT_HANDLE hObj, const char* s);
+void             MULTIEDIT_SetTextColor     (MULTIEDIT_HANDLE hObj, unsigned Index, GUI_COLOR color);
+int32_t              MULTIEDIT_SetUserData      (MULTIEDIT_HANDLE hObj, const void * pSrc, int32_t NumBytes);
+void             MULTIEDIT_SetWrapNone      (MULTIEDIT_HANDLE hObj);
+void             MULTIEDIT_SetWrapChar      (MULTIEDIT_HANDLE hObj);
+void             MULTIEDIT_SetWrapWord      (MULTIEDIT_HANDLE hObj);
+int32_t              MULTIEDIT_ShowCursor       (MULTIEDIT_HANDLE hObj, unsigned OnOff);
+
+#define MULTIEDIT_SetFocussable MULTIEDIT_SetFocusable
 
 /*********************************************************************
 *

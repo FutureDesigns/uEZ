@@ -30,7 +30,7 @@
  * @since Mini-XML 2.3@
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetCDATA(mxml_node_t *node,		/* I - Node to set */
              const char  *data)		/* I - New data string */
 {
@@ -69,7 +69,7 @@ mxmlSetCDATA(mxml_node_t *node,		/* I - Node to set */
  * @since Mini-XML 2.1@
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetCustom(
     mxml_node_t              *node,	/* I - Node to set */
     void                     *data,	/* I - New data pointer */
@@ -106,7 +106,7 @@ mxmlSetCustom(
  * The node is not changed if it is not an element node.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetElement(mxml_node_t *node,	/* I - Node to set */
                const char  *name)	/* I - New name string */
 {
@@ -136,9 +136,9 @@ mxmlSetElement(mxml_node_t *node,	/* I - Node to set */
  * The node is not changed if it (or its first child) is not an integer node.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetInteger(mxml_node_t *node,	/* I - Node to set */
-               int         integer)	/* I - Integer value */
+               int32_t         integer)	/* I - Integer value */
 {
  /*
   * Range check input...
@@ -167,7 +167,7 @@ mxmlSetInteger(mxml_node_t *node,	/* I - Node to set */
  * The node is not changed if it (or its first child) is not an opaque node.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetOpaque(mxml_node_t *node,	/* I - Node to set */
               const char  *opaque)	/* I - Opaque string */
 {
@@ -201,7 +201,7 @@ mxmlSetOpaque(mxml_node_t *node,	/* I - Node to set */
  * The node is not changed if it (or its first child) is not a real number node.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetReal(mxml_node_t *node,		/* I - Node to set */
             double      real)		/* I - Real number value */
 {
@@ -232,9 +232,9 @@ mxmlSetReal(mxml_node_t *node,		/* I - Node to set */
  * The node is not changed if it (or its first child) is not a text node.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetText(mxml_node_t *node,		/* I - Node to set */
-            int         whitespace,	/* I - 1 = leading whitespace, 0 = no whitespace */
+            int32_t         whitespace,	/* I - 1 = leading whitespace, 0 = no whitespace */
 	    const char  *string)	/* I - String */
 {
  /*
@@ -268,9 +268,9 @@ mxmlSetText(mxml_node_t *node,		/* I - Node to set */
  * The node is not changed if it (or its first child) is not a text node.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetTextf(mxml_node_t *node,		/* I - Node to set */
-             int         whitespace,	/* I - 1 = leading whitespace, 0 = no whitespace */
+             int32_t         whitespace,	/* I - 1 = leading whitespace, 0 = no whitespace */
              const char  *format,	/* I - Printf-style format string */
 	     ...)			/* I - Additional arguments as needed */
 {
@@ -312,7 +312,7 @@ mxmlSetTextf(mxml_node_t *node,		/* I - Node to set */
  * @since Mini-XML 2.7@
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlSetUserData(mxml_node_t *node,	/* I - Node to set */
                 void        *data)	/* I - User data pointer */
 {

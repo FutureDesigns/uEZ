@@ -86,7 +86,7 @@ usMBCRC16( UCHAR * pucFrame, USHORT usLen )
 {
     UCHAR           ucCRCHi = 0xFF;
     UCHAR           ucCRCLo = 0xFF;
-    int             iIndex;
+    int32_t             iIndex;
 
     while( usLen-- )
     {

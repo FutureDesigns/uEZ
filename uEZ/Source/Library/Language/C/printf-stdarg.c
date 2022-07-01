@@ -30,10 +30,11 @@ extern void UEZPlatformWriteChar(char aChar);
 #define putchar(c) UEZPlatformWriteChar(c)
 
 #include <stdarg.h>
+#include <stdint.h> /* for int types */
 
-static void printchar(char **str, int c)
+static void printchar(char **str, int32_t c)
 {
-	//extern int putchar(int c);
+	//extern int32_t putchar(int32_t c);
 	
 	if (str) {
 		**str = (char)c;
@@ -48,12 +49,12 @@ static void printchar(char **str, int c)
 #define PAD_RIGHT 1
 #define PAD_ZERO 2
 
-static int prints(char **out, const char *string, int width, int pad, int precision)
+static int32_t prints(char **out, const char *string, int32_t width, int32_t pad, int32_t precision)
 {
-	register int pc = 0, padchar = ' ';
+	register int32_t pc = 0, padchar = ' ';
 
 	if (width > 0) {
-		register int len = 0;
+		register int32_t len = 0;
 		register const char *ptr;
 		for (ptr = string; *ptr; ++ptr) ++len;
 		if (precision)
@@ -88,15 +89,15 @@ static int prints(char **out, const char *string, int width, int pad, int precis
 	return pc;
 }
 
-/* the following should be enough for 32 bit int */
+/* the following should be enough for 32 bit int32_t */
 #define PRINT_BUF_LEN 12
 
-static int printi(char **out, int i, int b, int sg, int width, int pad, int letbase)
+static int32_t printi(char **out, int32_t i, int32_t b, int32_t sg, int32_t width, int32_t pad, int32_t letbase)
 {
 	char print_buf[PRINT_BUF_LEN];
 	register char *s;
-	register int t, neg = 0, pc = 0;
-	register unsigned int u = (unsigned int)i;
+	register int32_t t, neg = 0, pc = 0;
+	register uint32_t u = (uint32_t)i;
 
 	if (i == 0) {
 		print_buf[0] = '0';
@@ -106,14 +107,14 @@ static int printi(char **out, int i, int b, int sg, int width, int pad, int letb
 
 	if (sg && b == 10 && i < 0) {
 		neg = 1;
-		u = (unsigned int)-i;
+		u = (uint32_t)-i;
 	}
 
 	s = print_buf + PRINT_BUF_LEN-1;
 	*s = '\0';
 
 	while (u) {
-		t = (unsigned int)u % b;
+		t = (uint32_t)u % b;
 		if( t >= 10 )
 			t += letbase - '0' - 10;
 		*--s = (char)(t + '0');
@@ -134,10 +135,10 @@ static int printi(char **out, int i, int b, int sg, int width, int pad, int letb
 	return pc + prints (out, s, width, pad, 0);
 }
 
-static int print( char **out, const char *format, va_list args )
+static int32_t print( char **out, const char *format, va_list args )
 {
-	register int width, pad, precision;
-	register int pc = 0;
+	register int32_t width, pad, precision;
+	register int32_t pc = 0;
 	char scr[2];
 
 	for (; *format != 0; ++format) {
@@ -166,29 +167,29 @@ static int print( char **out, const char *format, va_list args )
 	            }
 			}
 			if( *format == 's' ) {
-				register char *s = (char *)va_arg( args, int );
+				register char *s = (char *)va_arg( args, int32_t );
 				pc += prints (out, s?s:"(null)", width, pad, precision);
 				continue;
 			}
 			if( *format == 'd' ) {
-				pc += printi (out, va_arg( args, int ), 10, 1, width, pad, 'a');
+				pc += printi (out, va_arg( args, int32_t ), 10, 1, width, pad, 'a');
 				continue;
 			}
 			if( *format == 'x' ) {
-				pc += printi (out, va_arg( args, int ), 16, 0, width, pad, 'a');
+				pc += printi (out, va_arg( args, int32_t ), 16, 0, width, pad, 'a');
 				continue;
 			}
 			if( *format == 'X' ) {
-				pc += printi (out, va_arg( args, int ), 16, 0, width, pad, 'A');
+				pc += printi (out, va_arg( args, int32_t ), 16, 0, width, pad, 'A');
 				continue;
 			}
 			if( *format == 'u' ) {
-				pc += printi (out, va_arg( args, int ), 10, 0, width, pad, 'a');
+				pc += printi (out, va_arg( args, int32_t ), 10, 0, width, pad, 'a');
 				continue;
 			}
 			if( *format == 'c' ) {
-				/* char are converted to int then pushed on the stack */
-				scr[0] = (char)va_arg( args, int );
+				/* char are converted to int32_t then pushed on the stack */
+				scr[0] = (char)va_arg( args, int32_t );
 				scr[1] = '\0';
 				pc += prints (out, scr, width, pad, 0);
 				continue;
@@ -205,7 +206,7 @@ static int print( char **out, const char *format, va_list args )
 	return pc;
 }
 
-int printf(const char *format, ...)
+int32_t printf(const char *format, ...)
 {
         va_list args;
         
@@ -213,7 +214,7 @@ int printf(const char *format, ...)
         return print( 0, format, args );
 }
 
-int sprintf(char *out, const char *format, ...)
+int32_t sprintf(char *out, const char *format, ...)
 {
         va_list args;
         
@@ -222,7 +223,7 @@ int sprintf(char *out, const char *format, ...)
 }
 
 
-int snprintf( char *buf, unsigned int count, const char *format, ... )
+int32_t snprintf( char *buf, uint32_t count, const char *format, ... )
 {
         va_list args;
         
@@ -234,13 +235,13 @@ int snprintf( char *buf, unsigned int count, const char *format, ... )
 
 
 #ifdef TEST_PRINTF
-int main(void)
+int32_t main(void)
 {
 	char *ptr = "Hello world!";
 	char *np = 0;
-	int i = 5;
-	unsigned int bs = sizeof(int)*8;
-	int mi;
+	int32_t i = 5;
+	uint32_t bs = sizeof(int32_t)*8;
+	int32_t mi;
 	char buf[80];
 
 	mi = (1 << (bs-1)) + 1;
@@ -248,7 +249,7 @@ int main(void)
 	printf("printf test\n");
 	printf("%s is null pointer\n", np);
 	printf("%d = 5\n", i);
-	printf("%d = - max int\n", mi);
+	printf("%d = - max int32_t\n", mi);
 	printf("char %c = 'a'\n", 'a');
 	printf("hex %x = ff\n", 0xff);
 	printf("hex %02x = 00\n", 0);
@@ -275,13 +276,13 @@ int main(void)
  *   printf.c:214: warning: spurious trailing `%' in format
  * this line is testing an invalid % at the end of the format string.
  *
- * this should display (on 32bit int machine) :
+ * this should display (on 32bit int32_t machine) :
  *
  * Hello world!
  * printf test
  * (null) is null pointer
  * 5 = 5
- * -2147483647 = - max int
+ * -2147483647 = - max int32_t
  * char a = 'a'
  * hex ff = ff
  * hex 00 = 00
@@ -302,7 +303,7 @@ int main(void)
 
 
 /* To keep linker happy. */
-int	write( int i, char* c, int n)
+int32_t	write( int32_t i, char* c, int32_t n)
 {
 	(void)i;
 	(void)n;

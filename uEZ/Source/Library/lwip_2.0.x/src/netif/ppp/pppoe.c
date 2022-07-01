@@ -385,7 +385,7 @@ pppoe_disc_input(struct netif *netif, struct pbuf *pb)
 #endif
   struct pppoehdr *ph;
   struct pppoetag pt;
-  int off, err;
+  int32_t off, err;
   struct eth_hdr *ethhdr;
 
   /* don't do anything if there is not a single PPPoE instance */
@@ -754,20 +754,20 @@ pppoe_send_padi(struct pppoe_softc *sc)
 {
   struct pbuf *pb;
   u8_t *p;
-  int len;
+  int32_t len;
 #ifdef PPPOE_TODO
-  int l1 = 0, l2 = 0; /* XXX: gcc */
+  int32_t l1 = 0, l2 = 0; /* XXX: gcc */
 #endif /* PPPOE_TODO */
 
   /* calculate length of frame (excluding ethernet header + pppoe header) */
   len = 2 + 2 + 2 + 2 + sizeof sc;  /* service name tag is required, host unique is send too */
 #ifdef PPPOE_TODO
   if (sc->sc_service_name != NULL) {
-    l1 = (int)strlen(sc->sc_service_name);
+    l1 = (int32_t)strlen(sc->sc_service_name);
     len += l1;
   }
   if (sc->sc_concentrator_name != NULL) {
-    l2 = (int)strlen(sc->sc_concentrator_name);
+    l2 = (int32_t)strlen(sc->sc_concentrator_name);
     len += 2 + 2 + l2;
   }
 #endif /* PPPOE_TODO */
@@ -815,7 +815,7 @@ static void
 pppoe_timeout(void *arg)
 {
   u32_t retry_wait;
-  int err;
+  int32_t err;
   struct pppoe_softc *sc = (struct pppoe_softc*)arg;
 
   PPPDEBUG(LOG_DEBUG, ("pppoe: %c%c%"U16_F": timeout\n", sc->sc_ethif->name[0], sc->sc_ethif->name[1], sc->sc_ethif->num));
@@ -1148,11 +1148,11 @@ pppoe_xmit(struct pppoe_softc *sc, struct pbuf *pb)
 }
 
 #if 0 /*def PFIL_HOOKS*/
-static int
-pppoe_ifattach_hook(void *arg, struct pbuf **mp, struct netif *ifp, int dir)
+static int32_t
+pppoe_ifattach_hook(void *arg, struct pbuf **mp, struct netif *ifp, int32_t dir)
 {
   struct pppoe_softc *sc;
-  int s;
+  int32_t s;
 
   if (mp != (struct pbuf **)PFIL_IFNET_DETACH) {
     return 0;

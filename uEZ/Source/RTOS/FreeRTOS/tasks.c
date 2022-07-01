@@ -814,7 +814,7 @@ UBaseType_t x;
 	#if( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) || ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) )
 	{
 		/* Fill the stack with a known value to assist debugging. */
-		( void ) memset( pxNewTCB->pxStack, ( int ) tskSTACK_FILL_BYTE, ( size_t ) ulStackDepth * sizeof( StackType_t ) );
+		( void ) memset( pxNewTCB->pxStack, ( int32_t ) tskSTACK_FILL_BYTE, ( size_t ) ulStackDepth * sizeof( StackType_t ) );
 	}
 	#endif /* ( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) || ( ( configUSE_TRACE_FACILITY == 1 ) || ( INCLUDE_uxTaskGetStackHighWaterMark == 1 ) ) ) */
 
@@ -4053,7 +4053,7 @@ TCB_t *pxTCB;
 				pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
 
 				/* Write the rest of the string. */
-				sprintf( pcWriteBuffer, "\t%c\t%u\t%u\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber );
+				sprintf( pcWriteBuffer, "\t%c\t%u\t%u\t%u\r\n", cStatus, ( uint32_t ) pxTaskStatusArray[ x ].uxCurrentPriority, ( uint32_t ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( uint32_t ) pxTaskStatusArray[ x ].xTaskNumber );
 				pcWriteBuffer += strlen( pcWriteBuffer );
 			}
 
@@ -4153,9 +4153,9 @@ TCB_t *pxTCB;
 						}
 						#else
 						{
-							/* sizeof( int ) == sizeof( long ) so a smaller
+							/* sizeof( int32_t ) == sizeof( long ) so a smaller
 							printf() library can be used. */
-							sprintf( pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter, ( unsigned int ) ulStatsAsPercentage );
+							sprintf( pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( uint32_t ) pxTaskStatusArray[ x ].ulRunTimeCounter, ( uint32_t ) ulStatsAsPercentage );
 						}
 						#endif
 					}
@@ -4169,9 +4169,9 @@ TCB_t *pxTCB;
 						}
 						#else
 						{
-							/* sizeof( int ) == sizeof( long ) so a smaller
+							/* sizeof( int32_t ) == sizeof( long ) so a smaller
 							printf() library can be used. */
-							sprintf( pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter );
+							sprintf( pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( uint32_t ) pxTaskStatusArray[ x ].ulRunTimeCounter );
 						}
 						#endif
 					}

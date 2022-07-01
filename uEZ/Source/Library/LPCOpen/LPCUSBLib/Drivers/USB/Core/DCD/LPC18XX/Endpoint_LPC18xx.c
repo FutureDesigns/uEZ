@@ -30,7 +30,7 @@
  */
 
 /* Set bit macro */
-#define _BIT(n) (((unsigned int)(1)) << (n))
+#define _BIT(n) (((uint32_t)(1)) << (n))
 
 #define  __INCLUDE_FROM_USB_DRIVER
 #include "../../USBMode.h"
@@ -98,7 +98,7 @@ uint32_t CALLBACK_HAL_GetISOBufferAddress(const uint32_t EPNum, uint32_t *last_p
  * Event is required for using the device stack with any RTOS
  */
 PRAGMA_WEAK(EVENT_USB_Device_TransferComplete,Dummy_EVENT_USB_Device_TransferComplete)
-void EVENT_USB_Device_TransferComplete(int logicalEP, int xfer_in) ATTR_WEAK ATTR_ALIAS(Dummy_EVENT_USB_Device_TransferComplete);
+void EVENT_USB_Device_TransferComplete(int32_t logicalEP, int32_t xfer_in) ATTR_WEAK ATTR_ALIAS(Dummy_EVENT_USB_Device_TransferComplete);
 
 void DcdInsertTD(uint32_t head, uint32_t newtd);
 
@@ -436,7 +436,7 @@ void DcdIrqHandler(uint8_t corenum)
 	uint32_t USBSTS_D;
 	LPC_USBHS_T *	USB_Reg = USB_REG(corenum);
 	uint32_t t = USB_Reg->USBINTR_D;
-	int flagActivity = 0;
+	int32_t flagActivity = 0;
 
 	USBSTS_D = USB_Reg->USBSTS_D & t;	/* Device Interrupt Status */
 	if (USBSTS_D == 0) {/* avoid to clear disabled interrupt source */
@@ -561,7 +561,7 @@ uint32_t Dummy_EPGetISOAddress(uint32_t EPNum, uint32_t *last_packet_size)
  *      		and so it should never be removed!
  * @return	 	None
  **********************************************************************/
-void Dummy_EVENT_USB_Device_TransferComplete(int logicalEP, int xfer_in)
+void Dummy_EVENT_USB_Device_TransferComplete(int32_t logicalEP, int32_t xfer_in)
 {
 	/**
 	 * This is a dummy function

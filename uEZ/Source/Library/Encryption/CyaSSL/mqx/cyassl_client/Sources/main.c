@@ -67,7 +67,7 @@ TASK_TEMPLATE_STRUCT MQX_template_list[] =
 
 void Main_task(uint32_t initial_data)
 {
-    int  ret = 0;
+    int32_t  ret = 0;
     char filesystem_name[] = "a:";
     char partman_name[]    = "pm:";
     MQX_FILE_PTR com_handle, sdcard_handle, filesystem_handle, partman_handle;
@@ -101,7 +101,7 @@ void Main_task(uint32_t initial_data)
 
 void setup_ethernet(void)
 {
-    int	error;
+    int32_t	error;
     _enet_handle	ehandle;    /* for Ethernet driver */
     _rtcs_if_handle	ihandle;
     _enet_address	address;
@@ -178,7 +178,7 @@ void setup_clock(void)
     return;
 }
 
-int myVerify(int preverify, CYASSL_X509_STORE_CTX* store)
+int32_t myVerify(int32_t preverify, CYASSL_X509_STORE_CTX* store)
 {
     (void)preverify;
     char buffer[80];
@@ -193,8 +193,8 @@ void client_test(void)
 {
     char msg[64];
     char reply[1024];
-    int sockfd, input;
-    int ret = 0, msgSz = 0;
+    int32_t sockfd, input;
+    int32_t ret = 0, msgSz = 0;
     struct sockaddr_in	servaddr;
     CYASSL_CTX*			ctx;
     CYASSL*				ssl;

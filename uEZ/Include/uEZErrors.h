@@ -119,7 +119,7 @@ typedef enum {
     UEZ_ERROR_MUST_CLOSE_FIRST=62,//2005,
 	UEZ_ERROR_RTOS_START=63,//3000,		/** Refer to RTOS specific errors. */
 	UEZ_ERROR_RTOS_END=64,//4000,		/** Range reserved for RTOS errors. */
-    UEZ_ERROR_UNKNOWN=0xFF,//(int)0xFFFFFFFF
+    UEZ_ERROR_UNKNOWN=0xFF,//(int32_t)0xFFFFFFFF
 } T_uezError;
 
 #ifdef __cplusplus

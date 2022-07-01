@@ -24,17 +24,19 @@
 #include <uEZPlatform.h>
 #include <uEZNetwork.h>
 #include <uEZProcessor.h>
+#include <uEZDemoCommon.h>
+#include "Audio.h"
+#include <uEZToneGenerator.h>
+#include <uEZAudioMixer.h>
 #include "AppTasks.h"
 #include <NVSettings.h>
 #include <HAL/GPIO.h>
 #include "Source/Library/Web/BasicWeb/BasicWEB.h"
 #include <NetworkStartup.h>
 #include <AppHTTPServer.h>
+#include <Config_Build.h>
 
-#ifndef HEARTBEATLED // new default on all LPC1788/4088 uEZGUIs
-#define HEARTBEAT_PORT                  "GPIO1"
-#define HEARTBEATLED                     13
-#endif
+#define HEARTBEAT_BLINK_DELAY			 250
 /*---------------------------------------------------------------------------*
  * Task:  Heartbeat
  *---------------------------------------------------------------------------*
@@ -48,34 +50,24 @@
  *---------------------------------------------------------------------------*/
 TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
-#if (UEZ_PROCESSOR != NXP_LPC4357)
-    HAL_GPIOPort **p_gpio;
-    TUInt8 heartbeatLED = HEARTBEATLED;
+    UEZGPIOOutput(GPIO_HEARTBEAT_LED);
+    UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);
 
-    HALInterfaceFind(HEARTBEAT_PORT, (T_halWorkspace **)&p_gpio);
-
-    (*p_gpio)->SetOutputMode(p_gpio, 1 << heartbeatLED);
-    (*p_gpio)->SetMux(p_gpio, heartbeatLED, 0); // set to GPIO
-    // Blink
-    for (;;) {
-        (*p_gpio)->Set(p_gpio, 1 << heartbeatLED);
-        UEZTaskDelay(250);
-        (*p_gpio)->Clear(p_gpio, 1 << heartbeatLED);
-        UEZTaskDelay(250);
+    // initial quick blink at bootup
+    for (int i = 0; i < 20; i++) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY/5);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY/5);
     }
-#else
-    TUInt32 blinkrate = 250;
-
-    UEZGPIOOutput(GPIO_P0_11);
 
     // Blink
-    for (;;) {
-        UEZGPIOSet(GPIO_P0_11);
-        UEZTaskDelay(blinkrate);
-        UEZGPIOClear(GPIO_P0_11);
-        UEZTaskDelay(blinkrate);
+    while(1) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY);
     }
-#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -90,7 +82,10 @@ T_uezError SetupTasks(void)
 
 #if APP_ENABLE_HEARTBEAT_LED_ON
     // Start up the heart beat of the LED
-    UEZTaskCreate(Heartbeat, "Heart", 64, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+    UEZTaskCreate(Heartbeat, "Heart", 80, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+#endif
+#if (UEZ_SPEAKER_TEST == 1)
+    UEZTaskCreate(SpkrTestContinuous, "Tone", 256, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif
 
     error = UEZTaskCreate(
@@ -102,6 +97,45 @@ T_uezError SetupTasks(void)
                 0);
 
     return error;
+}
+
+#ifndef UEZ_SPEAKER_TEST_HZ 
+#define UEZ_SPEAKER_TEST_HZ 1600 // Maximum power output for BeStar Speaker
+#endif
+/*---------------------------------------------------------------------------*
+ * Task:  Speaker Test
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Continuous Speaker Test at Constant Hz Tone
+ * Inputs:
+ *      T_uezTask aMyTask            -- Handle to this task
+ *      void *aParams               -- Parameters.  Not used.
+ * Outputs:
+ *      TUInt32                     -- Never returns.
+ *---------------------------------------------------------------------------*/
+TUInt32 SpkrTestContinuous(T_uezTask aMyTask, void *aParams)
+{
+    UEZTaskDelay(7500);
+    for (;;)
+    {
+        if (G_mmTestMode == EFalse)
+        {
+            UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+            
+            while (G_mmTestMode == EFalse) {
+                PlayAudioContinuous(UEZ_SPEAKER_TEST_HZ);
+                UEZTaskDelay(1000);
+            }
+            
+            UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+        }
+        else
+        {
+          while (G_mmTestMode == ETrue) {
+            UEZTaskDelay(10000);
+          }
+        }
+    }
 }
 
 /*-------------------------------------------------------------------------*

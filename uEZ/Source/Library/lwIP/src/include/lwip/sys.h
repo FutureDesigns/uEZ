@@ -113,7 +113,7 @@ void sys_sem_signal(sys_sem_t sem);
 u32_t sys_arch_sem_wait(sys_sem_t sem, u32_t timeout);
 void sys_sem_free(sys_sem_t sem);
 void sys_sem_wait(sys_sem_t sem);
-int sys_sem_wait_timeout(sys_sem_t sem, u32_t timeout);
+int32_t sys_sem_wait_timeout(sys_sem_t sem, u32_t timeout);
 
 /* Time functions. */
 #ifndef sys_msleep
@@ -124,7 +124,7 @@ u32_t sys_jiffies(void); /* since power up. */
 #endif
 
 /* Mailbox functions. */
-sys_mbox_t sys_mbox_new(int size);
+sys_mbox_t sys_mbox_new(int32_t size);
 void sys_mbox_post(sys_mbox_t mbox, void *msg);
 err_t sys_mbox_trypost(sys_mbox_t mbox, void *msg);
 u32_t sys_arch_mbox_fetch(sys_mbox_t mbox, void **msg, u32_t timeout);
@@ -137,7 +137,7 @@ void sys_mbox_free(sys_mbox_t mbox);
 void sys_mbox_fetch(sys_mbox_t mbox, void **msg);
 
 /* Thread functions. */
-sys_thread_t sys_thread_new(char *name, void (* thread)(void *arg), void *arg, int stacksize, int prio);
+sys_thread_t sys_thread_new(char *name, void (* thread)(void *arg), void *arg, int32_t stacksize, int32_t prio);
 
 /* The following functions are used only in Unix code, and
    can be omitted when porting the stack. */

@@ -45,7 +45,7 @@
 #include "trcHardwarePort.h"
 #include <uEZProcessor.h>
 
-extern int uiInEventGroupSetBitsFromISR;
+extern int32_t uiInEventGroupSetBitsFromISR;
 
 #define USE_TRACEALYZER_RECORDER configUSE_TRACE_FACILITY
 
@@ -59,20 +59,20 @@ extern int uiInEventGroupSetBitsFromISR;
 #if (SELECTED_PORT == PORT_ARM_CortexM)
 
 	/* Uses CMSIS API */
-	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int __irq_status;
+	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int32_t __irq_status;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = __get_PRIMASK(); __set_PRIMASK(1);}
 	#define TRACE_EXIT_CRITICAL_SECTION() {__set_PRIMASK(__irq_status);}
 
 #endif
 
 #if (SELECTED_PORT == PORT_ARM_CORTEX_M0)
-	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int __irq_status;
+	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int32_t __irq_status;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = portSET_INTERRUPT_MASK_FROM_ISR();}
 	#define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(__irq_status);}
 #endif
 
 #if ((SELECTED_PORT == PORT_ARM_CORTEX_A9) || (SELECTED_PORT == PORT_Renesas_RX600) || (SELECTED_PORT == PORT_MICROCHIP_PIC32MX) || (SELECTED_PORT == PORT_MICROCHIP_PIC32MZ))
-	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int __irq_status;
+	#define TRACE_SR_ALLOC_CRITICAL_SECTION() int32_t __irq_status;
 	#define TRACE_ENTER_CRITICAL_SECTION() {__irq_status = portSET_INTERRUPT_MASK_FROM_ISR();}
 	#define TRACE_EXIT_CRITICAL_SECTION() {portCLEAR_INTERRUPT_MASK_FROM_ISR(__irq_status);}
 #endif

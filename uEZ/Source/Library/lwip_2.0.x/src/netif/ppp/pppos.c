@@ -63,8 +63,8 @@ static void pppos_listen(ppp_pcb *ppp, void *ctx);
 #endif /* PPP_SERVER */
 static void pppos_disconnect(ppp_pcb *ppp, void *ctx);
 static err_t pppos_destroy(ppp_pcb *ppp, void *ctx);
-static void pppos_send_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp);
-static void pppos_recv_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp);
+static void pppos_send_config(ppp_pcb *ppp, void *ctx, u32_t accm, int32_t pcomp, int32_t accomp);
+static void pppos_recv_config(ppp_pcb *ppp, void *ctx, u32_t accm, int32_t pcomp, int32_t accomp);
 
 /* Prototypes for procedures local to this file. */
 #if PPP_INPROC_IRQ_SAFE
@@ -138,8 +138,8 @@ static const u16_t fcstab[256] = {
 static u16_t
 ppp_get_fcs(u8_t byte)
 {
-  unsigned int octet;
-  int bit;
+  uint32_t octet;
+  int32_t bit;
   octet = byte;
   for (bit = 8; bit-- > 0; ) {
     octet = (octet & 0x01) ? ((octet >> 1) ^ PPP_FCS_POLYNOMIAL) : (octet >> 1);
@@ -407,7 +407,7 @@ pppos_destroy(ppp_pcb *ppp, void *ctx)
  * @param l length of received data
  */
 err_t
-pppos_input_tcpip(ppp_pcb *ppp, u8_t *s, int l)
+pppos_input_tcpip(ppp_pcb *ppp, u8_t *s, int32_t l)
 {
   struct pbuf *p;
   err_t err;
@@ -461,7 +461,7 @@ PACK_STRUCT_END
  * @param l length of received data
  */
 void
-pppos_input(ppp_pcb *ppp, u8_t *s, int l)
+pppos_input(ppp_pcb *ppp, u8_t *s, int32_t l)
 {
   pppos_pcb *pppos = (pppos_pcb *)ppp->link_ctx_cb;
   struct pbuf *next_pbuf;
@@ -715,9 +715,9 @@ drop:
 #endif /* PPP_INPROC_IRQ_SAFE */
 
 static void
-pppos_send_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp)
+pppos_send_config(ppp_pcb *ppp, void *ctx, u32_t accm, int32_t pcomp, int32_t accomp)
 {
-  int i;
+  int32_t i;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   LWIP_UNUSED_ARG(ppp);
 
@@ -735,9 +735,9 @@ pppos_send_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp)
 }
 
 static void
-pppos_recv_config(ppp_pcb *ppp, void *ctx, u32_t accm, int pcomp, int accomp)
+pppos_recv_config(ppp_pcb *ppp, void *ctx, u32_t accm, int32_t pcomp, int32_t accomp)
 {
-  int i;
+  int32_t i;
   pppos_pcb *pppos = (pppos_pcb *)ctx;
   PPPOS_DECL_PROTECT(lev);
   LWIP_UNUSED_ARG(ppp);

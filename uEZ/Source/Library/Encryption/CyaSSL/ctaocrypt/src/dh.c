@@ -82,9 +82,9 @@ static word32 DiscreteLogWorkFactor(word32 n)
 }
 
 
-static int GeneratePrivate(DhKey* key, RNG* rng, byte* priv, word32* privSz)
+static int32_t GeneratePrivate(DhKey* key, RNG* rng, byte* priv, word32* privSz)
 {
-    int ret;
+    int32_t ret;
     word32 sz = mp_unsigned_bin_size(&key->p);
     sz = min(sz, 2 * DiscreteLogWorkFactor(sz * CYASSL_BIT_SIZE) /
                                            CYASSL_BIT_SIZE + 1);
@@ -101,10 +101,10 @@ static int GeneratePrivate(DhKey* key, RNG* rng, byte* priv, word32* privSz)
 }
 
 
-static int GeneratePublic(DhKey* key, const byte* priv, word32 privSz,
+static int32_t GeneratePublic(DhKey* key, const byte* priv, word32 privSz,
                           byte* pub, word32* pubSz)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     mp_int x; 
     mp_int y;
@@ -131,18 +131,18 @@ static int GeneratePublic(DhKey* key, const byte* priv, word32 privSz,
 }
 
 
-int DhGenerateKeyPair(DhKey* key, RNG* rng, byte* priv, word32* privSz,
+int32_t DhGenerateKeyPair(DhKey* key, RNG* rng, byte* priv, word32* privSz,
                       byte* pub, word32* pubSz)
 {
-    int ret = GeneratePrivate(key, rng, priv, privSz);
+    int32_t ret = GeneratePrivate(key, rng, priv, privSz);
 
     return (ret != 0) ? ret : GeneratePublic(key, priv, *privSz, pub, pubSz);
 }
 
-int DhAgree(DhKey* key, byte* agree, word32* agreeSz, const byte* priv,
+int32_t DhAgree(DhKey* key, byte* agree, word32* agreeSz, const byte* priv,
             word32 privSz, const byte* otherPub, word32 pubSz)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     mp_int x; 
     mp_int y;

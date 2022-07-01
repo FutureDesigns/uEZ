@@ -99,18 +99,18 @@
  * Each interface is described by upap structure.
  */
 typedef struct upap_state {
-  int us_unit;           /* Interface unit number */
+  int32_t us_unit;           /* Interface unit number */
   const char *us_user;   /* User */
-  int us_userlen;        /* User length */
+  int32_t us_userlen;        /* User length */
   const char *us_passwd; /* Password */
-  int us_passwdlen;      /* Password length */
-  int us_clientstate;    /* Client state */
-  int us_serverstate;    /* Server state */
+  int32_t us_passwdlen;      /* Password length */
+  int32_t us_clientstate;    /* Client state */
+  int32_t us_serverstate;    /* Server state */
   u_char us_id;          /* Current id */
-  int us_timeouttime;    /* Timeout (seconds) for auth-req retrans. */
-  int us_transmits;      /* Number of auth-reqs sent */
-  int us_maxtransmits;   /* Maximum number of auth-reqs to send */
-  int us_reqtimeout;     /* Time to wait for auth-req from peer */
+  int32_t us_timeouttime;    /* Timeout (seconds) for auth-req retrans. */
+  int32_t us_transmits;      /* Number of auth-reqs sent */
+  int32_t us_maxtransmits;   /* Maximum number of auth-reqs to send */
+  int32_t us_reqtimeout;     /* Time to wait for auth-req from peer */
 } upap_state;
 
 
@@ -120,9 +120,9 @@ typedef struct upap_state {
 
 extern upap_state upap[];
 
-void upap_setloginpasswd(int unit, const char *luser, const char *lpassword);
-void upap_authwithpeer  (int, char *, char *);
-void upap_authpeer      (int);
+void upap_setloginpasswd(int32_t unit, const char *luser, const char *lpassword);
+void upap_authwithpeer  (int32_t, char *, char *);
+void upap_authpeer      (int32_t);
 
 extern struct protent pap_protent;
 

@@ -53,7 +53,7 @@ const byte base64Decode[] = { 62, BAD, BAD, BAD, 63,   /* + starts at 0x2B */
                             };
 
 
-int Base64_Decode(const byte* in, word32 inLen, byte* out, word32* outLen)
+int32_t Base64_Decode(const byte* in, word32 inLen, byte* out, word32* outLen)
 {
     word32 i = 0;
     word32 j = 0;
@@ -70,8 +70,8 @@ int Base64_Decode(const byte* in, word32 inLen, byte* out, word32* outLen)
         byte e3 = in[j++];
         byte e4 = in[j++];
 
-        int pad3 = 0;
-        int pad4 = 0;
+        int32_t pad3 = 0;
+        int32_t pad4 = 0;
 
         if (e1 == 0)            /* end file 0's */
             break;
@@ -149,10 +149,10 @@ const byte base64Encode[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 
 /* make sure *i (idx) won't exceed max, store and possibly escape to out,
  * raw means use e w/o decode,  0 on success */
-static int CEscape(int escaped, byte e, byte* out, word32* i, word32 max,
-                  int raw)
+static int32_t CEscape(int32_t escaped, byte e, byte* out, word32* i, word32 max,
+                  int32_t raw)
 {
-    int    doEscape = 0;
+    int32_t    doEscape = 0;
     word32 needed = 1;
     word32 idx = *i;
 
@@ -224,10 +224,10 @@ static int CEscape(int escaped, byte e, byte* out, word32* i, word32 max,
 
 
 /* internal worker, handles both escaped and normal line endings */
-static int DoBase64_Encode(const byte* in, word32 inLen, byte* out,
-                           word32* outLen, int escaped)
+static int32_t DoBase64_Encode(const byte* in, word32 inLen, byte* out,
+                           word32* outLen, int32_t escaped)
 {
-    int    ret = 0;
+    int32_t    ret = 0;
     word32 i = 0,
            j = 0,
            n = 0;   /* new line counter */
@@ -275,7 +275,7 @@ static int DoBase64_Encode(const byte* in, word32 inLen, byte* out,
 
     /* last integral */
     if (inLen && ret == 0) {
-        int twoBytes = (inLen == 2);
+        int32_t twoBytes = (inLen == 2);
 
         byte b1 = in[j++];
         byte b2 = (twoBytes) ? in[j++] : 0;
@@ -311,14 +311,14 @@ static int DoBase64_Encode(const byte* in, word32 inLen, byte* out,
 
 
 /* Base64 Encode, PEM style, with \n line endings */
-int Base64_Encode(const byte* in, word32 inLen, byte* out, word32* outLen)
+int32_t Base64_Encode(const byte* in, word32 inLen, byte* out, word32* outLen)
 {
     return DoBase64_Encode(in, inLen, out, outLen, 0);
 }
 
 
 /* Base64 Encode, with %0A esacped line endings instead of \n */
-int Base64_EncodeEsc(const byte* in, word32 inLen, byte* out, word32* outLen)
+int32_t Base64_EncodeEsc(const byte* in, word32 inLen, byte* out, word32* outLen)
 {
     return DoBase64_Encode(in, inLen, out, outLen, 1);
 }
@@ -340,7 +340,7 @@ const byte hexDecode[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            10, 11, 12, 13, 14, 15   /* lower case a-f */
                          };  /* A starts at 0x41 not 0x3A */
 
-int Base16_Decode(const byte* in, word32 inLen, byte* out, word32* outLen)
+int32_t Base16_Decode(const byte* in, word32 inLen, byte* out, word32* outLen)
 {
     word32 inIdx  = 0;
     word32 outIdx = 0;

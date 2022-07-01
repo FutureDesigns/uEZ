@@ -46,7 +46,7 @@ typedef struct {
  * Globals:
  *---------------------------------------------------------------------------*/
 static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum);
-static int IUpdate(int aUnitAddress);
+static int32_t IUpdate(int32_t aUnitAddress);
 
 static USB_ClassInfo_CDC_Host_t Serial_Interface0[MAX_SERIAL_INTERFACES] = {
     {
@@ -218,12 +218,12 @@ T_uezError Stream_LPCUSBLib_SerialHost_InitializeWorkspace(void *aW)
  * Outputs:
  *      TUInt32                      -- return code (never returns)
  *---------------------------------------------------------------------------*/
-static int IUpdate(int aUnitAddress)
+static int32_t IUpdate(int32_t aUnitAddress)
 {
     T_Stream_LPCUSBLib_SerialHost_Workspace *p = G_workspaces[aUnitAddress];
     TInt32 i, j;
     TUInt16 dataLen;
-    int activity = 0;
+    int32_t activity = 0;
 
     /* For each CDC interface check if any data is received, if so read data, modify data and send it back to device. */
     for (i = 0; i < serialInfCount; i++) {

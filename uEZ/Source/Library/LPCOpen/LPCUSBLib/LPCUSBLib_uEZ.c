@@ -83,7 +83,7 @@ static T_LPCUSBLib_Host_Callbacks G_hostCallbacks[2] = {
 
 // USB Device globals:
 T_uezTask G_usbDevTask = 0;
-static int G_usbDevCorenum;
+static int32_t G_usbDevCorenum;
 T_uezSemaphore G_usbDevWait = 0;
 
 // USB Host Globals:
@@ -162,7 +162,7 @@ uint16_t CALLBACK_USB_GetDescriptor(uint8_t corenum,
     return G_deviceCallbacks.GetDescriptor(corenum, wValue, wIndex, DescriptorAddress);
 }
 
-T_uezError UEZ_LPCUSBLib_Device_Require(int aUnitAddress, T_LPCUSBLib_Device_Callbacks *aCallbacks, TUInt8 aForceFullspeed)
+T_uezError UEZ_LPCUSBLib_Device_Require(int32_t aUnitAddress, T_LPCUSBLib_Device_Callbacks *aCallbacks, TUInt8 aForceFullspeed)
 {
     T_uezError error;
     extern void LPCUSBLib_USB0_IRQHandler(void);
@@ -222,8 +222,8 @@ T_uezError UEZ_LPCUSBLib_Device_Require(int aUnitAddress, T_LPCUSBLib_Device_Cal
 
 TUInt32 LPCUSBLIB_USBDeviceMonitor(T_uezTask aMyTask, void *aParameters)
 {
-    int activity;
-//static int count = 0;
+    int32_t activity;
+//static int32_t count = 0;
     if (G_usbDevWait == 0) {
         UEZSemaphoreCreateCounting(&G_usbDevWait, 1, 1);
     }
@@ -290,7 +290,7 @@ void EVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 
 TUInt32 LPCUSBLIB_USBHostMonitor(T_uezTask aMyTask, void *aParameters)
 {
-    int activity;
+    int32_t activity;
     if (G_usbHostWait == 0) {
         UEZSemaphoreCreateCounting(&G_usbHostWait, 1, 1);
     }
@@ -298,7 +298,7 @@ TUInt32 LPCUSBLIB_USBHostMonitor(T_uezTask aMyTask, void *aParameters)
     while (1) {
         activity = 0;
         // Check both USB0 and USB1
-        for (int i=0; i<2; i++) {
+        for (int32_t i=0; i<2; i++) {
             if (G_hostCallbacks[i].Update) {
                 UEZ_LPCUSBLib_USBTask(i, USB_MODE_Host);
                 if (G_hostCallbacks[i].Update)
@@ -316,7 +316,7 @@ TUInt32 LPCUSBLIB_USBHostMonitor(T_uezTask aMyTask, void *aParameters)
 //    return 0;
 }
 
-T_uezError UEZ_LPCUSBLib_Host_Require(int aUnitAddress, T_LPCUSBLib_Host_Callbacks *aCallbacks, TUInt8 aForceFullspeed)
+T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Callbacks *aCallbacks, TUInt8 aForceFullspeed)
 {
     T_uezError error;
     extern void LPCUSBLib_USB0_IRQHandler(void);

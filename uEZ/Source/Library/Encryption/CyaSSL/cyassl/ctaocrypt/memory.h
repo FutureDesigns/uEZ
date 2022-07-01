@@ -38,7 +38,7 @@ typedef void *(*CyaSSL_Realloc_cb)(void *ptr, size_t size);
 
 
 /* Public set function */
-CYASSL_API int CyaSSL_SetAllocators(CyaSSL_Malloc_cb  malloc_function,
+CYASSL_API int32_t CyaSSL_SetAllocators(CyaSSL_Malloc_cb  malloc_function,
                                     CyaSSL_Free_cb    free_function,
                                     CyaSSL_Realloc_cb realloc_function);
 

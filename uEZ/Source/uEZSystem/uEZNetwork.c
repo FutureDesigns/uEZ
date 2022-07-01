@@ -813,7 +813,7 @@ T_uezError UEZNetworkIPV4StringToAddr(
         const char *aString,
         T_uezNetworkAddr *aAddr)
 {
-    unsigned int a[4];//a1, a2, a3, a4;
+    uint32_t a[4];//a1, a2, a3, a4;
     char octet[4];
     TUInt8 i = 0;
     TUInt8 j = 0;

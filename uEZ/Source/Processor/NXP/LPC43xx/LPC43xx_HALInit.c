@@ -21,7 +21,7 @@
 #include <uEZ.h>
 #include <uEZProcessor.h>
 
-unsigned int G_LPC43xx_powerSetting;
+uint32_t G_LPC43xx_powerSetting;
 
 void uEZProcessorServicesInit(void)
 {

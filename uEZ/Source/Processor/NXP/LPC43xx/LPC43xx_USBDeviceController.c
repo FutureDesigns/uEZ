@@ -922,7 +922,7 @@ void LPC43xx_USBDev_ForceAddressAndConfiguration(
  *-------------------------------------------------------------------------*/
 static void LPC43xx_USBDev_EndpointEnable(
                 T_LPC43xx_USBDev_Workspace *p,
-                int aIndex)
+                int32_t aIndex)
 {
     ILPC43xx_USBDev_CommandAndWrite(
         p,
@@ -942,7 +942,7 @@ static void LPC43xx_USBDev_EndpointEnable(
 #if 0
 static void LPC43xx_USBDev_EndpointDisable(
                 T_LPC43xx_USBDev_Workspace *p,
-                int aIndex)
+                int32_t aIndex)
 {
     ILPC43xx_USBDev_CommandAndWrite(
             p,

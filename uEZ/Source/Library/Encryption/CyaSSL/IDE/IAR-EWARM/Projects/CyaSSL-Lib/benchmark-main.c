@@ -22,14 +22,14 @@
 #include "stdio.h"
 
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
 func_args args = { 0 } ;
 
-extern int benchmark_test(void *args) ;
+extern int32_t benchmark_test(void *args) ;
 
 main(void) {
     benchmark_test(&args) ;

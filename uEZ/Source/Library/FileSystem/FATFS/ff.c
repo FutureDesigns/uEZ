@@ -697,7 +697,7 @@ void mem_cpy (void* dst, const void* src, UINT cnt) {
 
 /* Fill memory block */
 static
-void mem_set (void* dst, int val, UINT cnt) {
+void mem_set (void* dst, int32_t val, UINT cnt) {
 	BYTE *d = (BYTE*)dst;
 
 	do *d++ = (BYTE)val; while (--cnt);
@@ -705,9 +705,9 @@ void mem_set (void* dst, int val, UINT cnt) {
 
 /* Compare memory block */
 static
-int mem_cmp (const void* dst, const void* src, UINT cnt) {	/* ZR:same, NZ:different */
+int32_t mem_cmp (const void* dst, const void* src, UINT cnt) {	/* ZR:same, NZ:different */
 	const BYTE *d = (const BYTE *)dst, *s = (const BYTE *)src;
-	int r = 0;
+	int32_t r = 0;
 
 	do {
 		r = *d++ - *s++;
@@ -718,7 +718,7 @@ int mem_cmp (const void* dst, const void* src, UINT cnt) {	/* ZR:same, NZ:differ
 
 /* Check if chr is contained in the string */
 static
-int chk_chr (const char* str, int chr) {	/* NZ:contained, ZR:not contained */
+int32_t chk_chr (const char* str, int32_t chr) {	/* NZ:contained, ZR:not contained */
 	while (*str && *str != chr) str++;
 	return *str;
 }
@@ -731,7 +731,7 @@ int chk_chr (const char* str, int chr) {	/* NZ:contained, ZR:not contained */
 /* Request/Release grant to access the volume                            */
 /*-----------------------------------------------------------------------*/
 static
-int lock_fs (
+int32_t lock_fs (
 	FATFS* fs		/* File system object */
 )
 {
@@ -762,7 +762,7 @@ void unlock_fs (
 static
 FRESULT chk_lock (	/* Check if the file can be accessed */
 	DIR* dp,		/* Directory object pointing the file to be checked */
-	int acc			/* Desired access type (0:Read, 1:Write, 2:Delete/Rename) */
+	int32_t acc			/* Desired access type (0:Read, 1:Write, 2:Delete/Rename) */
 )
 {
 	UINT i, be;
@@ -787,7 +787,7 @@ FRESULT chk_lock (	/* Check if the file can be accessed */
 
 
 static
-int enq_lock (void)	/* Check if an entry is available for a new object */
+int32_t enq_lock (void)	/* Check if an entry is available for a new object */
 {
 	UINT i;
 
@@ -799,7 +799,7 @@ int enq_lock (void)	/* Check if an entry is available for a new object */
 static
 UINT inc_lock (	/* Increment object open counter and returns its index (0:Internal error) */
 	DIR* dp,	/* Directory object pointing the file to register or increment */
-	int acc		/* Desired access (0:Read, 1:Write, 2:Delete/Rename) */
+	int32_t acc		/* Desired access (0:Read, 1:Write, 2:Delete/Rename) */
 )
 {
 	UINT i;
@@ -813,14 +813,14 @@ UINT inc_lock (	/* Increment object open counter and returns its index (0:Intern
 
 	if (i == _FS_LOCK) {				/* Not opened. Register it as new. */
 		for (i = 0; i < _FS_LOCK && Files[i].fs; i++) ;
-		if (i == _FS_LOCK) return 0;	/* No free entry to register (int err) */
+		if (i == _FS_LOCK) return 0;	/* No free entry to register (int32_t err) */
 		Files[i].fs = dp->obj.fs;
 		Files[i].clu = dp->obj.sclust;
 		Files[i].ofs = dp->dptr;
 		Files[i].ctr = 0;
 	}
 
-	if (acc && Files[i].ctr) return 0;	/* Access violation (int err) */
+	if (acc && Files[i].ctr) return 0;	/* Access violation (int32_t err) */
 
 	Files[i].ctr = acc ? 0x100 : Files[i].ctr + 1;	/* Set semaphore value */
 
@@ -1177,7 +1177,7 @@ FRESULT change_bitmap (
 	FATFS* fs,	/* File system object */
 	DWORD clst,	/* Cluster number to change from */
 	DWORD ncl,	/* Number of clusters to be changed */
-	int bv		/* bit value to be set (0 or 1) */
+	int32_t bv		/* bit value to be set (0 or 1) */
 )
 {
 	BYTE bm;
@@ -1193,7 +1193,7 @@ FRESULT change_bitmap (
 		if (move_window(fs, sect++) != FR_OK) return FR_DISK_ERR;
 		do {
 			do {
-				if (bv == (int)((fs->win[i] & bm) != 0)) return FR_INT_ERR;	/* Is the bit expected value? */
+				if (bv == (int32_t)((fs->win[i] & bm) != 0)) return FR_INT_ERR;	/* Is the bit expected value? */
 				fs->win[i] ^= bm;	/* Flip the bit */
 				fs->wflag = 1;
 				if (--ncl == 0) return FR_OK;	/* All bits processed? */
@@ -1482,7 +1482,7 @@ FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 static
 FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DENIED:Could not stretch */
 	DIR* dp,		/* Pointer to the directory object */
-	int stretch		/* 0: Do not stretch table, 1: Stretch table if needed */
+	int32_t stretch		/* 0: Do not stretch table, 1: Stretch table if needed */
 )
 {
 	DWORD ofs, clst;
@@ -1567,7 +1567,7 @@ FRESULT dir_alloc (	/* FR_OK(0):succeeded, !=0:error */
 			res = move_window(fs, dp->sect);
 			if (res != FR_OK) break;
 #if _FS_EXFAT
-			if ((fs->fs_type == FS_EXFAT) ? (int)((dp->dir[XDIR_Type] & 0x80) == 0) : (int)(dp->dir[DIR_Name] == DDEM || dp->dir[DIR_Name] == 0)) {
+			if ((fs->fs_type == FS_EXFAT) ? (int32_t)((dp->dir[XDIR_Type] & 0x80) == 0) : (int32_t)(dp->dir[DIR_Name] == DDEM || dp->dir[DIR_Name] == 0)) {
 #else
 			if (dp->dir[DIR_Name] == DDEM || dp->dir[DIR_Name] == 0) {
 #endif
@@ -1638,7 +1638,7 @@ const BYTE LfnOfs[] = {1,3,5,7,9,14,16,18,20,22,24,28,30};	/* Offset of LFN char
 /* FAT-LFN: Compare a part of file name with an LFN entry */
 /*--------------------------------------------------------*/
 static
-int cmp_lfn (				/* 1:matched, 0:not matched */
+int32_t cmp_lfn (				/* 1:matched, 0:not matched */
 	const WCHAR* lfnbuf,	/* Pointer to the LFN working buffer to be compared */
 	BYTE* dir				/* Pointer to the directory entry containing the part of LFN */
 )
@@ -1674,7 +1674,7 @@ int cmp_lfn (				/* 1:matched, 0:not matched */
 /* FAT-LFN: Pick a part of file name from an LFN entry */
 /*-----------------------------------------------------*/
 static
-int pick_lfn (			/* 1:succeeded, 0:buffer overflow or invalid LFN entry */
+int32_t pick_lfn (			/* 1:succeeded, 0:buffer overflow or invalid LFN entry */
 	WCHAR* lfnbuf,		/* Pointer to the LFN working buffer */
 	BYTE* dir			/* Pointer to the LFN entry */
 )
@@ -2095,7 +2095,7 @@ void create_xdir (
 static
 FRESULT dir_read (
 	DIR* dp,		/* Pointer to the directory object */
-	int vol			/* Filtered by 0:file/directory or 1:volume label */
+	int32_t vol			/* Filtered by 0:file/directory or 1:volume label */
 )
 {
 	FRESULT res = FR_NO_FILE;
@@ -2129,7 +2129,7 @@ FRESULT dir_read (
 		{	/* On the FAT12/16/32 volume */
 			dp->obj.attr = a = dp->dir[DIR_Attr] & AM_MASK;	/* Get attribute */
 #if _USE_LFN != 0	/* LFN configuration */
-			if (c == DDEM || c == '.' || (int)((a & ~AM_ARC) == AM_VOL) != vol) {	/* An entry without valid data */
+			if (c == DDEM || c == '.' || (int32_t)((a & ~AM_ARC) == AM_VOL) != vol) {	/* An entry without valid data */
 				ord = 0xFF;
 			} else {
 				if (a == AM_LFN) {			/* An LFN entry is found */
@@ -2148,7 +2148,7 @@ FRESULT dir_read (
 				}
 			}
 #else		/* Non LFN configuration */
-			if (c != DDEM && c != '.' && a != AM_LFN && (int)((a & ~AM_ARC) == AM_VOL) == vol) {	/* Is it a valid entry? */
+			if (c != DDEM && c != '.' && a != AM_LFN && (int32_t)((a & ~AM_ARC) == AM_VOL) == vol) {	/* Is it a valid entry? */
 				break;
 			}
 #endif
@@ -2526,16 +2526,16 @@ WCHAR get_achar (		/* Get a character and advances ptr 1 or 2 */
 
 
 static
-int pattern_matching (	/* 0:not matched, 1:matched */
+int32_t pattern_matching (	/* 0:not matched, 1:matched */
 	const TCHAR* pat,	/* Matching pattern */
 	const TCHAR* nam,	/* String to be tested */
-	int skip,			/* Number of pre-skip chars (number of ?s) */
-	int inf				/* Infinite search (* specified) */
+	int32_t skip,			/* Number of pre-skip chars (number of ?s) */
+	int32_t inf				/* Infinite search (* specified) */
 )
 {
 	const TCHAR *pp, *np;
 	WCHAR pc, nc;
-	int nm, nx;
+	int32_t nm, nx;
 
 
 	while (skip--) {				/* Pre-skip name chars */
@@ -2857,13 +2857,13 @@ FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 /*-----------------------------------------------------------------------*/
 
 static
-int get_ldnumber (		/* Returns logical drive number (-1:invalid drive) */
+int32_t get_ldnumber (		/* Returns logical drive number (-1:invalid drive) */
 	const TCHAR** path	/* Pointer to pointer to the path name */
 )
 {
 	const TCHAR *tp, *tt;
 	UINT i;
-	int vol = -1;
+	int32_t vol = -1;
 #if _STR_VOLUME_ID		/* Find string drive id */
 	static const char* const str[] = {_VOLUME_STRS};
 	const char *sp;
@@ -2879,7 +2879,7 @@ int get_ldnumber (		/* Returns logical drive number (-1:invalid drive) */
 			i = *tp++ - '0'; 
 			if (i < 10 && tp == tt) {	/* Is there a numeric drive id? */
 				if (i < _VOLUMES) {	/* If a drive id is found, get the value and strip it */
-					vol = (int)i;
+					vol = (int32_t)i;
 					*path = ++tt;
 				}
 			}
@@ -2894,7 +2894,7 @@ int get_ldnumber (		/* Returns logical drive number (-1:invalid drive) */
 					} while (c && (TCHAR)c == tc);
 				} while ((c || tp != tt) && ++i < _VOLUMES);	/* Repeat for each id until pattern match */
 				if (i < _VOLUMES) {	/* If a drive id is found, get the value and strip it */
-					vol = (int)i;
+					vol = (int32_t)i;
 					*path = tt;
 				}
 			}
@@ -2953,7 +2953,7 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 )
 {
 	BYTE fmt, *pt;
-	int vol;
+	int32_t vol;
 	DSTATUS stat;
 	DWORD bsect, fasize, tsect, sysect, nclst, szbfat, br[4];
 	WORD nrsv;
@@ -3208,7 +3208,7 @@ FRESULT f_mount (
 )
 {
 	FATFS *cfs;
-	int vol;
+	int32_t vol;
 	FRESULT res;
 	const TCHAR *rp = path;
 
@@ -3815,7 +3815,7 @@ FRESULT f_chdrive (
 	const TCHAR* path		/* Drive number */
 )
 {
-	int vol;
+	int32_t vol;
 
 
 	/* Get logical drive number */
@@ -5257,7 +5257,7 @@ FRESULT f_mkfs (
 	DWORD b_vol, b_fat, b_data;				/* Base LBA for volume, fat, data */
 	DWORD sz_vol, sz_rsv, sz_fat, sz_dir;	/* Size for volume, fat, dir, data */
 	UINT i;
-	int vol;
+	int32_t vol;
 	DSTATUS stat;
 #if _USE_TRIM || _FS_EXFAT
 	DWORD tbl[3];
@@ -5769,11 +5769,11 @@ FRESULT f_fdisk (
 
 TCHAR* f_gets (
 	TCHAR* buff,	/* Pointer to the string buffer to read */
-	int len,		/* Size of string buffer (characters) */
+	int32_t len,		/* Size of string buffer (characters) */
 	FIL* fp			/* Pointer to the file object */
 )
 {
-	int n = 0;
+	int32_t n = 0;
 	TCHAR c, *p = buff;
 	BYTE s[2];
 	UINT rc;
@@ -5848,7 +5848,7 @@ TCHAR* f_gets (
 
 typedef struct {
 	FIL *fp;		/* Ptr to the writing file */
-	int idx, nchr;	/* Write index of buf[] (-1:error), number of chars written */
+	int32_t idx, nchr;	/* Write index of buf[] (-1:error), number of chars written */
 	BYTE buf[64];	/* Write buffer */
 } putbuff;
 
@@ -5860,7 +5860,7 @@ void putc_bfd (		/* Buffered write with code conversion */
 )
 {
 	UINT bw;
-	int i;
+	int32_t i;
 
 
 	if (_USE_STRFUNC == 2 && c == '\n') {	 /* LF -> CRLF conversion */
@@ -5900,7 +5900,7 @@ void putc_bfd (		/* Buffered write with code conversion */
 	pb->buf[i++] = (BYTE)c;
 #endif
 
-	if (i >= (int)(sizeof pb->buf) - 3) {	/* Write buffered characters to the file */
+	if (i >= (int32_t)(sizeof pb->buf) - 3) {	/* Write buffered characters to the file */
 		f_write(pb->fp, pb->buf, (UINT)i, &bw);
 		i = (bw == (UINT)i) ? 0 : -1;
 	}
@@ -5910,7 +5910,7 @@ void putc_bfd (		/* Buffered write with code conversion */
 
 
 static
-int putc_flush (		/* Flush left characters in the buffer */
+int32_t putc_flush (		/* Flush left characters in the buffer */
 	putbuff* pb
 )
 {
@@ -5935,7 +5935,7 @@ void putc_init (		/* Initialize write buffer */
 
 
 
-int f_putc (
+int32_t f_putc (
 	TCHAR c,	/* A character to be output */
 	FIL* fp		/* Pointer to the file object */
 )
@@ -5955,7 +5955,7 @@ int f_putc (
 /* Put a string to the file                                              */
 /*-----------------------------------------------------------------------*/
 
-int f_puts (
+int32_t f_puts (
 	const TCHAR* str,	/* Pointer to the string to be output */
 	FIL* fp				/* Pointer to the file object */
 )
@@ -5975,7 +5975,7 @@ int f_puts (
 /* Put a formatted string to the file                                    */
 /*-----------------------------------------------------------------------*/
 
-int f_printf (
+int32_t f_printf (
 	FIL* fp,			/* Pointer to the file object */
 	const TCHAR* fmt,	/* Pointer to the format string */
 	...					/* Optional arguments... */
@@ -6013,7 +6013,7 @@ int f_printf (
 			w = w * 10 + c - '0';
 			c = *fmt++;
 		}
-		if (c == 'l' || c == 'L') {	/* Prefix: Size is long int */
+		if (c == 'l' || c == 'L') {	/* Prefix: Size is int32_t */
 			f |= 4; c = *fmt++;
 		}
 		if (!c) break;
@@ -6030,7 +6030,7 @@ int f_printf (
 			while (j++ < w) putc_bfd(&pb, ' ');
 			continue;
 		case 'C' :					/* Character */
-			putc_bfd(&pb, (TCHAR)va_arg(arp, int)); continue;
+			putc_bfd(&pb, (TCHAR)va_arg(arp, int32_t)); continue;
 		case 'B' :					/* Binary */
 			r = 2; break;
 		case 'O' :					/* Octal */
@@ -6045,7 +6045,7 @@ int f_printf (
 		}
 
 		/* Get an argument and put it in numeral */
-		v = (f & 4) ? (DWORD)va_arg(arp, long) : ((d == 'D') ? (DWORD)(long)va_arg(arp, int) : (DWORD)va_arg(arp, unsigned int));
+		v = (f & 4) ? (DWORD)va_arg(arp, long) : ((d == 'D') ? (DWORD)(long)va_arg(arp, int32_t) : (DWORD)va_arg(arp, uint32_t));
 		if (d == 'D' && (v & 0x80000000)) {
 			v = 0 - v;
 			f |= 8;

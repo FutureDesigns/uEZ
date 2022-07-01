@@ -380,7 +380,7 @@ SPIFI_ERR_T spifiDevDeInit(const SPIFI_HANDLE_T *pHandle)
 /* Converts a SPIFILIB error code into a meaningful string */
 const char *spifiReturnErrString(SPIFI_ERR_T errCode)
 {
-    if (((unsigned int) errCode) < SPIFI_ERR_LASTINDEX) {
+    if (((uint32_t) errCode) < SPIFI_ERR_LASTINDEX) {
         return spifiErrStrings[errCode];
     }
 

@@ -98,6 +98,9 @@ void TempMode(const T_choice *aChoice);
 
 void AudioPlayerMode(const T_choice *aChoice);
 
+void TS_NoiseDetect(void);
+void FWTSTest(void);
+
 #ifdef __cplusplus
 }
 #endif

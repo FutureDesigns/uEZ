@@ -55,7 +55,7 @@ ADC_RequestSingle G_TS_ADCRequest;
  *---------------------------------------------------------------------------*/
 typedef struct {
     const DEVICE_TOUCHSCREEN *iDevice;
-    int aNumOpen;
+    int32_t aNumOpen;
 
     // Hardware linkage
     TS_DirectDrive_Configuration iConfig;

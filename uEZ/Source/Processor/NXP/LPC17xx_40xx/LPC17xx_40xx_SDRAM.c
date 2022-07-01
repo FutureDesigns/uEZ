@@ -269,7 +269,7 @@ void LPC17xx_40xx_SDRAM_Init_32BitBus(const T_LPC17xx_40xx_SDRAM_Configuration *
     __IO uint32_t *dc;
     volatile TUInt32 dmy = 0;
     volatile uint32_t ringosccount[2] = { 0, 0 };
-    volatile unsigned int i;
+    volatile uint32_t i;
 
     // Do this to get rid of warning in compiler that dmy is set but not used
     VARIABLE_NOT_USED(dmy);
@@ -431,7 +431,7 @@ void LPC17xx_40xx_SDRAM_Init_32BitBus(const T_LPC17xx_40xx_SDRAM_Configuration *
 
     //Set correct refresh period
     LPC_EMC->DynamicRefresh
-            = (unsigned int)((((aConfig->iClockFrequency / 1000)
+            = (uint32_t)((((aConfig->iClockFrequency / 1000)
                     * (aConfig->iRefreshPeriod)) / aConfig->iRefreshCycles)
                     / 16) + 1;
 
@@ -444,9 +444,9 @@ void LPC17xx_40xx_SDRAM_Init_32BitBus(const T_LPC17xx_40xx_SDRAM_Configuration *
 
     //Set mode register in SDRAM
     if (aConfig->iSize == (32 * 1024 * 1024)) {
-        dmy = *((volatile unsigned int*)(aConfig->iBaseAddress | (0x22 << 11)));
+        dmy = *((volatile uint32_t*)(aConfig->iBaseAddress | (0x22 << 11)));
     } else {
-        dmy = *((volatile unsigned int*)(aConfig->iBaseAddress | (0x22 << 10)));
+        dmy = *((volatile uint32_t*)(aConfig->iBaseAddress | (0x22 << 10)));
     }
 
     //wait 128 ABH clock cycles

@@ -45,7 +45,7 @@
 /* Internal functions */
 
 #if !defined INCLUDE_READY_EVENTS || INCLUDE_READY_EVENTS == 1
-	void vTraceSetReadyEventsEnabled(int status);
+	void vTraceSetReadyEventsEnabled(int32_t status);
 	void vTraceStoreTaskReady(objectHandleType handle);
 #else
 	#define vTraceSetReadyEventsEnabled(status)

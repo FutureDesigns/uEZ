@@ -271,7 +271,7 @@
 /*------------------- FS OPTIONS -------------------*/
 
 /** Set this to 1 and provide the functions:
- * - "int fs_open_custom(struct fs_file *file, const char *name)"
+ * - "int32_t fs_open_custom(struct fs_file *file, const char *name)"
  *    Called first for every opened file to allow opening files
  *    that are not included in fsdata(_custom).c
  * - "void fs_close_custom(struct fs_file *file)"

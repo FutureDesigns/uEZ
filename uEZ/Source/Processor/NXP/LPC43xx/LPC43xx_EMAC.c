@@ -1242,8 +1242,8 @@ void LPC43xx_EMAC_CopyToFrame(void *aWorkspace, void *aSource, TUInt32 aSize)
 
 #if DEBUG_LPC43xx_EMAC_PACKETS_OUT
         printf("OUT Packet %4d%s\n", aSize, (p->tptr != &TXBuffer[p->iTransmitIndex][0])?" (continuation)":"");
-        int len = aSize;
-        for (int i=0; i<len; i++) {
+        int32_t len = aSize;
+        for (int32_t i=0; i<len; i++) {
             printf("%02X ", ((TUInt8 *)aSource)[i]);
             if ((i%16) == 15)
                 printf("\n");
@@ -1278,8 +1278,8 @@ void LPC43xx_EMAC_CopyFromFrame(
 
 #if DEBUG_LPC43xx_EMAC_PACKETS_IN
     printf("IN  Packet %4d%s\n", aSize, (p->rptr != &RXBuffer[p->iReceiveIndex][0])?" (continuation)":"");
-    int len = aSize;
-    for (int i=0; i<len; i++) {
+    int32_t len = aSize;
+    for (int32_t i=0; i<len; i++) {
         printf("%02X ", ((TUInt8 *)aDestination)[i]);
         if ((i%16) == 15)
             printf("\n");

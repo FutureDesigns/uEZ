@@ -377,7 +377,7 @@ void
 netif_remove(struct netif *netif)
 {
 #if LWIP_IPV6
-  int i;
+  int32_t i;
 #endif
 
   if (netif == NULL) {

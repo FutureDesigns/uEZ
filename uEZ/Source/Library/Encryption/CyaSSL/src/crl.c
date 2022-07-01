@@ -35,12 +35,12 @@
 #include <string.h>
 
 #ifdef HAVE_CRL_MONITOR
-    static int StopMonitor(int mfd);
+    static int32_t StopMonitor(int32_t mfd);
 #endif
 
 
 /* Initialze CRL members */
-int InitCRL(CYASSL_CRL* crl, CYASSL_CERT_MANAGER* cm)
+int32_t InitCRL(CYASSL_CRL* crl, CYASSL_CERT_MANAGER* cm)
 {
     CYASSL_ENTER("InitCRL");
 
@@ -60,7 +60,7 @@ int InitCRL(CYASSL_CRL* crl, CYASSL_CERT_MANAGER* cm)
 
 
 /* Initialze CRL Entry */
-static int InitCRL_Entry(CRL_Entry* crle, DecodedCRL* dcrl)
+static int32_t InitCRL_Entry(CRL_Entry* crle, DecodedCRL* dcrl)
 {
     CYASSL_ENTER("InitCRL_Entry");
 
@@ -97,7 +97,7 @@ static void FreeCRL_Entry(CRL_Entry* crle)
 
 
 /* Free all CRL resources */
-void FreeCRL(CYASSL_CRL* crl, int dynamic)
+void FreeCRL(CYASSL_CRL* crl, int32_t dynamic)
 {
     CRL_Entry* tmp = crl->crlList;
 
@@ -134,11 +134,11 @@ void FreeCRL(CYASSL_CRL* crl, int dynamic)
 
 
 /* Is the cert ok with CRL, return 0 on success */
-int CheckCertCRL(CYASSL_CRL* crl, DecodedCert* cert)
+int32_t CheckCertCRL(CYASSL_CRL* crl, DecodedCert* cert)
 {
     CRL_Entry* crle;
-    int        foundEntry = 0;
-    int        ret = 0;
+    int32_t        foundEntry = 0;
+    int32_t        ret = 0;
 
     CYASSL_ENTER("CheckCertCRL");
 
@@ -188,7 +188,7 @@ int CheckCertCRL(CYASSL_CRL* crl, DecodedCert* cert)
 
             CYASSL_MSG("Issuing missing CRL callback");
             url[0] = '\0';
-            if (cert->extCrlInfoSz < (int)sizeof(url) -1 ) {
+            if (cert->extCrlInfoSz < (int32_t)sizeof(url) -1 ) {
                 XMEMCPY(url, cert->extCrlInfo, cert->extCrlInfoSz);
                 url[cert->extCrlInfoSz] = '\0';
             }
@@ -205,7 +205,7 @@ int CheckCertCRL(CYASSL_CRL* crl, DecodedCert* cert)
 
 
 /* Add Decoded CRL, 0 on success */
-static int AddCRL(CYASSL_CRL* crl, DecodedCRL* dcrl)
+static int32_t AddCRL(CYASSL_CRL* crl, DecodedCRL* dcrl)
 {
     CRL_Entry* crle;
 
@@ -238,9 +238,9 @@ static int AddCRL(CYASSL_CRL* crl, DecodedCRL* dcrl)
 
 
 /* Load CRL File of type, SSL_SUCCESS on ok */
-int BufferLoadCRL(CYASSL_CRL* crl, const byte* buff, long sz, int type)
+int32_t BufferLoadCRL(CYASSL_CRL* crl, const byte* buff, long sz, int32_t type)
 {
-    int          ret = SSL_SUCCESS;
+    int32_t          ret = SSL_SUCCESS;
     const byte*  myBuffer = buff;    /* if DER ok, otherwise switch */
     buffer       der;
 #ifdef CYASSL_SMALL_STACK
@@ -257,7 +257,7 @@ int BufferLoadCRL(CYASSL_CRL* crl, const byte* buff, long sz, int type)
         return BAD_FUNC_ARG;
 
     if (type == SSL_FILETYPE_PEM) {
-        int eccKey = 0;   /* not used */
+        int32_t eccKey = 0;   /* not used */
         EncryptedInfo info;
         info.ctx = NULL;
 
@@ -311,9 +311,9 @@ int BufferLoadCRL(CYASSL_CRL* crl, const byte* buff, long sz, int type)
 
 
 /* read in new CRL entries and save new list */
-static int SwapLists(CYASSL_CRL* crl)
+static int32_t SwapLists(CYASSL_CRL* crl)
 {
-    int        ret;
+    int32_t        ret;
     CRL_Entry* newList;
 #ifdef CYASSL_SMALL_STACK
     CYASSL_CRL* tmp;    
@@ -409,7 +409,7 @@ static int SwapLists(CYASSL_CRL* crl)
 
 
 /* shutdown monitor thread, 0 on success */
-static int StopMonitor(int mfd)
+static int32_t StopMonitor(int32_t mfd)
 {
     struct kevent change;
 
@@ -427,7 +427,7 @@ static int StopMonitor(int mfd)
 /* OS X  monitoring */
 static void* DoMonitor(void* arg)
 {
-    int fPEM, fDER;
+    int32_t fPEM, fDER;
     struct kevent change;
 
     CYASSL_CRL* crl = (CYASSL_CRL*)arg;
@@ -479,7 +479,7 @@ static void* DoMonitor(void* arg)
 
     for (;;) {
         struct kevent event;
-        int           numEvents = kevent(crl->mfd, &change, 1, &event, 1, NULL);
+        int32_t           numEvents = kevent(crl->mfd, &change, 1, &event, 1, NULL);
        
         CYASSL_MSG("Got kevent");
 
@@ -518,7 +518,7 @@ static void* DoMonitor(void* arg)
 
 
 #ifndef max
-    static INLINE int max(int a, int b)
+    static INLINE int32_t max(int32_t a, int32_t b)
     {
         return a > b ? a : b;
     }
@@ -526,7 +526,7 @@ static void* DoMonitor(void* arg)
 
 
 /* shutdown monitor thread, 0 on success */
-static int StopMonitor(int mfd)
+static int32_t StopMonitor(int32_t mfd)
 {
     word64 w64 = 1;
 
@@ -543,8 +543,8 @@ static int StopMonitor(int mfd)
 /* linux monitoring */
 static void* DoMonitor(void* arg)
 {
-    int         notifyFd;
-    int         wd  = -1;
+    int32_t         notifyFd;
+    int32_t         wd  = -1;
     CYASSL_CRL* crl = (CYASSL_CRL*)arg;
 #ifdef CYASSL_SMALL_STACK
     char*       buff;
@@ -597,8 +597,8 @@ static void* DoMonitor(void* arg)
 
     for (;;) {
         fd_set readfds;
-        int    result;
-        int    length;
+        int32_t    result;
+        int32_t    length;
 
         FD_ZERO(&readfds);
         FD_SET(notifyFd, &readfds);
@@ -650,7 +650,7 @@ static void* DoMonitor(void* arg)
 
 
 /* Start Monitoring the CRL path(s) in a thread */
-static int StartMonitorCRL(CYASSL_CRL* crl)
+static int32_t StartMonitorCRL(CYASSL_CRL* crl)
 {
     pthread_attr_t attr;
 
@@ -677,7 +677,7 @@ static int StartMonitorCRL(CYASSL_CRL* crl)
 
 #else /* HAVE_CRL_MONITOR */
 
-static int StartMonitorCRL(CYASSL_CRL* crl)
+static int32_t StartMonitorCRL(CYASSL_CRL* crl)
 {
     (void)crl;
 
@@ -691,11 +691,11 @@ static int StartMonitorCRL(CYASSL_CRL* crl)
 
 
 /* Load CRL path files of type, SSL_SUCCESS on ok */ 
-int LoadCRL(CYASSL_CRL* crl, const char* path, int type, int monitor)
+int32_t LoadCRL(CYASSL_CRL* crl, const char* path, int32_t type, int32_t monitor)
 {
     struct dirent* entry;
     DIR*           dir;
-    int            ret = SSL_SUCCESS;
+    int32_t            ret = SSL_SUCCESS;
 #ifdef CYASSL_SMALL_STACK
     char*          name;
 #else

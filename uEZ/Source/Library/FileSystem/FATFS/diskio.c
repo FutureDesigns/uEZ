@@ -15,7 +15,7 @@
 typedef unsigned short	WORD;
 typedef unsigned long	DWORD;
 typedef unsigned char	BYTE;
-typedef unsigned int	UINT;
+typedef uint32_t	UINT;
 typedef unsigned short  WCHAR;
 #include "diskio.h"
 //#include "mci.h"
@@ -157,10 +157,10 @@ DRESULT disk_read (
   DEVICE_MassStorage **p_ms = G_fatfsMassStorageDevices[drv];
   if (p_ms) {
     // Are we on a 32-bit boundary?
-    if ((((int)buff) & 3) != 0) {
+    if ((((int32_t)buff) & 3) != 0) {
       // If the pointer is NOT on a 32-bit boundary, do it the slow way
       // Determine 32-bit aligned memory pointer to scratch area
-      char *p_scratch = (char *)(((int)(G_fatfs[drv].scratch+3)) & ~3);
+      char *p_scratch = (char *)(((int32_t)(G_fatfs[drv].scratch+3)) & ~3);
       
       while (count--) {
         error = (*p_ms)->Read(p_ms, sector++, 1, p_scratch); // read data into scratch buffer first
@@ -210,10 +210,10 @@ DRESULT disk_write (
   DEVICE_MassStorage **p_ms = G_fatfsMassStorageDevices[drv];
   if (p_ms) {
     // Are we on a 32-bit boundary?
-    if ((((int)buff) & 3) != 0) {
+    if ((((int32_t)buff) & 3) != 0) {
       // If the pointer is NOT on a 32-bit boundary, do it the slow way
       // Determine 32-bit aligned memory pointer to scratch area
-      char *p_scratch = (char *)(((int)(G_fatfs[drv].scratch+3)) & ~3);
+      char *p_scratch = (char *)(((int32_t)(G_fatfs[drv].scratch+3)) & ~3);
       
       while (count--) {
         memcpy(p_scratch, buffPtr, 512); // copy data to write into aligned buffer first			    

@@ -45,7 +45,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZTypes.h>
 #include <lwipopts.h>
-#include <UEZPlatformAPI.h>
+#include <uEZPlatformAPI.h>
 
 #ifdef __cplusplus
 extern "C" {

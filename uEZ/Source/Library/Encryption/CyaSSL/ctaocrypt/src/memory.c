@@ -39,11 +39,11 @@ static CyaSSL_Malloc_cb  malloc_function = 0;
 static CyaSSL_Free_cb    free_function = 0;
 static CyaSSL_Realloc_cb realloc_function = 0;
 
-int CyaSSL_SetAllocators(CyaSSL_Malloc_cb  mf,
+int32_t CyaSSL_SetAllocators(CyaSSL_Malloc_cb  mf,
                          CyaSSL_Free_cb    ff,
                          CyaSSL_Realloc_cb rf)
 {
-    int res = 0;
+    int32_t res = 0;
 
     if (mf)
         malloc_function = mf;
@@ -122,7 +122,7 @@ static THREAD_LS_T byte pool_in[17*1024];
 static THREAD_LS_T byte pool_out[17*1024];
 
 
-void* XMALLOC(size_t n, void* heap, int type)
+void* XMALLOC(size_t n, void* heap, int32_t type)
 {
     (void)heap;
 
@@ -143,7 +143,7 @@ void* XMALLOC(size_t n, void* heap, int type)
     return malloc(n);
 }
 
-void* XREALLOC(void *p, size_t n, void* heap, int type)
+void* XREALLOC(void *p, size_t n, void* heap, int32_t type)
 {
     (void)heap;
 
@@ -166,7 +166,7 @@ void* XREALLOC(void *p, size_t n, void* heap, int type)
 
 
 /* unit api calls, let's make sure visisble with CYASSL_API */
-CYASSL_API void XFREE(void *p, void* heap, int type)
+CYASSL_API void XFREE(void *p, void* heap, int32_t type)
 {
     (void)heap;
 

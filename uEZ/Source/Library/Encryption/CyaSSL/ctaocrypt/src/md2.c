@@ -80,7 +80,7 @@ void Md2Update(Md2* md2, const byte* data, word32 len)
         len  -= L;
 
         if (md2->count == MD2_PAD_SIZE) {
-            int  i;
+            int32_t  i;
             byte t;
 
             md2->count = 0;
@@ -94,7 +94,7 @@ void Md2Update(Md2* md2, const byte* data, word32 len)
 
             t=0;
             for(i = 0; i < 18; i++) {
-                int j;
+                int32_t j;
                 for(j = 0; j < MD2_X_SIZE; j += 8) {
                     t = md2->X[j+0] ^= S[t];
                     t = md2->X[j+1] ^= S[t];
@@ -130,7 +130,7 @@ void Md2Final(Md2* md2, byte* hash)
 }
 
 
-int Md2Hash(const byte* data, word32 len, byte* hash)
+int32_t Md2Hash(const byte* data, word32 len, byte* hash)
 {
 #ifdef CYASSL_SMALL_STACK
     Md2* md2;

@@ -423,7 +423,7 @@ tcp_close(struct tcp_pcb *pcb)
  *         another err_t on error.
  */
 err_t
-tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx)
+tcp_shutdown(struct tcp_pcb *pcb, int32_t shut_rx, int32_t shut_tx)
 {
   if (pcb->state == LISTEN) {
     return ERR_CONN;
@@ -467,7 +467,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx)
  * @param reset boolean to indicate whether a reset should be sent
  */
 void
-tcp_abandon(struct tcp_pcb *pcb, int reset)
+tcp_abandon(struct tcp_pcb *pcb, int32_t reset)
 {
   u32_t seqno, ackno;
 #if LWIP_CALLBACK_API
@@ -485,7 +485,7 @@ tcp_abandon(struct tcp_pcb *pcb, int reset)
     tcp_pcb_remove(&tcp_tw_pcbs, pcb);
     memp_free(MEMP_TCP_PCB, pcb);
   } else {
-    int send_rst = 0;
+    int32_t send_rst = 0;
     u16_t local_port = 0;
     enum tcp_state last_state;
     seqno = pcb->snd_nxt;
@@ -561,8 +561,8 @@ tcp_abort(struct tcp_pcb *pcb)
 err_t
 tcp_bind(struct tcp_pcb *pcb, const ip_addr_t *ipaddr, u16_t port)
 {
-  int i;
-  int max_pcb_list = NUM_TCP_PCB_LISTS;
+  int32_t i;
+  int32_t max_pcb_list = NUM_TCP_PCB_LISTS;
   struct tcp_pcb *cpcb;
 
 #if LWIP_IPV4
@@ -793,7 +793,7 @@ tcp_update_rcv_ann_wnd(struct tcp_pcb *pcb)
 void
 tcp_recved(struct tcp_pcb *pcb, u16_t len)
 {
-  int wnd_inflation;
+  int32_t wnd_inflation;
 
   /* pcb->state LISTEN not allowed here */
   LWIP_ASSERT("don't call tcp_recved for listen-pcbs",
@@ -918,7 +918,7 @@ tcp_connect(struct tcp_pcb *pcb, const ip_addr_t *ipaddr, u16_t port,
       /* Since SOF_REUSEADDR allows reusing a local address, we have to make sure
          now that the 5-tuple is unique. */
       struct tcp_pcb *cpcb;
-      int i;
+      int32_t i;
       /* Don't check listen- and bound-PCBs, check active- and TIME-WAIT PCBs. */
       for (i = 2; i < NUM_TCP_PCB_LISTS; i++) {
         for (cpcb = *tcp_pcb_lists[i]; cpcb != NULL; cpcb = cpcb->next) {

@@ -180,7 +180,7 @@ ip_input(struct pbuf *p, struct netif *inp)
   u16_t iphdr_hlen;
   u16_t iphdr_len;
 #if LWIP_DHCP
-  int check_ip_src=1;
+  int32_t check_ip_src=1;
 #endif /* LWIP_DHCP */
 
   IP_STATS_INC(ip.recv);
@@ -254,7 +254,7 @@ ip_input(struct pbuf *p, struct netif *inp)
     /* start trying with inp. if that's not acceptable, start walking the
        list of configured netifs.
        'first' is used as a boolean to mark whether we started walking the list */
-    int first = 1;
+    int32_t first = 1;
     netif = inp;
     do {
       LWIP_DEBUGF(IP_DEBUG, ("ip_input: iphdr->dest 0x%"X32_F" netif->ip_addr 0x%"X32_F" (0x%"X32_F", 0x%"X32_F", 0x%"X32_F")\n",

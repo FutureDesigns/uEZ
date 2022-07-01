@@ -200,7 +200,7 @@ T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
 {
   T_LPC43xx_RTC_Workspace *p = (T_LPC43xx_RTC_Workspace *)aWorkspace;
   p->iExternalClock = aIsExternalClock;
-  //int int_status; // TODO track interrupt status
+  //int32_t int_status; // TODO track interrupt status
   // TODO cleanup more
   
   // Output RTC to CLK3 for testing, currently don't leave this on as we use CLKOUT

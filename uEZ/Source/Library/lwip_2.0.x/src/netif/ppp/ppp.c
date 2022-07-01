@@ -160,7 +160,7 @@ static struct timeval start_time; /* Time when link was started. */
 static struct pppd_stats old_link_stats;
 struct pppd_stats link_stats;
 unsigned link_connect_time;
-int link_stats_valid;
+int32_t link_stats_valid;
 #endif /* PPP_STATS_SUPPORT */
 
 /*
@@ -411,7 +411,7 @@ ppp_ioctl(ppp_pcb *pcb, u8_t cmd, void *arg)
       if (!arg) {
         goto fail;
       }
-      *(int *)arg = (int)(0
+      *(int32_t *)arg = (int32_t)(0
 #if PPP_IPV4_SUPPORT
            || pcb->if4_up
 #endif /* PPP_IPV4_SUPPORT */
@@ -425,7 +425,7 @@ ppp_ioctl(ppp_pcb *pcb, u8_t cmd, void *arg)
       if (!arg) {
         goto fail;
       }
-      *(int *)arg = (int)(pcb->err_code);
+      *(int32_t *)arg = (int32_t)(pcb->err_code);
       return ERR_OK;
 
     default:
@@ -604,7 +604,7 @@ err:
 /************************************/
 
 /* Initialize the PPP subsystem. */
-int ppp_init(void)
+int32_t ppp_init(void)
 {
 #if PPPOS_SUPPORT
   LWIP_MEMPOOL_INIT(PPPOS_PCB);
@@ -642,7 +642,7 @@ int ppp_init(void)
 ppp_pcb *ppp_new(struct netif *pppif, const struct link_callbacks *callbacks, void *link_ctx_cb, ppp_link_status_cb_fn link_status_cb, void *ctx_cb) {
   ppp_pcb *pcb;
   const struct protent *protp;
-  int i;
+  int32_t i;
 
   /* PPP is single-threaded: without a callback,
    * there is no way to know when the link is up. */
@@ -915,7 +915,7 @@ void ppp_input(ppp_pcb *pcb, struct pbuf *pb) {
 #endif /* VJ_SUPPORT */
 
     default: {
-      int i;
+      int32_t i;
       const struct protent *protp;
 
       /*
@@ -1027,7 +1027,7 @@ void ppp_link_terminated(ppp_pcb *pcb) {
 /*
  * new_phase - signal the start of a new phase of pppd's operation.
  */
-void new_phase(ppp_pcb *pcb, int p) {
+void new_phase(ppp_pcb *pcb, int32_t p) {
   pcb->phase = p;
   PPPDEBUG(LOG_DEBUG, ("ppp phase changed[%d]: phase=%d\n", pcb->netif->num, pcb->phase));
 #if PPP_NOTIFY_PHASE
@@ -1041,7 +1041,7 @@ void new_phase(ppp_pcb *pcb, int p) {
  * ppp_send_config - configure the transmit-side characteristics of
  * the ppp interface.
  */
-int ppp_send_config(ppp_pcb *pcb, int mtu, u32_t accm, int pcomp, int accomp) {
+int32_t ppp_send_config(ppp_pcb *pcb, int32_t mtu, u32_t accm, int32_t pcomp, int32_t accomp) {
   LWIP_UNUSED_ARG(mtu);
   /* pcb->mtu = mtu; -- set correctly with netif_set_mtu */
 
@@ -1057,7 +1057,7 @@ int ppp_send_config(ppp_pcb *pcb, int mtu, u32_t accm, int pcomp, int accomp) {
  * ppp_recv_config - configure the receive-side characteristics of
  * the ppp interface.
  */
-int ppp_recv_config(ppp_pcb *pcb, int mru, u32_t accm, int pcomp, int accomp) {
+int32_t ppp_recv_config(ppp_pcb *pcb, int32_t mru, u32_t accm, int32_t pcomp, int32_t accomp) {
   LWIP_UNUSED_ARG(mru);
 
   if (pcb->link_cb->recv_config) {
@@ -1072,7 +1072,7 @@ int ppp_recv_config(ppp_pcb *pcb, int mru, u32_t accm, int pcomp, int accomp) {
 /*
  * sifaddr - Config the interface IP addresses and netmask.
  */
-int sifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr, u32_t netmask) {
+int32_t sifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr, u32_t netmask) {
   ip4_addr_t ip, nm, gw;
 
   ip4_addr_set_u32(&ip, our_adr);
@@ -1087,7 +1087,7 @@ int sifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr, u32_t netmask) {
  * cifaddr - Clear the interface IP addresses, and delete routes
  * through the interface if possible.
  */
-int cifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr) {
+int32_t cifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr) {
   LWIP_UNUSED_ARG(our_adr);
   LWIP_UNUSED_ARG(his_adr);
 
@@ -1101,7 +1101,7 @@ int cifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr) {
  * sifproxyarp - Make a proxy ARP entry for the peer.
  */
 
-int sifproxyarp(ppp_pcb *pcb, u32_t his_adr) {
+int32_t sifproxyarp(ppp_pcb *pcb, u32_t his_adr) {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(his_adr);
   return 0;
@@ -1112,7 +1112,7 @@ int sifproxyarp(ppp_pcb *pcb, u32_t his_adr) {
  * cifproxyarp - Delete the proxy ARP entry for the peer.
  */
 
-int cifproxyarp(ppp_pcb *pcb, u32_t his_adr) {
+int32_t cifproxyarp(ppp_pcb *pcb, u32_t his_adr) {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(his_adr);
   return 0;
@@ -1123,7 +1123,7 @@ int cifproxyarp(ppp_pcb *pcb, u32_t his_adr) {
 /*
  * sdns - Config the DNS servers
  */
-int sdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2) {
+int32_t sdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2) {
   ip_addr_t ns;
   LWIP_UNUSED_ARG(pcb);
 
@@ -1138,7 +1138,7 @@ int sdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2) {
  *
  * cdns - Clear the DNS servers
  */
-int cdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2) {
+int32_t cdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2) {
   const ip_addr_t *nsa;
   ip_addr_t nsb;
   LWIP_UNUSED_ARG(pcb);
@@ -1162,7 +1162,7 @@ int cdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2) {
  *
  * sifvjcomp - config tcp header compression
  */
-int sifvjcomp(ppp_pcb *pcb, int vjcomp, int cidcomp, int maxcid) {
+int32_t sifvjcomp(ppp_pcb *pcb, int32_t vjcomp, int32_t cidcomp, int32_t maxcid) {
   pcb->vj_enabled = vjcomp;
   pcb->vj_comp.compressSlot = cidcomp;
   pcb->vj_comp.maxSlotIndex = maxcid;
@@ -1175,7 +1175,7 @@ int sifvjcomp(ppp_pcb *pcb, int vjcomp, int cidcomp, int maxcid) {
 /*
  * sifup - Config the interface up and enable IP packets to pass.
  */
-int sifup(ppp_pcb *pcb) {
+int32_t sifup(ppp_pcb *pcb) {
   pcb->if4_up = 1;
   pcb->err_code = PPPERR_NONE;
   netif_set_link_up(pcb->netif);
@@ -1190,7 +1190,7 @@ int sifup(ppp_pcb *pcb) {
  * sifdown - Disable the indicated protocol and config the interface
  *           down if there are no remaining protocols.
  */
-int sifdown(ppp_pcb *pcb) {
+int32_t sifdown(ppp_pcb *pcb) {
 
   pcb->if4_up = 0;
 
@@ -1255,7 +1255,7 @@ u32_t get_mask(u32_t addr) {
  *
  * sif6addr - Config the interface with an IPv6 link-local address
  */
-int sif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64) {
+int32_t sif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64) {
   ip6_addr_t ip6;
   LWIP_UNUSED_ARG(his_eui64);
 
@@ -1270,7 +1270,7 @@ int sif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64) {
  *
  * cif6addr - Remove IPv6 address from interface
  */
-int cif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64) {
+int32_t cif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64) {
   LWIP_UNUSED_ARG(our_eui64);
   LWIP_UNUSED_ARG(his_eui64);
 
@@ -1282,7 +1282,7 @@ int cif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64) {
 /*
  * sif6up - Config the interface up and enable IPv6 packets to pass.
  */
-int sif6up(ppp_pcb *pcb) {
+int32_t sif6up(ppp_pcb *pcb) {
 
   pcb->if6_up = 1;
   pcb->err_code = PPPERR_NONE;
@@ -1298,7 +1298,7 @@ int sif6up(ppp_pcb *pcb) {
  * sif6down - Disable the indicated protocol and config the interface
  *            down if there are no remaining protocols.
  */
-int sif6down(ppp_pcb *pcb) {
+int32_t sif6down(ppp_pcb *pcb) {
 
   pcb->if6_up = 0;
 
@@ -1320,7 +1320,7 @@ int sif6down(ppp_pcb *pcb) {
 /*
  * sifnpmode - Set the mode for handling packets for a given NP.
  */
-int sifnpmode(ppp_pcb *pcb, int proto, enum NPmode mode) {
+int32_t sifnpmode(ppp_pcb *pcb, int32_t proto, enum NPmode mode) {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(proto);
   LWIP_UNUSED_ARG(mode);
@@ -1331,7 +1331,7 @@ int sifnpmode(ppp_pcb *pcb, int proto, enum NPmode mode) {
 /*
  * netif_set_mtu - set the MTU on the PPP network interface.
  */
-void netif_set_mtu(ppp_pcb *pcb, int mtu) {
+void netif_set_mtu(ppp_pcb *pcb, int32_t mtu) {
 
   pcb->netif->mtu = mtu;
   PPPDEBUG(LOG_INFO, ("netif_set_mtu[%d]: mtu=%d\n", pcb->netif->num, mtu));
@@ -1340,7 +1340,7 @@ void netif_set_mtu(ppp_pcb *pcb, int mtu) {
 /*
  * netif_get_mtu - get PPP interface MTU
  */
-int netif_get_mtu(ppp_pcb *pcb) {
+int32_t netif_get_mtu(ppp_pcb *pcb) {
 
   return pcb->netif->mtu;
 }
@@ -1350,8 +1350,8 @@ int netif_get_mtu(ppp_pcb *pcb) {
 /*
  * ccp_test - whether a given compression method is acceptable for use.
  */
-int
-ccp_test(ppp_pcb *pcb, u_char *opt_ptr, int opt_len, int for_transmit)
+int32_t
+ccp_test(ppp_pcb *pcb, u_char *opt_ptr, int32_t opt_len, int32_t for_transmit)
 {
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(opt_ptr);
@@ -1409,7 +1409,7 @@ ccp_reset_decomp(ppp_pcb *pcb)
  * result of an error detected after decompression of a packet,
  * 0 otherwise.  This is necessary because of patent nonsense.
  */
-int
+int32_t
 ccp_fatal_error(ppp_pcb *pcb)
 {
   LWIP_UNUSED_ARG(pcb);
@@ -1423,7 +1423,7 @@ ccp_fatal_error(ppp_pcb *pcb)
  *
  * get_idle_time - return how long the link has been idle.
  */
-int get_idle_time(ppp_pcb *pcb, struct ppp_idle *ip) {
+int32_t get_idle_time(ppp_pcb *pcb, struct ppp_idle *ip) {
   /* FIXME: add idle time support and make it optional */
   LWIP_UNUSED_ARG(pcb);
   LWIP_UNUSED_ARG(ip);
@@ -1438,7 +1438,7 @@ int get_idle_time(ppp_pcb *pcb, struct ppp_idle *ip) {
  * and detect when we want to bring the real link up.
  * Return value is 1 if we need to bring up the link, 0 otherwise.
  */
-int get_loop_output(void) {
+int32_t get_loop_output(void) {
   return 0;
 }
 #endif /* DEMAND_SUPPORT */
@@ -1582,7 +1582,7 @@ struct protocol_list {
 /*
  * protocol_name - find a name for a PPP protocol.
  */
-const char * protocol_name(int proto) {
+const char * protocol_name(int32_t proto) {
   const struct protocol_list *lp;
 
   for (lp = protocol_list; lp->proto != 0; ++lp) {
@@ -1605,7 +1605,7 @@ const char * protocol_name(int proto) {
 /*
  * reset_link_stats - "reset" stats when link goes up.
  */
-void reset_link_stats(int u) {
+void reset_link_stats(int32_t u) {
   if (!get_ppp_stats(u, &old_link_stats)) {
     return;
   }
@@ -1615,7 +1615,7 @@ void reset_link_stats(int u) {
 /*
  * update_link_stats - get stats at link termination.
  */
-void update_link_stats(int u) {
+void update_link_stats(int32_t u) {
   struct timeval now;
   char numbuf[32];
 
@@ -1636,7 +1636,7 @@ void print_link_stats() {
    * Print connect time and statistics.
    */
   if (link_stats_valid) {
-    int t = (link_connect_time + 5) / 6;    /* 1/10ths of minutes */
+    int32_t t = (link_connect_time + 5) / 6;    /* 1/10ths of minutes */
     info("Connect time %d.%d minutes.", t/10, t%10);
     info("Sent %u bytes, received %u bytes.", link_stats.bytes_out, link_stats.bytes_in);
     link_stats_valid = 0;

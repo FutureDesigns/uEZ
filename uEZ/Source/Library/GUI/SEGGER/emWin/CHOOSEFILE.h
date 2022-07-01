@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : CHOOSEFILE.h
 Purpose     : File dialog interface
@@ -84,8 +85,8 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 typedef struct CHOOSEFILE_INFO CHOOSEFILE_INFO;
 
 struct CHOOSEFILE_INFO {
-  int               Cmd;                                 // Command for GetData() function
-  int               Id;                                  // Id of pressed button (for internal use only)
+  int32_t               Cmd;                                 // Command for GetData() function
+  int32_t               Id;                                  // Id of pressed button (for internal use only)
   const char      * pMask;                               // Mask to be used for searching files
   char            * pName;                               // (for internal use only)
   char            * pExt;                                // (for internal use only)
@@ -95,7 +96,7 @@ struct CHOOSEFILE_INFO {
   U32               SizeH;                               // FileSize high word
   U32               Flags;                               // File flags
   char              pRoot[CHOOSEFILE_MAXLEN];            // Buffer used internally and for passing result
-  int            (* pfGetData)(CHOOSEFILE_INFO * pInfo); // Pointer to GetData() function
+  int32_t            (* pfGetData)(CHOOSEFILE_INFO * pInfo); // Pointer to GetData() function
 };
 
 /*********************************************************************
@@ -105,15 +106,15 @@ struct CHOOSEFILE_INFO {
 **********************************************************************
 */
 WM_HWIN CHOOSEFILE_Create(WM_HWIN           hParent,  // Parent window
-                          int               xPos,     // xPosition in window coordinates
-                          int               yPos,     // yPosition in window coordinates
-                          int               xSize,    // xSize in pixels
-                          int               ySize,    // ySize in pixels
+                          int32_t               xPos,     // xPosition in window coordinates
+                          int32_t               yPos,     // yPosition in window coordinates
+                          int32_t               xSize,    // xSize in pixels
+                          int32_t               ySize,    // ySize in pixels
                           const char      * apRoot[], // Pointers to root strings
-                          int               NumRoot,  // Number of roots
-                          int               SelRoot,  // Root to be selected at first
+                          int32_t               NumRoot,  // Number of roots
+                          int32_t               SelRoot,  // Root to be selected at first
                           const char      * sCaption, // Shown in title bar
-                          int               Flags,    // Flags for FRAMEWINDOW
+                          int32_t               Flags,    // Flags for FRAMEWINDOW
                           CHOOSEFILE_INFO * pInfo     // Pointer to CHOOSEFILE_INFO structure
                           );
 
@@ -122,7 +123,7 @@ void    CHOOSEFILE_EnableToolTips      (void);
 void    CHOOSEFILE_SetButtonText       (WM_HWIN hWin, unsigned ButtonIndex, const char * pText);
 void    CHOOSEFILE_SetDefaultButtonText(unsigned ButtonIndex, const char * pText);
 void    CHOOSEFILE_SetDelim            (char Delim);
-void    CHOOSEFILE_SetToolTips         (const TOOLTIP_INFO * pInfo, int NumItems);
+void    CHOOSEFILE_SetToolTips         (const TOOLTIP_INFO * pInfo, int32_t NumItems);
 void    CHOOSEFILE_SetTopMode          (unsigned OnOff);
 
 #if defined(__cplusplus)
@@ -132,3 +133,5 @@ void    CHOOSEFILE_SetTopMode          (unsigned OnOff);
 #endif /* GUI_WINSUPPORT */
 
 #endif /* CHOOSEFILE_H */
+
+/*************************** End of file ****************************/

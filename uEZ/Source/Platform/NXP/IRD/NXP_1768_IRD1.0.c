@@ -88,7 +88,7 @@
 #include <uEZProcessor.h>
 #include <uEZStream.h>
 
-extern int MainTask(void);
+extern int32_t MainTask(void);
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -144,7 +144,7 @@ void UEZBSPDelay1US(void)
     #error "1 microSecond delay not defined for CPU speed"
 #endif
 }
-void UEZBSPDelayUS(unsigned int aMicroseconds)
+void UEZBSPDelayUS(uint32_t aMicroseconds)
 {
     while (aMicroseconds--)
         UEZBSPDelay1US();
@@ -159,7 +159,7 @@ void UEZBSPDelay1MS(void)
         UEZBSPDelay1US();
 }
 
-void UEZBSPDelayMS(unsigned int aMilliseconds)
+void UEZBSPDelayMS(uint32_t aMilliseconds)
 {
     while (aMilliseconds--) {
         UEZBSPDelay1MS();
@@ -1531,10 +1531,10 @@ unsigned long ulStacked_pc = 0UL;
  *      interrupts and put the platform in a halted state with a blinking
  *      LED.
  * Inputs:
- *      int aErrorCode -- Blink the LED a number of times equal to
+ *      int32_t aErrorCode -- Blink the LED a number of times equal to
  *          the error code.
  *---------------------------------------------------------------------------*/
-void UEZBSP_FatalError(int aErrorCode)
+void UEZBSP_FatalError(int32_t aErrorCode)
 {
     register TUInt32 i;
     register TUInt32 count;
@@ -1587,9 +1587,9 @@ void UEZBSP_FatalError(int aErrorCode)
  *      The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
  * Outputs:
- *      int -- not used, 0
+ *      int32_t -- not used, 0
  *---------------------------------------------------------------------------*/
-int main(void)
+int32_t main(void)
 {
 // Turn off piezo immediately!
 

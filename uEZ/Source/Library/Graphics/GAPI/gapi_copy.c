@@ -1044,8 +1044,8 @@ gapiResp_type LCDBMPCopySub( BMP_type const *const s, BMP_type *const d, sI16 dP
 {
   const sI16 sbiHeight = BMP_Height(s);
   sI16 sbiWidth = BMP_Width(s);
-  int invertSY = 0;
-  int invertDY = 0;
+  int32_t invertSY = 0;
+  int32_t invertDY = 0;
   const sI16 dbiHeight = BMP_Height(d);
   sI16 dbiWidth = BMP_Width(d);
 
@@ -1243,7 +1243,7 @@ gapiResp_type LCDBMPCopySub( BMP_type const *const s, BMP_type *const d, sI16 dP
         copy_func = CopyLine_16_16;
 #if 0
         {
-          int LCDBLT(uI16 *sB, sI16 sW, sI16 sH, sI16 sR, uI16 *dB, sI16 dW, sI16 dH, sI16 dR);
+          int32_t LCDBLT(uI16 *sB, sI16 sW, sI16 sH, sI16 sR, uI16 *dB, sI16 dW, sI16 dH, sI16 dR);
           (void)LCDBLT(psRaster.p16, Width, Height, sbiWidth, pdRaster.p16, Width, Height, dbiWidth);
           return(0);
         }

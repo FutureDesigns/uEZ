@@ -1335,7 +1335,7 @@ nd6_new_destination_cache_entry(void)
 void
 nd6_clear_destination_cache(void)
 {
-  int i;
+  int32_t i;
 
   for (i = 0; i < LWIP_ND6_NUM_DESTINATIONS; i++) {
     ip6_addr_set_any(&destination_cache[i].destination_addr);
@@ -1732,7 +1732,7 @@ nd6_queue_packet(s8_t neighbor_index, struct pbuf *q)
 {
   err_t result = ERR_MEM;
   struct pbuf *p;
-  int copy_needed = 0;
+  int32_t copy_needed = 0;
 #if LWIP_ND6_QUEUEING
   struct nd6_q_entry *new_entry, *r;
 #endif /* LWIP_ND6_QUEUEING */

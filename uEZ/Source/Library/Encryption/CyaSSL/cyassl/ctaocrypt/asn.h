@@ -141,7 +141,7 @@ enum Misc_ASN {
     MAX_LENGTH_SZ       =   4,     /* Max length size for DER encoding */
     MAX_RSA_E_SZ        =  16,     /* Max RSA public e size */
     MAX_CA_SZ           =  32,     /* Max encoded CA basic constraint length */
-    MAX_SN_SZ           =  35,     /* Max encoded serial number (INT) length */
+    MAX_SN_SZ           =  35,     /* Max encoded serial number (int32_t) length */
 #ifdef CYASSL_CERT_GEN
     #ifdef CYASSL_CERT_REQ
                           /* Max encoded cert req attributes length */
@@ -282,35 +282,35 @@ typedef struct Base_entry  Base_entry;
 struct Base_entry {
     Base_entry* next;   /* next on name base list */
     char*       name;   /* actual name base */
-    int         nameSz; /* name length */
+    int32_t         nameSz; /* name length */
     byte        type;   /* Name base type (DNS or RFC822) */
 };
 
 
 struct DecodedName {
     char*   fullName;
-    int     fullNameLen;
-    int     entryCount;
-    int     cnIdx;
-    int     cnLen;
-    int     snIdx;
-    int     snLen;
-    int     cIdx;
-    int     cLen;
-    int     lIdx;
-    int     lLen;
-    int     stIdx;
-    int     stLen;
-    int     oIdx;
-    int     oLen;
-    int     ouIdx;
-    int     ouLen;
-    int     emailIdx;
-    int     emailLen;
-    int     uidIdx;
-    int     uidLen;
-    int     serialIdx;
-    int     serialLen;
+    int32_t     fullNameLen;
+    int32_t     entryCount;
+    int32_t     cnIdx;
+    int32_t     cnLen;
+    int32_t     snIdx;
+    int32_t     snLen;
+    int32_t     cIdx;
+    int32_t     cLen;
+    int32_t     lIdx;
+    int32_t     lLen;
+    int32_t     stIdx;
+    int32_t     stLen;
+    int32_t     oIdx;
+    int32_t     oLen;
+    int32_t     ouIdx;
+    int32_t     ouLen;
+    int32_t     emailIdx;
+    int32_t     emailLen;
+    int32_t     uidIdx;
+    int32_t     uidLen;
+    int32_t     serialIdx;
+    int32_t     serialLen;
 };
 
 
@@ -322,13 +322,13 @@ typedef struct Signer      Signer;
 struct DecodedCert {
     byte*   publicKey;
     word32  pubKeySize;
-    int     pubKeyStored;
+    int32_t     pubKeyStored;
     word32  certBegin;               /* offset to start of cert          */
     word32  sigIndex;                /* offset to start of signature     */
     word32  sigLength;               /* length of signature              */
     word32  signatureOID;            /* sum of algorithm object id       */
     word32  keyOID;                  /* sum of key algo  object id       */
-    int     version;                 /* cert version, 1 or 3             */
+    int32_t     version;                 /* cert version, 1 or 3             */
     DNS_entry* altNames;             /* alt names list of dns entries    */
 #ifndef IGNORE_NAME_CONSTRAINTS
     DNS_entry* altEmailNames;        /* alt names list of RFC822 entries */
@@ -342,25 +342,25 @@ struct DecodedCert {
 #endif /* HAVE_OCSP */
     byte*   signature;               /* not owned, points into raw cert  */
     char*   subjectCN;               /* CommonName                       */
-    int     subjectCNLen;            /* CommonName Length                */
+    int32_t     subjectCNLen;            /* CommonName Length                */
     char    subjectCNEnc;            /* CommonName Encoding              */
-    int     subjectCNStored;         /* have we saved a copy we own      */
+    int32_t     subjectCNStored;         /* have we saved a copy we own      */
     char    issuer[ASN_NAME_MAX];    /* full name including common name  */
     char    subject[ASN_NAME_MAX];   /* full name including common name  */
-    int     verify;                  /* Default to yes, but could be off */
+    int32_t     verify;                  /* Default to yes, but could be off */
     byte*   source;                  /* byte buffer holder cert, NOT owner */
     word32  srcIdx;                  /* current offset into buffer       */
     word32  maxIdx;                  /* max offset based on init size    */
     void*   heap;                    /* for user memory overrides        */
     byte    serial[EXTERNAL_SERIAL_SIZE];  /* raw serial number          */
-    int     serialSz;                /* raw serial bytes stored */
+    int32_t     serialSz;                /* raw serial bytes stored */
     byte*   extensions;              /* not owned, points into raw cert  */
-    int     extensionsSz;            /* length of cert extensions */
+    int32_t     extensionsSz;            /* length of cert extensions */
     word32  extensionsIdx;           /* if want to go back and parse later */
     byte*   extAuthInfo;             /* Authority Information Access URI */
-    int     extAuthInfoSz;           /* length of the URI                */
+    int32_t     extAuthInfoSz;           /* length of the URI                */
     byte*   extCrlInfo;              /* CRL Distribution Points          */
-    int     extCrlInfoSz;            /* length of the URI                */
+    int32_t     extCrlInfoSz;            /* length of the URI                */
     byte    extSubjKeyId[SHA_SIZE];  /* Subject Key ID                   */
     byte    extSubjKeyIdSet;         /* Set when the SKID was read from cert */
     byte    extAuthKeyId[SHA_SIZE];  /* Authority Key ID                 */
@@ -399,50 +399,50 @@ struct DecodedCert {
     word32  pkCurveOID;           /* Public Key's curve OID */
 #endif /* HAVE_ECC */
     byte*   beforeDate;
-    int     beforeDateLen;
+    int32_t     beforeDateLen;
     byte*   afterDate;
-    int     afterDateLen;
+    int32_t     afterDateLen;
 #ifdef HAVE_PKCS7
     byte*   issuerRaw;               /* pointer to issuer inside source */
-    int     issuerRawLen;
+    int32_t     issuerRawLen;
 #endif
 #ifndef IGNORE_NAME_CONSTRAINT
     byte*   subjectRaw;               /* pointer to subject inside source */
-    int     subjectRawLen;
+    int32_t     subjectRawLen;
 #endif
 #if defined(CYASSL_CERT_GEN)
     /* easy access to subject info for other sign */
     char*   subjectSN;
-    int     subjectSNLen;
+    int32_t     subjectSNLen;
     char    subjectSNEnc;
     char*   subjectC;
-    int     subjectCLen;
+    int32_t     subjectCLen;
     char    subjectCEnc;
     char*   subjectL;
-    int     subjectLLen;
+    int32_t     subjectLLen;
     char    subjectLEnc;
     char*   subjectST;
-    int     subjectSTLen;
+    int32_t     subjectSTLen;
     char    subjectSTEnc;
     char*   subjectO;
-    int     subjectOLen;
+    int32_t     subjectOLen;
     char    subjectOEnc;
     char*   subjectOU;
-    int     subjectOULen;
+    int32_t     subjectOULen;
     char    subjectOUEnc;
     char*   subjectEmail;
-    int     subjectEmailLen;
+    int32_t     subjectEmailLen;
 #endif /* CYASSL_CERT_GEN */
 #ifdef OPENSSL_EXTRA
     DecodedName issuerName;
     DecodedName subjectName;
 #endif /* OPENSSL_EXTRA */
 #ifdef CYASSL_SEP
-    int     deviceTypeSz;
+    int32_t     deviceTypeSz;
     byte*   deviceType;
-    int     hwTypeSz;
+    int32_t     hwTypeSz;
     byte*   hwType;
-    int     hwSerialNumSz;
+    int32_t     hwSerialNumSz;
     byte*   hwSerialNum;
     #ifdef OPENSSL_EXTRA
         byte    extCertPolicySet;
@@ -465,7 +465,7 @@ struct Signer {
     word32  keyOID;                  /* key type */
     word16  keyUsage;
     byte*   publicKey;
-    int     nameLen;
+    int32_t     nameLen;
     char*   name;                    /* common name */
 #ifndef IGNORE_NAME_CONSTRAINTS
         Base_entry* permittedNames;
@@ -494,33 +494,33 @@ CYASSL_TEST_API void FreeAltNames(DNS_entry*, void*);
 #endif /* IGNORE_NAME_CONSTRAINTS */
 CYASSL_TEST_API void InitDecodedCert(DecodedCert*, byte*, word32, void*);
 CYASSL_TEST_API void FreeDecodedCert(DecodedCert*);
-CYASSL_TEST_API int  ParseCert(DecodedCert*, int type, int verify, void* cm);
+CYASSL_TEST_API int32_t  ParseCert(DecodedCert*, int32_t type, int32_t verify, void* cm);
 
-CYASSL_LOCAL int ParseCertRelative(DecodedCert*, int type, int verify,void* cm);
-CYASSL_LOCAL int DecodeToKey(DecodedCert*, int verify);
+CYASSL_LOCAL int32_t ParseCertRelative(DecodedCert*, int32_t type, int32_t verify,void* cm);
+CYASSL_LOCAL int32_t DecodeToKey(DecodedCert*, int32_t verify);
 
 CYASSL_LOCAL Signer* MakeSigner(void*);
 CYASSL_LOCAL void    FreeSigner(Signer*, void*);
-CYASSL_LOCAL void    FreeSignerTable(Signer**, int, void*);
+CYASSL_LOCAL void    FreeSignerTable(Signer**, int32_t, void*);
 
 
-CYASSL_LOCAL int ToTraditional(byte* buffer, word32 length);
-CYASSL_LOCAL int ToTraditionalEnc(byte* buffer, word32 length,const char*, int);
+CYASSL_LOCAL int32_t ToTraditional(byte* buffer, word32 length);
+CYASSL_LOCAL int32_t ToTraditionalEnc(byte* buffer, word32 length,const char*, int32_t);
 
-CYASSL_LOCAL int ValidateDate(const byte* date, byte format, int dateType);
+CYASSL_LOCAL int32_t ValidateDate(const byte* date, byte format, int32_t dateType);
 
 /* ASN.1 helper functions */
-CYASSL_LOCAL int GetLength(const byte* input, word32* inOutIdx, int* len,
+CYASSL_LOCAL int32_t GetLength(const byte* input, word32* inOutIdx, int32_t* len,
                            word32 maxIdx);
-CYASSL_LOCAL int GetSequence(const byte* input, word32* inOutIdx, int* len,
+CYASSL_LOCAL int32_t GetSequence(const byte* input, word32* inOutIdx, int32_t* len,
                              word32 maxIdx);
-CYASSL_LOCAL int GetSet(const byte* input, word32* inOutIdx, int* len,
+CYASSL_LOCAL int32_t GetSet(const byte* input, word32* inOutIdx, int32_t* len,
                         word32 maxIdx);
-CYASSL_LOCAL int GetMyVersion(const byte* input, word32* inOutIdx,
-                              int* version);
-CYASSL_LOCAL int GetInt(mp_int* mpi, const byte* input, word32* inOutIdx,
+CYASSL_LOCAL int32_t GetMyVersion(const byte* input, word32* inOutIdx,
+                              int32_t* version);
+CYASSL_LOCAL int32_t GetInt(mp_int* mpi, const byte* input, word32* inOutIdx,
                         word32 maxIdx);
-CYASSL_LOCAL int GetAlgoId(const byte* input, word32* inOutIdx, word32* oid,
+CYASSL_LOCAL int32_t GetAlgoId(const byte* input, word32* inOutIdx, word32* oid,
                            word32 maxIdx);
 CYASSL_LOCAL word32 SetLength(word32 length, byte* output);
 CYASSL_LOCAL word32 SetSequence(word32 len, byte* output);
@@ -528,17 +528,17 @@ CYASSL_LOCAL word32 SetOctetString(word32 len, byte* output);
 CYASSL_LOCAL word32 SetImplicit(byte tag, byte number, word32 len,byte* output);
 CYASSL_LOCAL word32 SetExplicit(byte number, word32 len, byte* output);
 CYASSL_LOCAL word32 SetSet(word32 len, byte* output);
-CYASSL_LOCAL word32 SetAlgoID(int algoOID, byte* output, int type, int curveSz);
-CYASSL_LOCAL int SetMyVersion(word32 version, byte* output, int header);
-CYASSL_LOCAL int SetSerialNumber(const byte* sn, word32 snSz, byte* output);
-CYASSL_LOCAL int GetNameHash(const byte* source, word32* idx, byte* hash,
-                             int maxIdx);
+CYASSL_LOCAL word32 SetAlgoID(int32_t algoOID, byte* output, int32_t type, int32_t curveSz);
+CYASSL_LOCAL int32_t SetMyVersion(word32 version, byte* output, int32_t header);
+CYASSL_LOCAL int32_t SetSerialNumber(const byte* sn, word32 snSz, byte* output);
+CYASSL_LOCAL int32_t GetNameHash(const byte* source, word32* idx, byte* hash,
+                             int32_t maxIdx);
 
 #ifdef HAVE_ECC
     /* ASN sig helpers */
-    CYASSL_LOCAL int StoreECC_DSA_Sig(byte* out, word32* outLen, mp_int* r,
+    CYASSL_LOCAL int32_t StoreECC_DSA_Sig(byte* out, word32* outLen, mp_int* r,
                                       mp_int* s);
-    CYASSL_LOCAL int DecodeECC_DSA_Sig(const byte* sig, word32 sigLen,
+    CYASSL_LOCAL int32_t DecodeECC_DSA_Sig(const byte* sig, word32 sigLen,
                                        mp_int* r, mp_int* s);
 #endif
 
@@ -557,7 +557,7 @@ enum cert_enums {
 #ifndef NO_FILESYSTEM
 /* forward from CyaSSL */
 CYASSL_API
-int CyaSSL_PemCertToDer(const char* fileName, unsigned char* derBuf, int derSz);
+int32_t CyaSSL_PemCertToDer(const char* fileName, unsigned char* derBuf, int32_t derSz);
 #define CYASSL_PEMCERT_TODER_DEFINED
 #endif
 #endif
@@ -602,9 +602,9 @@ struct CertStatus {
     CertStatus* next;
 
     byte serial[EXTERNAL_SERIAL_SIZE];
-    int serialSz;
+    int32_t serialSz;
 
-    int status;
+    int32_t status;
 
     byte thisDate[MAX_DATE_SIZE];
     byte nextDate[MAX_DATE_SIZE];
@@ -614,7 +614,7 @@ struct CertStatus {
 
 
 struct OcspResponse {
-    int     responseStatus;  /* return code from Responder */
+    int32_t     responseStatus;  /* return code from Responder */
 
     byte*   response;        /* Pointer to beginning of OCSP Response */
     word32  responseSz;      /* length of the OCSP Response */
@@ -635,7 +635,7 @@ struct OcspResponse {
     CertStatus* status;      /* certificate status to fill out */
 
     byte*   nonce;           /* pointer to nonce inside ASN.1 response */
-    int     nonceSz;         /* length of the nonce string */
+    int32_t     nonceSz;         /* length of the nonce string */
 
     byte*   source;          /* pointer to source buffer, not owned */
     word32  maxIdx;          /* max offset based on init size */
@@ -647,12 +647,12 @@ struct OcspRequest {
 
     byte    useNonce;
     byte    nonce[MAX_OCSP_NONCE_SZ];
-    int     nonceSz;
+    int32_t     nonceSz;
 
     byte*   issuerHash;      /* pointer to issuerHash in source cert */
     byte*   issuerKeyHash;   /* pointer to issuerKeyHash in source cert */
     byte*   serial;          /* pointer to serial number in source cert */
-    int     serialSz;        /* length of the serial number */
+    int32_t     serialSz;        /* length of the serial number */
 
     byte*   dest;            /* pointer to the destination ASN.1 buffer */
     word32  destSz;          /* length of the destination buffer */
@@ -660,13 +660,13 @@ struct OcspRequest {
 
 
 CYASSL_LOCAL void InitOcspResponse(OcspResponse*, CertStatus*, byte*, word32);
-CYASSL_LOCAL int  OcspResponseDecode(OcspResponse*);
+CYASSL_LOCAL int32_t  OcspResponseDecode(OcspResponse*);
 
 CYASSL_LOCAL void InitOcspRequest(OcspRequest*, DecodedCert*,
                                                           byte, byte*, word32);
-CYASSL_LOCAL int  EncodeOcspRequest(OcspRequest*);
+CYASSL_LOCAL int32_t  EncodeOcspRequest(OcspRequest*);
 
-CYASSL_LOCAL int  CompareOcspReqResp(OcspRequest*, OcspResponse*);
+CYASSL_LOCAL int32_t  CompareOcspReqResp(OcspRequest*, OcspResponse*);
 
 
 #endif /* HAVE_OCSP */
@@ -679,7 +679,7 @@ typedef struct RevokedCert RevokedCert;
 
 struct RevokedCert {
     byte         serialNumber[EXTERNAL_SERIAL_SIZE];
-    int          serialSz;
+    int32_t          serialSz;
     RevokedCert* next;
 };
 
@@ -698,11 +698,11 @@ struct DecodedCRL {
     byte    lastDateFormat;          /* format of last date */
     byte    nextDateFormat;          /* format of next date */
     RevokedCert* certs;              /* revoked cert list  */
-    int          totalCerts;         /* number on list     */
+    int32_t          totalCerts;         /* number on list     */
 };
 
 CYASSL_LOCAL void InitDecodedCRL(DecodedCRL*);
-CYASSL_LOCAL int  ParseCRL(DecodedCRL*, const byte* buff, word32 sz, void* cm);
+CYASSL_LOCAL int32_t  ParseCRL(DecodedCRL*, const byte* buff, word32 sz, void* cm);
 CYASSL_LOCAL void FreeDecodedCRL(DecodedCRL*);
 
 

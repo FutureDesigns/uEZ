@@ -45,7 +45,7 @@
     #error "SDCARD low level communication device not defined!"
 #endif
 
-int sdcard_open(MQX_FILE_PTR *com_handle, MQX_FILE_PTR *sdcard_handle,
+int32_t sdcard_open(MQX_FILE_PTR *com_handle, MQX_FILE_PTR *sdcard_handle,
                 MQX_FILE_PTR *partman_handle, MQX_FILE_PTR *filesystem_handle,
                 char *partman_name, char *filesystem_name)
 {
@@ -133,7 +133,7 @@ int sdcard_open(MQX_FILE_PTR *com_handle, MQX_FILE_PTR *sdcard_handle,
 	return 0;
 }
 
-int sdcard_close(MQX_FILE_PTR *sdcard_handle, MQX_FILE_PTR *partman_handle,
+int32_t sdcard_close(MQX_FILE_PTR *sdcard_handle, MQX_FILE_PTR *partman_handle,
 		         MQX_FILE_PTR *filesystem_handle,
 		         char *partman_name, char *filesystem_name)
 {

@@ -15,7 +15,7 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_RTT                   0
 #define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
@@ -54,15 +54,15 @@
 #define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               1
 
-#define INCLUDE_EMWIN                       1
+#define INCLUDE_EMWIN                       0
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
-#define SHOW_GUIDEMO_AUTOMOTIVE             1
-#define SHOW_GUIDEMO_GRAPH                  1
-#define SHOW_GUIDEMO_LISTVIEW               1
-#define SHOW_GUIDEMO_SPEED                  1
+#define SHOW_GUIDEMO_AUTOMOTIVE             0
+#define SHOW_GUIDEMO_GRAPH                  0
+#define SHOW_GUIDEMO_LISTVIEW               0
+#define SHOW_GUIDEMO_SPEED                  0
 #define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-4088-43WQN"

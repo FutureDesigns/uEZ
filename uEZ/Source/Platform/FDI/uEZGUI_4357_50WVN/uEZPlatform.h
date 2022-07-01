@@ -58,9 +58,38 @@
     #define UEZBSP_SDRAM_BASE_ADDR              0x28000000
 #endif
 
+/*-------------------------------------------------------------------------*
+ * Platform Volume Settings:
+ *-------------------------------------------------------------------------*/
+#define AUDIO_AMP_NONE                        0   // Unique number per AMP
+#define AUDIO_AMP_TDA8551                     1
+#define AUDIO_AMP_WOLFSON                     2
+#define AUDIO_AMP_LM48110                     3
+
+// Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  175
+    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level // will lower OB speaker level
 #endif
+
+#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  140 // Limit audio to 0.5W output
+#endif
+
+// Max output limit changes based on AMP
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output
+
+// Define these for your own speakers or headphones.
+#ifndef UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL  255
+#endif
+#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL  255
+#endif
+#ifndef UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL
+    #define UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL  255
+#endif
+/*-------------------------------------------------------------------------*/
 
 #ifndef UEZ_CONSOLE_READ_BUFFER_SIZE
     #define UEZ_CONSOLE_READ_BUFFER_SIZE        128 // bytes
@@ -144,6 +173,7 @@ void UEZPlatform_ADC1_5_Require(void);
 void UEZPlatform_ADC1_6_Require(void);
 void UEZPlatform_ADC1_7_Require(void);
 void UEZPlatform_AudioAmp_Require(void);
+void UEZPlatform_AudioMixer_Require(void);
 void UEZPlatform_Backlight_Require(void);
 void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,

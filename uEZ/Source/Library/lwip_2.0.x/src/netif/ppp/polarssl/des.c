@@ -299,7 +299,7 @@ static const unsigned long RHs[16] =
 
 static void des_setkey( unsigned long SK[32], unsigned char key[8] )
 {
-    int i;
+    int32_t i;
     unsigned long X, Y, T;
 
     GET_ULONG_BE( X, key, 0 );
@@ -379,7 +379,7 @@ void des_setkey_enc( des_context *ctx, unsigned char key[8] )
  */
 void des_setkey_dec( des_context *ctx, unsigned char key[8] )
 {
-    int i;
+    int32_t i;
 
     des_setkey( ctx->sk, key );
 
@@ -397,7 +397,7 @@ void des_crypt_ecb( des_context *ctx,
                     const unsigned char input[8],
                     unsigned char output[8] )
 {
-    int i;
+    int32_t i;
     unsigned long X, Y, T, *SK;
 
     SK = ctx->sk;

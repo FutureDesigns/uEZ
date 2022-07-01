@@ -60,7 +60,7 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-int UEZCmdAudioDAC(void *aWorkspace, int argc, char *argv[]);
+int32_t UEZCmdAudioDAC(void *aWorkspace, int32_t argc, char *argv[]);
 
 #ifdef __cplusplus
 }

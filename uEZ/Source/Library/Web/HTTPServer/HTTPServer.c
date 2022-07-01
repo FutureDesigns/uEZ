@@ -41,9 +41,43 @@
 #include <Source/RTOS/FreeRTOS/include/task.h>
 #endif
 #include "HTTPServer.h"
+#include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
 
-#include <uEZNetwork.h>
 #include <uEZINI.h>
+
+#include "lwip/api.h"
+#include "lwip/sockets.h"
+
+//#define USE_VFILE // for virtual file system
+#define ENABLE_HTML_PARSED_VARIABLES   1
+#define ENABLE_HTML_QUESTION_IN_URL   0 // allow ? in URL
+
+#ifdef USE_VFILE
+extern T_uezError VFileOpen(
+            const char * const aName, 
+            TUInt32 aFlags,
+            T_uezFile *aFile);
+
+extern T_uezError VFileRead(
+            T_uezFile aFile, 
+            void *aBuffer, 
+            TUInt32 aNumBytes, 
+            TUInt32 *aNumBytesRead);
+
+extern T_uezError VFileGetLength(T_uezFile aFile, TUInt32 *aLength);
+
+extern T_uezError VFilePost(const char * aFileName,
+              const char *aVarName,
+              const char *aValue);
+
+extern T_uezError VFileClose(T_uezFile aFile);
+#else // use standard file api
+#define VFileOpen UEZFileOpen
+#define VFileRead UEZFileRead
+#define VFileGetLength UEZFileGetLength
+#define VFilePost UEZFilePost
+#define VFileClose UEZFileClose
+#endif
 
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -87,14 +121,12 @@
 #define WEB_SERVER_REPORT_VERSION         0
 #endif
 		
-#define MAX_LINE_LENGTH           1024 // Max length of message to send/receive per packet
+#define MAX_LINE_LENGTH           256 // Max length of message to send/receive per packet
 #define MAX_HTTP_VERSION          30  // Supported version of HTTP advertised by the server
 #define MAX_HTTP_CONTENT_TYPE     120 // Type of content supplied from the HTTP Server
 #define MAX_HTTP_CONTENT_BOUNDARY 80  // Content boundary of the HTTP Server
 #define MAX_VAR_NAME_LENGTH       20  // Maximum length of variable name
-//#define HTTP_WRITE_BUFFER_SIZE    512 // Max length of write buffer size
-#define HTTP_WRITE_BUFFER_SIZE    1024 // Max length of write buffer size
-//#define HTTP_WRITE_BUFFER_SIZE    2048 // Max length of write buffer size
+#define HTTP_WRITE_BUFFER_SIZE    256 // Max length of write buffer size
 
 #if DEBUG_HTTP_SERVER
 	#define dprintf printf
@@ -119,8 +151,7 @@ typedef struct _T_httpStateVar {
 } T_httpStateVar;
 
 typedef struct {
-    T_uezDevice iNetwork;
-    T_uezNetworkSocket iSocket;
+    int32_t iSocket; //Lwip socket, -1 if not active
     TUInt8 iReceiveBuffer[512];
     TUInt32 iReceiveIndex;
     TUInt32 iReceiveLength;
@@ -144,11 +175,50 @@ typedef struct {
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
+static uint8_t writesTillDelay = 5;
+
 
 /*---------------------------------------------------------------------------*
  * Prototypes:
  *---------------------------------------------------------------------------*/
 extern void FuncTestPageHit(void);
+
+static T_uezError IConvertErrorCode(err_t aLWIPError)
+{
+    switch (aLWIPError) {
+        case ERR_OK: /* No error, everything OK. */
+            return UEZ_ERROR_NONE;
+        case ERR_MEM: /* Out of memory error.     */
+            return UEZ_ERROR_OUT_OF_MEMORY;
+        case ERR_BUF: /* Buffer error.            */
+            return UEZ_ERROR_BUFFER_ERROR;
+        case ERR_RTE: /* Routing problem.         */
+            return UEZ_ERROR_INTERNAL_ERROR;
+        case ERR_ABRT: /* Connection aborted.      */
+            return UEZ_ERROR_ABORTED;
+        case ERR_RST: /* Connection reset.        */
+            return UEZ_ERROR_RESETED;
+        case ERR_CLSD: /* Connection closed.       */
+            return UEZ_ERROR_CLOSED;
+        case ERR_CONN: /* Not connected.           */
+            return UEZ_ERROR_COULD_NOT_CONNECT;
+        case ERR_VAL: /* Illegal value.           */
+            return UEZ_ERROR_ILLEGAL_VALUE;
+        case ERR_ARG: /* Illegal argument.        */
+            return UEZ_ERROR_ILLEGAL_ARGUMENT;
+        case ERR_USE: /* Address in use.          */
+            return UEZ_ERROR_ALREADY_EXISTS;
+        case ERR_IF: /* Low-level netif error    */
+            return UEZ_ERROR_INTERNAL_ERROR;
+        case ERR_ISCONN: /* Already connected.       */
+            return UEZ_ERROR_ALREADY_OPEN;
+        case ERR_TIMEOUT: /* Timeout.                 */
+            return UEZ_ERROR_TIMEOUT;
+        case ERR_INPROGRESS: /* Operation in progress    */
+            return UEZ_ERROR_BUSY;
+    }
+    return UEZ_ERROR_UNKNOWN;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  IHTTPStateAlloc
@@ -171,15 +241,12 @@ extern void FuncTestPageHit(void);
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-static T_httpState *IHTTPStateAlloc(
-    T_uezDevice aNetwork, T_uezNetworkSocket aSocket
-)
+static T_httpState *IHTTPStateAlloc(int32_t aSocket)
 {
     T_httpState *p = UEZMemAlloc(sizeof(T_httpState));
     if (!p)
         return p;
-memset(p, 0xCC, sizeof(T_httpState));
-    p->iNetwork = aNetwork;
+    memset(p, 0xCC, sizeof(T_httpState));
     p->iSocket = aSocket;
     p->iLength = 0;
     p->iFirstLineLength = 0;
@@ -488,16 +555,27 @@ static void IHTTPParameter(
 static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
 {
     T_uezError error;
-    unsigned int start;
-    
+    uint32_t start;
+    int32_t sent;
+    DEBUG_SV_Printf("FS");
     start = UEZTickCounterGet();
     dprintf("FlushStart: %d (%d)\n", start, aState->iWriteLen);
-    error = UEZNetworkSocketWrite(aState->iNetwork, aState->iSocket,
-        aState->iWriteBuffer, aState->iWriteLen, (aMoreToCome) ? EFalse : ETrue,
-        UEZ_TIMEOUT_INFINITE);
+    UEZTaskDelay(1); // Will crash if flushstart debug code is not running, testing delay fix
+    sent = send(aState->iSocket, aState->iWriteBuffer, aState->iWriteLen, 0);
+
     aState->iWriteLen = 0;
     dprintf("FlushEnd: %d\n", UEZTickCounterGet()-start);
+    UEZTaskDelay(2); // Will crash if flushend debug code is not running, testing delay fix
     start--;
+    DEBUG_SV_Printf("FE");
+    if(sent < 0)
+    {
+        error = UEZ_ERROR_TIMEOUT;
+    }
+    else
+    {
+        error = UEZ_ERROR_NONE;
+    }
 
     return error;
 }
@@ -522,6 +600,7 @@ static T_uezError IHTTPWrite(
 {
     TUInt32 i;
     T_uezError error = UEZ_ERROR_NONE;
+    writesTillDelay--;
 
     for (i=0; i<aLength; i++) {
         error = IHTTPWriteByte(aState, aData[i]);
@@ -533,9 +612,11 @@ static T_uezError IHTTPWrite(
     if ((!error) && (!aMoreToCome))
         error = IHTTPWriteFlush(aState, EFalse);
 
-//    return UEZNetworkSocketWrite(aState->iNetwork, aState->iSocket, aData,
-//        aLength, (aMoreToCome) ? EFalse : ETrue, UEZ_TIMEOUT_INFINITE);
-
+    DEBUG_SV_Printf("WE");    
+    if(writesTillDelay == 0) {
+      //UEZTaskDelay(1);
+      writesTillDelay = 5;
+    }
     return error;
 }
 
@@ -648,7 +729,7 @@ static T_uezError IHTTPOutputHeader(
  *
  *  @param [in]    *aString2   Second string to compare
  *
- *  @return        int		   Sign represents direction of aString1 ? aString2
+ *  @return        int32_t		   Sign represents direction of aString1 ? aString2
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -657,10 +738,10 @@ static T_uezError IHTTPOutputHeader(
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-static int ICompareStringInsensitive(const char *aString1, const char *aString2)
+static int32_t ICompareStringInsensitive(const char *aString1, const char *aString2)
 {
     char c1, c2;
-    int v;
+    int32_t v;
 
     do {
         c1 = *aString1++;
@@ -695,22 +776,27 @@ static const char *IDetermineMimeTypeFromFilename(const char *aFilename)
         const char *iPostfix;
         const char *iMimeType;
     } T_mimeType;
+
     const T_mimeType G_mimeTypes[] = {
-        { "htm", "text/html" },
-        { "html", "text/html" },
-        { "jpg", "image/jpeg" },
-        { "jpeg", "image/jpeg" },
-        { "gif", "image/gif" },
-        { "png", "image/png" },
-        { "js", "text/javascript" },
-        { "txt", "text/plain" },
-        { "css", "text/stylesheet" },
-        { "zip", "application/zip" },
-        { "pdf", "application/pdf" },
-        { "swf", "application/x-shockwave-flash" },
-        { "mp3", "audio/mpeg" },
-        { "ico", "image/vnd.microsoft.icon" },
-        { 0, "application/octet-stream" }, // default, always at end
+      {"htm", "text/html" },
+      {"html", "text/html" },
+      {"jpg", "image/jpeg" },
+      {"jpeg", "image/jpeg" },
+      {"gif", "image/gif" },
+      {"png", "image/png" },
+      {"bmp", "image/bmp" },
+      { "js", "text/javascript" },
+      { "txt", "text/plain"},
+      { "css", "text/css" },
+      { "csv", "text/csv" },
+      { "zip", "application/zip" },
+      { "pdf", "application/pdf" },
+      { "swf","application/x-shockwave-flash" },
+      { "mp3", "audio/mpeg" },
+      { "wav", "audio/wav" },
+      { "ico", "image/vnd.microsoft.icon" },
+      { "bin","application/octet-stream" },
+      { 0, "application/octet-stream" }  // default, always at end
     };
     const char *p;
     const char *p_last;
@@ -784,7 +870,7 @@ static T_uezError IHTTPParseFileForVars(
 
     for (i = 0; i < *aLength; i++) {
         // Put in c the next character
-        error = UEZFileRead(aFile, &c, 1, &numRead);
+        error = VFileRead(aFile, &c, 1, &numRead);
         if (error != UEZ_ERROR_NONE)
             break;
 
@@ -858,7 +944,7 @@ static T_uezError IHTTPParseFileForVars(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  IHTTPParseFileForVars
+ * Routine:  IHTTPOutputParsedFile
  *---------------------------------------------------------------------------*/
 /**
  *  Parse the HTML for a second time, but this time output each character
@@ -894,11 +980,11 @@ static T_uezError IHTTPOutputParsedFile(
     T_httpStateVar *p_var;
     TUInt32 fileLen = 0;
 
-    UEZFileGetLength(aFile, &fileLen);
+    VFileGetLength(aFile, &fileLen);
 
     for (i = 0; (i < fileLen) && (error == UEZ_ERROR_NONE); i++) {
         // Put in c the next character
-        error = UEZFileRead(aFile, &c, 1, &numRead);
+        error = VFileRead(aFile, &c, 1, &numRead);
         if (error != UEZ_ERROR_NONE)
             break;
 
@@ -964,7 +1050,7 @@ static T_uezError IHTTPOutputParsedFile(
     }
     if (!error) {
         // End of the parsing, flush out the last bit
-        error = IHTTPWriteFlush(aState, EFalse);
+        //TODO: needed? error = IHTTPWriteFlush(aState, EFalse);
     } else {
         // Reset the write buffer, its invalid
         aState->iWriteLen = 0;
@@ -993,6 +1079,9 @@ static T_uezError IHTTPOutputParsedFile(
 /*---------------------------------------------------------------------------*/
 static T_uezError IHTTPGet(T_httpState *aState)
 {
+#if (ENABLE_HTML_QUESTION_IN_URL == 1)
+    uint16_t i; 
+#endif
     T_uezFile file;
     TUInt32 len, totalLengthLeft;
     TBool moreToCome;
@@ -1017,10 +1106,18 @@ static T_uezError IHTTPGet(T_httpState *aState)
 
     // Filename we need to get is now in aState->iFirstLine.
     // Let's see if the file can be opened
-    if (UEZFileOpen((char *)aState->iLine, FILE_FLAG_READ_ONLY, &file)
+#if (ENABLE_HTML_QUESTION_IN_URL == 1) // added to  allow ? etc on url line
+    for(i=0;(i<40)&&(*((char *)(aState->iLine+i))!=0);i++)
+    if(*((char*)aState->iLine + i) =='?')
+    {
+     *((char *)aState->iLine + i) = 0;
+     break;
+    } // probably a better way to implement this such as ignoring ? in FS but only for end of file
+#endif
+    if (VFileOpen((char *)aState->iLine, FILE_FLAG_READ_ONLY, &file)
         == UEZ_ERROR_NONE) {
         len = 0;
-        UEZFileGetLength(file, &len);
+        VFileGetLength(file, &len);
         totalLengthLeft = len; // total file length
         dprintf("\r\nFetching file: %s (size %d)\r\n", aState->iLine, len);
         // File exists!
@@ -1028,28 +1125,32 @@ static T_uezError IHTTPGet(T_httpState *aState)
         // If there is a function to parse types and this a HTML file
         // then we need to parse the data, getting values as found, and
         // determine the real length
-//aState->iGetFunc = 0;
-        if ((aState->iGetFunc) && (strcmp(mimeType, "text/html") == 0)) {
+
+#if (ENABLE_HTML_PARSED_VARIABLES == 1)
+         if ((aState->iGetFunc) && (strcmp(mimeType, "text/html") == 0)) {
             error = IHTTPParseFileForVars(aState, file, &len);
             // Close the file and open again (if no errors)
             if (error == UEZ_ERROR_NONE) {
-                UEZFileClose(file);
+                VFileClose(file);
                 // Reopen the file so it can be parsed
-                error = UEZFileOpen((char *)aState->iLine, FILE_FLAG_READ_ONLY,
+                error = VFileOpen((char *)aState->iLine, FILE_FLAG_READ_ONLY,
                     &file);
             }
         }
+#endif
         if (error == UEZ_ERROR_NONE) {
             IHTTPOutputHeader(aState, 200, "OK", mimeType, len);
             // If there is a function to parse the vars in a HTML file,
             // we now use the previously parsed vars and data to output
+#if (ENABLE_HTML_PARSED_VARIABLES == 1) 
             if ((aState->iGetFunc) && (strcmp(mimeType, "text/html") == 0)) {
                 // Output the parsed data
                 IHTTPOutputParsedFile(aState, file, len);
             } else {
+#endif
               do {
                 // Read a section
-                if (UEZFileRead(file, block, MAX_LINE_LENGTH, &len)!= UEZ_ERROR_NONE){
+                if (VFileRead(file, block, MAX_LINE_LENGTH, &len)!= UEZ_ERROR_NONE){
                   break;
                 }
                 if(totalLengthLeft <= MAX_LINE_LENGTH){
@@ -1068,8 +1169,10 @@ static T_uezError IHTTPGet(T_httpState *aState)
                 totalLengthLeft -= len; // subtract how many bytes were read
               } while (moreToCome == ETrue);
             }
+#if (ENABLE_HTML_PARSED_VARIABLES == 1) 
         }
-        UEZFileClose(file);
+#endif
+        VFileClose(file);
     } else {
         // File does NOT exist
         IHTTPReportError(aState, 404, "Not Found", HTTP_MSG_NOT_FOUND);
@@ -1102,30 +1205,26 @@ static T_uezError IHTTPGet(T_httpState *aState)
 static T_uezError IHTTPReadByte(T_httpState *aState, char *aChar)
 {
     T_uezError error = UEZ_ERROR_NONE;
-    TUInt32 start = UEZTickCounterGet();
+    //TUInt32 start = UEZTickCounterGet();
     TUInt32 len;
+    int32_t recved = 0;
 
     while (aState->iReceiveIndex >= aState->iReceiveLength) {
         // Fetch more data
         len = 0;
-        error = UEZNetworkSocketRead(aState->iNetwork, aState->iSocket,
-            aState->iReceiveBuffer, sizeof(aState->iReceiveBuffer),
-            &len, 10);
-        if ((error == UEZ_ERROR_NONE) || (error == UEZ_ERROR_TIMEOUT)) {
+
+        //TODO: May need to add socket time out here
+        //Or use NO_WAIT and handle timeout
+        recved = recv(aState->iSocket, aState->iReceiveBuffer,
+                aState->iReceiveLength, 0);
+
+        if (recved > 0) {
             // See if we got any data?
-            if (len) {
-                // Got some data, prepare it for reading
-                aState->iReceiveIndex = 0;
-                aState->iReceiveLength = len;
-                error = UEZ_ERROR_NONE;
-                break;
-            } else {
-                // Didn't get any data!  Try again if we have time
-                if (UEZTickCounterGetDelta(start) >= 10000) {
-                    error = UEZ_ERROR_TIMEOUT;
-                    break;
-                }
-            }
+            // Got some data, prepare it for reading
+            aState->iReceiveIndex = 0;
+            aState->iReceiveLength = len;
+            error = UEZ_ERROR_NONE;
+            break;
         } else {
             // No more data
             return UEZ_ERROR_NOT_ENOUGH_DATA;
@@ -1280,15 +1379,15 @@ static T_uezError IHTTPProcessMultipartFormData(T_httpState *aState)
         HTTP_MFC_MODE_LOOK_FOR_NOTHING,
     } T_httpMFDMode;
     #define MAX_MFC_LINE_LENGTH 100
-    int mode = HTTP_MFD_MODE_LOOK_FOR_START;
+    int32_t mode = HTTP_MFD_MODE_LOOK_FOR_START;
     T_uezError error;
     TUInt32 lineLength = 0;
     char line[MAX_MFC_LINE_LENGTH+1];
-    int numDashes;
+    int32_t numDashes;
     char boundaryCheck[MAX_HTTP_CONTENT_BOUNDARY+1];
-    int boundaryIndex;
-    int boundaryPos = 0;
-    int pos;
+    int32_t boundaryIndex;
+    int32_t boundaryPos = 0;
+    int32_t pos;
 
     for (pos = 0; pos < aState->iContentLength; pos++) {
         error = IHTTPReadByte(aState, &c);
@@ -1637,10 +1736,6 @@ static T_uezError IParseHeaderLine(T_httpState *aState)
         if (c == '\r') {
             // Ignore
         } else if (c == '\n') {
-#if DEBUG_HTTP_SERVER
-            aState->iLine[aState->iLength] = '\0';
-            printf("Header Line: %s\n", aState->iLine);
-#endif
             // End of line!  Process!
             error = IProcessHeaderLine(aState);
 
@@ -1682,53 +1777,43 @@ static T_uezError IParseHeaderLine(T_httpState *aState)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-static void vProcessConnection(
-    T_uezDevice aNetwork, T_uezNetworkSocket aSocket,
+static void vProcessConnection(int32_t aSocket,
     T_HTTPCallbackGetVarFunc aGetFunc, T_HTTPCallbackSetVarFunc aSetFunc,
     const char *aDrivePrefix)
 {
     T_uezError error;
     T_httpState *p_parse;
     TBool done = EFalse;
+    int32_t recved;
 
-    do {
-        done = EFalse;
-        p_parse = IHTTPStateAlloc(aNetwork, aSocket);
-        if (p_parse) {
-            p_parse->iGetFunc = aGetFunc;
-            p_parse->iSetFunc = aSetFunc;
-            p_parse->iDrivePrefix = aDrivePrefix;
-            while (!done) {
-                do {
-                    error = UEZNetworkSocketRead(aNetwork, aSocket,
-                        p_parse->iReceiveBuffer, sizeof(p_parse->iReceiveBuffer),
-                        &p_parse->iReceiveLength, 200);
-                    if ((error == UEZ_ERROR_NONE) || (error == UEZ_ERROR_TIMEOUT)) {
-                        // Got data, process it.
-                        error = IParseHeaderLine(p_parse);
-                        if (error) {
-                            dprintf("HTTP Error on parse: %d\n", error);
-                            done = ETrue;
-                        }
-                    } else {
-                        // If there are any errors (closed socket, etc.) then
-                        // end the connection.
-                        dprintf("HTTP Error: %d\n", error);
+    p_parse = IHTTPStateAlloc(aSocket);
+    if (p_parse) {
+        p_parse->iGetFunc = aGetFunc;
+        p_parse->iSetFunc = aSetFunc;
+        p_parse->iDrivePrefix = aDrivePrefix;
+        while (!done) {
+            do {
+                DEBUG_SV_Printf("RS");
+                recved = recv(aSocket, p_parse->iReceiveBuffer, sizeof(p_parse->iReceiveBuffer), 0);
+                DEBUG_SV_Printf("RC");
+                if (recved > 0) {
+                    // Got data, process it.
+                    error = IParseHeaderLine(p_parse);
+                    if (error)
                         done = ETrue;
-                    }
-                } while (!done);
-            }
-
-            IHTTPStateFree(p_parse);
+                } else {
+                    // If there are any errors (closed socket, etc.) then
+                    // end the connection.
+                    done = ETrue;
+                }
+            } while (!done);
         }
-        // NOTE: We use the error of stall when the above HTTP connection has completed
-        // but we want to keep the HTTP 1.1 connection open.  When we get a STALL
-        // the GET or POST request is done processing and we go back to handling
-        // the next request.
-    } while (error == UEZ_ERROR_STALL);
 
-    dprintf("HTTP Close\n");
-    UEZNetworkSocketClose(aNetwork, aSocket);
+        IHTTPStateFree(p_parse);
+    }
+    close(p_parse->iSocket);
+    DEBUG_SV_Printf("RE");
+    p_parse->iSocket = -1;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1753,48 +1838,61 @@ static void vProcessConnection(
 /*---------------------------------------------------------------------------*/
 TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
 {
-    T_uezNetworkSocket socket;
-    T_uezNetworkSocket newSocket;
-    T_uezDevice network;
+    int32_t socket_fd;
+    int32_t accept_fd;
+    socklen_t addr_size;
+    struct sockaddr_in sa,isa;
+
 #if WEB_SERVER_REPORT_VERSION
     char version[20];
 #endif
     T_httpServerParameters *p_params = (T_httpServerParameters *)aParameters;
+    (void)&IConvertErrorCode; // prevent unused function warning
+    (void)&IHTTPParseFileForVars;
+    (void)&IHTTPOutputParsedFile;
 
     dprintf("HTTPServer: Starting\n");
 
-    /* Create a new tcp connection handle */
-    network = p_params->iNetwork;
-
-    if (UEZNetworkSocketCreate(network, UEZ_NETWORK_SOCKET_TYPE_TCP, &socket)
-        == UEZ_ERROR_NONE) {
+    socket_fd = socket(PF_INET, SOCK_STREAM, 0);
+    if (socket_fd >= 0) {
         // Setup the socket to be on the HTTP port
-        UEZNetworkSocketBind(network, socket, 0, p_params->iPort);
+        memset(&sa, 0, sizeof(struct sockaddr_in));
+        sa.sin_family = AF_INET;
+        sa.sin_addr.s_addr = INADDR_ANY;
+        sa.sin_port = htons(p_params->iPort);
 
-        // Put the socket into listen mode
-        UEZNetworkSocketListen(network, socket);
+        if (bind(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) != -1) {
 
-        /* Loop forever */
-        for (;;) {
-            /* Wait for connection. */
-            UEZNetworkSocketAccept(network, socket, &newSocket,
-                UEZ_TIMEOUT_INFINITE);
+            // Put the socket into listen mode
+            if (listen(socket_fd,5) == 0) {
 
-            dprintf("HTTPServer: Socket accepted\n");
-            /* Service connection. */
-            if (newSocket) {
-                vProcessConnection(network, newSocket,
-                    (p_params) ? p_params->iGet : 0,
-                    (p_params) ? p_params->iSet : 0,
-                    (p_params) ? p_params->iDrivePrefix : "0:/HTTPROOT");
-                UEZNetworkSocketDelete(network, newSocket);
+                /* Loop forever */
+                for (;;) {
+                    /* Wait for connection. */
+                    addr_size = sizeof(isa);
+                    accept_fd = accept(socket_fd, (struct sockaddr* )&isa,
+                            &addr_size);
+                    if (accept_fd >= 0) {
+
+                        dprintf("HTTPServer: Socket accepted\n");
+                        DEBUG_SV_Printf("SA");
+                        /* Service connection. */
+                        vProcessConnection(accept_fd,
+                                (p_params) ? p_params->iGet : 0,
+                                (p_params) ? p_params->iSet : 0,
+                                (p_params) ? p_params->iDrivePrefix :
+                                        "0:/HTTPROOT");
+                        close(accept_fd);
+                    }
+                }
             }
         }
     }
     while (1) {
         // Sit here doing nothing
         // TODO: Need better response/handling
-        dprintf("HTTPServer: Task failed!\n");
+        dprintf("HTTPServer: Task failed!\n");        
+        DEBUG_SV_PrintfE("HTTPServer: Task failed!"); // example error
         UEZTaskDelay(5000);
     }
 #if ((COMPILER_TYPE!=Keil4) && (COMPILER_TYPE != IAR))

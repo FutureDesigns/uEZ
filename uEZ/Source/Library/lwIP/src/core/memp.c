@@ -60,7 +60,7 @@ struct memp {
   struct memp *next;
 #if MEMP_OVERFLOW_CHECK
   const char *file;
-  int line;
+  int32_t line;
 #endif /* MEMP_OVERFLOW_CHECK */
 };
 
@@ -146,7 +146,7 @@ static u8_t memp_memory[MEM_ALIGNMENT - 1
 /**
  * Check that memp-lists don't form a circle
  */
-static int
+static int32_t
 memp_sanity(void)
 {
   s16_t i, c;
@@ -301,7 +301,7 @@ memp_malloc(memp_t type)
  *
  * @return void* a pointer to the allocated memory or a NULL pointer on error
  */
-memp_malloc_fn(memp_t type, const char* file, const int line)
+memp_malloc_fn(memp_t type, const char* file, const int32_t line)
 #endif
 {
   struct memp *memp;

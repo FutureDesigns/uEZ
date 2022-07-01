@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
@@ -93,14 +93,14 @@ T_uezError FWTSTestScreen(T_FWTSTestWorkspace *G_ws)
 	return UEZ_ERROR_NONE;
 }
 
-void FWTSTest()
+void FWTSTest(void)
 {
 	T_uezDevice ts;
 	static T_uezQueue queue = NULL;
 	static T_FWTSTestWorkspace *G_ws = NULL;
-	T_uezTSReading reading;
-	INT_32 winX, winY;
-	T_uezError error;
+	//T_uezTSReading reading;
+	//INT_32 winX, winY;
+	//T_uezError error;
 
 	G_ws = UEZMemAlloc(sizeof(*G_ws));
 

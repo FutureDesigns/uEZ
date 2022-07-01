@@ -1,10 +1,12 @@
-char *ltoa(long value, char *string, int radix)
+#include <stdint.h> /* for int types */
+
+char *ltoa(long value, char *string, int32_t radix)
 {
   char tmp[33];
   char *tp = tmp;
   long i;
   unsigned long v;
-  int sign;
+  int32_t sign;
   char *sp;
 
   if (radix > 36 || radix <= 1)

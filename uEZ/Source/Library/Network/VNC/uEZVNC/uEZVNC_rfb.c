@@ -56,7 +56,7 @@ typedef struct {
     const T_UEZVNCCallbacks *iCallbacks;
     char *iDesktopName;
     unsigned char iBuffer[16 * 16 * 4];
-    //int iConnection;
+    //int32_t iConnection;
     rfbPixelFormat iFormat;
     rfbServerInitMsg iServerInitMsg;
     TUInt16 iVirtualWidth;
@@ -132,7 +132,7 @@ UEZVNC_Write(T_VNCWorkspace *p, TUInt8 *aBuffer, TUInt32 aNumBytes);
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-Bool ConnectToRFBServer(char *hostname, int port)
+Bool ConnectToRFBServer(char *hostname, int32_t port)
 {
     unsigned long host = 0;
 
@@ -171,10 +171,10 @@ Bool ConnectToRFBServer(char *hostname, int port)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-TBool VNCInitialiseRFBConnection(void *aWorkspace/*, int sock -> iConnection */)
+TBool VNCInitialiseRFBConnection(void *aWorkspace/*, int32_t sock -> iConnection */)
 {
     rfbProtocolVersionMsg pv;
-    int majorV, minorV;
+    int32_t majorV, minorV;
     TBool authWillWork = ETrue;
     TUInt32 authScheme, reasonLen;
     char *reason;
@@ -245,7 +245,7 @@ TBool VNCInitialiseRFBConnection(void *aWorkspace/*, int sock -> iConnection */)
                 return EFalse;
             }
             // Read back the reason
-            if (!UEZVNC_Read(p, (unsigned char*)reason, (int)reasonLen)) {
+            if (!UEZVNC_Read(p, (unsigned char*)reason, (int32_t)reasonLen)) {
                 return EFalse;
             }
             reason[reasonLen] = 0;
@@ -309,14 +309,14 @@ TBool VNCInitialiseRFBConnection(void *aWorkspace/*, int sock -> iConnection */)
                     return EFalse;
                 default:
                     dprintf("Authentication failed - code %d\n",
-                        (int)authResult);
+                        (int32_t)authResult);
                     p->iCallbacks->StateUpdate(aWorkspace,
                         UEZVNC_STATE_AUTHENTICATION_FAILED, (void *)authResult);
                     return EFalse;
             }
             break;
         default:
-            dprintf("Unknown authentication: %d\n", (int)authScheme);
+            dprintf("Unknown authentication: %d\n", (int32_t)authScheme);
             p->iCallbacks->StateUpdate(aWorkspace,
                 UEZVNC_STATE_UNKNOWN_AUTHENTICATION, (void *)authScheme);
             return EFalse;
@@ -357,7 +357,7 @@ TBool VNCInitialiseRFBConnection(void *aWorkspace/*, int sock -> iConnection */)
     // Read back the desktop name following the above server message
     // and null terminate.
     if (!UEZVNC_Read(p, (unsigned char*)p->iDesktopName,
-        (int)p->iServerInitMsg.nameLength))
+        (int32_t)p->iServerInitMsg.nameLength))
         return EFalse;
     p->iDesktopName[p->iServerInitMsg.nameLength] = 0;
 
@@ -400,7 +400,7 @@ TBool VNCSetFormatAndEncodings(void *aWorkspace)
     unsigned char buf[sz_rfbSetEncodingsMsg + MAX_ENCODINGS * 4];
     rfbSetEncodingsMsg *se = (rfbSetEncodingsMsg *)buf;
     TUInt32 *encs = (TUInt32 *)(&buf[sz_rfbSetEncodingsMsg]);
-    int len = 0;
+    int32_t len = 0;
     T_VNCWorkspace *p = (T_VNCWorkspace *)aWorkspace;
 
     // Create a proper Set Pixel Format Message
@@ -655,7 +655,7 @@ TBool VNCSendKeyEvent(void *aWorkspace, TUInt32 key, TBool down)
 /******************************************************************
  * SendClientCutText.
  *****************************************************************/
-TBool SendClientCutText(void *aWorkspace, char *str, int len)
+TBool SendClientCutText(void *aWorkspace, char *str, int32_t len)
 {
     rfbClientCutTextMsg cct;
     T_VNCWorkspace *p = (T_VNCWorkspace *)aWorkspace;
@@ -712,7 +712,7 @@ T_uezError VNCHandleRFBServerMessage(void *aWorkspace)
         case rfbFramebufferUpdate: {
             // Process a framebuffer update message
             rfbFramebufferUpdateRectHeader rect;
-            int i;
+            int32_t i;
 
             // Get the rest of the buffer
             if (!UEZVNC_Read(p, ((unsigned char*)&msg.fu) + 1,
@@ -826,7 +826,7 @@ T_uezError VNCHandleRFBServerMessage(void *aWorkspace)
                     }
 
                     default:
-                        dprintf("unknown encoding %d\n", (int)rect.encoding);
+                        dprintf("unknown encoding %d\n", (int32_t)rect.encoding);
                         return UEZ_ERROR_INTERNAL_ERROR;
                 }
             }
@@ -941,7 +941,7 @@ static T_pixelColor G_table[256];
 static void ISetupTable(void)
 {
     TUInt16 red, green, blue;
-    int index = 0;
+    int32_t index = 0;
 
     for (red=0; red<4; red++) {
         for (green=0; green<8; green++) {
@@ -1037,7 +1037,7 @@ static TBool HandleHextileEncoding8(
     TUInt16 rh)
 {
     TUInt8 bg, fg;
-    int i;
+    int32_t i;
     TUInt8 *ptr;
     short x, y;
     unsigned short w, h;
@@ -1068,7 +1068,7 @@ static TBool HandleHextileEncoding8(
 
             // Raw section of bytes coming
             if (subencoding & rfbHextileRaw) {
-                if (!UEZVNC_Read(p, p->iBuffer, (int)(w * h)))
+                if (!UEZVNC_Read(p, p->iBuffer, (int32_t)(w * h)))
                     return EFalse;
 
                 // Copy from the buffer to the screen
@@ -1166,7 +1166,7 @@ static TBool HandleHextileEncoding16(
     TUInt16 rh)
 {
     TUInt16 bg, fg;
-    int i;
+    int32_t i;
     TUInt8 *ptr;
     short x, y;
     unsigned short w, h;
@@ -1197,7 +1197,7 @@ static TBool HandleHextileEncoding16(
 
             // Raw section of bytes coming
             if (subencoding & rfbHextileRaw) {
-                if (!UEZVNC_Read(p, p->iBuffer, (int)(w * h * 2)))
+                if (!UEZVNC_Read(p, p->iBuffer, (int32_t)(w * h * 2)))
                     return EFalse;
 
                 // Copy from the buffer to the screen

@@ -33,7 +33,7 @@
 #include "AppDemo.h"
 #include <uEZADC.h>
 #include <uEZTemperature.h>
-#include "Device\ToneGenerator.h"
+#include "Device/ToneGenerator.h"
 #include <Types/InputEvent.h>
 #include <uEZToneGenerator.h>
 #include <uEZKeypad.h>

@@ -652,7 +652,7 @@ ATLIBGS_MSG_ID_E AtLibGs_TCPClientStart(
     char cmd[80];
     ATLIBGS_MSG_ID_E rxMsgId;
     char *result;
-	  int cidIndex;
+	  int32_t cidIndex;
 
     sprintf(cmd, "AT+NCTCP=%s," _F16_ "\r\n", pRemoteTcpSrvIp,
             pRemoteTcpSrvPort);
@@ -1084,7 +1084,7 @@ ATLIBGS_MSG_ID_E AtLibGs_UDPServer_Start(uint16_t pUdpSrvPort, uint8_t *cid)
     rxMsgId = AtLibGs_CommandSendString(cmd);
     if (rxMsgId == ATLIBGS_MSG_ID_OK) {
         if ((result = strstr((const char *)MRBuffer, "CONNECT")) != NULL) {
-        	int cidIndex;
+        	int32_t cidIndex;
 
             *cid = result[8];
             cidIndex = AtLibGs_CIDToIndex(*cid);
@@ -1132,7 +1132,7 @@ ATLIBGS_MSG_ID_E AtLibGs_TCPServer_Start(uint16_t pTcpSrvPort, uint8_t *cid)
 
     if (rxMsgId == ATLIBGS_MSG_ID_OK) {
         if ((pSubStr = strstr((const char *)MRBuffer, "CONNECT")) != NULL) {
-        	int cidIndex;
+        	int32_t cidIndex;
 
             *cid = pSubStr[8];
             cidIndex = AtLibGs_CIDToIndex(*cid);
@@ -1687,7 +1687,7 @@ uint16_t AtLibGs_ParseIntoLines(char *text, char *pLines[], uint16_t maxLines)
 {
     char *p = text;
     uint8_t c;
-    int mode = 0;
+    int32_t mode = 0;
     uint16_t numLines = 0;
 
     /* Walk through all the characters and determine where the lines are */
@@ -1740,7 +1740,7 @@ uint8_t AtLibGs_ParseIntoTokens(
 {
     char *p = line;
     char c;
-    int mode = 0;
+    int32_t mode = 0;
     uint8_t numTokens = 0;
     char *lastNonWhitespace = 0;
 
@@ -1801,7 +1801,7 @@ uint8_t AtLibGs_ParseUDPClientCid(void)
 {
     uint8_t cid;
     char *result = NULL;
-    int cidIndex;
+    int32_t cidIndex;
 
     if ((result = strstr((const char *)MRBuffer, "CONNECT")) != NULL) {
         /* Succesfull connection done for UDP client */
@@ -2010,7 +2010,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPData(
     ATLIBGS_MSG_ID_E rxMsgId;
     uint16_t i;
     uint8_t *p;
-    int cidIndex;
+    int32_t cidIndex;
 
     if (cid == ATLIBGS_INVALID_CID)
         return ATLIBGS_MSG_ID_ERROR_SOCKET_FAIL;
@@ -2087,7 +2087,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPBulkData(
         uint16_t dataLen)
 {
     ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_OK;
-    int cidIndex;
+    int32_t cidIndex;
 
     if (cid == ATLIBGS_INVALID_CID)
         return ATLIBGS_MSG_ID_ERROR_SOCKET_FAIL;
@@ -2148,7 +2148,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
 {
     char cmd[30];
     ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_INVALID_INPUT;
-    int cidIndex;
+    int32_t cidIndex;
 
     if (ATLIBGS_INVALID_CID != cid) {
         // Are we still a valid connection?
@@ -2234,7 +2234,7 @@ ATLIBGS_MSG_ID_E AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16
     App_Write(cmd, strlen(cmd));
 
 #if 0
-    for (int i=0; i<50; i++) {
+    for (int32_t i=0; i<50; i++) {
 	if (GainSpan_SPI_IsDataReady(0)) {
 		printf("+");
 	} else {
@@ -2267,7 +2267,7 @@ const char *IGetLastLine(const char *p)
 {
     const char *p_last = p;
     char c;
-    int isCRLF = 0;
+    int32_t isCRLF = 0;
 
     while (*p) {
         c = *p;
@@ -2326,8 +2326,8 @@ ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBufferInput)
     } else if (strstr((const char *)pBuffer, "ERROR: SOCKET FAILURE") != NULL) {
     	if (pBuffer[21] == ' ') {
     		// Socket failure on a connection also causes it to close
-			int cid = pBuffer[22];
-			int cidIndex;
+			int32_t cid = pBuffer[22];
+			int32_t cidIndex;
 
 			cidIndex = AtLibGs_CIDToIndex(cid);
 
@@ -2349,8 +2349,8 @@ ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBufferInput)
         return ATLIBGS_MSG_ID_APP_RESET;
     } else if ((strstr((const char *)pBuffer, "DISCONNECT")) != NULL) {
         /* Reset the local flags */
-    	int cid = pBuffer[11];
-    	int cidIndex;
+    	int32_t cid = pBuffer[11];
+    	int32_t cidIndex;
 #ifdef ATLIBGS_DEBUG_ENABLE
 		printf("Disconnecting CID [%c]\n", cid);
 #endif		
@@ -2398,8 +2398,8 @@ ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBufferInput)
             if (numSpaces >= 4) {
             	char buffer[100];
                 char *tokens[6];
-            	int cid = pBuffer[10];
-            	int cidIndex;
+            	int32_t cid = pBuffer[10];
+            	int32_t cidIndex;
             	strcpy(buffer, pBuffer);
 
 #ifdef ATLIBGS_DEBUG_ENABLE
@@ -2490,7 +2490,7 @@ ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPConnection(
     char *p;
     char *tokens[6];
     uint16_t numTokens;
-    int i;
+    int32_t i;
 
     /* wait until message received or timeout*/
     while (1) {
@@ -2527,7 +2527,7 @@ ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPConnection(
                 p = strstr(MRBuffer, "CONNECT");
                 numTokens = AtLibGs_ParseIntoTokens(p, ' ', tokens, 6);
                 if (numTokens >= 5) {
-                	int cidIndex;
+                	int32_t cidIndex;
 
                     // Parse the connection information
                     connection->server_cid = *tokens[1];
@@ -2576,7 +2576,7 @@ ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPMessage(uint8_t cid, uint32_t timeout)
     ATLIBGS_MSG_ID_E rxMsgId;
     uint8_t rxData;
     uint32_t start = MSTimerGet();
-    int cidIndex;
+    int32_t cidIndex;
 
     cidIndex = AtLibGs_CIDToIndex(cid);
 
@@ -2691,8 +2691,8 @@ void AtLibGs_ParseUDPData(
         uint8_t length,
         ATLIBGS_UDPMessage *msg)
 {
-    int i;
-    int n;
+    int32_t i;
+    int32_t n;
     char port[6];
 
     if (length >= 1) {
@@ -3105,7 +3105,7 @@ ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(uint8_t cid)
         		if (((responseMsgId == ATLIBGS_MSG_ID_DISCONNECT) || (responseMsgId == ATLIBGS_MSG_ID_TCP_SERVER_CONNECT)) && (cid != ATLIBGS_INVALID_CID)) {
         			// Was this us?  If still connected, ignore it and repeat.
         			// Otherwise, we'll fall through and report the disconnect
-        			int cidIndex = AtLibGs_CIDToIndex(cid);
+        			int32_t cidIndex = AtLibGs_CIDToIndex(cid);
         			if (G_cidState[cidIndex].iState == CID_STATE_CONNECTED)
         				continue;
         		}
@@ -3467,8 +3467,8 @@ ATLIBGS_MSG_ID_E AtLibGs_GetProfile(
     uint16_t numLines;
     uint16_t offset = 0;
     uint16_t i;
-    int mode;
-    int len;
+    int32_t mode;
+    int32_t len;
     static const char *sections[3] = {
             "ACTIVE PROFILE",
             "STORED PROFILE 0",
@@ -3597,11 +3597,11 @@ ATLIBGS_MSG_ID_E AtLibGs_NetworkScan(
 {
     ATLIBGS_MSG_ID_E rxMsgId;
     char *lines[50];
-    int numLines;
+    int32_t numLines;
     char text[50];
     char *tokens[20];
     uint8_t numTokens;
-    int i;
+    int32_t i;
     ATLIBGS_NetworkScanEntry *entry = entries;
     char cmd[60];
 
@@ -3799,9 +3799,9 @@ ATLIBGS_MSG_ID_E AtLibGs_SetWPAKey(char key[])
  *--------------------------------------------------------------------------*/
 /**   Sets the Listen Beacon Interval
  *      Sends the command:
- *        AT+WIEEEPSPOLL=n[,I]: n is 0 or 1, and I is a 16 bit int iff n == 1
+ *        AT+WIEEEPSPOLL=n[,I]: n is 0 or 1, and I is a 16 bit int32_t iff n == 1
  *  @param [in] enable
- *  @param [in] interval 16bit unsigned int
+ *  @param [in] interval 16bit uint32_t
  *  @return     ATLIBGS_MSG_ID_E -- error code
  */
 /*--------------------------------------------------------------------------*/
@@ -4236,7 +4236,7 @@ ATLIBGS_MSG_ID_E AtLibGs_AssocPowerSaveMode(ATLIBGS_ASSOCPOWMODE_E mode)
 /** Sets the internal/external transmit power level
  *    Sends the command:
  *       AT+WP=[value]
- *  @param [in] power level (int 0-7, ext 2-15)**Lower number == higher PWR**
+ *  @param [in] power level (int32_t 0-7, ext 2-15)**Lower number == higher PWR**
  *  @return     ATLIBGS_MSG_ID_E -- error code
  */
 /*--------------------------------------------------------------------------*/
@@ -4877,7 +4877,7 @@ ATLIBGS_MSG_ID_E AtLibGs_HTTPSend(
     ATLIBGS_MSG_ID_E msg = ATLIBGS_MSG_ID_INVALID_INPUT;
     if (ATLIBGS_INVALID_CID != cid) {
         // Are we still a valid connection?
-    	int cidIndex = AtLibGs_CIDToIndex(cid);
+    	int32_t cidIndex = AtLibGs_CIDToIndex(cid);
         if (G_cidState[cidIndex].iState != CID_STATE_CONNECTED)
         	return ATLIBGS_MSG_ID_DISCONNECT;
 
@@ -5152,7 +5152,7 @@ ATLIBGS_SECURITYMODE_E AtLibGs_ParseSecurityMode(const char *string)
 /*--------------------------------------------------------------------------*/
 void AtLibGs_ParseIPAddress(const char *string, ATLIBGS_IP *ip)
 {
-    int v1, v2, v3, v4;
+    int32_t v1, v2, v3, v4;
 
     /* Currently only parses ipv4 addresses */
     sscanf(string, _F8_ "." _F8_ "." _F8_ "." _F8_, &v1, &v2, &v3, &v4);
@@ -5303,7 +5303,7 @@ void AtLibGs_IPv4AddressToString(ATLIBGS_IPv4 *ip, char *string)
     sprintf(string, "%d.%d.%d.%d", (*ip)[0], (*ip)[1], (*ip)[2], (*ip)[3]);
 }
 
-int AtLibGs_CIDToIndex(uint8_t cid)
+int32_t AtLibGs_CIDToIndex(uint8_t cid)
 {
 	// Convert '0'..'9' to 0..9
 	if ((cid >= '0') && (cid <= '9'))

@@ -101,7 +101,7 @@
 
 /* Type definitions for BSD code. */
 typedef unsigned long  u_long;
-typedef unsigned int   u_int;
+typedef uint32_t   u_int;
 typedef unsigned short u_short;
 typedef unsigned char  u_char;
 
@@ -245,7 +245,7 @@ enum NPmode {
  */
 /*
  * Get the up status - 0 for down, non-zero for up.  The argument must
- * point to an int.
+ * point to an int32_t.
  */
 #define PPPCTLG_UPSTATUS 100 /* Get the up status - 0 down else up */
 #define PPPCTLS_ERRCODE  101 /* Set the error code */
@@ -263,36 +263,36 @@ enum NPmode {
 struct protent {
     u_short protocol;       /* PPP protocol number */
     /* Initialization procedure */
-    void (*init) (int unit);
+    void (*init) (int32_t unit);
     /* Process a received packet */
-    void (*input) (int unit, u_char *pkt, int len);
+    void (*input) (int32_t unit, u_char *pkt, int32_t len);
     /* Process a received protocol-reject */
-    void (*protrej) (int unit);
+    void (*protrej) (int32_t unit);
     /* Lower layer has come up */
-    void (*lowerup) (int unit);
+    void (*lowerup) (int32_t unit);
     /* Lower layer has gone down */
-    void (*lowerdown) (int unit);
+    void (*lowerdown) (int32_t unit);
     /* Open the protocol */
-    void (*open) (int unit);
+    void (*open) (int32_t unit);
     /* Close the protocol */
-    void (*close) (int unit, char *reason);
+    void (*close) (int32_t unit, char *reason);
 #if 0
     /* Print a packet in readable form */
-    int  (*printpkt) (u_char *pkt, int len,
+    int32_t  (*printpkt) (u_char *pkt, int32_t len,
               void (*printer) (void *, char *, ...),
               void *arg);
     /* Process a received data packet */
-    void (*datainput) (int unit, u_char *pkt, int len);
+    void (*datainput) (int32_t unit, u_char *pkt, int32_t len);
 #endif
-    int  enabled_flag;      /* 0 iff protocol is disabled */
+    int32_t  enabled_flag;      /* 0 iff protocol is disabled */
     char *name;         /* Text name of protocol */
 #if 0
     /* Check requested options, assign defaults */
     void (*check_options) (u_long);
     /* Configure interface for demand-dial */
-    int  (*demand_conf) (int unit);
+    int32_t  (*demand_conf) (int32_t unit);
     /* Say whether to bring up link for this pkt */
-    int  (*active_pkt) (u_char *pkt, int len);
+    int32_t  (*active_pkt) (u_char *pkt, int32_t len);
 #endif
 };
 
@@ -316,7 +316,7 @@ struct ppp_settings {
   u_int  usepeerdns        : 1;       /* Ask peer for DNS adds */
 
   u_short idle_time_limit;            /* Shut down link if idle for this long */
-  int  maxconnect;                    /* Maximum connect time (seconds) */
+  int32_t  maxconnect;                    /* Maximum connect time (seconds) */
 
   char user       [MAXNAMELEN   + 1]; /* Username for PAP */
   char passwd     [MAXSECRETLEN + 1]; /* Password for PAP, secret for CHAP */
@@ -382,12 +382,12 @@ void pppSetAuth(enum pppAuthType authType, const char *user, const char *passwd)
  * Return a new PPP connection descriptor on success or
  * an error code (negative) on failure. 
  */
-int pppOverSerialOpen(sio_fd_t fd, void (*linkStatusCB)(void *ctx, int errCode, void *arg), void *linkStatusCtx);
+int32_t pppOverSerialOpen(sio_fd_t fd, void (*linkStatusCB)(void *ctx, int32_t errCode, void *arg), void *linkStatusCtx);
 
 /*
  * Open a new PPP Over Ethernet (PPPOE) connection.
  */
-int pppOverEthernetOpen(struct netif *ethif, const char *service_name, const char *concentrator_name, void (*linkStatusCB)(void *ctx, int errCode, void *arg), void *linkStatusCtx);
+int32_t pppOverEthernetOpen(struct netif *ethif, const char *service_name, const char *concentrator_name, void (*linkStatusCB)(void *ctx, int32_t errCode, void *arg), void *linkStatusCtx);
 
 /* for source code compatibility */
 #define pppOpen(fd,cb,ls) pppOverSerialOpen(fd,cb,ls)
@@ -397,65 +397,65 @@ int pppOverEthernetOpen(struct netif *ethif, const char *service_name, const cha
  * Any outstanding packets in the queues are dropped.
  * Return 0 on success, an error code on failure. 
  */
-int pppClose(int pd);
+int32_t pppClose(int32_t pd);
 
 /*
  * Indicate to the PPP process that the line has disconnected.
  */
-void pppSigHUP(int pd);
+void pppSigHUP(int32_t pd);
 
 /*
  * Get and set parameters for the given connection.
  * Return 0 on success, an error code on failure. 
  */
-int  pppIOCtl(int pd, int cmd, void *arg);
+int32_t  pppIOCtl(int32_t pd, int32_t cmd, void *arg);
 
 /*
  * Return the Maximum Transmission Unit for the given PPP connection.
  */
-u_int pppMTU(int pd);
+u_int pppMTU(int32_t pd);
 
 /*
  * Write n characters to a ppp link.
  * RETURN: >= 0 Number of characters written, -1 Failed to write to device.
  */
-int pppWrite(int pd, const u_char *s, int n);
+int32_t pppWrite(int32_t pd, const u_char *s, int32_t n);
 
-void pppInProcOverEthernet(int pd, struct pbuf *pb);
+void pppInProcOverEthernet(int32_t pd, struct pbuf *pb);
 
 struct pbuf *pppSingleBuf(struct pbuf *p);
 
-void pppLinkTerminated(int pd);
+void pppLinkTerminated(int32_t pd);
 
-void pppLinkDown(int pd);
+void pppLinkDown(int32_t pd);
 
-void pppMainWakeup(int pd);
+void pppMainWakeup(int32_t pd);
 
 /* Configure i/f transmit parameters */
-void ppp_send_config (int, int, u32_t, int, int);
+void ppp_send_config (int32_t, int32_t, u32_t, int32_t, int32_t);
 /* Set extended transmit ACCM */
-void ppp_set_xaccm (int, ext_accm *);
+void ppp_set_xaccm (int32_t, ext_accm *);
 /* Configure i/f receive parameters */
-void ppp_recv_config (int, int, u32_t, int, int);
+void ppp_recv_config (int32_t, int32_t, u32_t, int32_t, int32_t);
 /* Find out how long link has been idle */
-int  get_idle_time (int, struct ppp_idle *);
+int32_t  get_idle_time (int32_t, struct ppp_idle *);
 
 /* Configure VJ TCP header compression */
-int  sifvjcomp (int, int, int, int);
+int32_t  sifvjcomp (int32_t, int32_t, int32_t, int32_t);
 /* Configure i/f down (for IP) */
-int  sifup (int);
+int32_t  sifup (int32_t);
 /* Set mode for handling packets for proto */
-int  sifnpmode (int u, int proto, enum NPmode mode);
+int32_t  sifnpmode (int32_t u, int32_t proto, enum NPmode mode);
 /* Configure i/f down (for IP) */
-int  sifdown (int);
+int32_t  sifdown (int32_t);
 /* Configure IP addresses for i/f */
-int  sifaddr (int, u32_t, u32_t, u32_t, u32_t, u32_t);
+int32_t  sifaddr (int32_t, u32_t, u32_t, u32_t, u32_t, u32_t);
 /* Reset i/f IP addresses */
-int  cifaddr (int, u32_t, u32_t);
+int32_t  cifaddr (int32_t, u32_t, u32_t);
 /* Create default route through i/f */
-int  sifdefaultroute (int, u32_t, u32_t);
+int32_t  sifdefaultroute (int32_t, u32_t, u32_t);
 /* Delete default route through i/f */
-int  cifdefaultroute (int, u32_t, u32_t);
+int32_t  cifdefaultroute (int32_t, u32_t, u32_t);
 
 /* Get appropriate netmask for address */
 u32_t GetMask (u32_t); 

@@ -32,7 +32,7 @@
 #pragma import(__use_no_semihosting)
 
 struct __FILE {
-    int handle; /* Add whatever you need here */
+    int32_t handle; /* Add whatever you need here */
 };
 //#if !defined(FILE)
 //typedef struct __FILE FILE;
@@ -51,13 +51,13 @@ FILE __stderr;
  *      Puts a character out to the standard console.  In this case, we
  *      use the standard out stream device (declared elsewhere).
  * Inputs:
- *      int aChar               -- Character to output
+ *      int32_t aChar               -- Character to output
  * Outputs:
- *      int                     -- Character output or EOF if could not
+ *      int32_t                     -- Character output or EOF if could not
  *                                  output.
  *---------------------------------------------------------------------------*/
 //generic version
-/*int putchar(int aChar)
+/*int32_t putchar(int32_t aChar)
 {
     char c = aChar;
     T_uezDevice stdout = StdoutGet();
@@ -74,16 +74,16 @@ FILE __stderr;
 
 //KEIL version:
 /*
-void _ttywrch(int c)
+void _ttywrch(int32_t c)
 {
-    static int wrap = 0;
+    static int32_t wrap = 0;
     static char wrapBuffer[32];
     // Wrap in small buffer here
     wrapBuffer[wrap & 31] = c;
     wrap++;
 }
 
-int fputc(int aChar, FILE *f)
+int32_t fputc(int32_t aChar, FILE *f)
 {
     char c = aChar;
     T_uezDevice stdout = StdoutGet();
@@ -102,18 +102,18 @@ int fputc(int aChar, FILE *f)
     return c;
 }
 
-int fgetc(FILE *f)
+int32_t fgetc(FILE *f)
 {
     return (0);
 }
 
-void _sys_exit(int return_code)
+void _sys_exit(int32_t return_code)
 {
     label: goto label;
     // endless loop
 }
 
-FILEHANDLE _sys_open(const char *name, int openmode)
+FILEHANDLE _sys_open(const char *name, int32_t openmode)
 {
     return 0;
 }
@@ -129,12 +129,12 @@ FILEHANDLE _sys_open(const char *name, int openmode)
  *      Get a character from the standard input.  NOTE: blocks until
  *      a character is received.
  * Outputs:
- *      int                     -- Character received or EOF if could not
+ *      int32_t                     -- Character received or EOF if could not
  *                                  get a character (no stdin).
  *---------------------------------------------------------------------------*/
 // generic version
 /*
-int getchar(void)
+int32_t getchar(void)
 {
     char c;
     T_uezDevice stdin = StdInGet();

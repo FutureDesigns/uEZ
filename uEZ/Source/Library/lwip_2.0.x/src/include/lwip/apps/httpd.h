@@ -80,7 +80,7 @@ extern "C" {
  * request being ignored.
  *
  */
-typedef const char *(*tCGIHandler)(int iIndex, int iNumParams, char *pcParam[],
+typedef const char *(*tCGIHandler)(int32_t iIndex, int32_t iNumParams, char *pcParam[],
                              char *pcValue[]);
 
 /*
@@ -93,7 +93,7 @@ typedef struct
     tCGIHandler pfnCGIHandler;
 } tCGI;
 
-void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
+void http_set_cgi_handlers(const tCGI *pCGIs, int32_t iNumHandlers);
 
 #endif /* LWIP_HTTPD_CGI */
 
@@ -104,7 +104,7 @@ void http_set_cgi_handlers(const tCGI *pCGIs, int iNumHandlers);
  * It is called once for every URI with parameters.
  * The parameters can be stored to 
  */
-extern void httpd_cgi_handler(const char* uri, int iNumParams, char **pcParam, char **pcValue
+extern void httpd_cgi_handler(const char* uri, int32_t iNumParams, char **pcParam, char **pcValue
 #if defined(LWIP_HTTPD_FILE_STATE) && LWIP_HTTPD_FILE_STATE
                                      , void *connection_state
 #endif /* LWIP_HTTPD_FILE_STATE */
@@ -148,9 +148,9 @@ typedef u16_t (*tSSIHandler)(
 #if LWIP_HTTPD_SSI_RAW
                              const char* ssi_tag_name,
 #else /* LWIP_HTTPD_SSI_RAW */
-                             int iIndex,
+                             int32_t iIndex,
 #endif /* LWIP_HTTPD_SSI_RAW */
-                             char *pcInsert, int iInsertLen
+                             char *pcInsert, int32_t iInsertLen
 #if LWIP_HTTPD_SSI_MULTIPART
                              , u16_t current_tag_part, u16_t *next_tag_part
 #endif /* LWIP_HTTPD_SSI_MULTIPART */
@@ -163,7 +163,7 @@ typedef u16_t (*tSSIHandler)(
  * (if LWIP_HTTPD_SSI_RAW==1, only the first argument is used)
  */
 void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
-                          const char **ppcTags, int iNumTags);
+                          const char **ppcTags, int32_t iNumTags);
 
 /** For LWIP_HTTPD_SSI_RAW==1, return this to indicate the tag is unknown.
  * In this case, the webserver writes a warning into the page.
@@ -196,7 +196,7 @@ void http_set_ssi_handler(tSSIHandler pfnSSIHandler,
  *         another err_t: Deny the POST request, send back 'bad request'.
  */
 err_t httpd_post_begin(void *connection, const char *uri, const char *http_request,
-                       u16_t http_request_len, int content_len, char *response_uri,
+                       u16_t http_request_len, int32_t content_len, char *response_uri,
                        u16_t response_uri_len, u8_t *post_auto_wnd);
 
 /** Called for each pbuf of data that has been received for a POST.

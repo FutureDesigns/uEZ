@@ -49,7 +49,7 @@ typedef struct {
 } MD5_CTX;
 
 void MD5Init  ( MD5_CTX *mdContext);
-void MD5Update( MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen);
+void MD5Update( MD5_CTX *mdContext, unsigned char *inBuf, uint32_t inLen);
 void MD5Final ( unsigned char hash[], MD5_CTX *mdContext);
 
 #endif /* MD5_H */

@@ -926,7 +926,7 @@ void LPC1768_USBDev_ForceAddressAndConfiguration(
  *-------------------------------------------------------------------------*/
 static void LPC1768_USBDev_EndpointEnable(
                 T_LPC1768_USBDev_Workspace *p,
-                int aIndex)
+                int32_t aIndex)
 {
     ILPC1768_USBDev_CommandAndWrite(
         p,
@@ -946,7 +946,7 @@ static void LPC1768_USBDev_EndpointEnable(
 #if 0
 static void LPC1768_USBDev_EndpointDisable(
                 T_LPC1768_USBDev_Workspace *p,
-                int aIndex)
+                int32_t aIndex)
 {
     ILPC1768_USBDev_CommandAndWrite(
             p,

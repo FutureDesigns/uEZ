@@ -99,6 +99,11 @@ T_uezError ToneGenerator_Generic_PWM_SetTone(
             (*p->iGPIOPort)->SetOutputMode(p->iGPIOPort, 1<<p->iGPIOPortPinIndex);
         }
     } else {
+        /* TODO save the current tone setting here or just read the registers
+         * to verify if it is running. Then on subsequent calls don't set the 
+         * tone again so that you don't here a clicking noise.
+         */
+
         // Set the time for the PWM interval
         error = (*p->iPWM)->SetMaster(
             p->iPWM, 

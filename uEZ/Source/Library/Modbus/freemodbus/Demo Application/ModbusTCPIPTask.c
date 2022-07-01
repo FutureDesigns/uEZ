@@ -78,7 +78,7 @@ eMBErrorCode
 eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
-    int             iRegIndex;
+    int32_t             iRegIndex;
     /* UCHAR           ucUnitAddress = xMBTCPPortGetUnitAddress(); */
 
     /* example code to retrieve connection info for the current request
@@ -97,7 +97,7 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
     if( ( usAddress >= REG_INPUT_START )
         && ( usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS ) )
     {
-        iRegIndex = ( int )( usAddress - usRegInputStart );
+        iRegIndex = ( int32_t )( usAddress - usRegInputStart );
         while( usNRegs > 0 )
         {
             *pucRegBuffer++ = ( unsigned char )( usRegInputBuf[iRegIndex] >> 8 );
@@ -117,7 +117,7 @@ eMBErrorCode
 eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
-    int             iRegIndex;
+    int32_t             iRegIndex;
     /* UCHAR           ucUnitAddress = xMBTCPPortGetUnitAddress(); */
 
     /* example code to retrieve connection info for the current request
@@ -136,7 +136,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
     if( ( usAddress >= REG_HOLDING_START ) &&
         ( usAddress + usNRegs <= REG_HOLDING_START + REG_HOLDING_NREGS ) )
     {
-        iRegIndex = ( int )( usAddress - usRegHoldingStart );
+        iRegIndex = ( int32_t )( usAddress - usRegHoldingStart );
         switch ( eMode )
         {
             /* Pass current register values to the protocol stack. */
@@ -173,7 +173,7 @@ eMBErrorCode
 eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils, eMBRegisterMode eMode )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
-    int             iRegIndex;
+    int32_t             iRegIndex;
     USHORT          usIndex;       
     UCHAR           ucNBytes;
     /* UCHAR           ucUnitAddress = xMBTCPPortGetUnitAddress(); */
@@ -194,7 +194,7 @@ eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNCoils, eMBRegis
     if( ( usAddress >=COILS_START ) &&
         ( usAddress + usNCoils <=COILS_START + COILS_NCOILS ) )
     {
-        iRegIndex = ( int )( usAddress - usCoilsStart );
+        iRegIndex = ( int32_t )( usAddress - usCoilsStart );
         usIndex = 0;
 
         switch ( eMode )
@@ -260,7 +260,7 @@ eMBErrorCode
 eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
 {
     eMBErrorCode    eStatus = MB_ENOERR;
-    int             iRegIndex;
+    int32_t             iRegIndex;
     USHORT          usOutIndex;       
     UCHAR           ucNBytes;
     /* UCHAR           ucUnitAddress = xMBTCPPortGetUnitAddress(); */
@@ -281,7 +281,7 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
     if( ( usAddress >= DISCRETE_INPUTS_START ) &&
         ( usAddress + usNDiscrete <= DISCRETE_INPUTS_START + DISCRETE_INPUTS_NINPUTS ) )
     {
-        iRegIndex = ( int )( usAddress - usDiscreteInputsStart );
+        iRegIndex = ( int32_t )( usAddress - usDiscreteInputsStart );
 
         // the last byte needs to be padded with 0s, so we will just 0 out everything
         // and set the discrete inputs that are true

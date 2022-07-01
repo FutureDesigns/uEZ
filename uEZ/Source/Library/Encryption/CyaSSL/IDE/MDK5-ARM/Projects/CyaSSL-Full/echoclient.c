@@ -53,8 +53,8 @@ void echoclient_test(void* args)
     FILE* fin   = stdin  ;
     FILE* fout = stdout;
 
-    int inCreated  = 0;
-    int outCreated = 0;
+    int32_t inCreated  = 0;
+    int32_t outCreated = 0;
 
     char msg[1024];
     char reply[1024+1];
@@ -63,10 +63,10 @@ void echoclient_test(void* args)
     SSL_CTX*    ctx    = 0;
     SSL*        ssl    = 0;
 
-    int doDTLS = 0;
-    int doPSK = 0;
-    int sendSz;
-    int argc    = 0;
+    int32_t doDTLS = 0;
+    int32_t doPSK = 0;
+    int32_t sendSz;
+    int32_t argc    = 0;
     char** argv = 0;
     word16 port = yasslPort;
 
@@ -178,7 +178,7 @@ void echoclient_test(void* args)
 
     while (fgets(msg, sizeof(msg), fin) != 0) {
      
-        sendSz = (int)strlen(msg);
+        sendSz = (int32_t)strlen(msg);
 
         if (SSL_write(ssl, msg, sendSz) != sendSz)
             err_sys("SSL_write failed");
@@ -195,7 +195,7 @@ void echoclient_test(void* args)
 
         #ifndef CYASSL_MDK_SHELL
         while (sendSz) {
-            int got;
+            int32_t got;
             if ( (got = SSL_read(ssl, reply, sizeof(reply)-1)) > 0) {
                 reply[got] = 0;
                 fputs(reply, fout);
@@ -207,7 +207,7 @@ void echoclient_test(void* args)
         }
         #else
         {
-            int got;
+            int32_t got;
             if ( (got = SSL_read(ssl, reply, sizeof(reply)-1)) > 0) {
                 reply[got] = 0;
                 fputs(reply, fout);
@@ -221,7 +221,7 @@ void echoclient_test(void* args)
 
 #ifdef CYASSL_DTLS
     strncpy(msg, "break", 6);
-    sendSz = (int)strlen(msg);
+    sendSz = (int32_t)strlen(msg);
     /* try to tell server done */
     SSL_write(ssl, msg, sendSz);
 #else
@@ -243,12 +243,12 @@ void echoclient_test(void* args)
 /* so overall tests can pull in test function */
 #ifndef NO_MAIN_DRIVER
 
-    int main(int argc, char** argv)
+    int32_t main(int32_t argc, char** argv)
     {
         func_args args;
 
 #ifdef HAVE_CAVIUM
-        int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+        int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
         if (ret != 0)
             err_sys("Cavium OpenNitroxDevice failed");
 #endif /* HAVE_CAVIUM */

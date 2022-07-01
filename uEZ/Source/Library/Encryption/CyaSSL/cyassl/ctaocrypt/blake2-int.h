@@ -10,7 +10,7 @@
    You should have received a copy of the CC0 Public Domain Dedication along with
    this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 */
-/* blake2-int.h
+/* blake2-int32_t.h
  *
  * Copyright (C) 2006-2014 wolfSSL Inc.
  *
@@ -139,36 +139,36 @@
 #pragma pack(pop)
 
   /* Streaming API */
-  int blake2s_init( blake2s_state *S, const byte outlen );
-  int blake2s_init_key( blake2s_state *S, const byte outlen, const void *key, const byte keylen );
-  int blake2s_init_param( blake2s_state *S, const blake2s_param *P );
-  int blake2s_update( blake2s_state *S, const byte *in, word64 inlen );
-  int blake2s_final( blake2s_state *S, byte *out, byte outlen );
+  int32_t blake2s_init( blake2s_state *S, const byte outlen );
+  int32_t blake2s_init_key( blake2s_state *S, const byte outlen, const void *key, const byte keylen );
+  int32_t blake2s_init_param( blake2s_state *S, const blake2s_param *P );
+  int32_t blake2s_update( blake2s_state *S, const byte *in, word64 inlen );
+  int32_t blake2s_final( blake2s_state *S, byte *out, byte outlen );
 
-  int blake2b_init( blake2b_state *S, const byte outlen );
-  int blake2b_init_key( blake2b_state *S, const byte outlen, const void *key, const byte keylen );
-  int blake2b_init_param( blake2b_state *S, const blake2b_param *P );
-  int blake2b_update( blake2b_state *S, const byte *in, word64 inlen );
-  int blake2b_final( blake2b_state *S, byte *out, byte outlen );
+  int32_t blake2b_init( blake2b_state *S, const byte outlen );
+  int32_t blake2b_init_key( blake2b_state *S, const byte outlen, const void *key, const byte keylen );
+  int32_t blake2b_init_param( blake2b_state *S, const blake2b_param *P );
+  int32_t blake2b_update( blake2b_state *S, const byte *in, word64 inlen );
+  int32_t blake2b_final( blake2b_state *S, byte *out, byte outlen );
 
-  int blake2sp_init( blake2sp_state *S, const byte outlen );
-  int blake2sp_init_key( blake2sp_state *S, const byte outlen, const void *key, const byte keylen );
-  int blake2sp_update( blake2sp_state *S, const byte *in, word64 inlen );
-  int blake2sp_final( blake2sp_state *S, byte *out, byte outlen );
+  int32_t blake2sp_init( blake2sp_state *S, const byte outlen );
+  int32_t blake2sp_init_key( blake2sp_state *S, const byte outlen, const void *key, const byte keylen );
+  int32_t blake2sp_update( blake2sp_state *S, const byte *in, word64 inlen );
+  int32_t blake2sp_final( blake2sp_state *S, byte *out, byte outlen );
 
-  int blake2bp_init( blake2bp_state *S, const byte outlen );
-  int blake2bp_init_key( blake2bp_state *S, const byte outlen, const void *key, const byte keylen );
-  int blake2bp_update( blake2bp_state *S, const byte *in, word64 inlen );
-  int blake2bp_final( blake2bp_state *S, byte *out, byte outlen );
+  int32_t blake2bp_init( blake2bp_state *S, const byte outlen );
+  int32_t blake2bp_init_key( blake2bp_state *S, const byte outlen, const void *key, const byte keylen );
+  int32_t blake2bp_update( blake2bp_state *S, const byte *in, word64 inlen );
+  int32_t blake2bp_final( blake2bp_state *S, byte *out, byte outlen );
 
   /* Simple API */
-  int blake2s( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
-  int blake2b( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
+  int32_t blake2s( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
+  int32_t blake2b( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
 
-  int blake2sp( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
-  int blake2bp( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
+  int32_t blake2sp( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
+  int32_t blake2bp( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen );
 
-  static inline int blake2( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen )
+  static inline int32_t blake2( byte *out, const void *in, const void *key, const byte outlen, const word64 inlen, byte keylen )
   {
     return blake2b( out, in, key, outlen, inlen, keylen );
   }

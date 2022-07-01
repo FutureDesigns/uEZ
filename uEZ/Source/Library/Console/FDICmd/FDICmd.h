@@ -66,7 +66,7 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
-typedef int (*T_consoleCmd)(void *aWorkspace, int argc, char *argv[]);
+typedef int32_t (*T_consoleCmd)(void *aWorkspace, int32_t argc, char *argv[]);
 typedef struct {
     char *iName;    // 0 = last entry in array
     T_consoleCmd iFunction;
@@ -83,7 +83,7 @@ T_uezError FDICmdStart(
 T_uezError FDICmdStop(void *aWorkspace);
 T_uezError FDICmdPrintf(void *aWorkspace, const char *aFormat, ...);
 T_uezError FDICmdSendString(void *aWorkspace, const char *aString);
-int FDICmdProcessCmd(void *aWorkspace, const char *aCmd);
+int32_t FDICmdProcessCmd(void *aWorkspace, const char *aCmd);
 T_uezError FDICmdReadLine(
         void *aWorkspace,
         char *aLine,

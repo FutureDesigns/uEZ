@@ -61,8 +61,8 @@
 
 #define PIC32MZ_MAX_BD   2
 typedef struct {      /* Crypt Engine descripter */
-    int bdCount ;
-    int err   ;
+    int32_t bdCount ;
+    int32_t err   ;
     volatile bufferDescriptor 
         bd[PIC32MZ_MAX_BD] __attribute__((aligned (8), coherent));
     securityAssociation 
@@ -72,13 +72,13 @@ typedef struct {      /* Crypt Engine descripter */
 #define PIC32MZ_IF_RAM(addr) (KVA_TO_PA(addr) < 0x80000)
 
 #define WAIT_ENGINE \
-    { volatile int v ; while (CESTATbits.ACTIVE) ; for(v=0; v<100; v++) ; }
+    { volatile int32_t v ; while (CESTATbits.ACTIVE) ; for(v=0; v<100; v++) ; }
 
 #ifdef DEBUG_CYASSL
-static void print_mem(const unsigned char *p, int size) {
+static void print_mem(const unsigned char *p, int32_t size) {
     for(; size>0; size--, p++) {
         if(size%4 == 0)printf(" ") ;
-            printf("%02x", (int)*p) ;
+            printf("%02x", (int32_t)*p) ;
     }
     puts("") ;
 }

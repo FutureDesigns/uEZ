@@ -63,7 +63,7 @@ gapiResp_type LCDBMPColorCopy(BMP_type const *const s, BMP_type *d, sI16 PosX, s
   ColorTable_type *pCT=(ColorTable_type *)s->biColorTable;
   uI16 transparency=NO_TRANSPARENCY_COLOR;
   gapiResp_type status=0;
-  int allocated = 0;
+  int32_t allocated = 0;
 
   if((s==NULL) || (d==NULL))
     return(-1);

@@ -53,9 +53,9 @@
 #define portNOP()
 
 #endif
-#include <UEZRandom.h>
+#include <uEZRandom.h>
 
-#include "Source/uEZSystem/UEZHandles.h"
+#include "Source/uEZSystem/uEZHandles.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -93,8 +93,8 @@ typedef struct tag_SemList
  *---------------------------------------------------------------------------*/
 //static struct timeoutlist timeoutlist[SYS_THREAD_MAX];
 static u16_t nextthread = 0;
-int intlevel = 0;
-int errno;
+int32_t intlevel = 0;
+int32_t errno;
 T_uezRandomStream G_randomstream;
 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
@@ -111,11 +111,11 @@ T_xSemList *G_FreeSemaphore;
  * Description:
  *      Creates a new mailbox
  * Inputs:
- *      int size                -- Size of elements in the mailbox
+ *      int32_t size                -- Size of elements in the mailbox
  * Outputs:
  *      sys_mbox_t              -- Handle to new mailbox
  *---------------------------------------------------------------------------*/
-err_t sys_mbox_new(sys_mbox_t *mbox, int size)
+err_t sys_mbox_new(sys_mbox_t *mbox, int32_t size)
 {
 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
@@ -357,7 +357,7 @@ u32_t sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg)
 }
 
 /*----------------------------------------------------------------------------------*/
-int sys_mbox_valid(sys_mbox_t *mbox)
+int32_t sys_mbox_valid(sys_mbox_t *mbox)
 {
     if ((*mbox >= UEZ_NUM_HANDLES) || (*mbox == UEZ_NULL_HANDLE) ||
                 ((G_handles[*mbox].iTypeAndFlags & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_QUEUE)){
@@ -557,7 +557,7 @@ void sys_sem_free(sys_sem_t *sem)
 #endif
 }
 
-int sys_sem_valid(sys_sem_t *sem)
+int32_t sys_sem_valid(sys_sem_t *sem)
 {
     if ((*sem >= UEZ_NUM_HANDLES) || (*sem == UEZ_NULL_HANDLE) ||
                 ((G_handles[*sem].iTypeAndFlags & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_SEMAPHORE)){
@@ -655,15 +655,15 @@ void sys_mutex_unlock(sys_mutex_t *mutex){
  *      char *name              -- Name of thread
  *      void (* thread)(void *arg) -- Pointer to function to run.
  *      void *arg               -- Argument passed into function
- *      int stacksize           -- Required stack amount in bytes
- *      int prio                -- Thread priority
+ *      int32_t stacksize           -- Required stack amount in bytes
+ *      int32_t prio                -- Thread priority
  * Outputs:
  *      sys_thread_t            -- Pointer to per-thread timeouts.
  *---------------------------------------------------------------------------*/
 sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, void *arg,
-        int stacksize, int prio) {
+        int32_t stacksize, int32_t prio) {
     T_uezTask CreatedTask;
-    int result;
+    int32_t result;
 
     if (nextthread < SYS_THREAD_MAX) {
         result = UEZTaskCreate(

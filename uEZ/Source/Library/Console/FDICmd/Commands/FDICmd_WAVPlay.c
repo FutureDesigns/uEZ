@@ -49,7 +49,7 @@
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdWAVPlay(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdWAVPlay(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezError error;
 

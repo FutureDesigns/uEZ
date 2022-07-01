@@ -10,7 +10,7 @@
 // Returns      : 
 //
 ///////////////////////////////////////////////////////////////////////////////
-int HTTPClientRequestDoGet(HTTPParameters *pClientParams, CHAR *pBuffer, UINT32 *pSize)
+int32_t HTTPClientRequestDoGet(HTTPParameters *pClientParams, CHAR *pBuffer, UINT32 *pSize)
 {
 
     INT32                   nRetCode;
@@ -103,7 +103,7 @@ int HTTPClientRequestDoGet(HTTPParameters *pClientParams, CHAR *pBuffer, UINT32 
     {
         HTTPClientDebug("HTTPClientRequestDo",NULL,0,
                "HTTP Client terminated %s (got %d kb) %d\n" ,HTTPClientDebugReturnCode(nRetCode),
-               (int)(nTotal/ 1024), count++);
+               (int32_t)(nTotal/ 1024), count++);
     }
 #endif // _HTTP_DEBUGGING_
 
@@ -158,7 +158,7 @@ void HTTPClientRequestTestParams(HTTPParameters *pClientParams)
 // Returns      : 
 //
 ///////////////////////////////////////////////////////////////////////////////
-int HTTPClientRequestDoTest(void)
+int32_t HTTPClientRequestDoTest(void)
 {
     HTTPParameters ClientParams;
     UINT32 nSize = sizeof(Buffer);

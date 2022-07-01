@@ -65,7 +65,7 @@
 #endif /* min */
 
 
-int InitSha256(Sha256* sha256)
+int32_t InitSha256(Sha256* sha256)
 {
     #ifdef FREESCALE_MMCAU
         cau_sha256_initialize_output(sha256->digest);
@@ -90,7 +90,7 @@ int InitSha256(Sha256* sha256)
 #ifdef FREESCALE_MMCAU
     #define XTRANSFORM(S,B)  Transform((S), (B))
 
-static int Transform(Sha256* sha256, byte* buf)
+static int32_t Transform(Sha256* sha256, byte* buf)
 {
     cau_sha256_hash_n(buf, 1, sha256->digest);
 
@@ -132,10 +132,10 @@ static const word32 K[64] = {
      (h)  = t0 + t1;
 
 
-static int Transform(Sha256* sha256)
+static int32_t Transform(Sha256* sha256)
 {
     word32 S[8], t0, t1;
-    int i;
+    int32_t i;
 
 #ifdef CYASSL_SMALL_STACK
     word32* W;
@@ -191,7 +191,7 @@ static INLINE void AddLength(Sha256* sha256, word32 len)
 }
 
 
-int Sha256Update(Sha256* sha256, const byte* data, word32 len)
+int32_t Sha256Update(Sha256* sha256, const byte* data, word32 len)
 {
     /* do block size increments */
     byte* local = (byte*)sha256->buffer;
@@ -205,7 +205,7 @@ int Sha256Update(Sha256* sha256, const byte* data, word32 len)
         len             -= add;
 
         if (sha256->buffLen == SHA256_BLOCK_SIZE) {
-            int ret;
+            int32_t ret;
 
             #if defined(LITTLE_ENDIAN_ORDER) && !defined(FREESCALE_MMCAU)
                 ByteReverseWords(sha256->buffer, sha256->buffer,
@@ -225,10 +225,10 @@ int Sha256Update(Sha256* sha256, const byte* data, word32 len)
 }
 
 
-int Sha256Final(Sha256* sha256, byte* hash)
+int32_t Sha256Final(Sha256* sha256, byte* hash)
 {
     byte* local = (byte*)sha256->buffer;
-    int ret;
+    int32_t ret;
 
     AddLength(sha256, sha256->buffLen);  /* before adding pads */
 
@@ -285,9 +285,9 @@ int Sha256Final(Sha256* sha256, byte* hash)
 }
 
 
-int Sha256Hash(const byte* data, word32 len, byte* hash)
+int32_t Sha256Hash(const byte* data, word32 len, byte* hash)
 {
-    int ret = 0;
+    int32_t ret = 0;
 #ifdef CYASSL_SMALL_STACK
     Sha256* sha256;
 #else

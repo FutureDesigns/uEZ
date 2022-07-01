@@ -67,7 +67,7 @@ void tcp_poll (void const *arg)
 }
 
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
 } func_args;
 
@@ -78,12 +78,12 @@ extern void init_time(void) ;
 /*-----------------------------------------------------------------------------
  *       mian entry 
  *----------------------------------------------------------------------------*/
-int myoptind = 0;
+int32_t myoptind = 0;
 char* myoptarg = NULL;
 
 #include "config-EchoClient.h"
 
-int main() 
+int32_t main() 
 {
 	  func_args args = { 0 } ;
 		

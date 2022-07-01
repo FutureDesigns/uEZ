@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : WM.h
 Purpose     : Windows manager include
@@ -138,32 +139,36 @@ struct WM_WINDOW_INFO {
 };
 
 typedef struct {
-  int Key, PressedCnt;
+  int32_t Key, PressedCnt;
 } WM_KEY_INFO;
 
 typedef struct {
-  int NumItems, v, PageSize;
+  int32_t NumItems, v, PageSize;
 } WM_SCROLL_STATE;
 
 typedef struct {
-  int Done;
-  int ReturnValue;
+  int32_t Done;
+  int32_t ReturnValue;
 } WM_DIALOG_STATUS;
 
 typedef struct {
-  int x,y;
+  int32_t x,y;
   U8  State;
   U8  StatePrev;
 } WM_PID_STATE_CHANGED_INFO;
 
 typedef struct {
-  int Cmd;
-  int dx, dy, da;
-  int xPos, yPos;
-  int Period;
-  int SnapX;
-  int SnapY;
-  int FinalMove;
+  U8  Cmd;
+  U8  FinalMove;
+  U8  StopMotion;
+  U8  IsDragging;
+  int32_t dx, dy, da;
+  int32_t xPos, yPos;
+  int32_t Period;
+  int32_t SnapX;
+  int32_t SnapY;
+  U8  IsOutside;
+  unsigned Overlap;
   U32 Flags;
   GUI_PID_STATE * pState;
   GUI_HMEM hContext;
@@ -177,13 +182,13 @@ typedef struct {
   U32       xSizeParent; // xSize of parent window
   U32       ySizeParent; // ySize of parent window
   I32       Factor0;     // Primary factor when starting zoom gesture (<< 16)
-  int       xPos0;       // Primary window position in x when starting the gesture
-  int       yPos0;       // Primary window position in y when starting the gesture
+  int32_t       xPos0;       // Primary window position in x when starting the gesture
+  int32_t       yPos0;       // Primary window position in y when starting the gesture
   GUI_POINT Center0;     // Primary center point when starting the gesture
 } WM_ZOOM_INFO;
 
 typedef struct {
-  int            Flags;     // Information regarding gesture type
+  int32_t            Flags;     // Information regarding gesture type
   GUI_POINT      Point;     // Relative movement
   GUI_POINT      Center;    // Center point for zooming
   I32            Angle;     // Angle between the touch points
@@ -192,7 +197,7 @@ typedef struct {
 } WM_GESTURE_INFO;
 
 typedef struct {
-  int dx, dy;
+  int32_t dx, dy;
 } WM_MOVE_INFO;
 
 /*********************************************************************
@@ -204,6 +209,7 @@ typedef struct {
 #define WM_GF_PAN    (1 << 2)
 #define WM_GF_ZOOM   (1 << 3)
 #define WM_GF_ROTATE (1 << 4)
+#define WM_GF_DTAP   (1 << 5)
 
 /*********************************************************************
 *
@@ -252,7 +258,7 @@ typedef struct {
 
 #define WM_NOTIFY_CLIENTCHANGE      37      /* Client area may have changed */
 #define WM_NOTIFY_PARENT            38      /* Notify parent. Information is detailed as notification code */
-#define WM_NOTIFY_PARENT_REFLECTION 39      /* Notify parent reflection. 
+#define WM_NOTIFY_PARENT_REFLECTION 39      /* Notify parent reflection.
                                                Sometimes send back as a result of the WM_NOTIFY_PARENT message
                                                to let child react on behalf of its parent.
                                                Information is detailed as notification code */
@@ -271,8 +277,11 @@ typedef struct {
 
 #define WM_GET_WINDOW_ID            49      /* Return widget type specific Id (DebugId) */
 
-#define WM_PRE_BANDING              50
-#define WM_POST_BANDING             51
+#define WM_PRE_BANDING              50      /* Send before starting banding process */
+#define WM_POST_BANDING             51      /* Send after finishing banding process */
+
+#define WM_USER_DATA                52      /* Send immediately after setting user data */
+#define WM_SET_CALLBACK             53      /* Send immediately after setting user data */
 
 #define WM_GESTURE                  0x0119  /* Gesture message */
 
@@ -390,13 +399,15 @@ typedef struct WM_MESSAGE WM_MESSAGE;
 typedef void WM_CALLBACK( WM_MESSAGE * pMsg);
 
 struct WM_MESSAGE {
-  int MsgId;            /* type of message */
+  int32_t MsgId;            /* type of message */
   WM_HWIN hWin;         /* Destination window */
   WM_HWIN hWinSrc;      /* Source window  */
   union {
-    const void * p;            /* Some messages need more info ... Pointer is declared "const" because some systems (M16C) have 4 byte const, byte 2 byte default ptrs */
-    int v;
+    const void * p;     /* Message specific data pointer */
+    int32_t v;
+    PTR_ADDR u;
     GUI_COLOR Color;
+    void (* pFunc)(void);
   } Data;
 };
 
@@ -427,7 +438,7 @@ typedef void (* WM_tfPaint1Func)        (WM_HWIN hWin);
 typedef struct {
   WM_HMEM  hTimer;
   WM_HWIN  hWin;
-  int      UserId;
+  int32_t      UserId;
 } WM_TIMER_OBJ;
 
 /*********************************************************************
@@ -437,7 +448,8 @@ typedef struct {
 void WM_Activate  (void);
 void WM_Deactivate(void);
 void WM_Init      (void);
-int  WM_Exec      (void);    /* Execute all jobs ... Return 0 if nothing was done. */
+int32_t  WM_Exec      (void);    /* Execute all jobs ... Return 0 if nothing was done. */
+int32_t  WM_Exec1     (void);    // Execute only one job
 U32  WM_SetCreateFlags(U32 Flags);
 WM_tfPollPID * WM_SetpfPollPID(WM_tfPollPID * pf);
 
@@ -446,54 +458,63 @@ WM_tfPollPID * WM_SetpfPollPID(WM_tfPollPID * pf);
 *       Window manager interface
 */
 void    WM_AttachWindow              (WM_HWIN hWin, WM_HWIN hParent);
-void    WM_AttachWindowAt            (WM_HWIN hWin, WM_HWIN hParent, int x, int y);
-int     WM_CheckScrollPos            (WM_SCROLL_STATE * pScrollState, int Pos, int LowerDist, int UpperDist); /* not to be documented (may change in future version) */
+void    WM_AttachWindowAt            (WM_HWIN hWin, WM_HWIN hParent, int32_t x, int32_t y);
+int32_t     WM_CheckScrollPos            (WM_SCROLL_STATE * pScrollState, int32_t Pos, int32_t LowerDist, int32_t UpperDist); /* not to be documented (may change in future version) */
 void    WM_ClrHasTrans               (WM_HWIN hWin);
-WM_HWIN WM_CreateWindow              (int x0, int y0, int xSize, int ySize, U32 Style, WM_CALLBACK * cb, int NumExtraBytes);
-WM_HWIN WM_CreateWindowAsChild       (int x0, int y0, int xSize, int ySize, WM_HWIN hWinParent, U32 Style, WM_CALLBACK* cb, int NumExtraBytes);
+WM_HWIN WM_CreateWindow              (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, U32 Style, WM_CALLBACK * cb, int32_t NumExtraBytes);
+WM_HWIN WM_CreateWindowAsChild       (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hWinParent, U32 Style, WM_CALLBACK* cb, int32_t NumExtraBytes);
 void    WM_DeleteWindow              (WM_HWIN hWin);
 void    WM_DetachWindow              (WM_HWIN hWin);
-void    WM_EnableGestures            (WM_HWIN hWin, int OnOff);
-int     WM_GetHasTrans               (WM_HWIN hWin);
-WM_HWIN WM_GetFocussedWindow         (void);
-int     WM_GetInvalidRect            (WM_HWIN hWin, GUI_RECT * pRect);
-int     WM_GetStayOnTop              (WM_HWIN hWin);
+void    WM_EnableGestures            (WM_HWIN hWin, int32_t OnOff);
+int32_t     WM_GetHasTrans               (WM_HWIN hWin);
+WM_HWIN WM_GetFocusedWindow          (void);
+int32_t     WM_GetInvalidRect            (WM_HWIN hWin, GUI_RECT * pRect);
+int32_t     WM_GetStayOnTop              (WM_HWIN hWin);
 void    WM_HideWindow                (WM_HWIN hWin);
 void    WM_InvalidateArea            (const GUI_RECT * pRect);
 void    WM_InvalidateRect            (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM_InvalidateWindow          (WM_HWIN hWin);
 void    WM_InvalidateWindowAndDescsEx(WM_HWIN hWin, const GUI_RECT * pInvalidRect, U16 Flags);
 void    WM_InvalidateWindowAndDescs  (WM_HWIN hWin);    /* not to be documented (may change in future version) */
-int     WM_IsEnabled                 (WM_HWIN hObj);
+int32_t     WM_IsEnabled                 (WM_HWIN hObj);
 char    WM_IsCompletelyCovered       (WM_HWIN hWin);    /* Checks if the window is completely covered by other windows */
 char    WM_IsCompletelyVisible       (WM_HWIN hWin);    /* Is the window completely visible ? */
-int     WM_IsFocussable              (WM_HWIN hWin);
-int     WM_IsVisible                 (WM_HWIN hWin);
-int     WM_IsWindow                  (WM_HWIN hWin);    /* Check validity */
+int32_t     WM_IsFocusable               (WM_HWIN hWin);
+int32_t     WM_IsVisible                 (WM_HWIN hWin);
+int32_t     WM_IsWindow                  (WM_HWIN hWin);    /* Check validity */
+void    WM_Rect2Screen               (WM_HWIN hWin, GUI_RECT * pRect);
+void    WM_Rect2Client               (WM_HWIN hWin, GUI_RECT * pRect);
 void    WM_SetAnchor                 (WM_HWIN hWin, U16 AnchorFlags);
 void    WM_SetHasTrans               (WM_HWIN hWin);
-void    WM_SetId                     (WM_HWIN hObj, int Id);
-void    WM_SetStayOnTop              (WM_HWIN hWin, int OnOff);
+void    WM_SetId                     (WM_HWIN hObj, int32_t Id);
+void    WM_SetStayOnTop              (WM_HWIN hWin, int32_t OnOff);
 void    WM_SetTransState             (WM_HWIN hWin, unsigned State);
 void    WM_ShowWindow                (WM_HWIN hWin);
 void    WM_ValidateRect              (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM_ValidateWindow            (WM_HWIN hWin);
+void    WM_XY2Screen                 (WM_HWIN hWin, int32_t * px, int32_t * py);
+void    WM_XY2Client                 (WM_HWIN hWin, int32_t * px, int32_t * py);
+
+#define WM_GetFocussedWindow WM_GetFocusedWindow
+#define WM_IsFocussable      WM_IsFocusable
 
 /* Gesture support */
-void WM_GESTURE_Enable  (int OnOff);
-int  WM_GESTURE_EnableEx(int OnOff, int MaxFactor);
+void WM_GESTURE_Enable  (int32_t OnOff);
+int32_t  WM_GESTURE_EnableEx(int32_t OnOff, int32_t MaxFactor);
 void WM_GESTURE_Exec    (void);
 I32  WM_GESTURE_SetThresholdAngle(I32 ThresholdAngle);
 I32  WM_GESTURE_SetThresholdDist (I32 ThresholdDist);
 
 /* Motion support */
-void     WM_MOTION_Enable          (int OnOff);
-void     WM_MOTION_SetMovement     (WM_HWIN hWin, int Axis, I32 Velocity, I32 Dist);
-void     WM_MOTION_SetMotion       (WM_HWIN hWin, int Axis, I32 Velocity, I32 Deceleration);
-void     WM_MOTION_SetMoveable     (WM_HWIN hWin, U32 Flags, int OnOff);
-void     WM_MOTION_SetDeceleration (WM_HWIN hWin, int Axis, I32 Deceleration);
+void     WM_MOTION_Enable          (int32_t OnOff);
+void     WM_MOTION_SetMovement     (WM_HWIN hWin, int32_t Axis, I32 Speed, I32 Dist);
+void     WM_MOTION_SetMotion       (WM_HWIN hWin, int32_t Axis, I32 Speed, I32 Deceleration);
+void     WM_MOTION_SetMoveable     (WM_HWIN hWin, U32 Flags, int32_t OnOff);
+void     WM_MOTION_SetDeceleration (WM_HWIN hWin, int32_t Axis, I32 Deceleration);
 unsigned WM_MOTION_SetDefaultPeriod(unsigned Period);
-void     WM_MOTION_SetSpeed        (WM_HWIN hWin, int Axis, I32 Velocity);
+void     WM_MOTION_SetSpeed        (WM_HWIN hWin, int32_t Axis, I32 Velocity);
+void     WM_MOTION_SetMinMotion    (unsigned MinMotion);
+void     WM_MOTION_SetThreshold    (unsigned Threshold);
 
 /* Motion support, private interface */
 WM_HMEM WM_MOTION__CreateContext(void);
@@ -509,36 +530,36 @@ void     WM__SetMotionCallback (void(* cbMotion) (GUI_PID_STATE * pState, void *
   #define GUI_MEMDEV_EDGE_TOP    2
   #define GUI_MEMDEV_EDGE_BOTTOM 3
 
-  int               GUI_MEMDEV_BlendWinBk       (WM_HWIN hWin, int Period, U32 BlendColor, U8 BlendIntens);
-  int               GUI_MEMDEV_BlurAndBlendWinBk(WM_HWIN hWin, int Period, U8 BlurDepth, U32 BlendColor, U8 BlendIntens);
-  int               GUI_MEMDEV_BlurWinBk        (WM_HWIN hWin, int Period, U8 BlurDepth);
+  int32_t               GUI_MEMDEV_BlendWinBk       (WM_HWIN hWin, int32_t Period, U32 BlendColor, U8 BlendIntens);
+  int32_t               GUI_MEMDEV_BlurAndBlendWinBk(WM_HWIN hWin, int32_t Period, U8 BlurDepth, U32 BlendColor, U8 BlendIntens);
+  int32_t               GUI_MEMDEV_BlurWinBk        (WM_HWIN hWin, int32_t Period, U8 BlurDepth);
   void              GUI_MEMDEV_CreateStatic     (WM_HWIN hWin);
   GUI_MEMDEV_Handle GUI_MEMDEV_CreateWindowDevice(WM_HWIN hWin);
-  int               GUI_MEMDEV_FadeInWindow     (WM_HWIN hWin, int Period);
-  int               GUI_MEMDEV_FadeOutWindow    (WM_HWIN hWin, int Period);
+  int32_t               GUI_MEMDEV_FadeInWindow     (WM_HWIN hWin, int32_t Period);
+  int32_t               GUI_MEMDEV_FadeOutWindow    (WM_HWIN hWin, int32_t Period);
   GUI_MEMDEV_Handle GUI_MEMDEV_GetStaticDevice  (WM_HWIN hWin);
   GUI_MEMDEV_Handle GUI_MEMDEV_GetWindowDevice  (WM_HWIN hWin);
-  int               GUI_MEMDEV_MoveInWindow     (WM_HWIN hWin, int x, int y, int a180, int Period);
-  int               GUI_MEMDEV_MoveOutWindow    (WM_HWIN hWin, int x, int y, int a180, int Period);
+  int32_t               GUI_MEMDEV_MoveInWindow     (WM_HWIN hWin, int32_t x, int32_t y, int32_t a180, int32_t Period);
+  int32_t               GUI_MEMDEV_MoveOutWindow    (WM_HWIN hWin, int32_t x, int32_t y, int32_t a180, int32_t Period);
   void              GUI_MEMDEV_Paint1Static     (WM_HWIN hWin);                                     /* not to be documented */
-  int               GUI_MEMDEV_ShiftInWindow    (WM_HWIN hWin, int Period, int Direction);
-  int               GUI_MEMDEV_ShiftOutWindow   (WM_HWIN hWin, int Period, int Direction);
-  int               GUI_MEMDEV_SwapWindow       (WM_HWIN hWin, int Period, int Edge);
+  int32_t               GUI_MEMDEV_ShiftInWindow    (WM_HWIN hWin, int32_t Period, int32_t Direction);
+  int32_t               GUI_MEMDEV_ShiftOutWindow   (WM_HWIN hWin, int32_t Period, int32_t Direction);
+  int32_t               GUI_MEMDEV_SwapWindow       (WM_HWIN hWin, int32_t Period, int32_t Edge);
 
   void              GUI_MEMDEV__CreateStatic    (WM_HWIN hWin);
 #endif
 
 /* Move/resize windows */
-void WM_MoveWindow                (WM_HWIN hWin, int dx, int dy);
-void WM_ResizeWindow              (WM_HWIN hWin, int dx, int dy);
-void WM_MoveTo                    (WM_HWIN hWin, int x, int y);
-void WM_MoveChildTo               (WM_HWIN hWin, int x, int y);
-void WM_SetSize                   (WM_HWIN hWin, int XSize, int YSize);
-void WM_SetWindowPos              (WM_HWIN hWin, int xPos, int yPos, int xSize, int ySize);
-int  WM_SetXSize                  (WM_HWIN hWin, int xSize);
-int  WM_SetYSize                  (WM_HWIN hWin, int ySize);
-int  WM_SetScrollbarH             (WM_HWIN hWin, int OnOff); /* not to be documented (may change in future version) */
-int  WM_SetScrollbarV             (WM_HWIN hWin, int OnOff); /* not to be documented (may change in future version) */
+void WM_MoveWindow                (WM_HWIN hWin, int32_t dx, int32_t dy);
+void WM_ResizeWindow              (WM_HWIN hWin, int32_t dx, int32_t dy);
+void WM_MoveTo                    (WM_HWIN hWin, int32_t x, int32_t y);
+void WM_MoveChildTo               (WM_HWIN hWin, int32_t x, int32_t y);
+void WM_SetSize                   (WM_HWIN hWin, int32_t XSize, int32_t YSize);
+void WM_SetWindowPos              (WM_HWIN hWin, int32_t xPos, int32_t yPos, int32_t xSize, int32_t ySize);
+int32_t  WM_SetXSize                  (WM_HWIN hWin, int32_t xSize);
+int32_t  WM_SetYSize                  (WM_HWIN hWin, int32_t ySize);
+int32_t  WM_SetScrollbarH             (WM_HWIN hWin, int32_t OnOff); /* not to be documented (may change in future version) */
+int32_t  WM_SetScrollbarV             (WM_HWIN hWin, int32_t OnOff); /* not to be documented (may change in future version) */
 
 /* ToolTip support */
 #define WM_TOOLTIP_PI_FIRST 0
@@ -552,11 +573,11 @@ int  WM_SetScrollbarV             (WM_HWIN hWin, int OnOff); /* not to be docume
 typedef WM_HMEM WM_TOOLTIP_HANDLE;
 
 typedef struct {
-  int          Id;
+  int32_t          Id;
   const char * pText;
 } TOOLTIP_INFO;
 
-int               WM_TOOLTIP_AddTool         (WM_TOOLTIP_HANDLE hToolTip, WM_HWIN hTool, const char * pText);
+int32_t               WM_TOOLTIP_AddTool         (WM_TOOLTIP_HANDLE hToolTip, WM_HWIN hTool, const char * pText);
 WM_TOOLTIP_HANDLE WM_TOOLTIP_Create          (WM_HWIN hDlg, const TOOLTIP_INFO * pInfo, unsigned NumItems);
 void              WM_TOOLTIP_Delete          (WM_TOOLTIP_HANDLE hToolTip);
 GUI_COLOR         WM_TOOLTIP_SetDefaultColor (unsigned Index, GUI_COLOR Color);
@@ -568,26 +589,26 @@ void WM__SetToolTipCallback(void(* cbToolTip)(GUI_PID_STATE * pState, WM_HWIN));
 
 /* Timer */
 #ifdef GUI_X_CREATE_TIMER
-  int  WM_CreateTimer    (WM_HWIN hWin, int UserID, int Period, int Mode); /* not to be documented (may change in future version) */
-  void WM_DeleteTimer    (WM_HWIN hWin, int UserId); /* not to be documented (may change in future version) */
+  int32_t  WM_CreateTimer    (WM_HWIN hWin, int32_t UserID, int32_t Period, int32_t Mode); /* not to be documented (may change in future version) */
+  void WM_DeleteTimer    (WM_HWIN hWin, int32_t UserId); /* not to be documented (may change in future version) */
 #else
-  WM_HMEM WM_CreateTimer (WM_HWIN hWin, int UserID, int Period, int Mode); /* not to be documented (may change in future version) */
+  WM_HMEM WM_CreateTimer (WM_HWIN hWin, int32_t UserID, int32_t Period, int32_t Mode); /* not to be documented (may change in future version) */
   void    WM_DeleteTimer (WM_HMEM hTimer); /* not to be documented (may change in future version) */
-  void    WM_RestartTimer(WM_HMEM hTimer, int Period);
+  void    WM_RestartTimer(WM_HMEM hTimer, int32_t Period);
 #endif
-int WM_GetTimerId(WM_HTIMER hTimer);
+int32_t WM_GetTimerId(WM_HTIMER hTimer);
 
 /* Diagnostics */
-int WM_GetNumWindows(void);
-int WM_GetNumInvalidWindows(void);
+int32_t WM_GetNumWindows(void);
+int32_t WM_GetNumInvalidWindows(void);
 
 /* Scroll state related functions */
 void WM_CheckScrollBounds(WM_SCROLL_STATE * pScrollState); /* not to be documented (may change in future version) */
-int  WM_GetScrollPosH    (WM_HWIN hWin);
-int  WM_GetScrollPosV    (WM_HWIN hWin);
+int32_t  WM_GetScrollPosH    (WM_HWIN hWin);
+int32_t  WM_GetScrollPosV    (WM_HWIN hWin);
 void WM_SetScrollPosH    (WM_HWIN hWin, unsigned ScrollPos);
 void WM_SetScrollPosV    (WM_HWIN hWin, unsigned ScrollPos);
-int  WM_SetScrollValue   (WM_SCROLL_STATE * pScrollState, int v); /* not to be documented (may change in future version) */
+int32_t  WM_SetScrollValue   (WM_SCROLL_STATE * pScrollState, int32_t v); /* not to be documented (may change in future version) */
 
 /* Get / Set (new) callback function */
 WM_CALLBACK * WM_SetCallback(WM_HWIN hWin, WM_CALLBACK * cb);
@@ -601,17 +622,17 @@ void      WM_GetInsideRectEx         (WM_HWIN hWin, GUI_RECT * pRect);
 void      WM_GetInsideRectExScrollbar(WM_HWIN hWin, GUI_RECT * pRect); /* not to be documented (may change in future version) */
 void      WM_GetWindowRect           (GUI_RECT * pRect);
 void      WM_GetWindowRectEx         (WM_HWIN hWin, GUI_RECT * pRect);
-int       WM_GetOrgX                 (void);
-int       WM_GetOrgY                 (void);
-int       WM_GetWindowOrgX           (WM_HWIN hWin);
-int       WM_GetWindowOrgY           (WM_HWIN hWin);
-int       WM_GetWindowSizeX          (WM_HWIN hWin);
-int       WM_GetWindowSizeY          (WM_HWIN hWin);
+int32_t       WM_GetOrgX                 (void);
+int32_t       WM_GetOrgY                 (void);
+int32_t       WM_GetWindowOrgX           (WM_HWIN hWin);
+int32_t       WM_GetWindowOrgY           (WM_HWIN hWin);
+int32_t       WM_GetWindowSizeX          (WM_HWIN hWin);
+int32_t       WM_GetWindowSizeY          (WM_HWIN hWin);
 WM_HWIN   WM_GetFirstChild           (WM_HWIN hWin);
 WM_HWIN   WM_GetNextSibling          (WM_HWIN hWin);
 WM_HWIN   WM_GetParent               (WM_HWIN hWin);
 WM_HWIN   WM_GetPrevSibling          (WM_HWIN hWin);
-int       WM_GetId                   (WM_HWIN hWin);
+int32_t       WM_GetId                   (WM_HWIN hWin);
 WM_HWIN   WM_GetScrollbarV           (WM_HWIN hWin);
 WM_HWIN   WM_GetScrollbarH           (WM_HWIN hWin);
 WM_HWIN   WM_GetScrollPartner        (WM_HWIN hWin);
@@ -623,7 +644,7 @@ void WM_BringToBottom(WM_HWIN hWin);
 void WM_BringToTop(WM_HWIN hWin);
 
 GUI_COLOR WM_SetDesktopColor  (GUI_COLOR Color);
-GUI_COLOR WM_SetDesktopColorEx(GUI_COLOR Color, unsigned int LayerIndex);
+GUI_COLOR WM_SetDesktopColorEx(GUI_COLOR Color, uint32_t LayerIndex);
 void      WM_SetDesktopColors (GUI_COLOR Color);
 
 /* Select window used for drawing operations */
@@ -636,7 +657,7 @@ void    WM_UpdateWindowAndDescs   (WM_HWIN hWin);
 
 /* Get foreground/background windows */
 WM_HWIN WM_GetDesktopWindow  (void);
-WM_HWIN WM_GetDesktopWindowEx(unsigned int LayerIndex);
+WM_HWIN WM_GetDesktopWindowEx(uint32_t LayerIndex);
 
 /* Reduce clipping area of a window */
 const GUI_RECT * WM_SetUserClipRect(const GUI_RECT * pRect);
@@ -647,7 +668,8 @@ void WM_EnableMemdev              (WM_HWIN hWin);
 void WM_DisableMemdev             (WM_HWIN hWin);
 
 /* Automatic use of multiple buffers */
-int WM_MULTIBUF_Enable(int OnOff);
+int32_t WM_MULTIBUF_Enable  (int32_t OnOff);
+int32_t WM_MULTIBUF_EnableEx(int32_t OnOff, U32 LayerMask);
 
 extern const GUI_MULTIBUF_API * WM_MULTIBUF__pAPI;
 
@@ -656,10 +678,10 @@ typedef void (* T_WM_EXEC_GESTURE)(void);
 extern T_WM_EXEC_GESTURE WM__pExecGestures;
 
 /* ... */
-int WM_OnKey(int Key, int Pressed);
+int32_t WM_OnKey(int32_t Key, int32_t Pressed);
 void WM_MakeModal(WM_HWIN hWin);
-int WM_SetModalLayer(int LayerIndex);
-int WM_GetModalLayer(void);
+int32_t WM_SetModalLayer(int32_t LayerIndex);
+int32_t WM_GetModalLayer(void);
 
 /*********************************************************************
 *
@@ -668,19 +690,19 @@ int WM_GetModalLayer(void);
 *  Please note that some of these functions do not yet show up in the
 *  documentation, as they should not be required by application program.
 */
-void      WM_NotifyParent         (WM_HWIN hWin, int Notification);
+void      WM_NotifyParent         (WM_HWIN hWin, int32_t Notification);
 void      WM_SendMessage          (WM_HWIN hWin, WM_MESSAGE * p);
-void      WM_SendMessageNoPara    (WM_HWIN hWin, int MsgId);             /* not to be documented (may change in future */
+void      WM_SendMessageNoPara    (WM_HWIN hWin, int32_t MsgId);             /* not to be documented (may change in future */
 void      WM_DefaultProc          (WM_MESSAGE * pMsg);
-int       WM_BroadcastMessage     (WM_MESSAGE * pMsg);
+int32_t       WM_BroadcastMessage     (WM_MESSAGE * pMsg);
 void      WM_SetScrollState       (WM_HWIN hWin, const WM_SCROLL_STATE * pState);
-void      WM_SetEnableState       (WM_HWIN hItem, int State);
+void      WM_SetEnableState       (WM_HWIN hItem, int32_t State);
 void      WM_SendToParent         (WM_HWIN hWin, WM_MESSAGE * pMsg);
-int       WM_HasFocus             (WM_HWIN hWin);
-int       WM_SetFocus             (WM_HWIN hWin);
+int32_t       WM_HasFocus             (WM_HWIN hWin);
+int32_t       WM_SetFocus             (WM_HWIN hWin);
 WM_HWIN   WM_SetFocusOnNextChild  (WM_HWIN hParent);     /* Set the focus to the next child */
 WM_HWIN   WM_SetFocusOnPrevChild  (WM_HWIN hParent);     /* Set the focus to the previous child */
-WM_HWIN   WM_GetDialogItem        (WM_HWIN hWin, int Id);
+WM_HWIN   WM_GetDialogItem        (WM_HWIN hWin, int32_t Id);
 void      WM_EnableWindow         (WM_HWIN hWin);
 void      WM_DisableWindow        (WM_HWIN hWin);
 void      WM_GetScrollState       (WM_HWIN hObj, WM_SCROLL_STATE * pScrollState);
@@ -689,38 +711,38 @@ void      WM_GetScrollState       (WM_HWIN hObj, WM_SCROLL_STATE * pScrollState)
 *
 *       Managing user data
 */
-int       WM_GetUserData   (WM_HWIN hWin, void * pDest, int SizeOfBuffer);
-int       WM_SetUserData   (WM_HWIN hWin, const void * pSrc, int SizeOfBuffer);
-int       WM__GetUserDataEx(WM_HWIN hWin, void * pDest, int NumBytes, int SizeOfObject);
-int       WM__SetUserDataEx(WM_HWIN hWin, const void * pSrc, int NumBytes, int SizeOfObject);
+int32_t       WM_GetUserData   (WM_HWIN hWin, void * pDest, int32_t SizeOfBuffer);
+int32_t       WM_SetUserData   (WM_HWIN hWin, const void * pSrc, int32_t SizeOfBuffer);
+int32_t       WM__GetUserDataEx(WM_HWIN hWin, void * pDest, int32_t NumBytes, int32_t SizeOfObject);
+int32_t       WM__SetUserDataEx(WM_HWIN hWin, const void * pSrc, int32_t NumBytes, int32_t SizeOfObject);
 
 /*********************************************************************
 *
 *       Capturing input focus
 */
-int  WM_HasCaptured   (WM_HWIN hWin);
-void WM_SetCapture    (WM_HWIN hObj, int AutoRelease);
-void WM_SetCaptureMove(WM_HWIN hWin, const GUI_PID_STATE * pState, int MinVisibility, int LimitTop); /* Not yet documented */
+int32_t  WM_HasCaptured   (WM_HWIN hWin);
+void WM_SetCapture    (WM_HWIN hObj, int32_t AutoRelease);
+void WM_SetCaptureMove(WM_HWIN hWin, const GUI_PID_STATE * pState, int32_t MinVisibility, int32_t LimitTop); /* Not yet documented */
 void WM_ReleaseCapture(void);
 
 /*********************************************************************
 *
 *       Misc routines
 */
-int       WM_HandlePID      (void);
-WM_HWIN   WM_Screen2hWin    (int x, int y);
-WM_HWIN   WM_Screen2hWinEx  (WM_HWIN hStop, int x, int y);
+int32_t       WM_HandlePID      (void);
+WM_HWIN   WM_Screen2hWin    (int32_t x, int32_t y);
+WM_HWIN   WM_Screen2hWinEx  (WM_HWIN hStop, int32_t x, int32_t y);
 void      WM_ForEachDesc    (WM_HWIN hWin, WM_tfForEach * pcb, void * pData);
-void      WM_SetScreenSize  (int xSize, int ySize);
-int       WM_PollSimMsg     (void);
-int       WM_GetWindowInfo  (WM_WINDOW_INFO * pInfo, int FirstWindow);
+void      WM_SetScreenSize  (int32_t xSize, int32_t ySize);
+int32_t       WM_PollSimMsg     (void);
+int32_t       WM_GetWindowInfo  (WM_WINDOW_INFO * pInfo, int32_t FirstWindow);
 
 /*********************************************************************
 *
 *       Diagnostics routines
 */
 #if (WM_SUPPORT_DIAG)
-void WM_DIAG_EnableInvalidationColoring(int OnOff);
+void WM_DIAG_EnableInvalidationColoring(int32_t OnOff);
 #endif
 
 /*********************************************************************
@@ -765,7 +787,7 @@ void WM_DIAG_EnableInvalidationColoring(int OnOff);
 
 #if defined(__cplusplus)
 }
-#endif 
+#endif
 
 #endif   /* WM_H */
 

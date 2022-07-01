@@ -1465,8 +1465,8 @@ dhcp_parse_reply(struct dhcp *dhcp, struct pbuf *p)
   u16_t options_idx;
   u16_t options_idx_max;
   struct pbuf *q;
-  int parse_file_as_options = 0;
-  int parse_sname_as_options = 0;
+  int32_t parse_file_as_options = 0;
+  int32_t parse_sname_as_options = 0;
 
   /* clear received options */
   dhcp_clear_all_options(dhcp);
@@ -1504,7 +1504,7 @@ again:
     u8_t op = options[offset];
     u8_t len;
     u8_t decode_len = 0;
-    int decode_idx = -1;
+    int32_t decode_idx = -1;
     u16_t val_offset = offset + 2;
     /* len byte might be in the next pbuf */
     if ((offset + 1) < q->len) {
@@ -1640,7 +1640,7 @@ decode_next:
       parse_file_as_options = 1;
       LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("overloaded sname and file field\n"));
     } else {
-      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("invalid overload option: %d\n", (int)overload));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("invalid overload option: %d\n", (int32_t)overload));
     }
 #if LWIP_DHCP_BOOTP_FILE
     if (!parse_file_as_options) {

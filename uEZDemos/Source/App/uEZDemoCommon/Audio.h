@@ -46,6 +46,7 @@ extern "C" {
 #endif
 
 void PlayAudio(TUInt32 aHz, TUInt32 aMS);
+void PlayAudioContinuous(TUInt32 aHz);
 void ButtonClick(void);
 void BeepError(void);
 void Beep(void);

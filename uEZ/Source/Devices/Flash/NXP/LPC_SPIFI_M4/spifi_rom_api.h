@@ -236,7 +236,7 @@ int32_t write_stat (SPIFIobj *obj, uc len, uint16_t value);
 void setProtEnts(SPIFIobj *obj, const protEnt *p, uint32_t protTabLen);
 
 /* needs to be defined for each platform */
-void pullMISO(int high);
+void pullMISO(int32_t high);
 
 #ifdef TESTING
 /* used by testing code */

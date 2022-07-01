@@ -57,9 +57,9 @@ START_TEST(test_mem_one)
 }
 END_TEST
 
-static void malloc_keep_x(int x, int num, int size, int freestep)
+static void malloc_keep_x(int32_t x, int32_t num, int32_t size, int32_t freestep)
 {
-   int i;
+   int32_t i;
    void* p[16];
    LWIP_ASSERT("invalid size", size >= 0 && size < (mem_size_t)-1);
    memset(p, 0, sizeof(p));
@@ -89,10 +89,10 @@ static void malloc_keep_x(int x, int num, int size, int freestep)
 
 START_TEST(test_mem_random)
 {
-  const int num = 16;
-  int x;
-  int size;
-  int freestep;
+  const int32_t num = 16;
+  int32_t x;
+  int32_t size;
+  int32_t freestep;
   LWIP_UNUSED_ARG(_i);
 
   fail_unless(lwip_stats.mem.used == 0);

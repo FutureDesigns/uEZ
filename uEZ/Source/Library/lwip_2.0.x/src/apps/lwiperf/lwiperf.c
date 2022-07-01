@@ -247,7 +247,7 @@ lwiperf_tcp_close(lwiperf_state_tcp_t* conn, enum lwiperf_report_type report_typ
 static err_t
 lwiperf_tcp_client_send_more(lwiperf_state_tcp_t* conn)
 {
-  int send_more;
+  int32_t send_more;
   err_t err;
   u16_t txlen;
   u16_t txlen_max;

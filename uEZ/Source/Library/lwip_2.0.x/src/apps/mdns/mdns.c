@@ -400,12 +400,12 @@ mdns_domain_debug_print(struct mdns_domain *domain)
  * @param b Domain name to compare 2
  * @return 1 if domains are equal ignoring case, 0 otherwise
  */
-int
+int32_t
 mdns_domain_eq(struct mdns_domain *a, struct mdns_domain *b)
 {
   u8_t *ptra, *ptrb;
   u8_t len;
-  int res;
+  int32_t res;
 
   if (a->length != b->length) {
     return 0;
@@ -457,7 +457,7 @@ mdns_prepare_txtdata(struct mdns_service *service)
 static err_t
 mdns_build_reverse_v4_domain(struct mdns_domain *domain, const ip4_addr_t *addr)
 {
-  int i;
+  int32_t i;
   err_t res;
   const u8_t *ptr;
   if (!domain || !addr) {
@@ -495,7 +495,7 @@ mdns_build_reverse_v4_domain(struct mdns_domain *domain, const ip4_addr_t *addr)
 static err_t
 mdns_build_reverse_v6_domain(struct mdns_domain *domain, const ip6_addr_t *addr)
 {
-  int i;
+  int32_t i;
   err_t res;
   const u8_t *ptr;
   if (!domain || !addr) {
@@ -506,7 +506,7 @@ mdns_build_reverse_v6_domain(struct mdns_domain *domain, const ip6_addr_t *addr)
   for (i = sizeof(ip6_addr_t) - 1; i >= 0; i--) {
     char buf;
     u8_t byte = ptr[i];
-    int j;
+    int32_t j;
     for (j = 0; j < 2; j++) {
       if ((byte & 0x0F) < 0xA) {
         buf = '0' + (byte & 0x0F);
@@ -584,7 +584,7 @@ mdns_build_dnssd_domain(struct mdns_domain *domain)
  *         An err_t is returned on error.
  */
 static err_t
-mdns_build_service_domain(struct mdns_domain *domain, struct mdns_service *service, int include_name)
+mdns_build_service_domain(struct mdns_domain *domain, struct mdns_service *service, int32_t include_name)
 {
   err_t res;
   memset(domain, 0, sizeof(struct mdns_domain));
@@ -607,11 +607,11 @@ mdns_build_service_domain(struct mdns_domain *domain, struct mdns_service *servi
  *                         if reply bit has REPLY_HOST_PTR_V6 set
  * @return Bitmask of which replies to send
  */
-static int
+static int32_t
 check_host(struct netif *netif, struct mdns_rr_info *rr, u8_t *reverse_v6_reply)
 {
   err_t res;
-  int replies = 0;
+  int32_t replies = 0;
   struct mdns_domain mydomain;
 
   LWIP_UNUSED_ARG(reverse_v6_reply); /* if ipv6 is disabled */
@@ -624,7 +624,7 @@ check_host(struct netif *netif, struct mdns_rr_info *rr, u8_t *reverse_v6_reply)
   /* Handle PTR for our addresses */
   if (rr->type == DNS_RRTYPE_PTR || rr->type == DNS_RRTYPE_ANY) {
 #if LWIP_IPV6
-    int i;
+    int32_t i;
     for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; i++) {
       if (ip6_addr_isvalid(netif_ip6_addr_state(netif, i))) {
         res = mdns_build_reverse_v6_domain(&mydomain, netif_ip6_addr(netif, i));
@@ -674,11 +674,11 @@ check_host(struct netif *netif, struct mdns_rr_info *rr, u8_t *reverse_v6_reply)
  * @param rr Domain/type/class from a question
  * @return Bitmask of which replies to send
  */
-static int
+static int32_t
 check_service(struct mdns_service *service, struct mdns_rr_info *rr)
 {
   err_t res;
-  int replies = 0;
+  int32_t replies = 0;
   struct mdns_domain mydomain;
 
   if (rr->klass != DNS_RRCLASS_IN && rr->klass != DNS_RRCLASS_ANY) {
@@ -778,7 +778,7 @@ mdns_compress_domain(struct pbuf *pbuf, u16_t *offset, struct mdns_domain *domai
 static err_t
 mdns_write_domain(struct mdns_outpacket *outpkt, struct mdns_domain *domain)
 {
-  int i;
+  int32_t i;
   err_t res;
   u16_t writelen = domain->length;
   u16_t jump_offset = 0;
@@ -1133,7 +1133,7 @@ mdns_add_hostv4_ptr_answer(struct mdns_outpacket *reply, u16_t cache_flush, stru
 #if LWIP_IPV6
 /** Write an IPv6 address (AAAA) RR to outpacket */
 static err_t
-mdns_add_aaaa_answer(struct mdns_outpacket *reply, u16_t cache_flush, struct netif *netif, int addrindex)
+mdns_add_aaaa_answer(struct mdns_outpacket *reply, u16_t cache_flush, struct netif *netif, int32_t addrindex)
 {
   struct mdns_domain host;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1143,7 +1143,7 @@ mdns_add_aaaa_answer(struct mdns_outpacket *reply, u16_t cache_flush, struct net
 
 /** Write a x.y.z.ip6.arpa -> hostname.local PTR RR to outpacket */
 static err_t
-mdns_add_hostv6_ptr_answer(struct mdns_outpacket *reply, u16_t cache_flush, struct netif *netif, int addrindex)
+mdns_add_hostv6_ptr_answer(struct mdns_outpacket *reply, u16_t cache_flush, struct netif *netif, int32_t addrindex)
 {
   struct mdns_domain host, revhost;
   mdns_build_host_domain(&host, NETIF_TO_HOST(netif));
@@ -1252,7 +1252,7 @@ mdns_send_outpacket(struct mdns_outpacket *outpkt)
 {
   struct mdns_service *service;
   err_t res;
-  int i;
+  int32_t i;
   struct mdns_host* mdns = NETIF_TO_HOST(outpkt->netif);
 
   /* Write answers to host questions */
@@ -1274,7 +1274,7 @@ mdns_send_outpacket(struct mdns_outpacket *outpkt)
 #endif
 #if LWIP_IPV6
   if (outpkt->host_replies & REPLY_HOST_AAAA) {
-    int addrindex;
+    int32_t addrindex;
     for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; ++addrindex) {
       if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt->netif, addrindex))) {
         res = mdns_add_aaaa_answer(outpkt, outpkt->cache_flush, outpkt->netif, addrindex);
@@ -1287,7 +1287,7 @@ mdns_send_outpacket(struct mdns_outpacket *outpkt)
   }
   if (outpkt->host_replies & REPLY_HOST_PTR_V6) {
     u8_t rev_addrs = outpkt->host_reverse_v6_replies;
-    int addrindex = 0;
+    int32_t addrindex = 0;
     while (rev_addrs) {
       if (rev_addrs & 1) {
         res = mdns_add_hostv6_ptr_answer(outpkt, outpkt->cache_flush, outpkt->netif, addrindex);
@@ -1376,7 +1376,7 @@ mdns_send_outpacket(struct mdns_outpacket *outpkt)
         (outpkt->host_replies & (REPLY_HOST_A | REPLY_HOST_AAAA))) {
 #if LWIP_IPV6
       if (!(outpkt->host_replies & REPLY_HOST_AAAA)) {
-        int addrindex;
+        int32_t addrindex;
         for (addrindex = 0; addrindex < LWIP_IPV6_NUM_ADDRESSES; ++addrindex) {
           if (ip6_addr_isvalid(netif_ip6_addr_state(outpkt->netif, addrindex))) {
             res = mdns_add_aaaa_answer(outpkt, outpkt->cache_flush, outpkt->netif, addrindex);
@@ -1452,7 +1452,7 @@ static void
 mdns_announce(struct netif *netif, const ip_addr_t *destination)
 {
   struct mdns_outpacket announce;
-  int i;
+  int32_t i;
   struct mdns_host* mdns = NETIF_TO_HOST(netif);
 
   memset(&announce, 0, sizeof(announce));
@@ -1495,8 +1495,8 @@ mdns_handle_question(struct mdns_packet *pkt)
 {
   struct mdns_service *service;
   struct mdns_outpacket reply;
-  int replies = 0;
-  int i;
+  int32_t replies = 0;
+  int32_t i;
   err_t res;
   struct mdns_host* mdns = NETIF_TO_HOST(pkt->netif);
 
@@ -1545,7 +1545,7 @@ mdns_handle_question(struct mdns_packet *pkt)
   while (pkt->answers_left) {
     struct mdns_answer ans;
     u8_t rev_v6;
-    int match;
+    int32_t match;
 
     res = mdns_read_answer(pkt, &ans);
     if (res != ERR_OK) {
@@ -1915,7 +1915,7 @@ cleanup:
 err_t
 mdns_resp_remove_netif(struct netif *netif)
 {
-  int i;
+  int32_t i;
   struct mdns_host* mdns;
 
   LWIP_ASSERT("mdns_resp_remove_netif: Null pointer", netif);
@@ -1960,8 +1960,8 @@ mdns_resp_remove_netif(struct netif *netif)
 err_t
 mdns_resp_add_service(struct netif *netif, const char *name, const char *service, enum mdns_sd_proto proto, u16_t port, u32_t dns_ttl, service_get_txt_fn_t txt_fn, void *txt_data)
 {
-  int i;
-  int slot = -1;
+  int32_t i;
+  int32_t slot = -1;
   struct mdns_service *srv;
   struct mdns_host* mdns;
 

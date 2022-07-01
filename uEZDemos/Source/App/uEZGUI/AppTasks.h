@@ -47,6 +47,7 @@ extern "C" {
 
 T_uezError SetupTasks(void);
 TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams);
+TUInt32 SpkrTestContinuous(T_uezTask aMyTask, void *aParams);
 
 #ifdef __cplusplus
 }

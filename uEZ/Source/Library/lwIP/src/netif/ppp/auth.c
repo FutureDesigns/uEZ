@@ -110,24 +110,24 @@ extern char *crypt (const char *, const char *);
 
 /* Prototypes for procedures local to this file. */
 
-static void network_phase (int);
+static void network_phase (int32_t);
 static void check_idle (void *);
 static void connect_time_expired (void *);
 #if 0
-static int  login (char *, char *, char **, int *);
+static int32_t  login (char *, char *, char **, int32_t *);
 #endif
 static void logout (void);
-static int  null_login (int);
-static int  get_pap_passwd (int, char *, char *);
-static int  have_pap_secret (void);
-static int  have_chap_secret (char *, char *, u32_t);
-static int  ip_addr_check (u32_t, struct wordlist *);
+static int32_t  null_login (int32_t);
+static int32_t  get_pap_passwd (int32_t, char *, char *);
+static int32_t  have_pap_secret (void);
+static int32_t  have_chap_secret (char *, char *, u32_t);
+static int32_t  ip_addr_check (u32_t, struct wordlist *);
 #if 0 /* PAP_SUPPORT || CHAP_SUPPORT */
-static void set_allowed_addrs(int unit, struct wordlist *addrs);
+static void set_allowed_addrs(int32_t unit, struct wordlist *addrs);
 static void free_wordlist (struct wordlist *);
 #endif /* 0 */ /* PAP_SUPPORT || CHAP_SUPPORT */
 #if CBCP_SUPPORT
-static void callback_phase (int);
+static void callback_phase (int32_t);
 #endif /* CBCP_SUPPORT */
 
 
@@ -145,26 +145,26 @@ static char peer_authname[MAXNAMELEN];
 #endif /* PAP_SUPPORT || CHAP_SUPPORT */
 
 /* Records which authentication operations haven't completed yet. */
-static int auth_pending[NUM_PPP];
+static int32_t auth_pending[NUM_PPP];
 
 /* Set if we have successfully called login() */
-static int logged_in;
+static int32_t logged_in;
 
 /* Set if we have run the /etc/ppp/auth-up script. */
-static int did_authup;
+static int32_t did_authup;
 
 /* List of addresses which the peer may use. */
 static struct wordlist *addresses[NUM_PPP];
 
 /* Number of network protocols which we have opened. */
-static int num_np_open;
+static int32_t num_np_open;
 
 /* Number of network protocols which have come up. */
-static int num_np_up;
+static int32_t num_np_up;
 
 #if PAP_SUPPORT || CHAP_SUPPORT
 /* Set if we got the contents of passwd[] from the pap-secrets file. */
-static int passwd_from_file;
+static int32_t passwd_from_file;
 #endif /* PAP_SUPPORT || CHAP_SUPPORT */
 
 
@@ -176,7 +176,7 @@ static int passwd_from_file;
  * Do what's necessary to bring the physical layer up.
  */
 void
-link_required(int unit)
+link_required(int32_t unit)
 {
   LWIP_UNUSED_ARG(unit);
 
@@ -188,7 +188,7 @@ link_required(int unit)
  * physical layer down.
  */
 void
-link_terminated(int unit)
+link_terminated(int32_t unit)
 {
   AUTHDEBUG((LOG_INFO, "link_terminated: %d\n", unit));
   if (lcp_phase[unit] == PHASE_DEAD) {
@@ -206,9 +206,9 @@ link_terminated(int unit)
  * LCP has gone down; it will either die or try to re-establish.
  */
 void
-link_down(int unit)
+link_down(int32_t unit)
 {
-  int i;
+  int32_t i;
   struct protent *protp;
   
   AUTHDEBUG((LOG_INFO, "link_down: %d\n", unit));
@@ -240,10 +240,10 @@ link_down(int unit)
  * Proceed to the Dead, Authenticate or Network phase as appropriate.
  */
 void
-link_established(int unit)
+link_established(int32_t unit)
 {
-  int auth;
-  int i;
+  int32_t auth;
+  int32_t i;
   struct protent *protp;
   lcp_options *wo = &lcp_wantoptions[unit];
   lcp_options *go = &lcp_gotoptions[unit];
@@ -322,7 +322,7 @@ link_established(int unit)
  * The peer has failed to authenticate himself using `protocol'.
  */
 void
-auth_peer_fail(int unit, u16_t protocol)
+auth_peer_fail(int32_t unit, u16_t protocol)
 {
   LWIP_UNUSED_ARG(protocol);
 
@@ -339,9 +339,9 @@ auth_peer_fail(int unit, u16_t protocol)
  * The peer has been successfully authenticated using `protocol'.
  */
 void
-auth_peer_success(int unit, u16_t protocol, char *name, int namelen)
+auth_peer_success(int32_t unit, u16_t protocol, char *name, int32_t namelen)
 {
-  int pbit;
+  int32_t pbit;
   
   AUTHDEBUG((LOG_INFO, "auth_peer_success: %d proto=%X\n", unit, protocol));
   switch (protocol) {
@@ -378,9 +378,9 @@ auth_peer_success(int unit, u16_t protocol, char *name, int namelen)
  * We have failed to authenticate ourselves to the peer using `protocol'.
  */
 void
-auth_withpeer_fail(int unit, u16_t protocol)
+auth_withpeer_fail(int32_t unit, u16_t protocol)
 {
-  int errCode = PPPERR_AUTHFAIL;
+  int32_t errCode = PPPERR_AUTHFAIL;
   
   LWIP_UNUSED_ARG(protocol);
 
@@ -406,9 +406,9 @@ auth_withpeer_fail(int unit, u16_t protocol)
  * We have successfully authenticated ourselves with the peer using `protocol'.
  */
 void
-auth_withpeer_success(int unit, u16_t protocol)
+auth_withpeer_success(int32_t unit, u16_t protocol)
 {
-  int pbit;
+  int32_t pbit;
   
   AUTHDEBUG((LOG_INFO, "auth_withpeer_success: %d proto=%X\n", unit, protocol));
   switch (protocol) {
@@ -441,7 +441,7 @@ auth_withpeer_success(int unit, u16_t protocol)
  * np_up - a network protocol has come up.
  */
 void
-np_up(int unit, u16_t proto)
+np_up(int32_t unit, u16_t proto)
 {
   LWIP_UNUSED_ARG(unit);
   LWIP_UNUSED_ARG(proto);
@@ -471,7 +471,7 @@ np_up(int unit, u16_t proto)
  * np_down - a network protocol has gone down.
  */
 void
-np_down(int unit, u16_t proto)
+np_down(int32_t unit, u16_t proto)
 {
   LWIP_UNUSED_ARG(unit);
   LWIP_UNUSED_ARG(proto);
@@ -486,7 +486,7 @@ np_down(int unit, u16_t proto)
  * np_finished - a network protocol has finished using the link.
  */
 void
-np_finished(int unit, u16_t proto)
+np_finished(int32_t unit, u16_t proto)
 {
   LWIP_UNUSED_ARG(unit);
   LWIP_UNUSED_ARG(proto);
@@ -504,7 +504,7 @@ np_finished(int unit, u16_t proto)
  * to use for authenticating ourselves and/or the peer.
  */
 void
-auth_reset(int unit)
+auth_reset(int32_t unit)
 {
   lcp_options *go = &lcp_gotoptions[unit];
   lcp_options *ao = &lcp_allowoptions[0];
@@ -537,8 +537,8 @@ auth_reset(int unit)
  *  UPAP_AUTHACK: Authentication succeeded.
  * In either case, msg points to an appropriate message.
  */
-int
-check_passwd( int unit, char *auser, int userlen, char *apasswd, int passwdlen, char **msg, int *msglen)
+int32_t
+check_passwd( int32_t unit, char *auser, int32_t userlen, char *apasswd, int32_t passwdlen, char **msg, int32_t *msglen)
 {
 #if 1
   LWIP_UNUSED_ARG(unit);
@@ -550,7 +550,7 @@ check_passwd( int unit, char *auser, int userlen, char *apasswd, int passwdlen, 
   *msg = (char *) 0;
   return UPAP_AUTHACK;     /* XXX Assume all entries OK. */
 #else
-  int ret = 0;
+  int32_t ret = 0;
   struct wordlist *addrs = NULL;
   char passwd[256], user[256];
   char secret[MAXWORDLEN];
@@ -610,8 +610,8 @@ check_passwd( int unit, char *auser, int userlen, char *apasswd, int passwdlen, 
  * auth_ip_addr - check whether the peer is authorized to use
  * a given IP address.  Returns 1 if authorized, 0 otherwise.
  */
-int
-auth_ip_addr(int unit, u32_t addr)
+int32_t
+auth_ip_addr(int32_t unit, u32_t addr)
 {
   return ip_addr_check(addr, addresses[unit]);
 }
@@ -621,7 +621,7 @@ auth_ip_addr(int unit, u32_t addr)
  * to use, such as an address in the loopback net or a multicast address.
  * addr is in network byte order.
  */
-int
+int32_t
 bad_ip_adrs(u32_t addr)
 {
   addr = ntohl(addr);
@@ -636,10 +636,10 @@ bad_ip_adrs(u32_t addr)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-int get_secret( int unit, char *client, char *server, char *secret, int *secret_len, int save_addrs)
+int32_t get_secret( int32_t unit, char *client, char *server, char *secret, int32_t *secret_len, int32_t save_addrs)
 {
 #if 1
-  int len;
+  int32_t len;
   struct wordlist *addrs;
 
   LWIP_UNUSED_ARG(unit);
@@ -663,7 +663,7 @@ int get_secret( int unit, char *client, char *server, char *secret, int *secret_
 
   return 1;
 #else
-  int ret = 0, len;
+  int32_t ret = 0, len;
   struct wordlist *addrs;
   char secbuf[MAXWORDLEN];
   
@@ -703,7 +703,7 @@ void
 auth_check_options(void)
 {
   lcp_options *wo = &lcp_wantoptions[0];
-  int can_auth;
+  int32_t can_auth;
   ipcp_options *ipwo = &ipcp_wantoptions[0];
   u32_t remote;
 
@@ -746,9 +746,9 @@ auth_check_options(void)
  * Proceed to the network phase.
  */
 static void
-network_phase(int unit)
+network_phase(int32_t unit)
 {
-  int i;
+  int32_t i;
   struct protent *protp;
   lcp_options *go = &lcp_gotoptions[unit];
   
@@ -833,8 +833,8 @@ connect_time_expired(void *arg)
  *  UPAP_AUTHACK: Login succeeded.
  * In either case, msg points to an appropriate message.
  */
-static int
-login(char *user, char *passwd, char **msg, int *msglen)
+static int32_t
+login(char *user, char *passwd, char **msg, int32_t *msglen)
 {
   /* XXX Fail until we decide that we want to support logins. */
   return (UPAP_AUTHNAK);
@@ -855,8 +855,8 @@ logout(void)
  * acceptable, and iff so, set the list of acceptable IP addresses
  * and return 1.
  */
-static int
-null_login(int unit)
+static int32_t
+null_login(int32_t unit)
 {
   LWIP_UNUSED_ARG(unit);
   /* XXX Fail until we decide that we want to support logins. */
@@ -868,8 +868,8 @@ null_login(int unit)
  * our peer using PAP.  Returns 1 on success, 0 if no suitable password
  * could be found.
  */
-static int
-get_pap_passwd(int unit, char *user, char *passwd)
+static int32_t
+get_pap_passwd(int32_t unit, char *user, char *passwd)
 {
   LWIP_UNUSED_ARG(unit);
 /* normally we would reject PAP if no password is provided,
@@ -890,7 +890,7 @@ get_pap_passwd(int unit, char *user, char *passwd)
  * have_pap_secret - check whether we have a PAP file with any
  * secrets that we could possibly use for authenticating the peer.
  */
-static int
+static int32_t
 have_pap_secret(void)
 {
   /* XXX Fail until we set up our passwords. */
@@ -903,7 +903,7 @@ have_pap_secret(void)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-static int
+static int32_t
 have_chap_secret(char *client, char *server, u32_t remote)
 {
   LWIP_UNUSED_ARG(client);
@@ -918,7 +918,7 @@ have_chap_secret(char *client, char *server, u32_t remote)
  * set_allowed_addrs() - set the list of allowed addresses.
  */
 static void
-set_allowed_addrs(int unit, struct wordlist *addrs)
+set_allowed_addrs(int32_t unit, struct wordlist *addrs)
 {
   if (addresses[unit] != NULL) {
     free_wordlist(addresses[unit]);
@@ -952,7 +952,7 @@ set_allowed_addrs(int unit, struct wordlist *addrs)
 }
 #endif /* 0 */ /* PAP_SUPPORT || CHAP_SUPPORT */
 
-static int
+static int32_t
 ip_addr_check(u32_t addr, struct wordlist *addrs)
 {
   /* don't allow loopback or multicast address */

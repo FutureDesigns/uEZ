@@ -263,7 +263,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     static T_uezSemaphore xTxSemaphore = 0;
     struct pbuf *q;
     err_t xReturn = ERR_OK;
-    int txsize = 0;
+    int32_t txsize = 0;
 
 
     // Create semaphore if not already created
@@ -329,9 +329,9 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 static struct pbuf* low_level_input(struct netif *netif)
 {
     struct pbuf       *p, *q;
-    unsigned int      len;
-    unsigned int      cpyix;
-    unsigned int      cpylen;
+    uint32_t      len;
+    uint32_t      cpyix;
+    uint32_t      cpylen;
 
     // Packet ready?
     if (CheckFrameReceived() == 0)

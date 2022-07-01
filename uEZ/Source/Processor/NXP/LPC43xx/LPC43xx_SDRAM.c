@@ -118,7 +118,7 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
     __IO uint32_t *dc;
     volatile TUInt32 dmy = 0;
     //volatile uint32_t ringosccount[2] = { 0, 0 };
-    volatile unsigned int i;
+    volatile uint32_t i;
     //uint32_t    emcdivby2_buf[emcdivby2_szw];
     //uint32_t    div;
     //uint32_t    n;
@@ -270,7 +270,7 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
 
     //Set correct refresh period
     LPC_EMC->DYNAMICREFRESH
-            = (unsigned int)((((aConfig->iClockFrequency / 1000)
+            = (uint32_t)((((aConfig->iClockFrequency / 1000)
                     * (aConfig->iRefreshPeriod)) / aConfig->iRefreshCycles)
                     / 16) + 1;
 
@@ -319,7 +319,7 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
     EMC_DYN_MODE_BURST_TYPE_SEQUENTIAL | //(0<<3)
     EMC_DYN_MODE_BURST_LEN_4; //(2)
 
-    dmy = *((volatile unsigned int*)(aConfig->iBaseAddress | (devBusWidth << col_len)));
+    dmy = *((volatile uint32_t*)(aConfig->iBaseAddress | (devBusWidth << col_len)));
     dmy = dmy;
 
     //wait 128 ABH clock cycles

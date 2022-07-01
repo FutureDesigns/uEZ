@@ -95,7 +95,7 @@ T_pixelColor ConvertColor32(TUInt32 aColor)
  *      Copy the current viewed page to the hidden page 1 and then show
  *      page 1 (hiding page 0 as changes are about to be made).
  *---------------------------------------------------------------------------*/
-int SUIDrawBitmap(const TUInt8 *aBitmapImage, TUInt32 aX, TUInt32 aY)
+int32_t SUIDrawBitmap(const TUInt8 *aBitmapImage, TUInt32 aX, TUInt32 aY)
 {
 	static T_pixelColor ColorPalette[256];
     TUInt32 bitmapHeaderSize;

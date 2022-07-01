@@ -113,7 +113,7 @@ extern unsigned char P1DDRS, P2DDRS, P3DDRS, P4DDRS, P5DDRS, P6DDRS, P8DDRS, PAD
  *---------------------------------------------------------------------------*/
 typedef struct {
     const DEVICE_TOUCHSCREEN *iDevice;
-    int aNumOpen;
+    int32_t aNumOpen;
 
     // Hardware linkage
     TS_RX62N_DKTSKIT_Configuration iConfig;
@@ -300,9 +300,9 @@ static void ad_dtc_acquire(void)
     DTCE(S12AD,ADI) = 1;
 }
 
-static TUInt16 ad_dtc_value(int channel)
+static TUInt16 ad_dtc_value(int32_t channel)
 {
-    int index;
+    int32_t index;
     TUInt32 value;
 
     if (channel >= size_ra(AD_Buffer[1]))

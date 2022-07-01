@@ -93,7 +93,7 @@ void Chip_SDIF_DeInit(LPC_SDMMC_T *pSDMMC)
 int32_t Chip_SDIF_SendCmd(LPC_SDMMC_T *pSDMMC, uint32_t cmd, uint32_t arg)
 {
 	volatile int32_t tmo = 50;
-	volatile int delay;
+	volatile int32_t delay;
 
 	/* set command arg reg*/
 	pSDMMC->CMDARG = arg;
@@ -174,7 +174,7 @@ void Chip_SDIF_SetClearIntFifo(LPC_SDMMC_T *pSDMMC)
 /* Setup DMA descriptors */
 void Chip_SDIF_DmaSetup(LPC_SDMMC_T *pSDMMC, sdif_device *psdif_dev, uint32_t addr, uint32_t size)
 {
-	int i = 0;
+	int32_t i = 0;
 	uint32_t ctrl, maxs;
 
 	/* Reset DMA */

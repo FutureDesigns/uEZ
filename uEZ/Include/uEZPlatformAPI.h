@@ -85,7 +85,10 @@ const void* UEZPlatform_GUIColorConversion(void);
 const void* UEZPlatform_GUIDisplayDriver(void);
 
 TBool UEZPlatform_ExpansionBoardIsConnected(void);
-void UEZBSPDelayMS(unsigned int aMilliseconds);
+void UEZBSPDelay1MS(void);
+void UEZBSPDelayMS(TUInt32 aMilliseconds);
+void UEZBSPDelay1US(void);
+void UEZBSPDelayUS(TUInt32 aMicroseconds);
 
 #ifdef __cplusplus
 }

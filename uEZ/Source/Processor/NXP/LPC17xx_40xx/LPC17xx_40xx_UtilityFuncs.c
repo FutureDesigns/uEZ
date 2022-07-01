@@ -200,14 +200,14 @@ void CPUEnableInterrupts(void)
 
 void LPC17xx_40xxPowerOn(TUInt32 bits)
 {
-    extern unsigned int G_LPC17xx_40xx_powerSetting;
+    extern uint32_t G_LPC17xx_40xx_powerSetting;
     G_LPC17xx_40xx_powerSetting |= (bits);
     LPC_SC->PCONP = G_LPC17xx_40xx_powerSetting;
 }
 
 void LPC17xx_40xxPowerOff(TUInt32 bits)
 {
-    extern unsigned int G_LPC17xx_40xx_powerSetting;
+    extern uint32_t G_LPC17xx_40xx_powerSetting;
     G_LPC17xx_40xx_powerSetting &= ~(bits);
     LPC_SC->PCONP = G_LPC17xx_40xx_powerSetting;
 }

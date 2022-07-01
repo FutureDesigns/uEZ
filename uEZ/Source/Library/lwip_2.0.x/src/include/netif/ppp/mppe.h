@@ -158,8 +158,8 @@ typedef struct ppp_mppe_state {
 	u8_t bits;                  /* MPPE control bits */
 	u16_t ccount;               /* 12-bit coherency count (seqno)  */
 	u16_t sanity_errors;        /* take down LCP if too many */
-	unsigned int stateful  :1;  /* stateful mode flag */
-	unsigned int discard   :1;  /* stateful mode packet loss flag */
+	uint32_t stateful  :1;  /* stateful mode flag */
+	uint32_t discard   :1;  /* stateful mode packet loss flag */
 } ppp_mppe_state;
 
 void mppe_set_key(ppp_pcb *pcb, ppp_mppe_state *state, u8_t *key);

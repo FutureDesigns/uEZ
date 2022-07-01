@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : TEXT.h
 Purpose     : TEXT include
@@ -86,28 +87,15 @@ typedef WM_HMEM TEXT_Handle;
 
 /*********************************************************************
 *
-*       Standard member functions
-*
-**********************************************************************
-*/
-
-#define TEXT_EnableMemdev(hObj)  WM_EnableMemdev(hObj)
-#define TEXT_DisableMemdev(hObj) WM_DisableMemdev(hObj)
-#define TEXT_Delete(hObj)        WM_DeleteWindow(hObj)
-#define TEXT_Paint(hObj)         WM_Paint(hObj)
-#define TEXT_Invalidate(hObj)    WM_InvalidateWindow(hObj)
-
-/*********************************************************************
-*
 *       Create functions
 *
 **********************************************************************
 */
-TEXT_Handle TEXT_Create        (int x0, int y0, int xSize, int ySize, int Id, int Flags, const char * s, int Align);
-TEXT_Handle TEXT_CreateAsChild (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags, const char * s, int Align);
-TEXT_Handle TEXT_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, const char * pText);
-TEXT_Handle TEXT_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, const char * pText, int NumExtraBytes);
-TEXT_Handle TEXT_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+TEXT_Handle TEXT_Create        (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, int32_t Id, int32_t Flags, const char * s, int32_t Align);
+TEXT_Handle TEXT_CreateAsChild (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t Id, int32_t Flags, const char * s, int32_t Align);
+TEXT_Handle TEXT_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, const char * pText);
+TEXT_Handle TEXT_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, const char * pText, int32_t NumExtraBytes);
+TEXT_Handle TEXT_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -129,23 +117,24 @@ void TEXT_Callback(WM_MESSAGE * pMsg);
 
 GUI_COLOR        TEXT_GetBkColor  (TEXT_Handle hObj); 
 const GUI_FONT * TEXT_GetFont     (TEXT_Handle hObj);
-int              TEXT_GetNumLines (TEXT_Handle hObj);
-int              TEXT_GetText     (TEXT_Handle hObj, char * pDest, U32 BufferSize);
-int              TEXT_GetTextAlign(TEXT_Handle hObj);
+int32_t              TEXT_GetNumLines (TEXT_Handle hObj);
+int32_t              TEXT_GetText     (TEXT_Handle hObj, char * pDest, U32 BufferSize);
+int32_t              TEXT_GetTextAlign(TEXT_Handle hObj);
 GUI_COLOR        TEXT_GetTextColor(TEXT_Handle hObj);
-int              TEXT_GetUserData (TEXT_Handle hObj, void * pDest, int NumBytes);
+int32_t              TEXT_GetUserData (TEXT_Handle hObj, void * pDest, int32_t NumBytes);
 GUI_WRAPMODE     TEXT_GetWrapMode (TEXT_Handle hObj);
 void             TEXT_SetBkColor  (TEXT_Handle hObj, GUI_COLOR Color);
 void             TEXT_SetFont     (TEXT_Handle hObj, const GUI_FONT * pFont);
-int              TEXT_SetText     (TEXT_Handle hObj, const char * s);
-void             TEXT_SetTextAlign(TEXT_Handle hObj, int Align);
+int32_t              TEXT_SetDec      (TEXT_Handle hObj, I32 v, U8 Len, U8 Shift, U8 Signed, U8 Space);
+int32_t              TEXT_SetText     (TEXT_Handle hObj, const char * s);
+void             TEXT_SetTextAlign(TEXT_Handle hObj, int32_t Align);
 void             TEXT_SetTextColor(TEXT_Handle hObj, GUI_COLOR Color);
-int              TEXT_SetUserData (TEXT_Handle hObj, const void * pSrc, int NumBytes);
+int32_t              TEXT_SetUserData (TEXT_Handle hObj, const void * pSrc, int32_t NumBytes);
 void             TEXT_SetWrapMode (TEXT_Handle hObj, GUI_WRAPMODE WrapMode);
 
 /*********************************************************************
 *
-*       Global functions
+*       Managing default values
 *
 **********************************************************************
 */

@@ -66,7 +66,7 @@ T_uezError USBMSDriveInitialize(
      T_USBMSDriveCallbacks *aCallbacks,
      void *aCallbackWorkspace,
      const char *aDeviceName,
-     int aUnitAddress,
+     int32_t aUnitAddress,
      TUInt8 aForceFullSpeed);
 
 #ifdef __cplusplus

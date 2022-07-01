@@ -43,7 +43,7 @@ typedef struct {
 static TUInt16 IBCDToDecimal(TUInt16 aBCD)
 {
     TUInt16 decimal = 0;
-    int i;
+    int32_t i;
 
     for (i=0; i<4; i++) {
         decimal *= 10;

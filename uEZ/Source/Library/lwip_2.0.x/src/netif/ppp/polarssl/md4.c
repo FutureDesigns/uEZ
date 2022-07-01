@@ -189,9 +189,9 @@ static void md4_process( md4_context *ctx, const unsigned char data[64] )
 /*
  * MD4 process buffer
  */
-void md4_update( md4_context *ctx, const unsigned char *input, int ilen )
+void md4_update( md4_context *ctx, const unsigned char *input, int32_t ilen )
 {
-    int fill;
+    int32_t fill;
     unsigned long left;
 
     if( ilen <= 0 )
@@ -269,7 +269,7 @@ void md4_finish( md4_context *ctx, unsigned char output[16] )
 /*
  * output = MD4( input buffer )
  */
-void md4( unsigned char *input, int ilen, unsigned char output[16] )
+void md4( unsigned char *input, int32_t ilen, unsigned char output[16] )
 {
     md4_context ctx;
 

@@ -57,7 +57,7 @@ struct gethostbyname_r_helper {
 
 /** h_errno is exported in netdb.h for access by applications. */
 #if LWIP_DNS_API_DECLARE_H_ERRNO
-int h_errno;
+int32_t h_errno;
 #endif /* LWIP_DNS_API_DECLARE_H_ERRNO */
 
 /** define "hostent" variables storage: 0 if we use a static (but unprotected)
@@ -152,20 +152,20 @@ lwip_gethostbyname(const char *name)
  * @param buflen the size of buf
  * @param result pointer to a hostent pointer that is set to ret on success
  *               and set to zero on error
- * @param h_errnop pointer to an int where to store errors (instead of modifying
+ * @param h_errnop pointer to an int32_t where to store errors (instead of modifying
  *                 the global h_errno)
  * @return 0 on success, non-zero on error, additional error information
  *         is stored in *h_errnop instead of h_errno to be thread-safe
  */
-int
+int32_t
 lwip_gethostbyname_r(const char *name, struct hostent *ret, char *buf,
-                size_t buflen, struct hostent **result, int *h_errnop)
+                size_t buflen, struct hostent **result, int32_t *h_errnop)
 {
   err_t err;
   struct gethostbyname_r_helper *h;
   char *hostname;
   size_t namelen;
-  int lh_errno;
+  int32_t lh_errno;
 
   if (h_errnop == NULL) {
     /* ensure h_errnop is never NULL */
@@ -264,7 +264,7 @@ lwip_freeaddrinfo(struct addrinfo *ai)
  *
  * @todo: implement AI_V4MAPPED, AI_ADDRCONFIG
  */
-int
+int32_t
 lwip_getaddrinfo(const char *nodename, const char *servname,
        const struct addrinfo *hints, struct addrinfo **res)
 {
@@ -272,10 +272,10 @@ lwip_getaddrinfo(const char *nodename, const char *servname,
   ip_addr_t addr;
   struct addrinfo *ai;
   struct sockaddr_storage *sa = NULL;
-  int port_nr = 0;
+  int32_t port_nr = 0;
   size_t total_size;
   size_t namelen = 0;
-  int ai_family;
+  int32_t ai_family;
 
   if (res == NULL) {
     return EAI_FAIL;

@@ -102,24 +102,24 @@ typedef struct CertName {
 
 /* for user to fill for certificate generation */
 typedef struct Cert {
-    int      version;                   /* x509 version  */
+    int32_t      version;                   /* x509 version  */
     byte     serial[CTC_SERIAL_SIZE];   /* serial number */
-    int      sigType;                   /* signature algo type */
+    int32_t      sigType;                   /* signature algo type */
     CertName issuer;                    /* issuer info */
-    int      daysValid;                 /* validity days */
-    int      selfSigned;                /* self signed flag */
+    int32_t      daysValid;                 /* validity days */
+    int32_t      selfSigned;                /* self signed flag */
     CertName subject;                   /* subject info */
-    int      isCA;                      /* is this going to be a CA */
+    int32_t      isCA;                      /* is this going to be a CA */
     /* internal use only */
-    int      bodySz;                    /* pre sign total size */
-    int      keyType;                   /* public key type of subject */
+    int32_t      bodySz;                    /* pre sign total size */
+    int32_t      keyType;                   /* public key type of subject */
 #ifdef CYASSL_ALT_NAMES
     byte     altNames[CTC_MAX_ALT_SIZE]; /* altNames copy */
-    int      altNamesSz;                 /* altNames size in bytes */
+    int32_t      altNamesSz;                 /* altNames size in bytes */
     byte     beforeDate[CTC_DATE_SIZE];  /* before date copy */
-    int      beforeDateSz;               /* size of copy */
+    int32_t      beforeDateSz;               /* size of copy */
     byte     afterDate[CTC_DATE_SIZE];   /* after date copy */
-    int      afterDateSz;                /* size of copy */
+    int32_t      afterDateSz;                /* size of copy */
 #endif
 #ifdef CYASSL_CERT_REQ
     char     challengePw[CTC_NAME_SIZE];
@@ -141,28 +141,28 @@ typedef struct Cert {
    keyType    = RSA_KEY (default)
 */
 CYASSL_API void InitCert(Cert*);
-CYASSL_API int  MakeCert(Cert*, byte* derBuffer, word32 derSz, RsaKey*,
+CYASSL_API int32_t  MakeCert(Cert*, byte* derBuffer, word32 derSz, RsaKey*,
                          ecc_key*, RNG*);
 #ifdef CYASSL_CERT_REQ
-    CYASSL_API int  MakeCertReq(Cert*, byte* derBuffer, word32 derSz, RsaKey*,
+    CYASSL_API int32_t  MakeCertReq(Cert*, byte* derBuffer, word32 derSz, RsaKey*,
                                 ecc_key*);
 #endif
-CYASSL_API int  SignCert(int requestSz, int sigType, byte* derBuffer,
+CYASSL_API int32_t  SignCert(int32_t requestSz, int32_t sigType, byte* derBuffer,
                          word32 derSz, RsaKey*, ecc_key*, RNG*);
-CYASSL_API int  MakeSelfCert(Cert*, byte* derBuffer, word32 derSz, RsaKey*,
+CYASSL_API int32_t  MakeSelfCert(Cert*, byte* derBuffer, word32 derSz, RsaKey*,
                              RNG*);
-CYASSL_API int  SetIssuer(Cert*, const char*);
-CYASSL_API int  SetSubject(Cert*, const char*);
+CYASSL_API int32_t  SetIssuer(Cert*, const char*);
+CYASSL_API int32_t  SetSubject(Cert*, const char*);
 #ifdef CYASSL_ALT_NAMES
-    CYASSL_API int  SetAltNames(Cert*, const char*);
+    CYASSL_API int32_t  SetAltNames(Cert*, const char*);
 #endif
-CYASSL_API int  SetIssuerBuffer(Cert*, const byte*, int);
-CYASSL_API int  SetSubjectBuffer(Cert*, const byte*, int);
-CYASSL_API int  SetAltNamesBuffer(Cert*, const byte*, int);
-CYASSL_API int  SetDatesBuffer(Cert*, const byte*, int);
+CYASSL_API int32_t  SetIssuerBuffer(Cert*, const byte*, int32_t);
+CYASSL_API int32_t  SetSubjectBuffer(Cert*, const byte*, int32_t);
+CYASSL_API int32_t  SetAltNamesBuffer(Cert*, const byte*, int32_t);
+CYASSL_API int32_t  SetDatesBuffer(Cert*, const byte*, int32_t);
 
     #ifdef HAVE_NTRU
-        CYASSL_API int  MakeNtruCert(Cert*, byte* derBuffer, word32 derSz,
+        CYASSL_API int32_t  MakeNtruCert(Cert*, byte* derBuffer, word32 derSz,
                                      const byte* ntruKey, word16 keySz, RNG*);
     #endif
 
@@ -170,21 +170,21 @@ CYASSL_API int  SetDatesBuffer(Cert*, const byte*, int);
 
 
 #if defined(CYASSL_KEY_GEN) || defined(CYASSL_CERT_GEN)
-    CYASSL_API int DerToPem(const byte* der, word32 derSz, byte* output,
-                            word32 outputSz, int type);
+    CYASSL_API int32_t DerToPem(const byte* der, word32 derSz, byte* output,
+                            word32 outputSz, int32_t type);
 #endif
 
 #ifdef HAVE_ECC
     /* private key helpers */
-    CYASSL_API int EccPrivateKeyDecode(const byte* input,word32* inOutIdx,
+    CYASSL_API int32_t EccPrivateKeyDecode(const byte* input,word32* inOutIdx,
                                          ecc_key*,word32);
-    CYASSL_API int EccKeyToDer(ecc_key*, byte* output, word32 inLen);
+    CYASSL_API int32_t EccKeyToDer(ecc_key*, byte* output, word32 inLen);
 #endif
 
 /* DER encode signature */
 CYASSL_API word32 EncodeSignature(byte* out, const byte* digest, word32 digSz,
-                                  int hashOID);
-CYASSL_API int GetCTC_HashOID(int type);
+                                  int32_t hashOID);
+CYASSL_API int32_t GetCTC_HashOID(int32_t type);
 
 #ifdef __cplusplus
     } /* extern "C" */

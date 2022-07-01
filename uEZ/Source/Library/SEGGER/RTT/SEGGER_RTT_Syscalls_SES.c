@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2018 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -21,20 +21,10 @@
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -51,21 +41,17 @@
 * DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
-*                                                                    *
-*       RTT version: 6.30g                                           *
-*                                                                    *
-**********************************************************************
 ---------------------------END-OF-HEADER------------------------------
 File    : SEGGER_RTT_Syscalls_SES.c
-Purpose : Reimplementation of printf, puts and __getchar using RTT 
+Purpose : Reimplementation of printf, puts and __getchar using RTT
           in SEGGER Embedded Studio.
-          To use RTT for printf output, include this file in your 
+          To use RTT for printf output, include this file in your
           application.
-Revision: $Rev: 9599 $
+Revision: $Rev: 18539 $
 ----------------------------------------------------------------------
 */
-#if (defined __SES_ARM) || (defined __CROSSWORKS_ARM)
-  
+#if (defined __SES_ARM) || (defined __SES_RISCV) || (defined __CROSSWORKS_ARM)
+
 #include "SEGGER_RTT.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -90,7 +76,7 @@ Revision: $Rev: 9599 $
 //  - Configurable formatting capabilities.
 //  - Full conversion specifier and flag support.
 //  - Maximum string length has to be known or (slightly) slower character-wise output.
-// 
+//
 // #define PRINTF_USE_SEGGER_RTT_FORMATTING    0 // Use standard library formatting
 // #define PRINTF_USE_SEGGER_RTT_FORMATTING    1 // Use RTT formatting
 //
@@ -98,7 +84,7 @@ Revision: $Rev: 9599 $
   #define PRINTF_USE_SEGGER_RTT_FORMATTING    0
 #endif
 //
-// If using standard library formatting, 
+// If using standard library formatting,
 // select maximum output string buffer size or character-wise output.
 //
 // #define PRINTF_BUFFER_SIZE                  0 // Use character-wise output
@@ -115,7 +101,7 @@ Revision: $Rev: 9599 $
 *
 **********************************************************************
 */
-int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
+int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
 
 /*********************************************************************
 *
@@ -123,17 +109,17 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
 *
 **********************************************************************
 */
-/********************************************************************* 
+/*********************************************************************
 *
 *       printf()
 *
 *  Function description
 *    print a formatted string using RTT and SEGGER RTT formatting.
 */
-int printf(const char *fmt,...) {
-  int     n;
+int32_t printf(const char *fmt,...) {
+  int32_t     n;
   va_list args;
-  
+
   va_start (args, fmt);
   n = SEGGER_RTT_vprintf(0, fmt, &args);
   va_end(args);
@@ -148,7 +134,7 @@ int printf(const char *fmt,...) {
 *
 **********************************************************************
 */
-static int _putchar(int x, __printf_tag_ptr ctx) {
+static int32_t _putchar(int32_t x, __printf_tag_ptr ctx) {
   (void)ctx;
   SEGGER_RTT_Write(0, (char *)&x, 1);
   return x;
@@ -160,19 +146,19 @@ static int _putchar(int x, __printf_tag_ptr ctx) {
 *
 **********************************************************************
 */
-/********************************************************************* 
+/*********************************************************************
 *
 *       printf()
 *
 *  Function description
-*    print a formatted string character-wise, using RTT and standard 
+*    print a formatted string character-wise, using RTT and standard
 *    library formatting.
 */
-int printf(const char *fmt, ...) {
-  int         n;
+int32_t printf(const char *fmt, ...) {
+  int32_t         n;
   va_list     args;
   __printf_t  iod;
-  
+
   va_start(args, fmt);
   iod.string    = 0;
   iod.maxchars  = INT_MAX;
@@ -192,21 +178,21 @@ int printf(const char *fmt, ...) {
 *
 **********************************************************************
 */
-/********************************************************************* 
+/*********************************************************************
 *
 *       printf()
 *
 *  Function description
 *    print a formatted string using RTT and standard library formatting.
 */
-int printf(const char *fmt,...) {
-  int     n;
+int32_t printf(const char *fmt,...) {
+  int32_t     n;
   char    aBuffer[PRINTF_BUFFER_SIZE];
   va_list args;
-  
+
   va_start (args, fmt);
   n = vsnprintf(aBuffer, sizeof(aBuffer), fmt, args);
-  if (n > (int)sizeof(aBuffer)) {
+  if (n > (int32_t)sizeof(aBuffer)) {
     SEGGER_RTT_Write(0, aBuffer, sizeof(aBuffer));
   } else if (n > 0) {
     SEGGER_RTT_Write(0, aBuffer, n);
@@ -222,38 +208,38 @@ int printf(const char *fmt,...) {
 *
 **********************************************************************
 */
-/********************************************************************* 
+/*********************************************************************
 *
 *       puts()
 *
 *  Function description
 *    print a string using RTT.
 */
-int puts(const char *s) {
+int32_t puts(const char *s) {
   return SEGGER_RTT_WriteString(0, s);
 }
 
-/********************************************************************* 
+/*********************************************************************
 *
 *       __putchar()
 *
 *  Function description
 *    Write one character via RTT.
 */
-int __putchar(int x, __printf_tag_ptr ctx) {
+int32_t __putchar(int32_t x, __printf_tag_ptr ctx) {
   (void)ctx;
   SEGGER_RTT_Write(0, (char *)&x, 1);
   return x;
 }
 
-/********************************************************************* 
+/*********************************************************************
 *
 *       __getchar()
 *
 *  Function description
 *    Wait for and get a character via RTT.
 */
-int __getchar() {
+int32_t __getchar() {
   return SEGGER_RTT_WaitKey();
 }
 

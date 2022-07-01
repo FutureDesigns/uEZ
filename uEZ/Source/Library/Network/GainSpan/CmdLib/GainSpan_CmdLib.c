@@ -86,7 +86,7 @@ void IGainSpan_CmdLib_Write(const void *txData, uint16_t dataLength)
     }
 #else
     while (dataLength) {
-    	int numSent = GainSpan_SPI_SendData(tx, dataLength);
+    	int32_t numSent = GainSpan_SPI_SendData(tx, dataLength);
     	dataLength -= numSent;
     	tx += numSent;
     	if (dataLength) {
@@ -233,7 +233,7 @@ T_uezError GainSpan_CmdLib_ConfigureForSPI(
 {
     T_uezError error;
     ATLIBGS_MSG_ID_E r;
-    int i;
+    int32_t i;
 
     G_GSCmdLibSettings = *aSettings;
     G_GSSPITemplate.iBitsPerTransfer = 8;

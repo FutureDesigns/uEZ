@@ -309,7 +309,7 @@ T_uezError LPC43xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aRequest)
     TUInt16 *p_dataMOSI16;
     TUInt16 *p_dataMISO16;
     TVUInt32 dummy;
-    int isToggling = aRequest->iFlags & SPI_REQUEST_TOGGLING_CS;
+    int32_t isToggling = aRequest->iFlags & SPI_REQUEST_TOGGLING_CS;
 
     // No interrupt processing
     InterruptDisable(aW->iIRQChannel);

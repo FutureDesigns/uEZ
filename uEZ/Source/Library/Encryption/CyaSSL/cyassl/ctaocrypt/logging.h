@@ -39,18 +39,18 @@ enum  CYA_Log_Levels {
     OTHER_LOG
 };
 
-typedef void (*CyaSSL_Logging_cb)(const int logLevel,
+typedef void (*CyaSSL_Logging_cb)(const int32_t logLevel,
                                   const char *const logMessage);
 
-CYASSL_API int CyaSSL_SetLoggingCb(CyaSSL_Logging_cb log_function);
+CYASSL_API int32_t CyaSSL_SetLoggingCb(CyaSSL_Logging_cb log_function);
 
 
 #ifdef DEBUG_CYASSL
 
     void CYASSL_ENTER(const char* msg);
-    void CYASSL_LEAVE(const char* msg, int ret);
+    void CYASSL_LEAVE(const char* msg, int32_t ret);
 
-    void CYASSL_ERROR(int);
+    void CYASSL_ERROR(int32_t);
     void CYASSL_MSG(const char* msg);
 
 #else /* DEBUG_CYASSL   */

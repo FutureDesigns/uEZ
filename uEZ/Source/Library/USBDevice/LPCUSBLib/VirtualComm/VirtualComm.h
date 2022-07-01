@@ -60,7 +60,7 @@ typedef struct {
 } T_vcommCallbacks;
 
 // Main Virtual Comm Functions:
-T_uezError VirtualCommInitialize(T_vcommCallbacks *aCallbacks, int aUnitAddress, TUInt8 aForceFullSpeed);
+T_uezError VirtualCommInitialize(T_vcommCallbacks *aCallbacks, int32_t aUnitAddress, TUInt8 aForceFullSpeed);
 TBool VirtualCommPut(TUInt8 c, TUInt32 aTimeout);
 TInt32 VirtualCommGet(TUInt32 aTimeout);
 

@@ -60,9 +60,9 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-int UEZCmdI2CProbe(void *aWorkspace, int argc, char *argv[]);
-int UEZCmdI2CWrite(void *aWorkspace, int argc, char *argv[]);
-int UEZCmdI2CRead(void *aWorkspace, int argc, char *argv[]);
+int32_t UEZCmdI2CProbe(void *aWorkspace, int32_t argc, char *argv[]);
+int32_t UEZCmdI2CWrite(void *aWorkspace, int32_t argc, char *argv[]);
+int32_t UEZCmdI2CRead(void *aWorkspace, int32_t argc, char *argv[]);
 
 #ifdef __cplusplus
 }

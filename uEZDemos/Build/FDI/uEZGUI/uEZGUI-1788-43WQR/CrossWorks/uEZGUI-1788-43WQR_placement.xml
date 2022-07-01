@@ -11,21 +11,15 @@
     <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
-    <ProgramSection alignment="4" load="Yes" name=".text2" />
-    <ProgramSection alignment="4" load="Yes" name=".rodata2" />
-    <ProgramSection alignment="4" load="Yes" runin=".data2_run" name=".data2" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
   </MemorySegment>
   <MemorySegment name="SDRAM">
     <!-- 8 frames of graphics reserved -->
     <ProgramSection alignment="4" size="800*480*2*8" load="No" name=".frames"/>
     <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
-    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
-    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
-    <ProgramSection alignment="4" load="No" name=".data2_run" />
-    <ProgramSection alignment="4" load="No" name=".bss2" />  
+    <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:RAM)" >
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
@@ -40,6 +34,8 @@
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack" />
     <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
+    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
+    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
   </MemorySegment>
   <MemorySegment name="AHBSRAM0" oldname="USB RAM">
     <ProgramSection load="No" name=".usbhostmem"/>

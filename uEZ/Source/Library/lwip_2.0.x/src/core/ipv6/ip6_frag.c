@@ -104,7 +104,7 @@ static u16_t ip6_reass_pbufcount;
 /* Forward declarations. */
 static void ip6_reass_free_complete_datagram(struct ip6_reassdata *ipr);
 #if IP_REASS_FREE_OLDEST
-static void ip6_reass_remove_oldest_datagram(struct ip6_reassdata *ipr, int pbufs_needed);
+static void ip6_reass_remove_oldest_datagram(struct ip6_reassdata *ipr, int32_t pbufs_needed);
 #endif /* IP_REASS_FREE_OLDEST */
 
 void
@@ -220,7 +220,7 @@ ip6_reass_free_complete_datagram(struct ip6_reassdata *ipr)
  *        (used for freeing other datagrams if not enough space)
  */
 static void
-ip6_reass_remove_oldest_datagram(struct ip6_reassdata *ipr, int pbufs_needed)
+ip6_reass_remove_oldest_datagram(struct ip6_reassdata *ipr, int32_t pbufs_needed)
 {
   struct ip6_reassdata *r, *oldest;
 

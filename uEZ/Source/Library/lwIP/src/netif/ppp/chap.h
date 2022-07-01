@@ -126,20 +126,20 @@
  */
 
 typedef struct chap_state {
-  int unit;                               /* Interface unit number */
-  int clientstate;                        /* Client state */
-  int serverstate;                        /* Server state */
+  int32_t unit;                               /* Interface unit number */
+  int32_t clientstate;                        /* Client state */
+  int32_t serverstate;                        /* Server state */
   u_char challenge[MAX_CHALLENGE_LENGTH]; /* last challenge string sent */
   u_char chal_len;                        /* challenge length */
   u_char chal_id;                         /* ID of last challenge */
   u_char chal_type;                       /* hash algorithm for challenges */
   u_char id;                              /* Current id */
   char *chal_name;                        /* Our name to use with challenge */
-  int chal_interval;                      /* Time until we challenge peer again */
-  int timeouttime;                        /* Timeout time in seconds */
-  int max_transmits;                      /* Maximum # of challenge transmissions */
-  int chal_transmits;                     /* Number of transmissions of challenge */
-  int resp_transmits;                     /* Number of transmissions of response */
+  int32_t chal_interval;                      /* Time until we challenge peer again */
+  int32_t timeouttime;                        /* Timeout time in seconds */
+  int32_t max_transmits;                      /* Maximum # of challenge transmissions */
+  int32_t chal_transmits;                     /* Number of transmissions of challenge */
+  int32_t resp_transmits;                     /* Number of transmissions of response */
   u_char response[MAX_RESPONSE_LENGTH];   /* Response to send */
   u_char resp_length;                     /* length of response */
   u_char resp_id;                         /* ID for response messages */
@@ -160,7 +160,7 @@ extern struct protent chap_protent;
 *** PUBLIC FUNCTIONS ***
 ***********************/
 
-void ChapAuthWithPeer (int, char *, int);
-void ChapAuthPeer (int, char *, int);
+void ChapAuthWithPeer (int32_t, char *, int32_t);
+void ChapAuthPeer (int32_t, char *, int32_t);
 
 #endif /* CHAP_H */

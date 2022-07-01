@@ -29,9 +29,9 @@
 typedef struct _mxml_global_s
 {
   void	(*error_cb)(const char *);
-  int	num_entity_cbs;
-  int	(*entity_cbs[100])(const char *name);
-  int	wrap;
+  int32_t	num_entity_cbs;
+  int32_t	(*entity_cbs[100])(const char *name);
+  int32_t	wrap;
   mxml_custom_load_cb_t	custom_load_cb;
   mxml_custom_save_cb_t	custom_save_cb;
 } _mxml_global_t;
@@ -42,7 +42,7 @@ typedef struct _mxml_global_s
  */
 
 extern _mxml_global_t	*_mxml_global(void);
-extern int		_mxml_entity_cb(const char *name);
+extern int32_t		_mxml_entity_cb(const char *name);
 
 
 /*

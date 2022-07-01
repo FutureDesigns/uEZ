@@ -53,16 +53,16 @@
  */
  
 struct timeval {
-    long int tv_sec;
-    int tv_usec;
+    int32_t tv_sec;
+    int32_t tv_usec;
 };
 
 struct timezone {
-    int	tz_minuteswest;		/**< minutes west of Greenwich */
-    int	tz_dsttime;			/**< type of dst correction */
+    int32_t	tz_minuteswest;		/**< minutes west of Greenwich */
+    int32_t	tz_dsttime;			/**< type of dst correction */
 };
 
-int gettimeofday(struct timeval *tv, struct timezone *tz);
+int32_t gettimeofday(struct timeval *tv, struct timezone *tz);
 
 /**
  * Structure returned by gettimeofday(2) system call,

@@ -336,7 +336,7 @@ static T_consoleCmd FDICmdPrintCmds(void *aWorkspace)
  *                          
  *	@param [in]		*aCmd			Command line to process
  *
- *	@return			int				Result code from processing command.     
+ *	@return			int32_t				Result code from processing command.     
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -345,15 +345,15 @@ static T_consoleCmd FDICmdPrintCmds(void *aWorkspace)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-int FDICmdProcessCmd(void *aWorkspace, const char *aCmd)
+int32_t FDICmdProcessCmd(void *aWorkspace, const char *aCmd)
 {
     char *argv[FDICMD_MAX_PARAMETERS];
     char line[FDICMD_MAX_LINE_LENGTH+1];
-    int argc = 0;
+    int32_t argc = 0;
     char *p;
-    int quote = 0;
-    int started = 0;
-    int result = -1;
+    int32_t quote = 0;
+    int32_t started = 0;
+    int32_t result = -1;
     T_consoleCmd cmd;
 
     // Copy the line, we'll be modifying it

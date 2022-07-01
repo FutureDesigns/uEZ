@@ -620,7 +620,7 @@ tcp_write(struct tcp_pcb *pcb, const void *arg, u16_t len, u8_t apiflags)
      * overflows. */
     if ((queuelen > TCP_SND_QUEUELEN) || (queuelen > TCP_SNDQUEUELEN_OVERFLOW)) {
       LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write: queue too long %"U16_F" (%d)\n",
-        queuelen, (int)TCP_SND_QUEUELEN));
+        queuelen, (int32_t)TCP_SND_QUEUELEN));
       pbuf_free(p);
       goto memerr;
     }
@@ -1569,7 +1569,7 @@ tcp_keepalive(struct tcp_pcb *pcb)
   pbuf_free(p);
 
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_keepalive: seqno %"U32_F" ackno %"U32_F" err %d.\n",
-                          pcb->snd_nxt - 1, pcb->rcv_nxt, (int)err));
+                          pcb->snd_nxt - 1, pcb->rcv_nxt, (int32_t)err));
   return err;
 }
 
@@ -1665,7 +1665,7 @@ tcp_zero_window_probe(struct tcp_pcb *pcb)
 
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: seqno %"U32_F
                           " ackno %"U32_F" err %d.\n",
-                          pcb->snd_nxt - 1, pcb->rcv_nxt, (int)err));
+                          pcb->snd_nxt - 1, pcb->rcv_nxt, (int32_t)err));
   return err;
 }
 #endif /* LWIP_TCP */

@@ -32,13 +32,13 @@ usb_dev_handle *open_dev(void)
   return NULL;
 }
 
-int main(void)
+int32_t main(void)
 {
   usb_dev_handle *dev = NULL; /* the device handle */
   char tmp[BUF_SIZE];
-  int size;
-  int i;
-  int count=0;
+  int32_t size;
+  int32_t i;
+  int32_t count=0;
 
   usb_init(); /* initialize the library */
   usb_find_busses(); /* find all busses */

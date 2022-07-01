@@ -198,7 +198,7 @@ to exclude the API function. */
 
 // We cannot include //#include <uEZProcessor.h> here so we must set Priobits manually per MCU if needed!
 
-#ifdef GCC_ARMCM0
+#ifdef CORE_M0
     /* Use the system definition, if there is one */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS // Cccan be vender specific
@@ -212,7 +212,7 @@ to exclude the API function. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #endif
 
-#ifdef GCC_ARMCM3
+#ifdef CORE_M3
     /* Use the system definition, if there is one */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
@@ -226,12 +226,16 @@ to exclude the API function. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #endif
 
-#ifdef GCC_ARMCM4F
+#ifdef CORE_M4
     /* Use the system definition, if there is one */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
-    #else
-        #define configPRIO_BITS       5        /* 32 priority levels */ // TODO Cortex-M4 is minimum 3, so make this 3 if specific number not known
+    #else       
+        #if (UEZ_PROCESSOR == NXP_LPC4357)      //CS, LPC43xx not setup properly
+          #define configPRIO_BITS       3        /* 8 priority levels */
+        #else
+          #define configPRIO_BITS       5        /* 32 priority levels */ // TODO Cortex-M4 is minimum 3, so make this 3 if specific number not known
+        #endif
     #endif
 
     /* The lowest priority. */
@@ -240,7 +244,7 @@ to exclude the API function. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #endif
 
-#if (COMPILER_TYPE==IAR)
+#if (COMPILER_TYPE==IAR) // TODO remove
     /* Use the system definition, if there is one */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
@@ -289,7 +293,7 @@ to exclude the API function. */
 // New to FreeRTOS 7.
 //ToDo: turn back on and figure out why this doesn't work
 #define configASSERT( x ) if( ( x ) == 0 ) \
-    { extern void UEZBSP_FatalError(int aCode); \
+    { extern void UEZBSP_FatalError(int32_t aCode); \
         UEZBSP_FatalError(25); }
 
 // Allow a few named queue entries

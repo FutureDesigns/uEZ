@@ -95,27 +95,27 @@
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
 static void lcp_resetci (fsm*);                   /* Reset our CI */
-static int  lcp_cilen (fsm*);                     /* Return length of our CI */
-static void lcp_addci (fsm*, u_char*, int*);      /* Add our CI to pkt */
-static int  lcp_ackci (fsm*, u_char*, int);       /* Peer ack'd our CI */
-static int  lcp_nakci (fsm*, u_char*, int);       /* Peer nak'd our CI */
-static int  lcp_rejci (fsm*, u_char*, int);       /* Peer rej'd our CI */
-static int  lcp_reqci (fsm*, u_char*, int*, int); /* Rcv peer CI */
+static int32_t  lcp_cilen (fsm*);                     /* Return length of our CI */
+static void lcp_addci (fsm*, u_char*, int32_t*);      /* Add our CI to pkt */
+static int32_t  lcp_ackci (fsm*, u_char*, int32_t);       /* Peer ack'd our CI */
+static int32_t  lcp_nakci (fsm*, u_char*, int32_t);       /* Peer nak'd our CI */
+static int32_t  lcp_rejci (fsm*, u_char*, int32_t);       /* Peer rej'd our CI */
+static int32_t  lcp_reqci (fsm*, u_char*, int32_t*, int32_t); /* Rcv peer CI */
 static void lcp_up (fsm*);                        /* We're UP */
 static void lcp_down (fsm*);                      /* We're DOWN */
 static void lcp_starting (fsm*);                  /* We need lower layer up */
 static void lcp_finished (fsm*);                  /* We need lower layer down */
-static int  lcp_extcode (fsm*, int, u_char, u_char*, int);
+static int32_t  lcp_extcode (fsm*, int32_t, u_char, u_char*, int32_t);
 
-static void lcp_rprotrej (fsm*, u_char*, int);
+static void lcp_rprotrej (fsm*, u_char*, int32_t);
 
 /*
  * routines to send LCP echos to peer
  */
-static void lcp_echo_lowerup (int);
-static void lcp_echo_lowerdown (int);
+static void lcp_echo_lowerup (int32_t);
+static void lcp_echo_lowerdown (int32_t);
 static void LcpEchoTimeout (void*);
-static void lcp_received_echo_reply (fsm*, int, u_char*, int);
+static void lcp_received_echo_reply (fsm*, int32_t, u_char*, int32_t);
 static void LcpSendEchoRequest (fsm*);
 static void LcpLinkFailure (fsm*);
 static void LcpEchoCheck (fsm*);
@@ -124,8 +124,8 @@ static void LcpEchoCheck (fsm*);
  * Protocol entry points.
  * Some of these are called directly.
  */
-static void lcp_input (int, u_char *, int);
-static void lcp_protrej (int);
+static void lcp_input (int32_t, u_char *, int32_t);
+static void lcp_protrej (int32_t);
 
 #define CODENAME(x) ((x) == CONFACK ? "ACK" : (x) == CONFNAK ? "NAK" : "REJ")
 
@@ -195,7 +195,7 @@ struct protent lcp_protent = {
 #endif
 };
 
-int lcp_loopbackfail = DEFLOOPBACKFAIL;
+int32_t lcp_loopbackfail = DEFLOOPBACKFAIL;
 
 
 
@@ -206,7 +206,7 @@ int lcp_loopbackfail = DEFLOOPBACKFAIL;
  * lcp_init - Initialize LCP.
  */
 void
-lcp_init(int unit)
+lcp_init(int32_t unit)
 {
   fsm         *f  = &lcp_fsm[unit];
   lcp_options *wo = &lcp_wantoptions[unit];
@@ -271,7 +271,7 @@ lcp_init(int unit)
  * lcp_open - LCP is allowed to come up.
  */
 void
-lcp_open(int unit)
+lcp_open(int32_t unit)
 {
   fsm         *f  = &lcp_fsm[unit];
   lcp_options *wo = &lcp_wantoptions[unit];
@@ -293,7 +293,7 @@ lcp_open(int unit)
  * lcp_close - Take LCP down.
  */
 void
-lcp_close(int unit, char *reason)
+lcp_close(int32_t unit, char *reason)
 {
   fsm *f = &lcp_fsm[unit];
 
@@ -319,7 +319,7 @@ lcp_close(int unit, char *reason)
  * lcp_lowerup - The lower layer is up.
  */
 void
-lcp_lowerup(int unit)
+lcp_lowerup(int32_t unit)
 {
   lcp_options *wo = &lcp_wantoptions[unit];
 
@@ -351,7 +351,7 @@ lcp_lowerup(int unit)
  * lcp_lowerdown - The lower layer is down.
  */
 void
-lcp_lowerdown(int unit)
+lcp_lowerdown(int32_t unit)
 {
   fsm_lowerdown(&lcp_fsm[unit]);
 }
@@ -360,7 +360,7 @@ lcp_lowerdown(int unit)
  * lcp_sprotrej - Send a Protocol-Reject for some protocol.
  */
 void
-lcp_sprotrej(int unit, u_char *p, int len)
+lcp_sprotrej(int32_t unit, u_char *p, int32_t len)
 {
   /*
    * Send back the protocol and the information field of the
@@ -379,7 +379,7 @@ lcp_sprotrej(int unit, u_char *p, int len)
  * lcp_input - Input LCP packet.
  */
 static void
-lcp_input(int unit, u_char *p, int len)
+lcp_input(int32_t unit, u_char *p, int32_t len)
 {
   fsm *f = &lcp_fsm[unit];
 
@@ -390,8 +390,8 @@ lcp_input(int unit, u_char *p, int len)
 /*
  * lcp_extcode - Handle a LCP-specific code.
  */
-static int
-lcp_extcode(fsm *f, int code, u_char id, u_char *inp, int len)
+static int32_t
+lcp_extcode(fsm *f, int32_t code, u_char id, u_char *inp, int32_t len)
 {
   u_char *magp;
 
@@ -430,9 +430,9 @@ lcp_extcode(fsm *f, int code, u_char id, u_char *inp, int len)
  * Figure out which protocol is rejected and inform it.
  */
 static void
-lcp_rprotrej(fsm *f, u_char *inp, int len)
+lcp_rprotrej(fsm *f, u_char *inp, int32_t len)
 {
-  int i;
+  int32_t i;
   struct protent *protp;
   u_short prot;
 
@@ -472,7 +472,7 @@ lcp_rprotrej(fsm *f, u_char *inp, int len)
  * lcp_protrej - A Protocol-Reject was received.
  */
 static void
-lcp_protrej(int unit)
+lcp_protrej(int32_t unit)
 {
   LWIP_UNUSED_ARG(unit);
   /*
@@ -500,7 +500,7 @@ lcp_resetci(fsm *f)
 /*
  * lcp_cilen - Return length of our CI.
  */
-static int lcp_cilen(fsm *f)
+static int32_t lcp_cilen(fsm *f)
 {
   lcp_options *go = &lcp_gotoptions[f->unit];
 
@@ -530,7 +530,7 @@ static int lcp_cilen(fsm *f)
  * lcp_addci - Add our desired CIs to a packet.
  */
 static void
-lcp_addci(fsm *f, u_char *ucp, int *lenp)
+lcp_addci(fsm *f, u_char *ucp, int32_t *lenp)
 {
   lcp_options *go = &lcp_gotoptions[f->unit];
   u_char *start_ucp = ucp;
@@ -543,7 +543,7 @@ lcp_addci(fsm *f, u_char *ucp, int *lenp)
   }
 #define ADDCISHORT(opt, neg, val) \
   if (neg) { \
-    LCPDEBUG((LOG_INFO, "lcp_addci: INT opt=%d %X\n", opt, val)); \
+    LCPDEBUG((LOG_INFO, "lcp_addci: int32_t opt=%d %X\n", opt, val)); \
     PUTCHAR(opt, ucp); \
     PUTCHAR(CILEN_SHORT, ucp); \
     PUTSHORT(val, ucp); \
@@ -604,8 +604,8 @@ lcp_addci(fsm *f, u_char *ucp, int *lenp)
  *  0 - Ack was bad.
  *  1 - Ack was good.
  */
-static int
-lcp_ackci(fsm *f, u_char *p, int len)
+static int32_t
+lcp_ackci(fsm *f, u_char *p, int32_t len)
 {
   lcp_options *go = &lcp_gotoptions[f->unit];
   u_char cilen, citype, cichar;
@@ -726,8 +726,8 @@ bad:
  *  0 - Nak was bad.
  *  1 - Nak was good.
  */
-static int
-lcp_nakci(fsm *f, u_char *p, int len)
+static int32_t
+lcp_nakci(fsm *f, u_char *p, int32_t len)
 {
   lcp_options *go = &lcp_gotoptions[f->unit];
   lcp_options *wo = &lcp_wantoptions[f->unit];
@@ -736,8 +736,8 @@ lcp_nakci(fsm *f, u_char *p, int len)
   u32_t cilong;
   lcp_options no;     /* options we've seen Naks for */
   lcp_options try;    /* options to request next time */
-  int looped_back = 0;
-  int cilen;
+  int32_t looped_back = 0;
+  int32_t cilen;
 
   BZERO(&no, sizeof(no));
   try = *go;
@@ -1046,8 +1046,8 @@ bad:
  *  0 - Reject was bad.
  *  1 - Reject was good.
  */
-static int
-lcp_rejci(fsm *f, u_char *p, int len)
+static int32_t
+lcp_rejci(fsm *f, u_char *p, int32_t len)
 {
   lcp_options *go = &lcp_gotoptions[f->unit];
   u_char cichar;
@@ -1190,28 +1190,28 @@ bad:
  * appropriately.  If reject_if_disagree is non-zero, doesn't return
  * CONFNAK; returns CONFREJ if it can't return CONFACK.
  */
-static int
+static int32_t
 lcp_reqci(fsm *f, 
           u_char *inp,    /* Requested CIs */
-          int *lenp,      /* Length of requested CIs */
-          int reject_if_disagree)
+          int32_t *lenp,      /* Length of requested CIs */
+          int32_t reject_if_disagree)
 {
   lcp_options *go = &lcp_gotoptions[f->unit];
   lcp_options *ho = &lcp_hisoptions[f->unit];
   lcp_options *ao = &lcp_allowoptions[f->unit];
   u_char *cip, *next;         /* Pointer to current and next CIs */
-  int cilen, citype, cichar;  /* Parsed len, type, char value */
+  int32_t cilen, citype, cichar;  /* Parsed len, type, char value */
   u_short cishort;            /* Parsed short value */
   u32_t cilong;               /* Parse long value */
-  int rc = CONFACK;           /* Final packet return code */
-  int orc;                    /* Individual option return code */
+  int32_t rc = CONFACK;           /* Final packet return code */
+  int32_t orc;                    /* Individual option return code */
   u_char *p;                  /* Pointer to next char to parse */
   u_char *rejp;               /* Pointer to next char in reject frame */
   u_char *nakp;               /* Pointer to next char in Nak frame */
-  int l = *lenp;              /* Length left */
+  int32_t l = *lenp;              /* Length left */
 #if TRACELCP > 0
   char traceBuf[80];
-  int traceNdx = 0;
+  int32_t traceNdx = 0;
 #endif
 
   /*
@@ -1426,7 +1426,7 @@ lcp_reqci(fsm *f,
         GETSHORT(cishort, p);
         GETLONG(cilong, p);
 #if TRACELCP > 0
-        snprintf(&traceBuf[traceNdx], sizeof(traceBuf), " QUALITY (%x %x)", cishort, (unsigned int) cilong);
+        snprintf(&traceBuf[traceNdx], sizeof(traceBuf), " QUALITY (%x %x)", cishort, (uint32_t) cilong);
         traceNdx = strlen(traceBuf);
 #endif
 
@@ -1579,17 +1579,17 @@ lcp_reqci(fsm *f,
 
   switch (rc) {
     case CONFACK:
-      *lenp = (int)(next - inp);
+      *lenp = (int32_t)(next - inp);
       break;
     case CONFNAK:
       /*
        * Copy the Nak'd options from the nak_buffer to the caller's buffer.
        */
-      *lenp = (int)(nakp - nak_buffer);
+      *lenp = (int32_t)(nakp - nak_buffer);
       BCOPY(nak_buffer, inp, *lenp);
       break;
     case CONFREJ:
-      *lenp = (int)(rejp - inp);
+      *lenp = (int32_t)(rejp - inp);
       break;
   }
 
@@ -1697,9 +1697,9 @@ lcp_finished(fsm *f)
  * printer.
  */
 static void
-print_string( char *p, int len, void (*printer) (void *, char *, ...), void *arg)
+print_string( char *p, int32_t len, void (*printer) (void *, char *, ...), void *arg)
 {
-  int c;
+  int32_t c;
   
   printer(arg, "\"");
   for (; len > 0; --len) {
@@ -1738,10 +1738,10 @@ static char *lcp_codenames[] = {
   "EchoReq", "EchoRep", "DiscReq"
 };
 
-static int
-lcp_printpkt( u_char *p, int plen, void (*printer) (void *, char *, ...), void *arg)
+static int32_t
+lcp_printpkt( u_char *p, int32_t plen, void (*printer) (void *, char *, ...), void *arg)
 {
-  int code, id, len, olen;
+  int32_t code, id, len, olen;
   u_char *pstart, *optend;
   u_short cishort;
   u32_t cilong;
@@ -1896,7 +1896,7 @@ lcp_printpkt( u_char *p, int plen, void (*printer) (void *, char *, ...), void *
     printer(arg, " %.2x", code);
   }
 
-  return (int)(p - pstart);
+  return (int32_t)(p - pstart);
 }
 #endif
 
@@ -1946,7 +1946,7 @@ LcpEchoTimeout (void *arg)
  * LcpEchoReply - LCP has received a reply to the echo
  */
 static void
-lcp_received_echo_reply (fsm *f, int id, u_char *inp, int len)
+lcp_received_echo_reply (fsm *f, int32_t id, u_char *inp, int32_t len)
 {
   u32_t magic;
 
@@ -1993,7 +1993,7 @@ LcpSendEchoRequest (fsm *f)
     lcp_magic = lcp_gotoptions[f->unit].magicnumber;
     pktp = pkt;
     PUTLONG(lcp_magic, pktp);
-    fsm_sdata(f, ECHOREQ, (u_char)(lcp_echo_number++ & 0xFF), pkt, (int)(pktp - pkt));
+    fsm_sdata(f, ECHOREQ, (u_char)(lcp_echo_number++ & 0xFF), pkt, (int32_t)(pktp - pkt));
   }
 }
 
@@ -2002,7 +2002,7 @@ LcpSendEchoRequest (fsm *f)
  */
 
 static void
-lcp_echo_lowerup (int unit)
+lcp_echo_lowerup (int32_t unit)
 {
   fsm *f = &lcp_fsm[unit];
 
@@ -2022,7 +2022,7 @@ lcp_echo_lowerup (int unit)
  */
 
 static void
-lcp_echo_lowerdown (int unit)
+lcp_echo_lowerdown (int32_t unit)
 {
   fsm *f = &lcp_fsm[unit];
 

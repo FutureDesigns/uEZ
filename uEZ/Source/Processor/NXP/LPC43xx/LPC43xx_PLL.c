@@ -200,7 +200,7 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
     IPLLSetup1((T_pllRegs *)LPC_CGU, aFreq->iPLL1Frequency, aFreq->iOscillatorClockHz);
 
     TUInt32 n,c,temp;
-    int i;
+    int32_t i;
 
     /* Maximum allow RCOUNT number */
     c= 511;

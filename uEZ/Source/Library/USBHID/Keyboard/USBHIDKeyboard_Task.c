@@ -30,7 +30,7 @@ static void KeyboardTask(void)
 {
     T_uezError error;
     T_HIDKeyboardReport keyscan;
-    int i;
+    int32_t i;
     TUInt8 state = 0;
     const TUInt8 pattern[4] = { 0x01, 0x02, 0x04, 0x02 };
 

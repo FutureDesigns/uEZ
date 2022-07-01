@@ -93,7 +93,7 @@ typedef struct tag_SemList
  *---------------------------------------------------------------------------*/
 static struct timeoutlist timeoutlist[SYS_THREAD_MAX];
 static u16_t nextthread = 0;
-int intlevel = 0;
+int32_t intlevel = 0;
 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
 T_xMBoxQList xMBoxQueues[ sysarchMAX_MBOX_QUEUES ];
@@ -109,11 +109,11 @@ T_xSemList *G_FreeSemaphore;
  * Description:
  *      Creates a new mailbox
  * Inputs:
- *      int size                -- Size of elements in the mailbox
+ *      int32_t size                -- Size of elements in the mailbox
  * Outputs:
  *      sys_mbox_t              -- Handle to new mailbox
  *---------------------------------------------------------------------------*/
-sys_mbox_t sys_mbox_new(int size)
+sys_mbox_t sys_mbox_new(int32_t size)
 {
     T_uezQueue mbox=0;
 
@@ -508,7 +508,7 @@ void sys_sem_free(sys_sem_t sem)
  *---------------------------------------------------------------------------*/
 void sys_init(void)
 {
-    int i;
+    int32_t i;
 
     // Initialize the the per-thread sys_timeouts structures
     // make sure there are no valid pids in the list
@@ -559,7 +559,7 @@ void sys_init(void)
  *---------------------------------------------------------------------------*/
 struct sys_timeouts *sys_arch_timeouts(void)
 {
-    int i;
+    int32_t i;
     T_uezTask pid;
     struct timeoutlist *tl;
 
@@ -588,8 +588,8 @@ struct sys_timeouts *sys_arch_timeouts(void)
  *      char *name              -- Name of thread
  *      void (* thread)(void *arg) -- Pointer to function to run.
  *      void *arg               -- Argument passed into function
- *      int stacksize           -- Required stack amount in bytes
- *      int prio                -- Thread priority
+ *      int32_t stacksize           -- Required stack amount in bytes
+ *      int32_t prio                -- Thread priority
  * Outputs:
  *      sys_thread_t            -- Pointer to per-thread timeouts.
  *---------------------------------------------------------------------------*/
@@ -597,11 +597,11 @@ sys_thread_t sys_thread_new(
         char *name,
         void (* thread)(void *arg),
         void *arg,
-        int stacksize,
-        int prio)
+        int32_t stacksize,
+        int32_t prio)
 {
     T_uezTask CreatedTask;
-    int result;
+    int32_t result;
 
     if (nextthread < SYS_THREAD_MAX) {
         result = UEZTaskCreate(

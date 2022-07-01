@@ -201,10 +201,10 @@
 
 	void prvTraceInitCortexM(void);
 
-	#define REG_DEMCR (*(volatile unsigned int*)0xE000EDFC)
-	#define REG_DWT_CTRL (*(volatile unsigned int*)0xE0001000)
-	#define REG_DWT_CYCCNT (*(volatile unsigned int*)0xE0001004)
-	#define REG_DWT_EXCCNT (*(volatile unsigned int*)0xE000100C)
+	#define REG_DEMCR (*(volatile uint32_t*)0xE000EDFC)
+	#define REG_DWT_CTRL (*(volatile uint32_t*)0xE0001000)
+	#define REG_DWT_CYCCNT (*(volatile uint32_t*)0xE0001004)
+	#define REG_DWT_EXCCNT (*(volatile uint32_t*)0xE000100C)
 
 	/* Bit mask for TRCENA bit in DEMCR - Global enable for DWT and ITM */
 	#define DEMCR_TRCENA (1 << 24)

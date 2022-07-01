@@ -54,7 +54,7 @@ static T_uezError AudioMixer_MasterSetLevel(TBool aMute, TUInt8 aLevel)
         if(G_AudioMixer[i].iCallback){
             error = G_AudioMixer[i].iCallback((T_uezAudioMixerOutput)i,
                     aMute?ETrue:G_AudioMixer[i].iMuted,
-                    (G_AudioMixer[i].iLevel * aLevel)/256);
+                    (G_AudioMixer[i].iLevel * aLevel)/255);
         }
     }
     return error;
@@ -69,12 +69,23 @@ static T_uezError AudioMixer_MasterSetMute(TBool aMute)
         if(G_AudioMixer[i].iCallback){
             error = G_AudioMixer[i].iCallback((T_uezAudioMixerOutput)i,
                     aMute?ETrue:G_AudioMixer[i].iMuted,
-                    (G_AudioMixer[i].iLevel * G_AudioMixer[UEZ_AUDIO_MIXER_OUTPUT_MASTER].iLevel)/256);
+                    (G_AudioMixer[i].iLevel * G_AudioMixer[UEZ_AUDIO_MIXER_OUTPUT_MASTER].iLevel)/255);
         }
     }
     return error;
 }
 
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZAudioMixerSetLevel
+ *---------------------------------------------------------------------------*
+ * Description:
+ *     Routine returns the current level that the audio amp is set to
+ * Inputs:
+ *      T_uezAudioMixerOutput aOutput -
+ *      TUInt8 aLevel                 --new level to set the amp to
+ * Outputs:
+ *      T_uezError                    -- Error code
+ *---------------------------------------------------------------------------*/
 T_uezError UEZAudioMixerSetLevel(T_uezAudioMixerOutput aOutput, TUInt8 aLevel)
 {
     T_uezError error = UEZ_ERROR_NONE;
@@ -91,7 +102,7 @@ T_uezError UEZAudioMixerSetLevel(T_uezAudioMixerOutput aOutput, TUInt8 aLevel)
     } else if(G_AudioMixer[aOutput].iCallback){
         error = G_AudioMixer[aOutput].iCallback(aOutput,
                 masterIsMuted?ETrue:G_AudioMixer[aOutput].iMuted,
-                (G_AudioMixer[aOutput].iLevel * masterLevel)/256);
+                (G_AudioMixer[aOutput].iLevel * masterLevel)/255);
     }
     return error;
 }
@@ -120,7 +131,7 @@ T_uezError UEZAudioMixerMute(T_uezAudioMixerOutput aOutput)
         if(G_AudioMixer[aOutput].iCallback){
             error = G_AudioMixer[aOutput].iCallback(aOutput,
                     masterIsMuted?ETrue:G_AudioMixer[aOutput].iMuted,
-                    (G_AudioMixer[aOutput].iLevel * masterLevel)/256);
+                    (G_AudioMixer[aOutput].iLevel * masterLevel)/255);
         }
     }
     return error;
@@ -132,6 +143,11 @@ T_uezError UEZAudioMixerUnmute(T_uezAudioMixerOutput aOutput)
     TUInt32 masterLevel;
     TBool masterIsMuted;
 
+    // need to handle noise avoidence here to prevent duplicating volume increase procedure
+    // set volume low
+    // unmute
+    //set volume high
+
     masterLevel = G_AudioMixer[UEZ_AUDIO_MIXER_OUTPUT_MASTER].iLevel;
     masterIsMuted = G_AudioMixer[UEZ_AUDIO_MIXER_OUTPUT_MASTER].iMuted;
     
@@ -142,7 +158,7 @@ T_uezError UEZAudioMixerUnmute(T_uezAudioMixerOutput aOutput)
         if(G_AudioMixer[aOutput].iCallback){
             error = G_AudioMixer[aOutput].iCallback(aOutput,
                     masterIsMuted?ETrue:G_AudioMixer[aOutput].iMuted,
-                    (G_AudioMixer[aOutput].iLevel * masterLevel)/256);
+                    (G_AudioMixer[aOutput].iLevel * masterLevel)/255);
         }
     }
     return error;
@@ -166,7 +182,7 @@ T_uezError UEZAudioMixerRegister(T_uezAudioMixerOutput aOutput, T_AudioMixer_Cal
        for( i = 0; i < MAX_AUDIO_MIXER_OUTPUTS; i++){
            G_AudioMixer[i].iOutput = (T_uezAudioMixerOutput)i;
            if(i == 0){
-               G_AudioMixer[i].iLevel = 255;
+               G_AudioMixer[i].iLevel = 128; // don't default to max volume, we don't know platform defines in library
            }else {
                G_AudioMixer[i].iLevel = 0;
            }
@@ -175,15 +191,9 @@ T_uezError UEZAudioMixerRegister(T_uezAudioMixerOutput aOutput, T_AudioMixer_Cal
        iHaveRun = ETrue;
     }
 
-#ifdef __clang__ // Clang thinks the comparison is always true. Is there a better way to check this?
-    if(((!aOutput) == UEZ_AUDIO_MIXER_OUTPUT_MASTER)){
-        G_AudioMixer[aOutput].iCallback = *aCallback;
-    }
-#else
     if(((!aOutput) == UEZ_AUDIO_MIXER_OUTPUT_MASTER) && (aOutput < MAX_AUDIO_MIXER_OUTPUTS)){
         G_AudioMixer[aOutput].iCallback = *aCallback;
     }
-#endif    
     return error;
 }
 

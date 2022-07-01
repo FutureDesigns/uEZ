@@ -55,7 +55,7 @@
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdFileTestWrite(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdFileTestWrite(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezDevice file;
     TUInt32 size;

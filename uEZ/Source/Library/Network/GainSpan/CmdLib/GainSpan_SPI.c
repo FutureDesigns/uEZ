@@ -83,15 +83,15 @@ static T_uezSemaphore G_sem;
 #define IGrab() UEZSemaphoreGrab(G_sem, UEZ_TIMEOUT_INFINITE);
 #define IRelease() UEZSemaphoreRelease(G_sem);
 
-static int IGainSpan_SPI_Update(uint8_t channel);
+static int32_t IGainSpan_SPI_Update(uint8_t channel);
 bool GainSpan_SPI_IsDataReady(uint8_t channel);
 bool GainSpan_SPI_SendTwoBytesLowLevel(uint8_t aByte1, uint8_t aByte2);
 //----------------------------------------
 
 static TUInt32 IGainSpan_SPI_Thread(T_uezTask aMyTask, void *aParameters)
 {
-	int isProcessing;
-	int struggling = 0;
+	int32_t isProcessing;
+	int32_t struggling = 0;
         TBool forever = ETrue;
 
 	while (forever) {
@@ -362,7 +362,7 @@ void GainSpan_SPI_Update(uint8_t channel)
  *  @return     void
  */
 /*---------------------------------------------------------------------------*/
-static int IGainSpan_SPI_Update(uint8_t channel)
+static int32_t IGainSpan_SPI_Update(uint8_t channel)
 {
 #if 0
 	TUInt8 c;
@@ -401,7 +401,7 @@ static int IGainSpan_SPI_Update(uint8_t channel)
 	return 0;
 #else
     uint16_t numBytes;
-    int processing = 0;
+    int32_t processing = 0;
 
     /* Process any incoming bytes that were just sent */
     if (G_GainSpan_SPI_IsTransferComplete) {

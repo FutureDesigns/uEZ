@@ -204,7 +204,6 @@
  * for callback/timeout API communication. 
  * (only needed if you use tcpip.c)
  */
-//For RX builds define in Config_Build.h as 4
 #ifndef MEMP_NUM_TCPIP_MSG_API
 #define MEMP_NUM_TCPIP_MSG_API          20
 #endif
@@ -268,7 +267,6 @@
 #define MEMP_OVERFLOW_CHECK             0 // This flag should be 0 for releases!
 //#define MEMP_SANITY_CHECK             0 // for testing
 
-//For RX builds define in Config_Build.h as 0
 #ifndef LWIP_DNS
 #define LWIP_DNS                        1
 #endif
@@ -297,7 +295,7 @@
 #define MEMP_USE_CUSTOM_POOLS           1
 
 #define htons(x)                        lwip_htons(x)
-#include "sys_arch.h"
+#include "Source/Library/lwip_2.0.x/system/arch/sys_arch.h"
 #define LWIP_RAND()                     ((u32_t)GetRandomNumber())
 /*----- Value in opt.h for CHECKSUM_GEN_UDP: 1 -----*/
 #define CHECKSUM_GEN_UDP                0

@@ -14,7 +14,7 @@
 #define MAIN_TASK   1
 
 extern void Main_task (uint32_t);
-int benchmark_test(void* args);
+int32_t benchmark_test(void* args);
 
 #endif /* __main_h_ */
 

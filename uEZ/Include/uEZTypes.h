@@ -48,48 +48,23 @@
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+#include <stdint.h> /* for int types */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
- 
- #if (COMPILER_TYPE==CodeRed)
-    typedef unsigned int TUInt32;
-    typedef unsigned short TUInt16;
-    typedef unsigned char TUInt8;
-    typedef int TInt32;
-    typedef short TInt16;
-    typedef char TInt8;
-    typedef void (*TFPtr)(void);
-    typedef int TBool;
-    #define EFalse          0
-    #define ETrue           (~0)
-#elif (COMPILER_TYPE==IAR)
-    /** IAR is based on the stdint library */
-    #include <stdint.h>
-    typedef uint32_t TUInt32;
-    typedef uint16_t TUInt16;
-    typedef uint8_t TUInt8;
-    typedef int32_t TInt32;
-    typedef int16_t TInt16;
-    typedef int8_t TInt8;
-    typedef void (*TFPtr)(void);
-    typedef int TBool;
-    #define EFalse          0
-    #define ETrue           (~0)
-#else
-    /** Default types */
-    typedef unsigned TUInt32;
-    typedef unsigned short TUInt16;
-    typedef unsigned char TUInt8;
-    typedef long TInt32;
-    typedef short TInt16;
-    typedef signed char TInt8;
-    typedef void (*TFPtr)(void);
-    typedef int TBool;
-    #define EFalse          0
-    #define ETrue           (~0)
-#endif
+/** Default types for all compilers */
+typedef uint32_t TUInt32;
+typedef uint16_t TUInt16;
+typedef uint8_t TUInt8;
+typedef int32_t TInt32;
+typedef int16_t TInt16;
+typedef int8_t TInt8;
+typedef void (*TFPtr)(void);
+typedef int32_t TBool;
+#define EFalse          0
+#define ETrue           (~0)
 
 /** Volatile extensions */
 typedef volatile TUInt32 TVUInt32;

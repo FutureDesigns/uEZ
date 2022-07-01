@@ -145,7 +145,7 @@ mxmlGetFirstChild(mxml_node_t *node)	/* I - Node to get */
  * @since Mini-XML 2.7@
  */
 
-int					/* O - Integer value or 0 */
+int32_t					/* O - Integer value or 0 */
 mxmlGetInteger(mxml_node_t *node)	/* I - Node to get */
 {
  /*
@@ -353,7 +353,7 @@ mxmlGetReal(mxml_node_t *node)		/* I - Node to get */
 
 const char *				/* O - Text string or NULL */
 mxmlGetText(mxml_node_t *node,		/* I - Node to get */
-            int         *whitespace)	/* O - 1 if string is preceded by whitespace, 0 otherwise */
+            int32_t         *whitespace)	/* O - 1 if string is preceded by whitespace, 0 otherwise */
 {
  /*
   * Range check input...

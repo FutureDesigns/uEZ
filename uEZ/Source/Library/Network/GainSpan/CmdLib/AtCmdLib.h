@@ -753,7 +753,7 @@ void AtLibGs_ConvertNumberTo4DigitASCII(uint16_t myNum, char *pStr);
 ATLIBGS_MSG_ID_E AtLibGs_GetWebProvSettings(
         ATLIBGS_WEB_PROV_SETTINGS *wp,
         uint32_t timeout);
-int AtLibGs_CIDToIndex(uint8_t cid);
+int32_t AtLibGs_CIDToIndex(uint8_t cid);
 
 extern void AtLibGs_Init(void);
 

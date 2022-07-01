@@ -34,7 +34,7 @@
 /* blank build */
 #include <stdio.h>
 #include <stdlib.h>
-int main(void)
+int32_t main(void)
 {
     printf("do ./configure --enable-sniffer to enable build support\n");
     return EXIT_SUCCESS;
@@ -85,7 +85,7 @@ static void FreeAll(void)
 #endif
 }
 
-static void sig_handler(const int sig) 
+static void sig_handler(const int32_t sig) 
 {
     printf("SIGINT handled = %d.\n", sig);
     FreeAll();
@@ -109,7 +109,7 @@ static void err_sys(const char* msg)
 #endif
 
 
-static char* iptos(unsigned int addr)
+static char* iptos(uint32_t addr)
 {
     static char    output[32];
     byte *p = (byte*)&addr;
@@ -120,14 +120,14 @@ static char* iptos(unsigned int addr)
 }
 
 
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 {
-    int          ret = 0;
-    int             inum;
-    int             port;
-    int          saveFile = 0;
-    int             i = 0;
-    int          frame = ETHER_IF_FRAME_LEN; 
+    int32_t          ret = 0;
+    int32_t             inum;
+    int32_t             port;
+    int32_t          saveFile = 0;
+    int32_t             i = 0;
+    int32_t          frame = ETHER_IF_FRAME_LEN; 
     char         err[PCAP_ERRBUF_SIZE];
     char         filter[32];
     const char  *server = NULL;
@@ -287,7 +287,7 @@ int main(int argc, char** argv)
         frame = NULL_IF_FRAME_LEN;
 
     while (1) {
-        static int packetNumber = 0;
+        static int32_t packetNumber = 0;
         struct pcap_pkthdr header;
         const unsigned char* packet = pcap_next(pcap, &header);
         packetNumber++;

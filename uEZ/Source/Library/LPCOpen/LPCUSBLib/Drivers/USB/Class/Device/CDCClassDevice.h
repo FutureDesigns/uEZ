@@ -340,10 +340,10 @@
 		/* Function Prototypes: */
 			#if defined(__INCLUDE_FROM_CDC_DEVICE_C)
 				#if defined(FDEV_SETUP_STREAM)
-				static int CDC_Device_putchar(char c,
+				static int32_t CDC_Device_putchar(char c,
 				                              FILE* Stream) ATTR_NON_NULL_PTR_ARG(2);
-				static int CDC_Device_getchar(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
-				static int CDC_Device_getchar_Blocking(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
+				static int32_t CDC_Device_getchar(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
+				static int32_t CDC_Device_getchar_Blocking(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
 				#endif
 
 				void CDC_Device_Event_Stub(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo) ATTR_CONST;

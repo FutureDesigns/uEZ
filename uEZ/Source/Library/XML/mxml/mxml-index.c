@@ -26,11 +26,11 @@
  * Sort functions...
  */
 
-static int	index_compare(mxml_index_t *ind, mxml_node_t *first,
+static int32_t	index_compare(mxml_index_t *ind, mxml_node_t *first,
 		              mxml_node_t *second);
-static int	index_find(mxml_index_t *ind, const char *element,
+static int32_t	index_find(mxml_index_t *ind, const char *element,
 		           const char *value, mxml_node_t *node);
-static void	index_sort(mxml_index_t *ind, int left, int right);
+static void	index_sort(mxml_index_t *ind, int32_t left, int32_t right);
 
 
 /*
@@ -102,7 +102,7 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
               const char   *element,	/* I - Element name to find, if any */
 	      const char   *value)	/* I - Attribute value, if any */
 {
-  int		diff,			/* Difference between names */
+  int32_t		diff,			/* Difference between names */
 		current,		/* Current entity in search */
 		first,			/* First entity in search */
 		last;			/* Last entity in search */
@@ -276,7 +276,7 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
  * @since Mini-XML 2.7@
  */
 
-int					/* I - Number of nodes in index */
+int32_t					/* I - Number of nodes in index */
 mxmlIndexGetCount(mxml_index_t *ind)	/* I - Index of nodes */
 {
  /*
@@ -383,7 +383,7 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
 
 #ifdef DEBUG
   {
-    int i;				/* Looping var */
+    int32_t i;				/* Looping var */
 
 
     printf("%d node(s) in index.\n\n", ind->num_nodes);
@@ -417,7 +417,7 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
 
 #ifdef DEBUG
   {
-    int i;				/* Looping var */
+    int32_t i;				/* Looping var */
 
 
     puts("After sorting:\n");
@@ -497,12 +497,12 @@ mxmlIndexReset(mxml_index_t *ind)	/* I - Index to reset */
  * 'index_compare()' - Compare two nodes.
  */
 
-static int				/* O - Result of comparison */
+static int32_t				/* O - Result of comparison */
 index_compare(mxml_index_t *ind,	/* I - Index */
               mxml_node_t  *first,	/* I - First node */
               mxml_node_t  *second)	/* I - Second node */
 {
-  int	diff;				/* Difference */
+  int32_t	diff;				/* Difference */
 
 
  /*
@@ -536,13 +536,13 @@ index_compare(mxml_index_t *ind,	/* I - Index */
  * 'index_find()' - Compare a node with index values.
  */
 
-static int				/* O - Result of comparison */
+static int32_t				/* O - Result of comparison */
 index_find(mxml_index_t *ind,		/* I - Index */
            const char   *element,	/* I - Element name or NULL */
 	   const char   *value,		/* I - Attribute value or NULL */
            mxml_node_t  *node)		/* I - Node */
 {
-  int	diff;				/* Difference */
+  int32_t	diff;				/* Difference */
 
 
  /*
@@ -581,12 +581,12 @@ index_find(mxml_index_t *ind,		/* I - Index */
 
 static void
 index_sort(mxml_index_t *ind,		/* I - Index to sort */
-           int          left,		/* I - Left node in partition */
-	   int          right)		/* I - Right node in partition */
+           int32_t          left,		/* I - Left node in partition */
+	   int32_t          right)		/* I - Right node in partition */
 {
   mxml_node_t	*pivot,			/* Pivot node */
 		*temp;			/* Swap node */
-  int		templ,			/* Temporary left node */
+  int32_t		templ,			/* Temporary left node */
 		tempr;			/* Temporary right node */
 
 

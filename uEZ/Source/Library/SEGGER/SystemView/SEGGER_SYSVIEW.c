@@ -1,9 +1,9 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*       (c) 2015 - 2017  SEGGER Microcontroller GmbH & Co. KG        *
+*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -17,24 +17,14 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -52,14 +42,14 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.52a                                    *
+*       SystemView version: 3.10                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW.c
 Purpose : System visualization API implementation.
-Revision: $Rev: 6414 $
+Revision: $Rev: 17331 $
 
 Additional information:
   Packet format:
@@ -70,18 +60,21 @@ Additional information:
     Packets with IDs 24..31 are standard packets with extendible
     structure and contain a length field.
     <ID><Lenght><Data><TimeStampDelta>
+    
+    Packet ID 31 is used for SystemView extended events.
+    <ID><Lenght><ID_EX><Data><TimeStampDelta>
 
     Packets with IDs >= 32 always contain a length field.
     <ID><Length><Data><TimeStampDelta>
 
   Packet IDs:
-       0..  31 : Standard packets, known by SystemViewer.
+       0..  31 : Standard packets, known by SystemView.
       32..1023 : OS-definable packets, described in a SystemView description file.
     1024..2047 : User-definable packets, described in a SystemView description file.
     2048..32767: Undefined.
 
   Data encoding:
-    Basic types (int, short, char, ...):
+    Basic types (int32_t, short, char, ...):
       Basic types are encoded little endian with most-significant bit variant
       encoding.
       Each encoded byte contains 7 data bits [6:0] and the MSB continuation bit.
@@ -157,6 +150,10 @@ Additional information:
 *
 **********************************************************************
 */
+
+#define SEGGER_RTT_SECTION ".rtt"
+#define SEGGER_SYSVIEW_SECTION ".rttbuf"
+
 #if SEGGER_SYSVIEW_ID_SHIFT
   #define SHRINK_ID(Id)   (((Id) - _SYSVIEW_Globals.RAMBaseAddress) >> SEGGER_SYSVIEW_ID_SHIFT)
 #else
@@ -246,7 +243,7 @@ typedef struct {
 *
 **********************************************************************
 */
-static void _SendPacket(U8* pStartPacket, U8* pEndPacket, unsigned int EventId);
+static void _SendPacket(U8* pStartPacket, U8* pEndPacket, uint32_t EventId);
 
 /*********************************************************************
 *
@@ -351,8 +348,8 @@ static U8 _aPacket[SEGGER_SYSVIEW_MAX_PACKET_SIZE];
 *    of the data buffer.
 *    Make sure NumBytes + 1 bytes are free for the payload.
 */
-static U8* _EncodeData(U8* pPayload, const char* pSrc, unsigned int NumBytes) {
-  unsigned int n;
+static U8* _EncodeData(U8* pPayload, const char* pSrc, uint32_t NumBytes) {
+  uint32_t n;
   //
   n = 0;
   *pPayload++ = NumBytes;
@@ -385,9 +382,9 @@ static U8* _EncodeData(U8* pPayload, const char* pSrc, unsigned int NumBytes) {
 *    of the string.
 *    No more than 1 + Limit bytes will be encoded to the payload.
 */
-static U8 *_EncodeStr(U8 *pPayload, const char *pText, unsigned int Limit) {
-  unsigned int n;
-  unsigned int Len;
+static U8 *_EncodeStr(U8 *pPayload, const char *pText, uint32_t Limit) {
+  uint32_t n;
+  uint32_t Len;
   //
   // Compute string len
   //
@@ -456,7 +453,7 @@ static U8* _PreparePacket(U8* pPacket) {
 #if (SEGGER_SYSVIEW_POST_MORTEM_MODE != 1)
 static void _HandleIncomingPacket(void) {
   U8  Cmd;
-  int Status;
+  int32_t Status;
   //
   Status = SEGGER_RTT_ReadNoLock(CHANNEL_ID_DOWN, &Cmd, 1);
   if (Status > 0) {
@@ -519,10 +516,10 @@ static void _HandleIncomingPacket(void) {
 *
 */
 #if (SEGGER_SYSVIEW_POST_MORTEM_MODE != 1)
-static int _TrySendOverflowPacket(void) {
+static int32_t _TrySendOverflowPacket(void) {
   U32 TimeStamp;
   I32 Delta;
-  int Status;
+  int32_t Status;
   U8  aPacket[11];
   U8* pPayload;
 
@@ -540,6 +537,7 @@ static int _TrySendOverflowPacket(void) {
   // Try to store packet in RTT buffer and update time stamp when this was successful
   //
   Status = SEGGER_RTT_WriteSkipNoLock(CHANNEL_ID_UP, aPacket, pPayload - aPacket);
+  SEGGER_SYSVIEW_ON_EVENT_RECORDED(pPayload - aPacket);
   if (Status) {
     _SYSVIEW_Globals.LastTxTimeStamp = TimeStamp;
     _SYSVIEW_Globals.EnableState--; // EnableState has been 2, will be 1. Always.
@@ -573,6 +571,7 @@ static void _SendSyncInfo(void) {
   // Send module information
   //
   SEGGER_RTT_WriteWithOverwriteNoLock(CHANNEL_ID_UP, _abSync, 10);
+  SEGGER_SYSVIEW_ON_EVENT_RECORDED(10);
   SEGGER_SYSVIEW_RecordVoid(SYSVIEW_EVTID_TRACE_START);
   {
     U8* pPayload;
@@ -593,8 +592,9 @@ static void _SendSyncInfo(void) {
   SEGGER_SYSVIEW_RecordSystime();
   SEGGER_SYSVIEW_SendTaskList();
   if (_NumModules > 0) {
+    int32_t n;
     SEGGER_SYSVIEW_SendNumModules();
-    for (int n = 0; n < _NumModules; n++) {
+    for (n = 0; n < _NumModules; n++) {
       SEGGER_SYSVIEW_SendModule(n);
     }
     SEGGER_SYSVIEW_SendModuleDescription();
@@ -621,12 +621,12 @@ static void _SendSyncInfo(void) {
 *    EventId      - Id of the event to send.
 *
 */
-static void _SendPacket(U8* pStartPacket, U8* pEndPacket, unsigned int EventId) {
-  unsigned int  NumBytes;
+static void _SendPacket(U8* pStartPacket, U8* pEndPacket, uint32_t EventId) {
+  uint32_t  NumBytes;
   U32           TimeStamp;
   U32           Delta;
 #if (SEGGER_SYSVIEW_POST_MORTEM_MODE != 1)
-  int           Status;
+  int32_t           Status;
 #endif
 
 #if (SEGGER_SYSVIEW_USE_STATIC_BUFFER == 0)
@@ -699,12 +699,14 @@ Send:
   // Store packet in RTT buffer by overwriting old data and update time stamp
   //
   SEGGER_RTT_WriteWithOverwriteNoLock(CHANNEL_ID_UP, pStartPacket, pEndPacket - pStartPacket);
+  SEGGER_SYSVIEW_ON_EVENT_RECORDED(pEndPacket - pStartPacket);
   _SYSVIEW_Globals.LastTxTimeStamp = TimeStamp;
 #else
   //
   // Try to store packet in RTT buffer and update time stamp when this was successful
   //
   Status = SEGGER_RTT_WriteSkipNoLock(CHANNEL_ID_UP, pStartPacket, pEndPacket - pStartPacket);
+  SEGGER_SYSVIEW_ON_EVENT_RECORDED(pEndPacket - pStartPacket);
   if (Status) {
     _SYSVIEW_Globals.LastTxTimeStamp = TimeStamp;
   } else {
@@ -760,7 +762,7 @@ SendDone:
 *    Options      Options to be sent to the host.
 *    pParamList   Pointer to the list of arguments for the format string.
 */
-static int _VPrintHost(const char* s, U32 Options, va_list* pParamList) {
+static int32_t _VPrintHost(const char* s, U32 Options, va_list* pParamList) {
   U32         aParas[SEGGER_SYSVIEW_MAX_ARGUMENTS];
   U32*        pParas;
   U32         NumArguments;
@@ -787,7 +789,7 @@ static int _VPrintHost(const char* s, U32 Options, va_list* pParamList) {
     if (c == '%') {
       c = *p;
 #if SEGGER_SYSVIEW_PRINTF_IMPLICIT_FORMAT == 0
-      aParas[NumArguments++] = va_arg(*pParamList, int);
+      aParas[NumArguments++] = va_arg(*pParamList, int32_t);
       if (NumArguments == SEGGER_SYSVIEW_MAX_ARGUMENTS) {
         break;
       }
@@ -796,7 +798,7 @@ static int _VPrintHost(const char* s, U32 Options, va_list* pParamList) {
         HasNonScalar = 1;
         break;
       } else {
-        aParas[NumArguments++] = va_arg(*pParamList, int);
+        aParas[NumArguments++] = va_arg(*pParamList, int32_t);
         if (NumArguments == SEGGER_SYSVIEW_MAX_ARGUMENTS) {
           break;
         }
@@ -842,7 +844,7 @@ static int _VPrintHost(const char* s, U32 Options, va_list* pParamList) {
 *    c            Character to be printed.
 */
 static void _StoreChar(SEGGER_SYSVIEW_PRINTF_DESC * p, char c) {
-  unsigned int  Cnt;
+  uint32_t  Cnt;
   U8*           pPayload;
   U32           Options;
 
@@ -883,12 +885,12 @@ static void _StoreChar(SEGGER_SYSVIEW_PRINTF_DESC * p, char c) {
 *    FieldWidth   Width of the printed field.
 *    FormatFlags  Flags for formatting the value.
 */
-static void _PrintUnsigned(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, unsigned int v, unsigned int Base, unsigned int NumDigits, unsigned int FieldWidth, unsigned int FormatFlags) {
+static void _PrintUnsigned(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, uint32_t v, uint32_t Base, uint32_t NumDigits, uint32_t FieldWidth, uint32_t FormatFlags) {
   static const char _aV2C[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-  unsigned int      Div;
-  unsigned int      Digit;
-  unsigned int      Number;
-  unsigned int      Width;
+  uint32_t      Div;
+  uint32_t      Digit;
+  uint32_t      Number;
+  uint32_t      Width;
   char              c;
 
   Number = v;
@@ -974,9 +976,9 @@ static void _PrintUnsigned(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, unsigned in
 *    FieldWidth   Width of the printed field.
 *    FormatFlags  Flags for formatting the value.
 */
-static void _PrintInt(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, int v, unsigned int Base, unsigned int NumDigits, unsigned int FieldWidth, unsigned int FormatFlags) {
-  unsigned int  Width;
-  int           Number;
+static void _PrintInt(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, int32_t v, uint32_t Base, uint32_t NumDigits, uint32_t FieldWidth, uint32_t FormatFlags) {
+  uint32_t  Width;
+  int32_t           Number;
 
   Number = (v < 0) ? -v : v;
 
@@ -984,8 +986,8 @@ static void _PrintInt(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, int v, unsigned 
   // Get actual field width
   //
   Width = 1u;
-  while (Number >= (int)Base) {
-    Number = (Number / (int)Base);
+  while (Number >= (int32_t)Base) {
+    Number = (Number / (int32_t)Base);
     Width++;
   }
   if (NumDigits > Width) {
@@ -1031,7 +1033,7 @@ static void _PrintInt(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, int v, unsigned 
   //
   // Print number without sign
   //
-  _PrintUnsigned(pBufferDesc, (unsigned int)v, Base, NumDigits, FieldWidth, FormatFlags);
+  _PrintUnsigned(pBufferDesc, (uint32_t)v, Base, NumDigits, FieldWidth, FormatFlags);
 }
 
 /*********************************************************************
@@ -1050,10 +1052,10 @@ static void _PrintInt(SEGGER_SYSVIEW_PRINTF_DESC * pBufferDesc, int v, unsigned 
 static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList) {
   SEGGER_SYSVIEW_PRINTF_DESC BufferDesc;
   char          c;
-  int           v;
-  unsigned int  NumDigits;
-  unsigned int  FormatFlags;
-  unsigned int  FieldWidth;
+  int32_t           v;
+  uint32_t  NumDigits;
+  uint32_t  FormatFlags;
+  uint32_t  FieldWidth;
   U8*           pPayloadStart;
 #if SEGGER_SYSVIEW_USE_STATIC_BUFFER == 0
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_MAX_STRING_LEN + 1 + 2 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1104,7 +1106,7 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
           break;
         }
         sFormat++;
-        FieldWidth = (FieldWidth * 10u) + ((unsigned int)c - '0');
+        FieldWidth = (FieldWidth * 10u) + ((uint32_t)c - '0');
       } while (1);
 
       //
@@ -1120,7 +1122,7 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
             break;
           }
           sFormat++;
-          NumDigits = NumDigits * 10u + ((unsigned int)c - '0');
+          NumDigits = NumDigits * 10u + ((uint32_t)c - '0');
         } while (1);
       }
       //
@@ -1141,27 +1143,27 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
       switch (c) {
       case 'c': {
         char c0;
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         c0 = (char)v;
         _StoreChar(&BufferDesc, c0);
         break;
       }
       case 'd':
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         _PrintInt(&BufferDesc, v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'u':
-        v = va_arg(*pParamList, int);
-        _PrintUnsigned(&BufferDesc, (unsigned int)v, 10u, NumDigits, FieldWidth, FormatFlags);
+        v = va_arg(*pParamList, int32_t);
+        _PrintUnsigned(&BufferDesc, (uint32_t)v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'x':
       case 'X':
-        v = va_arg(*pParamList, int);
-        _PrintUnsigned(&BufferDesc, (unsigned int)v, 16u, NumDigits, FieldWidth, FormatFlags);
+        v = va_arg(*pParamList, int32_t);
+        _PrintUnsigned(&BufferDesc, (uint32_t)v, 16u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'p':
-        v = va_arg(*pParamList, int);
-        _PrintUnsigned(&BufferDesc, (unsigned int)v, 16u, 8u, 8u, 0u);
+        v = va_arg(*pParamList, int32_t);
+        _PrintUnsigned(&BufferDesc, (uint32_t)v, 16u, 8u, 8u, 0u);
         break;
       case '%':
         _StoreChar(&BufferDesc, '%');
@@ -1195,7 +1197,7 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
 
 /*********************************************************************
 *
-*       Public functions
+*       Public code
 *
 **********************************************************************
 */
@@ -1206,13 +1208,14 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
 *
 *  Function description
 *    Initializes the SYSVIEW module.
-*    Must be called before SystemViewer attaches to the system.
+*    Must be called before the Systemview Application connects to 
+*    the system.
 *
 *  Parameters
-*    SysFreq        - Frequency of timestamp, i.e. CPU core clock frequency.
+*    SysFreq        - Frequency of timestamp, usually CPU core clock frequency.
 *    CPUFreq        - CPU core clock frequency.
 *    pOSAPI         - Pointer to the API structure for OS-specific functions.
-*    pfSendSysDesc  - Pointer to SendSysDesc callback function.
+*    pfSendSysDesc  - Pointer to record system description callback function.
 *
 *  Additional information
 *    This function initializes the RTT channel used to transport 
@@ -1220,8 +1223,7 @@ static void _VPrintTarget(const char* sFormat, U32 Options, va_list* pParamList)
 *    The channel is assigned the label "SysView" for client software 
 *    to identify the SystemView channel.
 *
-*  Notes
-*    The channel is configured by the macro SEGGER_SYSVIEW_RTT_CHANNEL.
+*    The channel is configured with the macro SEGGER_SYSVIEW_RTT_CHANNEL.
 */
 void SEGGER_SYSVIEW_Init(U32 SysFreq, U32 CPUFreq, const SEGGER_SYSVIEW_OS_API *pOSAPI, SEGGER_SYSVIEW_SEND_SYS_DESC_FUNC pfSendSysDesc) {
 #ifdef SEGGER_RTT_SECTION
@@ -1250,9 +1252,6 @@ void SEGGER_SYSVIEW_Init(U32 SysFreq, U32 CPUFreq, const SEGGER_SYSVIEW_OS_API *
   SEGGER_RTT_ConfigDownBuffer (SEGGER_SYSVIEW_RTT_CHANNEL, "SysView", &_DownBuffer[0], sizeof(_DownBuffer), SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 #else
   _SYSVIEW_Globals.UpChannel = SEGGER_RTT_AllocUpBuffer  ("SysView", &_UpBuffer[0],   sizeof(_UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
-  //
-  // TODO: Use SEGGER_RTT_AllocDownBuffer when SystemViewer is able to handle another Down Channel than Up Channel.
-  //
   _SYSVIEW_Globals.DownChannel = _SYSVIEW_Globals.UpChannel;
   SEGGER_RTT_ConfigDownBuffer (_SYSVIEW_Globals.DownChannel, "SysView", &_DownBuffer[0], sizeof(_DownBuffer), SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 #endif
@@ -1291,7 +1290,7 @@ void SEGGER_SYSVIEW_SetRAMBase(U32 RAMBaseAddress) {
 *  Parameters
 *    EventID - SystemView event ID.
 */
-void SEGGER_SYSVIEW_RecordVoid(unsigned int EventID) {
+void SEGGER_SYSVIEW_RecordVoid(uint32_t EventID) {
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE);
   //
@@ -1311,7 +1310,7 @@ void SEGGER_SYSVIEW_RecordVoid(unsigned int EventID) {
 *    EventID - SystemView event ID.
 *    Value   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32(unsigned int EventID, U32 Value) {
+void SEGGER_SYSVIEW_RecordU32(uint32_t EventID, U32 Value) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32);
@@ -1334,7 +1333,7 @@ void SEGGER_SYSVIEW_RecordU32(unsigned int EventID, U32 Value) {
 *    Para0   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para1   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x2(unsigned int EventID, U32 Para0, U32 Para1) {
+void SEGGER_SYSVIEW_RecordU32x2(uint32_t EventID, U32 Para0, U32 Para1) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1359,7 +1358,7 @@ void SEGGER_SYSVIEW_RecordU32x2(unsigned int EventID, U32 Para0, U32 Para1) {
 *    Para1   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para2   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x3(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2) {
+void SEGGER_SYSVIEW_RecordU32x3(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 3 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1386,7 +1385,7 @@ void SEGGER_SYSVIEW_RecordU32x3(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para2   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para3   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x4(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3) {
+void SEGGER_SYSVIEW_RecordU32x4(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 4 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1415,7 +1414,7 @@ void SEGGER_SYSVIEW_RecordU32x4(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para3   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para4   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x5(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) {
+void SEGGER_SYSVIEW_RecordU32x5(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 5 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1446,7 +1445,7 @@ void SEGGER_SYSVIEW_RecordU32x5(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para4   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para5   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x6(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5) {
+void SEGGER_SYSVIEW_RecordU32x6(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 6 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1479,7 +1478,7 @@ void SEGGER_SYSVIEW_RecordU32x6(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para5   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para6   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x7(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6) {
+void SEGGER_SYSVIEW_RecordU32x7(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 7 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1514,7 +1513,7 @@ void SEGGER_SYSVIEW_RecordU32x7(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para6   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para7   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x8(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7) {
+void SEGGER_SYSVIEW_RecordU32x8(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 8 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1551,7 +1550,7 @@ void SEGGER_SYSVIEW_RecordU32x8(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para7   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para8   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x9(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8) {
+void SEGGER_SYSVIEW_RecordU32x9(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 9 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1590,7 +1589,7 @@ void SEGGER_SYSVIEW_RecordU32x9(unsigned int EventID, U32 Para0, U32 Para1, U32 
 *    Para8   - The 32-bit parameter encoded to SystemView packet payload.
 *    Para9   - The 32-bit parameter encoded to SystemView packet payload.
 */
-void SEGGER_SYSVIEW_RecordU32x10(unsigned int EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8, U32 Para9) {
+void SEGGER_SYSVIEW_RecordU32x10(uint32_t EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8, U32 Para9) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 10 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -1625,7 +1624,7 @@ void SEGGER_SYSVIEW_RecordU32x10(unsigned int EventID, U32 Para0, U32 Para1, U32
 *    of the string.
 *    No more than SEGGER_SYSVIEW_MAX_STRING_LEN bytes will be encoded to the payload.
 */
-void SEGGER_SYSVIEW_RecordString(unsigned int EventID, const char* pString) {
+void SEGGER_SYSVIEW_RecordString(uint32_t EventID, const char* pString) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN);
@@ -1641,7 +1640,10 @@ void SEGGER_SYSVIEW_RecordString(unsigned int EventID, const char* pString) {
 *
 *  Function description
 *    Start recording SystemView events.
-*    This function is triggered by the host application.
+*
+*    This function is triggered by the SystemView Application on connect.
+*    For single-shot or post-mortem mode recording, it needs to be called
+*    by the application.
 *
 *  Additional information
 *    This function enables transmission of SystemView packets recorded
@@ -1653,9 +1655,15 @@ void SEGGER_SYSVIEW_RecordString(unsigned int EventID, const char* pString) {
 *
 *  Notes
 *    SEGGER_SYSVIEW_Start and SEGGER_SYSVIEW_Stop do not nest.
+*    When SEGGER_SYSVIEW_CAN_RESTART is 1, each received start command
+*    records the system information. This is required to enable restart
+*    of recordings when SystemView unexpectedly disconnects without sending
+*    a stop command before.
 */
 void SEGGER_SYSVIEW_Start(void) {
+#if (SEGGER_SYSVIEW_CAN_RESTART == 0)
   if (_SYSVIEW_Globals.EnableState == 0) {
+#endif
     _SYSVIEW_Globals.EnableState = 1;
 #if (SEGGER_SYSVIEW_POST_MORTEM_MODE == 1)
     _SendSyncInfo();
@@ -1663,6 +1671,7 @@ void SEGGER_SYSVIEW_Start(void) {
     SEGGER_SYSVIEW_LOCK();
     SEGGER_RTT_WriteSkipNoLock(CHANNEL_ID_UP, _abSync, 10);
     SEGGER_SYSVIEW_UNLOCK();
+    SEGGER_SYSVIEW_ON_EVENT_RECORDED(10);
     SEGGER_SYSVIEW_RecordVoid(SYSVIEW_EVTID_TRACE_START);
     {
       U8* pPayload;
@@ -1684,7 +1693,9 @@ void SEGGER_SYSVIEW_Start(void) {
     SEGGER_SYSVIEW_SendTaskList();
     SEGGER_SYSVIEW_SendNumModules();
 #endif
+#if (SEGGER_SYSVIEW_CAN_RESTART == 0)
   }
+#endif
 }
 
 /*********************************************************************
@@ -1693,6 +1704,10 @@ void SEGGER_SYSVIEW_Start(void) {
 *
 *  Function description
 *    Stop recording SystemView events.
+*
+*    This function is triggered by the SystemView Application on disconnect.
+*    For single-shot or post-mortem mode recording, it can be called
+*    by the application.
 *
 *  Additional information
 *    This function disables transmission of SystemView packets recorded
@@ -1709,6 +1724,17 @@ void SEGGER_SYSVIEW_Stop(void) {
     _SYSVIEW_Globals.EnableState = 0;
   }
   RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_GetChannelID()
+*
+*  Function description
+*    Returns the RTT <Up> / <Down> channel ID used by SystemView.
+*/
+uint32_t SEGGER_SYSVIEW_GetChannelID(void) {
+  return CHANNEL_ID_UP;
 }
 
 /*********************************************************************
@@ -1786,14 +1812,19 @@ void SEGGER_SYSVIEW_SendTaskList(void) {
 *
 *  Function description
 *    Send the system description string to the host.
-*    The system description is used by SystemViewer to identify the
-*    current application and handle events accordingly.
+*    The system description is used by the Systemview Application
+*    to identify the current application and handle events accordingly.
+*
+*    The system description is usually called by the system description
+*    callback, to ensure it is only sent when the SystemView Application
+*    is connected.  
 *
 *  Parameters
 *    sSysDesc - Pointer to the 0-terminated system description string.
 *
 *  Additional information
 *    One system description string may not exceed SEGGER_SYSVIEW_MAX_STRING_LEN characters.
+*    Multiple description strings can be recorded.
 *
 *    The Following items can be described in a system description string.
 *    Each item is identified by its identifier, followed by '=' and the value.
@@ -1944,7 +1975,7 @@ void SEGGER_SYSVIEW_RecordExitTimer(void) {
 *  Parameters
 *    EventID - Id of API function which ends.
 */
-void SEGGER_SYSVIEW_RecordEndCall(unsigned int EventID) {
+void SEGGER_SYSVIEW_RecordEndCall(uint32_t EventID) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32);
@@ -1966,7 +1997,7 @@ void SEGGER_SYSVIEW_RecordEndCall(unsigned int EventID) {
 *    EventID      - Id of API function which ends.
 *    Para0        - Return value which will be returned by the API function.
 */
-void SEGGER_SYSVIEW_RecordEndCallU32(unsigned int EventID, U32 Para0) {
+void SEGGER_SYSVIEW_RecordEndCallU32(uint32_t EventID, U32 Para0) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -2114,7 +2145,7 @@ void SEGGER_SYSVIEW_OnTaskStartReady(U32 TaskId) {
 *    TaskId - Task ID of task that completed execution.
 *    Cause  - Reason for task to stop (i.e. Idle/Sleep)
 */
-void SEGGER_SYSVIEW_OnTaskStopReady(U32 TaskId, unsigned int Cause) {
+void SEGGER_SYSVIEW_OnTaskStopReady(U32 TaskId, uint32_t Cause) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32);
@@ -2129,43 +2160,93 @@ void SEGGER_SYSVIEW_OnTaskStopReady(U32 TaskId, unsigned int Cause) {
 
 /*********************************************************************
 *
-*       SEGGER_SYSVIEW_OnUserStart()
+*       SEGGER_SYSVIEW_MarkStart()
 *
 *  Function description
-*    Send a user event start, such as start of a subroutine for profiling.
+*    Record a Performance Marker Start event to start measuring runtime.
 *
 *  Parameters
-*    UserId  - User defined ID for the event.
+*    MarkerId  - User defined ID for the marker.
 */
-void SEGGER_SYSVIEW_OnUserStart(unsigned UserId) {
+void SEGGER_SYSVIEW_MarkStart(unsigned MarkerId) {
   U8* pPayload;
   U8* pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32);
   //
   pPayload = pPayloadStart;
-  ENCODE_U32(pPayload, UserId);
-  _SendPacket(pPayloadStart, pPayload, SYSVIEW_EVTID_USER_START);
+  ENCODE_U32(pPayload, MarkerId);
+  _SendPacket(pPayloadStart, pPayload, SYSVIEW_EVTID_MARK_START);
   RECORD_END();
 }
 
 /*********************************************************************
 *
-*       SEGGER_SYSVIEW_OnUserStop()
+*       SEGGER_SYSVIEW_MarkStop()
 *
 *  Function description
-*    Send a user event stop, such as return of a subroutine for profiling.
+*    Record a Performance Marker Stop event to stop measuring runtime.
 *
 *  Parameters
-*    UserId  - User defined ID for the event.
+*    MarkerId  - User defined ID for the marker.
 */
-void SEGGER_SYSVIEW_OnUserStop(unsigned UserId) {
+void SEGGER_SYSVIEW_MarkStop(unsigned MarkerId) {
   U8 * pPayload;
   U8 * pPayloadStart;
   RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32);
   //
   pPayload = pPayloadStart;
-  ENCODE_U32(pPayload, UserId);
-  _SendPacket(pPayloadStart, pPayload, SYSVIEW_EVTID_USER_STOP);
+  ENCODE_U32(pPayload, MarkerId);
+  _SendPacket(pPayloadStart, pPayload, SYSVIEW_EVTID_MARK_STOP);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_Mark()
+*
+*  Function description
+*    Record a Performance Marker intermediate event.
+*
+*  Parameters
+*    MarkerId  - User defined ID for the marker.
+*/
+void SEGGER_SYSVIEW_Mark(unsigned int MarkerId) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, SYSVIEW_EVTID_EX_MARK);
+  ENCODE_U32(pPayload, MarkerId);
+  _SendPacket(pPayloadStart, pPayload, SYSVIEW_EVTID_EX);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_NameMarker()
+*
+*  Function description
+*    Send the name of a Performance Marker to be displayed in SystemView.
+*
+*    Marker names are usually set in the system description
+*    callback, to ensure it is only sent when the SystemView Application
+*    is connected.  
+*
+*  Parameters
+*    MarkerId   - User defined ID for the marker.
+*    sName      - Pointer to the marker name. (Max. SEGGER_SYSVIEW_MAX_STRING_LEN Bytes)
+*/
+void SEGGER_SYSVIEW_NameMarker(unsigned int MarkerId, const char* sName) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32 + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, SYSVIEW_EVTID_EX_NAME_MARKER);
+  ENCODE_U32(pPayload, MarkerId);
+  pPayload = _EncodeStr(pPayload, sName, SEGGER_SYSVIEW_MAX_STRING_LEN);
+  _SendPacket(pPayloadStart, pPayload, SYSVIEW_EVTID_EX);
   RECORD_END();
 }
 
@@ -2174,7 +2255,11 @@ void SEGGER_SYSVIEW_OnUserStop(unsigned UserId) {
 *       SEGGER_SYSVIEW_NameResource()
 *
 *  Function description
-*    Send the name of a resource to be displayed in SystemViewer.
+*    Send the name of a resource to be displayed in SystemView.
+*
+*    Marker names are usually set in the system description
+*    callback, to ensure it is only sent when the SystemView Application
+*    is connected.  
 *
 *  Parameters
 *    ResourceId - Id of the resource to be named. i.e. its address.
@@ -2209,7 +2294,7 @@ void SEGGER_SYSVIEW_NameResource(U32 ResourceId, const char* sName) {
 *    !=0:  Success, Message sent.
 *    ==0:  Buffer full, Message *NOT* sent.
 */
-int SEGGER_SYSVIEW_SendPacket(U8* pPacket, U8* pPayloadEnd, unsigned int EventId) {
+int32_t SEGGER_SYSVIEW_SendPacket(U8* pPacket, U8* pPayloadEnd, uint32_t EventId) {
 #if (SEGGER_SYSVIEW_USE_STATIC_BUFFER == 1)
   SEGGER_SYSVIEW_LOCK();
 #endif
@@ -2263,7 +2348,7 @@ U8* SEGGER_SYSVIEW_EncodeU32(U8* pPayload, U32 Value) {
 *    of the string.
 *    No more than 1 + MaxLen bytes will be encoded to the payload.
 */
-U8* SEGGER_SYSVIEW_EncodeString(U8* pPayload, const char* s, unsigned int MaxLen) {
+U8* SEGGER_SYSVIEW_EncodeString(U8* pPayload, const char* s, uint32_t MaxLen) {
   return _EncodeStr(pPayload, s, MaxLen);
 }
 
@@ -2289,7 +2374,7 @@ U8* SEGGER_SYSVIEW_EncodeString(U8* pPayload, const char* s, unsigned int MaxLen
 *    of the data buffer.
 *    Make sure NumBytes + 1 bytes are free for the payload.
 */
-U8* SEGGER_SYSVIEW_EncodeData(U8 *pPayload, const char* pSrc, unsigned int NumBytes) {
+U8* SEGGER_SYSVIEW_EncodeData(U8 *pPayload, const char* pSrc, uint32_t NumBytes) {
   return _EncodeData(pPayload, pSrc, NumBytes);
 }
 
@@ -2364,7 +2449,7 @@ U32 SEGGER_SYSVIEW_ShrinkId(U32 Id) {
 *      sDescription      - Pointer to a string containing the module name and optionally the module event description.
 *      NumEvents         - Number of events the module wants to register.
 *      EventOffset       - Offset to be added to the event Ids. Out parameter, set by this function. Do not modify after calling this function.
-*      pfSendModuleDesc  - Callback function pointer to send more detailed module description to SystemViewer.
+*      pfSendModuleDesc  - Callback function pointer to send more detailed module description to SystemView Application.
 *      pNext             - Pointer to next registered module. Out parameter, set by this function. Do not modify after calling this function.
 */
 void SEGGER_SYSVIEW_RegisterModule(SEGGER_SYSVIEW_MODULE* pModule) {
@@ -2526,7 +2611,7 @@ void SEGGER_SYSVIEW_SendNumModules(void) {
 *       SEGGER_SYSVIEW_PrintfHostEx()
 *
 *  Function description
-*    Print a string which is formatted on the host by SystemViewer
+*    Print a string which is formatted on the host by the SystemView Application
 *    with Additional information.
 *
 *  Parameters
@@ -2539,7 +2624,7 @@ void SEGGER_SYSVIEW_SendNumModules(void) {
 void SEGGER_SYSVIEW_PrintfHostEx(const char* s, U32 Options, ...) {
   va_list ParamList;
 #if SEGGER_SYSVIEW_PRINTF_IMPLICIT_FORMAT
-  int r;
+  int32_t r;
 
   va_start(ParamList, Options);
   r = _VPrintHost(s, Options, &ParamList);
@@ -2562,7 +2647,7 @@ void SEGGER_SYSVIEW_PrintfHostEx(const char* s, U32 Options, ...) {
 *       SEGGER_SYSVIEW_PrintfHost()
 *
 *  Function description
-*    Print a string which is formatted on the host by SystemViewer.
+*    Print a string which is formatted on the host by the SystemView Application.
 *
 *  Parameters
 *    s        - String to be formatted.
@@ -2573,7 +2658,7 @@ void SEGGER_SYSVIEW_PrintfHostEx(const char* s, U32 Options, ...) {
 void SEGGER_SYSVIEW_PrintfHost(const char* s, ...) {
   va_list ParamList;
 #if SEGGER_SYSVIEW_PRINTF_IMPLICIT_FORMAT
-  int r;
+  int32_t r;
 
   va_start(ParamList, s);
   r = _VPrintHost(s, SEGGER_SYSVIEW_LOG, &ParamList);
@@ -2597,7 +2682,7 @@ void SEGGER_SYSVIEW_PrintfHost(const char* s, ...) {
 *
 *  Function description
 *    Print a warnin string which is formatted on the host by 
-*    SystemViewer.
+*    the SystemView Application.
 *
 *  Parameters
 *    s        - String to be formatted.
@@ -2608,7 +2693,7 @@ void SEGGER_SYSVIEW_PrintfHost(const char* s, ...) {
 void SEGGER_SYSVIEW_WarnfHost(const char* s, ...) {
   va_list ParamList;
 #if SEGGER_SYSVIEW_PRINTF_IMPLICIT_FORMAT
-  int r;
+  int32_t r;
 
   va_start(ParamList, s);
   r = _VPrintHost(s, SEGGER_SYSVIEW_WARNING, &ParamList);
@@ -2632,7 +2717,7 @@ void SEGGER_SYSVIEW_WarnfHost(const char* s, ...) {
 *
 *  Function description
 *    Print an error string which is formatted on the host by 
-*    SystemViewer.
+*    the SystemView Application.
 *
 *  Parameters
 *    s        - String to be formatted.
@@ -2643,7 +2728,7 @@ void SEGGER_SYSVIEW_WarnfHost(const char* s, ...) {
 void SEGGER_SYSVIEW_ErrorfHost(const char* s, ...) {
   va_list ParamList;
 #if SEGGER_SYSVIEW_PRINTF_IMPLICIT_FORMAT
-  int r;
+  int32_t r;
 
   va_start(ParamList, s);
   r = _VPrintHost(s, SEGGER_SYSVIEW_ERROR, &ParamList);
@@ -2831,6 +2916,33 @@ void SEGGER_SYSVIEW_EnableEvents(U32 EnableMask) {
 */
 void SEGGER_SYSVIEW_DisableEvents(U32 DisableMask) {
   _SYSVIEW_Globals.DisabledEvents |= DisableMask;
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_IsStarted()
+*
+*  Function description
+*    Handle incoming packets if any and check if recording is started.
+*
+*  Return value
+*      0: Recording not started.
+*    > 0: Recording started.
+*/
+int SEGGER_SYSVIEW_IsStarted(void) {
+#if (SEGGER_SYSVIEW_POST_MORTEM_MODE != 1)
+  //
+  // Check if host is sending data which needs to be processed.
+  //
+  if (SEGGER_RTT_HASDATA(CHANNEL_ID_DOWN)) {
+    if (_SYSVIEW_Globals.RecursionCnt == 0) {   // Avoid uncontrolled nesting. This way, this routine can call itself once, but no more often than that.
+      _SYSVIEW_Globals.RecursionCnt = 1;
+      _HandleIncomingPacket();
+      _SYSVIEW_Globals.RecursionCnt = 0;
+    }
+  }
+#endif
+  return _SYSVIEW_Globals.EnableState;
 }
 
 

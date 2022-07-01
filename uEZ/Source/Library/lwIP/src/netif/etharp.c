@@ -936,7 +936,7 @@ etharp_query(struct netif *netif, struct ip_addr *ipaddr, struct pbuf *q)
     } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
 #if ARP_QUEUEING /* queue the given q packet */
       struct pbuf *p;
-      int copy_needed = 0;
+      int32_t copy_needed = 0;
       /* IF q includes a PBUF_REF, PBUF_POOL or PBUF_RAM, we have no choice but
        * to copy the whole queue into a new PBUF_RAM (see bug #11400) 
        * PBUF_ROMs can be left as they are, since ROM must not get changed. */

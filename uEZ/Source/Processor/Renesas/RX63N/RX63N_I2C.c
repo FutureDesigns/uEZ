@@ -113,10 +113,10 @@ static void IRX63N_ProcessStateWrite(
 #if 0 // #if DEBUG_I2C_TRACK_INTERRUPTS
 #define TRACK_SIZE 200
 char G_track[TRACK_SIZE];
-static int track_num = 0;
+static int32_t track_num = 0;
 static void track_start(void)
 {
-    int i;
+    int32_t i;
     for (i=0; i<TRACK_SIZE; i++)
     G_track[i] = 0;
     track_num = 0;

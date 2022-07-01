@@ -59,9 +59,9 @@ static uint32_t prvTraceGetParam(uint32_t, uint32_t);
 
 #if !defined INCLUDE_READY_EVENTS || INCLUDE_READY_EVENTS == 1
 
-static int readyEventsEnabled = 1;
+static int32_t readyEventsEnabled = 1;
 
-void vTraceSetReadyEventsEnabled(int status)
+void vTraceSetReadyEventsEnabled(int32_t status)
 {
 	readyEventsEnabled = status;
 }

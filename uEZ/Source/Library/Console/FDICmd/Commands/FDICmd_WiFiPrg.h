@@ -60,8 +60,8 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-int UEZCmdWiFiPrg(void *aWorkspace, int argc, char *argv[]);
-int UEZCmdWiFiRun(void *aWorkspace, int argc, char *argv[]);
+int32_t UEZCmdWiFiPrg(void *aWorkspace, int32_t argc, char *argv[]);
+int32_t UEZCmdWiFiRun(void *aWorkspace, int32_t argc, char *argv[]);
 
 #ifdef __cplusplus
 }

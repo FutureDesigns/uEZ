@@ -36,7 +36,7 @@
 
 #if !defined(NO_MD5) && !defined(NO_SHA) && !defined(NO_SHA256)
 
-static void reset_engine(pic32mz_desc *desc_l, int algo)
+static void reset_engine(pic32mz_desc *desc_l, int32_t algo)
 {
     pic32mz_desc *desc ;
     desc = KVA0_TO_KVA1(desc_l) ;
@@ -76,8 +76,8 @@ static void update_engine(pic32mz_desc *desc_l, const char *input, word32 len,
                     word32 *hash)
 {
     pic32mz_desc *desc ;
-    int i ;
-    int total ;
+    int32_t i ;
+    int32_t total ;
     desc = KVA0_TO_KVA1(desc_l) ;
 
     i = desc_l->bdCount ;
@@ -121,9 +121,9 @@ static void start_engine(pic32mz_desc *desc) {
     hash_bd[0]->BD_CTRL.DESC_EN = 1;
 }
 
-void wait_engine(pic32mz_desc *desc, char *hash, int hash_sz) {
-    unsigned int i;
-    unsigned int *intptr;
+void wait_engine(pic32mz_desc *desc, char *hash, int32_t hash_sz) {
+    uint32_t i;
+    uint32_t *intptr;
 #undef DEBUG_CYASSL
     #ifdef DEBUG_CYASSL
     printf("desc(%x)[bd:%d * 2, sz:%d]\n", desc, sizeof(desc->bd[0]),
@@ -140,16 +140,16 @@ void wait_engine(pic32mz_desc *desc, char *hash, int hash_sz) {
     print_mem(KVA0_TO_KVA1(hash), hash_sz) ;
     print_mem(             hash , hash_sz) ;
     #endif
-    for (i = 0, intptr = (unsigned int *)hash; i < hash_sz/sizeof(unsigned int);
+    for (i = 0, intptr = (uint32_t *)hash; i < hash_sz/sizeof(uint32_t);
                                                                   i++, intptr++)
     {
         *intptr = ntohl(*intptr);
     }
 }
 
-static int fillBuff(char *buff, int *bufflen, const char *data, int len, int blocksz)
+static int32_t fillBuff(char *buff, int32_t *bufflen, const char *data, int32_t len, int32_t blocksz)
 {
-    int room, copysz ;
+    int32_t room, copysz ;
 
     room = blocksz - *bufflen ;
     copysz = (len <= room) ? len : room ;
@@ -187,7 +187,7 @@ void Md5Final(Md5* md5, byte* hash)
 #endif
 
 #ifndef NO_SHA
-int InitSha(Sha* sha)
+int32_t InitSha(Sha* sha)
 {
     CYASSL_ENTER("InitSha\n") ;
     XMEMSET((void *)sha, 0xcc, sizeof(Sha)) ;
@@ -196,14 +196,14 @@ int InitSha(Sha* sha)
     return 0;
 }
 
-int ShaUpdate(Sha* sha, const byte* data, word32 len)
+int32_t ShaUpdate(Sha* sha, const byte* data, word32 len)
 {
     CYASSL_ENTER("ShaUpdate\n") ;
     update_engine(&(sha->desc), data, len, sha->digest) ;
     return 0;
 }
 
-int ShaFinal(Sha* sha, byte* hash)
+int32_t ShaFinal(Sha* sha, byte* hash)
 {
     CYASSL_ENTER("ShaFinal\n") ;
     start_engine(&(sha->desc)) ;
@@ -216,7 +216,7 @@ int ShaFinal(Sha* sha, byte* hash)
 #endif /* NO_SHA */
 
 #ifndef NO_SHA256
-int InitSha256(Sha256* sha256)
+int32_t InitSha256(Sha256* sha256)
 {
     CYASSL_ENTER("InitSha256\n") ;
     XMEMSET((void *)sha256, 0xcc, sizeof(Sha256)) ;
@@ -225,7 +225,7 @@ int InitSha256(Sha256* sha256)
     return 0;
 }
 
-int Sha256Update(Sha256* sha256, const byte* data, word32 len)
+int32_t Sha256Update(Sha256* sha256, const byte* data, word32 len)
 {
     CYASSL_ENTER("Sha256Update\n") ;
     update_engine(&(sha256->desc), data, len, sha256->digest) ;
@@ -233,7 +233,7 @@ int Sha256Update(Sha256* sha256, const byte* data, word32 len)
     return 0;
 }
 
-int Sha256Final(Sha256* sha256, byte* hash)
+int32_t Sha256Final(Sha256* sha256, byte* hash)
 {
     CYASSL_ENTER("Sha256Final\n") ;
     start_engine(&(sha256->desc)) ;

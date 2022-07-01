@@ -46,7 +46,7 @@ enum {
 
 /* ECC set type defined a NIST GF(p) curve */
 typedef struct {
-    int size;       /* The size of the curve in octets */
+    int32_t size;       /* The size of the curve in octets */
     const char* name;     /* name of this curve */
     const char* prime;    /* prime that defines the field, curve is in (hex) */
     const char* Af;       /* fields A param (hex) */
@@ -68,8 +68,8 @@ typedef struct {
 
 /* An ECC Key */
 typedef struct {
-    int type;           /* Public or Private */
-    int idx;            /* Index into the ecc_sets[] for the parameters of
+    int32_t type;           /* Public or Private */
+    int32_t idx;            /* Index into the ecc_sets[] for the parameters of
                            this curve if -1, this key is using user supplied
                            curve in dp */
     const ecc_set_type* dp;     /* domain parameters, either points to NIST
@@ -84,16 +84,16 @@ extern const ecc_set_type ecc_sets[];
 
 
 CYASSL_API
-int ecc_make_key(RNG* rng, int keysize, ecc_key* key);
+int32_t ecc_make_key(RNG* rng, int32_t keysize, ecc_key* key);
 CYASSL_API
-int ecc_shared_secret(ecc_key* private_key, ecc_key* public_key, byte* out,
+int32_t ecc_shared_secret(ecc_key* private_key, ecc_key* public_key, byte* out,
                       word32* outlen);
 CYASSL_API
-int ecc_sign_hash(const byte* in, word32 inlen, byte* out, word32 *outlen, 
+int32_t ecc_sign_hash(const byte* in, word32 inlen, byte* out, word32 *outlen, 
                   RNG* rng, ecc_key* key);
 CYASSL_API
-int ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
-                    word32 hashlen, int* stat, ecc_key* key);
+int32_t ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
+                    word32 hashlen, int32_t* stat, ecc_key* key);
 CYASSL_API
 void ecc_init(ecc_key* key);
 CYASSL_API
@@ -104,29 +104,29 @@ void ecc_fp_free(void);
 
 /* ASN key helpers */
 CYASSL_API
-int ecc_export_x963(ecc_key*, byte* out, word32* outLen);
+int32_t ecc_export_x963(ecc_key*, byte* out, word32* outLen);
 CYASSL_API
-int ecc_export_x963_ex(ecc_key*, byte* out, word32* outLen, int compressed);
+int32_t ecc_export_x963_ex(ecc_key*, byte* out, word32* outLen, int32_t compressed);
     /* extended functionality with compressed option */
 CYASSL_API
-int ecc_import_x963(const byte* in, word32 inLen, ecc_key* key);
+int32_t ecc_import_x963(const byte* in, word32 inLen, ecc_key* key);
 CYASSL_API
-int ecc_import_private_key(const byte* priv, word32 privSz, const byte* pub,
+int32_t ecc_import_private_key(const byte* priv, word32 privSz, const byte* pub,
                            word32 pubSz, ecc_key* key);
 CYASSL_API
-int ecc_rs_to_sig(const char* r, const char* s, byte* out, word32* outlen);
+int32_t ecc_rs_to_sig(const char* r, const char* s, byte* out, word32* outlen);
 CYASSL_API
-int ecc_import_raw(ecc_key* key, const char* qx, const char* qy,
+int32_t ecc_import_raw(ecc_key* key, const char* qx, const char* qy,
                    const char* d, const char* curveName);
 
 CYASSL_API
-int ecc_export_private_only(ecc_key* key, byte* out, word32* outLen);
+int32_t ecc_export_private_only(ecc_key* key, byte* out, word32* outLen);
 
 /* size helper */
 CYASSL_API
-int ecc_size(ecc_key* key);
+int32_t ecc_size(ecc_key* key);
 CYASSL_API
-int ecc_sig_size(ecc_key* key);
+int32_t ecc_sig_size(ecc_key* key);
 
 
 #ifdef HAVE_ECC_ENCRYPT
@@ -164,24 +164,24 @@ enum ecFlags {
 typedef struct ecEncCtx ecEncCtx;
 
 CYASSL_API
-ecEncCtx* ecc_ctx_new(int flags, RNG* rng);
+ecEncCtx* ecc_ctx_new(int32_t flags, RNG* rng);
 CYASSL_API
 void ecc_ctx_free(ecEncCtx*);
 CYASSL_API
-int ecc_ctx_reset(ecEncCtx*, RNG*);   /* reset for use again w/o alloc/free */
+int32_t ecc_ctx_reset(ecEncCtx*, RNG*);   /* reset for use again w/o alloc/free */
 
 CYASSL_API
 const byte* ecc_ctx_get_own_salt(ecEncCtx*);
 CYASSL_API
-int ecc_ctx_set_peer_salt(ecEncCtx*, const byte* salt);
+int32_t ecc_ctx_set_peer_salt(ecEncCtx*, const byte* salt);
 CYASSL_API
-int ecc_ctx_set_info(ecEncCtx*, const byte* info, int sz);
+int32_t ecc_ctx_set_info(ecEncCtx*, const byte* info, int32_t sz);
 
 CYASSL_API
-int ecc_encrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
+int32_t ecc_encrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
                 word32 msgSz, byte* out, word32* outSz, ecEncCtx* ctx);
 CYASSL_API
-int ecc_decrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
+int32_t ecc_decrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
                 word32 msgSz, byte* out, word32* outSz, ecEncCtx* ctx);
 
 #endif /* HAVE_ECC_ENCRYPT */

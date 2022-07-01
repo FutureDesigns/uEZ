@@ -191,10 +191,10 @@ struct {                                                                       \
 struct pppoe_softc {
   LIST_ENTRY(pppoe_softc) sc_list;
   struct netif *sc_ethif;      /* ethernet interface we are using */
-  int sc_pd;                   /* ppp unit number */
-  void (*sc_linkStatusCB)(int pd, int up);
+  int32_t sc_pd;                   /* ppp unit number */
+  void (*sc_linkStatusCB)(int32_t pd, int32_t up);
 
-  int sc_state;                /* discovery phase or session connected */
+  int32_t sc_state;                /* discovery phase or session connected */
   struct eth_addr sc_dest;     /* hardware address of concentrator */
   u16_t sc_session;            /* PPPoE session id */
 
@@ -206,15 +206,15 @@ struct pppoe_softc {
   u8_t *sc_hunique;            /* content of host unique we must echo back */
   size_t sc_hunique_len;       /* length of host unique */
 #endif
-  int sc_padi_retried;         /* number of PADI retries already done */
-  int sc_padr_retried;         /* number of PADR retries already done */
+  int32_t sc_padi_retried;         /* number of PADI retries already done */
+  int32_t sc_padr_retried;         /* number of PADR retries already done */
 };
 
 /* input routines */
 static void pppoe_dispatch_disc_pkt(struct netif *, struct pbuf *);
 
 /* management routines */
-static int pppoe_do_disconnect(struct pppoe_softc *);
+static int32_t pppoe_do_disconnect(struct pppoe_softc *);
 static void pppoe_abort_connect(struct pppoe_softc *);
 static void pppoe_clear_softc(struct pppoe_softc *, const char *);
 
@@ -236,7 +236,7 @@ static struct pppoe_softc * pppoe_find_softc_by_hunique(u8_t *, size_t, struct n
 
 static LIST_HEAD(pppoe_softc_head, pppoe_softc) pppoe_softc_list;
 
-int pppoe_hdrlen;
+int32_t pppoe_hdrlen;
 
 void
 pppoe_init(void)
@@ -246,7 +246,7 @@ pppoe_init(void)
 }
 
 err_t
-pppoe_create(struct netif *ethif, int pd, void (*linkStatusCB)(int pd, int up), struct pppoe_softc **scptr)
+pppoe_create(struct netif *ethif, int32_t pd, void (*linkStatusCB)(int32_t pd, int32_t up), struct pppoe_softc **scptr)
 {
   struct pppoe_softc *sc;
 
@@ -398,7 +398,7 @@ pppoe_dispatch_disc_pkt(struct netif *netif, struct pbuf *pb)
 #endif
   struct pppoehdr *ph;
   struct pppoetag pt;
-  int off = 0, err, errortag;
+  int32_t off = 0, err, errortag;
   struct eth_hdr *ethhdr;
 
   pb = pppSingleBuf(pb);
@@ -684,7 +684,7 @@ pppoe_data_input(struct netif *netif, struct pbuf *pb)
 #ifdef PPPOE_TERM_UNKNOWN_SESSIONS
   MEMCPY(shost, ((struct eth_hdr *)pb->payload)->src.addr, sizeof(shost));
 #endif
-  if (pbuf_header(pb, -(int)sizeof(struct eth_hdr)) != 0) {
+  if (pbuf_header(pb, -(int32_t)sizeof(struct eth_hdr)) != 0) {
     /* bail out */
     PPPDEBUG((LOG_ERR, "pppoe_data_input: pbuf_header failed\n"));
     LINK_STATS_INC(link.lenerr);
@@ -724,7 +724,7 @@ pppoe_data_input(struct netif *netif, struct pbuf *pb)
 
   plen = ntohs(ph->plen);
 
-  if (pbuf_header(pb, -(int)(PPPOE_HEADERLEN)) != 0) {
+  if (pbuf_header(pb, -(int32_t)(PPPOE_HEADERLEN)) != 0) {
     /* bail out */
     PPPDEBUG((LOG_ERR, "pppoe_data_input: pbuf_header PPPOE_HEADERLEN failed\n"));
     LINK_STATS_INC(link.lenerr);
@@ -783,7 +783,7 @@ pppoe_send_padi(struct pppoe_softc *sc)
 {
   struct pbuf *pb;
   u8_t *p;
-  int len, l1 = 0, l2 = 0; /* XXX: gcc */
+  int32_t len, l1 = 0, l2 = 0; /* XXX: gcc */
 
   if (sc->sc_state >PPPOE_STATE_PADI_SENT) {
     PPPDEBUG((LOG_ERR, "ERROR: pppoe_send_padi in state %d", sc->sc_state));
@@ -834,7 +834,7 @@ pppoe_send_padi(struct pppoe_softc *sc)
 static void
 pppoe_timeout(void *arg)
 {
-  int retry_wait, err;
+  int32_t retry_wait, err;
   struct pppoe_softc *sc = (struct pppoe_softc*)arg;
 
   PPPDEBUG((LOG_DEBUG, "pppoe: %c%c%"U16_F": timeout\n", sc->sc_ethif->name[0], sc->sc_ethif->name[1], sc->sc_ethif->num));
@@ -901,10 +901,10 @@ pppoe_timeout(void *arg)
 }
 
 /* Start a connection (i.e. initiate discovery phase) */
-int
+int32_t
 pppoe_connect(struct pppoe_softc *sc)
 {
-  int err;
+  int32_t err;
 
   if (sc->sc_state != PPPOE_STATE_INITIAL) {
     return EBUSY;
@@ -941,10 +941,10 @@ pppoe_disconnect(struct pppoe_softc *sc)
   tcpip_timeout(20, pppoe_timeout, sc);
 }
 
-static int
+static int32_t
 pppoe_do_disconnect(struct pppoe_softc *sc)
 {
-  int err;
+  int32_t err;
 
   if (sc->sc_state < PPPOE_STATE_SESSION) {
     err = EBUSY;
@@ -1171,11 +1171,11 @@ pppoe_xmit(struct pppoe_softc *sc, struct pbuf *pb)
 }
 
 #if 0 /*def PFIL_HOOKS*/
-static int
-pppoe_ifattach_hook(void *arg, struct pbuf **mp, struct netif *ifp, int dir)
+static int32_t
+pppoe_ifattach_hook(void *arg, struct pbuf **mp, struct netif *ifp, int32_t dir)
 {
   struct pppoe_softc *sc;
-  int s;
+  int32_t s;
 
   if (mp != (struct pbuf **)PFIL_IFNET_DETACH) {
     return 0;

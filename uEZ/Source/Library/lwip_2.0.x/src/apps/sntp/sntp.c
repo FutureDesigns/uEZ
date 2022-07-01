@@ -213,7 +213,7 @@ sntp_process(u32_t *receive_timestamp)
    * if MSB is 0, SNTP time is 2036-based!
    */
   u32_t rx_secs = lwip_ntohl(receive_timestamp[0]);
-  int is_1900_based = ((rx_secs & 0x80000000) != 0);
+  int32_t is_1900_based = ((rx_secs & 0x80000000) != 0);
   u32_t t = is_1900_based ? (rx_secs - DIFF_SEC_1900_1970) : (rx_secs + DIFF_SEC_1970_2036);
   time_t tim = t;
 
@@ -617,7 +617,7 @@ sntp_getoperatingmode(void)
  * @param set_servers_from_dhcp enable or disable getting server addresses from dhcp
  */
 void
-sntp_servermode_dhcp(int set_servers_from_dhcp)
+sntp_servermode_dhcp(int32_t set_servers_from_dhcp)
 {
   u8_t new_mode = set_servers_from_dhcp ? 1 : 0;
   if (sntp_set_servers_from_dhcp != new_mode) {

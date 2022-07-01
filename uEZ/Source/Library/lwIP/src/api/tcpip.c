@@ -68,7 +68,7 @@ sys_sem_t lock_tcpip_core;
 
 #if LWIP_TCP
 /* global variable that shows if the tcp timer is currently scheduled or not */
-static int tcpip_tcp_timer_active;
+static int32_t tcpip_tcp_timer_active;
 
 /**
  * Timer callback function that calls tcp_tmr() and reschedules itself.

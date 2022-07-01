@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_ARRAY.h
 Purpose     : Array handling routines
@@ -43,11 +44,6 @@ Purpose     : Array handling routines
 
 #ifndef GUI_ARRAY_H
 #define GUI_ARRAY_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 #include "WM_Intern.h"
 
@@ -68,22 +64,20 @@ typedef WM_HMEM GUI_ARRAY;
 **********************************************************************
 */
 GUI_ARRAY GUI_ARRAY_Create          (void);
-int       GUI_ARRAY_AddItem         (GUI_ARRAY hArray, const void * pNew, int Len);
+int32_t       GUI_ARRAY_AddItem         (GUI_ARRAY hArray, const void * pNew, int32_t Len);
 void      GUI_ARRAY_Delete          (GUI_ARRAY hArray);
-WM_HMEM   GUI_ARRAY_GethItem        (GUI_ARRAY hArray, unsigned int Index);
+WM_HMEM   GUI_ARRAY_GethItem        (GUI_ARRAY hArray, uint32_t Index);
 unsigned  GUI_ARRAY_GetNumItems     (GUI_ARRAY hArray);
-void    * GUI_ARRAY_GetpItemLocked  (GUI_ARRAY hArray, unsigned int Index);
-int       GUI_ARRAY_SethItem        (GUI_ARRAY hArray, unsigned int Index, WM_HMEM hItem);
-WM_HMEM   GUI_ARRAY_SetItem         (GUI_ARRAY hArray, unsigned int Index, const void * pData, int Len);
-void      GUI_ARRAY_DeleteItem      (GUI_ARRAY hArray, unsigned int Index);
-char      GUI_ARRAY_InsertBlankItem (GUI_ARRAY hArray, unsigned int Index);
-WM_HMEM   GUI_ARRAY_InsertItem      (GUI_ARRAY hArray, unsigned int Index, int Len);
-void    * GUI_ARRAY_ResizeItemLocked(GUI_ARRAY hArray, unsigned int Index, int Len);
+void    * GUI_ARRAY_GetpItemLocked  (GUI_ARRAY hArray, uint32_t Index);
+int32_t       GUI_ARRAY_SethItem        (GUI_ARRAY hArray, uint32_t Index, WM_HMEM hItem);
+WM_HMEM   GUI_ARRAY_SetItem         (GUI_ARRAY hArray, uint32_t Index, const void * pData, int32_t Len);
+void      GUI_ARRAY_DeleteItem      (GUI_ARRAY hArray, uint32_t Index);
+char      GUI_ARRAY_InsertBlankItem (GUI_ARRAY hArray, uint32_t Index);
+WM_HMEM   GUI_ARRAY_InsertItem      (GUI_ARRAY hArray, uint32_t Index, int32_t Len);
+void    * GUI_ARRAY_ResizeItemLocked(GUI_ARRAY hArray, uint32_t Index, int32_t Len);
 
 #endif /* GUI_WINSUPPORT */
 
-#ifdef __cplusplus
-}
-#endif
-
 #endif /* GUI_ARRAY_H */
+
+/*************************** End of file ****************************/

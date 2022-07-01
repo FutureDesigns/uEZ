@@ -233,7 +233,7 @@ bool Chip_Clock_IsBaseClockEnabled(CHIP_CGU_BASE_CLK_T BaseClock);
  * @param	div			: Divider for the clock, must be 1 for most clocks, 2 supported on others
  * @return	Nothing
  */
-void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int div);
+void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int32_t div);
 
 /**
  * @brief	Enables a peripheral clock

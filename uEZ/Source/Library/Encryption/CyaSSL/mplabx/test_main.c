@@ -46,16 +46,16 @@
 
 /* func_args from test.h, so don't have to pull in other junk */
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
 /*
  * Main driver for CTaoCrypt tests.
  */
-int main(int argc, char** argv) {
-    int i ;
+int32_t main(int32_t argc, char** argv) {
+    int32_t i ;
 
     init_serial() ;  /* initialize PIC32MZ serial I/O */
     SYSTEMConfigPerformance(80000000);

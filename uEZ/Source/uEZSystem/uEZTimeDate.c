@@ -353,7 +353,7 @@ void UEZTimeCalcDuration(T_uezTime *aT1, T_uezTime *aT2, T_uezTimeDuration *aDur
 {
     T_uezTime *p1;
     T_uezTime *p2;
-    int h, m, s;
+    int32_t h, m, s;
     if (UEZTimeCompare(aT1, aT2) > 0) {
         p2 = aT1;
         p1 = aT2;
@@ -1028,7 +1028,7 @@ TUInt16 UEZDateGetNumDaysInYear(T_uezDate *aDate)
  *---------------------------------------------------------------------------*/
 /**
  *  Calculates the difference of time in days between the first and second
- *      times and put them into the duration variable.  The calculation assumes
+ *      dates and put them into the duration variable.  The calculation assumes
  *      the same day and is down to the second.
  *
  *  @param [in]    *aD1 		first date
@@ -1255,7 +1255,7 @@ TInt8 UEZTimeDateCompare(T_uezTimeDate *aTD1, T_uezTimeDate *aTD2)
  *---------------------------------------------------------------------------*/
 /**
  *  Calculates the difference of time between the first and second
- *      times and put them into the duration variable.  The calculation is down
+ *      time/date and put them into the duration variable.  The calculation is down
  *      to the second.
  *
  *  @param [in]    *aTD1 		first date and time
@@ -1473,7 +1473,7 @@ double UEZTimeDateDurationToDouble(T_uezTimeDuration *aDuration)
  * Function:    UEZTimeDateAddDuration
  *---------------------------------------------------------------------------*/
 /**
- *  Adds a time duration to a time structure.
+ *  Adds a time duration to a time/date structure.
  *
  *  @param [in]    *aTD 		Time to add to
  *
@@ -1500,8 +1500,8 @@ void UEZTimeDateAddDuration(T_uezTimeDate *aTD, T_uezTimeDuration *aAdded)
 
     numDays = UEZTimeAddDuration(&aTD->iTime, aAdded);
     if (numDays) {
-        while (1) {
-            dayOfYear = numDays + UEZDateGetDayOfYear(&aTD->iDate);
+        dayOfYear = numDays + UEZDateGetDayOfYear(&aTD->iDate);
+        while (1) {            
             numDaysInYear = UEZDateGetNumDaysInYear(&aTD->iDate);
             if (dayOfYear > numDaysInYear) {
                 // Skip to the next year
@@ -1522,7 +1522,7 @@ void UEZTimeDateAddDuration(T_uezTimeDate *aTD, T_uezTimeDuration *aAdded)
  * Function:    UEZTimeDateSubtractDuration
  *---------------------------------------------------------------------------*/
 /**
- *  Subtracts a time duration from a time structure.
+ *  Subtracts a time duration from a time/date structure.
  *
  *  @param [in]    *aTD 			Time to add to
  *

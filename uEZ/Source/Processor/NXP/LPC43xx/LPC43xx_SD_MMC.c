@@ -376,10 +376,10 @@ T_uezError LPC43xx_SD_MMC_Reset(void *aWorkspace)
     return UEZ_ERROR_NONE;
 }
 
-static int ISendCommand(unsigned int aCommand, unsigned int aArgument)
+static int32_t ISendCommand(uint32_t aCommand, uint32_t aArgument)
 {
     volatile int32_t timeout = 50;
-    volatile int delay; // very fast delays
+    volatile int32_t delay; // very fast delays
 
     // Set command argument
     LPC_SDMMC->CMDARG = aArgument;
@@ -413,7 +413,7 @@ static void IGetResponse(uint32_t *resp)
 /* Setup DMA descriptors */
 void ISetupDMA(LPC43xx_SD_MMC_DMAArea *aDMAArea, TUInt32 addr, TUInt32 size)
 {
-    int i = 0;
+    int32_t i = 0;
     TUInt32 ctrl, maxs;
 
     /* // Enable this code to check for unaligned Read/Write buffer pointers
@@ -659,7 +659,7 @@ typedef struct {
       uint32_t response[4];
 } T_mmcCmd;
 T_mmcCmd G_cmds[100];
-int G_numCmds = 0;
+int32_t G_numCmds = 0;
 
 static T_mmcCmd *SDMMCLog(uint32_t cmd, uint32_t arg, uint32_t wait_status)
 {

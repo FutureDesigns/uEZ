@@ -127,15 +127,15 @@ struct netconn {
       by the application thread */
   sys_mbox_t acceptmbox;
   /** only used for socket layer */
-  int socket;
+  int32_t socket;
 #if LWIP_SO_RCVTIMEO
   /** timeout to wait for new data to be received
       (or connections to arrive for listening netconns) */
-  int recv_timeout;
+  int32_t recv_timeout;
 #endif /* LWIP_SO_RCVTIMEO */
 #if LWIP_SO_RCVBUF
   /** maximum amount of bytes queued in recvmbox */
-  int recv_bufsize;
+  int32_t recv_bufsize;
 #endif /* LWIP_SO_RCVBUF */
   u16_t recv_avail;
   /** TCP: when data passed to netconn_write doesn't fit into the send buffer,
@@ -143,7 +143,7 @@ struct netconn {
   struct api_msg_msg *write_msg;
   /** TCP: when data passed to netconn_write doesn't fit into the send buffer,
       this temporarily stores how much is already sent. */
-  int write_offset;
+  int32_t write_offset;
 #if LWIP_TCPIP_CORE_LOCKING
   /** TCP: when data passed to netconn_write doesn't fit into the send buffer,
       this temporarily stores whether to wake up the original application task
@@ -191,7 +191,7 @@ err_t             netconn_sendto  (struct netconn *conn,
 err_t             netconn_send    (struct netconn *conn,
                                    struct netbuf *buf);
 err_t             netconn_write   (struct netconn *conn,
-                                   const void *dataptr, int size,
+                                   const void *dataptr, int32_t size,
                                    u8_t apiflags);
 err_t             netconn_close   (struct netconn *conn);
 

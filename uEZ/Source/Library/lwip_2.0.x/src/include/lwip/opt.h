@@ -1796,7 +1796,7 @@
 #endif
 
 /**
- * LWIP_SO_SNDRCVTIMEO_NONSTANDARD==1: SO_RCVTIMEO/SO_SNDTIMEO take an int
+ * LWIP_SO_SNDRCVTIMEO_NONSTANDARD==1: SO_RCVTIMEO/SO_SNDTIMEO take an int32_t
  * (milliseconds, much like winsock does) instead of a struct timeval (default).
  */
 #if !defined LWIP_SO_SNDRCVTIMEO_NONSTANDARD || defined __DOXYGEN__

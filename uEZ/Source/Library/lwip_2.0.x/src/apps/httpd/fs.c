@@ -46,14 +46,14 @@
 /*-----------------------------------------------------------------------------------*/
 
 #if LWIP_HTTPD_CUSTOM_FILES
-int fs_open_custom(struct fs_file *file, const char *name);
+int32_t fs_open_custom(struct fs_file *file, const char *name);
 void fs_close_custom(struct fs_file *file);
 #if LWIP_HTTPD_FS_ASYNC_READ
 u8_t fs_canread_custom(struct fs_file *file);
 u8_t fs_wait_read_custom(struct fs_file *file, fs_wait_cb callback_fn, void *callback_arg);
-int fs_read_async_custom(struct fs_file *file, char *buffer, int count, fs_wait_cb callback_fn, void *callback_arg);
+int32_t fs_read_async_custom(struct fs_file *file, char *buffer, int32_t count, fs_wait_cb callback_fn, void *callback_arg);
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-int fs_read_custom(struct fs_file *file, char *buffer, int count);
+int32_t fs_read_custom(struct fs_file *file, char *buffer, int32_t count);
 #endif /* LWIP_HTTPD_FS_ASYNC_READ */
 #endif /* LWIP_HTTPD_CUSTOM_FILES */
 
@@ -113,14 +113,14 @@ fs_close(struct fs_file *file)
 /*-----------------------------------------------------------------------------------*/
 #if LWIP_HTTPD_DYNAMIC_FILE_READ
 #if LWIP_HTTPD_FS_ASYNC_READ
-int
-fs_read_async(struct fs_file *file, char *buffer, int count, fs_wait_cb callback_fn, void *callback_arg)
+int32_t
+fs_read_async(struct fs_file *file, char *buffer, int32_t count, fs_wait_cb callback_fn, void *callback_arg)
 #else /* LWIP_HTTPD_FS_ASYNC_READ */
-int
-fs_read(struct fs_file *file, char *buffer, int count)
+int32_t
+fs_read(struct fs_file *file, char *buffer, int32_t count)
 #endif /* LWIP_HTTPD_FS_ASYNC_READ */
 {
-  int read;
+  int32_t read;
   if(file->index == file->len) {
     return FS_READ_EOF;
   }
@@ -151,7 +151,7 @@ fs_read(struct fs_file *file, char *buffer, int count)
 #endif /* LWIP_HTTPD_DYNAMIC_FILE_READ */
 /*-----------------------------------------------------------------------------------*/
 #if LWIP_HTTPD_FS_ASYNC_READ
-int
+int32_t
 fs_is_file_ready(struct fs_file *file, fs_wait_cb callback_fn, void *callback_arg)
 {
   if (file != NULL) {
@@ -172,7 +172,7 @@ fs_is_file_ready(struct fs_file *file, fs_wait_cb callback_fn, void *callback_ar
 }
 #endif /* LWIP_HTTPD_FS_ASYNC_READ */
 /*-----------------------------------------------------------------------------------*/
-int
+int32_t
 fs_bytes_left(struct fs_file *file)
 {
   return file->len - file->index;

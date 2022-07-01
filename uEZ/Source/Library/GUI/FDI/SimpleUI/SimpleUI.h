@@ -55,7 +55,7 @@ extern "C" {
  *---------------------------------------------------------------------------*/
 void SUICallbackSetLCDBase(void *aAddress);
 void *SUICallbackGetLCDBase(void);
-T_pixelColor SUICallbackRGBConvert(int r, int g, int b);
+T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b);
 
 #ifdef __cplusplus
 }

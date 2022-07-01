@@ -34,7 +34,7 @@
 #ifdef __cplusplus
     extern "C" {
 #endif
-    CYASSL_API int  CyaSSL_Debugging_ON(void);
+    CYASSL_API int32_t  CyaSSL_Debugging_ON(void);
     CYASSL_API void CyaSSL_Debugging_OFF(void);
 #ifdef __cplusplus
     } 
@@ -45,15 +45,15 @@
 
 /* Set these to default values initially. */
 static CyaSSL_Logging_cb log_function = 0;
-static int loggingEnabled = 0;
+static int32_t loggingEnabled = 0;
 
 #endif /* DEBUG_CYASSL */
 
 
-int CyaSSL_SetLoggingCb(CyaSSL_Logging_cb f)
+int32_t CyaSSL_SetLoggingCb(CyaSSL_Logging_cb f)
 {
 #ifdef DEBUG_CYASSL
-    int res = 0;
+    int32_t res = 0;
 
     if (f)
         log_function = f;
@@ -68,7 +68,7 @@ int CyaSSL_SetLoggingCb(CyaSSL_Logging_cb f)
 }
 
 
-int CyaSSL_Debugging_ON(void)
+int32_t CyaSSL_Debugging_ON(void)
 {
 #ifdef DEBUG_CYASSL
     loggingEnabled = 1;
@@ -96,10 +96,10 @@ void CyaSSL_Debugging_OFF(void)
 #endif
 
 #ifdef THREADX
-    int dc_log_printf(char*, ...);
+    int32_t dc_log_printf(char*, ...);
 #endif
 
-static void cyassl_log(const int logLevel, const char *const logMessage)
+static void cyassl_log(const int32_t logLevel, const char *const logMessage)
 {
     if (log_function)
         log_function(logLevel, logMessage);
@@ -140,7 +140,7 @@ void CYASSL_ENTER(const char* msg)
 }
 
 
-void CYASSL_LEAVE(const char* msg, int ret)
+void CYASSL_LEAVE(const char* msg, int32_t ret)
 {
     if (loggingEnabled) {
         char buffer[80];
@@ -150,7 +150,7 @@ void CYASSL_LEAVE(const char* msg, int ret)
 }
 
 
-void CYASSL_ERROR(int error)
+void CYASSL_ERROR(int32_t error)
 {
     if (loggingEnabled) {
         char buffer[80];

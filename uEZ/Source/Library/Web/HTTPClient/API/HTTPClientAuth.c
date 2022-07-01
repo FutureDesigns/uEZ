@@ -19,7 +19,7 @@
 // Notes	    : 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void HTTPBase64Encoder(unsigned char *out, const unsigned char *in, int inlen)
+void HTTPBase64Encoder(unsigned char *out, const unsigned char *in, int32_t inlen)
 // [OUT] out  A pointer to a char to hold the converted string  
 // [IN]  in  String to convert  
 // [IN]  inlen  Length of the string to be converted 
@@ -59,11 +59,11 @@ void HTTPBase64Encoder(unsigned char *out, const unsigned char *in, int inlen)
 // Notes	    : 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int HTTPBase64Decoder(char *out, const char *in)
+int32_t HTTPBase64Decoder(char *out, const char *in)
 {                           // [OUT]  out  Where to save the converted string  
     // [IN]   in  String to convert  
 
-    int len = 0;
+    int32_t len = 0;
     register unsigned char digit1, digit2, digit3, digit4;
 
     if (in[0] == '+' && in[1] == ' ')
@@ -122,7 +122,7 @@ int HTTPBase64Decoder(char *out, const char *in)
 
 void HTTPDigestGenerateCNonce(char *outbuff) 
 {
-    int i,num;
+    int32_t i,num;
     InitRandomeNumber();
     for(i = 0; i < 32; i++) {
         num = GetRandomeNumber();
@@ -181,13 +181,13 @@ void HTTPDigestCvtHex(IN HASH Bin,OUT HASHHEX Hex)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void HTTPDigestCalcHA1(
-                       IN int    nAlg,     /* 0 = MD5, 1 = MD5-Sess */
+                       IN int32_t    nAlg,     /* 0 = MD5, 1 = MD5-Sess */
                        IN char * pszUserName,
                        IN char * pszRealm,
-                       IN int    nRealmLength,
+                       IN int32_t    nRealmLength,
                        IN char * pszPassword,
                        IN char * pszNonce,
-                       IN int    nNonceLength,
+                       IN int32_t    nNonceLength,
                        IN char * pszCNonce,
                        OUT HASHHEX SessionKey
                        )
@@ -235,15 +235,15 @@ void HTTPDigestCalcHA1(
 void HTTPDigestCalcResponse(
                             IN HASHHEX HA1,             // H(A1) 
                             IN char * pszNonce,         // nonce from server 
-                            IN int    nNonceLength,     // Length of nonce
+                            IN int32_t    nNonceLength,     // Length of nonce
                             IN char * pszNonceCount,    // 8 hex digits 
                             IN char * pszCNonce,        // client nonce */
-                            IN char * pszQop,           // qop-value: "", "auth", "auth-int" 
-                            IN int    nQopLength,       // qop param length
+                            IN char * pszQop,           // qop-value: "", "auth", "auth-int32_t" 
+                            IN int32_t    nQopLength,       // qop param length
                             IN char * pszMethod,        // method from the request 
                             IN char * pszDigestUri,     // requested URL
-                            IN int    nDigestUriLebgth, // Uri Length
-                            IN HASHHEX HEntity,         // H(entity body) if qop="auth-int" 
+                            IN int32_t    nDigestUriLebgth, // Uri Length
+                            IN HASHHEX HEntity,         // H(entity body) if qop="auth-int32_t" 
                             OUT HASHHEX Response        // request-digest or response-digest 
                             )
 {
@@ -257,7 +257,7 @@ void HTTPDigestCalcResponse(
     HTTPMD5Update(&Md5Ctx, (const unsigned char *)pszMethod, strlen(pszMethod));
     HTTPMD5Update(&Md5Ctx, (const unsigned char *)":", 1);
     HTTPMD5Update(&Md5Ctx, (const unsigned char *)pszDigestUri, nDigestUriLebgth);
-    if (strcasecmp(pszQop, "auth-int") == 0)
+    if (strcasecmp(pszQop, "auth-int32_t") == 0)
     {
 
         HTTPMD5Update(&Md5Ctx, (const unsigned char *)":", 1);

@@ -18,13 +18,13 @@ struct eth_addr test_ethaddr =  {{1,1,1,1,1,1}};
 struct eth_addr test_ethaddr2 = {{1,1,1,1,1,2}};
 struct eth_addr test_ethaddr3 = {{1,1,1,1,1,3}};
 struct eth_addr test_ethaddr4 = {{1,1,1,1,1,4}};
-static int linkoutput_ctr;
+static int32_t linkoutput_ctr;
 
 /* Helper functions */
 static void
 etharp_remove_all(void)
 {
-  int i;
+  int32_t i;
   /* call etharp_tmr often enough to have all entries cleaned */
   for(i = 0; i < 0xff; i++) {
     etharp_tmr();
@@ -75,7 +75,7 @@ default_netif_remove(void)
 static void
 create_arp_response(ip4_addr_t *adr)
 {
-  int k;
+  int32_t k;
   struct eth_hdr *ethhdr;
   struct etharp_hdr *etharphdr;
   struct pbuf *p = pbuf_alloc(PBUF_RAW, sizeof(struct eth_hdr) + sizeof(struct etharp_hdr), PBUF_RAM);
@@ -152,7 +152,7 @@ START_TEST(test_etharp_table)
   fail_unless(pcb != NULL);
   if (pcb != NULL) {
     ip4_addr_t adrs[ARP_TABLE_SIZE + 2];
-    int i;
+    int32_t i;
     for(i = 0; i < ARP_TABLE_SIZE + 2; i++) {
       IP4_ADDR(&adrs[i], 192,168,0,i+2);
     }

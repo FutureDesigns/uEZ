@@ -37,7 +37,7 @@
 #endif
 
 
-int SetCipherSpecs(CYASSL* ssl)
+int32_t SetCipherSpecs(CYASSL* ssl)
 {
 #ifndef NO_CYASSL_CLIENT
     if (ssl->options.side == CYASSL_CLIENT_END) {
@@ -1785,7 +1785,7 @@ enum KeyStuff {
 
 #ifndef NO_OLD_TLS
 /* true or false, zero for error */
-static int SetPrefix(byte* sha_input, int idx)
+static int32_t SetPrefix(byte* sha_input, int32_t idx)
 {
     switch (idx) {
     case 0:
@@ -1818,8 +1818,8 @@ static int SetPrefix(byte* sha_input, int idx)
 #endif
 
 
-static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
-                   byte side, void* heap, int devId)
+static int32_t SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
+                   byte side, void* heap, int32_t devId)
 {
 #ifdef BUILD_ARC4
     word32 sz = specs->key_size;
@@ -1870,7 +1870,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef HAVE_CHACHA
     if (specs->bulk_cipher_algorithm == cyassl_chacha) {
-        int chachaRet;
+        int32_t chachaRet;
         if (enc && enc->chacha == NULL)
             enc->chacha =
                     (ChaCha*)XMALLOC(sizeof(ChaCha), heap, DYNAMIC_TYPE_CIPHER);
@@ -1923,7 +1923,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef HAVE_HC128
     if (specs->bulk_cipher_algorithm == cyassl_hc128) {
-        int hcRet;
+        int32_t hcRet;
         if (enc && enc->hc128 == NULL)
             enc->hc128 =
                       (HC128*)XMALLOC(sizeof(HC128), heap, DYNAMIC_TYPE_CIPHER);
@@ -1967,7 +1967,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef BUILD_RABBIT
     if (specs->bulk_cipher_algorithm == cyassl_rabbit) {
-        int rabRet;
+        int32_t rabRet;
         if (enc && enc->rabbit == NULL)
             enc->rabbit =
                     (Rabbit*)XMALLOC(sizeof(Rabbit), heap, DYNAMIC_TYPE_CIPHER);
@@ -2011,7 +2011,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef BUILD_DES3
     if (specs->bulk_cipher_algorithm == cyassl_triple_des) {
-        int desRet = 0;
+        int32_t desRet = 0;
 
         if (enc && enc->des3 == NULL)
             enc->des3 = (Des3*)XMALLOC(sizeof(Des3), heap, DYNAMIC_TYPE_CIPHER);
@@ -2070,7 +2070,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef BUILD_AES
     if (specs->bulk_cipher_algorithm == cyassl_aes) {
-        int aesRet = 0;
+        int32_t aesRet = 0;
 
         if (enc && enc->aes == NULL)
             enc->aes = (Aes*)XMALLOC(sizeof(Aes), heap, DYNAMIC_TYPE_CIPHER);
@@ -2133,7 +2133,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef BUILD_AESGCM
     if (specs->bulk_cipher_algorithm == cyassl_aes_gcm) {
-        int gcmRet;
+        int32_t gcmRet;
 
         if (enc && enc->aes == NULL)
             enc->aes = (Aes*)XMALLOC(sizeof(Aes), heap, DYNAMIC_TYPE_CIPHER);
@@ -2227,7 +2227,7 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef HAVE_CAMELLIA
     if (specs->bulk_cipher_algorithm == cyassl_camellia) {
-        int camRet;
+        int32_t camRet;
 
         if (enc && enc->cam == NULL)
             enc->cam =
@@ -2298,8 +2298,8 @@ static int SetKeys(Ciphers* enc, Ciphers* dec, Keys* keys, CipherSpecs* specs,
 
 #ifdef HAVE_ONE_TIME_AUTH
 /* set one time authentication keys */
-static int SetAuthKeys(OneTimeAuth* authentication, Keys* keys,
-                       CipherSpecs* specs, void* heap, int devId)
+static int32_t SetAuthKeys(OneTimeAuth* authentication, Keys* keys,
+                       CipherSpecs* specs, void* heap, int32_t devId)
 {
 
 #ifdef HAVE_POLY1305
@@ -2322,9 +2322,9 @@ static int SetAuthKeys(OneTimeAuth* authentication, Keys* keys,
 
 
 /* Set encrypt/decrypt or both sides of key setup */
-int SetKeysSide(CYASSL* ssl, enum encrypt_side side)
+int32_t SetKeysSide(CYASSL* ssl, enum encrypt_side side)
 {
-    int devId = NO_CAVIUM_DEVICE, ret, copy = 0;
+    int32_t devId = NO_CAVIUM_DEVICE, ret, copy = 0;
     Ciphers* enc = NULL;
     Ciphers* dec = NULL;
     Keys*    keys    = &ssl->keys;
@@ -2373,7 +2373,7 @@ int SetKeysSide(CYASSL* ssl, enum encrypt_side side)
 
 #ifdef HAVE_SECURE_RENEGOTIATION
     if (copy) {
-        int clientCopy = 0;
+        int32_t clientCopy = 0;
 
         if (ssl->options.side == CYASSL_CLIENT_END && enc)
             clientCopy = 1;
@@ -2416,9 +2416,9 @@ int SetKeysSide(CYASSL* ssl, enum encrypt_side side)
 
 
 /* TLS can call too */
-int StoreKeys(CYASSL* ssl, const byte* keyData)
+int32_t StoreKeys(CYASSL* ssl, const byte* keyData)
 {
-    int sz, i = 0;
+    int32_t sz, i = 0;
     Keys* keys = &ssl->keys;
 
 #ifdef HAVE_SECURE_RENEGOTIATION
@@ -2458,13 +2458,13 @@ int StoreKeys(CYASSL* ssl, const byte* keyData)
 }
 
 #ifndef NO_OLD_TLS
-int DeriveKeys(CYASSL* ssl)
+int32_t DeriveKeys(CYASSL* ssl)
 {
-    int    length = 2 * ssl->specs.hash_size +
+    int32_t    length = 2 * ssl->specs.hash_size +
                     2 * ssl->specs.key_size  +
                     2 * ssl->specs.iv_size;
-    int    rounds = (length + MD5_DIGEST_SIZE - 1 ) / MD5_DIGEST_SIZE, i;
-    int    ret = 0;
+    int32_t    rounds = (length + MD5_DIGEST_SIZE - 1 ) / MD5_DIGEST_SIZE, i;
+    int32_t    ret = 0;
 
 #ifdef CYASSL_SMALL_STACK
     byte*  shaOutput;
@@ -2515,8 +2515,8 @@ int DeriveKeys(CYASSL* ssl)
         XMEMCPY(md5Input, ssl->arrays->masterSecret, SECRET_LEN);
 
         for (i = 0; i < rounds; ++i) {
-            int j   = i + 1;
-            int idx = j;
+            int32_t j   = i + 1;
+            int32_t idx = j;
 
             if (!SetPrefix(shaInput, i)) {
                 ret = PREFIX_ERROR;
@@ -2555,9 +2555,9 @@ int DeriveKeys(CYASSL* ssl)
 }
 
 
-static int CleanPreMaster(CYASSL* ssl)
+static int32_t CleanPreMaster(CYASSL* ssl)
 {
-    int i, ret, sz = ssl->arrays->preMasterSz;
+    int32_t i, ret, sz = ssl->arrays->preMasterSz;
 
     for (i = 0; i < sz; i++)
         ssl->arrays->preMasterSecret[i] = 0;
@@ -2574,9 +2574,9 @@ static int CleanPreMaster(CYASSL* ssl)
 
 
 /* Create and store the master secret see page 32, 6.1 */
-static int MakeSslMasterSecret(CYASSL* ssl)
+static int32_t MakeSslMasterSecret(CYASSL* ssl)
 {
-    int    i, ret;
+    int32_t    i, ret;
     word32 idx;
     word32 pmsSz = ssl->arrays->preMasterSz;
 
@@ -2693,7 +2693,7 @@ static int MakeSslMasterSecret(CYASSL* ssl)
 
 
 /* Master wrapper, doesn't use SSL stack space in TLS mode */
-int MakeMasterSecret(CYASSL* ssl)
+int32_t MakeMasterSecret(CYASSL* ssl)
 {
 #ifdef NO_OLD_TLS
     return MakeTlsMasterSecret(ssl);

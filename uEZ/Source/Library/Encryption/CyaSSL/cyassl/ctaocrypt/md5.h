@@ -63,7 +63,7 @@ typedef struct Md5 {
 CYASSL_API void InitMd5(Md5*);
 CYASSL_API void Md5Update(Md5*, const byte*, word32);
 CYASSL_API void Md5Final(Md5*, byte*);
-CYASSL_API int  Md5Hash(const byte*, word32, byte*);
+CYASSL_API int32_t  Md5Hash(const byte*, word32, byte*);
 
 
 #ifdef __cplusplus

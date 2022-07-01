@@ -196,7 +196,7 @@ static T_uezError MassStorage_SDCard_SD_MMC_InitializeWorkspace(void *aWorkspace
  * Outputs:
  *      @return non-zero if acquired, else 0
  *---------------------------------------------------------------------------*/
-static int IIsCardAquired(T_MassStorage_SDCard_SD_MMC_Workspace *p)
+static int32_t IIsCardAquired(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 {
     return p->iCID[0] != 0;
 }
@@ -310,7 +310,7 @@ static void IProcessCSD(T_MassStorage_SDCard_SD_MMC_Workspace *p)
  *  Output:
  *      @return Error code.  Zero if ok, else non-zero.
  *---------------------------------------------------------------------------*/
-static int ISetTransState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
+static int32_t ISetTransState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 {
     TUInt32 status;
     TUInt32 response[4];
@@ -356,7 +356,7 @@ static int ISetTransState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
  *      @return Error code.  Zero if ok, else non-zero.
  *---------------------------------------------------------------------------*/
 /* Sets card data width and block size */
-static int ISetCardParams(T_MassStorage_SDCard_SD_MMC_Workspace *p)
+static int32_t ISetCardParams(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 {
     TUInt32 status;
     TUInt32 response[4];

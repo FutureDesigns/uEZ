@@ -70,7 +70,7 @@ enum {
 
     ASN_PARSE_E        = -140,  /* ASN parsing error, invalid input */
     ASN_VERSION_E      = -141,  /* ASN version error, invalid number */
-    ASN_GETINT_E       = -142,  /* ASN get big int error, invalid data */
+    ASN_GETINT_E       = -142,  /* ASN get big int32_t error, invalid data */
     ASN_RSA_KEY_E      = -143,  /* ASN key init error, invalid input */
     ASN_OBJECT_ID_E    = -144,  /* ASN object id error, invalid id */
     ASN_TAG_NULL_E     = -145,  /* ASN tag error, not null */
@@ -143,8 +143,8 @@ enum {
 };
 
 
-CYASSL_API void CTaoCryptErrorString(int err, char* buff);
-CYASSL_API const char* CTaoCryptGetErrorString(int error);
+CYASSL_API void CTaoCryptErrorString(int32_t err, char* buff);
+CYASSL_API const char* CTaoCryptGetErrorString(int32_t error);
 
 
 #ifdef __cplusplus

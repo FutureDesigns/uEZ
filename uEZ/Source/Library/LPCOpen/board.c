@@ -2,7 +2,7 @@
 #include <string.h>
 #include <UEZ.h>
 
-extern void UEZBSPDelayMS(unsigned int aMilliseconds);
+extern void UEZBSPDelayMS(uint32_t aMilliseconds);
 extern TUInt32 UEZTickCounterGet(void);
 /* Returns the MAC address assigned to this board */
 void Board_ENET_GetMacADDR(uint8_t *mcaddr)

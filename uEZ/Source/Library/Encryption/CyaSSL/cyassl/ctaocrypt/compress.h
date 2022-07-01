@@ -37,8 +37,8 @@
 #define COMPRESS_FIXED 1
 
 
-CYASSL_API int Compress(byte*, word32, const byte*, word32, word32);
-CYASSL_API int DeCompress(byte*, word32, const byte*, word32);
+CYASSL_API int32_t Compress(byte*, word32, const byte*, word32, word32);
+CYASSL_API int32_t DeCompress(byte*, word32, const byte*, word32);
 
 
 #ifdef __cplusplus

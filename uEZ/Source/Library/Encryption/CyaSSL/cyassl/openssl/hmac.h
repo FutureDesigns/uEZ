@@ -43,23 +43,23 @@
 
 
 CYASSL_API unsigned char* CyaSSL_HMAC(const CYASSL_EVP_MD* evp_md,
-                               const void* key, int key_len,
-                               const unsigned char* d, int n, unsigned char* md,
-                               unsigned int* md_len);
+                               const void* key, int32_t key_len,
+                               const unsigned char* d, int32_t n, unsigned char* md,
+                               uint32_t* md_len);
 
 
 typedef struct CYASSL_HMAC_CTX {
     Hmac hmac;
-    int  type;
+    int32_t  type;
 } CYASSL_HMAC_CTX;
 
 
 CYASSL_API void CyaSSL_HMAC_Init(CYASSL_HMAC_CTX* ctx, const void* key,
-                                 int keylen, const EVP_MD* type);
+                                 int32_t keylen, const EVP_MD* type);
 CYASSL_API void CyaSSL_HMAC_Update(CYASSL_HMAC_CTX* ctx,
-                                   const unsigned char* data, int len);
+                                   const unsigned char* data, int32_t len);
 CYASSL_API void CyaSSL_HMAC_Final(CYASSL_HMAC_CTX* ctx, unsigned char* hash,
-                                  unsigned int* len);
+                                  uint32_t* len);
 CYASSL_API void CyaSSL_HMAC_cleanup(CYASSL_HMAC_CTX* ctx);
 
 

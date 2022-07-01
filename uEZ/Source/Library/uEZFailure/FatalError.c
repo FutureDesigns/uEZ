@@ -38,7 +38,7 @@
  *-------------------------------------------------------------------------*/
 extern void BSODPrint(const char *aLine);
 extern void BSODStart(const char *aLine);
-extern void UEZBSP_FatalError(int aNumBlinks);
+extern void UEZBSP_FatalError(int32_t aNumBlinks);
 
 void FatalError(const char *aLine)
 {

@@ -82,7 +82,7 @@ void bench_des(void);
 void bench_arc4(void);
 void bench_hc128(void);
 void bench_rabbit(void);
-void bench_aes(int);
+void bench_aes(int32_t);
 void bench_aesgcm(void);
 void bench_aesccm(void);
 void bench_aesctr(void);
@@ -102,12 +102,12 @@ void bench_eccKeyGen(void);
 void bench_eccKeyAgree(void);
 #endif
 
-double current_time(int);
+double current_time(int32_t);
 
 
 #ifdef HAVE_CAVIUM
 
-static int OpenNitroxDevice(int dma_mode,int dev_id)
+static int32_t OpenNitroxDevice(int32_t dma_mode,int32_t dev_id)
 {
    Csp1CoreAssignment core_assign;
    Uint32             device;
@@ -132,18 +132,18 @@ static int OpenNitroxDevice(int dma_mode,int dev_id)
 /* so embedded projects can pull in tests on their own */
 #if !defined(NO_MAIN_DRIVER)
 
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 
 {
   (void)argc;
   (void)argv;
 #else
-int benchmark_test(void *args) 
+int32_t benchmark_test(void *args) 
 {
 #endif
 
 	#ifdef HAVE_CAVIUM
-    int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+    int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
     if (ret != 0) {
         printf("Cavium OpenNitroxDevice failed\n");
         exit(-1);
@@ -269,12 +269,12 @@ static byte cipher[1024*1024];
 
 
 #ifndef NO_AES
-void bench_aes(int show)
+void bench_aes(int32_t show)
 {
     Aes    enc;
     double start, total, persec;
-    int    i;
-    int    ret;
+    int32_t    i;
+    int32_t    ret;
 
 #ifdef HAVE_CAVIUM
     if (AesInitCavium(&enc, CAVIUM_DEV_ID) != 0) {
@@ -322,7 +322,7 @@ void bench_aesgcm(void)
 {
     Aes    enc;
     double start, total, persec;
-    int    i;
+    int32_t    i;
 
     AesGcmSetKey(&enc, key, 16);
     start = current_time(1);
@@ -349,7 +349,7 @@ void bench_aesctr(void)
 {
     Aes    enc;
     double start, total, persec;
-    int    i;
+    int32_t    i;
 
     AesSetKeyDirect(&enc, key, AES_BLOCK_SIZE, iv, AES_ENCRYPTION);
     start = current_time(1);
@@ -377,7 +377,7 @@ void bench_aesccm(void)
 {
     Aes    enc;
     double start, total, persec;
-    int    i;
+    int32_t    i;
 
     AesCcmSetKey(&enc, key, 16);
     start = current_time(1);
@@ -405,7 +405,7 @@ void bench_camellia(void)
 {
     Camellia cam;
     double start, total, persec;
-    int    i, ret;
+    int32_t    i, ret;
 
     ret = CamelliaSetKey(&cam, key, 16, iv);
     if (ret != 0) {
@@ -436,7 +436,7 @@ void bench_des(void)
 {
     Des3   enc;
     double start, total, persec;
-    int    i, ret;
+    int32_t    i, ret;
 
 #ifdef HAVE_CAVIUM
     if (Des3_InitCavium(&enc, CAVIUM_DEV_ID) != 0)
@@ -474,7 +474,7 @@ void bench_arc4(void)
 {
     Arc4   enc;
     double start, total, persec;
-    int    i;
+    int32_t    i;
     
 #ifdef HAVE_CAVIUM
     if (Arc4InitCavium(&enc, CAVIUM_DEV_ID) != 0)
@@ -508,7 +508,7 @@ void bench_hc128(void)
 {
     HC128  enc;
     double start, total, persec;
-    int    i;
+    int32_t    i;
     
     Hc128_SetKey(&enc, key, iv);
     start = current_time(1);
@@ -534,7 +534,7 @@ void bench_rabbit(void)
 {
     Rabbit  enc;
     double start, total, persec;
-    int    i;
+    int32_t    i;
     
     RabbitSetKey(&enc, key, iv);
     start = current_time(1);
@@ -561,7 +561,7 @@ void bench_md5(void)
     Md5    hash;
     byte   digest[MD5_DIGEST_SIZE];
     double start, total, persec;
-    int    i;
+    int32_t    i;
 
     InitMd5(&hash);
     start = current_time(1);
@@ -590,7 +590,7 @@ void bench_sha(void)
     Sha    hash;
     byte   digest[SHA_DIGEST_SIZE];
     double start, total, persec;
-    int    i, ret;
+    int32_t    i, ret;
         
     ret = InitSha(&hash);
     if (ret != 0) {
@@ -623,7 +623,7 @@ void bench_sha256(void)
     Sha256 hash;
     byte   digest[SHA256_DIGEST_SIZE];
     double start, total, persec;
-    int    i, ret;
+    int32_t    i, ret;
         
     ret = InitSha256(&hash);
     if (ret != 0) {
@@ -664,7 +664,7 @@ void bench_sha512(void)
     Sha512 hash;
     byte   digest[SHA512_DIGEST_SIZE];
     double start, total, persec;
-    int    i, ret;
+    int32_t    i, ret;
         
     ret = InitSha512(&hash);
     if (ret != 0) {
@@ -705,7 +705,7 @@ void bench_ripemd(void)
     RipeMd hash;
     byte   digest[RIPEMD_DIGEST_SIZE];
     double start, total, persec;
-    int    i;
+    int32_t    i;
         
     InitRipeMd(&hash);
     start = current_time(1);
@@ -734,7 +734,7 @@ void bench_blake2(void)
     Blake2b b2b;
     byte    digest[64];
     double  start, total, persec;
-    int     i, ret;
+    int32_t     i, ret;
        
     ret = InitBlake2b(&b2b, 64);
     if (ret != 0) {
@@ -791,19 +791,19 @@ static const char *certRSAname = "certs/rsa2048.der" ;
 
 void bench_rsa(void)
 {
-    int    i;
-    int    ret;
+    int32_t    i;
+    int32_t    ret;
     byte   tmp[3072];
     size_t bytes;
     word32 idx = 0;
 
     byte      message[] = "Everyone gets Friday off.";
     byte      enc[512];  /* for up to 4096 bit */
-    const int len = (int)strlen((char*)message);
+    const int32_t len = (int32_t)strlen((char*)message);
     double    start, total, each, milliEach;
     
     RsaKey rsaKey;
-    int    rsaKeySz = 2048; /* used in printf */
+    int32_t    rsaKeySz = 2048; /* used in printf */
 
 #ifdef USE_CERT_BUFFERS_1024
     XMEMCPY(tmp, rsa_key_der_1024, sizeof_rsa_key_der_1024);
@@ -896,7 +896,7 @@ static const char *certDHname = "certs/dh2048.der" ;
 
 void bench_dh(void)
 {
-    int    i, ret;
+    int32_t    i, ret;
     byte   tmp[1024];
     size_t bytes;
     word32 idx = 0, pubSz, privSz = 0, pubSz2, privSz2, agreeSz;
@@ -909,7 +909,7 @@ void bench_dh(void)
     
     double start, total, each, milliEach;
     DhKey  dhKey;
-    int    dhKeySz = 2048; /* used in printf */
+    int32_t    dhKeySz = 2048; /* used in printf */
 
 	
 #ifdef USE_CERT_BUFFERS_1024
@@ -983,7 +983,7 @@ void bench_rsaKeyGen(void)
 {
     RsaKey genKey;
     double start, total, each, milliEach;
-    int    i;
+    int32_t    i;
   
     /* 1024 bit */ 
     start = current_time(1);
@@ -1023,7 +1023,7 @@ void bench_eccKeyGen(void)
 {
     ecc_key genKey;
     double start, total, each, milliEach;
-    int    i, ret;
+    int32_t    i, ret;
   
     ret = InitRng(&rng);
     if (ret < 0) {
@@ -1051,7 +1051,7 @@ void bench_eccKeyAgree(void)
 {
     ecc_key genKey, genKey2;
     double start, total, each, milliEach;
-    int    i, ret;
+    int32_t    i, ret;
     byte   shared[1024];
     byte   sig[1024];
     byte   digest[32];
@@ -1096,7 +1096,7 @@ void bench_eccKeyAgree(void)
            " iterations\n", milliEach, agreeTimes);
 
     /* make dummy digest */
-    for (i = 0; i < (int)sizeof(digest); i++)
+    for (i = 0; i < (int32_t)sizeof(digest); i++)
         digest[i] = (byte)i;
 
 
@@ -1120,7 +1120,7 @@ void bench_eccKeyAgree(void)
     start = current_time(1);
 
     for(i = 0; i < agreeTimes; i++) {
-        int verify = 0;
+        int32_t verify = 0;
         ret = ecc_verify_hash(sig, x, digest, sizeof(digest), &verify, &genKey);
         if (ret != 0) {
             printf("ecc_verify_hash failed\n");
@@ -1145,9 +1145,9 @@ void bench_eccKeyAgree(void)
     #define WIN32_LEAN_AND_MEAN
     #include <windows.h>
 
-    double current_time(int reset)
+    double current_time(int32_t reset)
     {
-        static int init = 0;
+        static int32_t init = 0;
         static LARGE_INTEGER freq;
     
         LARGE_INTEGER count;
@@ -1172,9 +1172,9 @@ void bench_eccKeyAgree(void)
         #define CLOCK 4000000.0
     #endif
 
-    double current_time(int reset)
+    double current_time(int32_t reset)
     {
-        unsigned int ns;
+        uint32_t ns;
 
         if (reset) {
             WriteCoreTimer(0);
@@ -1189,11 +1189,11 @@ void bench_eccKeyAgree(void)
 
 #elif defined CYASSL_MDK_ARM
 
-    extern double current_time(int reset) ;
+    extern double current_time(int32_t reset) ;
 
 #elif defined FREERTOS
 
-    double current_time(int reset)
+    double current_time(int32_t reset)
     {
         (void) reset;
 
@@ -1208,7 +1208,7 @@ void bench_eccKeyAgree(void)
 
     #include <sys/time.h>
 
-    double current_time(int reset)
+    double current_time(int32_t reset)
     {
         struct timeval tv;
 

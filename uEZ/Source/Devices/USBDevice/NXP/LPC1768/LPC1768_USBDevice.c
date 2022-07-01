@@ -213,7 +213,7 @@ static void INXP_LPC1768_StandardControlTransfer(
         TUInt8 aEndpoint,
         T_USBEndpointStatus aStatus)
 {
-    int numRead;
+    int32_t numRead;
     TUInt8 setupType;
     T_USBDevice_LPC1768_Workspace *p =
         (T_USBDevice_LPC1768_Workspace *)aWorkspace;

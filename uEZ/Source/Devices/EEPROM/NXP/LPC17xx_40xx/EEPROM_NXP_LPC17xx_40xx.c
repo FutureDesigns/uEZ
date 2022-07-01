@@ -41,8 +41,8 @@ typedef struct {
     T_EEPROMConfig iConfig;
     TBool iInitialized;
     T_uezSemaphore iIRQReadySem;
-    volatile int end_of_prog;
-    volatile int end_of_rdwr;
+    volatile int32_t end_of_prog;
+    volatile int32_t end_of_rdwr;
 } T_EEPROM_NXP_LPC17xx_40xx_Workspace;
 
 /* EEPROM_CMD */

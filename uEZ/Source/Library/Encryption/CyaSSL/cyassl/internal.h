@@ -147,9 +147,9 @@
 
 
 #ifdef USE_WINDOWS_API 
-    typedef unsigned int SOCKET_T;
+    typedef uint32_t SOCKET_T;
 #else
-    typedef int SOCKET_T;
+    typedef int32_t SOCKET_T;
 #endif
 
 
@@ -902,8 +902,8 @@ struct CYASSL_BIO {
     byte        eof;           /* eof flag */
     CYASSL*     ssl;           /* possible associated ssl */
     byte*       mem;           /* memory buffer */
-    int         memLen;        /* memory buffer length */
-    int         fd;            /* possible file descriptor */
+    int32_t         memLen;        /* memory buffer length */
+    int32_t         fd;            /* possible file descriptor */
     CYASSL_BIO* prev;          /* previous in chain */
     CYASSL_BIO* next;          /* next in chain */
 };
@@ -921,9 +921,9 @@ struct CYASSL_METHOD {
 CYASSL_LOCAL void InitSSL_Method(CYASSL_METHOD*, ProtocolVersion);
 
 /* for sniffer */
-CYASSL_LOCAL int DoFinished(CYASSL* ssl, const byte* input, word32* inOutIdx,
-                            word32 size, word32 totalSz, int sniff);
-CYASSL_LOCAL int DoApplicationData(CYASSL* ssl, byte* input, word32* inOutIdx);
+CYASSL_LOCAL int32_t DoFinished(CYASSL* ssl, const byte* input, word32* inOutIdx,
+                            word32 size, word32 totalSz, int32_t sniff);
+CYASSL_LOCAL int32_t DoApplicationData(CYASSL* ssl, byte* input, word32* inOutIdx);
 
 
 /* CyaSSL buffer type */
@@ -1011,7 +1011,7 @@ typedef struct {
 
 /* Cipher Suites holder */
 typedef struct Suites {
-    int    setSuites;               /* user set suites from default */
+    int32_t    setSuites;               /* user set suites from default */
     byte   suites[MAX_SUITE_SZ];  
     word16 suiteSz;                 /* suite length in bytes        */
     byte   hashSigAlgo[HELLO_EXT_SIGALGO_MAX]; /* sig/algo to offer */
@@ -1023,21 +1023,21 @@ typedef struct Suites {
 
 CYASSL_LOCAL
 void InitSuites(Suites*, ProtocolVersion,
-                                     byte, byte, byte, byte, byte, byte, int);
+                                     byte, byte, byte, byte, byte, byte, int32_t);
 CYASSL_LOCAL
-int  SetCipherList(Suites*, const char* list);
+int32_t  SetCipherList(Suites*, const char* list);
 
 #ifndef PSK_TYPES_DEFINED
-    typedef unsigned int (*psk_client_callback)(CYASSL*, const char*, char*,
-                          unsigned int, unsigned char*, unsigned int);
-    typedef unsigned int (*psk_server_callback)(CYASSL*, const char*,
-                          unsigned char*, unsigned int);
+    typedef uint32_t (*psk_client_callback)(CYASSL*, const char*, char*,
+                          uint32_t, unsigned char*, uint32_t);
+    typedef uint32_t (*psk_server_callback)(CYASSL*, const char*,
+                          unsigned char*, uint32_t);
 #endif /* PSK_TYPES_DEFINED */
 
 
 #ifdef HAVE_NETX
-    CYASSL_LOCAL int NetX_Receive(CYASSL *ssl, char *buf, int sz, void *ctx);
-    CYASSL_LOCAL int NetX_Send(CYASSL *ssl, char *buf, int sz, void *ctx);
+    CYASSL_LOCAL int32_t NetX_Receive(CYASSL *ssl, char *buf, int32_t sz, void *ctx);
+    CYASSL_LOCAL int32_t NetX_Send(CYASSL *ssl, char *buf, int32_t sz, void *ctx);
 #endif /* HAVE_NETX */
 
 
@@ -1065,7 +1065,7 @@ struct OCSP_Entry {
     byte    issuerHash[OCSP_DIGEST_SIZE];    /* issuer hash            */ 
     byte    issuerKeyHash[OCSP_DIGEST_SIZE]; /* issuer public key hash */
     CertStatus* status;                      /* OCSP response list     */
-    int         totalStatus;                 /* number on list         */
+    int32_t         totalStatus;                 /* number on list         */
 };
 
 
@@ -1107,7 +1107,7 @@ struct CRL_Entry {
     byte    lastDateFormat;          /* last date format */
     byte    nextDateFormat;          /* next date format */
     RevokedCert* certs;              /* revoked cert list  */
-    int          totalCerts;         /* number on list     */
+    int32_t          totalCerts;         /* number on list     */
 };
 
 
@@ -1116,7 +1116,7 @@ typedef struct CRL_Monitor CRL_Monitor;
 /* CRL directory monitor */
 struct CRL_Monitor {
     char* path;      /* full dir path, if valid pointer we're using */
-    int   type;      /* PEM or ASN1 type */
+    int32_t   type;      /* PEM or ASN1 type */
 };
 
 
@@ -1132,7 +1132,7 @@ struct CYASSL_CRL {
     CRL_Monitor          monitors[2];   /* PEM and DER possible */
 #ifdef HAVE_CRL_MONITOR
     pthread_t            tid;           /* monitoring thread */
-    int                  mfd;           /* monitor fd, -1 if no init yet */
+    int32_t                  mfd;           /* monitor fd, -1 if no init yet */
 #endif
 };
 
@@ -1166,21 +1166,21 @@ struct CYASSL_CERT_MANAGER {
     CbOCSPRespFree  ocspRespFreeCb;     /* Frees OCSP Response from IO Cb */
 };
 
-CYASSL_LOCAL int CM_SaveCertCache(CYASSL_CERT_MANAGER*, const char*);
-CYASSL_LOCAL int CM_RestoreCertCache(CYASSL_CERT_MANAGER*, const char*);
-CYASSL_LOCAL int CM_MemSaveCertCache(CYASSL_CERT_MANAGER*, void*, int, int*);
-CYASSL_LOCAL int CM_MemRestoreCertCache(CYASSL_CERT_MANAGER*, const void*, int);
-CYASSL_LOCAL int CM_GetCertCacheMemSize(CYASSL_CERT_MANAGER*);
+CYASSL_LOCAL int32_t CM_SaveCertCache(CYASSL_CERT_MANAGER*, const char*);
+CYASSL_LOCAL int32_t CM_RestoreCertCache(CYASSL_CERT_MANAGER*, const char*);
+CYASSL_LOCAL int32_t CM_MemSaveCertCache(CYASSL_CERT_MANAGER*, void*, int32_t, int32_t*);
+CYASSL_LOCAL int32_t CM_MemRestoreCertCache(CYASSL_CERT_MANAGER*, const void*, int32_t);
+CYASSL_LOCAL int32_t CM_GetCertCacheMemSize(CYASSL_CERT_MANAGER*);
 
 /* CyaSSL Sock Addr */
 struct CYASSL_SOCKADDR {
-    unsigned int sz; /* sockaddr size */
+    uint32_t sz; /* sockaddr size */
     void*        sa; /* pointer to the sockaddr_in or sockaddr_in6 */
 };
 
 typedef struct CYASSL_DTLS_CTX {
     CYASSL_SOCKADDR peer;
-    int fd;
+    int32_t fd;
 } CYASSL_DTLS_CTX;
 
 
@@ -1264,7 +1264,7 @@ typedef struct TLSX {
 
 CYASSL_LOCAL TLSX*  TLSX_Find(TLSX* list, TLSX_Type type);
 CYASSL_LOCAL void   TLSX_FreeAll(TLSX* list);
-CYASSL_LOCAL int    TLSX_SupportExtensions(CYASSL* ssl);
+CYASSL_LOCAL int32_t    TLSX_SupportExtensions(CYASSL* ssl);
 
 #ifndef NO_CYASSL_CLIENT
 CYASSL_LOCAL word16 TLSX_GetRequestSize(CYASSL* ssl);
@@ -1276,7 +1276,7 @@ CYASSL_LOCAL word16 TLSX_GetResponseSize(CYASSL* ssl);
 CYASSL_LOCAL word16 TLSX_WriteResponse(CYASSL* ssl, byte* output);
 #endif
 
-CYASSL_LOCAL int    TLSX_Parse(CYASSL* ssl, byte* input, word16 length,
+CYASSL_LOCAL int32_t    TLSX_Parse(CYASSL* ssl, byte* input, word16 length,
                                                 byte isRequest, Suites *suites);
                                                 
 #elif defined(HAVE_SNI)                  \
@@ -1303,7 +1303,7 @@ typedef struct SNI {
 #endif
 } SNI;
 
-CYASSL_LOCAL int TLSX_UseSNI(TLSX** extensions, byte type, const void* data,
+CYASSL_LOCAL int32_t TLSX_UseSNI(TLSX** extensions, byte type, const void* data,
                                                                    word16 size);
 
 #ifndef NO_CYASSL_SERVER
@@ -1312,7 +1312,7 @@ CYASSL_LOCAL void   TLSX_SNI_SetOptions(TLSX* extensions, byte type,
 CYASSL_LOCAL byte   TLSX_SNI_Status(TLSX* extensions, byte type);
 CYASSL_LOCAL word16 TLSX_SNI_GetRequest(TLSX* extensions, byte type,
                                                                    void** data);
-CYASSL_LOCAL int    TLSX_SNI_GetFromBuffer(const byte* buffer, word32 bufferSz,
+CYASSL_LOCAL int32_t    TLSX_SNI_GetFromBuffer(const byte* buffer, word32 bufferSz,
                                          byte type, byte* sni, word32* inOutSz);
 #endif
 
@@ -1321,13 +1321,13 @@ CYASSL_LOCAL int    TLSX_SNI_GetFromBuffer(const byte* buffer, word32 bufferSz,
 /* Maximum Fragment Length */
 #ifdef HAVE_MAX_FRAGMENT
 
-CYASSL_LOCAL int TLSX_UseMaxFragment(TLSX** extensions, byte mfl);
+CYASSL_LOCAL int32_t TLSX_UseMaxFragment(TLSX** extensions, byte mfl);
 
 #endif /* HAVE_MAX_FRAGMENT */
 
 #ifdef HAVE_TRUNCATED_HMAC
 
-CYASSL_LOCAL int TLSX_UseTruncatedHMAC(TLSX** extensions);
+CYASSL_LOCAL int32_t TLSX_UseTruncatedHMAC(TLSX** extensions);
 
 #endif /* HAVE_TRUNCATED_HMAC */
 
@@ -1338,10 +1338,10 @@ typedef struct EllipticCurve {
     struct EllipticCurve* next; /* List Behavior */
 } EllipticCurve;
 
-CYASSL_LOCAL int TLSX_UseSupportedCurve(TLSX** extensions, word16 name);
+CYASSL_LOCAL int32_t TLSX_UseSupportedCurve(TLSX** extensions, word16 name);
 
 #ifndef NO_CYASSL_SERVER
-CYASSL_LOCAL int TLSX_ValidateEllipticCurves(CYASSL* ssl, byte first,
+CYASSL_LOCAL int32_t TLSX_ValidateEllipticCurves(CYASSL* ssl, byte first,
                                                                    byte second);
 #endif
 
@@ -1369,7 +1369,7 @@ typedef struct SecureRenegotiation {
    Keys                 tmp_keys;  /* can't overwrite real keys yet */
 } SecureRenegotiation;
 
-CYASSL_LOCAL int TLSX_UseSecureRenegotiation(TLSX** extensions);
+CYASSL_LOCAL int32_t TLSX_UseSecureRenegotiation(TLSX** extensions);
 
 #endif /* HAVE_SECURE_RENEGOTIATION */
 
@@ -1381,7 +1381,7 @@ typedef struct SessionTicket {
     word16 size;
 } SessionTicket;
 
-CYASSL_LOCAL int  TLSX_UseSessionTicket(TLSX** extensions, 
+CYASSL_LOCAL int32_t  TLSX_UseSessionTicket(TLSX** extensions, 
                                                          SessionTicket* ticket);
 CYASSL_LOCAL SessionTicket* TLSX_SessionTicket_Create(word32 lifetime,
                                                        byte* data, word16 size);
@@ -1392,7 +1392,7 @@ CYASSL_LOCAL void TLSX_SessionTicket_Free(SessionTicket* ticket);
 struct CYASSL_CTX {
     CYASSL_METHOD* method;
     CyaSSL_Mutex   countMutex;    /* reference count mutex */
-    int         refCount;         /* reference count */
+    int32_t         refCount;         /* reference count */
 #ifndef NO_CERTS
     buffer      certificate;
     buffer      certChain;
@@ -1446,7 +1446,7 @@ struct CYASSL_CTX {
     CYASSL_OCSP      ocsp;
 #endif
 #ifdef HAVE_CAVIUM
-    int              devId;            /* cavium device id to use */
+    int32_t              devId;            /* cavium device id to use */
 #endif
 #ifdef HAVE_TLS_EXTENSIONS
     TLSX* extensions;                  /* RFC 6066 TLS Extensions data */
@@ -1471,22 +1471,22 @@ struct CYASSL_CTX {
 
 
 CYASSL_LOCAL
-int InitSSL_Ctx(CYASSL_CTX*, CYASSL_METHOD*);
+int32_t InitSSL_Ctx(CYASSL_CTX*, CYASSL_METHOD*);
 CYASSL_LOCAL
 void FreeSSL_Ctx(CYASSL_CTX*);
 CYASSL_LOCAL
 void SSL_CtxResourceFree(CYASSL_CTX*);
 
 CYASSL_LOCAL
-int DeriveTlsKeys(CYASSL* ssl);
+int32_t DeriveTlsKeys(CYASSL* ssl);
 CYASSL_LOCAL
-int ProcessOldClientHello(CYASSL* ssl, const byte* input, word32* inOutIdx,
+int32_t ProcessOldClientHello(CYASSL* ssl, const byte* input, word32* inOutIdx,
                           word32 inSz, word16 sz);
 #ifndef NO_CERTS
     CYASSL_LOCAL
-    int AddCA(CYASSL_CERT_MANAGER* ctx, buffer der, int type, int verify);
+    int32_t AddCA(CYASSL_CERT_MANAGER* ctx, buffer der, int32_t type, int32_t verify);
     CYASSL_LOCAL
-    int AlreadySigner(CYASSL_CERT_MANAGER* cm, byte* hash);
+    int32_t AlreadySigner(CYASSL_CERT_MANAGER* cm, byte* hash);
 #endif
 
 /* All cipher suite related info */
@@ -1646,14 +1646,14 @@ typedef struct Hashes {
 
 /* Static x509 buffer */
 typedef struct x509_buffer {
-    int  length;                  /* actual size */
+    int32_t  length;                  /* actual size */
     byte buffer[MAX_X509_SIZE];   /* max static cert size */
 } x509_buffer;
 
 
 /* CyaSSL X509_CHAIN, for no dynamic memory SESSION_CACHE */
 struct CYASSL_X509_CHAIN {
-    int         count;                    /* total number in chain */
+    int32_t         count;                    /* total number in chain */
     x509_buffer certs[MAX_CHAIN_DEPTH];   /* only allow max depth 4 for now */
 };
 
@@ -1685,12 +1685,12 @@ struct CYASSL_SESSION {
 CYASSL_LOCAL
 CYASSL_SESSION* GetSession(CYASSL*, byte*);
 CYASSL_LOCAL
-int          SetSession(CYASSL*, CYASSL_SESSION*);
+int32_t          SetSession(CYASSL*, CYASSL_SESSION*);
 
-typedef int (*hmacfp) (CYASSL*, byte*, const byte*, word32, int, int);
+typedef int32_t (*hmacfp) (CYASSL*, byte*, const byte*, word32, int32_t, int32_t);
 
 #ifndef NO_CLIENT_CACHE
-    CYASSL_SESSION* GetSessionClient(CYASSL*, const byte*, int);
+    CYASSL_SESSION* GetSessionClient(CYASSL*, const byte*, int32_t);
 #endif
 
 /* client connect state for nonblocking restart */
@@ -1742,9 +1742,9 @@ typedef struct Buffers {
     bufferStatic    inputBuffer;
     bufferStatic    outputBuffer;
     buffer          clearOutputBuffer;
-    int             prevSent;              /* previous plain text bytes sent
+    int32_t             prevSent;              /* previous plain text bytes sent
                                               when got WANT_WRITE            */
-    int             plainSz;               /* plain text bytes in buffer to send
+    int32_t             plainSz;               /* plain text bytes in buffer to send
                                               when got WANT_WRITE            */
     byte            weOwnCert;             /* SSL own cert flag */
     byte            weOwnCertChain;        /* SSL own cert chain flag */
@@ -1853,8 +1853,8 @@ typedef struct Arrays {
 struct CYASSL_X509_NAME {
     char  *name;
     char  staticName[ASN_NAME_MAX];
-    int   dynamicName;
-    int   sz;
+    int32_t   dynamicName;
+    int32_t   sz;
 #ifdef OPENSSL_EXTRA
     DecodedName fullName;
 #endif /* OPENSSL_EXTRA */
@@ -1869,31 +1869,31 @@ struct CYASSL_X509_NAME {
 #endif
 
 struct CYASSL_X509 {
-    int              version;
+    int32_t              version;
     CYASSL_X509_NAME issuer;
     CYASSL_X509_NAME subject;
-    int              serialSz;
+    int32_t              serialSz;
     byte             serial[EXTERNAL_SERIAL_SIZE];
     char             subjectCN[ASN_NAME_MAX];        /* common name short cut */
 #ifdef CYASSL_SEP
-    int              deviceTypeSz;
+    int32_t              deviceTypeSz;
     byte             deviceType[EXTERNAL_SERIAL_SIZE];
-    int              hwTypeSz;
+    int32_t              hwTypeSz;
     byte             hwType[EXTERNAL_SERIAL_SIZE];
-    int              hwSerialNumSz;
+    int32_t              hwSerialNumSz;
     byte             hwSerialNum[EXTERNAL_SERIAL_SIZE];
     #ifdef OPENSSL_EXTRA
         byte             certPolicySet;
         byte             certPolicyCrit;
     #endif /* OPENSSL_EXTRA */
 #endif
-    int              notBeforeSz;
+    int32_t              notBeforeSz;
     byte             notBefore[MAX_DATE_SZ];
-    int              notAfterSz;
+    int32_t              notAfterSz;
     byte             notAfter[MAX_DATE_SZ];
-    int              sigOID;
+    int32_t              sigOID;
     buffer           sig;
-    int              pubKeyOID;
+    int32_t              pubKeyOID;
     buffer           pubKey;
     #ifdef HAVE_ECC
         word32       pkCurveOID;
@@ -1947,7 +1947,7 @@ typedef struct DtlsRecordLayerHeader {
 
 typedef struct DtlsPool {
     buffer          buf[DTLS_POOL_SZ];
-    int             used;
+    int32_t             used;
 } DtlsPool;
 
 typedef struct DtlsMsg {
@@ -1995,7 +1995,7 @@ typedef struct MsgsReceived {
 /* CyaSSL ssl type */
 struct CYASSL {
     CYASSL_CTX*     ctx;
-    int             error;
+    int32_t             error;
     ProtocolVersion version;            /* negotiated version */
     ProtocolVersion chVersion;          /* client hello version */
     Suites*         suites;             /* only need during handshake */
@@ -2007,10 +2007,10 @@ struct CYASSL {
     CipherSpecs     specs;
     Keys            keys;
     MsgsReceived    msgsReceived;       /* peer messages received */
-    int             rfd;                /* read  file descriptor */
-    int             wfd;                /* write file descriptor */
-    int             rflags;             /* user read  flags */
-    int             wflags;             /* user write flags */
+    int32_t             rfd;                /* read  file descriptor */
+    int32_t             wfd;                /* write file descriptor */
+    int32_t             rflags;             /* user read  flags */
+    int32_t             wflags;             /* user write flags */
     CYASSL_BIO*     biord;              /* socket bio read  to free/close */
     CYASSL_BIO*     biowr;              /* socket bio write to free/close */
     void*           IOCB_ReadCtx;
@@ -2071,9 +2071,9 @@ struct CYASSL {
     byte            didStreamInit;      /* for stream init and end */
 #endif
 #ifdef CYASSL_DTLS
-    int             dtls_timeout_init;  /* starting timeout vaule */
-    int             dtls_timeout_max;   /* maximum timeout value */
-    int             dtls_timeout;       /* current timeout value, changes */
+    int32_t             dtls_timeout_init;  /* starting timeout vaule */
+    int32_t             dtls_timeout_max;   /* maximum timeout value */
+    int32_t             dtls_timeout;       /* current timeout value, changes */
     DtlsPool*       dtls_pool;
     DtlsMsg*        dtls_msg_list;
     void*           IOCB_CookieCtx;     /* gen cookie ctx */
@@ -2096,7 +2096,7 @@ struct CYASSL {
     void*           ex_data[MAX_EX_DATA]; /* external data, for Fortress */
 #endif
 #ifdef HAVE_CAVIUM
-    int              devId;            /* cavium device id to use */
+    int32_t              devId;            /* cavium device id to use */
 #endif
 #ifdef HAVE_TLS_EXTENSIONS
     TLSX* extensions;                  /* RFC 6066 TLS Extensions data */
@@ -2119,7 +2119,7 @@ struct CYASSL {
     NetX_Ctx        nxCtx;             /* NetX IO Context */
 #endif
 #ifdef SESSION_INDEX
-    int sessionIndex;                  /* Session's location in the cache. */
+    int32_t sessionIndex;                  /* Session's location in the cache. */
 #endif
     CYASSL_ALERT_HISTORY alert_history;
 #ifdef ATOMIC_USER
@@ -2146,7 +2146,7 @@ struct CYASSL {
 
 
 CYASSL_LOCAL
-int  InitSSL(CYASSL*, CYASSL_CTX*);
+int32_t  InitSSL(CYASSL*, CYASSL_CTX*);
 CYASSL_LOCAL
 void FreeSSL(CYASSL*);
 CYASSL_API void SSL_ResourceFree(CYASSL*);   /* Micrium uses */
@@ -2169,12 +2169,12 @@ typedef struct EncryptedInfo {
 
 
 #ifndef NO_CERTS
-    CYASSL_LOCAL int PemToDer(const unsigned char* buff, long sz, int type,
+    CYASSL_LOCAL int32_t PemToDer(const unsigned char* buff, long sz, int32_t type,
                               buffer* der, void* heap, EncryptedInfo* info,
-                              int* eccKey);
+                              int32_t* eccKey);
 
-    CYASSL_LOCAL int ProcessFile(CYASSL_CTX* ctx, const char* fname, int format,
-                                 int type, CYASSL* ssl, int userChain,
+    CYASSL_LOCAL int32_t ProcessFile(CYASSL_CTX* ctx, const char* fname, int32_t format,
+                                 int32_t type, CYASSL* ssl, int32_t userChain,
                                 CYASSL_CRL* crl);
 #endif
 
@@ -2192,7 +2192,7 @@ typedef struct EncryptedInfo {
     CYASSL_LOCAL 
     void FreeTimeoutInfo(TimeoutInfo*, void*);
     CYASSL_LOCAL 
-    void AddPacketInfo(const char*, TimeoutInfo*, const byte*, int, void*);
+    void AddPacketInfo(const char*, TimeoutInfo*, const byte*, int32_t, void*);
     CYASSL_LOCAL 
     void AddLateName(const char*, TimeoutInfo*);
     CYASSL_LOCAL 
@@ -2255,69 +2255,69 @@ static const byte tls_server[FINISHED_LABEL_SZ + 1] = "server finished";
 
 
 /* internal functions */
-CYASSL_LOCAL int SendChangeCipher(CYASSL*);
-CYASSL_LOCAL int SendData(CYASSL*, const void*, int);
-CYASSL_LOCAL int SendCertificate(CYASSL*);
-CYASSL_LOCAL int SendCertificateRequest(CYASSL*);
-CYASSL_LOCAL int SendServerKeyExchange(CYASSL*);
-CYASSL_LOCAL int SendBuffered(CYASSL*);
-CYASSL_LOCAL int ReceiveData(CYASSL*, byte*, int, int);
-CYASSL_LOCAL int SendFinished(CYASSL*);
-CYASSL_LOCAL int SendAlert(CYASSL*, int, int);
-CYASSL_LOCAL int ProcessReply(CYASSL*);
+CYASSL_LOCAL int32_t SendChangeCipher(CYASSL*);
+CYASSL_LOCAL int32_t SendData(CYASSL*, const void*, int32_t);
+CYASSL_LOCAL int32_t SendCertificate(CYASSL*);
+CYASSL_LOCAL int32_t SendCertificateRequest(CYASSL*);
+CYASSL_LOCAL int32_t SendServerKeyExchange(CYASSL*);
+CYASSL_LOCAL int32_t SendBuffered(CYASSL*);
+CYASSL_LOCAL int32_t ReceiveData(CYASSL*, byte*, int32_t, int32_t);
+CYASSL_LOCAL int32_t SendFinished(CYASSL*);
+CYASSL_LOCAL int32_t SendAlert(CYASSL*, int32_t, int32_t);
+CYASSL_LOCAL int32_t ProcessReply(CYASSL*);
 
-CYASSL_LOCAL int SetCipherSpecs(CYASSL*);
-CYASSL_LOCAL int MakeMasterSecret(CYASSL*);
+CYASSL_LOCAL int32_t SetCipherSpecs(CYASSL*);
+CYASSL_LOCAL int32_t MakeMasterSecret(CYASSL*);
 
-CYASSL_LOCAL int  AddSession(CYASSL*);
-CYASSL_LOCAL int  DeriveKeys(CYASSL* ssl);
-CYASSL_LOCAL int  StoreKeys(CYASSL* ssl, const byte* keyData);
+CYASSL_LOCAL int32_t  AddSession(CYASSL*);
+CYASSL_LOCAL int32_t  DeriveKeys(CYASSL* ssl);
+CYASSL_LOCAL int32_t  StoreKeys(CYASSL* ssl, const byte* keyData);
 
-CYASSL_LOCAL int IsTLS(const CYASSL* ssl);
-CYASSL_LOCAL int IsAtLeastTLSv1_2(const CYASSL* ssl);
+CYASSL_LOCAL int32_t IsTLS(const CYASSL* ssl);
+CYASSL_LOCAL int32_t IsAtLeastTLSv1_2(const CYASSL* ssl);
 
 CYASSL_LOCAL void FreeHandshakeResources(CYASSL* ssl);
-CYASSL_LOCAL void ShrinkInputBuffer(CYASSL* ssl, int forcedFree);
+CYASSL_LOCAL void ShrinkInputBuffer(CYASSL* ssl, int32_t forcedFree);
 CYASSL_LOCAL void ShrinkOutputBuffer(CYASSL* ssl);
 
-CYASSL_LOCAL int VerifyClientSuite(CYASSL* ssl);
+CYASSL_LOCAL int32_t VerifyClientSuite(CYASSL* ssl);
 #ifndef NO_CERTS
     CYASSL_LOCAL Signer* GetCA(void* cm, byte* hash);
     #ifndef NO_SKID
         CYASSL_LOCAL Signer* GetCAByName(void* cm, byte* hash);
     #endif
 #endif
-CYASSL_LOCAL int  BuildTlsFinished(CYASSL* ssl, Hashes* hashes,
+CYASSL_LOCAL int32_t  BuildTlsFinished(CYASSL* ssl, Hashes* hashes,
                                    const byte* sender);
-CYASSL_LOCAL void FreeArrays(CYASSL* ssl, int keep);
-CYASSL_LOCAL  int CheckAvailableSize(CYASSL *ssl, int size);
-CYASSL_LOCAL  int GrowInputBuffer(CYASSL* ssl, int size, int usedLength);
+CYASSL_LOCAL void FreeArrays(CYASSL* ssl, int32_t keep);
+CYASSL_LOCAL  int32_t CheckAvailableSize(CYASSL *ssl, int32_t size);
+CYASSL_LOCAL  int32_t GrowInputBuffer(CYASSL* ssl, int32_t size, int32_t usedLength);
 
 #ifndef NO_TLS
-    CYASSL_LOCAL int  MakeTlsMasterSecret(CYASSL*);
-    CYASSL_LOCAL int  TLS_hmac(CYASSL* ssl, byte* digest, const byte* in,
-                               word32 sz, int content, int verify);
+    CYASSL_LOCAL int32_t  MakeTlsMasterSecret(CYASSL*);
+    CYASSL_LOCAL int32_t  TLS_hmac(CYASSL* ssl, byte* digest, const byte* in,
+                               word32 sz, int32_t content, int32_t verify);
 #endif
 
 #ifndef NO_CYASSL_CLIENT
-    CYASSL_LOCAL int SendClientHello(CYASSL*);
-    CYASSL_LOCAL int SendClientKeyExchange(CYASSL*);
-    CYASSL_LOCAL int SendCertificateVerify(CYASSL*);
+    CYASSL_LOCAL int32_t SendClientHello(CYASSL*);
+    CYASSL_LOCAL int32_t SendClientKeyExchange(CYASSL*);
+    CYASSL_LOCAL int32_t SendCertificateVerify(CYASSL*);
 #endif /* NO_CYASSL_CLIENT */
 
 #ifndef NO_CYASSL_SERVER
-    CYASSL_LOCAL int SendServerHello(CYASSL*);
-    CYASSL_LOCAL int SendServerHelloDone(CYASSL*);
+    CYASSL_LOCAL int32_t SendServerHello(CYASSL*);
+    CYASSL_LOCAL int32_t SendServerHelloDone(CYASSL*);
     #ifdef CYASSL_DTLS
-        CYASSL_LOCAL int SendHelloVerifyRequest(CYASSL*);
+        CYASSL_LOCAL int32_t SendHelloVerifyRequest(CYASSL*);
     #endif
 #endif /* NO_CYASSL_SERVER */
 
 #ifdef CYASSL_DTLS
-    CYASSL_LOCAL int  DtlsPoolInit(CYASSL*);
-    CYASSL_LOCAL int  DtlsPoolSave(CYASSL*, const byte*, int);
-    CYASSL_LOCAL int  DtlsPoolTimeout(CYASSL*);
-    CYASSL_LOCAL int  DtlsPoolSend(CYASSL*);
+    CYASSL_LOCAL int32_t  DtlsPoolInit(CYASSL*);
+    CYASSL_LOCAL int32_t  DtlsPoolSave(CYASSL*, const byte*, int32_t);
+    CYASSL_LOCAL int32_t  DtlsPoolTimeout(CYASSL*);
+    CYASSL_LOCAL int32_t  DtlsPoolSend(CYASSL*);
     CYASSL_LOCAL void DtlsPoolReset(CYASSL*);
 
     CYASSL_LOCAL DtlsMsg* DtlsMsgNew(word32, void*);
@@ -2339,19 +2339,19 @@ CYASSL_LOCAL  int GrowInputBuffer(CYASSL* ssl, int size, int usedLength);
 
 CYASSL_LOCAL word32  LowResTimer(void);
 
-CYASSL_LOCAL void InitX509Name(CYASSL_X509_NAME*, int);
+CYASSL_LOCAL void InitX509Name(CYASSL_X509_NAME*, int32_t);
 CYASSL_LOCAL void FreeX509Name(CYASSL_X509_NAME* name);
-CYASSL_LOCAL void InitX509(CYASSL_X509*, int);
+CYASSL_LOCAL void InitX509(CYASSL_X509*, int32_t);
 CYASSL_LOCAL void FreeX509(CYASSL_X509*);
 #ifndef NO_CERTS
-    CYASSL_LOCAL int  CopyDecodedToX509(CYASSL_X509*, DecodedCert*);
+    CYASSL_LOCAL int32_t  CopyDecodedToX509(CYASSL_X509*, DecodedCert*);
 #endif
 
 /* used by ssl.c and cyassl_int.c */
 CYASSL_LOCAL void c32to24(word32 in, word24 out);
 
 CYASSL_LOCAL const char* const* GetCipherNames(void);
-CYASSL_LOCAL int GetCipherNamesSize(void);
+CYASSL_LOCAL int32_t GetCipherNamesSize(void);
 
 
 enum encrypt_side {
@@ -2360,7 +2360,7 @@ enum encrypt_side {
     ENCRYPT_AND_DECRYPT_SIDE
 };
 
-CYASSL_LOCAL int SetKeysSide(CYASSL*, enum encrypt_side);
+CYASSL_LOCAL int32_t SetKeysSide(CYASSL*, enum encrypt_side);
 
 
 #ifdef __cplusplus

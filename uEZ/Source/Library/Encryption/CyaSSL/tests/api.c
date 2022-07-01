@@ -58,9 +58,9 @@ static const char* bogusFile  = "/dev/null";
  | Setup
  *----------------------------------------------------------------------------*/
 
-static int test_CyaSSL_Init(void)
+static int32_t test_CyaSSL_Init(void)
 {
-    int result;
+    int32_t result;
 
     printf(testingFmt, "CyaSSL_Init()");
     result = CyaSSL_Init();
@@ -70,9 +70,9 @@ static int test_CyaSSL_Init(void)
 }
 
 
-static int test_CyaSSL_Cleanup(void)
+static int32_t test_CyaSSL_Cleanup(void)
 {
-    int result;
+    int32_t result;
 
     printf(testingFmt, "CyaSSL_Cleanup()");
     result = CyaSSL_Cleanup();
@@ -307,7 +307,7 @@ static THREAD_RETURN CYASSL_THREAD test_server_nofail(void* args)
 
     char msg[] = "I hear you fa shizzle!";
     char input[1024];
-    int idx;
+    int32_t idx;
 
 #ifdef CYASSL_TIRTOS
     fdOpenSession(Task_self());
@@ -366,7 +366,7 @@ static THREAD_RETURN CYASSL_THREAD test_server_nofail(void* args)
 
     if (CyaSSL_accept(ssl) != SSL_SUCCESS)
     {
-        int err = CyaSSL_get_error(ssl, 0);
+        int32_t err = CyaSSL_get_error(ssl, 0);
         char buffer[CYASSL_MAX_ERROR_SZ];
         printf("error = %d, %s\n", err, CyaSSL_ERR_error_string(err, buffer));
         /*err_sys("SSL_accept failed");*/
@@ -426,8 +426,8 @@ static void test_client_nofail(void* args)
 
     char msg[64] = "hello cyassl!";
     char reply[1024];
-    int  input;
-    int  msgSz = (int)strlen(msg);
+    int32_t  input;
+    int32_t  msgSz = (int32_t)strlen(msg);
 
 #ifdef CYASSL_TIRTOS
     fdOpenSession(Task_self());
@@ -467,7 +467,7 @@ static void test_client_nofail(void* args)
     CyaSSL_set_fd(ssl, sockfd);
     if (CyaSSL_connect(ssl) != SSL_SUCCESS)
     {
-        int  err = CyaSSL_get_error(ssl, 0);
+        int32_t  err = CyaSSL_get_error(ssl, 0);
         char buffer[CYASSL_MAX_ERROR_SZ];
         printf("err = %d, %s\n", err, CyaSSL_ERR_error_string(err, buffer));
         /*printf("SSL_connect failed");*/
@@ -515,9 +515,9 @@ static THREAD_RETURN CYASSL_THREAD run_cyassl_server(void* args)
     word16      port = yasslPort;
 
     char msg[] = "I hear you fa shizzle!";
-    int  len   = (int) XSTRLEN(msg);
+    int32_t  len   = (int32_t) XSTRLEN(msg);
     char input[1024];
-    int  idx;
+    int32_t  idx;
 
 #ifdef CYASSL_TIRTOS
     fdOpenSession(Task_self());
@@ -569,7 +569,7 @@ static THREAD_RETURN CYASSL_THREAD run_cyassl_server(void* args)
 
     /* AssertIntEQ(SSL_SUCCESS, CyaSSL_accept(ssl)); */
     if (CyaSSL_accept(ssl) != SSL_SUCCESS) {
-        int err = CyaSSL_get_error(ssl, 0);
+        int32_t err = CyaSSL_get_error(ssl, 0);
         char buffer[CYASSL_MAX_ERROR_SZ];
         printf("error = %d, %s\n", err, CyaSSL_ERR_error_string(err, buffer));
 
@@ -619,9 +619,9 @@ static void run_cyassl_client(void* args)
     SOCKET_T    sfd = 0;
 
     char msg[] = "hello cyassl server!";
-    int  len   = (int) XSTRLEN(msg);
+    int32_t  len   = (int32_t) XSTRLEN(msg);
     char input[1024];
-    int  idx;
+    int32_t  idx;
 
 #ifdef CYASSL_TIRTOS
     fdOpenSession(Task_self());
@@ -653,7 +653,7 @@ static void run_cyassl_client(void* args)
         callbacks->ssl_ready(ssl);
 
     if (CyaSSL_connect(ssl) != SSL_SUCCESS) {
-        int err = CyaSSL_get_error(ssl, 0);
+        int32_t err = CyaSSL_get_error(ssl, 0);
         char buffer[CYASSL_MAX_ERROR_SZ];
         printf("error = %d, %s\n", err, CyaSSL_ERR_error_string(err, buffer));
 

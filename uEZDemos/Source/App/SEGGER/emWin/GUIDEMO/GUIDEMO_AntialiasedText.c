@@ -221,6 +221,7 @@ static void _DrawScreen(void) {
   int      ySize;
   int      xOff;
   int      yOff;
+  unsigned OldAlphaState;
 
   xSize = LCD_GetXSize();
   ySize = LCD_GetYSize();
@@ -230,6 +231,9 @@ static void _DrawScreen(void) {
   }
   GUIDEMO_ConfigureDemo("Antialiased text", "Output antialiased text\non different backgrounds.", GUIDEMO_SHOW_CURSOR | GUIDEMO_SHOW_CONTROL);
   GUIDEMO_DrawBk();
+  
+  OldAlphaState = GUI_EnableAlpha(1); // Don't enable this until after the demo title text was shown!
+  
   GUIDEMO_DispTitle("Antialiased text");
   TitleSize = GUIDEMO_GetTitleSizeY();
   xOff      = (xSize - XSIZE_MIN) / 2;
@@ -249,6 +253,8 @@ static void _DrawScreen(void) {
   Rect.y1 = ySize - yOff;
   _DrawSample(Rect, &GUI_FontAA2_32, "Antialiased text\n(2 bpp)");
   GUIDEMO_Wait(4000);
+  
+  GUI_EnableAlpha(OldAlphaState); // set previous alpha set
 }
 
 /*********************************************************************
@@ -262,11 +268,7 @@ static void _DrawScreen(void) {
 *       GUIDEMO_AntialiasedText
 */
 void GUIDEMO_AntialiasedText(void) {
-  unsigned OldAlphaState;
-
-  OldAlphaState = GUI_EnableAlpha(1);
   _DrawScreen();
-  GUI_EnableAlpha(OldAlphaState);
 }
 
 #else

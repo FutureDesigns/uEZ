@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : TREEVIEW.h
 Purpose     : TREEVIEW include
@@ -114,11 +115,11 @@ typedef WM_HMEM TREEVIEW_Handle;
 typedef WM_HMEM TREEVIEW_ITEM_Handle;
 
 typedef struct {
-  int IsNode;
-  int IsExpanded;
-  int HasLines;
-  int HasRowSelect;
-  int Level;
+  int32_t IsNode;
+  int32_t IsExpanded;
+  int32_t HasLines;
+  int32_t HasRowSelect;
+  int32_t Level;
 } TREEVIEW_ITEM_INFO;
 
 typedef struct {
@@ -150,9 +151,9 @@ typedef struct {
 *
 **********************************************************************
 */
-TREEVIEW_Handle      TREEVIEW_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
-TREEVIEW_Handle      TREEVIEW_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
-TREEVIEW_Handle      TREEVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+TREEVIEW_Handle      TREEVIEW_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id);
+TREEVIEW_Handle      TREEVIEW_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t NumExtraBytes);
+TREEVIEW_Handle      TREEVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -169,30 +170,30 @@ void TREEVIEW_Callback(WM_MESSAGE * pMsg);
 *
 **********************************************************************
 */
-int                  TREEVIEW_AttachItem     (TREEVIEW_Handle hObj, TREEVIEW_ITEM_Handle hItem, TREEVIEW_ITEM_Handle hItemAt, int Position);
+int32_t                  TREEVIEW_AttachItem     (TREEVIEW_Handle hObj, TREEVIEW_ITEM_Handle hItem, TREEVIEW_ITEM_Handle hItemAt, int32_t Position);
 void                 TREEVIEW_DecSel         (TREEVIEW_Handle hObj);
-TREEVIEW_ITEM_Handle TREEVIEW_GetItem        (TREEVIEW_Handle hObj, TREEVIEW_ITEM_Handle hItem, int Flags);
+TREEVIEW_ITEM_Handle TREEVIEW_GetItem        (TREEVIEW_Handle hObj, TREEVIEW_ITEM_Handle hItem, int32_t Flags);
 TREEVIEW_ITEM_Handle TREEVIEW_GetSel         (TREEVIEW_Handle hObj);
-int                  TREEVIEW_GetUserData    (TREEVIEW_Handle hObj, void * pDest, int NumBytes);
+int32_t                  TREEVIEW_GetUserData    (TREEVIEW_Handle hObj, void * pDest, int32_t NumBytes);
 void                 TREEVIEW_IncSel         (TREEVIEW_Handle hObj);
-TREEVIEW_ITEM_Handle TREEVIEW_InsertItem     (TREEVIEW_Handle hObj, int IsNode, TREEVIEW_ITEM_Handle hItemPrev, int Position, const char * s);
-int                  TREEVIEW_OwnerDraw      (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+TREEVIEW_ITEM_Handle TREEVIEW_InsertItem     (TREEVIEW_Handle hObj, int32_t IsNode, TREEVIEW_ITEM_Handle hItemPrev, int32_t Position, const char * s);
+int32_t                  TREEVIEW_OwnerDraw      (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
 void                 TREEVIEW_ScrollToSel    (TREEVIEW_Handle hObj);
-void                 TREEVIEW_SetAutoScrollH (TREEVIEW_Handle hObj, int State);
-void                 TREEVIEW_SetAutoScrollV (TREEVIEW_Handle hObj, int State);
-void                 TREEVIEW_SetBitmapOffset(TREEVIEW_Handle hObj, int Index, int xOff, int yOff);
-void                 TREEVIEW_SetBkColor     (TREEVIEW_Handle hObj, int Index, GUI_COLOR Color);
+void                 TREEVIEW_SetAutoScrollH (TREEVIEW_Handle hObj, int32_t State);
+void                 TREEVIEW_SetAutoScrollV (TREEVIEW_Handle hObj, int32_t State);
+void                 TREEVIEW_SetBitmapOffset(TREEVIEW_Handle hObj, int32_t Index, int32_t xOff, int32_t yOff);
+void                 TREEVIEW_SetBkColor     (TREEVIEW_Handle hObj, int32_t Index, GUI_COLOR Color);
 void                 TREEVIEW_SetFont        (TREEVIEW_Handle hObj, const GUI_FONT * pFont);
-void                 TREEVIEW_SetHasLines    (TREEVIEW_Handle hObj, int State);
-void                 TREEVIEW_SetImage       (TREEVIEW_Handle hObj, int Index, const GUI_BITMAP * pBitmap);
-int                  TREEVIEW_SetIndent      (TREEVIEW_Handle hObj, int Indent);
-void                 TREEVIEW_SetLineColor   (TREEVIEW_Handle hObj, int Index, GUI_COLOR Color);
+void                 TREEVIEW_SetHasLines    (TREEVIEW_Handle hObj, int32_t State);
+void                 TREEVIEW_SetImage       (TREEVIEW_Handle hObj, int32_t Index, const GUI_BITMAP * pBitmap);
+int32_t                  TREEVIEW_SetIndent      (TREEVIEW_Handle hObj, int32_t Indent);
+void                 TREEVIEW_SetLineColor   (TREEVIEW_Handle hObj, int32_t Index, GUI_COLOR Color);
 void                 TREEVIEW_SetOwnerDraw   (TREEVIEW_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawItem);
 void                 TREEVIEW_SetSel         (TREEVIEW_Handle hObj, TREEVIEW_ITEM_Handle hItem);
-void                 TREEVIEW_SetSelMode     (TREEVIEW_Handle hObj, int Mode);
-void                 TREEVIEW_SetTextColor   (TREEVIEW_Handle hObj, int Index, GUI_COLOR Color);
-int                  TREEVIEW_SetTextIndent  (TREEVIEW_Handle hObj, int TextIndent);
-int                  TREEVIEW_SetUserData    (TREEVIEW_Handle hObj, const void * pSrc, int NumBytes);
+void                 TREEVIEW_SetSelMode     (TREEVIEW_Handle hObj, int32_t Mode);
+void                 TREEVIEW_SetTextColor   (TREEVIEW_Handle hObj, int32_t Index, GUI_COLOR Color);
+int32_t                  TREEVIEW_SetTextIndent  (TREEVIEW_Handle hObj, int32_t TextIndent);
+int32_t                  TREEVIEW_SetUserData    (TREEVIEW_Handle hObj, const void * pSrc, int32_t NumBytes);
 
 
 /*********************************************************************
@@ -203,15 +204,15 @@ int                  TREEVIEW_SetUserData    (TREEVIEW_Handle hObj, const void *
 */
 void                 TREEVIEW_ITEM_Collapse   (TREEVIEW_ITEM_Handle hItem);
 void                 TREEVIEW_ITEM_CollapseAll(TREEVIEW_ITEM_Handle hItem);
-TREEVIEW_ITEM_Handle TREEVIEW_ITEM_Create     (int IsNode, const char * s, U32 UserData);
+TREEVIEW_ITEM_Handle TREEVIEW_ITEM_Create     (int32_t IsNode, const char * s, U32 UserData);
 void                 TREEVIEW_ITEM_Delete     (TREEVIEW_ITEM_Handle hItem);
 void                 TREEVIEW_ITEM_Detach     (TREEVIEW_ITEM_Handle hItem);
 void                 TREEVIEW_ITEM_Expand     (TREEVIEW_ITEM_Handle hItem);
 void                 TREEVIEW_ITEM_ExpandAll  (TREEVIEW_ITEM_Handle hItem);
 void                 TREEVIEW_ITEM_GetInfo    (TREEVIEW_ITEM_Handle hItem, TREEVIEW_ITEM_INFO * pInfo);
-void                 TREEVIEW_ITEM_GetText    (TREEVIEW_ITEM_Handle hItem, U8 * pBuffer, int MaxNumBytes);
+void                 TREEVIEW_ITEM_GetText    (TREEVIEW_ITEM_Handle hItem, U8 * pBuffer, int32_t MaxNumBytes);
 U32                  TREEVIEW_ITEM_GetUserData(TREEVIEW_ITEM_Handle hItem);
-void                 TREEVIEW_ITEM_SetImage   (TREEVIEW_ITEM_Handle hItem, int Index, const GUI_BITMAP * pBitmap);
+void                 TREEVIEW_ITEM_SetImage   (TREEVIEW_ITEM_Handle hItem, int32_t Index, const GUI_BITMAP * pBitmap);
 TREEVIEW_ITEM_Handle TREEVIEW_ITEM_SetText    (TREEVIEW_ITEM_Handle hItem, const char * s);
 void                 TREEVIEW_ITEM_SetUserData(TREEVIEW_ITEM_Handle hItem, U32 UserData);
 
@@ -221,14 +222,14 @@ void                 TREEVIEW_ITEM_SetUserData(TREEVIEW_ITEM_Handle hItem, U32 U
 *
 **********************************************************************
 */
-GUI_COLOR        TREEVIEW_GetDefaultBkColor  (int Index);
+GUI_COLOR        TREEVIEW_GetDefaultBkColor  (int32_t Index);
 const GUI_FONT * TREEVIEW_GetDefaultFont     (void);
-GUI_COLOR        TREEVIEW_GetDefaultLineColor(int Index);
-GUI_COLOR        TREEVIEW_GetDefaultTextColor(int Index);
-void             TREEVIEW_SetDefaultBkColor  (int Index, GUI_COLOR Color);
+GUI_COLOR        TREEVIEW_GetDefaultLineColor(int32_t Index);
+GUI_COLOR        TREEVIEW_GetDefaultTextColor(int32_t Index);
+void             TREEVIEW_SetDefaultBkColor  (int32_t Index, GUI_COLOR Color);
 void             TREEVIEW_SetDefaultFont     (const GUI_FONT * pFont);
-void             TREEVIEW_SetDefaultLineColor(int Index, GUI_COLOR Color);
-void             TREEVIEW_SetDefaultTextColor(int Index, GUI_COLOR Color);
+void             TREEVIEW_SetDefaultLineColor(int32_t Index, GUI_COLOR Color);
+void             TREEVIEW_SetDefaultTextColor(int32_t Index, GUI_COLOR Color);
 
 #if defined(__cplusplus)
   }

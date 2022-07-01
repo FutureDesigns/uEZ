@@ -74,12 +74,14 @@
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
+#include <Source/Devices/Serial/RS485/Generic/Generic_RS485.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
 #include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/Timer/ToneGenerator_Generic_Timer.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Himax/HX8526-A/HX8526-A_Touchscreen.h>
+#include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
 #include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
 #include <Source/Library/Web/BasicWeb/BasicWEB.h>
 #include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
@@ -97,16 +99,16 @@
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_I2S.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_LCDController.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SD_MMC.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_PWM.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_PWM.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_PLL.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_RTC.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SDRAM.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_Serial.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_Serial.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SPI.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_Timer.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_Timer.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_USBDeviceController.h>
 //#include <Source/Processor/NXP/LPC546xx/LPC546xx_USBHost.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_Watchdog.h>
+#include <Source/Processor/NXP/LPC546xx/LPC546xx_Watchdog.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
 #include <uEZDevice.h>
@@ -119,7 +121,7 @@
 #include <uEZStream.h>
 #include <uEZAudioMixer.h>
 
-extern int MainTask(void);
+extern int32_t MainTask(void);
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -156,46 +158,33 @@ T_uezTask G_mainTask;
  *---------------------------------------------------------------------------*/
 void UEZBSPDelay1US(void)
 {	
-/* 	Measured to 1.004 microseconds GPIO switch time: (RTOS off)
- *  -   Based on release build with high optimization speed setting, inline
- *      small functions enabled, with GPIO on/off verified with a scope.
- *      Use the following code for direct GPIO switching (example GPIO_P5_3):
- *          LPC_GPIO_PORT->SET[5] = 8; 
- *          UEZBSPDelay1US();        
- *          LPC_GPIO_PORT->CLR[5] = 8; 
- */
-#if ( PROCESSOR_OSCILLATOR_FREQUENCY == 180000000) //ToDo: set timing for delay.
-    nops50();
-    nops50();
-    nops50();
-    nops10();
-    nops10();
-    nops10();
-    nops10();
-    nop();
-    nop();
-    nop();
-    nop();
+#if ( PROCESSOR_OSCILLATOR_FREQUENCY == 180000000) 
+  nops50();
+  nops50();
+  nops10();
+  nop();
+  nop();
+  nop(); // BF - Verified that UEZBSPDelayUS(50); ~51us debug and release build
 #elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 96000000)
-    nops10(); //setup for FRO
-    nops10();
-    nops10();
-    nop();
-    nop();
-    nop();
-    nop();
+  nops10(); //setup for FRO
+  nops10();
+  nops10();
+  nop();
+  nop();
+  nop();
+  nop();
 #elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 24000000)
-    nops10();
-    nops10();
-    nop();
-    nop();
-    nop();
-    nop();
+  nops10();
+  nops10();
+  nop();
+  nop();
+  nop();
+  nop();
 #else
-    #error "1 microSecond delay not defined for CPU speed"
+#error "1 microSecond delay not defined for CPU speed"
 #endif
 }
-void UEZBSPDelayUS(unsigned int aMicroseconds)
+void UEZBSPDelayUS(uint32_t aMicroseconds)
 {
     while (aMicroseconds--)
         UEZBSPDelay1US();
@@ -216,7 +205,7 @@ void UEZBSPDelay1MS(void)
         UEZBSPDelay1US();
 }
 
-void UEZBSPDelayMS(unsigned int aMilliseconds)
+void UEZBSPDelayMS(uint32_t aMilliseconds)
 {
     while (aMilliseconds--) {
         UEZBSPDelay1MS();
@@ -231,31 +220,56 @@ void UEZBSPDelayMS(unsigned int aMilliseconds)
  *---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
 {
-    static const T_LPC546xx_SDRAM_Configuration sdramConfig_8Mx16 = {
-            UEZBSP_SDRAM_BASE_ADDR,
-            UEZBSP_SDRAM_SIZE,
-            SDRAM_CAS_2,
-            SDRAM_CAS_2,
-            LPC546xx_SDRAM_CLKOUT0,
-            SDRAM_CLOCK_FREQUENCY,
-            64,                     // ms
-            4096,                   // cycles
-            SDRAM_CYCLES(18),       // tRP min
-            SDRAM_CYCLES(42),       // tRAS min
-            SDRAM_CYCLES(67),       // tXSR min
-            SDRAM_CYCLES(18),       // tAPR/tRCD
-            4,                      // tDAL clocks
-            1,                      // tWR
-            SDRAM_CYCLES(60),       // tRC
-            SDRAM_CYCLES(60),       // tRFC
-            SDRAM_CYCLES(67),       // tXSR
-            SDRAM_CYCLES(12),       // tRRD
-            SDRAM_CLOCKS(2) };      // tMRD clocks
-    LPC546xx_SDRAM_Init_16BitBus(&sdramConfig_8Mx16);
-
-#if CONFIG_MEMORY_TEST_ON_SDRAM
-    MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
-#endif
+  //Rev 2 has Alliance AS4C8M16SA-6 part
+  /*static const T_LPC546xx_SDRAM_Configuration sdramConfig_8Mx16_6 = {
+    UEZBSP_SDRAM_BASE_ADDR,
+    UEZBSP_SDRAM_SIZE,
+    SDRAM_CAS_2,
+    SDRAM_CAS_2,
+    LPC546xx_SDRAM_CLKOUT0,
+    SDRAM_CLOCK_FREQUENCY,
+    64,                     // ms
+    4096,                   // cycles
+    SDRAM_CYCLES(18),       // tRP min
+    SDRAM_CYCLES(42),       // tRAS min
+    SDRAM_CYCLES(67),       // tSREX min
+    SDRAM_CYCLES(18),       // tAPR/tRCD
+    SDRAM_CYCLES(30),       // tDAL
+    SDRAM_CYCLES(24),       // tWR 
+    SDRAM_CYCLES(60),       // tRC
+    SDRAM_CYCLES(60),       // tRFC // match tRC
+    SDRAM_CYCLES(67),       // tXSR
+    SDRAM_CYCLES(12),       // tRRD
+    SDRAM_CLOCKS(12) };     // tMRD clocks
+      
+  LPC546xx_SDRAM_Init_16BitBus(&sdramConfig_8Mx16_6);*/  
+  
+  //Rev 1 has ISSI IS42S16800F-7 part
+  static const T_LPC546xx_SDRAM_Configuration sdramConfig_8Mx16_7 = {
+    UEZBSP_SDRAM_BASE_ADDR,
+    UEZBSP_SDRAM_SIZE,
+    SDRAM_CAS_2,
+    SDRAM_CAS_2,
+    LPC546xx_SDRAM_CLKOUT0,
+    SDRAM_CLOCK_FREQUENCY,
+    64,                     // ms
+    4096,                   // cycles
+    SDRAM_CYCLES(15),       // tRP min - 2 clocks for CAS2
+    SDRAM_CLOCKS(5),//SDRAM_CYCLES(37),       // tRAS min
+    SDRAM_CYCLES(67),       // tSREX 
+    SDRAM_CYCLES(15),       // tAPR/tRCD - 2 cycles
+    (SDRAM_CYCLES(15)+SDRAM_CYCLES(22)),  // tDAL  = TWR+TRP rounded
+    SDRAM_CYCLES(22),       // tWR 
+    SDRAM_CLOCKS(8),//SDRAM_CYCLES(60),  // tRC 8 cycles from DS
+    SDRAM_CLOCKS(8),//SDRAM_CYCLES(64),  // tRFC match tRC
+    SDRAM_CYCLES(67),       // tXSR
+    SDRAM_CYCLES(14),       // tRRD
+    SDRAM_CYCLES(14) };     // tMRD clocks 
+  LPC546xx_SDRAM_Init_16BitBus(&sdramConfig_8Mx16_7);
+  
+#if (CONFIG_MEMORY_TEST_ON_SDRAM == 1)
+  MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
+#endif  
 }
 
 /*---------------------------------------------------------------------------*
@@ -267,6 +281,33 @@ void UEZBSP_RAMInit(void)
 void UEZBSP_ROMInit(void)
 {
 
+}
+
+// Earliest platform init function
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+  // PIO3_14 initial state is pull up mode.
+  // Turn off LED before init clocks. 
+  // Then it will only start blinking after RTOS
+  
+  SYSCON->AHBCLKCTRLSET[0] = (1U << CLK_GATE_ABSTRACT_BITS_SHIFT(17));
+  IOCON->PIO[3][14] = ((0 <<3) | (0x03 << 8) | (1 << 0x07) | (0x00));
+  GPIO->DIR[3] |= (1 << 14);
+  GPIO->CLR[3] |= (1<<14);
+}
+
+// Low level function for controlling LED after Pre-Pll init and before system starts up.
+void UEZBSP_HeartBeat_Off(void) {  // PIO3_14 clear
+  GPIO->CLR[3] |= (1<<14);
+}
+void UEZBSP_HeartBeat_On(void) {  // PIO3_14 set
+  GPIO->SET[3] |= (1<<14);
 }
 
 /*---------------------------------------------------------------------------*
@@ -345,10 +386,10 @@ void UEZBSP_CPU_PinConfigInit(void)
  *      interrupts and put the platform in a halted state with a blinking
  *      LED.
  * Inputs:
- *      int aErrorCode -- Blink the LED a number of times equal to
+ *      int32_t aErrorCode -- Blink the LED a number of times equal to
  *          the error code.
  *---------------------------------------------------------------------------*/
-void UEZBSP_FatalError(int aErrorCode)
+void UEZBSP_FatalError(int32_t aErrorCode)
 {
     register TUInt32 i;
     register TUInt32 count;
@@ -646,7 +687,7 @@ void UEZPlatform_LCD_Require(void)
     const T_LPC546xx_LCDController_Pins pins = {
             GPIO_NONE,      // LCD_PWR -- GPIO controlled
             GPIO_P2_13,     // LCD_DCLK
-            GPIO_P2_15,     // LCD_ENAB_M
+            GPIO_NONE,//GPIO_P2_15,     // LCD_ENAB_M
             GPIO_P2_14,     // LCD_FP
             GPIO_NONE,      // LCD_LE
             GPIO_P2_16,     // LCD_LP
@@ -736,7 +777,6 @@ void UEZPlatform_LCD_Require(void)
             NULL);//(DEVICE_Backlight **)p_backlight);
     LCD_Tianma_TM035NKH02_09_Create("LCD", "SPI6", GPIO_P4_0);
 }
-
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Touchscreen_Require
  *---------------------------------------------------------------------------*
@@ -744,6 +784,56 @@ void UEZPlatform_LCD_Require(void)
  *      Setup the touchscreen and touch sensitivity for four wire resistive
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Touchscreen_Require(char *aName)
+{
+    // Select Touchscreen
+    UEZPlatform_TouchscreenRT_Require(aName);
+    //UEZPlatform_TouchscreenPCAP_Require(aName);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_TouchscreenRT_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the touchscreen and touch sensitivity for four wire resistive
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_TouchscreenRT_Require(char * aName)
+{
+    T_uezDevice ts;
+
+    const TS_FourWireTouchResist_Configuration tsConfig = {
+            // XPlus ADC = ADC0.8 / P2.01
+            { "ADC0",   8,  GPIO_P2_1,     0,      0 },
+            // XMinus GPIO = P3.22
+            { GPIO_P3_22 },
+            // YPlus ADC = ADC0.7 / P2.00
+            { "ADC0",   7,  GPIO_P2_0,     0,      0 },
+            // YMinus GPIO = P3.21
+            { GPIO_P3_21 },
+            // Use IRQs?
+            EFalse,
+            // Need input buffer disabled when doing A/Ds?
+            EFalse,
+    };
+
+    DEVICE_CREATE_ONCE();
+
+    LPC546xx_GPIO2_Require();
+    LPC546xx_GPIO3_Require();
+    UEZPlatform_ADC0_7_Require();
+    UEZPlatform_ADC0_8_Require();
+
+    Touchscreen_FourWireTouchResist_Create(aName, &tsConfig);
+    UEZDeviceTableFind("Touchscreen", &ts);
+    UEZTSSetTouchDetectSensitivity(ts, 0x1000, 0x5000); // testing new numbers for touch detection
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Touchscreen_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the touchscreen and touch sensitivity for four wire resistive
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_TouchscreenPCAP_Require(char *aName)
 {
     DEVICE_CREATE_ONCE();
 
@@ -780,23 +870,23 @@ void UEZPlatform_Flash0_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer0_Require(void)
 {
-//    static const T_LPC546xx_Timer_Settings settings = {
-//            {
-//            GPIO_NONE,      // T0_CAP[0]
-//            GPIO_NONE,      // T0_CAP[1]
-//            GPIO_NONE,      // T0_CAP[2]
-//            GPIO_NONE,      // T0_CAP[3]
-//            },
-//            {
-//            GPIO_NONE,      // T0_MAT[0]
-//            GPIO_NONE,      // T0_MAT[1]
-//            GPIO_NONE,      // T0_MAT[2]
-//            GPIO_NONE,      // T0_MAT[3]
-//            }
-//    };
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_Timer0_Require(&settings);
-//    Timer_Generic_Create("Timer0", "Timer0");
+    static const T_LPC546xx_Timer_Settings settings = {
+            {
+            GPIO_NONE,      // T0_CAP[0]
+            GPIO_NONE,      // T0_CAP[1]
+            GPIO_NONE,      // T0_CAP[2]
+            GPIO_NONE,      // T0_CAP[3]
+            },
+            {
+            GPIO_NONE,      // T0_MAT[0]
+            GPIO_NONE,      // T0_MAT[1]
+            GPIO_NONE,      // T0_MAT[2]
+            GPIO_NONE,      // T0_MAT[3]
+            }
+    };
+    DEVICE_CREATE_ONCE();
+    LPC546xx_Timer0_Require(&settings);
+    Timer_Generic_Create("Timer0", "Timer0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -808,23 +898,24 @@ void UEZPlatform_Timer0_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer1_Require(void)
 {
-//    static const T_LPC546xx_Timer_Settings settings = {
-//            {
-//            GPIO_NONE,      // T1_CAP[0]
-//            GPIO_NONE,      // T1_CAP[1]
-//            GPIO_NONE,      // T1_CAP[2]
-//            GPIO_NONE,      // T1_CAP[3]
-//            },
-//            {
-//            GPIO_NONE,      // T1_MAT[0]
-//            GPIO_NONE,      // T1_MAT[1]
-//            GPIO_NONE,      // T1_MAT[2]
-//            GPIO_NONE,      // T1_MAT[3]
-//            }
-//    };
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_Timer1_Require(&settings);
-//    Timer_Generic_Create("Timer1", "Timer1");
+    /* Not tested */
+    static const T_LPC546xx_Timer_Settings settings = {
+            {
+            GPIO_NONE,      // T1_CAP[0]
+            GPIO_NONE,      // T1_CAP[1]
+            GPIO_NONE,      // T1_CAP[2]
+            GPIO_NONE,      // T1_CAP[3]
+            },
+            {
+            GPIO_NONE,      // T1_MAT[0]
+            GPIO_NONE,      // T1_MAT[1]
+            GPIO_NONE,      // T1_MAT[2]
+            GPIO_NONE,      // T1_MAT[3]
+            }
+    };
+    DEVICE_CREATE_ONCE();
+    LPC546xx_Timer1_Require(&settings);
+    Timer_Generic_Create("Timer1", "Timer1");
 }
 
 /*---------------------------------------------------------------------------*
@@ -836,23 +927,24 @@ void UEZPlatform_Timer1_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer2_Require(void)
 {
-//    static const T_LPC546xx_Timer_Settings settings = {
-//            {
-//            GPIO_NONE,      // T2_CAP[0]
-//            GPIO_NONE,      // T2_CAP[1]
-//            GPIO_NONE,      // T2_CAP[2]
-//            GPIO_NONE,      // T2_CAP[3]
-//            },
-//            {
-//            GPIO_NONE,      // T2_MAT[0]
-//            GPIO_NONE,      // T2_MAT[1]
-//            GPIO_NONE,      // T2_MAT[2]
-//            GPIO_NONE,      // T2_MAT[3]
-//            }
-//    };
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_Timer2_Require(&settings);
-//    Timer_Generic_Create("Timer2", "Timer2");
+    /* Not tested */
+    static const T_LPC546xx_Timer_Settings settings = {
+            {
+            GPIO_NONE,      // T2_CAP[0]
+            GPIO_NONE,      // T2_CAP[1]
+            GPIO_NONE,      // T2_CAP[2]
+            GPIO_NONE,      // T2_CAP[3]
+            },
+            {
+            GPIO_NONE,      // T2_MAT[0]
+            GPIO_NONE,      // T2_MAT[1]
+            GPIO_NONE,      // T2_MAT[2]
+            GPIO_NONE,      // T2_MAT[3]
+            }
+    };
+    DEVICE_CREATE_ONCE();
+    LPC546xx_Timer2_Require(&settings);
+    Timer_Generic_Create("Timer2", "Timer2");
 }
 
 /*---------------------------------------------------------------------------*
@@ -861,26 +953,58 @@ void UEZPlatform_Timer2_Require(void)
  * Description:
  *      Setup the Timer3 drivers, but don't set any capture sources or
  *      match registers.
+ *      Do not use when using PWM Backlight
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Timer3_Require(void)
 {
-//    static const T_LPC546xx_Timer_Settings settings = {
-//            {
-//            GPIO_NONE,      // T3_CAP[0]
-//            GPIO_NONE,      // T3_CAP[1]
-//            GPIO_NONE,      // T3_CAP[2]
-//            GPIO_NONE,      // T3_CAP[3]
-//            },
-//            {
-//            GPIO_NONE,      // T3_MAT[0]
-//            GPIO_NONE,      // T3_MAT[1]
-//            GPIO_NONE,      // T3_MAT[2]
-//            GPIO_NONE,      // T3_MAT[3]
-//            }
-//    };
-//    DEVICE_CREATE_ONCE();
-//    LPC546xx_Timer3_Require(&settings);
-//    Timer_Generic_Create("Timer3", "Timer3");
+    /* Not tested */
+    static const T_LPC546xx_Timer_Settings settings = {
+            {
+            GPIO_NONE,      // T3_CAP[0]
+            GPIO_NONE,      // T3_CAP[1]
+            GPIO_NONE,      // T3_CAP[2]
+            GPIO_NONE,      // T3_CAP[3]
+            },
+            {
+            GPIO_NONE,      // T3_MAT[0]
+            GPIO_NONE,      // T3_MAT[1]
+            GPIO_NONE,      // T3_MAT[2]
+            GPIO_NONE,      // T3_MAT[3]
+            }
+    };
+    DEVICE_CREATE_ONCE();
+    LPC546xx_Timer3_Require(&settings);
+    Timer_Generic_Create("Timer3", "Timer3");
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Timer4_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Timer4 drivers, but don't set any capture sources or
+ *      match registers.
+ *      Do not use when using PWM Backlight
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Timer4_Require(void)
+{
+    /* Not tested */
+    static const T_LPC546xx_Timer_Settings settings = {
+            {
+            GPIO_NONE,      // T3_CAP[0]
+            GPIO_NONE,      // T3_CAP[1]
+            GPIO_NONE,      // T3_CAP[2]
+            GPIO_NONE,      // T3_CAP[3]
+            },
+            {
+            GPIO_NONE,      // T3_MAT[0]
+            GPIO_NONE,      // T3_MAT[1]
+            GPIO_NONE,      // T3_MAT[2]
+            GPIO_NONE,      // T3_MAT[3]
+            }
+    };
+    DEVICE_CREATE_ONCE();
+    LPC546xx_Timer4_Require(&settings);
+    Timer_Generic_Create("Timer4", "Timer4");
 }
 
 /*---------------------------------------------------------------------------*
@@ -929,6 +1053,7 @@ void UEZPlatform_PWM2_Require(void)
 }
 
 //static T_uezDevice G_Amp;
+static TUInt8 G_Amp_In_Use = AUDIO_AMP_NONE;
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioAmp_Require
  *---------------------------------------------------------------------------*
@@ -942,38 +1067,59 @@ void UEZPlatform_AudioAmp_Require(void)
 //    UEZPlatform_I2C0_Require();
 //    AudioAmp_LM48110_Create("Amp0", "I2C0", 0x1F);
 //    UEZAudioAmpOpen("Amp0", &G_Amp);
-//    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_AUDIO_LEVEL);
+//    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110);
+      G_Amp_In_Use = AUDIO_AMP_LM48110;
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZGUI70WVT_AudioMixerCallback
+ * Routine:  UEZGUI35CX_AudioMixerCallback
  *---------------------------------------------------------------------------*
  * Description:
  *
  *---------------------------------------------------------------------------*/
-//static T_uezError UEZGUI43WQR_AudioMixerCallback(
-//        T_uezAudioMixerOutput aChangedOutput,
-//            TBool aMute,
-//            TUInt8 aLevel)
-//{
-//    T_uezError error = UEZ_ERROR_NONE;
-//
-//    switch(aChangedOutput){
-//        case  UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER:
-//            if(G_Amp){
-//                if(aMute){
-//                    error = UEZAudioAmpMute(G_Amp);
-//                } else {
-//                    error = UEZAudioAmpUnMute(G_Amp);
-//                }
-//                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
-//            }
-//            break;
-//        default:
-//            break;
-//    }
-//    return error;
-//}
+static T_uezError UEZGUI35CX_AudioMixerCallback(
+        T_uezAudioMixerOutput aChangedOutput,
+            TBool aMute,
+            TUInt8 aLevel)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+
+    switch(aChangedOutput){
+        case  UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER:
+            if(G_Amp){
+                if(aMute){
+                    error = UEZAudioAmpMute(G_Amp);
+                } else {
+                    error = UEZAudioAmpUnMute(G_Amp);
+                } 
+                // This insures we scale the 0-255 input volume to the correct maximum volume for the onboard speaker.
+                if(G_Amp_In_Use == AUDIO_AMP_TDA8551) { // enforce maximum volume based on AMP
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 /255);
+                } else if(G_Amp_In_Use == AUDIO_AMP_WOLFSON) {
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL /255);
+                } else if(G_Amp_In_Use == AUDIO_AMP_LM48110) {
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 /255);
+                } else {
+                    aLevel = 0; // NEED TO DEFINE AMP AND MAX SAFE VOLUME LEVEL!
+                }
+                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
+            }
+        // Example Offboard speaker callback case
+        /*case  UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER:
+            if(G_Amp){
+                if(aMute){
+                    error = UEZAudioAmpMute(G_Amp);
+                } else {
+                    error = UEZAudioAmpUnMute(G_Amp);
+                }
+                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
+            }*/
+            break;
+        default:
+            break;
+    }
+    return error;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioMixer_Require
@@ -983,12 +1129,24 @@ void UEZPlatform_AudioAmp_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_AudioMixer_Require(void)
 {
-//    DEVICE_CREATE_ONCE();
-//
-//    UEZPlatform_AudioAmp_Require();
-//    UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &UEZGUI43WQR_AudioMixerCallback);
-//    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 255);
-//    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER);
+    DEVICE_CREATE_ONCE();
+
+    UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &UEZGUI35CX_AudioMixerCallback);
+    
+    // To seperately control offboard speaker jack uncomment this line.
+    //UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, &UEZGUI70WVT_AudioMixerCallback);
+
+    // Set all 5 volume levels from platform file
+    // First set master volume
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_MASTER, UEZ_DEFAULT_AUDIO_LEVEL); // master volume
+    // Next set onboard speaker based on AMP that is loaded. Callback will handle this automatically.
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, UEZ_DEFAULT_AUDIO_LEVEL);
+    
+    // Uncomment these lines to set the other 3 volumes if needed.
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL); // We call this AFTER onboard speaker, so it will set the current volume.
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL);
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_HEADPHONES, UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1018,16 +1176,56 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
 {
-//    DEVICE_CREATE_ONCE();
-//    // NOTE: This require routine does NOT require the HAL driver
-//    // automatically!
-//    Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
-//            aWriteBufferSize, aReadBufferSize);
-//    // Set standard output to console
-//    UEZStreamOpen("Console", &G_stdout);
-//    G_stdin = G_stdout;
-//    StdinRedirect(G_stdin);
-//    StdoutRedirect(G_stdout);
+    DEVICE_CREATE_ONCE();
+    // NOTE: This require routine does NOT require the HAL driver
+    // automatically!
+    Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
+            aWriteBufferSize, aReadBufferSize);
+    // Set standard output to console
+    UEZStreamOpen("Console", &G_stdout);
+    G_stdin = G_stdout;
+    StdinRedirect(G_stdin);
+    StdoutRedirect(G_stdout);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Console_FullDuplex_UART8_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART8.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Console_FullDuplex_UART8_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART8 on P3.17/P3.16
+    LPC546xx_GPIO3_Require();
+    LPC546xx_UART8_Require(GPIO_P3_17, GPIO_P3_16);
+    UEZPlatform_Console_FullDuplex_UART_Require("UART8", aWriteBufferSize,
+            aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+* Routine:  UEZPlatform_Console_FullDuplex_UART6_Require
+*---------------------------------------------------------------------------*
+* Description:
+*      Setup the console using a full duplex UART using UART6.
+* Inputs:
+*      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+*      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+*---------------------------------------------------------------------------*/
+void UEZPlatform_Console_FullDuplex_UART6_Require(
+                                                  TUInt32 aWriteBufferSize,
+                                                  TUInt32 aReadBufferSize)
+{
+  // UART8 on P4.3/P4.2
+  LPC546xx_GPIO4_Require();
+  LPC546xx_UART6_Require(GPIO_P4_3, GPIO_P4_2);
+  UEZPlatform_Console_FullDuplex_UART_Require("UART6", aWriteBufferSize,
+                                              aReadBufferSize);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1043,10 +1241,11 @@ void UEZPlatform_Console_FullDuplex_UART0_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
 {
-//    LPC546xx_GPIO7_Require();
-//    LPC546xx_UART0_Require(GPIO_P7_24, GPIO_P7_25, GPIO_NONE, GPIO_NONE);
-//    UEZPlatform_Console_FullDuplex_UART_Require("UART0", aWriteBufferSize,
-//            aReadBufferSize);
+    // UART0 on P0.29/P0.30
+    LPC546xx_GPIO0_Require();
+    LPC546xx_UART0_Require(GPIO_P0_30, GPIO_P0_29);
+    UEZPlatform_Console_FullDuplex_UART_Require("UART0", aWriteBufferSize,
+            aReadBufferSize);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1063,9 +1262,134 @@ void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
 {
-//    // Standard Expansion board serial console is on UART0
-//    UEZPlatform_Console_FullDuplex_UART0_Require(aWriteBufferSize,
-//            aReadBufferSize);
+    // Standard Expansion board serial console is on UART8
+    UEZPlatform_Console_FullDuplex_UART8_Require(aWriteBufferSize,
+            aReadBufferSize);
+}
+
+void UEZPlatform_Console_HalfDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.29/P0.30
+    LPC546xx_GPIO0_Require();
+    LPC546xx_UART0_Require(GPIO_P0_30, GPIO_P0_29);
+    UEZPlatform_HalfDuplex_RS485_UART0_Require("UART0", aWriteBufferSize,
+            aReadBufferSize,
+        GPIO_P0_31, ETrue,   1, // if one pin don't set it twice, otherwise we switch/delay twice in driver
+        GPIO_NONE, EFalse,  1);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_HalfDuplex_RS485_UART0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the half-duplex RS485 driver for UART5 as the uEZGUI Console.
+ * Inputs:
+ *      char *aHALSerialName, -- Serial Port Name (
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *      T_uezGPIOPortPin aDriveEnablePortPin -- drive enable GPIO pin
+ *      TBool aDriveEnablePolarity -- Drive enable polarity (ETrue = HIGH true)
+ *      TUInt32 aDriveEnableReleaseTime -- Drive enable release time (in ms)
+ *      T_uezGPIOPortPin aReceiveEnablePortPin -- Receive enable GPIO pin
+ *      TBool aReceiveEnablePolarity -- Receive enable polarity (EFalse = LOW true)
+ *      TUInt32 aReceiveEnableReleaseTime -- Receive enable release time (in ms)
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_HalfDuplex_RS485_UART0_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize,
+        T_uezGPIOPortPin aDriveEnablePortPin,
+        TBool aDriveEnablePolarity,
+        TUInt32 aDriveEnableReleaseTime,
+        T_uezGPIOPortPin aReceiveEnablePortPin,
+        TBool aReceiveEnablePolarity,
+        TUInt32 aReceiveEnableReleaseTime)
+{
+    T_RS485_GenericHalfDuplex_Settings aSettings;
+    DEVICE_CREATE_ONCE();
+
+    aSettings.iSerialName = aHALSerialName;
+    aSettings.iQueueSendSize = aWriteBufferSize;
+    aSettings.iQueueReceiveSize = aReadBufferSize;
+    aSettings.iDriveEnable = aDriveEnablePortPin;
+    aSettings.iDriveEnablePolarity = aDriveEnablePolarity;
+    aSettings.iDriveEnableReleaseTime = aDriveEnableReleaseTime;
+    aSettings.iReceiveEnable = aReceiveEnablePortPin;
+    aSettings.iReceiveEnablePolarity = aReceiveEnablePolarity;
+    aSettings.aReceiveEnableReleaseTime = aReceiveEnableReleaseTime;
+
+    RS485_GenericHalfDuplex_Create("Console", &aSettings);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_HalfDuplex_RS485_UART5_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the half-duplex RS485 driver for UART5 as the uEZGUI Console.
+ * Inputs:
+ *      char *aHALSerialName, -- Serial Port Name (
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *      T_uezGPIOPortPin aDriveEnablePortPin -- drive enable GPIO pin
+ *      TBool aDriveEnablePolarity -- Drive enable polarity (ETrue = HIGH true)
+ *      TUInt32 aDriveEnableReleaseTime -- Drive enable release time (in ms)
+ *      T_uezGPIOPortPin aReceiveEnablePortPin -- Receive enable GPIO pin
+ *      TBool aReceiveEnablePolarity -- Receive enable polarity (EFalse = LOW true)
+ *      TUInt32 aReceiveEnableReleaseTime -- Receive enable release time (in ms)
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_HalfDuplex_RS485_UART5_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize,
+        T_uezGPIOPortPin aDriveEnablePortPin,
+        TBool aDriveEnablePolarity,
+        TUInt32 aDriveEnableReleaseTime,
+        T_uezGPIOPortPin aReceiveEnablePortPin,
+        TBool aReceiveEnablePolarity,
+        TUInt32 aReceiveEnableReleaseTime)
+{
+    T_RS485_GenericHalfDuplex_Settings aSettings;
+    DEVICE_CREATE_ONCE();
+    // UART5 on P5.8/P5.7
+    LPC546xx_GPIO5_Require();
+    LPC546xx_UART5_Require(GPIO_P5_8, GPIO_P5_7);
+
+    //GPIO_P5_9 Receive Enable
+    //GPIO_P5_10 Drive enable
+
+    aSettings.iSerialName = aHALSerialName;
+    aSettings.iQueueSendSize = aWriteBufferSize;
+    aSettings.iQueueReceiveSize = aReadBufferSize;
+    aSettings.iDriveEnable = aDriveEnablePortPin;
+    aSettings.iDriveEnablePolarity = aDriveEnablePolarity;
+    aSettings.iDriveEnableReleaseTime = aDriveEnableReleaseTime;
+    aSettings.iReceiveEnable = aReceiveEnablePortPin;
+    aSettings.iReceiveEnablePolarity = aReceiveEnablePolarity;
+    aSettings.aReceiveEnableReleaseTime = aReceiveEnableReleaseTime;
+
+    RS485_GenericHalfDuplex_Create("RS485", &aSettings);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART8_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART8.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART8_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART8 on P3.17/P3.16
+    LPC546xx_GPIO3_Require();
+    LPC546xx_UART8_Require(GPIO_P3_17, GPIO_P3_16);
+    Serial_Generic_FullDuplex_Stream_Create("UART8", "UART8",
+            aWriteBufferSize, aReadBufferSize);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1081,11 +1405,51 @@ void UEZPlatform_FullDuplex_UART0_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
 {
-//    // UART0 on P7.24/P7.25
-//    LPC546xx_GPIO7_Require();
-//    LPC546xx_UART0_Require(GPIO_P7_24, GPIO_P7_25, GPIO_NONE, GPIO_NONE);
-//    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
-//            aWriteBufferSize, aReadBufferSize);
+    // UART0 on P0.29/P0.30
+    LPC546xx_GPIO0_Require();
+    LPC546xx_UART0_Require(GPIO_P0_30, GPIO_P0_29);
+    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART5_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART5.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART5_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART5 on P5.8/P5.7
+    LPC546xx_GPIO5_Require();
+    LPC546xx_UART5_Require(GPIO_P5_8, GPIO_P5_7);
+    Serial_Generic_FullDuplex_Stream_Create("UART5", "UART5",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART6_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART5.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART6_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART6 on P4.3/P4.2
+    LPC546xx_GPIO4_Require();
+    LPC546xx_UART6_Require(GPIO_P4_3, GPIO_P4_2);
+    Serial_Generic_FullDuplex_Stream_Create("UART6", "UART6",
+            aWriteBufferSize, aReadBufferSize);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1108,7 +1472,7 @@ void UEZPlatform_FullDuplex_UART1_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART0_Require
+ * Routine:  UEZPlatform_FullDuplex_UART2_Require
  *---------------------------------------------------------------------------*
  * Description:
  *      Setup the console using a full duplex UART using UART0.
@@ -1127,7 +1491,7 @@ void UEZPlatform_FullDuplex_UART2_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART0_Require
+ * Routine:  UEZPlatform_FullDuplex_UART3_Require
  *---------------------------------------------------------------------------*
  * Description:
  *      Setup the console using a full duplex UART using UART0.
@@ -1450,17 +1814,6 @@ void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZBSP_Pre_PLL_SystemInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Earliest platform init function
- *      Can call before PLL comes on. For example to set LED initial state.
- *---------------------------------------------------------------------------*/
-void UEZBSP_Pre_PLL_SystemInit(void) {
-	//TODO
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_System_Reset
  *---------------------------------------------------------------------------*
  * Description:
@@ -1469,13 +1822,20 @@ void UEZBSP_Pre_PLL_SystemInit(void) {
  *      This is necessary to insure a full hardware reset across all lines
  *      with minimum reset hold timing.
  *---------------------------------------------------------------------------*/
-void UEZPlatform_System_Reset(void){
-	//  TODO test reset pin and code
-    // By default use HW reset pin on this board.
-    /*UEZGPIOSetMux(PIN_HW_RESET, 4);
-    UEZGPIOClear(PIN_HW_RESET);
-    UEZGPIOOutput(PIN_HW_RESET);*/
-    NVIC_SystemReset();
+
+void UEZPlatform_System_Reset(void) {
+  CPUDisableInterrupts(); // Per ARM should disable ISR when resetting, but it isn't done in reset function and CPSID is even missing in intrinsics.h
+  // http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dai0321a/BIHDHCGJ.html  
+  // By default use HW reset pin on this board so that we can trigger POR.
+  // Use low level code to make sure we can call this anytime.  
+  SYSCON->AHBCLKCTRLSET[2] = (1U << CLK_GATE_ABSTRACT_BITS_SHIFT(9)); // enable GPIO4 clock  
+  IOCON->PIO[UEZ_GPIO_PORT_FROM_PORT_PIN(PIN_HW_RESET)][UEZ_GPIO_PIN_FROM_PORT_PIN(PIN_HW_RESET)] = ((0 <<3) | (0x03 << 8) | (1 << 0x07) | (0x00)); //UEZGPIOControl(PIN_HW_RESET, GPIO_CONTROL_SET_CONFIG_BITS, IOCON_D_DEFAULT(0));
+  // Reset any HW that might cause bootup issues on warm boot.
+    
+  // Finally switch the GPIO pin which will trigger POR and hold reset for 150ms.
+  GPIO->CLR[UEZ_GPIO_PORT_FROM_PORT_PIN(PIN_HW_RESET)] |= (1 << UEZ_GPIO_PIN_FROM_PORT_PIN(PIN_HW_RESET)); //UEZGPIOClear(PIN_HW_RESET);
+  GPIO->DIR[UEZ_GPIO_PORT_FROM_PORT_PIN(PIN_HW_RESET)] |= (1 << UEZ_GPIO_PIN_FROM_PORT_PIN(PIN_HW_RESET)); //UEZGPIOOutput(PIN_HW_RESET);
+  //NVIC_SystemReset(); // Cannot use this with SDRAM or you will encounter bootup issues!
 }
 
 /*---------------------------------------------------------------------------*
@@ -1546,7 +1906,7 @@ void UEZPlatform_WirelessNetwork0_Require(void)
 //    UEZGPIOSet(GPIO_P7_16);
 //    UEZGPIOOutput(GPIO_P7_16);
 //
-//    //Set int INTR pin to an input.
+//    //Set int32_t INTR pin to an input.
 //    UEZGPIOControl(GPIO_P5_12, GPIO_CONTROL_SET_CONFIG_BITS, ((1 << 7) | (1 << 6)));
 //    UEZGPIOSetMux(GPIO_P5_12, 4);
 //    UEZGPIOInput(GPIO_P5_12);
@@ -1626,6 +1986,11 @@ void UEZPlatform_Standard_Require(void)
 //
 //    UEZPlatform_Console_FullDuplex_UART0_Require(1024, 1024);
     UEZPlatform_IRTC_Require();
+    
+    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    UEZPlatform_Speaker_Require();
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 }
 
 TBool UEZPlatform_Host_Port_B_Detect(void)
@@ -1678,7 +2043,7 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
     return PROCESSOR_OSCILLATOR_FREQUENCY;
 }
 
-T_pixelColor SUICallbackRGBConvert(int r, int g, int b)
+T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b)
 {
     return RGB(r, g, b);
 }
@@ -1691,7 +2056,7 @@ TUInt32 UEZPlatform_GetBaseAddress(void)
 #include <Source/Library/GUI/SEGGER/emWin/LCD.h>
 #include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
 const void* UEZPlatform_GUIColorConversion(void)
-{
+{    
     return GUICC_M555;
 }
 
@@ -1740,23 +2105,9 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
  *  Determine which stack was in use when the MPU fault occurred and extract
     the stacked PC.
  *
- *  @return         int
+ *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
-#if (COMPILER_TYPE==Keil4)
-__asm void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
-    tst lr, #4
-    ite eq
-    mrseq r0, msp /* The code that generated the exception was using the main stack. */
-    mrsne r0, psp /* The code that generated the exception was using the process stack. */
-    ldr r0, [r0, #24]   /* Extract the value of the stacked PC. */
-    str r0, [sp]    /* Store the value of the stacked PC into ulStacked_pc. */
-
-    /* Inspect ulStacked_pc to locate the offending instruction. */
-loopforever
-    bl loopforever
-}
-#else
 void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
 unsigned long ulStacked_pc = 0UL;
     ( void ) ulStacked_pc;
@@ -1772,7 +2123,6 @@ unsigned long ulStacked_pc = 0UL;
 
     for( ;; );     /* Inspect ulStacked_pc to locate the offending instruction. */
 }
-#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  main
@@ -1781,28 +2131,11 @@ unsigned long ulStacked_pc = 0UL;
  *  The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
  *
- *  @return         int
+ *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
-int main(void)
+int32_t main(void)
 {
-#if 0 //TODO: Remove
-    SYSCON->AHBCLKCTRLSET[0] = (1U << CLK_GATE_ABSTRACT_BITS_SHIFT(17));
-    IOCON->PIO[3][14] = ((0 <<3) | (0x03 << 8) | (1 << 0x07) | (0x00));
-    GPIO->DIR[3] |= (1 << 14);
-
-    while(1){
-        GPIO->SET[3] |= (1<<14);
-        //UEZBSPDelay1US();
-        UEZBSPDelay1MS();
-        //UEZBSPDelayMS(250);
-        GPIO->CLR[3] |= (1<<14);
-        //UEZBSPDelay1US();
-        UEZBSPDelay1MS();
-        //UEZBSPDelayMS(250);
-    }
-#endif
-
     UEZBSP_Startup();
 
     while (1) {

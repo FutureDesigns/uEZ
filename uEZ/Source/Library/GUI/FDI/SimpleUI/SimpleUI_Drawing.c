@@ -160,14 +160,14 @@ void SUIDrawPixel(TUInt32 x, TUInt32 y, T_pixelColor color)
  *---------------------------------------------------------------------------*/
 void SUIFillRect(
     T_pixelColor *pixels,
-    int x1,
-    int y1,
-    int x2,
-    int y2,
+    int32_t x1,
+    int32_t y1,
+    int32_t x2,
+    int32_t y2,
     T_pixelColor color)
 {
-    int y;
-    int len = 1 + x2 - x1;
+    int32_t y;
+    int32_t len = 1 + x2 - x1;
 
     for (y = y1; y <= y2; y++)
         swim_driver_fill_raster(&G_SUISettings.iWindow, x1, y, color, len);
@@ -331,9 +331,9 @@ void SUIRenderRGBRaster(
  *                                        Loads while flag is EFalse, else
  *                                        stops
  * Outputs:
- *      int                         -- 1 if error, 2 if aborted, else 0
+ *      int32_t                         -- 1 if error, 2 if aborted, else 0
  *---------------------------------------------------------------------------*/
-int SUILoadPicture(
+int32_t SUILoadPicture(
     char *aPicture,
     TUInt8 aPage,
     TBool *aAbortFlag,
@@ -341,8 +341,8 @@ int SUILoadPicture(
 {
     T_uezFile file;
     TUInt32 num;
-    int y = 0;
-    int error = 0;
+    int32_t y = 0;
+    int32_t error = 0;
     TUInt32 loadLeft;
     TUInt32 blockSize;
     TUInt8 *p_raster;

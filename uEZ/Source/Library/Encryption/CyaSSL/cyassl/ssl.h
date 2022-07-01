@@ -93,35 +93,35 @@ typedef struct CYASSL_dynlock_value  CYASSL_dynlock_value;
 #define CYASSL_ASN1_UTCTIME CYASSL_ASN1_TIME
 
 typedef struct CYASSL_EVP_PKEY {
-    int type;         /* openssh dereference */
-    int save_type;    /* openssh dereference */
-    int pkey_sz;
+    int32_t type;         /* openssh dereference */
+    int32_t save_type;    /* openssh dereference */
+    int32_t pkey_sz;
     union {
         char* ptr;
     } pkey;
     #ifdef HAVE_ECC
-        int pkey_curve;
+        int32_t pkey_curve;
     #endif
 } CYASSL_EVP_PKEY;
 
 typedef struct CYASSL_MD4_CTX {
-    int buffer[32];      /* big enough to hold, check size in Init */
+    int32_t buffer[32];      /* big enough to hold, check size in Init */
 } CYASSL_MD4_CTX;
 
 
 typedef struct CYASSL_COMP_METHOD {
-    int type;            /* stunnel dereference */
+    int32_t type;            /* stunnel dereference */
 } CYASSL_COMP_METHOD;
 
 
 typedef struct CYASSL_X509_STORE {
-    int                  cache;          /* stunnel dereference */
+    int32_t                  cache;          /* stunnel dereference */
     CYASSL_CERT_MANAGER* cm;
 } CYASSL_X509_STORE;
 
 typedef struct CYASSL_ALERT {
-    int code;
-    int level;
+    int32_t code;
+    int32_t level;
 } CYASSL_ALERT;
 
 typedef struct CYASSL_ALERT_HISTORY {
@@ -148,9 +148,9 @@ typedef struct CYASSL_X509_STORE_CTX {
     char* domain;                /* subject CN domain name */
     void* ex_data;               /* external data, for fortress build */
     void* userCtx;               /* user ctx */
-    int   error;                 /* current error */
-    int   error_depth;           /* cert depth for this error */
-    int   discardSessionCerts;   /* so verify callback can flag for discard */ 
+    int32_t   error;                 /* current error */
+    int32_t   error_depth;           /* cert depth for this error */
+    int32_t   discardSessionCerts;   /* so verify callback can flag for discard */ 
 } CYASSL_X509_STORE_CTX;
 
 
@@ -200,35 +200,35 @@ CYASSL_API CYASSL_METHOD *CyaTLSv1_2_client_method(void);
 
 #if !defined(NO_FILESYSTEM) && !defined(NO_CERTS)
 
-CYASSL_API int CyaSSL_CTX_use_certificate_file(CYASSL_CTX*, const char*, int);
-CYASSL_API int CyaSSL_CTX_use_PrivateKey_file(CYASSL_CTX*, const char*, int);
-CYASSL_API int CyaSSL_CTX_load_verify_locations(CYASSL_CTX*, const char*,
+CYASSL_API int32_t CyaSSL_CTX_use_certificate_file(CYASSL_CTX*, const char*, int32_t);
+CYASSL_API int32_t CyaSSL_CTX_use_PrivateKey_file(CYASSL_CTX*, const char*, int32_t);
+CYASSL_API int32_t CyaSSL_CTX_load_verify_locations(CYASSL_CTX*, const char*,
                                                 const char*);
-CYASSL_API int CyaSSL_CTX_use_certificate_chain_file(CYASSL_CTX *,
+CYASSL_API int32_t CyaSSL_CTX_use_certificate_chain_file(CYASSL_CTX *,
                                                      const char *file);
-CYASSL_API int CyaSSL_CTX_use_RSAPrivateKey_file(CYASSL_CTX*, const char*, int);
+CYASSL_API int32_t CyaSSL_CTX_use_RSAPrivateKey_file(CYASSL_CTX*, const char*, int32_t);
 
-CYASSL_API int CyaSSL_use_certificate_file(CYASSL*, const char*, int);
-CYASSL_API int CyaSSL_use_PrivateKey_file(CYASSL*, const char*, int);
-CYASSL_API int CyaSSL_use_certificate_chain_file(CYASSL*, const char *file);
-CYASSL_API int CyaSSL_use_RSAPrivateKey_file(CYASSL*, const char*, int);
+CYASSL_API int32_t CyaSSL_use_certificate_file(CYASSL*, const char*, int32_t);
+CYASSL_API int32_t CyaSSL_use_PrivateKey_file(CYASSL*, const char*, int32_t);
+CYASSL_API int32_t CyaSSL_use_certificate_chain_file(CYASSL*, const char *file);
+CYASSL_API int32_t CyaSSL_use_RSAPrivateKey_file(CYASSL*, const char*, int32_t);
 
 #ifdef CYASSL_DER_LOAD
-    CYASSL_API int CyaSSL_CTX_der_load_verify_locations(CYASSL_CTX*,
-                                                    const char*, int);
+    CYASSL_API int32_t CyaSSL_CTX_der_load_verify_locations(CYASSL_CTX*,
+                                                    const char*, int32_t);
 #endif
 
 #ifdef HAVE_POLY1305
-    CYASSL_API int CyaSSL_use_old_poly(CYASSL*, int);
+    CYASSL_API int32_t CyaSSL_use_old_poly(CYASSL*, int32_t);
 #endif
 
 #ifdef HAVE_NTRU
-    CYASSL_API int CyaSSL_CTX_use_NTRUPrivateKey_file(CYASSL_CTX*, const char*);
+    CYASSL_API int32_t CyaSSL_CTX_use_NTRUPrivateKey_file(CYASSL_CTX*, const char*);
     /* load NTRU private key blob */
 #endif
 
 #ifndef CYASSL_PEMCERT_TODER_DEFINED
-    CYASSL_API int CyaSSL_PemCertToDer(const char*, unsigned char*, int);
+    CYASSL_API int32_t CyaSSL_PemCertToDer(const char*, unsigned char*, int32_t);
     #define CYASSL_PEMCERT_TODER_DEFINED
 #endif
 
@@ -236,38 +236,38 @@ CYASSL_API int CyaSSL_use_RSAPrivateKey_file(CYASSL*, const char*, int);
 
 CYASSL_API CYASSL_CTX* CyaSSL_CTX_new(CYASSL_METHOD*);
 CYASSL_API CYASSL* CyaSSL_new(CYASSL_CTX*);
-CYASSL_API int  CyaSSL_set_fd (CYASSL*, int);
-CYASSL_API int  CyaSSL_get_ciphers(char*, int);
-CYASSL_API int  CyaSSL_get_fd(const CYASSL*);
-CYASSL_API void CyaSSL_set_using_nonblock(CYASSL*, int);
-CYASSL_API int  CyaSSL_get_using_nonblock(CYASSL*);
-CYASSL_API int  CyaSSL_connect(CYASSL*);     /* please see note at top of README
+CYASSL_API int32_t  CyaSSL_set_fd (CYASSL*, int32_t);
+CYASSL_API int32_t  CyaSSL_get_ciphers(char*, int32_t);
+CYASSL_API int32_t  CyaSSL_get_fd(const CYASSL*);
+CYASSL_API void CyaSSL_set_using_nonblock(CYASSL*, int32_t);
+CYASSL_API int32_t  CyaSSL_get_using_nonblock(CYASSL*);
+CYASSL_API int32_t  CyaSSL_connect(CYASSL*);     /* please see note at top of README
                                              if you get an error from connect */
-CYASSL_API int  CyaSSL_write(CYASSL*, const void*, int);
-CYASSL_API int  CyaSSL_read(CYASSL*, void*, int);
-CYASSL_API int  CyaSSL_peek(CYASSL*, void*, int);
-CYASSL_API int  CyaSSL_accept(CYASSL*);
+CYASSL_API int32_t  CyaSSL_write(CYASSL*, const void*, int32_t);
+CYASSL_API int32_t  CyaSSL_read(CYASSL*, void*, int32_t);
+CYASSL_API int32_t  CyaSSL_peek(CYASSL*, void*, int32_t);
+CYASSL_API int32_t  CyaSSL_accept(CYASSL*);
 CYASSL_API void CyaSSL_CTX_free(CYASSL_CTX*);
 CYASSL_API void CyaSSL_free(CYASSL*);
-CYASSL_API int  CyaSSL_shutdown(CYASSL*);
-CYASSL_API int  CyaSSL_send(CYASSL*, const void*, int sz, int flags);
-CYASSL_API int  CyaSSL_recv(CYASSL*, void*, int sz, int flags);
+CYASSL_API int32_t  CyaSSL_shutdown(CYASSL*);
+CYASSL_API int32_t  CyaSSL_send(CYASSL*, const void*, int32_t sz, int32_t flags);
+CYASSL_API int32_t  CyaSSL_recv(CYASSL*, void*, int32_t sz, int32_t flags);
 
-CYASSL_API void CyaSSL_CTX_set_quiet_shutdown(CYASSL_CTX*, int);
-CYASSL_API void CyaSSL_set_quiet_shutdown(CYASSL*, int);
+CYASSL_API void CyaSSL_CTX_set_quiet_shutdown(CYASSL_CTX*, int32_t);
+CYASSL_API void CyaSSL_set_quiet_shutdown(CYASSL*, int32_t);
 
-CYASSL_API int  CyaSSL_get_error(CYASSL*, int);
-CYASSL_API int  CyaSSL_get_alert_history(CYASSL*, CYASSL_ALERT_HISTORY *);
+CYASSL_API int32_t  CyaSSL_get_error(CYASSL*, int32_t);
+CYASSL_API int32_t  CyaSSL_get_alert_history(CYASSL*, CYASSL_ALERT_HISTORY *);
 
-CYASSL_API int        CyaSSL_set_session(CYASSL* ssl,CYASSL_SESSION* session);
+CYASSL_API int32_t        CyaSSL_set_session(CYASSL* ssl,CYASSL_SESSION* session);
 CYASSL_API CYASSL_SESSION* CyaSSL_get_session(CYASSL* ssl);
 CYASSL_API void       CyaSSL_flush_sessions(CYASSL_CTX *ctx, long tm);
-CYASSL_API int        CyaSSL_SetServerID(CYASSL* ssl, const unsigned char*, 
-                                         int, int);
+CYASSL_API int32_t        CyaSSL_SetServerID(CYASSL* ssl, const unsigned char*, 
+                                         int32_t, int32_t);
 
 #ifdef SESSION_INDEX
-CYASSL_API int CyaSSL_GetSessionIndex(CYASSL* ssl);
-CYASSL_API int CyaSSL_GetSessionAtIndex(int index, CYASSL_SESSION* session);
+CYASSL_API int32_t CyaSSL_GetSessionIndex(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_GetSessionAtIndex(int32_t index, CYASSL_SESSION* session);
 #endif /* SESSION_INDEX */
 
 #if defined(SESSION_INDEX) && defined(SESSION_CERTS)
@@ -275,55 +275,55 @@ CYASSL_API
     CYASSL_X509_CHAIN* CyaSSL_SESSION_get_peer_chain(CYASSL_SESSION* session);
 #endif /* SESSION_INDEX && SESSION_CERTS */
 
-typedef int (*VerifyCallback)(int, CYASSL_X509_STORE_CTX*);
-typedef int (*pem_password_cb)(char*, int, int, void*);
+typedef int32_t (*VerifyCallback)(int32_t, CYASSL_X509_STORE_CTX*);
+typedef int32_t (*pem_password_cb)(char*, int32_t, int32_t, void*);
 
-CYASSL_API void CyaSSL_CTX_set_verify(CYASSL_CTX*, int, 
+CYASSL_API void CyaSSL_CTX_set_verify(CYASSL_CTX*, int32_t, 
                                       VerifyCallback verify_callback);
-CYASSL_API void CyaSSL_set_verify(CYASSL*, int, VerifyCallback verify_callback);
+CYASSL_API void CyaSSL_set_verify(CYASSL*, int32_t, VerifyCallback verify_callback);
 CYASSL_API void CyaSSL_SetCertCbCtx(CYASSL*, void*);
 
-CYASSL_API int  CyaSSL_pending(CYASSL*);
+CYASSL_API int32_t  CyaSSL_pending(CYASSL*);
 
 CYASSL_API void CyaSSL_load_error_strings(void);
-CYASSL_API int  CyaSSL_library_init(void);
+CYASSL_API int32_t  CyaSSL_library_init(void);
 CYASSL_API long CyaSSL_CTX_set_session_cache_mode(CYASSL_CTX*, long);
 
 #ifdef HAVE_SECRET_CALLBACK
-typedef int (*SessionSecretCb)(CYASSL* ssl,
-                                        void* secret, int* secretSz, void* ctx);
-CYASSL_API int  CyaSSL_set_session_secret_cb(CYASSL*, SessionSecretCb, void*);
+typedef int32_t (*SessionSecretCb)(CYASSL* ssl,
+                                        void* secret, int32_t* secretSz, void* ctx);
+CYASSL_API int32_t  CyaSSL_set_session_secret_cb(CYASSL*, SessionSecretCb, void*);
 #endif /* HAVE_SECRET_CALLBACK */
 
 /* session cache persistence */
-CYASSL_API int  CyaSSL_save_session_cache(const char*);
-CYASSL_API int  CyaSSL_restore_session_cache(const char*);
-CYASSL_API int  CyaSSL_memsave_session_cache(void*, int);
-CYASSL_API int  CyaSSL_memrestore_session_cache(const void*, int);
-CYASSL_API int  CyaSSL_get_session_cache_memsize(void);
+CYASSL_API int32_t  CyaSSL_save_session_cache(const char*);
+CYASSL_API int32_t  CyaSSL_restore_session_cache(const char*);
+CYASSL_API int32_t  CyaSSL_memsave_session_cache(void*, int32_t);
+CYASSL_API int32_t  CyaSSL_memrestore_session_cache(const void*, int32_t);
+CYASSL_API int32_t  CyaSSL_get_session_cache_memsize(void);
 
 /* certificate cache persistence, uses ctx since certs are per ctx */
-CYASSL_API int  CyaSSL_CTX_save_cert_cache(CYASSL_CTX*, const char*);
-CYASSL_API int  CyaSSL_CTX_restore_cert_cache(CYASSL_CTX*, const char*);
-CYASSL_API int  CyaSSL_CTX_memsave_cert_cache(CYASSL_CTX*, void*, int, int*);
-CYASSL_API int  CyaSSL_CTX_memrestore_cert_cache(CYASSL_CTX*, const void*, int);
-CYASSL_API int  CyaSSL_CTX_get_cert_cache_memsize(CYASSL_CTX*);
+CYASSL_API int32_t  CyaSSL_CTX_save_cert_cache(CYASSL_CTX*, const char*);
+CYASSL_API int32_t  CyaSSL_CTX_restore_cert_cache(CYASSL_CTX*, const char*);
+CYASSL_API int32_t  CyaSSL_CTX_memsave_cert_cache(CYASSL_CTX*, void*, int32_t, int32_t*);
+CYASSL_API int32_t  CyaSSL_CTX_memrestore_cert_cache(CYASSL_CTX*, const void*, int32_t);
+CYASSL_API int32_t  CyaSSL_CTX_get_cert_cache_memsize(CYASSL_CTX*);
 
 /* only supports full name from cipher_name[] delimited by : */
-CYASSL_API int  CyaSSL_CTX_set_cipher_list(CYASSL_CTX*, const char*);
-CYASSL_API int  CyaSSL_set_cipher_list(CYASSL*, const char*);
+CYASSL_API int32_t  CyaSSL_CTX_set_cipher_list(CYASSL_CTX*, const char*);
+CYASSL_API int32_t  CyaSSL_set_cipher_list(CYASSL*, const char*);
 
 /* Nonblocking DTLS helper functions */
-CYASSL_API int  CyaSSL_dtls_get_current_timeout(CYASSL* ssl);
-CYASSL_API int  CyaSSL_dtls_set_timeout_init(CYASSL* ssl, int);
-CYASSL_API int  CyaSSL_dtls_set_timeout_max(CYASSL* ssl, int);
-CYASSL_API int  CyaSSL_dtls_got_timeout(CYASSL* ssl);
-CYASSL_API int  CyaSSL_dtls(CYASSL* ssl);
+CYASSL_API int32_t  CyaSSL_dtls_get_current_timeout(CYASSL* ssl);
+CYASSL_API int32_t  CyaSSL_dtls_set_timeout_init(CYASSL* ssl, int32_t);
+CYASSL_API int32_t  CyaSSL_dtls_set_timeout_max(CYASSL* ssl, int32_t);
+CYASSL_API int32_t  CyaSSL_dtls_got_timeout(CYASSL* ssl);
+CYASSL_API int32_t  CyaSSL_dtls(CYASSL* ssl);
 
-CYASSL_API int  CyaSSL_dtls_set_peer(CYASSL*, void*, unsigned int);
-CYASSL_API int  CyaSSL_dtls_get_peer(CYASSL*, void*, unsigned int*);
+CYASSL_API int32_t  CyaSSL_dtls_set_peer(CYASSL*, void*, uint32_t);
+CYASSL_API int32_t  CyaSSL_dtls_get_peer(CYASSL*, void*, uint32_t*);
 
-CYASSL_API int   CyaSSL_ERR_GET_REASON(int err);
+CYASSL_API int32_t   CyaSSL_ERR_GET_REASON(int32_t err);
 CYASSL_API char* CyaSSL_ERR_error_string(unsigned long,char*);
 CYASSL_API void  CyaSSL_ERR_error_string_n(unsigned long e, char* buf,
                                            unsigned long sz);
@@ -333,23 +333,23 @@ CYASSL_API const char* CyaSSL_ERR_reason_error_string(unsigned long);
 
 #define STACK_OF(x) x
 
-CYASSL_API int  CyaSSL_set_ex_data(CYASSL*, int, void*);
-CYASSL_API int  CyaSSL_get_shutdown(const CYASSL*);
-CYASSL_API int  CyaSSL_set_rfd(CYASSL*, int);
-CYASSL_API int  CyaSSL_set_wfd(CYASSL*, int);
-CYASSL_API void CyaSSL_set_shutdown(CYASSL*, int);
-CYASSL_API int  CyaSSL_set_session_id_context(CYASSL*, const unsigned char*,
-                                           unsigned int);
+CYASSL_API int32_t  CyaSSL_set_ex_data(CYASSL*, int32_t, void*);
+CYASSL_API int32_t  CyaSSL_get_shutdown(const CYASSL*);
+CYASSL_API int32_t  CyaSSL_set_rfd(CYASSL*, int32_t);
+CYASSL_API int32_t  CyaSSL_set_wfd(CYASSL*, int32_t);
+CYASSL_API void CyaSSL_set_shutdown(CYASSL*, int32_t);
+CYASSL_API int32_t  CyaSSL_set_session_id_context(CYASSL*, const unsigned char*,
+                                           uint32_t);
 CYASSL_API void CyaSSL_set_connect_state(CYASSL*);
 CYASSL_API void CyaSSL_set_accept_state(CYASSL*);
-CYASSL_API int  CyaSSL_session_reused(CYASSL*);
+CYASSL_API int32_t  CyaSSL_session_reused(CYASSL*);
 CYASSL_API void CyaSSL_SESSION_free(CYASSL_SESSION* session);
-CYASSL_API int  CyaSSL_is_init_finished(CYASSL*);
+CYASSL_API int32_t  CyaSSL_is_init_finished(CYASSL*);
 
 CYASSL_API const char*  CyaSSL_get_version(CYASSL*);
-CYASSL_API int  CyaSSL_get_current_cipher_suite(CYASSL* ssl);
+CYASSL_API int32_t  CyaSSL_get_current_cipher_suite(CYASSL* ssl);
 CYASSL_API CYASSL_CIPHER*  CyaSSL_get_current_cipher(CYASSL*);
-CYASSL_API char*        CyaSSL_CIPHER_description(CYASSL_CIPHER*, char*, int);
+CYASSL_API char*        CyaSSL_CIPHER_description(CYASSL_CIPHER*, char*, int32_t);
 CYASSL_API const char*  CyaSSL_CIPHER_get_name(const CYASSL_CIPHER* cipher);
 CYASSL_API const char*  CyaSSL_get_cipher(CYASSL*);
 CYASSL_API CYASSL_SESSION* CyaSSL_get1_session(CYASSL* ssl);
@@ -358,8 +358,8 @@ CYASSL_API CYASSL_SESSION* CyaSSL_get1_session(CYASSL* ssl);
 CYASSL_API void CyaSSL_X509_free(CYASSL_X509*);
 CYASSL_API void CyaSSL_OPENSSL_free(void*);
 
-CYASSL_API int CyaSSL_OCSP_parse_url(char* url, char** host, char** port,
-                                     char** path, int* ssl);
+CYASSL_API int32_t CyaSSL_OCSP_parse_url(char* url, char** host, char** port,
+                                     char** path, int32_t* ssl);
 
 CYASSL_API CYASSL_METHOD* CyaSSLv23_client_method(void);
 CYASSL_API CYASSL_METHOD* CyaSSLv2_client_method(void);
@@ -371,87 +371,87 @@ CYASSL_API void CyaSSL_MD4_Final(unsigned char*, CYASSL_MD4_CTX*);
 
 
 CYASSL_API CYASSL_BIO* CyaSSL_BIO_new(CYASSL_BIO_METHOD*);
-CYASSL_API int  CyaSSL_BIO_free(CYASSL_BIO*);
-CYASSL_API int  CyaSSL_BIO_free_all(CYASSL_BIO*);
-CYASSL_API int  CyaSSL_BIO_read(CYASSL_BIO*, void*, int);
-CYASSL_API int  CyaSSL_BIO_write(CYASSL_BIO*, const void*, int);
+CYASSL_API int32_t  CyaSSL_BIO_free(CYASSL_BIO*);
+CYASSL_API int32_t  CyaSSL_BIO_free_all(CYASSL_BIO*);
+CYASSL_API int32_t  CyaSSL_BIO_read(CYASSL_BIO*, void*, int32_t);
+CYASSL_API int32_t  CyaSSL_BIO_write(CYASSL_BIO*, const void*, int32_t);
 CYASSL_API CYASSL_BIO* CyaSSL_BIO_push(CYASSL_BIO*, CYASSL_BIO* append);
 CYASSL_API CYASSL_BIO* CyaSSL_BIO_pop(CYASSL_BIO*);
-CYASSL_API int  CyaSSL_BIO_flush(CYASSL_BIO*);
-CYASSL_API int  CyaSSL_BIO_pending(CYASSL_BIO*);
+CYASSL_API int32_t  CyaSSL_BIO_flush(CYASSL_BIO*);
+CYASSL_API int32_t  CyaSSL_BIO_pending(CYASSL_BIO*);
 
 CYASSL_API CYASSL_BIO_METHOD* CyaSSL_BIO_f_buffer(void);
 CYASSL_API long CyaSSL_BIO_set_write_buffer_size(CYASSL_BIO*, long size);
 CYASSL_API CYASSL_BIO_METHOD* CyaSSL_BIO_f_ssl(void);
-CYASSL_API CYASSL_BIO*        CyaSSL_BIO_new_socket(int sfd, int flag);
-CYASSL_API int         CyaSSL_BIO_eof(CYASSL_BIO*);
+CYASSL_API CYASSL_BIO*        CyaSSL_BIO_new_socket(int32_t sfd, int32_t flag);
+CYASSL_API int32_t         CyaSSL_BIO_eof(CYASSL_BIO*);
 
 CYASSL_API CYASSL_BIO_METHOD* CyaSSL_BIO_s_mem(void);
 CYASSL_API CYASSL_BIO_METHOD* CyaSSL_BIO_f_base64(void);
-CYASSL_API void CyaSSL_BIO_set_flags(CYASSL_BIO*, int);
+CYASSL_API void CyaSSL_BIO_set_flags(CYASSL_BIO*, int32_t);
 
-CYASSL_API int CyaSSL_BIO_get_mem_data(CYASSL_BIO* bio,const unsigned char** p);
-CYASSL_API CYASSL_BIO* CyaSSL_BIO_new_mem_buf(void* buf, int len);
+CYASSL_API int32_t CyaSSL_BIO_get_mem_data(CYASSL_BIO* bio,const unsigned char** p);
+CYASSL_API CYASSL_BIO* CyaSSL_BIO_new_mem_buf(void* buf, int32_t len);
 
 
-CYASSL_API long        CyaSSL_BIO_set_ssl(CYASSL_BIO*, CYASSL*, int flag);
+CYASSL_API long        CyaSSL_BIO_set_ssl(CYASSL_BIO*, CYASSL*, int32_t flag);
 CYASSL_API void        CyaSSL_set_bio(CYASSL*, CYASSL_BIO* rd, CYASSL_BIO* wr);
 
-CYASSL_API int  CyaSSL_add_all_algorithms(void);
+CYASSL_API int32_t  CyaSSL_add_all_algorithms(void);
 
 CYASSL_API void        CyaSSL_RAND_screen(void);
 CYASSL_API const char* CyaSSL_RAND_file_name(char*, unsigned long);
-CYASSL_API int         CyaSSL_RAND_write_file(const char*);
-CYASSL_API int         CyaSSL_RAND_load_file(const char*, long);
-CYASSL_API int         CyaSSL_RAND_egd(const char*);
-CYASSL_API int         CyaSSL_RAND_seed(const void*, int);
-CYASSL_API void        CyaSSL_RAND_add(const void*, int, double);
+CYASSL_API int32_t         CyaSSL_RAND_write_file(const char*);
+CYASSL_API int32_t         CyaSSL_RAND_load_file(const char*, long);
+CYASSL_API int32_t         CyaSSL_RAND_egd(const char*);
+CYASSL_API int32_t         CyaSSL_RAND_seed(const void*, int32_t);
+CYASSL_API void        CyaSSL_RAND_add(const void*, int32_t, double);
 
 CYASSL_API CYASSL_COMP_METHOD* CyaSSL_COMP_zlib(void);
 CYASSL_API CYASSL_COMP_METHOD* CyaSSL_COMP_rle(void);
-CYASSL_API int CyaSSL_COMP_add_compression_method(int, void*);
+CYASSL_API int32_t CyaSSL_COMP_add_compression_method(int32_t, void*);
 
-CYASSL_API int CyaSSL_get_ex_new_index(long, void*, void*, void*, void*);
+CYASSL_API int32_t CyaSSL_get_ex_new_index(long, void*, void*, void*, void*);
 
 CYASSL_API void CyaSSL_set_id_callback(unsigned long (*f)(void));
-CYASSL_API void CyaSSL_set_locking_callback(void (*f)(int, int, const char*,
-                                                      int));
+CYASSL_API void CyaSSL_set_locking_callback(void (*f)(int32_t, int32_t, const char*,
+                                                      int32_t));
 CYASSL_API void CyaSSL_set_dynlock_create_callback(CYASSL_dynlock_value* (*f)
-                                                   (const char*, int));
-CYASSL_API void CyaSSL_set_dynlock_lock_callback(void (*f)(int,
-                                      CYASSL_dynlock_value*, const char*, int));
+                                                   (const char*, int32_t));
+CYASSL_API void CyaSSL_set_dynlock_lock_callback(void (*f)(int32_t,
+                                      CYASSL_dynlock_value*, const char*, int32_t));
 CYASSL_API void CyaSSL_set_dynlock_destroy_callback(void (*f)
-                                     (CYASSL_dynlock_value*, const char*, int));
-CYASSL_API int  CyaSSL_num_locks(void);
+                                     (CYASSL_dynlock_value*, const char*, int32_t));
+CYASSL_API int32_t  CyaSSL_num_locks(void);
 
 CYASSL_API CYASSL_X509* CyaSSL_X509_STORE_CTX_get_current_cert(
                                                         CYASSL_X509_STORE_CTX*);
-CYASSL_API int   CyaSSL_X509_STORE_CTX_get_error(CYASSL_X509_STORE_CTX*);
-CYASSL_API int   CyaSSL_X509_STORE_CTX_get_error_depth(CYASSL_X509_STORE_CTX*);
+CYASSL_API int32_t   CyaSSL_X509_STORE_CTX_get_error(CYASSL_X509_STORE_CTX*);
+CYASSL_API int32_t   CyaSSL_X509_STORE_CTX_get_error_depth(CYASSL_X509_STORE_CTX*);
 
-CYASSL_API char*       CyaSSL_X509_NAME_oneline(CYASSL_X509_NAME*, char*, int);
+CYASSL_API char*       CyaSSL_X509_NAME_oneline(CYASSL_X509_NAME*, char*, int32_t);
 CYASSL_API CYASSL_X509_NAME*  CyaSSL_X509_get_issuer_name(CYASSL_X509*);
 CYASSL_API CYASSL_X509_NAME*  CyaSSL_X509_get_subject_name(CYASSL_X509*);
-CYASSL_API int  CyaSSL_X509_ext_isSet_by_NID(CYASSL_X509*, int);
-CYASSL_API int  CyaSSL_X509_ext_get_critical_by_NID(CYASSL_X509*, int);
-CYASSL_API int  CyaSSL_X509_get_isCA(CYASSL_X509*);
-CYASSL_API int  CyaSSL_X509_get_isSet_pathLength(CYASSL_X509*);
-CYASSL_API unsigned int CyaSSL_X509_get_pathLength(CYASSL_X509*);
-CYASSL_API unsigned int CyaSSL_X509_get_keyUsage(CYASSL_X509*);
+CYASSL_API int32_t  CyaSSL_X509_ext_isSet_by_NID(CYASSL_X509*, int32_t);
+CYASSL_API int32_t  CyaSSL_X509_ext_get_critical_by_NID(CYASSL_X509*, int32_t);
+CYASSL_API int32_t  CyaSSL_X509_get_isCA(CYASSL_X509*);
+CYASSL_API int32_t  CyaSSL_X509_get_isSet_pathLength(CYASSL_X509*);
+CYASSL_API uint32_t CyaSSL_X509_get_pathLength(CYASSL_X509*);
+CYASSL_API uint32_t CyaSSL_X509_get_keyUsage(CYASSL_X509*);
 CYASSL_API unsigned char* CyaSSL_X509_get_authorityKeyID(
-                                            CYASSL_X509*, unsigned char*, int*);
+                                            CYASSL_X509*, unsigned char*, int32_t*);
 CYASSL_API unsigned char* CyaSSL_X509_get_subjectKeyID(
-                                            CYASSL_X509*, unsigned char*, int*);
-CYASSL_API int CyaSSL_X509_NAME_entry_count(CYASSL_X509_NAME*);
-CYASSL_API int CyaSSL_X509_NAME_get_text_by_NID(
-                                            CYASSL_X509_NAME*, int, char*, int);
-CYASSL_API int         CyaSSL_X509_verify_cert(CYASSL_X509_STORE_CTX*);
+                                            CYASSL_X509*, unsigned char*, int32_t*);
+CYASSL_API int32_t CyaSSL_X509_NAME_entry_count(CYASSL_X509_NAME*);
+CYASSL_API int32_t CyaSSL_X509_NAME_get_text_by_NID(
+                                            CYASSL_X509_NAME*, int32_t, char*, int32_t);
+CYASSL_API int32_t         CyaSSL_X509_verify_cert(CYASSL_X509_STORE_CTX*);
 CYASSL_API const char* CyaSSL_X509_verify_cert_error_string(long);
-CYASSL_API int CyaSSL_X509_get_signature_type(CYASSL_X509*);
-CYASSL_API int CyaSSL_X509_get_signature(CYASSL_X509*, unsigned char*, int*);
+CYASSL_API int32_t CyaSSL_X509_get_signature_type(CYASSL_X509*);
+CYASSL_API int32_t CyaSSL_X509_get_signature(CYASSL_X509*, unsigned char*, int32_t*);
 
-CYASSL_API int CyaSSL_X509_LOOKUP_add_dir(CYASSL_X509_LOOKUP*,const char*,long);
-CYASSL_API int CyaSSL_X509_LOOKUP_load_file(CYASSL_X509_LOOKUP*, const char*,
+CYASSL_API int32_t CyaSSL_X509_LOOKUP_add_dir(CYASSL_X509_LOOKUP*,const char*,long);
+CYASSL_API int32_t CyaSSL_X509_LOOKUP_load_file(CYASSL_X509_LOOKUP*, const char*,
                                             long);
 CYASSL_API CYASSL_X509_LOOKUP_METHOD* CyaSSL_X509_LOOKUP_hash_dir(void);
 CYASSL_API CYASSL_X509_LOOKUP_METHOD* CyaSSL_X509_LOOKUP_file(void);
@@ -460,13 +460,13 @@ CYASSL_API CYASSL_X509_LOOKUP* CyaSSL_X509_STORE_add_lookup(CYASSL_X509_STORE*,
                                                     CYASSL_X509_LOOKUP_METHOD*);
 CYASSL_API CYASSL_X509_STORE*  CyaSSL_X509_STORE_new(void);
 CYASSL_API void         CyaSSL_X509_STORE_free(CYASSL_X509_STORE*);
-CYASSL_API int          CyaSSL_X509_STORE_add_cert(
+CYASSL_API int32_t          CyaSSL_X509_STORE_add_cert(
                                               CYASSL_X509_STORE*, CYASSL_X509*);
-CYASSL_API int          CyaSSL_X509_STORE_set_default_paths(CYASSL_X509_STORE*);
-CYASSL_API int          CyaSSL_X509_STORE_get_by_subject(CYASSL_X509_STORE_CTX*,
-                                   int, CYASSL_X509_NAME*, CYASSL_X509_OBJECT*);
+CYASSL_API int32_t          CyaSSL_X509_STORE_set_default_paths(CYASSL_X509_STORE*);
+CYASSL_API int32_t          CyaSSL_X509_STORE_get_by_subject(CYASSL_X509_STORE_CTX*,
+                                   int32_t, CYASSL_X509_NAME*, CYASSL_X509_OBJECT*);
 CYASSL_API CYASSL_X509_STORE_CTX* CyaSSL_X509_STORE_CTX_new(void);
-CYASSL_API int  CyaSSL_X509_STORE_CTX_init(CYASSL_X509_STORE_CTX*,
+CYASSL_API int32_t  CyaSSL_X509_STORE_CTX_init(CYASSL_X509_STORE_CTX*,
                       CYASSL_X509_STORE*, CYASSL_X509*, STACK_OF(CYASSL_X509)*);
 CYASSL_API void CyaSSL_X509_STORE_CTX_free(CYASSL_X509_STORE_CTX*);
 CYASSL_API void CyaSSL_X509_STORE_CTX_cleanup(CYASSL_X509_STORE_CTX*);
@@ -475,22 +475,22 @@ CYASSL_API CYASSL_ASN1_TIME* CyaSSL_X509_CRL_get_lastUpdate(CYASSL_X509_CRL*);
 CYASSL_API CYASSL_ASN1_TIME* CyaSSL_X509_CRL_get_nextUpdate(CYASSL_X509_CRL*);
 
 CYASSL_API CYASSL_EVP_PKEY* CyaSSL_X509_get_pubkey(CYASSL_X509*);
-CYASSL_API int       CyaSSL_X509_CRL_verify(CYASSL_X509_CRL*, CYASSL_EVP_PKEY*);
+CYASSL_API int32_t       CyaSSL_X509_CRL_verify(CYASSL_X509_CRL*, CYASSL_EVP_PKEY*);
 CYASSL_API void      CyaSSL_X509_STORE_CTX_set_error(CYASSL_X509_STORE_CTX*,
-                                                     int);
+                                                     int32_t);
 CYASSL_API void      CyaSSL_X509_OBJECT_free_contents(CYASSL_X509_OBJECT*);
 CYASSL_API void      CyaSSL_EVP_PKEY_free(CYASSL_EVP_PKEY*);
-CYASSL_API int       CyaSSL_X509_cmp_current_time(const CYASSL_ASN1_TIME*);
-CYASSL_API int       CyaSSL_sk_X509_REVOKED_num(CYASSL_X509_REVOKED*);
+CYASSL_API int32_t       CyaSSL_X509_cmp_current_time(const CYASSL_ASN1_TIME*);
+CYASSL_API int32_t       CyaSSL_sk_X509_REVOKED_num(CYASSL_X509_REVOKED*);
 
 CYASSL_API CYASSL_X509_REVOKED* CyaSSL_X509_CRL_get_REVOKED(CYASSL_X509_CRL*);
 CYASSL_API CYASSL_X509_REVOKED* CyaSSL_sk_X509_REVOKED_value(
-                                                      CYASSL_X509_REVOKED*,int);
+                                                      CYASSL_X509_REVOKED*,int32_t);
 CYASSL_API CYASSL_ASN1_INTEGER* CyaSSL_X509_get_serialNumber(CYASSL_X509*);
 
-CYASSL_API int CyaSSL_ASN1_TIME_print(CYASSL_BIO*, const CYASSL_ASN1_TIME*);
+CYASSL_API int32_t CyaSSL_ASN1_TIME_print(CYASSL_BIO*, const CYASSL_ASN1_TIME*);
 
-CYASSL_API int  CyaSSL_ASN1_INTEGER_cmp(const CYASSL_ASN1_INTEGER*,
+CYASSL_API int32_t  CyaSSL_ASN1_INTEGER_cmp(const CYASSL_ASN1_INTEGER*,
                                        const CYASSL_ASN1_INTEGER*);
 CYASSL_API long CyaSSL_ASN1_INTEGER_get(const CYASSL_ASN1_INTEGER*);
 
@@ -498,9 +498,9 @@ CYASSL_API STACK_OF(CYASSL_X509_NAME)* CyaSSL_load_client_CA_file(const char*);
 
 CYASSL_API void  CyaSSL_CTX_set_client_CA_list(CYASSL_CTX*,
                                                STACK_OF(CYASSL_X509_NAME)*);
-CYASSL_API void* CyaSSL_X509_STORE_CTX_get_ex_data(CYASSL_X509_STORE_CTX*, int);
-CYASSL_API int   CyaSSL_get_ex_data_X509_STORE_CTX_idx(void);
-CYASSL_API void* CyaSSL_get_ex_data(const CYASSL*, int);
+CYASSL_API void* CyaSSL_X509_STORE_CTX_get_ex_data(CYASSL_X509_STORE_CTX*, int32_t);
+CYASSL_API int32_t   CyaSSL_get_ex_data_X509_STORE_CTX_idx(void);
+CYASSL_API void* CyaSSL_get_ex_data(const CYASSL*, int32_t);
 
 CYASSL_API void CyaSSL_CTX_set_default_passwd_cb_userdata(CYASSL_CTX*,
                                                           void* userdata);
@@ -510,18 +510,18 @@ CYASSL_API void CyaSSL_CTX_set_default_passwd_cb(CYASSL_CTX*, pem_password_cb);
 CYASSL_API void CyaSSL_CTX_set_info_callback(CYASSL_CTX*, void (*)(void));
 
 CYASSL_API unsigned long CyaSSL_ERR_peek_error(void);
-CYASSL_API int           CyaSSL_GET_REASON(int);
+CYASSL_API int32_t           CyaSSL_GET_REASON(int32_t);
 
-CYASSL_API char* CyaSSL_alert_type_string_long(int);
-CYASSL_API char* CyaSSL_alert_desc_string_long(int);
+CYASSL_API char* CyaSSL_alert_type_string_long(int32_t);
+CYASSL_API char* CyaSSL_alert_desc_string_long(int32_t);
 CYASSL_API char* CyaSSL_state_string_long(CYASSL*);
 
-CYASSL_API CYASSL_RSA* CyaSSL_RSA_generate_key(int, unsigned long,
-                                               void(*)(int, int, void*), void*);
+CYASSL_API CYASSL_RSA* CyaSSL_RSA_generate_key(int32_t, unsigned long,
+                                               void(*)(int32_t, int32_t, void*), void*);
 CYASSL_API void CyaSSL_CTX_set_tmp_rsa_callback(CYASSL_CTX*,
-                                             CYASSL_RSA*(*)(CYASSL*, int, int));
+                                             CYASSL_RSA*(*)(CYASSL*, int32_t, int32_t));
 
-CYASSL_API int CyaSSL_PEM_def_callback(char*, int num, int w, void* key);
+CYASSL_API int32_t CyaSSL_PEM_def_callback(char*, int32_t num, int32_t w, void* key);
 
 CYASSL_API long CyaSSL_CTX_sess_accept(CYASSL_CTX*);
 CYASSL_API long CyaSSL_CTX_sess_connect(CYASSL_CTX*);
@@ -638,7 +638,7 @@ enum {
 #if !defined(NO_FILESYSTEM) && !defined(NO_STDIO_FILESYSTEM)
 /* CyaSSL extension, provide last error from SSL_get_error
    since not using thread storage error queue */
-CYASSL_API void  CyaSSL_ERR_print_errors_fp(FILE*, int err);
+CYASSL_API void  CyaSSL_ERR_print_errors_fp(FILE*, int32_t err);
 #endif
 
 enum { /* ssl Constants */
@@ -696,8 +696,8 @@ enum { /* ssl Constants */
 
 
 #ifndef NO_PSK
-    typedef unsigned int (*psk_client_callback)(CYASSL*, const char*, char*,
-                                    unsigned int, unsigned char*, unsigned int);
+    typedef uint32_t (*psk_client_callback)(CYASSL*, const char*, char*,
+                                    uint32_t, unsigned char*, uint32_t);
     CYASSL_API void CyaSSL_CTX_set_psk_client_callback(CYASSL_CTX*,
                                                     psk_client_callback);
     CYASSL_API void CyaSSL_set_psk_client_callback(CYASSL*,psk_client_callback);
@@ -705,11 +705,11 @@ enum { /* ssl Constants */
     CYASSL_API const char* CyaSSL_get_psk_identity_hint(const CYASSL*);
     CYASSL_API const char* CyaSSL_get_psk_identity(const CYASSL*);
 
-    CYASSL_API int CyaSSL_CTX_use_psk_identity_hint(CYASSL_CTX*, const char*);
-    CYASSL_API int CyaSSL_use_psk_identity_hint(CYASSL*, const char*);
+    CYASSL_API int32_t CyaSSL_CTX_use_psk_identity_hint(CYASSL_CTX*, const char*);
+    CYASSL_API int32_t CyaSSL_use_psk_identity_hint(CYASSL*, const char*);
 
-    typedef unsigned int (*psk_server_callback)(CYASSL*, const char*,
-                          unsigned char*, unsigned int);
+    typedef uint32_t (*psk_server_callback)(CYASSL*, const char*,
+                          unsigned char*, uint32_t);
     CYASSL_API void CyaSSL_CTX_set_psk_server_callback(CYASSL_CTX*,
                                                     psk_server_callback);
     CYASSL_API void CyaSSL_set_psk_server_callback(CYASSL*,psk_server_callback);
@@ -719,7 +719,7 @@ enum { /* ssl Constants */
 
 
 #ifdef HAVE_ANON
-    CYASSL_API int CyaSSL_CTX_allow_anon_cipher(CYASSL_CTX*);
+    CYASSL_API int32_t CyaSSL_CTX_allow_anon_cipher(CYASSL_CTX*);
 #endif /* HAVE_ANON */
 
 
@@ -729,19 +729,19 @@ enum {  /* ERR Constants */
     ERR_TXT_STRING = 1
 };
 
-CYASSL_API unsigned long CyaSSL_ERR_get_error_line_data(const char**, int*,
-                                                 const char**, int *);
+CYASSL_API unsigned long CyaSSL_ERR_get_error_line_data(const char**, int32_t*,
+                                                 const char**, int32_t *);
 
 CYASSL_API unsigned long CyaSSL_ERR_get_error(void);
 CYASSL_API void          CyaSSL_ERR_clear_error(void);
 
 
-CYASSL_API int  CyaSSL_RAND_status(void);
-CYASSL_API int  CyaSSL_RAND_bytes(unsigned char* buf, int num);
+CYASSL_API int32_t  CyaSSL_RAND_status(void);
+CYASSL_API int32_t  CyaSSL_RAND_bytes(unsigned char* buf, int32_t num);
 CYASSL_API CYASSL_METHOD *CyaSSLv23_server_method(void);
 CYASSL_API long CyaSSL_CTX_set_options(CYASSL_CTX*, long);
 #ifndef NO_CERTS
-  CYASSL_API int  CyaSSL_CTX_check_private_key(CYASSL_CTX*);
+  CYASSL_API int32_t  CyaSSL_CTX_check_private_key(CYASSL_CTX*);
 #endif /* !NO_CERTS */
 
 CYASSL_API void CyaSSL_ERR_free_strings(void);
@@ -751,41 +751,41 @@ CYASSL_API void CyaSSL_EVP_cleanup(void);
 CYASSL_API void CyaSSL_cleanup_all_ex_data(void);
 CYASSL_API long CyaSSL_CTX_set_mode(CYASSL_CTX* ctx, long mode);
 CYASSL_API long CyaSSL_CTX_get_mode(CYASSL_CTX* ctx);
-CYASSL_API void CyaSSL_CTX_set_default_read_ahead(CYASSL_CTX* ctx, int m);
+CYASSL_API void CyaSSL_CTX_set_default_read_ahead(CYASSL_CTX* ctx, int32_t m);
 
 CYASSL_API long CyaSSL_CTX_sess_set_cache_size(CYASSL_CTX*, long);
 
-CYASSL_API int  CyaSSL_CTX_set_default_verify_paths(CYASSL_CTX*);
-CYASSL_API int  CyaSSL_CTX_set_session_id_context(CYASSL_CTX*,
-                                            const unsigned char*, unsigned int);
+CYASSL_API int32_t  CyaSSL_CTX_set_default_verify_paths(CYASSL_CTX*);
+CYASSL_API int32_t  CyaSSL_CTX_set_session_id_context(CYASSL_CTX*,
+                                            const unsigned char*, uint32_t);
 CYASSL_API CYASSL_X509* CyaSSL_get_peer_certificate(CYASSL* ssl);
 
-CYASSL_API int CyaSSL_want_read(CYASSL*);
-CYASSL_API int CyaSSL_want_write(CYASSL*);
+CYASSL_API int32_t CyaSSL_want_read(CYASSL*);
+CYASSL_API int32_t CyaSSL_want_write(CYASSL*);
 
-CYASSL_API int CyaSSL_BIO_printf(CYASSL_BIO*, const char*, ...);
-CYASSL_API int CyaSSL_ASN1_UTCTIME_print(CYASSL_BIO*,
+CYASSL_API int32_t CyaSSL_BIO_printf(CYASSL_BIO*, const char*, ...);
+CYASSL_API int32_t CyaSSL_ASN1_UTCTIME_print(CYASSL_BIO*,
                                          const CYASSL_ASN1_UTCTIME*);
-CYASSL_API int   CyaSSL_sk_num(CYASSL_X509_REVOKED*);
-CYASSL_API void* CyaSSL_sk_value(CYASSL_X509_REVOKED*, int);
+CYASSL_API int32_t   CyaSSL_sk_num(CYASSL_X509_REVOKED*);
+CYASSL_API void* CyaSSL_sk_value(CYASSL_X509_REVOKED*, int32_t);
 
 /* stunnel 4.28 needs */
-CYASSL_API void* CyaSSL_CTX_get_ex_data(const CYASSL_CTX*, int);
-CYASSL_API int   CyaSSL_CTX_set_ex_data(CYASSL_CTX*, int, void*);
+CYASSL_API void* CyaSSL_CTX_get_ex_data(const CYASSL_CTX*, int32_t);
+CYASSL_API int32_t   CyaSSL_CTX_set_ex_data(CYASSL_CTX*, int32_t, void*);
 CYASSL_API void  CyaSSL_CTX_sess_set_get_cb(CYASSL_CTX*,
-                       CYASSL_SESSION*(*f)(CYASSL*, unsigned char*, int, int*));
+                       CYASSL_SESSION*(*f)(CYASSL*, unsigned char*, int32_t, int32_t*));
 CYASSL_API void  CyaSSL_CTX_sess_set_new_cb(CYASSL_CTX*,
-                                            int (*f)(CYASSL*, CYASSL_SESSION*));
+                                            int32_t (*f)(CYASSL*, CYASSL_SESSION*));
 CYASSL_API void  CyaSSL_CTX_sess_set_remove_cb(CYASSL_CTX*,
                                        void (*f)(CYASSL_CTX*, CYASSL_SESSION*));
 
-CYASSL_API int          CyaSSL_i2d_SSL_SESSION(CYASSL_SESSION*,unsigned char**);
+CYASSL_API int32_t          CyaSSL_i2d_SSL_SESSION(CYASSL_SESSION*,unsigned char**);
 CYASSL_API CYASSL_SESSION* CyaSSL_d2i_SSL_SESSION(CYASSL_SESSION**,
                                                    const unsigned char**, long);
 
 CYASSL_API long CyaSSL_SESSION_get_timeout(const CYASSL_SESSION*);
 CYASSL_API long CyaSSL_SESSION_get_time(const CYASSL_SESSION*);
-CYASSL_API int  CyaSSL_CTX_get_ex_new_index(long, void*, void*, void*, void*);
+CYASSL_API int32_t  CyaSSL_CTX_get_ex_new_index(long, void*, void*, void*, void*);
 
 /* extra ends */
 
@@ -794,111 +794,111 @@ CYASSL_API int  CyaSSL_CTX_get_ex_new_index(long, void*, void*, void*, void*);
 
 /* call before SSL_connect, if verifying will add name check to
    date check and signature check */
-CYASSL_API int CyaSSL_check_domain_name(CYASSL* ssl, const char* dn);
+CYASSL_API int32_t CyaSSL_check_domain_name(CYASSL* ssl, const char* dn);
 
 /* need to call once to load library (session cache) */
-CYASSL_API int CyaSSL_Init(void);
+CYASSL_API int32_t CyaSSL_Init(void);
 /* call when done to cleanup/free session cache mutex / resources  */
-CYASSL_API int CyaSSL_Cleanup(void);
+CYASSL_API int32_t CyaSSL_Cleanup(void);
 
 /* turn logging on, only if compiled in */
-CYASSL_API int  CyaSSL_Debugging_ON(void);
+CYASSL_API int32_t  CyaSSL_Debugging_ON(void);
 /* turn logging off */
 CYASSL_API void CyaSSL_Debugging_OFF(void);
 
 /* do accept or connect depedning on side */
-CYASSL_API int CyaSSL_negotiate(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_negotiate(CYASSL* ssl);
 /* turn on CyaSSL data compression */
-CYASSL_API int CyaSSL_set_compression(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_set_compression(CYASSL* ssl);
 
-CYASSL_API int CyaSSL_set_timeout(CYASSL*, unsigned int);
-CYASSL_API int CyaSSL_CTX_set_timeout(CYASSL_CTX*, unsigned int);
+CYASSL_API int32_t CyaSSL_set_timeout(CYASSL*, uint32_t);
+CYASSL_API int32_t CyaSSL_CTX_set_timeout(CYASSL_CTX*, uint32_t);
 
 /* get CyaSSL peer X509_CHAIN */
 CYASSL_API CYASSL_X509_CHAIN* CyaSSL_get_peer_chain(CYASSL* ssl);
 /* peer chain count */
-CYASSL_API int  CyaSSL_get_chain_count(CYASSL_X509_CHAIN* chain);
+CYASSL_API int32_t  CyaSSL_get_chain_count(CYASSL_X509_CHAIN* chain);
 /* index cert length */
-CYASSL_API int  CyaSSL_get_chain_length(CYASSL_X509_CHAIN*, int idx);
+CYASSL_API int32_t  CyaSSL_get_chain_length(CYASSL_X509_CHAIN*, int32_t idx);
 /* index cert */
-CYASSL_API unsigned char* CyaSSL_get_chain_cert(CYASSL_X509_CHAIN*, int idx);
+CYASSL_API unsigned char* CyaSSL_get_chain_cert(CYASSL_X509_CHAIN*, int32_t idx);
 /* index cert in X509 */
-CYASSL_API CYASSL_X509* CyaSSL_get_chain_X509(CYASSL_X509_CHAIN*, int idx);
+CYASSL_API CYASSL_X509* CyaSSL_get_chain_X509(CYASSL_X509_CHAIN*, int32_t idx);
 /* free X509 */
 CYASSL_API void CyaSSL_FreeX509(CYASSL_X509*);
 /* get index cert in PEM */
-CYASSL_API int  CyaSSL_get_chain_cert_pem(CYASSL_X509_CHAIN*, int idx,
-                                unsigned char* buffer, int inLen, int* outLen);
+CYASSL_API int32_t  CyaSSL_get_chain_cert_pem(CYASSL_X509_CHAIN*, int32_t idx,
+                                unsigned char* buffer, int32_t inLen, int32_t* outLen);
 CYASSL_API const unsigned char* CyaSSL_get_sessionID(const CYASSL_SESSION* s);
-CYASSL_API int  CyaSSL_X509_get_serial_number(CYASSL_X509*,unsigned char*,int*);
+CYASSL_API int32_t  CyaSSL_X509_get_serial_number(CYASSL_X509*,unsigned char*,int32_t*);
 CYASSL_API char*  CyaSSL_X509_get_subjectCN(CYASSL_X509*);
-CYASSL_API const unsigned char* CyaSSL_X509_get_der(CYASSL_X509*, int*);
+CYASSL_API const unsigned char* CyaSSL_X509_get_der(CYASSL_X509*, int32_t*);
 CYASSL_API const unsigned char* CyaSSL_X509_notBefore(CYASSL_X509*);
 CYASSL_API const unsigned char* CyaSSL_X509_notAfter(CYASSL_X509*);
-CYASSL_API int CyaSSL_X509_version(CYASSL_X509*);
+CYASSL_API int32_t CyaSSL_X509_version(CYASSL_X509*);
 CYASSL_API 
 
-CYASSL_API int CyaSSL_cmp_peer_cert_to_file(CYASSL*, const char*);
+CYASSL_API int32_t CyaSSL_cmp_peer_cert_to_file(CYASSL*, const char*);
 
 CYASSL_API char* CyaSSL_X509_get_next_altname(CYASSL_X509*);
 
 CYASSL_API CYASSL_X509*
-    CyaSSL_X509_d2i(CYASSL_X509** x509, const unsigned char* in, int len);
+    CyaSSL_X509_d2i(CYASSL_X509** x509, const unsigned char* in, int32_t len);
 #ifndef NO_FILESYSTEM
     #ifndef NO_STDIO_FILESYSTEM
     CYASSL_API CYASSL_X509*
         CyaSSL_X509_d2i_fp(CYASSL_X509** x509, FILE* file);
     #endif
 CYASSL_API CYASSL_X509*
-    CyaSSL_X509_load_certificate_file(const char* fname, int format);
+    CyaSSL_X509_load_certificate_file(const char* fname, int32_t format);
 #endif
 
 #ifdef CYASSL_SEP
     CYASSL_API unsigned char*
-           CyaSSL_X509_get_device_type(CYASSL_X509*, unsigned char*, int*);
+           CyaSSL_X509_get_device_type(CYASSL_X509*, unsigned char*, int32_t*);
     CYASSL_API unsigned char*
-           CyaSSL_X509_get_hw_type(CYASSL_X509*, unsigned char*, int*);
+           CyaSSL_X509_get_hw_type(CYASSL_X509*, unsigned char*, int32_t*);
     CYASSL_API unsigned char*
-           CyaSSL_X509_get_hw_serial_number(CYASSL_X509*, unsigned char*, int*);
+           CyaSSL_X509_get_hw_serial_number(CYASSL_X509*, unsigned char*, int32_t*);
 #endif
 
 /* connect enough to get peer cert */
-CYASSL_API int  CyaSSL_connect_cert(CYASSL* ssl);
+CYASSL_API int32_t  CyaSSL_connect_cert(CYASSL* ssl);
 
 /* XXX This should be #ifndef NO_DH */
 #ifndef NO_CERTS
 /* server Diffie-Hellman parameters */
-CYASSL_API int  CyaSSL_SetTmpDH(CYASSL*, const unsigned char* p, int pSz,
-                                const unsigned char* g, int gSz);
-CYASSL_API int  CyaSSL_SetTmpDH_buffer(CYASSL*, const unsigned char* b, long sz,
-                                       int format);
-CYASSL_API int  CyaSSL_SetTmpEC_DHE_Sz(CYASSL*, unsigned short);
+CYASSL_API int32_t  CyaSSL_SetTmpDH(CYASSL*, const unsigned char* p, int32_t pSz,
+                                const unsigned char* g, int32_t gSz);
+CYASSL_API int32_t  CyaSSL_SetTmpDH_buffer(CYASSL*, const unsigned char* b, long sz,
+                                       int32_t format);
+CYASSL_API int32_t  CyaSSL_SetTmpEC_DHE_Sz(CYASSL*, unsigned short);
 #ifndef NO_FILESYSTEM
-    CYASSL_API int  CyaSSL_SetTmpDH_file(CYASSL*, const char* f, int format);
+    CYASSL_API int32_t  CyaSSL_SetTmpDH_file(CYASSL*, const char* f, int32_t format);
 #endif
 
 /* server ctx Diffie-Hellman parameters */
-CYASSL_API int  CyaSSL_CTX_SetTmpDH(CYASSL_CTX*, const unsigned char* p,
-                                    int pSz, const unsigned char* g, int gSz);
-CYASSL_API int  CyaSSL_CTX_SetTmpDH_buffer(CYASSL_CTX*, const unsigned char* b,
-                                           long sz, int format);
-CYASSL_API int  CyaSSL_CTX_SetTmpEC_DHE_Sz(CYASSL_CTX*, unsigned short);
+CYASSL_API int32_t  CyaSSL_CTX_SetTmpDH(CYASSL_CTX*, const unsigned char* p,
+                                    int32_t pSz, const unsigned char* g, int32_t gSz);
+CYASSL_API int32_t  CyaSSL_CTX_SetTmpDH_buffer(CYASSL_CTX*, const unsigned char* b,
+                                           long sz, int32_t format);
+CYASSL_API int32_t  CyaSSL_CTX_SetTmpEC_DHE_Sz(CYASSL_CTX*, unsigned short);
 
 #ifndef NO_FILESYSTEM
-    CYASSL_API int  CyaSSL_CTX_SetTmpDH_file(CYASSL_CTX*, const char* f,
-                                             int format);
+    CYASSL_API int32_t  CyaSSL_CTX_SetTmpDH_file(CYASSL_CTX*, const char* f,
+                                             int32_t format);
 #endif
 #endif
 
 /* keyblock size in bytes or -1 */
 /* need to call CyaSSL_KeepArrays before handshake to save keys */
-CYASSL_API int CyaSSL_get_keyblock_size(CYASSL*);
-CYASSL_API int CyaSSL_get_keys(CYASSL*,unsigned char** ms, unsigned int* msLen,
-                                       unsigned char** sr, unsigned int* srLen,
-                                       unsigned char** cr, unsigned int* crLen);
+CYASSL_API int32_t CyaSSL_get_keyblock_size(CYASSL*);
+CYASSL_API int32_t CyaSSL_get_keys(CYASSL*,unsigned char** ms, uint32_t* msLen,
+                                       unsigned char** sr, uint32_t* srLen,
+                                       unsigned char** cr, uint32_t* crLen);
 
 /* Computes EAP-TLS and EAP-TTLS keying material from the master_secret. */
-CYASSL_API int CyaSSL_make_eap_keys(CYASSL*, void* key, unsigned int len, 
+CYASSL_API int32_t CyaSSL_make_eap_keys(CYASSL*, void* key, uint32_t len, 
                                                              const char* label);
 
 
@@ -911,40 +911,40 @@ CYASSL_API int CyaSSL_make_eap_keys(CYASSL*, void* key, unsigned int len,
             #include <sys/uio.h>
         #endif
         /* allow writev style writing */
-        CYASSL_API int CyaSSL_writev(CYASSL* ssl, const struct iovec* iov,
-                                     int iovcnt);
+        CYASSL_API int32_t CyaSSL_writev(CYASSL* ssl, const struct iovec* iov,
+                                     int32_t iovcnt);
     #endif
 #endif
 
 
 #ifndef NO_CERTS
     /* SSL_CTX versions */
-    CYASSL_API int CyaSSL_CTX_UnloadCAs(CYASSL_CTX*);
-    CYASSL_API int CyaSSL_CTX_load_verify_buffer(CYASSL_CTX*, 
-                                               const unsigned char*, long, int);
-    CYASSL_API int CyaSSL_CTX_use_certificate_buffer(CYASSL_CTX*,
-                                               const unsigned char*, long, int);
-    CYASSL_API int CyaSSL_CTX_use_PrivateKey_buffer(CYASSL_CTX*,
-                                               const unsigned char*, long, int);
-    CYASSL_API int CyaSSL_CTX_use_certificate_chain_buffer(CYASSL_CTX*, 
+    CYASSL_API int32_t CyaSSL_CTX_UnloadCAs(CYASSL_CTX*);
+    CYASSL_API int32_t CyaSSL_CTX_load_verify_buffer(CYASSL_CTX*, 
+                                               const unsigned char*, long, int32_t);
+    CYASSL_API int32_t CyaSSL_CTX_use_certificate_buffer(CYASSL_CTX*,
+                                               const unsigned char*, long, int32_t);
+    CYASSL_API int32_t CyaSSL_CTX_use_PrivateKey_buffer(CYASSL_CTX*,
+                                               const unsigned char*, long, int32_t);
+    CYASSL_API int32_t CyaSSL_CTX_use_certificate_chain_buffer(CYASSL_CTX*, 
                                                     const unsigned char*, long);
 
     /* SSL versions */
-    CYASSL_API int CyaSSL_use_certificate_buffer(CYASSL*, const unsigned char*,
-                                               long, int);
-    CYASSL_API int CyaSSL_use_PrivateKey_buffer(CYASSL*, const unsigned char*,
-                                               long, int);
-    CYASSL_API int CyaSSL_use_certificate_chain_buffer(CYASSL*, 
+    CYASSL_API int32_t CyaSSL_use_certificate_buffer(CYASSL*, const unsigned char*,
+                                               long, int32_t);
+    CYASSL_API int32_t CyaSSL_use_PrivateKey_buffer(CYASSL*, const unsigned char*,
+                                               long, int32_t);
+    CYASSL_API int32_t CyaSSL_use_certificate_chain_buffer(CYASSL*, 
                                                const unsigned char*, long);
-    CYASSL_API int CyaSSL_UnloadCertsKeys(CYASSL*);
+    CYASSL_API int32_t CyaSSL_UnloadCertsKeys(CYASSL*);
 #endif
 
-CYASSL_API int CyaSSL_CTX_set_group_messages(CYASSL_CTX*);
-CYASSL_API int CyaSSL_set_group_messages(CYASSL*);
+CYASSL_API int32_t CyaSSL_CTX_set_group_messages(CYASSL_CTX*);
+CYASSL_API int32_t CyaSSL_set_group_messages(CYASSL*);
 
 /* I/O callbacks */
-typedef int (*CallbackIORecv)(CYASSL *ssl, char *buf, int sz, void *ctx);
-typedef int (*CallbackIOSend)(CYASSL *ssl, char *buf, int sz, void *ctx);
+typedef int32_t (*CallbackIORecv)(CYASSL *ssl, char *buf, int32_t sz, void *ctx);
+typedef int32_t (*CallbackIOSend)(CYASSL *ssl, char *buf, int32_t sz, void *ctx);
 
 #ifdef HAVE_FUZZER
 enum fuzzer_type {
@@ -955,8 +955,8 @@ enum fuzzer_type {
     FUZZ_HEAD      = 4
 };
 
-typedef int (*CallbackFuzzer)(CYASSL* ssl, const unsigned char* buf, int sz,
-        int type, void* fuzzCtx);
+typedef int32_t (*CallbackFuzzer)(CYASSL* ssl, const unsigned char* buf, int32_t sz,
+        int32_t type, void* fuzzCtx);
 
 CYASSL_API void CyaSSL_SetFuzzerCb(CYASSL* ssl, CallbackFuzzer cbf, void* fCtx);
 #endif
@@ -970,26 +970,26 @@ CYASSL_API void CyaSSL_SetIOWriteCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetIOReadCtx( CYASSL* ssl);
 CYASSL_API void* CyaSSL_GetIOWriteCtx(CYASSL* ssl);
 
-CYASSL_API void CyaSSL_SetIOReadFlags( CYASSL* ssl, int flags);
-CYASSL_API void CyaSSL_SetIOWriteFlags(CYASSL* ssl, int flags);
+CYASSL_API void CyaSSL_SetIOReadFlags( CYASSL* ssl, int32_t flags);
+CYASSL_API void CyaSSL_SetIOWriteFlags(CYASSL* ssl, int32_t flags);
 
 
 #ifndef CYASSL_USER_IO
     /* default IO callbacks */
-    CYASSL_API int EmbedReceive(CYASSL* ssl, char* buf, int sz, void* ctx);
-    CYASSL_API int EmbedSend(CYASSL* ssl, char* buf, int sz, void* ctx);
+    CYASSL_API int32_t EmbedReceive(CYASSL* ssl, char* buf, int32_t sz, void* ctx);
+    CYASSL_API int32_t EmbedSend(CYASSL* ssl, char* buf, int32_t sz, void* ctx);
 
     #ifdef HAVE_OCSP
-        CYASSL_API int EmbedOcspLookup(void*, const char*, int, unsigned char*,
-                                       int, unsigned char**);
+        CYASSL_API int32_t EmbedOcspLookup(void*, const char*, int32_t, unsigned char*,
+                                       int32_t, unsigned char**);
         CYASSL_API void EmbedOcspRespFree(void*, unsigned char*);
     #endif
 
     #ifdef CYASSL_DTLS
-        CYASSL_API int EmbedReceiveFrom(CYASSL* ssl, char* buf, int sz, void*);
-        CYASSL_API int EmbedSendTo(CYASSL* ssl, char* buf, int sz, void* ctx);
-        CYASSL_API int EmbedGenerateCookie(CYASSL* ssl, unsigned char* buf,
-                                           int sz, void*);
+        CYASSL_API int32_t EmbedReceiveFrom(CYASSL* ssl, char* buf, int32_t sz, void*);
+        CYASSL_API int32_t EmbedSendTo(CYASSL* ssl, char* buf, int32_t sz, void* ctx);
+        CYASSL_API int32_t EmbedGenerateCookie(CYASSL* ssl, unsigned char* buf,
+                                           int32_t sz, void*);
     #endif /* CYASSL_DTLS */
 #endif /* CYASSL_USER_IO */
 
@@ -999,7 +999,7 @@ CYASSL_API void CyaSSL_SetIOWriteFlags(CYASSL* ssl, int flags);
                                       ULONG waitoption);
 #endif
 
-typedef int (*CallbackGenCookie)(CYASSL* ssl, unsigned char* buf, int sz,
+typedef int32_t (*CallbackGenCookie)(CYASSL* ssl, unsigned char* buf, int32_t sz,
                                  void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetGenCookie(CYASSL_CTX*, CallbackGenCookie);
 CYASSL_API void  CyaSSL_SetCookieCtx(CYASSL* ssl, void *ctx);
@@ -1028,55 +1028,55 @@ enum {
     CYASSL_CHAIN_CA = 2           /* added to cache from trusted chain */
 };
 
-CYASSL_API int CyaSSL_SetMinVersion(CYASSL* ssl, int version);
-CYASSL_API int CyaSSL_GetObjectSize(void);  /* object size based on build */
-CYASSL_API int CyaSSL_SetVersion(CYASSL* ssl, int version);
-CYASSL_API int CyaSSL_KeyPemToDer(const unsigned char*, int sz, unsigned char*,
-                                  int, const char*);
-CYASSL_API int CyaSSL_CertPemToDer(const unsigned char*, int sz, unsigned char*,
-                                   int, int);
+CYASSL_API int32_t CyaSSL_SetMinVersion(CYASSL* ssl, int32_t version);
+CYASSL_API int32_t CyaSSL_GetObjectSize(void);  /* object size based on build */
+CYASSL_API int32_t CyaSSL_SetVersion(CYASSL* ssl, int32_t version);
+CYASSL_API int32_t CyaSSL_KeyPemToDer(const unsigned char*, int32_t sz, unsigned char*,
+                                  int32_t, const char*);
+CYASSL_API int32_t CyaSSL_CertPemToDer(const unsigned char*, int32_t sz, unsigned char*,
+                                   int32_t, int32_t);
 
-typedef void (*CallbackCACache)(unsigned char* der, int sz, int type);
+typedef void (*CallbackCACache)(unsigned char* der, int32_t sz, int32_t type);
 typedef void (*CbMissingCRL)(const char* url);
-typedef int  (*CbOCSPIO)(void*, const char*, int,
-                                         unsigned char*, int, unsigned char**);
+typedef int32_t  (*CbOCSPIO)(void*, const char*, int32_t,
+                                         unsigned char*, int32_t, unsigned char**);
 typedef void (*CbOCSPRespFree)(void*,unsigned char*);
 
 /* User Atomic Record Layer CallBacks */
-typedef int (*CallbackMacEncrypt)(CYASSL* ssl, unsigned char* macOut, 
-       const unsigned char* macIn, unsigned int macInSz, int macContent, 
-       int macVerify, unsigned char* encOut, const unsigned char* encIn,
-       unsigned int encSz, void* ctx);
+typedef int32_t (*CallbackMacEncrypt)(CYASSL* ssl, unsigned char* macOut, 
+       const unsigned char* macIn, uint32_t macInSz, int32_t macContent, 
+       int32_t macVerify, unsigned char* encOut, const unsigned char* encIn,
+       uint32_t encSz, void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetMacEncryptCb(CYASSL_CTX*, CallbackMacEncrypt);
 CYASSL_API void  CyaSSL_SetMacEncryptCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetMacEncryptCtx(CYASSL* ssl);
 
-typedef int (*CallbackDecryptVerify)(CYASSL* ssl, 
+typedef int32_t (*CallbackDecryptVerify)(CYASSL* ssl, 
        unsigned char* decOut, const unsigned char* decIn,
-       unsigned int decSz, int content, int verify, unsigned int* padSz,
+       uint32_t decSz, int32_t content, int32_t verify, uint32_t* padSz,
        void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetDecryptVerifyCb(CYASSL_CTX*,
                                                CallbackDecryptVerify);
 CYASSL_API void  CyaSSL_SetDecryptVerifyCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetDecryptVerifyCtx(CYASSL* ssl);
 
-CYASSL_API const unsigned char* CyaSSL_GetMacSecret(CYASSL*, int);
+CYASSL_API const unsigned char* CyaSSL_GetMacSecret(CYASSL*, int32_t);
 CYASSL_API const unsigned char* CyaSSL_GetClientWriteKey(CYASSL*);
 CYASSL_API const unsigned char* CyaSSL_GetClientWriteIV(CYASSL*);
 CYASSL_API const unsigned char* CyaSSL_GetServerWriteKey(CYASSL*);
 CYASSL_API const unsigned char* CyaSSL_GetServerWriteIV(CYASSL*);
-CYASSL_API int                  CyaSSL_GetKeySize(CYASSL*);
-CYASSL_API int                  CyaSSL_GetIVSize(CYASSL*);
-CYASSL_API int                  CyaSSL_GetSide(CYASSL*);
-CYASSL_API int                  CyaSSL_IsTLSv1_1(CYASSL*);
-CYASSL_API int                  CyaSSL_GetBulkCipher(CYASSL*);
-CYASSL_API int                  CyaSSL_GetCipherBlockSize(CYASSL*);
-CYASSL_API int                  CyaSSL_GetAeadMacSize(CYASSL*);
-CYASSL_API int                  CyaSSL_GetHmacSize(CYASSL*);
-CYASSL_API int                  CyaSSL_GetHmacType(CYASSL*);
-CYASSL_API int                  CyaSSL_GetCipherType(CYASSL*);
-CYASSL_API int                  CyaSSL_SetTlsHmacInner(CYASSL*, unsigned char*,
-                                                       unsigned int, int, int);
+CYASSL_API int32_t                  CyaSSL_GetKeySize(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetIVSize(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetSide(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_IsTLSv1_1(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetBulkCipher(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetCipherBlockSize(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetAeadMacSize(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetHmacSize(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetHmacType(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_GetCipherType(CYASSL*);
+CYASSL_API int32_t                  CyaSSL_SetTlsHmacInner(CYASSL*, unsigned char*,
+                                                       uint32_t, int32_t, int32_t);
 
 /* Atomic User Needs */
 enum {
@@ -1116,57 +1116,57 @@ enum KDF_MacAlgorithm {
 
 
 /* Public Key Callback support */
-typedef int (*CallbackEccSign)(CYASSL* ssl, 
-       const unsigned char* in, unsigned int inSz,
-       unsigned char* out, unsigned int* outSz,
-       const unsigned char* keyDer, unsigned int keySz,
+typedef int32_t (*CallbackEccSign)(CYASSL* ssl, 
+       const unsigned char* in, uint32_t inSz,
+       unsigned char* out, uint32_t* outSz,
+       const unsigned char* keyDer, uint32_t keySz,
        void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetEccSignCb(CYASSL_CTX*, CallbackEccSign);
 CYASSL_API void  CyaSSL_SetEccSignCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetEccSignCtx(CYASSL* ssl);
 
-typedef int (*CallbackEccVerify)(CYASSL* ssl, 
-       const unsigned char* sig, unsigned int sigSz,
-       const unsigned char* hash, unsigned int hashSz,
-       const unsigned char* keyDer, unsigned int keySz,
-       int* result, void* ctx);
+typedef int32_t (*CallbackEccVerify)(CYASSL* ssl, 
+       const unsigned char* sig, uint32_t sigSz,
+       const unsigned char* hash, uint32_t hashSz,
+       const unsigned char* keyDer, uint32_t keySz,
+       int32_t* result, void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetEccVerifyCb(CYASSL_CTX*, CallbackEccVerify);
 CYASSL_API void  CyaSSL_SetEccVerifyCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetEccVerifyCtx(CYASSL* ssl);
 
-typedef int (*CallbackRsaSign)(CYASSL* ssl, 
-       const unsigned char* in, unsigned int inSz,
-       unsigned char* out, unsigned int* outSz,
-       const unsigned char* keyDer, unsigned int keySz,
+typedef int32_t (*CallbackRsaSign)(CYASSL* ssl, 
+       const unsigned char* in, uint32_t inSz,
+       unsigned char* out, uint32_t* outSz,
+       const unsigned char* keyDer, uint32_t keySz,
        void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetRsaSignCb(CYASSL_CTX*, CallbackRsaSign);
 CYASSL_API void  CyaSSL_SetRsaSignCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetRsaSignCtx(CYASSL* ssl);
 
-typedef int (*CallbackRsaVerify)(CYASSL* ssl, 
-       unsigned char* sig, unsigned int sigSz,
+typedef int32_t (*CallbackRsaVerify)(CYASSL* ssl, 
+       unsigned char* sig, uint32_t sigSz,
        unsigned char** out,
-       const unsigned char* keyDer, unsigned int keySz,
+       const unsigned char* keyDer, uint32_t keySz,
        void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetRsaVerifyCb(CYASSL_CTX*, CallbackRsaVerify);
 CYASSL_API void  CyaSSL_SetRsaVerifyCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetRsaVerifyCtx(CYASSL* ssl);
 
 /* RSA Public Encrypt cb */
-typedef int (*CallbackRsaEnc)(CYASSL* ssl, 
-       const unsigned char* in, unsigned int inSz,
-       unsigned char* out, unsigned int* outSz,
-       const unsigned char* keyDer, unsigned int keySz,
+typedef int32_t (*CallbackRsaEnc)(CYASSL* ssl, 
+       const unsigned char* in, uint32_t inSz,
+       unsigned char* out, uint32_t* outSz,
+       const unsigned char* keyDer, uint32_t keySz,
        void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetRsaEncCb(CYASSL_CTX*, CallbackRsaEnc);
 CYASSL_API void  CyaSSL_SetRsaEncCtx(CYASSL* ssl, void *ctx);
 CYASSL_API void* CyaSSL_GetRsaEncCtx(CYASSL* ssl);
 
 /* RSA Private Decrypt cb */
-typedef int (*CallbackRsaDec)(CYASSL* ssl, 
-       unsigned char* in, unsigned int inSz,
+typedef int32_t (*CallbackRsaDec)(CYASSL* ssl, 
+       unsigned char* in, uint32_t inSz,
        unsigned char** out,
-       const unsigned char* keyDer, unsigned int keySz,
+       const unsigned char* keyDer, uint32_t keySz,
        void* ctx);
 CYASSL_API void  CyaSSL_CTX_SetRsaDecCb(CYASSL_CTX*, CallbackRsaDec);
 CYASSL_API void  CyaSSL_SetRsaDecCtx(CYASSL* ssl, void *ctx);
@@ -1179,49 +1179,49 @@ CYASSL_API void* CyaSSL_GetRsaDecCtx(CYASSL* ssl);
     CYASSL_API CYASSL_CERT_MANAGER* CyaSSL_CertManagerNew(void);
     CYASSL_API void CyaSSL_CertManagerFree(CYASSL_CERT_MANAGER*);
 
-    CYASSL_API int CyaSSL_CertManagerLoadCA(CYASSL_CERT_MANAGER*, const char* f,
+    CYASSL_API int32_t CyaSSL_CertManagerLoadCA(CYASSL_CERT_MANAGER*, const char* f,
                                                                  const char* d);
-    CYASSL_API int CyaSSL_CertManagerUnloadCAs(CYASSL_CERT_MANAGER* cm);
-    CYASSL_API int CyaSSL_CertManagerVerify(CYASSL_CERT_MANAGER*, const char* f,
-                                                                    int format);
-    CYASSL_API int CyaSSL_CertManagerVerifyBuffer(CYASSL_CERT_MANAGER* cm,
-                                const unsigned char* buff, long sz, int format);
-    CYASSL_API int CyaSSL_CertManagerCheckCRL(CYASSL_CERT_MANAGER*,
-                                                        unsigned char*, int sz);
-    CYASSL_API int CyaSSL_CertManagerEnableCRL(CYASSL_CERT_MANAGER*,
-                                                                   int options);
-    CYASSL_API int CyaSSL_CertManagerDisableCRL(CYASSL_CERT_MANAGER*);
-    CYASSL_API int CyaSSL_CertManagerLoadCRL(CYASSL_CERT_MANAGER*, const char*,
-                                                                      int, int);
-    CYASSL_API int CyaSSL_CertManagerSetCRL_Cb(CYASSL_CERT_MANAGER*,
+    CYASSL_API int32_t CyaSSL_CertManagerUnloadCAs(CYASSL_CERT_MANAGER* cm);
+    CYASSL_API int32_t CyaSSL_CertManagerVerify(CYASSL_CERT_MANAGER*, const char* f,
+                                                                    int32_t format);
+    CYASSL_API int32_t CyaSSL_CertManagerVerifyBuffer(CYASSL_CERT_MANAGER* cm,
+                                const unsigned char* buff, long sz, int32_t format);
+    CYASSL_API int32_t CyaSSL_CertManagerCheckCRL(CYASSL_CERT_MANAGER*,
+                                                        unsigned char*, int32_t sz);
+    CYASSL_API int32_t CyaSSL_CertManagerEnableCRL(CYASSL_CERT_MANAGER*,
+                                                                   int32_t options);
+    CYASSL_API int32_t CyaSSL_CertManagerDisableCRL(CYASSL_CERT_MANAGER*);
+    CYASSL_API int32_t CyaSSL_CertManagerLoadCRL(CYASSL_CERT_MANAGER*, const char*,
+                                                                      int32_t, int32_t);
+    CYASSL_API int32_t CyaSSL_CertManagerSetCRL_Cb(CYASSL_CERT_MANAGER*,
                                                                   CbMissingCRL);
-    CYASSL_API int CyaSSL_CertManagerCheckOCSP(CYASSL_CERT_MANAGER*,
-                                                        unsigned char*, int sz);
-    CYASSL_API int CyaSSL_CertManagerEnableOCSP(CYASSL_CERT_MANAGER*,
-                                                                   int options);
-    CYASSL_API int CyaSSL_CertManagerDisableOCSP(CYASSL_CERT_MANAGER*);
-    CYASSL_API int CyaSSL_CertManagerSetOCSPOverrideURL(CYASSL_CERT_MANAGER*,
+    CYASSL_API int32_t CyaSSL_CertManagerCheckOCSP(CYASSL_CERT_MANAGER*,
+                                                        unsigned char*, int32_t sz);
+    CYASSL_API int32_t CyaSSL_CertManagerEnableOCSP(CYASSL_CERT_MANAGER*,
+                                                                   int32_t options);
+    CYASSL_API int32_t CyaSSL_CertManagerDisableOCSP(CYASSL_CERT_MANAGER*);
+    CYASSL_API int32_t CyaSSL_CertManagerSetOCSPOverrideURL(CYASSL_CERT_MANAGER*,
                                                                    const char*);
-    CYASSL_API int CyaSSL_CertManagerSetOCSP_Cb(CYASSL_CERT_MANAGER*,
+    CYASSL_API int32_t CyaSSL_CertManagerSetOCSP_Cb(CYASSL_CERT_MANAGER*,
                                                CbOCSPIO, CbOCSPRespFree, void*);
 
-    CYASSL_API int CyaSSL_EnableCRL(CYASSL* ssl, int options);
-    CYASSL_API int CyaSSL_DisableCRL(CYASSL* ssl);
-    CYASSL_API int CyaSSL_LoadCRL(CYASSL*, const char*, int, int);
-    CYASSL_API int CyaSSL_SetCRL_Cb(CYASSL*, CbMissingCRL);
-    CYASSL_API int CyaSSL_EnableOCSP(CYASSL*, int options);
-    CYASSL_API int CyaSSL_DisableOCSP(CYASSL*);
-    CYASSL_API int CyaSSL_SetOCSP_OverrideURL(CYASSL*, const char*);
-    CYASSL_API int CyaSSL_SetOCSP_Cb(CYASSL*, CbOCSPIO, CbOCSPRespFree, void*);
+    CYASSL_API int32_t CyaSSL_EnableCRL(CYASSL* ssl, int32_t options);
+    CYASSL_API int32_t CyaSSL_DisableCRL(CYASSL* ssl);
+    CYASSL_API int32_t CyaSSL_LoadCRL(CYASSL*, const char*, int32_t, int32_t);
+    CYASSL_API int32_t CyaSSL_SetCRL_Cb(CYASSL*, CbMissingCRL);
+    CYASSL_API int32_t CyaSSL_EnableOCSP(CYASSL*, int32_t options);
+    CYASSL_API int32_t CyaSSL_DisableOCSP(CYASSL*);
+    CYASSL_API int32_t CyaSSL_SetOCSP_OverrideURL(CYASSL*, const char*);
+    CYASSL_API int32_t CyaSSL_SetOCSP_Cb(CYASSL*, CbOCSPIO, CbOCSPRespFree, void*);
 
-    CYASSL_API int CyaSSL_CTX_EnableCRL(CYASSL_CTX* ctx, int options);
-    CYASSL_API int CyaSSL_CTX_DisableCRL(CYASSL_CTX* ctx);
-    CYASSL_API int CyaSSL_CTX_LoadCRL(CYASSL_CTX*, const char*, int, int);
-    CYASSL_API int CyaSSL_CTX_SetCRL_Cb(CYASSL_CTX*, CbMissingCRL);
-    CYASSL_API int CyaSSL_CTX_EnableOCSP(CYASSL_CTX*, int options);
-    CYASSL_API int CyaSSL_CTX_DisableOCSP(CYASSL_CTX*);
-    CYASSL_API int CyaSSL_CTX_SetOCSP_OverrideURL(CYASSL_CTX*, const char*);
-    CYASSL_API int CyaSSL_CTX_SetOCSP_Cb(CYASSL_CTX*,
+    CYASSL_API int32_t CyaSSL_CTX_EnableCRL(CYASSL_CTX* ctx, int32_t options);
+    CYASSL_API int32_t CyaSSL_CTX_DisableCRL(CYASSL_CTX* ctx);
+    CYASSL_API int32_t CyaSSL_CTX_LoadCRL(CYASSL_CTX*, const char*, int32_t, int32_t);
+    CYASSL_API int32_t CyaSSL_CTX_SetCRL_Cb(CYASSL_CTX*, CbMissingCRL);
+    CYASSL_API int32_t CyaSSL_CTX_EnableOCSP(CYASSL_CTX*, int32_t options);
+    CYASSL_API int32_t CyaSSL_CTX_DisableOCSP(CYASSL_CTX*);
+    CYASSL_API int32_t CyaSSL_CTX_SetOCSP_OverrideURL(CYASSL_CTX*, const char*);
+    CYASSL_API int32_t CyaSSL_CTX_SetOCSP_Cb(CYASSL_CTX*,
                                                CbOCSPIO, CbOCSPRespFree, void*);
 #endif /* !NO_CERTS */
 
@@ -1233,8 +1233,8 @@ CYASSL_API void CyaSSL_FreeArrays(CYASSL*);
 
 
 /* cavium additions */
-CYASSL_API int CyaSSL_UseCavium(CYASSL*, int devId);
-CYASSL_API int CyaSSL_CTX_UseCavium(CYASSL_CTX*, int devId);
+CYASSL_API int32_t CyaSSL_UseCavium(CYASSL*, int32_t devId);
+CYASSL_API int32_t CyaSSL_CTX_UseCavium(CYASSL_CTX*, int32_t devId);
 
 /* TLS Extensions */
 
@@ -1246,9 +1246,9 @@ enum {
     CYASSL_SNI_HOST_NAME = 0
 };
 
-CYASSL_API int CyaSSL_UseSNI(CYASSL* ssl, unsigned char type, const void* data,
+CYASSL_API int32_t CyaSSL_UseSNI(CYASSL* ssl, unsigned char type, const void* data,
                                                            unsigned short size);
-CYASSL_API int CyaSSL_CTX_UseSNI(CYASSL_CTX* ctx, unsigned char type,
+CYASSL_API int32_t CyaSSL_CTX_UseSNI(CYASSL_CTX* ctx, unsigned char type,
                                          const void* data, unsigned short size);
 
 #ifndef NO_CYASSL_SERVER
@@ -1275,9 +1275,9 @@ CYASSL_API unsigned char CyaSSL_SNI_Status(CYASSL* ssl, unsigned char type);
 
 CYASSL_API unsigned short CyaSSL_SNI_GetRequest(CYASSL *ssl, unsigned char type,
                                                                    void** data);
-CYASSL_API int CyaSSL_SNI_GetFromBuffer(
-                 const unsigned char* clientHello, unsigned int helloSz,
-                 unsigned char type, unsigned char* sni, unsigned int* inOutSz);
+CYASSL_API int32_t CyaSSL_SNI_GetFromBuffer(
+                 const unsigned char* clientHello, uint32_t helloSz,
+                 unsigned char type, unsigned char* sni, uint32_t* inOutSz);
 
 #endif
 #endif
@@ -1296,8 +1296,8 @@ enum {
 
 #ifndef NO_CYASSL_CLIENT
 
-CYASSL_API int CyaSSL_UseMaxFragment(CYASSL* ssl, unsigned char mfl);
-CYASSL_API int CyaSSL_CTX_UseMaxFragment(CYASSL_CTX* ctx, unsigned char mfl);
+CYASSL_API int32_t CyaSSL_UseMaxFragment(CYASSL* ssl, unsigned char mfl);
+CYASSL_API int32_t CyaSSL_CTX_UseMaxFragment(CYASSL_CTX* ctx, unsigned char mfl);
 
 #endif
 #endif
@@ -1306,8 +1306,8 @@ CYASSL_API int CyaSSL_CTX_UseMaxFragment(CYASSL_CTX* ctx, unsigned char mfl);
 #ifdef HAVE_TRUNCATED_HMAC
 #ifndef NO_CYASSL_CLIENT
 
-CYASSL_API int CyaSSL_UseTruncatedHMAC(CYASSL* ssl);
-CYASSL_API int CyaSSL_CTX_UseTruncatedHMAC(CYASSL_CTX* ctx);
+CYASSL_API int32_t CyaSSL_UseTruncatedHMAC(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_CTX_UseTruncatedHMAC(CYASSL_CTX* ctx);
 
 #endif
 #endif
@@ -1326,8 +1326,8 @@ enum {
 
 #ifndef NO_CYASSL_CLIENT
 
-CYASSL_API int CyaSSL_UseSupportedCurve(CYASSL* ssl, unsigned short name);
-CYASSL_API int CyaSSL_CTX_UseSupportedCurve(CYASSL_CTX* ctx,
+CYASSL_API int32_t CyaSSL_UseSupportedCurve(CYASSL* ssl, unsigned short name);
+CYASSL_API int32_t CyaSSL_CTX_UseSupportedCurve(CYASSL_CTX* ctx,
                                                            unsigned short name);
 
 #endif
@@ -1336,8 +1336,8 @@ CYASSL_API int CyaSSL_CTX_UseSupportedCurve(CYASSL_CTX* ctx,
 /* Secure Renegotiation */
 #ifdef HAVE_SECURE_RENEGOTIATION
 
-CYASSL_API int CyaSSL_UseSecureRenegotiation(CYASSL* ssl);
-CYASSL_API int CyaSSL_Rehandshake(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_UseSecureRenegotiation(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_Rehandshake(CYASSL* ssl);
 
 #endif
 
@@ -1345,12 +1345,12 @@ CYASSL_API int CyaSSL_Rehandshake(CYASSL* ssl);
 #ifdef HAVE_SESSION_TICKET
 #ifndef NO_CYASSL_CLIENT
 
-CYASSL_API int CyaSSL_UseSessionTicket(CYASSL* ssl);
-CYASSL_API int CyaSSL_CTX_UseSessionTicket(CYASSL_CTX* ctx);
-CYASSL_API int CyaSSL_get_SessionTicket(CYASSL*, unsigned char*, unsigned int*);
-CYASSL_API int CyaSSL_set_SessionTicket(CYASSL*, unsigned char*, unsigned int);
-typedef int (*CallbackSessionTicket)(CYASSL*, const unsigned char*, int, void*);
-CYASSL_API int CyaSSL_set_SessionTicket_cb(CYASSL*,
+CYASSL_API int32_t CyaSSL_UseSessionTicket(CYASSL* ssl);
+CYASSL_API int32_t CyaSSL_CTX_UseSessionTicket(CYASSL_CTX* ctx);
+CYASSL_API int32_t CyaSSL_get_SessionTicket(CYASSL*, unsigned char*, uint32_t*);
+CYASSL_API int32_t CyaSSL_set_SessionTicket(CYASSL*, unsigned char*, uint32_t);
+typedef int32_t (*CallbackSessionTicket)(CYASSL*, const unsigned char*, int32_t, void*);
+CYASSL_API int32_t CyaSSL_set_SessionTicket_cb(CYASSL*,
                                                   CallbackSessionTicket, void*);
 
 #endif
@@ -1362,30 +1362,30 @@ CYASSL_API int CyaSSL_set_SessionTicket_cb(CYASSL*,
 
 /* External facing KDF */
 CYASSL_API
-int CyaSSL_MakeTlsMasterSecret(unsigned char* ms, unsigned int msLen,
-                               const unsigned char* pms, unsigned int pmsLen,
+int32_t CyaSSL_MakeTlsMasterSecret(unsigned char* ms, uint32_t msLen,
+                               const unsigned char* pms, uint32_t pmsLen,
                                const unsigned char* cr, const unsigned char* sr,
-                               int tls1_2, int hash_type);
+                               int32_t tls1_2, int32_t hash_type);
 
 CYASSL_API
-int CyaSSL_DeriveTlsKeys(unsigned char* key_data, unsigned int keyLen,
-                               const unsigned char* ms, unsigned int msLen,
+int32_t CyaSSL_DeriveTlsKeys(unsigned char* key_data, uint32_t keyLen,
+                               const unsigned char* ms, uint32_t msLen,
                                const unsigned char* sr, const unsigned char* cr,
-                               int tls1_2, int hash_type);
+                               int32_t tls1_2, int32_t hash_type);
 
 #ifdef CYASSL_CALLBACKS
 
 /* used internally by CyaSSL while OpenSSL types aren't */
 #include <cyassl/callbacks.h>
 
-typedef int (*HandShakeCallBack)(HandShakeInfo*);
-typedef int (*TimeoutCallBack)(TimeoutInfo*);
+typedef int32_t (*HandShakeCallBack)(HandShakeInfo*);
+typedef int32_t (*TimeoutCallBack)(TimeoutInfo*);
 
 /* CyaSSL connect extension allowing HandShakeCallBack and/or TimeoutCallBack
    for diagnostics */
-CYASSL_API int CyaSSL_connect_ex(CYASSL*, HandShakeCallBack, TimeoutCallBack,
+CYASSL_API int32_t CyaSSL_connect_ex(CYASSL*, HandShakeCallBack, TimeoutCallBack,
                                  Timeval);
-CYASSL_API int CyaSSL_accept_ex(CYASSL*, HandShakeCallBack, TimeoutCallBack,
+CYASSL_API int32_t CyaSSL_accept_ex(CYASSL*, HandShakeCallBack, TimeoutCallBack,
                                 Timeval);
 
 #endif /* CYASSL_CALLBACKS */

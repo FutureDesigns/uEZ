@@ -89,7 +89,7 @@ static void tcp_parseopt(struct tcp_pcb *pcb);
 static void tcp_listen_input(struct tcp_pcb_listen *pcb);
 static void tcp_timewait_input(struct tcp_pcb *pcb);
 
-static int tcp_input_delayed_close(struct tcp_pcb *pcb);
+static int32_t tcp_input_delayed_close(struct tcp_pcb *pcb);
 
 /**
  * The initial input processing of TCP. It verifies the TCP header, demultiplexes
@@ -532,7 +532,7 @@ dropped:
  * any more.
  * @returns 1 if the pcb has been closed and deallocated, 0 otherwise
  */
-static int
+static int32_t
 tcp_input_delayed_close(struct tcp_pcb *pcb)
 {
   if (recv_flags & TF_CLOSED) {
@@ -1023,7 +1023,7 @@ tcp_receive(struct tcp_pcb *pcb)
   s16_t m;
   u32_t right_wnd_edge;
   u16_t new_tot_len;
-  int found_dupack = 0;
+  int32_t found_dupack = 0;
 #if TCP_OOSEQ_MAX_BYTES || TCP_OOSEQ_MAX_PBUFS
   u32_t ooseq_blen;
   u16_t ooseq_qlen;
@@ -1393,7 +1393,7 @@ tcp_receive(struct tcp_pcb *pcb)
           if (TCPH_FLAGS(inseg.tcphdr) & TCP_FIN) {
             /* Must remove the FIN from the header as we're trimming
              * that byte of sequence-space from the packet */
-            TCPH_FLAGS_SET(inseg.tcphdr, TCPH_FLAGS(inseg.tcphdr) & ~(unsigned int)TCP_FIN);
+            TCPH_FLAGS_SET(inseg.tcphdr, TCPH_FLAGS(inseg.tcphdr) & ~(uint32_t)TCP_FIN);
           }
           /* Adjust length of segment to fit in the window. */
           TCPWND_CHECK16(pcb->rcv_wnd);

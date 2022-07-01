@@ -230,7 +230,7 @@ struct netconn {
 #endif /* LWIP_TCP */
   /** only used for socket layer */
 #if LWIP_SOCKET
-  int socket;
+  int32_t socket;
 #endif /* LWIP_SOCKET */
 #if LWIP_SO_SNDTIMEO
   /** timeout to wait for sending data (which means enqueueing data for sending
@@ -240,16 +240,16 @@ struct netconn {
 #if LWIP_SO_RCVTIMEO
   /** timeout in milliseconds to wait for new data to be received
       (or connections to arrive for listening netconns) */
-  int recv_timeout;
+  int32_t recv_timeout;
 #endif /* LWIP_SO_RCVTIMEO */
 #if LWIP_SO_RCVBUF
   /** maximum amount of bytes queued in recvmbox
       not used for TCP: adjust TCP_WND instead! */
-  int recv_bufsize;
+  int32_t recv_bufsize;
   /** number of bytes currently in recvmbox to be received,
       tested against recv_bufsize to limit bytes on recvmbox
       for UDP and RAW, used for FIONREAD */
-  int recv_avail;
+  int32_t recv_avail;
 #endif /* LWIP_SO_RCVBUF */
 #if LWIP_SO_LINGER
    /** values <0 mean linger is disabled, values > 0 are seconds to linger */

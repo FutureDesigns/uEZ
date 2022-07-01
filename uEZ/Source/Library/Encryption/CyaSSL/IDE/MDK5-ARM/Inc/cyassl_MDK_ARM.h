@@ -31,9 +31,9 @@
 
 /* Go to STDIN */
 #define fgets(buff, sz, fd)   Cyassl_fgets(buff, sz, fd) 
-extern char * Cyassl_fgets ( char * str, int num, FILE * f ) ;
+extern char * Cyassl_fgets ( char * str, int32_t num, FILE * f ) ;
 
-#define SOCKET_T int
+#define SOCKET_T int32_t
 
 /*** #include <socket.h> ***/
 #define  NUMBITSPERBYTE 8
@@ -62,7 +62,7 @@ struct timeval {
 #include "rl_net.h" 
 #endif
  
-typedef int socklen_t ;
+typedef int32_t socklen_t ;
 
 /* for avoiding conflict with KEIL-TCPnet BSD socket */
 /* Bodies are in cyassl_KEIL_RL.c                    */
@@ -79,20 +79,20 @@ typedef int socklen_t ;
 #define tcp_listen      Cyassl_tcp_listen
 #define tcp_select     Cyassl_tcp_select
 
-extern int Cyassl_connect(int sd, const struct sockaddr * sa, int sz) ;
-extern int Cyassl_accept(int sd, struct sockaddr *addr, socklen_t *addrlen);
-extern int Cyassl_recv(int sd, void *buf, size_t len, int flags);
-extern int Cyassl_send(int sd, const void *buf, size_t len, int flags);
-extern void Cyassl_sleep(int sec) ;
-extern int Cyassl_tcp_select(int sd, int timeout) ;
+extern int32_t Cyassl_connect(int32_t sd, const struct sockaddr * sa, int32_t sz) ;
+extern int32_t Cyassl_accept(int32_t sd, struct sockaddr *addr, socklen_t *addrlen);
+extern int32_t Cyassl_recv(int32_t sd, void *buf, size_t len, int32_t flags);
+extern int32_t Cyassl_send(int32_t sd, const void *buf, size_t len, int32_t flags);
+extern void Cyassl_sleep(int32_t sec) ;
+extern int32_t Cyassl_tcp_select(int32_t sd, int32_t timeout) ;
 
 /** KEIL-RL TCPnet ****/
 /* TCPnet BSD socket does not have following functions. */
 extern char *inet_ntoa(struct in_addr in);
 extern unsigned long inet_addr(const char *cp);
-extern int setsockopt(int sockfd, int level, int optname, 
+extern int32_t setsockopt(int32_t sockfd, int32_t level, int32_t optname, 
                                       const void *optval, socklen_t optlen);
-extern int select(int nfds, fd_set *readfds, fd_set *writefds,
+extern int32_t select(int32_t nfds, fd_set *readfds, fd_set *writefds,
                           fd_set *exceptfds, const struct timeval *timeout);
 
 #endif /* CYASSL_KEIL_TCP_NET */

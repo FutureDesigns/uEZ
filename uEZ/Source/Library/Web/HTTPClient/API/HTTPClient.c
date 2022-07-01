@@ -32,10 +32,10 @@
 /**
  * Here to set a socket to nonblocking (or not).
  */
-int sktSetNonblocking( int socket , int on_off )
+int32_t sktSetNonblocking( int32_t socket , int32_t on_off )
 {
 #ifndef _UEZ_RTOS
-    int                    flags_orig , flags_new;
+    int32_t                    flags_orig , flags_new;
 
     // Get current socket flags; return if error.
     flags_orig = fcntl( socket , F_GETFL , 0 );
@@ -1622,7 +1622,7 @@ UINT32 HTTPIntrnConnectionClose (P_HTTP_SESSION pHTTPSession)
             if((pHTTPSession->HttpFlags & HTTP_CLIENT_FLAG_SECURE) == HTTP_CLIENT_FLAG_SECURE)
             {
                 // TLS Close
-                nRetCode = HTTPWrapperSSLClose((int)pHTTPSession);
+                nRetCode = HTTPWrapperSSLClose((int32_t)pHTTPSession);
             }
 
             UEZNetworkSocketClose(pHTTPSession->HttpConnection.HttpNetwork, pHTTPSession->HttpConnection.HttpSocket);
@@ -1721,7 +1721,7 @@ UINT32 HTTPIntrnConnectionOpen (P_HTTP_SESSION pHTTPSession)
             
             Backup = HTTPStrExtract(pHTTPSession->HttpUrl.UrlHost.pParam,nNullOffset,0); 
             // Resolve the host name
-            nRetCode = HostByName((int)pHTTPSession, pHTTPSession->HttpUrl.UrlHost.pParam, &ipAddress);
+            nRetCode = HostByName((int32_t)pHTTPSession, pHTTPSession->HttpUrl.UrlHost.pParam, &ipAddress);
             
             // Restore from backup (fix the buffer)
             HTTPStrExtract(pHTTPSession->HttpUrl.UrlHost.pParam,nNullOffset,Backup);
@@ -1731,7 +1731,7 @@ UINT32 HTTPIntrnConnectionOpen (P_HTTP_SESSION pHTTPSession)
         else
         {
             // Using a Proxy server so resolve the proxy host name
-            nRetCode = HostByName((int)pHTTPSession, pHTTPSession->HttpProxy.ProxyHost, &ipAddress);
+            nRetCode = HostByName((int32_t)pHTTPSession, pHTTPSession->HttpProxy.ProxyHost, &ipAddress);
         }
         
         // See if we have a valid response from the net resolve operation
@@ -1845,7 +1845,7 @@ UINT32 HTTPIntrnSend (P_HTTP_SESSION pHTTPSession,
                 // TLS Protected connection
                 if(pConnection->TlsNego == FALSE)
                 {
-                    nRetCode = HTTPWrapperSSLNegotiate((int)pHTTPSession, "desktop");
+                    nRetCode = HTTPWrapperSSLNegotiate((int32_t)pHTTPSession, "desktop");
                     if(nRetCode != 0)
                     {
                         // TLS Error
@@ -1855,7 +1855,7 @@ UINT32 HTTPIntrnSend (P_HTTP_SESSION pHTTPSession,
                     pConnection->TlsNego = TRUE;
                 }
 
-                nRetCode = HTTPWrapperSSLSend((int)pHTTPSession,pData,*(nLength),0);   
+                nRetCode = HTTPWrapperSSLSend((int32_t)pHTTPSession,pData,*(nLength),0);   
             }
             else
             {
@@ -1940,7 +1940,7 @@ UINT32 HTTPIntrnRecv (P_HTTP_SESSION pHTTPSession,
                 // Get the data (secure)
                 if((pHTTPSession->HttpFlags & HTTP_CLIENT_FLAG_SECURE) == HTTP_CLIENT_FLAG_SECURE)
                 {
-                    if((numRead = HTTPWrapperSSLRecv((int)pHTTPSession,pData,*(nLength),0)) == SOCKET_ERROR)
+                    if((numRead = HTTPWrapperSSLRecv((int32_t)pHTTPSession,pData,*(nLength),0)) == SOCKET_ERROR)
                     {
                         // Socket error
                         nRetCode =  HTTP_CLIENT_ERROR_SOCKET_RECV;
@@ -2079,7 +2079,7 @@ UINT32 HTTPIntrnRecv (P_HTTP_SESSION pHTTPSession,
                                                 {
                                                     INT32            nRetCode = HTTP_CLIENT_SUCCESS;     // a function return code value
                                                     UINT32           nNullOffset;                        // a helper value to null terminate a given string
-                                                    int              nNonBlocking    = 1;                // non blocking mode parameter
+                                                    int32_t              nNonBlocking    = 1;                // non blocking mode parameter
                                                     CHAR             Backup;                             // a container for a char value (helps in temporary null termination) 
                                                     // HTTP_HOSTNET     *HostEntry;                          // Socket host entry pointer
                                                     UINT32           Address = 0; 

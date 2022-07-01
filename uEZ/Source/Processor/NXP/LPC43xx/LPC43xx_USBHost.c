@@ -180,7 +180,7 @@ static void *IAllocBuffer(
 static void  Host_DelayUS (TUInt32  delay);
 void  WriteLE16U (volatile  TUInt8  *pmem,
                             TUInt16   val);
-extern void UEZBSPDelayMS(unsigned int aMilliseconds);
+extern void UEZBSPDelayMS(uint32_t aMilliseconds);
 
 /*---------------------------------------------------------------------------*
  * Globals:

@@ -68,13 +68,13 @@
 #endif /* min */
 
 
-int PBKDF1(byte* output, const byte* passwd, int pLen, const byte* salt,
-           int sLen, int iterations, int kLen, int hashType)
+int32_t PBKDF1(byte* output, const byte* passwd, int32_t pLen, const byte* salt,
+           int32_t sLen, int32_t iterations, int32_t kLen, int32_t hashType)
 {
     Md5  md5;
     Sha  sha;
-    int  hLen = (hashType == MD5) ? (int)MD5_DIGEST_SIZE : (int)SHA_DIGEST_SIZE;
-    int  i, ret = 0;
+    int32_t  hLen = (hashType == MD5) ? (int32_t)MD5_DIGEST_SIZE : (int32_t)SHA_DIGEST_SIZE;
+    int32_t  i, ret = 0;
     byte buffer[SHA_DIGEST_SIZE];  /* max size */
 
     if (hashType != MD5 && hashType != SHA)
@@ -117,12 +117,12 @@ int PBKDF1(byte* output, const byte* passwd, int pLen, const byte* salt,
 }
 
 
-int PBKDF2(byte* output, const byte* passwd, int pLen, const byte* salt,
-           int sLen, int iterations, int kLen, int hashType)
+int32_t PBKDF2(byte* output, const byte* passwd, int32_t pLen, const byte* salt,
+           int32_t sLen, int32_t iterations, int32_t kLen, int32_t hashType)
 {
     word32 i = 1;
-    int    hLen;
-    int    j, ret;
+    int32_t    hLen;
+    int32_t    j, ret;
     Hmac   hmac;
 #ifdef CYASSL_SMALL_STACK
     byte*  buffer;
@@ -159,7 +159,7 @@ int PBKDF2(byte* output, const byte* passwd, int pLen, const byte* salt,
 
     if (ret == 0) {
         while (kLen) {
-            int currentLen;
+            int32_t currentLen;
 
             ret = HmacUpdate(&hmac, salt, sLen);
             if (ret != 0)
@@ -220,14 +220,14 @@ int PBKDF2(byte* output, const byte* passwd, int pLen, const byte* salt,
 #define PBKDF_DIGEST_SIZE SHA_DIGEST_SIZE
 #endif
 
-int PKCS12_PBKDF(byte* output, const byte* passwd, int passLen,const byte* salt,
-                 int saltLen, int iterations, int kLen, int hashType, int id)
+int32_t PKCS12_PBKDF(byte* output, const byte* passwd, int32_t passLen,const byte* salt,
+                 int32_t saltLen, int32_t iterations, int32_t kLen, int32_t hashType, int32_t id)
 {
     /* all in bytes instead of bits */
     word32 u, v, dLen, pLen, iLen, sLen, totalLen;
-    int    dynamic = 0;
-    int    ret = 0;
-    int    i;
+    int32_t    dynamic = 0;
+    int32_t    ret = 0;
+    int32_t    i;
     byte   *D, *S, *P, *I;
 #ifdef CYASSL_SMALL_STACK
     byte   staticBuffer[1]; /* force dynamic usage */
@@ -311,9 +311,9 @@ int PKCS12_PBKDF(byte* output, const byte* passwd, int passLen,const byte* salt,
 
     XMEMSET(D, id, dLen);
 
-    for (i = 0; i < (int)sLen; i++)
+    for (i = 0; i < (int32_t)sLen; i++)
         S[i] = salt[i % saltLen];
-    for (i = 0; i < (int)pLen; i++)
+    for (i = 0; i < (int32_t)pLen; i++)
         P[i] = passwd[i % passLen];
 
     while (kLen > 0) {
@@ -401,7 +401,7 @@ int PKCS12_PBKDF(byte* output, const byte* passwd, int passLen,const byte* salt,
         }
 #endif
 
-        for (i = 0; i < (int)v; i++)
+        for (i = 0; i < (int32_t)v; i++)
             B[i] = Ai[i % u];
 
         if (mp_init(&B1) != MP_OKAY)
@@ -416,8 +416,8 @@ int PKCS12_PBKDF(byte* output, const byte* passwd, int passLen,const byte* salt,
             break;
         }
 
-        for (i = 0; i < (int)iLen; i += v) {
-            int    outSz;
+        for (i = 0; i < (int32_t)iLen; i += v) {
+            int32_t    outSz;
             mp_int i1;
             mp_int res;
 
@@ -432,13 +432,13 @@ int PKCS12_PBKDF(byte* output, const byte* passwd, int passLen,const byte* salt,
             else if ( (outSz = mp_unsigned_bin_size(&res)) < 0)
                 ret = MP_TO_E;
             else {
-                if (outSz > (int)v) {
+                if (outSz > (int32_t)v) {
                     /* take off MSB */
                     byte  tmp[129];
                     ret = mp_to_unsigned_bin(&res, tmp);
                     XMEMCPY(I + i, tmp + 1, v);
                 }
-                else if (outSz < (int)v) {
+                else if (outSz < (int32_t)v) {
                     XMEMSET(I + i, 0, v - outSz);
                     ret = mp_to_unsigned_bin(&res, I + i + v - outSz);
                 }
@@ -451,7 +451,7 @@ int PKCS12_PBKDF(byte* output, const byte* passwd, int passLen,const byte* salt,
             if (ret < 0) break;
         }
 
-        currentLen = min(kLen, (int)u);
+        currentLen = min(kLen, (int32_t)u);
         XMEMCPY(output, Ai, currentLen);
         output += currentLen;
         kLen   -= currentLen;

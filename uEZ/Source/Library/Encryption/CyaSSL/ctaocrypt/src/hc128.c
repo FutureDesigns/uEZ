@@ -270,7 +270,7 @@ static void Hc128_SetIV(HC128* ctx, const byte* inIv)
 }
 
 
-static INLINE int DoKey(HC128* ctx, const byte* key, const byte* iv)
+static INLINE int32_t DoKey(HC128* ctx, const byte* key, const byte* iv)
 { 
   word32 i;  
 
@@ -287,11 +287,11 @@ static INLINE int DoKey(HC128* ctx, const byte* key, const byte* iv)
 
 
 /* Key setup */
-int Hc128_SetKey(HC128* ctx, const byte* key, const byte* iv)
+int32_t Hc128_SetKey(HC128* ctx, const byte* key, const byte* iv)
 {
 #ifdef XSTREAM_ALIGN
     if ((cyassl_word)key % 4) {
-        int alignKey[4];
+        int32_t alignKey[4];
 
         /* iv gets aligned in SetIV */
         CYASSL_MSG("Hc128SetKey unaligned key");
@@ -308,7 +308,7 @@ int Hc128_SetKey(HC128* ctx, const byte* key, const byte* iv)
 
 
 /* The following defines the encryption of data stream */
-static INLINE int DoProcess(HC128* ctx, byte* output, const byte* input,
+static INLINE int32_t DoProcess(HC128* ctx, byte* output, const byte* input,
                             word32 msglen)
 {
   word32 i, keystream[16];
@@ -359,7 +359,7 @@ static INLINE int DoProcess(HC128* ctx, byte* output, const byte* input,
 
 
 /* Encrypt/decrypt a message of any size */
-int Hc128_Process(HC128* ctx, byte* output, const byte* input, word32 msglen)
+int32_t Hc128_Process(HC128* ctx, byte* output, const byte* input, word32 msglen)
 {
 #ifdef XSTREAM_ALIGN
     if ((cyassl_word)input % 4 || (cyassl_word)output % 4) {

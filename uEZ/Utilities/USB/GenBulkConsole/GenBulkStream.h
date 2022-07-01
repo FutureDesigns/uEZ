@@ -55,14 +55,14 @@ class GenBulkStream {
     public:
         GenBulkStream();
         ~GenBulkStream();
-        int Open(void);
+        int32_t Open(void);
         void Close(void);
-        int ReadChar(void);
+        int32_t ReadChar(void);
         void WriteChar(char c);
-        int Read(char *aBuffer, unsigned int aMaxBytes);
-        int Write(char *aBuffer, unsigned int aNumBytes);
+        int32_t Read(char *aBuffer, uint32_t aMaxBytes);
+        int32_t Write(char *aBuffer, uint32_t aNumBytes);
         void Flush(void);
-		int GetErrorCode(void);
+		int32_t GetErrorCode(void);
 };
 
 #ifdef __cplusplus

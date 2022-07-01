@@ -66,7 +66,7 @@
 #define NEventCodes 0x100
 
 /* Keeps track of the recorder's critical sections */
-extern volatile int recorder_busy;
+extern volatile int32_t recorder_busy;
 
 /* Our local critical sections for the recorder */
 #define trcCRITICAL_SECTION_BEGIN() {TRACE_ENTER_CRITICAL_SECTION(); recorder_busy++;}

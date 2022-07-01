@@ -31,22 +31,22 @@
 #endif
 
 /* Known Answer Test string inputs are hex, internal */
-CYASSL_LOCAL int DoKnownAnswerTests(char*, int);
+CYASSL_LOCAL int32_t DoKnownAnswerTests(char*, int32_t);
 
 
 /* FIPS failure callback */
-typedef void(*wolfCrypt_fips_cb)(int ok, int err, const char* hash);
+typedef void(*wolfCrypt_fips_cb)(int32_t ok, int32_t err, const char* hash);
 
 /* Public set function */
-CYASSL_API int wolfCrypt_SetCb_fips(wolfCrypt_fips_cb cbf);
+CYASSL_API int32_t wolfCrypt_SetCb_fips(wolfCrypt_fips_cb cbf);
 
 /* Public get status functions */
-CYASSL_API int wolfCrypt_GetStatus_fips(void);
+CYASSL_API int32_t wolfCrypt_GetStatus_fips(void);
 CYASSL_API const char* wolfCrypt_GetCoreHash_fips(void);
 
 #ifdef HAVE_FORCE_FIPS_FAILURE
     /* Public function to force failure mode for operational testing */
-    CYASSL_API int wolfCrypt_SetStatus_fips(int);
+    CYASSL_API int32_t wolfCrypt_SetStatus_fips(int32_t);
 #endif
 
 

@@ -96,7 +96,7 @@
 #include <uEZStream.h>
 #include <UEZPlatform.h>
 
-extern int MainTask(void);
+extern int32_t MainTask(void);
 
 #define PRINTF_IS_SWO       (0)
 
@@ -149,7 +149,7 @@ void UEZBSPDelay1US(void)
 //    #error "1 microSecond delay not defined for CPU speed"
 //#endif
 }
-void UEZBSPDelayUS(unsigned int aMicroseconds)
+void UEZBSPDelayUS(uint32_t aMicroseconds)
 {
     while (aMicroseconds--)
         UEZBSPDelay1US();
@@ -164,7 +164,7 @@ void UEZBSPDelay1MS(void)
         UEZBSPDelay1US();
 }
 
-void UEZBSPDelayMS(unsigned int aMilliseconds)
+void UEZBSPDelayMS(uint32_t aMilliseconds)
 {
     while (aMilliseconds--) {
         UEZBSPDelay1MS();
@@ -293,10 +293,10 @@ void UEZBSP_CPU_PinConfigInit(void)
  *      interrupts and put the platform in a halted state with a blinking
  *      LED.
  * Inputs:
- *      int aErrorCode -- Blink the LED a number of times equal to
+ *      int32_t aErrorCode -- Blink the LED a number of times equal to
  *          the error code.
  *---------------------------------------------------------------------------*/
-void UEZBSP_FatalError(int aErrorCode)
+void UEZBSP_FatalError(int32_t aErrorCode)
 {
     register TUInt32 i;
     register TUInt32 count;
@@ -1540,6 +1540,13 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_IRTC_Require();
 
     UEZPlatform_Temp0_Require();//Added in Rev two hardware
+    
+    /* // TODO add and test require routines and verify I2C bus
+    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    UEZPlatform_Speaker_Require();
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    */    
 }
 
 TUInt16 UEZPlatform_LCDGetHeight(void)
@@ -1576,7 +1583,7 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
     return PROCESSOR_OSCILLATOR_FREQUENCY;
 }
 
-T_pixelColor SUICallbackRGBConvert(int r, int g, int b)
+T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b)
 {
     return RGB(r, g, b);
 }
@@ -1615,7 +1622,7 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
  *  Determine which stack was in use when the MPU fault occurred and extract
     the stacked PC.
  *
- *  @return         int
+ *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
 #if (COMPILER_TYPE==Keil4)
@@ -1656,10 +1663,10 @@ unsigned long ulStacked_pc = 0UL;
  *  The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
  *
- *  @return         int
+ *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
-int main(void)
+int32_t main(void)
 {
     UEZBSP_Startup();
 

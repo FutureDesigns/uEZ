@@ -20,7 +20,7 @@
 /**
  * rfbproto.h - header file for the RFB protocol version 3.3
  *
- * Uses types CARD<n> for an n-bit unsigned integer, INT<n> for an n-bit signed
+ * Uses types CARD<n> for an n-bit unsigned integer, int32_t<n> for an n-bit signed
  * integer (for n = 8, 16 and 32).
  *
  * All multiple byte integers are in big endian (network) order (most

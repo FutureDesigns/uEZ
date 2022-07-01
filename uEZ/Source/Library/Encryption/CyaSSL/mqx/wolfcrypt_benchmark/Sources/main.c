@@ -50,9 +50,9 @@ TASK_TEMPLATE_STRUCT MQX_template_list[] =
 
 /* func_args from test.h */
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
 /*TASK*-----------------------------------------------------------------
@@ -64,7 +64,7 @@ typedef struct func_args {
 
 void Main_task(uint32_t initial_data)
 {
-    int          ret = 0;
+    int32_t          ret = 0;
     func_args    args;
     char         filesystem_name[] = "a:";
     char         partman_name[]    = "pm:";

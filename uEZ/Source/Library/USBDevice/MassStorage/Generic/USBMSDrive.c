@@ -974,6 +974,7 @@ dprintfc(",");
                 if (G_callbacks.iUSBMSDriveActivity)
                     G_callbacks.iUSBMSDriveActivity(G_callbackWorkspace);
                 IMSRead();
+                UEZTaskDelay(1); // Safe to add delay here. USB MSC will still work but with SPI SD really slow
             }
             break;
         case STAGE_DATA_IN_LAST:
@@ -1037,9 +1038,12 @@ TUInt32 USBMSDriveMonitor(T_uezTask aMyTask, void *aParameters)
     PARAM_NOT_USED(aParameters);
     PARAM_NOT_USED(aMyTask);
 
+    UEZTaskDelay(2000);
+
     // Just constantly process endpoint data
     for (;;)  {
         ((*G_ghDevice)->ProcessEndpoints)(G_ghDevice, UEZ_TIMEOUT_INFINITE);
+        // cannot add delay here or it stops working
     }
 }
 

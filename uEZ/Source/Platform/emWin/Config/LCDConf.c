@@ -32,6 +32,7 @@ Purpose     : Display controller configuration (single layer)
 
 #include <uEZProcessor.h>
 #include "GUI.h"
+#include "Global.h"
 #include "GUIDRV_Lin.h"
 #include "uEZPlatform.h"
 #include <string.h>
@@ -172,7 +173,7 @@ Purpose     : Display controller configuration (single layer)
 *
 *       _SetDisplayOrigin()
 */
-static void _SetDisplayOrigin(int x, int y) {
+static void _SetDisplayOrigin(int32_t x, int32_t y) {
   (void)x;
   //
   // Set start address for display data and enable LCD controller
@@ -208,7 +209,7 @@ static void _InitController(unsigned LayerIndex) {
 *   Copies the framebuffer for multiple buffering
 *
 */
-static void _CopyBuffer(int LayerIndex, int IndexSrc, int IndexDst) {
+static void _CopyBuffer(int32_t LayerIndex, int32_t IndexSrc, int32_t IndexDst) {
   U32 BufferSize;
   U32 AddrSrc;
   U32 AddrDst;
@@ -302,8 +303,8 @@ void LCD_X_Config(void) {
 *     -1 - Command not handled
 *      0 - Ok
 */
-int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
-  int r;
+int32_t LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
+  int32_t r;
 
   (void)LayerIndex;
 

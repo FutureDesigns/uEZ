@@ -81,7 +81,7 @@ extern "C" {
 /**
  * Example INLINE usage to define MyFunc() inline
  *
- *   int INLINE MyFunc(int x) {
+ *   int32_t INLINE MyFunc(int32_t x) {
  *      return x+1;
  *   }
  */

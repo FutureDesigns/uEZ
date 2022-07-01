@@ -219,7 +219,7 @@ static void vInitStartMarkers()
 	}
 }
 
-volatile int recorder_busy = 0;
+volatile int32_t recorder_busy = 0;
 
 /* Gives the last error message of the recorder. NULL if no error message. */
 char* traceErrorMessage = NULL;
@@ -284,7 +284,7 @@ uint16_t uiIndexOfObject(objectHandleType objecthandle, uint8_t objectclass)
 objectHandleType xTraceGetObjectHandle(traceObjectClass objectclass)
 {
 	objectHandleType handle;
-	static int indexOfHandle;
+	static int32_t indexOfHandle;
 
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES,
 		"xTraceGetObjectHandle: Invalid value for objectclass", (objectHandleType)0);
@@ -312,7 +312,7 @@ objectHandleType xTraceGetObjectHandle(traceObjectClass objectclass)
 	}
 	else
 	{
-		int hndCount;
+		int32_t hndCount;
 		objectHandleStacks.indexOfNextAvailableHandle[objectclass]++;
 
 		hndCount = objectHandleStacks.indexOfNextAvailableHandle[objectclass] -
@@ -333,7 +333,7 @@ objectHandleType xTraceGetObjectHandle(traceObjectClass objectclass)
 
 void vTraceFreeObjectHandle(traceObjectClass objectclass, objectHandleType handle)
 {
-	int indexOfHandle;
+	int32_t indexOfHandle;
 
 	TRACE_ASSERT(objectclass < TRACE_NCLASSES,
 		"vTraceFreeObjectHandle: Invalid value for objectclass", );
@@ -492,9 +492,9 @@ void vTraceError(const char* msg)
 
 void prvCheckDataToBeOverwrittenForMultiEntryEvents(uint8_t nofEntriesToCheck)
 {
-	/* Generic "int" type is desired - should be 16 bit variable on 16 bit HW */
-	unsigned int i = 0;
-	unsigned int e = 0;
+	/* Generic "int32_t" type is desired - should be 16 bit variable on 16 bit HW */
+	uint32_t i = 0;
+	uint32_t e = 0;
 
 	TRACE_ASSERT(nofEntriesToCheck != 0,
 		"prvCheckDataToBeOverwrittenForMultiEntryEvents: nofEntriesToCheck == 0", );
@@ -797,8 +797,8 @@ uint16_t prvTraceCreateSymbolTableEntry(const char* name,
 void prvTraceGetChecksum(const char *pname, uint8_t* pcrc, uint8_t* plength)
 {
 	unsigned char c;
-	int length = 1;		/* Should be 1 to account for '\0' */
-	int crc = 0;
+	int32_t length = 1;		/* Should be 1 to account for '\0' */
+	int32_t crc = 0;
 
 	TRACE_ASSERT(pname != NULL, "prvTraceGetChecksum: pname == NULL", );
 	TRACE_ASSERT(pcrc != NULL, "prvTraceGetChecksum: pcrc == NULL", );

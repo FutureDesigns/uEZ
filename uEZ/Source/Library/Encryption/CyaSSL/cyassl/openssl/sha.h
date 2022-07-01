@@ -16,7 +16,7 @@
 
 
 typedef struct CYASSL_SHA_CTX {
-    int holder[24];   /* big enough to hold ctaocrypt sha, but check on init */
+    int32_t holder[24];   /* big enough to hold ctaocrypt sha, but check on init */
 } CYASSL_SHA_CTX;
 
 CYASSL_API void CyaSSL_SHA_Init(CYASSL_SHA_CTX*);
@@ -45,7 +45,7 @@ typedef CYASSL_SHA_CTX SHA_CTX;
 
 
 typedef struct CYASSL_SHA256_CTX {
-    int holder[28];   /* big enough to hold ctaocrypt sha, but check on init */
+    int32_t holder[28];   /* big enough to hold ctaocrypt sha, but check on init */
 } CYASSL_SHA256_CTX;
 
 CYASSL_API void CyaSSL_SHA256_Init(CYASSL_SHA256_CTX*);

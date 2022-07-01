@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SPINBOX.h
 Purpose     : SPINBOX header file
@@ -95,7 +96,7 @@ Purpose     : SPINBOX header file
 #define SPINBOX_SKIN_FLEX            SPINBOX_DrawSkinFlex
 
 #define SPINBOX_SKINFLEX_PI_PRESSED  0
-#define SPINBOX_SKINFLEX_PI_FOCUSSED 1
+#define SPINBOX_SKINFLEX_PI_FOCUSED  1
 #define SPINBOX_SKINFLEX_PI_ENABLED  2
 #define SPINBOX_SKINFLEX_PI_DISABLED 3
 #define SPINBOX_SKIN_FLEX_RADIUS     2
@@ -128,9 +129,9 @@ typedef struct {
 *
 *       Creation
 */
-SPINBOX_Handle SPINBOX_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int Id, int Min, int Max);
-SPINBOX_Handle SPINBOX_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int Id, int Min, int Max, int NumExtraBytes);
-SPINBOX_Handle SPINBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+SPINBOX_Handle SPINBOX_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t Id, int32_t Min, int32_t Max);
+SPINBOX_Handle SPINBOX_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t Id, int32_t Min, int32_t Max, int32_t NumExtraBytes);
+SPINBOX_Handle SPINBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -142,27 +143,29 @@ void           SPINBOX_Callback(WM_MESSAGE * pMsg);
 *
 *       Get / Set properties
 */
-void        SPINBOX_EnableBlink     (SPINBOX_Handle hObj, int Period, int OnOff);
-GUI_COLOR   SPINBOX_GetBkColor      (SPINBOX_Handle hObj, unsigned int Index);
-GUI_COLOR   SPINBOX_GetButtonBkColor(SPINBOX_Handle hObj, unsigned int Index);
-EDIT_Handle SPINBOX_GetEditHandle   (SPINBOX_Handle hObj);
-int         SPINBOX_GetUserData     (SPINBOX_Handle hObj, void * pDest, int NumBytes);
-I32         SPINBOX_GetValue        (SPINBOX_Handle hObj);
-void        SPINBOX_SetBkColor      (SPINBOX_Handle hObj, unsigned int Index, GUI_COLOR Color);
-void        SPINBOX_SetButtonBkColor(SPINBOX_Handle hObj, unsigned int Index, GUI_COLOR Color);
-void        SPINBOX_SetButtonSize   (SPINBOX_Handle hObj, unsigned ButtonSize);
-void        SPINBOX_SetEdge         (SPINBOX_Handle hObj, U8 Edge);
-void        SPINBOX_SetEditMode     (SPINBOX_Handle hObj, U8 EditMode);
-void        SPINBOX_SetFont         (SPINBOX_Handle hObj, const GUI_FONT * pFont);
-void        SPINBOX_SetRange        (SPINBOX_Handle hObj, I32 Min, I32 Max);
-U16         SPINBOX_SetStep         (SPINBOX_Handle hObj, U16 Step);
-void        SPINBOX_SetTextColor    (SPINBOX_Handle hObj, unsigned int Index, GUI_COLOR Color);
-int         SPINBOX_SetUserData     (SPINBOX_Handle hObj, const void * pSrc, int NumBytes);
-void        SPINBOX_SetValue        (SPINBOX_Handle hObj, I32 Value);
+void             SPINBOX_EnableBlink     (SPINBOX_Handle hObj, int32_t Period, int32_t OnOff);
+GUI_COLOR        SPINBOX_GetBkColor      (SPINBOX_Handle hObj, uint32_t Index);
+GUI_COLOR        SPINBOX_GetButtonBkColor(SPINBOX_Handle hObj, uint32_t Index);
+EDIT_Handle      SPINBOX_GetEditHandle   (SPINBOX_Handle hObj);
+const GUI_FONT * SPINBOX_GetFont         (SPINBOX_Handle hObj);
+GUI_COLOR        SPINBOX_GetTextColor    (SPINBOX_Handle hObj, uint32_t Index);
+int32_t              SPINBOX_GetUserData     (SPINBOX_Handle hObj, void * pDest, int32_t NumBytes);
+I32              SPINBOX_GetValue        (SPINBOX_Handle hObj);
+void             SPINBOX_SetBkColor      (SPINBOX_Handle hObj, uint32_t Index, GUI_COLOR Color);
+void             SPINBOX_SetButtonBkColor(SPINBOX_Handle hObj, uint32_t Index, GUI_COLOR Color);
+void             SPINBOX_SetButtonSize   (SPINBOX_Handle hObj, unsigned ButtonSize);
+void             SPINBOX_SetEdge         (SPINBOX_Handle hObj, U8 Edge);
+void             SPINBOX_SetEditMode     (SPINBOX_Handle hObj, U8 EditMode);
+void             SPINBOX_SetFont         (SPINBOX_Handle hObj, const GUI_FONT * pFont);
+void             SPINBOX_SetRange        (SPINBOX_Handle hObj, I32 Min, I32 Max);
+U16              SPINBOX_SetStep         (SPINBOX_Handle hObj, U16 Step);
+void             SPINBOX_SetTextColor    (SPINBOX_Handle hObj, uint32_t Index, GUI_COLOR Color);
+int32_t              SPINBOX_SetUserData     (SPINBOX_Handle hObj, const void * pSrc, int32_t NumBytes);
+void             SPINBOX_SetValue        (SPINBOX_Handle hObj, I32 Value);
 
 /*********************************************************************
 *
-*       Default value management
+*       Managing default values
 */
 U16  SPINBOX_GetDefaultButtonSize(void);
 void SPINBOX_SetDefaultButtonSize(U16 ButtonSize);
@@ -171,11 +174,11 @@ void SPINBOX_SetDefaultButtonSize(U16 ButtonSize);
 *
 *       Skinning
 */
-void                    SPINBOX_GetSkinFlexProps     (SPINBOX_SKINFLEX_PROPS * pProps, int Index);
+void                    SPINBOX_GetSkinFlexProps     (SPINBOX_SKINFLEX_PROPS * pProps, int32_t Index);
 void                    SPINBOX_SetSkinClassic       (SPINBOX_Handle hObj);
 void                    SPINBOX_SetSkin              (SPINBOX_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
-int                     SPINBOX_DrawSkinFlex         (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
-void                    SPINBOX_SetSkinFlexProps     (const SPINBOX_SKINFLEX_PROPS * pProps, int Index);
+int32_t                     SPINBOX_DrawSkinFlex         (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+void                    SPINBOX_SetSkinFlexProps     (const SPINBOX_SKINFLEX_PROPS * pProps, int32_t Index);
 void                    SPINBOX_SetDefaultSkinClassic(void);
 WIDGET_DRAW_ITEM_FUNC * SPINBOX_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
 

@@ -573,7 +573,7 @@ T_uezError Lumex_SO2004DSR_Create(
 {
     T_uezDeviceWorkspace *p_charDisplay;
     T_uezError error;
-    int i;
+    int32_t i;
 
     error = UEZDeviceTableRegister(
         aName,

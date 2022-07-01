@@ -59,11 +59,11 @@ void UEZBSP_CPU_PinConfigInit(void);
 void UEZBSP_InterruptsReset(void);
 void UEZBSP_RAMInit(void);
 void UEZBSP_ROMInit(void);
-void UEZBSP_FatalError(int aNumBlinks);
+void UEZBSP_FatalError(int32_t aNumBlinks);
 
 /** Utility routine to delay a number of ms (approximately). */
-void UEZBSPDelayMS(unsigned int aMilliseconds);
-void UEZBSPDelayUS(unsigned int aMicroseconds);
+void UEZBSPDelayMS(uint32_t aMilliseconds);
+void UEZBSPDelayUS(uint32_t aMicroseconds);
 
 void uEZProcessorServicesInit(void);
 void uEZPlatformInit(void);

@@ -32,7 +32,7 @@ static void MouseTask(void)
 {
     T_uezError error;
     T_HIDMouseReport report;
-    int x=0, y=0, w=0;
+    int32_t x=0, y=0, w=0;
 
     while (1) {
         error = HIDMouseRead(&report, UEZ_TIMEOUT_INFINITE);

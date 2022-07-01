@@ -53,30 +53,30 @@
 
 
 #ifdef CYASSL_CALLBACKS
-    int handShakeCB(HandShakeInfo*);
-    int timeoutCB(TimeoutInfo*);
+    int32_t handShakeCB(HandShakeInfo*);
+    int32_t timeoutCB(TimeoutInfo*);
     Timeval timeout;
 #endif
 
 #ifdef HAVE_SESSION_TICKET
-    int sessionTicketCB(CYASSL*, const unsigned char*, int, void*);
+    int32_t sessionTicketCB(CYASSL*, const unsigned char*, int32_t, void*);
 #endif
 
 
 static void NonBlockingSSL_Connect(CYASSL* ssl)
 {
 #ifndef CYASSL_CALLBACKS
-    int ret = CyaSSL_connect(ssl);
+    int32_t ret = CyaSSL_connect(ssl);
 #else
-    int ret = CyaSSL_connect_ex(ssl, handShakeCB, timeoutCB, timeout);
+    int32_t ret = CyaSSL_connect_ex(ssl, handShakeCB, timeoutCB, timeout);
 #endif
-    int error = CyaSSL_get_error(ssl, 0);
+    int32_t error = CyaSSL_get_error(ssl, 0);
     SOCKET_T sockfd = (SOCKET_T)CyaSSL_get_fd(ssl);
-    int select_ret;
+    int32_t select_ret;
 
     while (ret != SSL_SUCCESS && (error == SSL_ERROR_WANT_READ ||
                                   error == SSL_ERROR_WANT_WRITE)) {
-        int currTimeout = 1;
+        int32_t currTimeout = 1;
 
         if (error == SSL_ERROR_WANT_READ)
             printf("... client would read block\n");
@@ -183,36 +183,36 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
     CYASSL*         sslResume = 0;
     CYASSL_SESSION* session = 0;
     char         resumeMsg[] = "resuming cyassl!";
-    int          resumeSz    = sizeof(resumeMsg);
+    int32_t          resumeSz    = sizeof(resumeMsg);
 
     char msg[32] = "hello cyassl!";   /* GET may make bigger */
     char reply[80];
-    int  input;
-    int  msgSz = (int)strlen(msg);
+    int32_t  input;
+    int32_t  msgSz = (int32_t)strlen(msg);
 
     word16 port   = yasslPort;
     char* host   = (char*)yasslIP;
     const char* domain = "www.yassl.com";
 
-    int    ch;
-    int    version = CLIENT_INVALID_VERSION;
-    int    usePsk   = 0;
-    int    useAnon  = 0;
-    int    sendGET  = 0;
-    int    benchmark = 0;
-    int    doDTLS    = 0;
-    int    matchName = 0;
-    int    doPeerCheck = 1;
-    int    nonBlocking = 0;
-    int    resumeSession = 0;
-    int    scr           = 0;    /* allow secure renegotiation */
-    int    forceScr      = 0;    /* force client initiaed scr */
-    int    trackMemory   = 0;
-    int    useClientCert = 1;
-    int    fewerPackets  = 0;
-    int    atomicUser    = 0;
-    int    pkCallbacks   = 0;
-    int    overrideDateErrors = 0;
+    int32_t    ch;
+    int32_t    version = CLIENT_INVALID_VERSION;
+    int32_t    usePsk   = 0;
+    int32_t    useAnon  = 0;
+    int32_t    sendGET  = 0;
+    int32_t    benchmark = 0;
+    int32_t    doDTLS    = 0;
+    int32_t    matchName = 0;
+    int32_t    doPeerCheck = 1;
+    int32_t    nonBlocking = 0;
+    int32_t    resumeSession = 0;
+    int32_t    scr           = 0;    /* allow secure renegotiation */
+    int32_t    forceScr      = 0;    /* force client initiaed scr */
+    int32_t    trackMemory   = 0;
+    int32_t    useClientCert = 1;
+    int32_t    fewerPackets  = 0;
+    int32_t    atomicUser    = 0;
+    int32_t    pkCallbacks   = 0;
+    int32_t    overrideDateErrors = 0;
     char*  cipherList = NULL;
     const char* verifyCert = caCert;
     const char* ourCert    = cliCert;
@@ -230,11 +230,11 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
 
 
 #ifdef HAVE_OCSP
-    int    useOcsp  = 0;
+    int32_t    useOcsp  = 0;
     char*  ocspUrl  = NULL;
 #endif
 
-    int     argc = ((func_args*)args)->argc;
+    int32_t     argc = ((func_args*)args)->argc;
     char**  argv = ((func_args*)args)->argv;
 
     ((func_args*)args)->return_code = -1; /* error state */
@@ -628,8 +628,8 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
 
     if (benchmark) {
         /* time passed in number of connects give average */
-        int times = benchmark;
-        int i = 0;
+        int32_t times = benchmark;
+        int32_t i = 0;
 
         double start = current_time(), avg;
 
@@ -717,7 +717,7 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
     }
     else if (CyaSSL_connect(ssl) != SSL_SUCCESS) {
         /* see note at top of README */
-        int  err = CyaSSL_get_error(ssl, 0);
+        int32_t  err = CyaSSL_get_error(ssl, 0);
         char buffer[CYASSL_MAX_ERROR_SZ];
         printf("err = %d, %s\n", err,
                                 CyaSSL_ERR_error_string(err, buffer));
@@ -745,7 +745,7 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
                 }
             #endif
             if (CyaSSL_Rehandshake(ssl) != SSL_SUCCESS) {
-                int  err = CyaSSL_get_error(ssl, 0);
+                int32_t  err = CyaSSL_get_error(ssl, 0);
                 char buffer[CYASSL_MAX_ERROR_SZ];
                 printf("err = %d, %s\n", err,
                                 CyaSSL_ERR_error_string(err, buffer));
@@ -782,7 +782,7 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
         }
     }
     else if (input < 0) {
-        int readErr = CyaSSL_get_error(ssl, 0);
+        int32_t readErr = CyaSSL_get_error(ssl, 0);
         if (readErr != SSL_ERROR_WANT_READ)
             err_sys("CyaSSL_read failed");
     }
@@ -791,7 +791,7 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
     if (resumeSession) {
         if (doDTLS) {
             strncpy(msg, "break", 6);
-            msgSz = (int)strlen(msg);
+            msgSz = (int32_t)strlen(msg);
             /* try to send session close */
             CyaSSL_write(ssl, msg, msgSz);
         }
@@ -901,12 +901,12 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
 /* so overall tests can pull in test function */
 #ifndef NO_MAIN_DRIVER
 
-    int main(int argc, char** argv)
+    int32_t main(int32_t argc, char** argv)
     {
         func_args args;
 
 #ifdef HAVE_CAVIUM
-        int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+        int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
         if (ret != 0)
             err_sys("Cavium OpenNitroxDevice failed");
 #endif /* HAVE_CAVIUM */
@@ -938,7 +938,7 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
         return args.return_code;
     }
 
-    int myoptind = 0;
+    int32_t myoptind = 0;
     char* myoptarg = NULL;
 
 #endif /* NO_MAIN_DRIVER */
@@ -947,14 +947,14 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
 
 #ifdef CYASSL_CALLBACKS
 
-    int handShakeCB(HandShakeInfo* info)
+    int32_t handShakeCB(HandShakeInfo* info)
     {
         (void)info;
         return 0;
     }
 
 
-    int timeoutCB(TimeoutInfo* info)
+    int32_t timeoutCB(TimeoutInfo* info)
     {
         (void)info;
         return 0;
@@ -965,8 +965,8 @@ THREAD_RETURN CYASSL_THREAD client_test(void* args)
 
 #ifdef HAVE_SESSION_TICKET
 
-    int sessionTicketCB(CYASSL* ssl,
-                        const unsigned char* ticket, int ticketSz,
+    int32_t sessionTicketCB(CYASSL* ssl,
+                        const unsigned char* ticket, int32_t ticketSz,
                         void* ctx)
     {
         (void)ssl;

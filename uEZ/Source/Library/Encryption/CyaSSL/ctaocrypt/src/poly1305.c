@@ -256,7 +256,7 @@ static void poly1305_blocks(Poly1305* ctx, const unsigned char *m,
 }
 
 
-int Poly1305SetKey(Poly1305* ctx, const byte* key, word32 keySz) {
+int32_t Poly1305SetKey(Poly1305* ctx, const byte* key, word32 keySz) {
 
 #if defined(POLY130564)
     word64 t0,t1;
@@ -326,7 +326,7 @@ int Poly1305SetKey(Poly1305* ctx, const byte* key, word32 keySz) {
 }
 
 
-int Poly1305Final(Poly1305* ctx, byte* mac) {
+int32_t Poly1305Final(Poly1305* ctx, byte* mac) {
 
 #if defined(POLY130564)
 
@@ -500,7 +500,7 @@ int Poly1305Final(Poly1305* ctx, byte* mac) {
 }
 
 
-int Poly1305Update(Poly1305* ctx, const byte* m, word32 bytes) {
+int32_t Poly1305Update(Poly1305* ctx, const byte* m, word32 bytes) {
 
 	size_t i;
 

@@ -158,34 +158,34 @@ TUInt32 UEZMemGetNumBlocks(void);
 #endif
 
 #if UEZ_BUFFER_ALIGNMENT
-  #define UEZ_BUFFER_ALIGN(Var)  UEZ_ALIGN(Var, UEZ_BUFFER_ALIGNMENT)
+  #define UEZ_BUFFER_ALIGN(Var)  UEZ_ALIGN(UEZ_BUFFER_ALIGNMENT, Var)
 #else
   #define UEZ_BUFFER_ALIGN(Var)  Var
 #endif
 
 #if UEZ_BUFFER_ALIGNMENT
   #if (defined __GNUC__)
-    #define UEZ_ALIGN(Var, Alignment) Var __attribute__ ((aligned (Alignment)))
+    #define UEZ_ALIGN(Alignment, ...) __attribute__ ((aligned (Alignment))) __VA_ARGS__
   #elif (defined __ICCARM__) || (defined __ICCRX__)
     #define PRAGMA(A) _Pragma(#A)
-#define UEZ_ALIGN(Var, Alignment) UEZ_PRAGMA(data_alignment=Alignment) \
-                                  Var
+#define UEZ_ALIGN(Alignment, ...) UEZ_PRAGMA(data_alignment=Alignment) \
+                                  __VA_ARGS__
   #elif (defined __CC_ARM)
-    #define UEZ_ALIGN(Var, Alignment) Var __attribute__ ((aligned (Alignment)))
+    #define UEZ_ALIGN(Alignment, ...) __attribute__ ((aligned (Alignment))) __VA_ARGS__
   #else
     #error "Alignment not supported for this compiler."
   #endif
 #else
-  #define UEZ_ALIGN(Var, Alignment) Var
+  #define UEZ_ALIGN(Alignment, ...) __VA_ARGS__
 #endif
 
   #if (defined __GNUC__)
-    #define UEZ_PUT_SECTION(Var, Section) __attribute__ ((section (Section))) __attribute__ ((__used__)) Var
+    #define UEZ_PUT_SECTION(Section, ...) __attribute__ ((section (Section))) __attribute__ ((__used__)) __VA_ARGS__
   #elif (defined __ICCARM__) || (defined __ICCRX__)
-#define UEZ_PUT_SECTION(Var, Section)  UEZ_PRAGMA(location=Section) __root \
-                                          Var
+#define UEZ_PUT_SECTION(Section, ...)  UEZ_PRAGMA(location=Section) __root \
+                                          __VA_ARGS__
   #elif (defined __CC_ARM)
-    #define UEZ_PUT_SECTION(Var, Section) __attribute__ ((section (Section), zero_init))  Var
+    #define UEZ_PUT_SECTION(Section, ...) __attribute__ ((section (Section), zero_init)) __VA_ARGS__
   #else
     #error "Section placement not supported for this compiler."
   #endif
