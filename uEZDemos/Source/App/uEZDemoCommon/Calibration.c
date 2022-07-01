@@ -466,6 +466,7 @@ TBool CalibrateTestIfTouchscreenHeld(void)
             UEZTaskDelay(50);
         }
         UEZTSClose(ts, 0);
+        UEZTaskDelay(10);
     }
     return sawPress;
 }

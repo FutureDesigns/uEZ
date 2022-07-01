@@ -516,6 +516,23 @@ T_uezError LPC546xx_Serial_SetSerialSettings(
             return UEZ_ERROR_NOT_SUPPORTED;
     }
 
+	switch (aSettings->iFlowControl) {
+        case SERIAL_FLOW_CONTROL_NONE:
+            // default register settings are for none, need to figure out how to set it back
+            //p_info->iUART->MCR |= (0 << 6); // Disable auto RTS
+            //p_info->iUART->MCR |= (0 << 7); // Disable auto CTS
+            break;
+        case SERIAL_FLOW_CONTROL_XON_XOFF:
+            return UEZ_ERROR_NOT_SUPPORTED; // TODO
+        case SERIAL_FLOW_CONTROL_HARDWARE:
+			return UEZ_ERROR_NOT_SUPPORTED; // TODO, example config from 43xx
+            //p_info->iUART->MCR |= (1 << 6); // Auto RTS enable bit
+            //p_info->iUART->MCR |= (1 << 7); // Auto CTS enable bit
+            //break;			
+        default:
+            return UEZ_ERROR_NOT_SUPPORTED;
+    }
+	
     return UEZ_ERROR_NONE;
 }
 
@@ -619,7 +636,7 @@ T_serialStatusByte LPC546xx_Serial_GetStatus(void *aWorkspace)
 // List of serial port HAL interfaces
 const HAL_Serial G_LPC546xx_Serial_UART0 = {
         {
-        "Serial:LCP1788 UART0",
+        "Serial:LPC546X UART0",
         0x0100,
         LPC546xx_Serial_InitializeWorkspace_UART0,
         sizeof(T_Serial_LPC546xx_Workspace),
@@ -637,7 +654,7 @@ const HAL_Serial G_LPC546xx_Serial_UART0 = {
 
 const HAL_Serial G_LPC546xx_Serial_UART1 = {
         {
-        "Serial:LCP1788 UART1",
+        "Serial:LPC546X UART1",
         0x0100,
         LPC546xx_Serial_InitializeWorkspace_UART1,
         sizeof(T_Serial_LPC546xx_Workspace),
@@ -655,7 +672,7 @@ const HAL_Serial G_LPC546xx_Serial_UART1 = {
 
 const HAL_Serial G_LPC546xx_Serial_UART2 = {
         {
-        "Serial:LCP1788 UART2",
+        "Serial:LPC546X UART2",
         0x0100,
         LPC546xx_Serial_InitializeWorkspace_UART2,
         sizeof(T_Serial_LPC546xx_Workspace),
@@ -673,7 +690,7 @@ const HAL_Serial G_LPC546xx_Serial_UART2 = {
 
 const HAL_Serial G_LPC546xx_Serial_UART3 = {
         {
-        "Serial:LCP1788 UART3",
+        "Serial:LPC546X UART3",
         0x0100,
         LPC546xx_Serial_InitializeWorkspace_UART3,
         sizeof(T_Serial_LPC546xx_Workspace),
@@ -731,36 +748,36 @@ void LPC546xx_UART0_Require(
         T_uezGPIOPortPin aPinUCLK0)
 {
     static const T_LPC546xx_SCU_ConfigList txd0[] = {
-            {GPIO_P5_0,   SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_3,   SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P5_18,   SCU_NORMAL_DRIVE_DEFAULT(7)},
-            {GPIO_P7_24,   SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P5_0,   IOCON_D_DEFAULT(1)},
+            {GPIO_P3_3,   IOCON_D_DEFAULT(2)},
+            {GPIO_P5_18,   IOCON_D_DEFAULT(7)},
+            {GPIO_P7_24,   IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList rxd0[] = {
-            {GPIO_P5_1,   SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_4,   SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_25,   SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P4_11,   SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P5_1,   IOCON_D_DEFAULT(1)},
+            {GPIO_P3_4,   IOCON_D_DEFAULT(2)},
+            {GPIO_P7_25,   IOCON_D_DEFAULT(1)},
+            {GPIO_P4_11,   IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList dir0[] = {
-            {GPIO_P5_6, SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_1, SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_23, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P5_6, IOCON_D_DEFAULT(1)},
+            {GPIO_P3_1, IOCON_D_DEFAULT(2)},
+            {GPIO_P7_23, IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList uclk0[] = {
-            {GPIO_P5_2, SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_0, SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_22, SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P5_2, IOCON_D_DEFAULT(1)},
+            {GPIO_P3_0, IOCON_D_DEFAULT(2)},
+            {GPIO_P7_22, IOCON_D_DEFAULT(1)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     HALInterfaceRegister("UART0", (T_halInterface *)&G_LPC546xx_Serial_UART0, 0,
             0);
 
-    LPC546xx_SCU_ConfigPinOrNone(aPinTXD0, txd0, ARRAY_COUNT(txd0));
-    LPC546xx_SCU_ConfigPinOrNone(aPinRXD0, rxd0, ARRAY_COUNT(rxd0));
-    LPC546xx_SCU_ConfigPinOrNone(aPinDIR0, dir0, ARRAY_COUNT(dir0));
-    LPC546xx_SCU_ConfigPinOrNone(aPinUCLK0, uclk0, ARRAY_COUNT(uclk0));
+    LPC546xx_ICON_ConfigPinOrNone(aPinTXD0, txd0, ARRAY_COUNT(txd0));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRXD0, rxd0, ARRAY_COUNT(rxd0));
+    LPC546xx_ICON_ConfigPinOrNone(aPinDIR0, dir0, ARRAY_COUNT(dir0));
+    LPC546xx_ICON_ConfigPinOrNone(aPinUCLK0, uclk0, ARRAY_COUNT(uclk0));
 }
 
 void LPC546xx_UART1_Require(
@@ -774,68 +791,68 @@ void LPC546xx_UART1_Require(
         T_uezGPIOPortPin aPinRTS)
 {
     static const T_LPC546xx_SCU_ConfigList cts1[] = {
-            {GPIO_P2_13 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P7_7  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P1_4  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P6_1  , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P2_13 , IOCON_D_DEFAULT(4)},
+            {GPIO_P7_7  , IOCON_D_DEFAULT(2)},
+            {GPIO_P1_4  , IOCON_D_DEFAULT(1)},
+            {GPIO_P6_1  , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList dcd1[] = {
-            {GPIO_P1_5  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P2_14 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_10 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_9  , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P1_5  , IOCON_D_DEFAULT(1)},
+            {GPIO_P2_14 , IOCON_D_DEFAULT(4)},
+            {GPIO_P6_10 , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_9  , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList dsr1[] = {
-            {GPIO_P2_9  , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P1_0  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P6_9  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_8  , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P2_9  , IOCON_D_DEFAULT(4)},
+            {GPIO_P1_0  , IOCON_D_DEFAULT(1)},
+            {GPIO_P6_9  , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_8  , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList dtr1[] = {
-            {GPIO_P1_1  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P2_10 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_11 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_10 , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P1_1  , IOCON_D_DEFAULT(1)},
+            {GPIO_P2_10 , IOCON_D_DEFAULT(4)},
+            {GPIO_P6_11 , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_10 , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList ri1[] = {
-            {GPIO_P1_3  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P2_12 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_0  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_6  , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P1_3  , IOCON_D_DEFAULT(1)},
+            {GPIO_P2_12 , IOCON_D_DEFAULT(4)},
+            {GPIO_P6_0  , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_6  , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList rts1[] = {
-            {GPIO_P1_2  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P2_11 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_2  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_5  , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P1_2  , IOCON_D_DEFAULT(1)},
+            {GPIO_P2_11 , IOCON_D_DEFAULT(4)},
+            {GPIO_P6_2  , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_5  , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList rxd1[] = {
-            {GPIO_P1_7  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P1_15 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P2_7  , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_13 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_12 , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P1_7  , IOCON_D_DEFAULT(1)},
+            {GPIO_P1_15 , IOCON_D_DEFAULT(4)},
+            {GPIO_P2_7  , IOCON_D_DEFAULT(4)},
+            {GPIO_P6_13 , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_12 , IOCON_D_DEFAULT(2)},
     };
     static const T_LPC546xx_SCU_ConfigList txd1[] = {
-            {GPIO_P1_6  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P1_14 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P2_15 , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_12 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P7_11 , SCU_NORMAL_DRIVE_DEFAULT(2)},
+            {GPIO_P1_6  , IOCON_D_DEFAULT(1)},
+            {GPIO_P1_14 , IOCON_D_DEFAULT(4)},
+            {GPIO_P2_15 , IOCON_D_DEFAULT(4)},
+            {GPIO_P6_12 , IOCON_D_DEFAULT(2)},
+            {GPIO_P7_11 , IOCON_D_DEFAULT(2)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     HALInterfaceRegister("UART1", (T_halInterface *)&G_LPC546xx_Serial_UART1, 0,
             0);
 
-    LPC546xx_SCU_ConfigPinOrNone(aPinTXD1, txd1, ARRAY_COUNT(txd1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinRXD1, rxd1, ARRAY_COUNT(rxd1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinCTS, cts1, ARRAY_COUNT(cts1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinDCD, dcd1, ARRAY_COUNT(dcd1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinDSR, dsr1, ARRAY_COUNT(dsr1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinDTR, dtr1, ARRAY_COUNT(dtr1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinRI, ri1, ARRAY_COUNT(ri1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinRTS, rts1, ARRAY_COUNT(rts1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinTXD1, txd1, ARRAY_COUNT(txd1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRXD1, rxd1, ARRAY_COUNT(rxd1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinCTS, cts1, ARRAY_COUNT(cts1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinDCD, dcd1, ARRAY_COUNT(dcd1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinDSR, dsr1, ARRAY_COUNT(dsr1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinDTR, dtr1, ARRAY_COUNT(dtr1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRI, ri1, ARRAY_COUNT(ri1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRTS, rts1, ARRAY_COUNT(rts1));
 }
 
 void LPC546xx_UART2_Require(
@@ -845,31 +862,31 @@ void LPC546xx_UART2_Require(
         T_uezGPIOPortPin aPinUCLK2)
 {
     static const T_LPC546xx_SCU_ConfigList dir2[] = {
-            {GPIO_P0_13 , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P1_13 , SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_13 , IOCON_D_DEFAULT(1)},
+            {GPIO_P1_13 , IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList rxd2[] = {
-            {GPIO_P0_3  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_10 , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P4_9  , SCU_NORMAL_DRIVE_DEFAULT(3)},
+            {GPIO_P0_3  , IOCON_D_DEFAULT(1)},
+            {GPIO_P3_10 , IOCON_D_DEFAULT(6)},
+            {GPIO_P4_9  , IOCON_D_DEFAULT(3)},
     };
     static const T_LPC546xx_SCU_ConfigList txd2[] = {
-            {GPIO_P0_2  , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_9  , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P4_8  , SCU_NORMAL_DRIVE_DEFAULT(3)},
+            {GPIO_P0_2  , IOCON_D_DEFAULT(1)},
+            {GPIO_P3_9  , IOCON_D_DEFAULT(6)},
+            {GPIO_P4_8  , IOCON_D_DEFAULT(3)},
     };
     static const T_LPC546xx_SCU_ConfigList uclk2[] = {
-            {GPIO_P0_12 , SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P1_12 , SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_12 , IOCON_D_DEFAULT(1)},
+            {GPIO_P1_12 , IOCON_D_DEFAULT(7)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     HALInterfaceRegister("UART2", (T_halInterface *)&G_LPC546xx_Serial_UART2, 0,
             0);
-    LPC546xx_SCU_ConfigPinOrNone(aPinTXD2, txd2, ARRAY_COUNT(txd2));
-    LPC546xx_SCU_ConfigPinOrNone(aPinRXD2, rxd2, ARRAY_COUNT(rxd2));
-    LPC546xx_SCU_ConfigPinOrNone(aPinDIR2, dir2, ARRAY_COUNT(dir2));
-    LPC546xx_SCU_ConfigPinOrNone(aPinUCLK2, uclk2, ARRAY_COUNT(uclk2));
+    LPC546xx_ICON_ConfigPinOrNone(aPinTXD2, txd2, ARRAY_COUNT(txd2));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRXD2, rxd2, ARRAY_COUNT(rxd2));
+    LPC546xx_ICON_ConfigPinOrNone(aPinDIR2, dir2, ARRAY_COUNT(dir2));
+    LPC546xx_ICON_ConfigPinOrNone(aPinUCLK2, uclk2, ARRAY_COUNT(uclk2));
 }
 
 void LPC546xx_UART3_Require(
@@ -880,44 +897,44 @@ void LPC546xx_UART3_Require(
         T_uezGPIOPortPin aPinUCLK3)
 {
     static const T_LPC546xx_SCU_ConfigList buad3[] = {
-            {GPIO_P1_10 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P2_3  , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P7_21 , SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P1_10 , IOCON_D_DEFAULT(2)},
+            {GPIO_P2_3  , IOCON_D_DEFAULT(6)},
+            {GPIO_P7_21 , IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList dir3[] = {
-            {GPIO_P5_7  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P2_4  , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P7_20 , SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P5_7  , IOCON_D_DEFAULT(2)},
+            {GPIO_P2_4  , IOCON_D_DEFAULT(6)},
+            {GPIO_P7_20 , IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList rxd3[] = {
-            {GPIO_P1_11 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P5_4  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P2_2  , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P5_17 , SCU_NORMAL_DRIVE_DEFAULT(7)},
-            {GPIO_P7_18 , SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P1_11 , IOCON_D_DEFAULT(2)},
+            {GPIO_P5_4  , IOCON_D_DEFAULT(2)},
+            {GPIO_P2_2  , IOCON_D_DEFAULT(6)},
+            {GPIO_P5_17 , IOCON_D_DEFAULT(7)},
+            {GPIO_P7_18 , IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList txd3[] = {
-            {GPIO_P0_14 , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P5_3  , SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P2_1  , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P4_15 , SCU_NORMAL_DRIVE_DEFAULT(7)},
-            {GPIO_P7_17 , SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P0_14 , IOCON_D_DEFAULT(2)},
+            {GPIO_P5_3  , IOCON_D_DEFAULT(2)},
+            {GPIO_P2_1  , IOCON_D_DEFAULT(6)},
+            {GPIO_P4_15 , IOCON_D_DEFAULT(7)},
+            {GPIO_P7_17 , IOCON_D_DEFAULT(1)},
     };
     static const T_LPC546xx_SCU_ConfigList uclk3[] = {
-            {GPIO_P0_7  , SCU_NORMAL_DRIVE_DEFAULT(5)},
-            {GPIO_P2_0  , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P7_19 , SCU_NORMAL_DRIVE_DEFAULT(1)},
+            {GPIO_P0_7  , IOCON_D_DEFAULT(5)},
+            {GPIO_P2_0  , IOCON_D_DEFAULT(6)},
+            {GPIO_P7_19 , IOCON_D_DEFAULT(1)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     HALInterfaceRegister("UART3", (T_halInterface *)&G_LPC546xx_Serial_UART3, 0,
             0);
 
-    LPC546xx_SCU_ConfigPinOrNone(aPinTXD3, txd3, ARRAY_COUNT(txd3));
-    LPC546xx_SCU_ConfigPinOrNone(aPinRXD3, rxd3, ARRAY_COUNT(rxd3));
-    LPC546xx_SCU_ConfigPinOrNone(aPinBAUD3, buad3, ARRAY_COUNT(buad3));
-    LPC546xx_SCU_ConfigPinOrNone(aPinDIR3, dir3, ARRAY_COUNT(dir3));
-    LPC546xx_SCU_ConfigPinOrNone(aPinUCLK3, uclk3, ARRAY_COUNT(uclk3));
+    LPC546xx_ICON_ConfigPinOrNone(aPinTXD3, txd3, ARRAY_COUNT(txd3));
+    LPC546xx_ICON_ConfigPinOrNone(aPinRXD3, rxd3, ARRAY_COUNT(rxd3));
+    LPC546xx_ICON_ConfigPinOrNone(aPinBAUD3, buad3, ARRAY_COUNT(buad3));
+    LPC546xx_ICON_ConfigPinOrNone(aPinDIR3, dir3, ARRAY_COUNT(dir3));
+    LPC546xx_ICON_ConfigPinOrNone(aPinUCLK3, uclk3, ARRAY_COUNT(uclk3));
 }
 
 /*===========================================================================*

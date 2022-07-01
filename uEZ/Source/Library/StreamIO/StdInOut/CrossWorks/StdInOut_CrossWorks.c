@@ -22,9 +22,16 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <__cross_studio_io.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <uEZ.h>
-#include <uEZStream.h>
-#include <Source/Library/StreamIO/StdInOut/StdInOut.h>
+#include "..\StdInOut.h"
+
+//int getchar_a(void);
+//#define getchar(void) _Generic(void: getchar_a)(void)
+
+#define PARAMETER_NOT_USED(p) (void) ((p))
 
 /*---------------------------------------------------------------------------*
  * Routine:  putchar
@@ -38,9 +45,9 @@
  *      int                     -- Character output or EOF if could not
  *                                  output.
  *---------------------------------------------------------------------------*/
-#include <__cross_studio_io.h>
-int putchar(int aChar)
+int __putchar(int aChar, __printf_tag_ptr unused)
 {
+    PARAMETER_NOT_USED(unused);
     char c = aChar;
     T_uezDevice stdout = StdoutGet();
 
@@ -65,6 +72,9 @@ int putchar(int aChar)
  *                                  get a character (no stdin).
  *---------------------------------------------------------------------------*/
 // TODO: Replace getchar with appropriate function
+/*int getchar_a(void) {
+    return 0;
+}*/
 
 /*-------------------------------------------------------------------------*
  * End of File:  StdInOut_CrossWorks.c

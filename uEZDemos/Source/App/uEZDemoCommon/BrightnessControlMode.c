@@ -167,7 +167,7 @@ static void BCMScreenSaverToggle(const T_choice *aChoice)
         ssInfo.iMSTillDim = 5000;
         ssInfo.iMSTillAnimation = 10000;
         ssInfo.iMSTillSleep = 30000;
-        ssInfo.iMSAnimationRefresh = 1000;
+        ssInfo.iMSAnimationRefresh = 1000; // TODO seems VSYNC doens't work correctly if we run this faster
         ssInfo.iCallback_AnimationStart = &BouncingLogoSS_Start;
         ssInfo.iCallback_AnimationUpdate = &BouncingLogoSS_Update;
         ssInfo.iCallback_AnimationSleep = &BouncingLogoSS_Sleep;

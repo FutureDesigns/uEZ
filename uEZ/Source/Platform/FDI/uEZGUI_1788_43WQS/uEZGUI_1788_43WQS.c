@@ -1892,6 +1892,29 @@ void UEZPlatform_SWO_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    NVIC_SystemReset();
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
  *---------------------------------------------------------------------------*
  * Description:

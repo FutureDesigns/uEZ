@@ -30,7 +30,7 @@
 #include "AppDemo.h"
 #include <uEZLCD.h>
 #include <uEZKeypad.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 #include <Types/InputEvent.h>
 
 /*-------------------------------------------------------------------------*

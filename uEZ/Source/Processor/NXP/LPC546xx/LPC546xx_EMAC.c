@@ -32,6 +32,8 @@
 #include <UEZErrors.h>
 #include <Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.h>
 
+//TODO: Remove
+#include "iar/Include/CMSIS/LPC54608.h"
 /*---------------------------------------------------------------------------*
  * Options:
  *---------------------------------------------------------------------------*/
@@ -494,13 +496,13 @@ static void IPHYWrite(T_LPC546xx_EMAC_Workspace *p, TUInt8 PhyReg, TUInt32 Value
 {
     TUInt32 timeout;
 
-    LPC_ETHERNET->MAC_MII_ADDR = p->iSettings.iPHYAddr | (4 << 2) | (PhyReg << 6);
-    LPC_ETHERNET->MAC_MII_DATA = Value;
-    LPC_ETHERNET->MAC_MII_ADDR |= (1<<1);
-    LPC_ETHERNET->MAC_MII_ADDR |= (1<<0);
+    ENET->MAC_MDIO_ADDR = p->iSettings.iPHYAddr | (4 << 2) | (PhyReg << 6);
+    ENET->MAC_MDIO_DATA = Value;
+    ENET->MAC_MDIO_ADDR |= (1<<1);
+    ENET->MAC_MDIO_ADDR |= (1<<0);
 
     for (timeout = 0; timeout < MII_WR_TOUT; timeout++) {
-        if ((LPC_ETHERNET->MAC_MII_ADDR & (1 << 0)) == 0) {
+        if ((ENET->MAC_MDIO_ADDR & (1 << 0)) == 0) {
             break;
         }
     }
@@ -520,17 +522,17 @@ static TUInt16 IPHYRead(T_LPC546xx_EMAC_Workspace *p, TUInt8 PhyReg)
 {
     TUInt32 timeout;
 
-    LPC_ETHERNET->MAC_MII_ADDR = p->iSettings.iPHYAddr | (4 << 2) | (PhyReg << 6);
-    LPC_ETHERNET->MAC_MII_ADDR |= (1<<0);
+    ENET->MAC_MDIO_ADDR = p->iSettings.iPHYAddr | (4 << 2) | (PhyReg << 6);
+    ENET->MAC_MDIO_ADDR |= (1<<0);
 
     // Wait until operation completed
     for (timeout = 0; timeout < MII_RD_TOUT; timeout++) {
-        if ((LPC_ETHERNET->MAC_MII_ADDR & (1 << 0)) == 0) {
+        if ((ENET->MAC_MDIO_ADDR & (1 << 0)) == 0) {
             break;
         }
     }
 
-    return (TUInt16)(LPC_ETHERNET->MAC_MII_DATA);
+    return (TUInt16)(ENET->MAC_MDIO_ADDR);
 }
 
 /*---------------------------------------------------------------------------*
@@ -643,34 +645,34 @@ static T_uezError IEMACConfigPHY_Micrel(T_LPC546xx_EMAC_Workspace *p)
     switch (regv) {
         case 0x0004:
             // Half duplex mode.
-            LPC_ETHERNET->MAC_CONFIG &= ~(1 << 11);
+            ENET->MAC_CONFIG &= ~(1 << 11);
             // 10MBit mode.
-            LPC_ETHERNET->MAC_CONFIG &= ~(1 << 14);
+            ENET->MAC_CONFIG &= ~(1 << 14);
             break;
         case 0x0008:
             // Half duplex mode.
-            LPC_ETHERNET->MAC_CONFIG &= ~(1 << 11);
+            ENET->MAC_CONFIG &= ~(1 << 11);
             // 100MBit mode.
-            LPC_ETHERNET->MAC_CONFIG |= (1 << 14);
+            ENET->MAC_CONFIG |= (1 << 14);
             break;
         case 0x0014:
             // Full duplex is enabled.
-            LPC_ETHERNET->MAC_CONFIG |= (1 << 11);
+            ENET->MAC_CONFIG |= (1 << 11);
             // 10MBit mode.
-            LPC_ETHERNET->MAC_CONFIG &= ~(1 << 14);
+            ENET->MAC_CONFIG &= ~(1 << 14);
             break;
         case 0x0018:
             // Full duplex is enabled.
-            LPC_ETHERNET->MAC_CONFIG |= (1 << 11);
+            ENET->MAC_CONFIG |= (1 << 11);
             // 100MBit mode.
-            LPC_ETHERNET->MAC_CONFIG |= (1 << 14);
+            ENET->MAC_CONFIG |= (1 << 14);
             //LPC_EMAC->SUPP = SUPP_SPEED;
             break;
         default: // Should not come here, force to set default, 100 FULL_DUPLEX
             // Full duplex is enabled.
-            LPC_ETHERNET->MAC_CONFIG |= (1 << 11);
+            ENET->MAC_CONFIG |= (1 << 11);
             // 100MBit mode.
-            LPC_ETHERNET->MAC_CONFIG |= (1 << 14);
+            ENET->MAC_CONFIG |= (1 << 14);
             //LPC_EMAC->SUPP = SUPP_SPEED;
             break;
     }
@@ -735,7 +737,7 @@ static void ILPC546xx_EMAC_InitRxDescriptors(void)
     RXDescs[ENET_NUM_RX_DESC - 1].B2ADD = (TUInt32) &RXDescs[0];
 
      // Set EMAC Receive Descriptor Registers.
-    LPC_ETHERNET->DMA_REC_DES_ADDR = (TUInt32)RXDescs;
+    ENET->DMA_CH[0].DMA_CHX_RXDESC_LIST_ADDR = (TUInt32)RXDescs;
 
     for(i = 0; i < ENET_NUM_RX_DESC; i++){
         RXDescs[i].B1ADD = (TUInt32) &RXBuffer[i];
@@ -795,7 +797,7 @@ void ILPC546xx_EMAC_InitTxDescriptors(void)
     TXDescs[ENET_NUM_TX_DESC - 1].B2ADD = (TUInt32) &TXDescs[0];
 
     /* Set EMAC Transmit Descriptor Registers. */
-    LPC_ETHERNET->DMA_TRANS_DES_ADDR = (TUInt32)TXDescs;
+    ENET->DMA_CH[0].DMA_CHX_TXDESC_LIST_ADDR = (TUInt32)TXDescs;
 }
 
 /*---------------------------------------------------------------------------*
@@ -910,46 +912,46 @@ T_uezError LPC546xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     // Delay a small amount
     UEZBSPDelayMS(1);
 
-    LPC_CREG->CREG6 |= 0x4;
+    //LPC_CREG->CREG6 |= 0x4;
 
-    LPC_RGU->RESET_CTRL0 = (1 << 22);
+    //LPC_RGU->RESET_CTRL0 = (1 << 22);
 
-    while((LPC_RGU->RESET_ACTIVE_STATUS0 & (1<<22)) == 1);
+    //while((LPC_RGU->RESET_ACTIVE_STATUS0 & (1<<22)) == 1);
 
-    LPC_ETHERNET->DMA_BUS_MODE |= (1<<0);
+    ENET->DMA_MODE |= (1<<0);
 
-    while((LPC_ETHERNET->DMA_BUS_MODE & 0x01) == 1);
+    while((ENET->DMA_MODE & 0x01) == 1);
 
-    LPC_ETHERNET->DMA_BUS_MODE = /*(1 << 1) |*/ (1 << 7) | (1 << 8) | (1 << 17);
+    ENET->DMA_MODE = /*(1 << 1) |*/ (1 << 7) | (1 << 8) | (1 << 17);
 
-    LPC_ETHERNET->MAC_CONFIG =  (3<<17) | (1<<15) | (1 << 14) | (1<<13) | (1 << 11) | (1 << 10);
+    ENET->MAC_CONFIG =  (3<<17) | (1<<15) | (1 << 14) | (1<<13) | (1 << 11) | (1 << 10);
 
     /* Setup default filter */
-    LPC_ETHERNET->MAC_FRAME_FILTER = (1<<0) | (1UL<<31);
+    ENET->MAC_FRAME_FILTER = (1<<0) | (1UL<<31);
 
     /* Flush transmit FIFO */
-    LPC_ETHERNET->DMA_OP_MODE = (1<<20);
+    ENET->DMA_MODE = (1<<20);
 
     /* Setup DMA to flush receive FIFOs at 32 bytes, service TX FIFOs at
        64 bytes */
-    LPC_ETHERNET->DMA_OP_MODE |= (1<<3) | (0<<14);
+    ENET->DMA_MODE |= (1<<3) | (0<<14);
 
     /* Clear all MAC interrupts */
-    LPC_ETHERNET->DMA_STAT = 0x1E7FF;
+    ENET->DMA_INTR_STAT = 0x1E7FF;
 
-    LPC_ETHERNET->DMA_INT_EN = 0;
+    ENET->DMA_INTR_STAT = 0;
 
-    LPC_ETHERNET->MAC_ADDR0_HIGH = (p->iSettings.iMACAddress[5] << 8) |
+    ENET->MAC_ADDR_HIGH = (p->iSettings.iMACAddress[5] << 8) |
                                    (p->iSettings.iMACAddress[4]);
-    LPC_ETHERNET->MAC_ADDR0_LOW =  (p->iSettings.iMACAddress[3] << 24) |
+    ENET->MAC_ADDR_LOW =  (p->iSettings.iMACAddress[3] << 24) |
                                    (p->iSettings.iMACAddress[2] << 16) |
                                    (p->iSettings.iMACAddress[1] << 8) |
                                    (p->iSettings.iMACAddress[0]);
 
-    LPC_ETHERNET->MAC_CONFIG =  (3<<17) | (1<<15) | (1 << 14) | (1<<13) | (1 << 11) | (1 << 10);
+    ENET->MAC_CONFIG =  (3<<17) | (1<<15) | (1 << 14) | (1<<13) | (1 << 11) | (1 << 10);
 
     /* Setup default filter */
-    LPC_ETHERNET->MAC_FRAME_FILTER = (1<<0) | (1UL<<31);
+    ENET->MAC_FRAME_FILTER = (1<<0) | (1UL<<31);
 
     UEZBSPDelayMS(500);
 
@@ -1045,25 +1047,25 @@ T_uezError LPC546xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     p->iTransmitIndex = 0;
 
     /* Flush transmit FIFO */
-    LPC_ETHERNET->DMA_OP_MODE = (1<<20);
+    ENET->DMA_MODE = (1<<20);
 
     /* Setup DMA to flush receive FIFOs at 32 bytes, service TX FIFOs at
        64 bytes */
-    LPC_ETHERNET->DMA_OP_MODE |= (1<<3) | (0<<14);
+    ENET->DMA_MODE |= (1<<3) | (0<<14);
 
     /* Clear all MAC interrupts */
-    LPC_ETHERNET->DMA_STAT = 0x1E7FF;
+    ENET->DMA_INTR_STAT = 0x1E7FF;
 
     /* Enable MAC interrupts */
-    LPC_ETHERNET->DMA_INT_EN = (1 << 0) | (1 << 4) | (1 << 5) | (1 << 6) |
+    ENET->DMA_INTR_STAT = (1 << 0) | (1 << 4) | (1 << 5) | (1 << 6) |
                                (1 << 16) | (1 << 15) | (1 << 2) | (1 << 7);
 
-    LPC_ETHERNET->DMA_OP_MODE |= /*(1 << 24) |*/ (1 << 13) | (1 << 1);
+    ENET->DMA_MODE |= /*(1 << 24) |*/ (1 << 13) | (1 << 1);
     
     /* Enable receive and transmit mode of MAC Ethernet core */
-    LPC_ETHERNET->MAC_CONFIG |= (1 << 3) | (1 << 2);
+    ENET->MAC_CONFIG |= (1 << 3) | (1 << 2);
     
-    LPC_ETHERNET->DMA_REC_POLL_DEMAND = 1;
+    //ENET->DMA_REC_POLL_DEMAND = 1;
 
     return error;
 }
@@ -1085,7 +1087,7 @@ TBool LPC546xx_EMAC_CheckFrameReceived(void *aWorkspace)
     p_rdesc = (ENET_RXDESC_T *)&RXDescs[p->iReceiveIndex];
 
     // Ensure we poll for demand
-    LPC_ETHERNET->DMA_REC_POLL_DEMAND = 1;
+    //ENET->DMA_REC_POLL_DEMAND = 1;
 
     // Is the current descriptor waiting for us?
     if ((p_rdesc->STATUS & RXDESC_STATUS_OWN)==0) {
@@ -1215,7 +1217,7 @@ void LPC546xx_EMAC_DoSend(void *aWorkspace, TUInt16 aFrameSize)
     }
 
     // Ensure we tell the MAC to check the descriptors to send everything
-    LPC_ETHERNET->DMA_TRANS_POLL_DEMAND = 1;
+    //ENET->DMA_TRANS_POLL_DEMAND = 1;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1306,14 +1308,14 @@ static void LPC546xx_EMAC_ProcessInterrupt(void)
     TUInt32 status;
 
     // Clear the interrupt.
-    status = LPC_ETHERNET->DMA_STAT;
+    status = ENET->DMA_INTR_STAT;
     if (status & (1<<6)) {
         if (p->iReceiveCallback) {
             p->iReceiveCallback(p->iReceiveCallbackWorkspace);
         }
     }
     // Clear any interrupts that triggered this code
-    LPC_ETHERNET->DMA_STAT = status;
+    ENET->DMA_INTR_STAT = status;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1360,10 +1362,10 @@ void LPC546xx_EMAC_EnableReceiveInterrupt(
         INTERRUPT_PRIORITY_HIGH, "EMAC");
     InterruptEnable(ETHERNET_IRQn);
     // Turn on those types of interrupts
-    //LPC_ETHERNET->DMA_INT_EN = (1<<16) | (1<<6);//INT_RX_DONE;
-    LPC_ETHERNET->DMA_INT_EN = (1 << 0) | (1 << 4) | (1 << 5) | (1 << 6) |
+    //ENET->DMA_INT_EN = (1<<16) | (1<<6);//INT_RX_DONE;
+    ENET->DMA_INTR_STAT = (1 << 0) | (1 << 4) | (1 << 5) | (1 << 6) |
                                (1 << 16) | (1 << 15) | (1 << 2) | (1 << 7);
-    LPC_ETHERNET->DMA_REC_POLL_DEMAND = 1;
+    //ENET->DMA_REC_POLL_DEMAND = 1;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1375,7 +1377,7 @@ void LPC546xx_EMAC_EnableReceiveInterrupt(
 void LPC546xx_EMAC_DisableReceiveInterrupt(void *aWorkspace)
 {
     // Turn off those types of interrupts
-    LPC_ETHERNET->DMA_INT_EN = 0;//INT_RX_DONE;
+    ENET->DMA_INTR_STAT = 0;//INT_RX_DONE;
     // Turn off the whole interrutp since it is the only one
     InterruptDisable(ETHERNET_IRQn);//?
 }
@@ -1457,104 +1459,118 @@ void LPC546xx_EMAC_RMII_Require(const T_LPC546xx_EMAC_Settings *aSettings)
 {
     T_LPC546xx_EMAC_Workspace *p;
 
-    static const T_LPC546xx_SCU_ConfigList TX_EN[] = {
-            {GPIO_P0_1       , SCU_NORMAL_DRIVE_DEFAULT(6)}, //TX Enable
-            {GPIO_P6_3       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //TX Enable
-    };
-    static const T_LPC546xx_SCU_ConfigList TXD3[] = {
-            {GPIO_P5_18      , SCU_NORMAL_DRIVE_DEFAULT(5)}, //TXD 3
-            {GPIO_P6_2       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //TXD 3
-    };
-    static const T_LPC546xx_SCU_ConfigList TXD2[] = {
-            {GPIO_P5_17      , SCU_NORMAL_DRIVE_DEFAULT(5)}, //TXD 2
-            {GPIO_P6_1       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //TXD 2
-    };
-    static const T_LPC546xx_SCU_ConfigList TXD1[] = {
-            {GPIO_P0_15      , SCU_NORMAL_DRIVE_DEFAULT(3)}, //TXD 1
-    };
-    static const T_LPC546xx_SCU_ConfigList TXD0[] = {
-            {GPIO_P0_13      , SCU_NORMAL_DRIVE_DEFAULT(3)}, //TXD 0
-    };
-    static const T_LPC546xx_SCU_ConfigList TX_ER[] = {
-            {GPIO_P6_4       , SCU_NORMAL_DRIVE_DEFAULT(4)}, //TX Error
-            {GPIO_P6_13      , SCU_NORMAL_DRIVE_DEFAULT(6)}, //TX Error
-    };
-    static const T_LPC546xx_SCU_ConfigList TX_CLK[] = {
-            {GPIO_PZ_0_P1_19 , SCU_NORMAL_DRIVE(0, (1 << 7) , (1 << 6) , (1 << 5) , (1 << 4), (0 << 3))}, //TX Clk
-    };
-    static const T_LPC546xx_SCU_ConfigList RX_DV[] = {
-            {GPIO_P0_3       , SCU_NORMAL_DRIVE_DEFAULT(7)}, //RX DV
-            {GPIO_P6_7       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //RX DV
-    };
-    static const T_LPC546xx_SCU_ConfigList RXD3[] = {
-            {GPIO_P4_14      , SCU_NORMAL_DRIVE_DEFAULT(5)}, //RXD 3
-            {GPIO_P6_6       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //RXD 3
-    };
-    static const T_LPC546xx_SCU_ConfigList RXD2[] = {
-            {GPIO_P4_15      , SCU_NORMAL_DRIVE_DEFAULT(5)}, //RXD 2
-            {GPIO_P6_5       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //RXD 2
-    };
-    static const T_LPC546xx_SCU_ConfigList RXD1[] = {
-            {GPIO_P0_0       , SCU_NORMAL_DRIVE_DEFAULT(2)}, //RXD 1
-    };
-    static const T_LPC546xx_SCU_ConfigList RXD0[] = {
-            {GPIO_P0_2       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //RXD 0
-    };
-    static const T_LPC546xx_SCU_ConfigList RX_ER[] = {
-            {GPIO_P4_13      , SCU_NORMAL_DRIVE_DEFAULT(5)}, //RX Error
-            {GPIO_P6_8       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //RX Error
-    };
-    static const T_LPC546xx_SCU_ConfigList RX_CLK[] = {
-            {GPIO_PZ_Z_PC_0  , SCU_NORMAL_DRIVE(3, (1 << 7) , (1 << 6) , (1 << 5) , (1 << 4), (0 << 3))}, //RX Clk
-    };
-    static const T_LPC546xx_SCU_ConfigList COL[] = {
-            {GPIO_P0_1       , SCU_NORMAL_DRIVE_DEFAULT(2)}, //COL
-            {GPIO_P2_1       , SCU_NORMAL_DRIVE_DEFAULT(7)}, //COL
-            {GPIO_P4_11      , SCU_NORMAL_DRIVE_DEFAULT(5)}, //COL
-    };
-    static const T_LPC546xx_SCU_ConfigList CRS[] = {
-            {GPIO_P0_3       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //CRS
-            {GPIO_P4_2       , SCU_NORMAL_DRIVE_DEFAULT(5)}, //CRS
-    };
-    static const T_LPC546xx_SCU_ConfigList MDC[] = {
-            {GPIO_P5_0       , SCU_NORMAL_DRIVE_DEFAULT(7)}, //MDC
-            {GPIO_P3_15      , SCU_NORMAL_DRIVE_DEFAULT(6)}, //MDC
-            {GPIO_P6_0       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //MDC
-    };
-    static const T_LPC546xx_SCU_ConfigList MDIO[] = {
-            {GPIO_P0_12      , SCU_NORMAL_DRIVE_DEFAULT(3)}, //MDIO
-    };
-
-    HAL_DEVICE_REQUIRE_ONCE();
-
-    // Register EMAC
+//    static const T_LPC546xx_SCU_ConfigList TX_EN[] = {
+//            {GPIO_P0_1       , IOCON_D_DEFAULT(6)}, //TX Enable
+//            {GPIO_P6_3       , IOCON_D_DEFAULT(3)}, //TX Enable
+//    };
+//    static const T_LPC546xx_SCU_ConfigList TXD3[] = {
+//            {GPIO_P5_18      , IOCON_D_DEFAULT(5)}, //TXD 3
+//            {GPIO_P6_2       , IOCON_D_DEFAULT(3)}, //TXD 3
+//    };
+//    static const T_LPC546xx_SCU_ConfigList TXD2[] = {
+//            {GPIO_P5_17      , IOCON_D_DEFAULT(5)}, //TXD 2
+//            {GPIO_P6_1       , IOCON_D_DEFAULT(3)}, //TXD 2
+//    };
+//    static const T_LPC546xx_SCU_ConfigList TXD1[] = {
+//            {GPIO_P0_15      , IOCON_D_DEFAULT(3)}, //TXD 1
+//    };
+//    static const T_LPC546xx_SCU_ConfigList TXD0[] = {
+//            {GPIO_P0_13      , IOCON_D_DEFAULT(3)}, //TXD 0
+//    };
+//    static const T_LPC546xx_SCU_ConfigList TX_ER[] = {
+//            {GPIO_P6_4       , IOCON_D_DEFAULT(4)}, //TX Error
+//            {GPIO_P6_13      , IOCON_D_DEFAULT(6)}, //TX Error
+//    };
+//    static const T_LPC546xx_SCU_ConfigList TX_CLK[] = {
+//            {GPIO_PZ_0_P1_19 , SCU_NORMAL_DRIVE(0, (1 << 7) , (1 << 6) , (1 << 5) , (1 << 4), (0 << 3))}, //TX Clk
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RX_DV[] = {
+//            {GPIO_P0_3       , IOCON_D_DEFAULT(7)}, //RX DV
+//            {GPIO_P6_7       , IOCON_D_DEFAULT(3)}, //RX DV
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RXD3[] = {
+//            {GPIO_P4_14      , IOCON_D_DEFAULT(5)}, //RXD 3
+//            {GPIO_P6_6       , IOCON_D_DEFAULT(3)}, //RXD 3
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RXD2[] = {
+//            {GPIO_P4_15      , IOCON_D_DEFAULT(5)}, //RXD 2
+//            {GPIO_P6_5       , IOCON_D_DEFAULT(3)}, //RXD 2
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RXD1[] = {
+//            {GPIO_P0_0       , IOCON_D_DEFAULT(2)}, //RXD 1
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RXD0[] = {
+//            {GPIO_P0_2       , IOCON_D_DEFAULT(3)}, //RXD 0
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RX_ER[] = {
+//            {GPIO_P4_13      , IOCON_D_DEFAULT(5)}, //RX Error
+//            {GPIO_P6_8       , IOCON_D_DEFAULT(3)}, //RX Error
+//    };
+//    static const T_LPC546xx_SCU_ConfigList RX_CLK[] = {
+//            {GPIO_PZ_Z_PC_0  , SCU_NORMAL_DRIVE(3, (1 << 7) , (1 << 6) , (1 << 5) , (1 << 4), (0 << 3))}, //RX Clk
+//    };
+//    static const T_LPC546xx_SCU_ConfigList COL[] = {
+//            {GPIO_P0_1       , IOCON_D_DEFAULT(2)}, //COL
+//            {GPIO_P2_1       , IOCON_D_DEFAULT(7)}, //COL
+//            {GPIO_P4_11      , IOCON_D_DEFAULT(5)}, //COL
+//    };
+//    static const T_LPC546xx_SCU_ConfigList CRS[] = {
+//            {GPIO_P0_3       , IOCON_D_DEFAULT(3)}, //CRS
+//            {GPIO_P4_2       , IOCON_D_DEFAULT(5)}, //CRS
+//    };
+//    static const T_LPC546xx_SCU_ConfigList MDC[] = {
+//            {GPIO_P5_0       , IOCON_D_DEFAULT(7)}, //MDC
+//            {GPIO_P3_15      , IOCON_D_DEFAULT(6)}, //MDC
+//            {GPIO_P6_0       , IOCON_D_DEFAULT(3)}, //MDC
+//    };
+//    static const T_LPC546xx_SCU_ConfigList MDIO[] = {
+//            {GPIO_P0_12      , IOCON_D_DEFAULT(3)}, //MDIO
+//    };
+//
+//    HAL_DEVICE_REQUIRE_ONCE();
+//
+//    // Register EMAC
     HALInterfaceRegister("EMAC", (T_halInterface *)&G_LPC546xx_EMAC_Interface, 0,
         (T_halWorkspace **)&p);
+//
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_EN, TX_EN, ARRAY_COUNT(TX_EN));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTXD3, TXD3, ARRAY_COUNT(TXD3));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTXD2, TXD2, ARRAY_COUNT(TXD2));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTXD1, TXD1, ARRAY_COUNT(TXD1));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTXD0, TXD0, ARRAY_COUNT(TXD0));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_ER, TX_ER,
+//            ARRAY_COUNT(TX_ER));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_CLK, TX_CLK,
+//            ARRAY_COUNT(TX_CLK));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_DV, RX_DV,
+//            ARRAY_COUNT(RX_DV));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRXD3, RXD3,
+//            ARRAY_COUNT(RXD3));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRXD2, RXD2,
+//            ARRAY_COUNT(RXD2));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRXD1, RXD1, ARRAY_COUNT(RXD1));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRXD0, RXD0, ARRAY_COUNT(RXD0));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_ER, RX_ER, ARRAY_COUNT(RX_ER));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_CLK, RX_CLK, ARRAY_COUNT(RX_CLK));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCOL, COL, ARRAY_COUNT(COL));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCRS, CRS, ARRAY_COUNT(CRS));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMDC, MDC, ARRAY_COUNT(MDC));
+//    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMDIO, MDIO, ARRAY_COUNT(MDIO));
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_EN, TX_EN, ARRAY_COUNT(TX_EN));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTXD3, TXD3, ARRAY_COUNT(TXD3));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTXD2, TXD2, ARRAY_COUNT(TXD2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTXD1, TXD1, ARRAY_COUNT(TXD1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTXD0, TXD0, ARRAY_COUNT(TXD0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_ER, TX_ER,
-            ARRAY_COUNT(TX_ER));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_CLK, TX_CLK,
-            ARRAY_COUNT(TX_CLK));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_DV, RX_DV,
-            ARRAY_COUNT(RX_DV));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRXD3, RXD3,
-            ARRAY_COUNT(RXD3));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRXD2, RXD2,
-            ARRAY_COUNT(RXD2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRXD1, RXD1, ARRAY_COUNT(RXD1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRXD0, RXD0, ARRAY_COUNT(RXD0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_ER, RX_ER, ARRAY_COUNT(RX_ER));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_CLK, RX_CLK, ARRAY_COUNT(RX_CLK));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCOL, COL, ARRAY_COUNT(COL));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCRS, CRS, ARRAY_COUNT(CRS));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMDC, MDC, ARRAY_COUNT(MDC));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMDIO, MDIO, ARRAY_COUNT(MDIO));
+#define EMAC_IOCON       (0x01 << 0x08) | (0x01)
 
+    IOCON->PIO[4][19] = EMAC_IOCON;
+    IOCON->PIO[2][2] = EMAC_IOCON;
+    IOCON->PIO[4][23] = EMAC_IOCON;
+    IOCON->PIO[4][24] = EMAC_IOCON;
+    IOCON->PIO[4][13] = EMAC_IOCON;
+    IOCON->PIO[4][14] = EMAC_IOCON;
+    IOCON->PIO[4][15] = EMAC_IOCON;
+    IOCON->PIO[4][16] = EMAC_IOCON;
+    IOCON->PIO[4][9] = EMAC_IOCON;
+
+    p->iMDIOSettings.iPinMDC = GPIO_P4_15;
+    p->iMDIOSettings.iPinMDIO = GPIO_P4_15;
 #if EMAC_USE_BITBANG_MDIO_DETECT
     p->iMDIOSettings.iDelayUSPerHalfBit = EMAC_BITBANG_MDIO_DELAY_US;
     p->iMDIOSettings.iIsClause45 = EFalse;

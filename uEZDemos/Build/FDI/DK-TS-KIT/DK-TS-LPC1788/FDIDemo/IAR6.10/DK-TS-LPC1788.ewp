@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.1.13270</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -112,11 +112,11 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -133,7 +133,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -156,7 +156,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -196,6 +196,19 @@
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -213,6 +226,7 @@
                     <name>CCDefines</name>
                     <state>LPC1700_IAR</state>
                     <state>COMPILER_TYPE=IAR</state>
+                    <state>LWIP_2_0_x</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -294,7 +308,6 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    <state>--enum_is_int</state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -347,13 +360,16 @@
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/Inc</state>
@@ -691,7 +707,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>21</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1003,6 +1019,10 @@
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>DK-TS-LPC1788_import_lib.o</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1042,7 +1062,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1097,7 +1117,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.1.13270</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -1147,7 +1167,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1164,7 +1184,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1187,7 +1207,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1227,6 +1247,19 @@
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1245,6 +1278,7 @@
                     <state>NDEBUG</state>
                     <state>LPC1700_IAR</state>
                     <state>COMPILER_TYPE=IAR</state>
+                    <state>LWIP_2_0_x</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1326,7 +1360,6 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    <state>--enum_is_int</state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -1379,13 +1412,16 @@
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/Inc</state>
@@ -1723,7 +1759,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>21</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -2035,6 +2071,10 @@
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
                 </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>###Unitialized###</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2074,7 +2114,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -2129,7 +2169,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.1.13270</state>
+                    <state>8.30.1.17146</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -2179,7 +2219,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -2196,7 +2236,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -2219,7 +2259,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -2259,6 +2299,19 @@
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2277,6 +2330,7 @@
                     <state>LPC1700_IAR</state>
                     <state>COMPILER_TYPE=IAR</state>
                     <state>FREERTOS_PLUS_TRACE</state>
+                    <state>LWIP_2_0_x</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -2358,7 +2412,6 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    <state>--enum_is_int</state>
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -2411,14 +2464,18 @@
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/FDI/CARRIER_LPC1788</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../../uEZ/Source/Platform/emWin/Inc</state>
@@ -2756,7 +2813,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>21</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -3067,6 +3124,10 @@
                 <option>
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>###Unitialized###</state>
                 </option>
             </data>
         </settings>

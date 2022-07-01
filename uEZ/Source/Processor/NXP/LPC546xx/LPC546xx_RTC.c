@@ -24,13 +24,20 @@
 #include <uEZTypes.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_RTC.h>
-#include <LPC546xx.h>
+#include <LPC54608.h>
 
+//TODO: Remove
+#include "iar/Include/CMSIS/LPC54608.h"
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
 #define RTC_VALID_MARKER        0xAA55DCCD
-#define RTC_CCR_BITMASK         (0x00000013) // CCR register mask
+#define SECONDS_IN_A_DAY        (86400U)
+#define SECONDS_IN_A_HOUR       (3600U)
+#define SECONDS_IN_A_MINUTE     (60U)
+#define DAYS_IN_A_YEAR          (365U)
+#define YEAR_RANGE_START        (1970U)
+#define YEAR_RANGE_END          (2099U)
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -60,6 +67,55 @@ T_uezError LPC546xx_RTC_InitializeWorkspace(void *aWorkspace)
     return UEZ_ERROR_NONE;
 }
 
+static void LPC546xx_RCT_CovertToTimeDate(T_uezTimeDate *aTimeDate, TUInt32 aCount)
+{
+    TUInt32 i;
+    TUInt32 secondsRemaining;
+    TUInt32 days;
+    TUInt32 daysInYear;
+    //Table of days in month, first value is not used.
+    TUInt8 daysPerMonth[13] = {0U, 31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U};
+
+    secondsRemaining = aCount;
+
+    days = secondsRemaining / SECONDS_IN_A_DAY + 1;
+
+    secondsRemaining = secondsRemaining % SECONDS_IN_A_DAY;
+
+    aTimeDate->iTime.iHour = secondsRemaining / SECONDS_IN_A_HOUR;
+    secondsRemaining = secondsRemaining % SECONDS_IN_A_HOUR;
+    aTimeDate->iTime.iMinute = secondsRemaining / 60;
+    aTimeDate->iTime.iSecond = secondsRemaining % SECONDS_IN_A_MINUTE;
+
+    daysInYear = DAYS_IN_A_YEAR;
+    aTimeDate->iDate.iYear = YEAR_RANGE_START;
+
+    while(days > daysInYear){
+        days -= daysInYear;
+        aTimeDate->iDate.iYear++;
+
+        if(aTimeDate->iDate.iYear & 0x03){
+            daysInYear = DAYS_IN_A_YEAR;
+        } else {
+            daysInYear = DAYS_IN_A_YEAR + 1;
+        }
+    }
+
+    if(aTimeDate->iDate.iYear & 0x03){
+        daysPerMonth[2] = 29;
+    }
+
+    for(i = 1; i <= 12; i++){
+        if(days <= daysPerMonth[i]){
+            aTimeDate->iDate.iMonth = i;
+            break;
+        } else {
+            days -= daysPerMonth[i];
+        }
+    }
+    aTimeDate->iDate.iDay = days;
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  LPC546xx_RTC_Get
  *---------------------------------------------------------------------------*
@@ -79,21 +135,42 @@ T_uezError LPC546xx_RTC_Get(void *aWorkspace, T_uezTimeDate *aTimeDate)
     // changing.  If it just changes, then read again.  We don't
     // want to be caught reading between 11:59:59 and 0:00:00.
     do {
-        t = LPC_RTC->CTIME0;
-        d = LPC_RTC->CTIME1;
+        t = RTC->COUNT;
+        d = RTC->COUNT;
     }
-    while ((t != LPC_RTC->CTIME0) || (d != LPC_RTC->CTIME1));
+    while ((t != RTC->COUNT) || (d != RTC->COUNT));
 
     // Now extract the consolidated registers into the structure
     // in a more useful form.
-    aTimeDate->iTime.iSecond = (t >> 0) & 63;
-    aTimeDate->iTime.iMinute = (t >> 8) & 63;
-    aTimeDate->iTime.iHour = (t >> 16) & 31;
-    aTimeDate->iDate.iDay = d & 31;
-    aTimeDate->iDate.iMonth = (d >> 8) & 15;
-    aTimeDate->iDate.iYear = (d >> 16) & 4095; // 0 - 4095
+    LPC546xx_RCT_CovertToTimeDate(aTimeDate, RTC->COUNT);
 
     return UEZ_ERROR_NONE;
+}
+
+static void LPC546xx_RCT_CovertToSeconds(const T_uezTimeDate *aTimeDate)
+{
+    TUInt16 monthDays[] = {0U, 0U, 31U, 59U, 90U, 120U, 151U, 181U, 212U, 243U, 273U, 304U, 334U};
+    TUInt32 seconds;
+    
+    /* Compute number of days from 1970 till given year*/
+    seconds = (aTimeDate->iDate.iYear - YEAR_RANGE_START) * DAYS_IN_A_YEAR;
+    /* Add leap year days */
+    seconds += ((aTimeDate->iDate.iYear / 4) - (YEAR_RANGE_START / 4));
+    /* Add number of days till given month*/
+    seconds += monthDays[aTimeDate->iDate.iMonth];
+    /* Add days in given month. We subtract the current day as it is
+     * represented in the hours, minutes and seconds field*/
+    seconds += (aTimeDate->iDate.iDay - 1);
+    /* For leap year if month less than or equal to Febraury, decrement day counter*/
+    if ((!(aTimeDate->iDate.iYear & 3U)) && (aTimeDate->iDate.iMonth <= 2U))
+    {
+        seconds--;
+    }
+
+    seconds = (seconds * SECONDS_IN_A_DAY) + (aTimeDate->iTime.iHour * SECONDS_IN_A_HOUR) +
+              (aTimeDate->iTime.iMinute * SECONDS_IN_A_MINUTE) + aTimeDate->iTime.iSecond;
+    
+    RTC->COUNT = seconds;
 }
 
 /*---------------------------------------------------------------------------*
@@ -110,23 +187,15 @@ T_uezError LPC546xx_RTC_Get(void *aWorkspace, T_uezTimeDate *aTimeDate)
 T_uezError LPC546xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 {
     PARAM_NOT_USED(aWorkspace);//T_LPC546xx_RTC_Workspace *p = (T_LPC546xx_RTC_Workspace *)aWorkspace;
-	uint32_t ccrValue = LPC_RTC->CCR; // read current CCR value
 
-	// Temporarily disable Clock Control Register
-	if (ccrValue & RTC_CCR_CLKEN_Msk) {
-		LPC_RTC->CCR = (ccrValue & (~RTC_CCR_CLKEN_Msk)) & RTC_CCR_BITMASK;
-	}
+    //Disable the clock while setting the time
+	RTC->CTRL &= ~(1<<6);
 
     // Update RTC registers
-    LPC_RTC->SEC = aTimeDate->iTime.iSecond;
-    LPC_RTC->MIN = aTimeDate->iTime.iMinute;
-    LPC_RTC->HRS = aTimeDate->iTime.iHour;
-    LPC_RTC->DOM = aTimeDate->iDate.iDay;
-    LPC_RTC->MONTH = aTimeDate->iDate.iMonth;
-    LPC_RTC->YEAR = aTimeDate->iDate.iYear;
+	LPC546xx_RCT_CovertToSeconds(aTimeDate);
 
   	// Restore Clock Control Register to old setting
-	LPC_RTC->CCR = ccrValue;
+	RTC->CTRL |= (1<<6);
 
     return UEZ_ERROR_NONE;
 }
@@ -151,41 +220,11 @@ T_uezError LPC546xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
     T_LPC546xx_RTC_Workspace *p = (T_LPC546xx_RTC_Workspace *)aWorkspace;
     p->iExternalClock = aIsExternalClock;
 
-    if((LPC_RTC->CCR & RTC_CCR_CLKEN_Msk) != 0){
-        return UEZ_ERROR_NONE;
-    }
-    // Enable RTC Clock
-	LPC_CREG->CREG0 &= ~((1 << 3) | (1 << 2));	/* Reset 32Khz oscillator */
-	LPC_CREG->CREG0 |= (1 << 1) | (1 << 0);	/* Enable 32 kHz & 1 kHz on osc32k and release reset */
+    LPC546xxPowerOn(kCLOCK_Rtc);
 
-	// 2-Second delay after enabling RTC clock per datasheet
-	LPC_ATIMER->DOWNCOUNTER = 2048;
-	while (LPC_ATIMER->DOWNCOUNTER);
-
-	// Disable RTC
-    LPC_RTC->CCR = (LPC_RTC->CCR & ~RTC_CCR_CLKEN_Msk) & RTC_CCR_BITMASK;
-
-	// Disable Calibration
-    LPC_RTC->CCR |= RTC_CCR_CCALEN_Msk;
-
-	// Reset RTC clock
-	LPC_RTC->CCR |= RTC_CCR_CTCRST_Msk;
-	while (!(LPC_RTC->CCR & RTC_CCR_CTCRST_Msk)) {}
-	// Finish resetting RTC clock
-	LPC_RTC->CCR = (LPC_RTC->CCR & ~RTC_CCR_CTCRST_Msk) & RTC_CCR_BITMASK;
-	while (LPC_RTC->CCR & RTC_CCR_CTCRST_Msk) {}
-
-	// Clear counter increment and alarm interrupt
-	LPC_RTC->ILR = RTC_ILR_RTCCIF_Msk | RTC_ILR_RTCALF_Msk;
-	while (LPC_RTC->ILR != 0) {}
-
-	// Clear all register to be default
-	LPC_RTC->CIIR = 0x00;
-	LPC_RTC->AMR = 0xFF;
-	LPC_RTC->CALIBRATION = 0x00;
-
-    // Enable RTC
-    LPC_RTC->CCR |= RTC_CCR_CLKEN_Msk;
+    RTC->CTRL = 0;
+    
+    RTC->CTRL = (1<<7) | (1<<6);//Enable RTC and External clock
 
     return UEZ_ERROR_NONE;
 }

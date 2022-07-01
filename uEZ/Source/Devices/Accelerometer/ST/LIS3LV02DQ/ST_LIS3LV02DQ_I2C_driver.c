@@ -227,6 +227,49 @@ accdata[6] - OUTZ_H     (0x2D)
 }
 
 
+T_uezError ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ_Single(
+        void *aWorkspace, 
+        AccelerometerReading *aReading,
+        TUInt32 aTimeout) {
+		
+	
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+
+}
+
+T_uezError ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ_Float(
+        void *aWorkspace, 
+        AccelerometerReadingFloat *aReading,
+        TUInt32 aTimeout) {
+		
+	
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+
+}
+
+T_uezError ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ_Float_Single(
+        void *aWorkspace, 
+        AccelerometerReadingFloat *aReading,
+        TUInt32 aTimeout) {
+		
+	
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+
+}		
+
+
 /*---------------------------------------------------------------------------*
  * Routine:  ST_Accelo_LIS3LV02DQ_Configure
  *---------------------------------------------------------------------------*
@@ -316,6 +359,10 @@ const DEVICE_Accelerometer Accelerometer_ST_LIS3LV02DQ_via_I2C_Interface = {
     // Functions
     ST_Accelo_LIS3LV02DQ_I2C_GetInfo,
     ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ,
+	ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ_Single,
+	ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ_Float,
+    ST_Accelo_LIS3LV02DQ_I2C_ReadXYZ_Float_Single,
+	
 } ;
 
 /*-------------------------------------------------------------------------*

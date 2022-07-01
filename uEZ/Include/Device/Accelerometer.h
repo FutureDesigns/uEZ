@@ -70,13 +70,17 @@ typedef struct {
     T_uezDeviceInterface iDevice;
 
     // Functions
-    T_uezError (*GetInfo)(
-            void *aWorkspace,
-            AccelerometerInfo *aInfo);
-    T_uezError (*ReadXYZ)(
-            void *aWorkspace, 
-            AccelerometerReading *aReading,
-            TUInt32 aTimeout);
+    T_uezError (*GetInfo)(void *aWorkspace, AccelerometerInfo *aInfo);
+    T_uezError (*ReadXYZ)(void *aWorkspace, 
+            AccelerometerReading *aReading, TUInt32 aTimeout);
+	
+	// uEZ 2.10
+    T_uezError (*ReadXYZSingle)(void *aWorkspace, 
+            AccelerometerReading *aReading, TUInt32 aTimeout);
+    T_uezError (*ReadXYZFloat)(void *aWorkspace, 
+            AccelerometerReadingFloat *aReading, TUInt32 aTimeout);
+    T_uezError (*ReadXYZFloatSingle)(void *aWorkspace, 
+            AccelerometerReadingFloat *aReading, TUInt32 aTimeout);
 } DEVICE_Accelerometer;
 
 #ifdef __cplusplus

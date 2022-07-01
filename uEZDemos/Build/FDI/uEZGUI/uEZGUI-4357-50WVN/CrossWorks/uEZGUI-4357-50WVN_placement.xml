@@ -1,5 +1,6 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement">
+  <!-- Remember to set the CM0_SIZE=0x? Macros in the "Memory Map Macros" Section! -->
   <MemorySegment name="$(FLASH_NAME:FLASH)">
     <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)" />	
     <ProgramSection load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
@@ -10,13 +11,10 @@
     <ProgramSection alignment="4" load="Yes" name=".dtors" />
     <ProgramSection alignment="4" load="Yes" name=".ctors" />
     <ProgramSection alignment="4" load="Yes" name=".rodata" />
-    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end" />
     <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
-    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
-  </MemorySegment>
-  <MemorySegment name="$(FLASH2_NAME:FLASH2)">
+    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>    
     <ProgramSection alignment="4" load="Yes" name=".text2" />
     <ProgramSection alignment="4" load="Yes" name=".rodata2" />
     <ProgramSection alignment="4" load="Yes" runin=".data2_run" name=".data2" />
@@ -26,35 +24,41 @@
   </MemorySegment>
   <MemorySegment name="SRAM1">
     <ProgramSection alignment="4" load="Yes" name=".fast_run" />
+    <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
+    <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. -->
+    <ProgramSection alignment="4" load="Yes" name=".rtt" />
     <ProgramSection alignment="4" load="No" name=".data_run" />
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
-    <ProgramSection alignment="4" load="No" name=".tbss" />
     <ProgramSection alignment="4" load="No" name=".tdata_run" />
     <ProgramSection alignment="4" load="No" name=".non_init" />
-    <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
     <ProgramSection alignment="8" size="__STACKSIZE__" load="No" name=".stack" />
     <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" />
-  </MemorySegment>
-  <MemorySegment name="$(RAM_NAME:RAM);SDRAM">
-    <!-- 4MB reserved for frame buffer and emWin memory -->
-    <ProgramSection alignment="4" size="4*1024*1024" load="No" name=".frames"/>
-    <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
-    <!-- Reserved 1 Meg for loading work space at end-->
-    <ProgramSection alignment="4" size="1*1024*1024" load="No" name=".loadspace"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
-  </MemorySegment>
-  <MemorySegment name="$(RAM2_NAME:RAM2)">
+    <ProgramSection alignment="4" load="No" name=".tbss" />
     <ProgramSection alignment="4" load="No" name=".data2_run" />
     <ProgramSection alignment="4" load="No" name=".bss2" />
   </MemorySegment>
+  <MemorySegment name="$(RAM_NAME:RAM);SDRAM">
+    <!-- 4MB reserved for frame buffer and emWin memory -->
+    <ProgramSection alignment="4" size="10*1024*1024" load="No" name=".frames"/>
+    <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
+    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
+    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
+  </MemorySegment>
+  <MemorySegment name="SRAM2">
+  </MemorySegment>
+  <MemorySegment name="FLASHB">
+  </MemorySegment>
+  <!-- Note that AHB section defines are different from the IAR project which is split into 3 sections. -->
+  <!-- Note that the shown size of these will be the size-CM0 size. -->
   <MemorySegment name="AHBSRAM1">
     <!-- The AHB area from 0x20000000 to 0x2000C000 -->
     <ProgramSection load="No" name=".usbhostmem"/>
+    <ProgramSection load="No" name=".emacmem"/>
     <ProgramSection load="No" name=".mcimem"/>
   </MemorySegment>
   <MemorySegment name="AHBSRAM2">
-    <!-- The ethernet area from 0x2000C000 -->
-    <ProgramSection load="No" name=".emacmem"/>
+    <!-- From 0x2000C000 to 0x2010000-->
   </MemorySegment>
 </Root>

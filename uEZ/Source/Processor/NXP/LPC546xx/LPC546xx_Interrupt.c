@@ -52,7 +52,7 @@ static T_irqHandleStruct G_isrArray[UEZ_MAX_IRQ_CHANNELS];
 void InterruptFatalError(void)
 {
     // Disable all interrupts
-    __disable_irq();
+    __disable_interrupt();
     while(1)  {
         //TBD: Report error in some form
     }

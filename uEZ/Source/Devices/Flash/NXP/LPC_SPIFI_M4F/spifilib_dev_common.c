@@ -863,6 +863,26 @@ SPIFI_ERR_T spifiErase(const SPIFI_HANDLE_T *pHandle, uint32_t firstBlock, uint3
     return err;
 }
 
+/* Erase multiple sub blocks */
+SPIFI_ERR_T spifiEraseSubBlocks(const SPIFI_HANDLE_T *pHandle, uint32_t firstSubBlock, uint32_t numSubBlocks)
+{
+    SPIFI_ERR_T err = SPIFI_ERR_NONE;
+
+    if ((firstSubBlock + numSubBlocks) > pHandle->pInfoData->numSubBlocks) {
+        return SPIFI_ERR_RANGE;
+    }
+
+    /* Only perform erase if numBlocks is != 0 */
+    for (; (numSubBlocks); ++firstSubBlock, --numSubBlocks) {
+        err = pHandle->pFamFx->eraseSubBlock(pHandle, firstSubBlock);
+        if (err != SPIFI_ERR_NONE) {
+            break;
+        }
+    }
+
+    return err;
+}
+
 /* Erase multiple blocks by address range */
 SPIFI_ERR_T spifiEraseByAddr(const SPIFI_HANDLE_T *pHandle, uint32_t firstAddr, uint32_t lastAddr)
 {

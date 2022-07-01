@@ -27,6 +27,7 @@
 
 /* ----------------------- lwIP includes ------------------------------------*/
 #include "lwip/api.h"
+#include "lwip/sockets.h"
 
 /* ----------------------- Modbus includes ----------------------------------*/
 #include "mb.h"
@@ -59,7 +60,7 @@ static USHORT usPort;
 
 typedef struct {
   T_uezDevice         aNetwork;
-  T_uezNetworkSocket  aSocket;
+  int  aSocket;
   T_uEZNetworkConnectionInfo aConnection;
   T_uezSemaphore      aSemaphore;
   T_uezTask           aTask;
@@ -76,7 +77,7 @@ static pxMBTCPConnectionCloseCB pxConnectionCloseCB = NULL;
 
 /* ----------------------- Static functions ---------------------------------*/
 static void     prvvMBPortReleaseClient( xMBTCPClient *pClientHandle );
-static void     prvvMBPortReleaseSocket( T_uezDevice aNetwork, T_uezNetworkSocket aSocket );
+static void     prvvMBPortReleaseSocket( int aSocket );
 
 /* ----------------------- Begin implementation -----------------------------*/
 
@@ -90,7 +91,7 @@ prvMBTCPListenerTask( T_uezTask aMyTask, void *arg )
     USHORT usLength;
     UCHAR *pBuf = NULL;
     USHORT usConsume = 0;
-    T_uezError error;
+    //T_uezError error;
     USHORT usTimeouts;
     xMBTCPClient    *pClientHandle = (xMBTCPClient *)arg;
 
@@ -109,10 +110,12 @@ prvMBTCPListenerTask( T_uezTask aMyTask, void *arg )
         for (;;)
         {
             /* read the socket */
-            error = UEZNetworkSocketRead(pClientHandle->aNetwork, pClientHandle->aSocket, buffer, sizeof(buffer), 
-                                         &numBytes, MB_TCP_CONNECTION_READ_TIMEOUT);
+            if(pClientHandle->aSocket == -1){
+              break;
+            }
+            numBytes = recv(pClientHandle->aSocket, buffer, sizeof(buffer), 0);
 
-            UEZTaskDelay(1);
+            // TODO: needed UEZTaskDelay(1);
 #ifdef MB_TCP_DEBUG
             //vMBPortLog( MB_LOG_DEBUG,
             //            "MBTCP-READ", "Socket: %d bytes: %d error: %d ticks: %d\r\n",
@@ -121,11 +124,14 @@ prvMBTCPListenerTask( T_uezTask aMyTask, void *arg )
 
 mb_tcp_receive_buffer_parsing:
             /* was this a timeout? */
-            if ((numBytes == 0) && (error == UEZ_ERROR_TIMEOUT))
+            if ((numBytes == 0)) //&& (error == UEZ_ERROR_TIMEOUT))
             {
+                UEZTaskDelay(1);
                 usTimeouts++;
+                int sock_err = 0;
 
-                if (usTimeouts > ((MB_TCP_CONNECTION_TIMEOUT*1000)/MB_TCP_CONNECTION_READ_TIMEOUT))
+                if (usTimeouts > ((MB_TCP_CONNECTION_TIMEOUT*1000)/MB_TCP_CONNECTION_READ_TIMEOUT) ||
+                   ((sock_err = lwip_getsockopt(pClientHandle->aSocket, 0, 0, 0, 0)) < 0))
                 {
                     /* the socket has timed out */
 #ifdef MB_TCP_DEBUG
@@ -133,6 +139,7 @@ mb_tcp_receive_buffer_parsing:
                                 "MBTCP-TIMEOUT", "Connection deemed inactive! Dropping it.\r\n");
 #endif
                     prvvMBPortReleaseClient(pClientHandle);
+                    (void)sock_err; //Debugging
                     break;
                 }
                 else
@@ -140,17 +147,19 @@ mb_tcp_receive_buffer_parsing:
                     continue;
                 }
             }
+            #if 0
             else if ((error != UEZ_ERROR_NONE) && (error != UEZ_ERROR_TIMEOUT))
             {
 
 #ifdef MB_TCP_DEBUG
-                    vMBPortLog( MB_LOG_DEBUG, 
+                    vMBPortLog( MB_LOG_DEBUG,
                                 "MBTCP-ERROR", "Socket read returned error %d.\r\n", error);
 #endif
                  /* the socket has an error, close it */
                 prvvMBPortReleaseClient(pClientHandle);
                 break;
             }
+            #endif
 
             usTimeouts = 0;
             
@@ -249,20 +258,20 @@ mb_tcp_receive_buffer_parsing:
 }
 
 static xMBTCPClient *
-prvvMBPortNewClient(T_uezDevice aNetwork, T_uezNetworkSocket aSocket, T_uEZNetworkConnectionInfo *aConnection)
+prvvMBPortNewClient(int aSocket)
 {
   USHORT  index;
 
   for (index = 0; index < MB_TCP_MAX_CLIENTS; index++)
   {
-    if ((xClients[index].aNetwork == NULL) &&
-        (xClients[index].aSocket == NULL))
+    if (//(xClients[index].aNetwork == NULL) &&
+        (xClients[index].aSocket == -1))
     {
       // found an empty slot
-      xClients[index].aNetwork = aNetwork;
+      //xClients[index].aNetwork = aNetwork;
       xClients[index].aSocket = aSocket;
       xClients[index].usTCPBufPos = 0;
-      memcpy(&xClients[index].aConnection, aConnection, sizeof(xClients[index].aConnection));
+      //memcpy(&xClients[index].aConnection, aConnection, sizeof(xClients[index].aConnection));
 
       return &xClients[index];
     }
@@ -281,14 +290,14 @@ prvvMBPortFreeClient(xMBTCPClient *pClientHandle)
 
   for (index = 0; index < MB_TCP_MAX_CLIENTS; index++)
   {
-    if ((xClients[index].aNetwork == pClientHandle->aNetwork) &&
+    if (//(xClients[index].aNetwork == pClientHandle->aNetwork) &&
         (xClients[index].aSocket == pClientHandle->aSocket))
     {
       // found client
-      xClients[index].aNetwork = NULL;
-      xClients[index].aSocket = NULL;
+      //xClients[index].aNetwork = NULL;
+      xClients[index].aSocket = -1;
       xClients[index].usTCPBufPos = 0;
-      memset(&xClients[index].aConnection, 0, sizeof(xClients[index].aConnection));
+      //memset(&xClients[index].aConnection, 0, sizeof(xClients[index].aConnection));
 
       return TRUE;
     }
@@ -299,10 +308,9 @@ prvvMBPortFreeClient(xMBTCPClient *pClientHandle)
 }
 
 static void
-prvvMBPortReleaseSocket( T_uezDevice aNetwork, T_uezNetworkSocket aSocket )
+prvvMBPortReleaseSocket(int aSocket )
 {
-    UEZNetworkSocketClose( aNetwork, aSocket );
-    UEZNetworkSocketDelete( aNetwork, aSocket );
+    close(aSocket);
 }
 
 static void
@@ -316,7 +324,7 @@ prvvMBPortReleaseClient( xMBTCPClient *pClientHandle )
             pxConnectionCloseCB(&pClientHandle->aConnection);
         }
 
-        prvvMBPortReleaseSocket(pClientHandle->aNetwork, pClientHandle->aSocket );
+        prvvMBPortReleaseSocket( pClientHandle->aSocket );
         
         prvvMBPortFreeClient( pClientHandle );
 
@@ -369,13 +377,11 @@ vMBTCPPortDisable( void )
 }
 
 static void
-prvMBTCPProcessConnection(T_uezDevice aNetwork, T_uezNetworkSocket aSocket)
+prvMBTCPProcessConnection(int aSocket)
 {
     xMBTCPClient    *pClientHandle;
-    T_uEZNetworkConnectionInfo aConnection;
 
-    /* get the remote ip, port */
-    UEZNetworkGetConnectionInfo(aNetwork, aSocket, &aConnection);
+#if 0 //TODO Add back
 
     /* if an application callback has been registered, call it 
      * a return value of TRUE means accept connection, FALSE means reject */
@@ -394,9 +400,10 @@ prvMBTCPProcessConnection(T_uezDevice aNetwork, T_uezNetworkSocket aSocket)
         prvvMBPortReleaseSocket( aNetwork, aSocket );
         return;
     }
+#endif
 
     /* accept the new client if we can. */
-    pClientHandle = prvvMBPortNewClient(aNetwork, aSocket, &aConnection);
+    pClientHandle = prvvMBPortNewClient(aSocket);
 
     if( pClientHandle )
     {
@@ -445,7 +452,7 @@ prvMBTCPProcessConnection(T_uezDevice aNetwork, T_uezNetworkSocket aSocket)
                     // ip4_addr3( &( pxPCB->remote_ip ) ), 
                     // ip4_addr4( &( pxPCB->remote_ip ) ) );
 #endif
-        prvvMBPortReleaseSocket( aNetwork, aSocket );
+        prvvMBPortReleaseSocket( aSocket );
     }
 }
 
@@ -463,12 +470,11 @@ xMBTCPPortSendResponse( void *pvSession, const UCHAR * pucMBTCPFrame, USHORT usT
 
     if( pClientHandle )
     {
-        if ( UEZNetworkSocketWrite(pClientHandle->aNetwork, pClientHandle->aSocket, 
-                                   (void *)pucMBTCPFrame, usTCPLength, TRUE, UEZ_TIMEOUT_INFINITE) == UEZ_ERROR_NONE )
+        if(send(pClientHandle->aSocket, pucMBTCPFrame, usTCPLength, 0) == usTCPLength)
         {
 #ifdef MB_TCP_DEBUG
-            vMBPortLog( MB_LOG_DEBUG, 
-                        "MBTCP-WRITE", "Socket: %d bytes: %d ticks: %d\r\n", 
+            vMBPortLog( MB_LOG_DEBUG,
+                        "MBTCP-WRITE", "Socket: %d bytes: %d ticks: %d\r\n",
                         pClientHandle->aSocket, usTCPLength, UEZTickCounterGet());
 #endif
 #ifdef MB_TCP_DEBUG
@@ -502,6 +508,8 @@ xMBTCPPortRegisterConnectionCloseCB( pxMBTCPConnectionCloseCB pCB )
 BOOL
 xMBTCPPortGetConnectionInfo( T_uEZNetworkConnectionInfo *aConnection )
 {
+    //CS: Currently not working with BSD style sockets
+    //May be able to use socket options to pull the information
     USHORT index;
     T_uezTask task;
     
@@ -551,46 +559,54 @@ xMBTCPPortGetUnitAddress( void )
 static void
 prvMBTCPServerTask( T_uezTask aMyTask, void *arg )
 {
-    T_uezNetworkSocket socket;
-    T_uezNetworkSocket newSocket;
-    T_uezDevice network;
+    int socket_fd;
+    int accept_fd;
+    socklen_t addr_size;
+    struct sockaddr_in sa,isa;
+    TUInt32 index = 0;
+
 
     /* clear out the client info */
     memset(xClients, 0, sizeof(xClients));
-
-    /* Get the network handle */
-    UEZNetworkOpen("WiredNetwork0", &network);
+    //Set the intial state of the socket
+    for (index = 0; index < MB_TCP_MAX_CLIENTS; index++)
+    {
+      xClients[index].aSocket = -1;
+    }
 
     /* create the TCP socket */
-    if (UEZNetworkSocketCreate(network, UEZ_NETWORK_SOCKET_TYPE_TCP, &socket) == UEZ_ERROR_NONE) 
+    socket_fd = socket(PF_INET, SOCK_STREAM, 0);
+    if(socket_fd >= 0)
     {
         /* Setup the socket to be on the Modbus TCP port */
-        UEZNetworkSocketBind(network, socket, 0, usPort);
+        memset(&sa, 0, sizeof(struct sockaddr_in));
+        sa.sin_family = AF_INET;
+        sa.sin_addr.s_addr = INADDR_ANY;
+        sa.sin_port = htons(usPort);
 
-        /* Put the socket into listen mode */
-        UEZNetworkSocketListen(network, socket);
-
+        if(bind(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) != -1){
+            /* Put the socket into listen mode */
+            if (listen(socket_fd,5) == 0) {
 #ifdef MB_TCP_DEBUG
-        vMBPortLog( MB_LOG_DEBUG, "MBTCP-ACCEPT", "Protocol stack ready.\r\n" );
+                vMBPortLog( MB_LOG_DEBUG, "MBTCP-ACCEPT", "Protocol stack ready.\r\n" );
 #endif
-
-        /* Loop forever */
-        for (;;) 
-        {
-            /* Wait for connection. */
-            if (UEZNetworkSocketAccept(network, socket, &newSocket, UEZ_TIMEOUT_INFINITE) != UEZ_ERROR_NONE)
-            {
-                break;
-            }
-
+                /* Loop forever */
+                for (;;) {
+                    /* Wait for connection. */
+                    addr_size = sizeof(isa);
+                    accept_fd = accept(socket_fd, (struct sockaddr* )&isa,
+                            &addr_size);
+                    if (accept_fd < 0) {
+                        printf("Socket error: %d\n\r", accept_fd);
+                    } else {
 #ifdef MB_TCP_DEBUG
-            vMBPortLog( MB_LOG_DEBUG, "MBTCP-ACCEPT", "Socket accepted.\r\n" );
+                        vMBPortLog(MB_LOG_DEBUG, "MBTCP-ACCEPT",
+                                "Socket accepted.\r\n");
 #endif
-
-            /* Service connection. */
-            if (socket) 
-            {
-                prvMBTCPProcessConnection(network, newSocket);
+                        /* Service connection. */
+                        prvMBTCPProcessConnection(accept_fd);
+                    }
+                }
             }
         }
     }

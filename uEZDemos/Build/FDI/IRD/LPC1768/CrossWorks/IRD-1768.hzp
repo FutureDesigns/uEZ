@@ -5,6 +5,7 @@
       Name="Common"
       Target="LPC1768"
       arm_architecture="v7M"
+      arm_compiler_variant="gcc"
       arm_core_type="Cortex-M3"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
@@ -17,15 +18,21 @@
       arm_target_loader_parameter="12000000"
       batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug-Trace;THUMB Flash Debug-Trace CLANG;THUMB Flash Release"
       build_output_directory="$(Configuration)"
-      c_only_additional_options="-fms-extensions"
-      c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET;__$(LPC1000_Series)_SERIES"
-      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/NXP/IRD/;../../../../../../uEZ/Source/Processor/NXP/LPC1768;../../../../../../uEZ/Source/Processor/NXP/LPC1768/CrossWorks/;../../../../../../uEZ/Source/Processor/NXP/LPC1768/CrossWorks/include;../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
+      build_remove_unused_symbols="Yes"
+      c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
+      c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
+      c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;CORE_M3;STARTUP_FROM_RESET;__THUMB;LWIP_2_0_x;__$(LPC1000_Series)_SERIES"
+      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/NXP/IRD/;../../../../../../uEZ/Source/Processor/NXP/LPC1768;../../../../../../uEZ/Source/Processor/NXP/LPC1768/CrossWorks/;../../../../../../uEZ/Source/Processor/NXP/LPC1768/CrossWorks/include;../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwIP_2.0.x/src;../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include;../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwIP_2.0.x/system;../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
+      gcc_c_language_standard="c11"
+      gcc_cplusplus_language_standard="c++11"
       link_include_startup_code="No"
       linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)"
       linker_memory_map_file="$(TargetsDir)/LPC1000/LPC1768_MemoryMap.xml"
       linker_output_format="hex"
-      linker_printf_enabled="Yes"
-      linker_scanf_enabled="Yes"
+      linker_printf_fmt_level="long"
+      linker_printf_fp_enabled="No"
+      linker_scanf_fmt_level="long"
+      linker_scanf_fp_enabled="No"
       linker_section_placement_file="$(ProjectDir)/IRD-1768_placement.xml"
       macros="LPC1000_Series=LPC17xx"
       oscillator_frequency="12MHz"
@@ -40,6 +47,7 @@
       Placement="Flash"
       arm_target_flash_loader_file_path="$(TargetsDir)/LPC1000/Release/Loader_rpc.elf"
       arm_target_flash_loader_type="LIBMEM RPC Loader"
+      c_preprocessor_definitions="__FLASH_BUILD"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC1000/LPC1000_LinkPatch.js\&quot;);patch(\&quot;$(TargetPath)\&quot;);&quot;"
       target_reset_script="FLASHReset()" />
     <configuration
@@ -196,9 +204,10 @@
         build_exclude_from_build="Yes" />
     </file>
     <configuration
-      Name="THUMB Flash Release"
-      gcc_optimization_level="Level 1" />
-    <configuration Name="Release" gcc_optimization_level="Level 1" />
+      Name="Release"
+      c_preprocessor_definitions="NDEBUG"
+      gcc_debugging_level="Level 1"
+      gcc_optimization_level="Level 2" />
     <configuration
       Name="THUMB Flash Debug-Trace"
       c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
@@ -207,6 +216,12 @@
     <configuration
       Name="THUMB Flash Debug-Trace CLANG"
       arm_compiler_variant="clang" />
+    <configuration
+      Name="Debug"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="DEBUG"
+      gcc_debugging_level="Level 3"
+      gcc_optimization_level="None" />
   </project>
   <configuration
     Name="THUMB Flash Debug"
@@ -216,27 +231,13 @@
     Platform="ARM"
     arm_instruction_set="THUMB"
     arm_library_instruction_set="THUMB"
-    c_preprocessor_definitions="__THUMB"
     hidden="Yes" />
-  <configuration
-    Name="Flash"
-    c_preprocessor_definitions="__FLASH_BUILD"
-    hidden="Yes" />
-  <configuration
-    Name="Debug"
-    c_preprocessor_definitions="DEBUG"
-    gcc_debugging_level="Level 1"
-    gcc_optimization_level="None"
-    hidden="Yes" />
+  <configuration Name="Flash" hidden="Yes" />
+  <configuration Name="Debug" hidden="Yes" />
   <configuration
     Name="THUMB Flash Release"
     inherited_configurations="THUMB;Flash;Release" />
-  <configuration
-    Name="Release"
-    c_preprocessor_definitions="NDEBUG"
-    gcc_debugging_level="Level 1"
-    gcc_optimization_level="Level 1"
-    hidden="Yes" />
+  <configuration Name="Release" hidden="Yes" />
   <configuration
     Name="THUMB Flash Debug-Trace"
     inherited_configurations="Debug;Flash;THUMB" />

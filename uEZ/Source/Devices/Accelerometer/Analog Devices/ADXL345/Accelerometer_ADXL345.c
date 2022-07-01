@@ -290,6 +290,42 @@ T_uezError ST_Accelerometer_ADXL345_ReadXYZ(
     return UEZ_ERROR_NONE;
 }
 
+T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Single(
+    void *aWorkspace,
+    AccelerometerReading *aReading,
+    TUInt32 aTimeout)
+{
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Float(
+    void *aWorkspace,
+    AccelerometerReadingFloat *aReading,
+    TUInt32 aTimeout)
+{
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Float_Single(
+    void *aWorkspace,
+    AccelerometerReadingFloat *aReading,
+    TUInt32 aTimeout)
+{
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  ST_Accelerometer_ADXL345_Configure
  *---------------------------------------------------------------------------*
@@ -357,7 +393,11 @@ const DEVICE_Accelerometer Accelerometer_ADXL345_Interface = {
 
     // Functions
     ST_Accelerometer_ADXL345_GetInfo,
-    ST_Accelerometer_ADXL345_ReadXYZ, };
+    ST_Accelerometer_ADXL345_ReadXYZ,
+	ST_Accelerometer_ADXL345_ReadXYZ_Single,
+	ST_Accelerometer_ADXL345_ReadXYZ_Float,
+    ST_Accelerometer_ADXL345_ReadXYZ_Float_Single,
+	};
 
 /*-------------------------------------------------------------------------*
  * End of File:  Accelerometer_ADXL345.c

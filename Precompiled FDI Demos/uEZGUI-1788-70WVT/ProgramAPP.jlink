@@ -1,8 +1,0 @@
-exec device = LPC1788
-speed 4000
-rx 200
-h
-loadbin "uEZGUI-1788-70WVT_IAR_APP.BIN", 0
-rx 200
-g
-q

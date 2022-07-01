@@ -55,6 +55,13 @@ extern "C" {
 #endif
 
 /*-------------------------------------------------------------------------*
+ * Put typedefs first as Rowley doesn't like them after #include FreeRTOS.h
+ *-------------------------------------------------------------------------*/
+typedef T_uezHandle T_uezQueue;
+typedef T_uezHandle T_uezTask;
+typedef T_uezHandle T_uezSemaphore;
+
+/*-------------------------------------------------------------------------*
  * FreeRTOS specific definitions.
  *-------------------------------------------------------------------------*/
 #if (RTOS==FreeRTOS)
@@ -110,8 +117,6 @@ typedef enum {
 /*-------------------------------------------------------------------------*
  * Section: Tasks
  *-------------------------------------------------------------------------*/
-typedef T_uezHandle T_uezTask;
-
 typedef TUInt32 (*T_uezTaskFunction)(T_uezTask aMyTask, void *aParameters);
 
 T_uezError UEZTaskCreate(
@@ -154,8 +159,6 @@ void _isr_UEZTaskContextSwitch(void);
 /*-------------------------------------------------------------------------*
  * Section: Semaphores
  *-------------------------------------------------------------------------*/
-typedef T_uezHandle T_uezSemaphore;
-
 T_uezError UEZSemaphoreCreateBinary(T_uezSemaphore *aSemaphore);
 T_uezError UEZSemaphoreCreateCounting(
             T_uezSemaphore *aSemaphore,
@@ -187,8 +190,6 @@ T_uezError UEZSemaphoreRecursiveRelease(T_uezSemaphore aSemaphore);
 /*-------------------------------------------------------------------------*
  * Section: Queues
  *-------------------------------------------------------------------------*/
-typedef T_uezHandle T_uezQueue;
-
 T_uezError UEZQueueCreate(
             TUInt32 aNumItems,
             TUInt32 aItemSize,

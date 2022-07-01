@@ -31,7 +31,7 @@ Purpose     : emWin demo
 #include <uEZLCD.h>
 
 #ifndef EMWIN_LOAD_ONCE
-#define EMWIN_LOAD_ONCE 0
+#define EMWIN_LOAD_ONCE 1
 #endif
 
 /*********************************************************************

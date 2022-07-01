@@ -2,7 +2,7 @@
  * File:  AtCmdLib.c
  *-------------------------------------------------------------------------*/
 /** @addtogroup AtCmdLib
- * 	@{ *     @brief The GainSpan AT Command Library (AtCmdLib) provides the 
+ *       @{ *     @brief The GainSpan AT Command Library (AtCmdLib) provides the 
  *      functions that send AT commands to a GainSpan node and looks for a 
  *      response. Parse commands are provided to interpret the response data.
  */
@@ -518,6 +518,28 @@ ATLIBGS_MSG_ID_E AtLibGs_GetMAC2(char *mac)
         strcpy(mac, lines[0]);
 
     return rxMsgId;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  AtLibGs_NCM_AutoConfig
+ *--------------------------------------------------------------------------*/
+/**   Used to setup the NCM. Use this to setup roaming mode support.
+ *    See the GS1100/1500 manual for NCMAUTOCONF for details on usage.
+ *      Sends the command:
+ *          AT+NCMAUTOCONF=[id],[value]
+ *      and waits for a response.
+ *  @param [in] id -- parameter ID
+ *  @param [in] value -- value to set parameter
+ *  @return     ATLIBGS_MSG_ID_E -- error code
+ */
+/*--------------------------------------------------------------------------*/
+ATLIBGS_MSG_ID_E AtLibGs_NCM_AutoConfig(uint32_t id, int32_t value)
+{
+    char cmd[32];
+
+    sprintf(cmd, "AT+NCMAUTOCONF=" _F32_ "," _F32_ "\r\n", id, value);
+ 
+    return AtLibGs_CommandSendString(cmd);
 }
 
 /*---------------------------------------------------------------------------*
@@ -2854,7 +2876,11 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
                 }
 
             } else {
-                MRBuffer[MRBufferIndex] = rxData;
+                if(rxData){
+                    MRBuffer[MRBufferIndex] = rxData;
+                } else {
+                    MRBuffer[MRBufferIndex] = 0x20;
+                }				
                 MRBufferIndex++;
 #if 0
     if ((rxData >= 0x20) && (rxData <= 0x7F))

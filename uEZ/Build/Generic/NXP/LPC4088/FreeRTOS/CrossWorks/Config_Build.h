@@ -29,6 +29,9 @@
 #define USE_PRIMASK_CS            1
 #endif
 
+#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_SYSTEM_VIEW           0
+
 #ifdef NDEBUG
 #define UEZ_REGISTER              0
 #else

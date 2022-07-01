@@ -64,7 +64,7 @@ typedef enum
 /* ----------------------- Supporting functions -----------------------------*/
 BOOL            xMBPortEventInit( void );
 
-#define NEW_PORT_EVENT 0
+#define NEW_PORT_EVENT 1 //1 for TCP
 
 #if NEW_PORT_EVENT == 0
 BOOL            xMBPortEventPost( eMBEventType eEvent );

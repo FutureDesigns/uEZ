@@ -21,8 +21,8 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZDevice.h>	// This is needed for the RX compiler
-#include <Source/Library/lwIP/src/include/lwip/netdb.h>
-#include <Source/Library/lwIP/src/include/lwip/tcp.h>
+#include <lwip/netdb.h>
+#include <lwip/tcp.h>
 #include <uEZDeviceTable.h>
 #include "Network_lwIP.h"
 
@@ -33,7 +33,10 @@
 #include "lwip/tcpip.h"
 #include "lwip/memp.h"
 #include "lwip/stats.h"
-#include "netif/loopif.h"
+#include "lwip/dhcp.h"
+#include "lwip/ip_addr.h"
+
+#define          tcp_nagle_disable(pcb)   ((pcb)->flags |= TF_NODELAY)
 
 #if (!LWIP_SO_RCVTIMEO)
 #error "LWIP_SO_RCVTIMEO must be 1 to use device Network::lwIP"
@@ -164,6 +167,36 @@ T_uezError Network_lwIP_InitializeWorkspace(void *aWorkspace)
     return error;
 }
 
+#if LWIP_DHCP
+static TUInt32 DHCP(T_uezTask aMyTask, void *aParams)
+{
+    T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace*)aParams;
+    TUInt32 mscnt = 0;
+
+    while(p->EMAC_if.ip_addr.addr == 0){
+        UEZTaskDelay(DHCP_FINE_TIMER_MSECS);
+        mscnt += DHCP_FINE_TIMER_MSECS;
+        if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
+               dhcp_coarse_tmr();
+               mscnt = 0;
+        }
+        //autoip_tmr();
+    }
+    //LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("pbuf->len = %"U16_F"\n", p->len));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\nDone with DHCP"));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\nAcquired IP ="));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr)));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>8)));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>16)));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>24)));
+    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\n"));
+    return 0;
+}
+#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  IStartup
  *---------------------------------------------------------------------------*
@@ -180,7 +213,11 @@ static T_uezError IStartup(
 {
     extern err_t ethernetif_init(struct netif *netif);
     T_uezError error = UEZ_ERROR_NONE;
+#if LWIP_2_0_x
+    ip_addr_t xIpAddr, xNetMast, xGateway;
+#else
     struct ip_addr xIpAddr, xNetMast, xGateway;
+#endif
 
     // Only support infrastructure network types
     if (aSettings->iNetworkType != UEZ_NETWORK_TYPE_INFRASTRUCTURE)
@@ -188,20 +225,37 @@ static T_uezError IStartup(
 
     tcpip_init(NULL, NULL);
     
+#if LWIP_DHCP
     /* Create and configure the EMAC interface. */
-    IP4_ADDR(&xIpAddr, aSettings->iIPAddress.v4[0],
-        aSettings->iIPAddress.v4[1], aSettings->iIPAddress.v4[2],
-        aSettings->iIPAddress.v4[3]);
-    IP4_ADDR(&xNetMast, aSettings->iSubnetMask.v4[0],
-        aSettings->iSubnetMask.v4[1], aSettings->iSubnetMask.v4[2],
-        aSettings->iSubnetMask.v4[3]);
-    IP4_ADDR(&xGateway, aSettings->iGatewayAddress.v4[0],
-        aSettings->iGatewayAddress.v4[1], aSettings->iGatewayAddress.v4[2],
-        aSettings->iGatewayAddress.v4[3]);
+    if(aSettings->iEnableDHCP){
+        IP4_ADDR(&xIpAddr, 0, 0, 0, 0);
+        IP4_ADDR(&xNetMast, 0, 0, 0, 0);
+        IP4_ADDR(&xGateway, 0, 0, 0, 0);
+        UEZTaskCreate(DHCP, "DHCP", 1024, (void *)p, UEZ_PRIORITY_NORMAL,
+                0);
+
+    } else {
+#endif
+        IP4_ADDR(&xIpAddr, aSettings->iIPAddress.v4[0],
+            aSettings->iIPAddress.v4[1], aSettings->iIPAddress.v4[2],
+            aSettings->iIPAddress.v4[3]);
+        IP4_ADDR(&xNetMast, aSettings->iSubnetMask.v4[0],
+            aSettings->iSubnetMask.v4[1], aSettings->iSubnetMask.v4[2],
+            aSettings->iSubnetMask.v4[3]);
+        IP4_ADDR(&xGateway, aSettings->iGatewayAddress.v4[0],
+            aSettings->iGatewayAddress.v4[1], aSettings->iGatewayAddress.v4[2],
+            aSettings->iGatewayAddress.v4[3]);
+#if LWIP_DHCP
+    }
+#endif
 
     /* uEZ v2.04 -- The MAC address is now passed into via the Network Settings
      *              instead of using a confusing callback. */
+#if LWIP_2_0_x
+    p->EMAC_if.hwaddr_len = 6;
+#else
     p->EMAC_if.hwaddr_len_padding = 6;
+#endif
     p->EMAC_if.hwaddr[0] = aSettings->iMACAddress.v4[0];
     p->EMAC_if.hwaddr[1] = aSettings->iMACAddress.v4[1];
     p->EMAC_if.hwaddr[2] = aSettings->iMACAddress.v4[2];
@@ -217,6 +271,12 @@ static T_uezError IStartup(
 
     /* bring it up */
     netif_set_up(&p->EMAC_if);
+
+#if LWIP_DHCP
+    if(aSettings->iEnableDHCP){
+        dhcp_start(&p->EMAC_if);
+    }
+#endif
 
     return error;
 }
@@ -460,6 +520,7 @@ static T_uezNetworkSocket ISocketCreate(
             } else {
                 p->iSockets[i].iNetconn
                     = netconn_new((aType == UEZ_NETWORK_SOCKET_TYPE_TCP)?NETCONN_TCP:NETCONN_UDP);
+                tcp_nagle_disable(p->iSockets[i].iNetconn->pcb.tcp);
             }
             if (p->iSockets[i].iNetconn) {
                 // Allocate this slot and report back this slot
@@ -537,7 +598,11 @@ T_uezError Network_lwIP_SocketBind(
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_UNKNOWN;
     T_lwIPSocket *p_socket = p->iSockets + aSocket;
+#if LWIP_2_0_x
+    ip_addr_t ip;
+#else
     struct ip_addr ip;
+#endif
 
     // Only valid sockets
     if ((aSocket == 0) || (aSocket > NETWORK_LWIP_NUM_SOCKETS))
@@ -567,7 +632,11 @@ T_uezError Network_lwIP_SocketConnect(
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
     T_lwIPSocket *p_socket = p->iSockets + aSocket;
+#if LWIP_2_0_x
+    ip_addr_t ip;
+#else
     struct ip_addr ip;
+#endif
 
     // Only valid sockets
     if ((aSocket == 0) || (aSocket > NETWORK_LWIP_NUM_SOCKETS))
@@ -625,9 +694,12 @@ T_uezError Network_lwIP_SocketAccept(
 {
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_UNKNOWN;
-    struct netconn *p_acceptedNetconn;
+    struct netconn *p_acceptedNetconn = 0;
     T_lwIPSocket *p_socket = p->iSockets + aListenSocket;
     T_lwIPSocket *p_newSocket;
+#if LWIP_2_0_x
+    err_t err = ERR_OK;
+#endif
 
     // So far, we got nothing
     *aCreatedSocket = 0;
@@ -649,10 +721,19 @@ T_uezError Network_lwIP_SocketAccept(
         // Go ahead and create a socket to receive
         // (of the same type as we are listening on)
         p_socket->iNetconn->recv_timeout = aTimeout;
+#if LWIP_2_0_x
+        if (err == ERR_TIMEOUT)
+            err = ERR_OK;
+#else
         if (p_socket->iNetconn->err == ERR_TIMEOUT)
             p_socket->iNetconn->err = ERR_OK;
+#endif
         UEZSemaphoreRelease(p->iSem);
+#if LWIP_2_0_x
+        err = netconn_accept(p_socket->iNetconn, &p_acceptedNetconn);
+#else
         p_acceptedNetconn = netconn_accept(p_socket->iNetconn);
+#endif
         UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
         if (p_acceptedNetconn) {
             *aCreatedSocket = ISocketCreate(p, p_socket->iType, p_acceptedNetconn);
@@ -665,7 +746,11 @@ T_uezError Network_lwIP_SocketAccept(
                 error = UEZ_ERROR_OUT_OF_HANDLES;
             }
         } else {
+#if LWIP_2_0_x
+            error = IConvertErrorCode(err);
+#else
             error = IConvertErrorCode(p_socket->iNetconn->err);
+#endif
             // Free this previously created socket, we had an error
             ISocketFree(p, *aCreatedSocket);
             *aCreatedSocket = 0;
@@ -754,6 +839,9 @@ T_uezError Network_lwIP_SocketRead(
     T_uezError error = UEZ_ERROR_NONE;
     T_lwIPSocket *p_socket = p->iSockets + aSocket;
     TUInt16 numCopy;
+#if LWIP_2_0_x
+    err_t err;
+#endif
     //    TUInt32 timeStart = UEZTickCounterGet();
 
     // No bytes read yet
@@ -794,8 +882,13 @@ T_uezError Network_lwIP_SocketRead(
                 if (p_socket->iReceiveRemaining == 0) {
                     if (netbuf_next(p_socket->iReceiveNetBuf) >= 0) {
                         // Got more data!  Setup the info for it
+#if LWIP_2_0_x
+                        err = netbuf_data(p_socket->iReceiveNetBuf,
+                            (void **)&p_socket->iReceiveData, &p_socket->iReceiveLength);
+#else
                         netbuf_data(p_socket->iReceiveNetBuf,
                             (void **)&p_socket->iReceiveData, &p_socket->iReceiveLength);
+#endif
                         p_socket->iReceiveRemaining = p_socket->iReceiveLength;
                     } else {
                         // Done with this netbuf, delete it
@@ -810,18 +903,33 @@ T_uezError Network_lwIP_SocketRead(
             if ((aNumBytes) && (p_socket->iReceiveRemaining == 0)) {
                 // Change the timeout for this connection
                 p_socket->iNetconn->recv_timeout = aTimeout;
+#if LWIP_2_0_x
+                if (err == ERR_TIMEOUT)
+                    err = ERR_OK;
+                err = netconn_recv(p_socket->iNetconn, &p_socket->iReceiveNetBuf);
+#else
                 if (p_socket->iNetconn->err == ERR_TIMEOUT)
                     p_socket->iNetconn->err = ERR_OK;
                 p_socket->iReceiveNetBuf = netconn_recv(p_socket->iNetconn);
+#endif
                 if (p_socket->iReceiveNetBuf == 0) {
                     // Received no data, possibly timed out?
                     // Stop with the given returned data
+#if LWIP_2_0_x
+                    error = IConvertErrorCode(err);
+#else
                     error = IConvertErrorCode(p_socket->iNetconn->err);
+#endif
                     break;
                 }
                 // We did get data, pull out the pertinent info
+#if LWIP_2_0_x
+                err = netbuf_data(p_socket->iReceiveNetBuf, (void **)&p_socket->iReceiveData,
+                        &p_socket->iReceiveLength);
+#else
                 netbuf_data(p_socket->iReceiveNetBuf, (void **)&p_socket->iReceiveData,
                     &p_socket->iReceiveLength);
+#endif
                 p_socket->iReceiveRemaining = p_socket->iReceiveLength;
             }
         }
@@ -863,13 +971,15 @@ T_uezError Network_lwIP_SocketWrite(
                 numWrite = (TUInt16)aNumBytes;
             aNumBytes -= numWrite;
 
+#ifndef LWIP_2_0_x
             // Clean up any previous timeout errors
             if (p_socket->iNetconn->err == ERR_TIMEOUT)
                 p_socket->iNetconn->err = ERR_OK;
+#endif
             // Write out this segment (noting if there is data past this one)
             error
                 = IConvertErrorCode(netconn_write(p_socket->iNetconn, aData,
-                    numWrite, NETCONN_COPY | ((aFlush) ? 0
+                    numWrite, ((aFlush) ? NETCONN_COPY
                         : NETCONN_MORE)));
             // Stop on any errors
             if (error != UEZ_ERROR_NONE)
@@ -993,7 +1103,11 @@ T_uezError Network_lwIP_GetConnectionInfo(void *aWorkspace,
 	T_uezError error = UEZ_ERROR_NONE;
 	T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
 	T_lwIPSocket *p_socket = p->iSockets + aSocket;
-	struct ip_addr ip;
+#if LWIP_2_0_x
+    ip_addr_t ip;
+#else
+    struct ip_addr ip;
+#endif
 
     error = IConvertErrorCode(netconn_getaddr(p_socket->iNetconn, &ip, &aConnection->iConnectedPort, 0));
     aConnection->iIPConnectedAddr[3] = (ip.addr>> 24) &0xFF;

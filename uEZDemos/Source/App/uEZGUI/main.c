@@ -35,6 +35,7 @@
 #include "Audio.h"
 #include <Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h>
 #include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
+#include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
 #include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
 
 #if COMPILE_OPTION_USB_SDCARD_DISK
@@ -76,7 +77,32 @@ int MainTask(void)
 #if COMPILE_OPTION_USB_SDCARD_DISK
      T_USBMSDriveCallbacks usbMSDiskCallbacks = {0};
 #endif
+     
+#if (SEGGER_ENABLE_RTT ==1 )  // enable RTT
+#if (SEGGER_ENABLE_SYSTEM_VIEW != 1) //systemview will auto init RTT
+    #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
+    (void)_SEGGER_RTT; // Crossworks complains if we don't use this.
+    SEGGER_RTT_Init();
+    SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
+#endif  
+#endif
 
+#if FREERTOS_PLUS_TRACE 
+  // Don't enable SystemView with FreeRTOS+Trace
+#else // Otherwise SystemView can be enabled
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
+    SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init and SEGGER_RTT_Init
+    SEGGER_SYSVIEW_Start(); // Start recording events
+    // These "DEBUG_SV_" defines only compile in when systemview is enabled.
+    // So you can leave them in the application for release builds.
+    // Warnings and errors show different graphical icons and colors for debug.
+    // Must add #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h> even when turned off
+    DEBUG_SV_Printf("SystemView Started"); // SystemView terminal
+    DEBUG_SV_PrintfW("Warn Test"); // example warning
+    DEBUG_SV_PrintfE("Error Test"); // example error
+#endif
+#endif
+     
      printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
 
      // Load the settings from non-volatile memory
@@ -85,7 +111,9 @@ int MainTask(void)
           NVSettingsInit();
           NVSettingsSave();
      }
-
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+ (void)G_OnBoardUSBIsHost;
+#endif
 #if COMPILE_OPTION_USB_SDCARD_DISK
     // Setup the USB MassStorage device to connect to MS1 (the SD Card)
 #if (UEZ_PROCESSOR != NXP_LPC4357)

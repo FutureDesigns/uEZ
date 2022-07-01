@@ -136,6 +136,7 @@ void NVSettingsInit(void)
 {
     // Clear the structure
     memset(&G_nonvolatileSettings, 0, sizeof(G_nonvolatileSettings));
+    G_nonvolatileSettings.iNeedRecalibrate = ETrue;
     G_nonvolatileSettings.iIPAddr[0] = emacIPADDR0;
     G_nonvolatileSettings.iIPAddr[1] = emacIPADDR1;
     G_nonvolatileSettings.iIPAddr[2] = emacIPADDR2;

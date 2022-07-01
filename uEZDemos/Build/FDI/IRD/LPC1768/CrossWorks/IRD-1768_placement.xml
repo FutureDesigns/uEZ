@@ -25,6 +25,8 @@
   </MemorySegment>
   <MemorySegment name="$(AHBSRAM_NAME:AHBSRAM);$(RAM_NAME:RAM)" >
     <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap" />
+    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
+    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack" />
     <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" />
   </MemorySegment>
@@ -36,6 +38,8 @@
     <ProgramSection alignment="4" load="No" name=".tbss"/>
     <ProgramSection alignment="4" load="No" name=".non_init" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
+    <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. -->
+    <ProgramSection alignment="4" load="Yes" name=".rtt" />  
     <ProgramSection alignment="4" load="No" name=".tdata_run"/>
     <ProgramSection alignment="4" size="23*1024" load="No" name=".loadspace"/>
   </MemorySegment>

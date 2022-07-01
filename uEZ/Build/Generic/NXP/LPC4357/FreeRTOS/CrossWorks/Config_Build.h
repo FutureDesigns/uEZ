@@ -25,8 +25,11 @@
 #define configUSE_TRACE_FACILITY  1
 #define configUSE_TIMERS          1
 #define USE_PRIMASK_CS            1
-//#define SELECTED_PORT PORT_ARM_CortexM
+#define SELECTED_PORT PORT_ARM_CortexM
 #endif
+
+#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
 #define UEZ_REGISTER              0

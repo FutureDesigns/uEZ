@@ -113,7 +113,8 @@ void UEZBSP_Startup(void)
  */
 /*---------------------------------------------------------------------------*/
 void SystemInit(void)
-{
+{  
+    UEZBSP_Pre_PLL_SystemInit();
     UEZBSP_PLLConfigure();
     UEZBSP_CPU_PinConfigInit();
     UEZBSP_RAMInit();

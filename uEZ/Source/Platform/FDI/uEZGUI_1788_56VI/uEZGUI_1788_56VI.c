@@ -2117,6 +2117,39 @@ TBool UEZPlatform_Host_Port_B_Detect()
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+  // PIO1_13 initial state is pull up mode.
+  // Turn off LED before init clocks. 
+  // Then it will only start blinking after RTOS
+
+  // Configure status led to be fully in our control
+  // Make P1.13 be a GPIO pin
+  LPC_GPIO1->PIN &= ~(3 << 3);
+  LPC_GPIO1->CLR |= (1 << 13); // off
+  // and an output pin    
+  LPC_GPIO1->DIR |= (1 << 13);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    NVIC_SystemReset();
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
  *---------------------------------------------------------------------------*
  * Description:

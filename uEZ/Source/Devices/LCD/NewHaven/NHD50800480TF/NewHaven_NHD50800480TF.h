@@ -68,6 +68,11 @@ extern const T_uezDeviceInterface *LCD_NewHaven_NHD50800480TF_InterfaceArray[];
 extern const DEVICE_LCD LCD_NewHaven_NHD50800480TF_Interface_8Bit;
 extern const DEVICE_LCD LCD_NewHaven_NHD50800480TF_Interface_I15Bit;
 extern const DEVICE_LCD LCD_NewHaven_NHD50800480TF_Interface_16Bit;
+// both LCDs have same model number but different vertical front/back porch
+extern const T_uezDeviceInterface *LCD_NewHaven_NHD50800480TF_Rev2_InterfaceArray[];
+extern const DEVICE_LCD LCD_NewHaven_NHD50800480TF_Rev2_Interface_8Bit;
+extern const DEVICE_LCD LCD_NewHaven_NHD50800480TF_Rev2_Interface_I15Bit;
+extern const DEVICE_LCD LCD_NewHaven_NHD50800480TF_Rev2_Interface_16Bit;
 
 #ifdef __cplusplus
 }

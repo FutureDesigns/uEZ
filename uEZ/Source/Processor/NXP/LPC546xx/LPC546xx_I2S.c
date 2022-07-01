@@ -247,69 +247,69 @@ const HAL_I2S G_LPC546xx_I2S_Interface = {
 void LPC546xx_I2S_Require(const T_LPC546xx_I2S_Settings *aSettings)
 {
     static const T_LPC546xx_SCU_ConfigList pinsRX_SCK[] = {
-            {GPIO_PZ_1_P3_0, SCU_NORMAL_DRIVE_DEFAULT(0)},
-            {GPIO_PZ_4_P6_0, SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_PZ_9_PF_4, SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_PZ_1_P3_0, IOCON_D_DEFAULT(0)},
+            {GPIO_PZ_4_P6_0, IOCON_D_DEFAULT(4)},
+            {GPIO_PZ_9_PF_4, IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList pinsRX_SDA[] = {
-            {GPIO_P5_9,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_1, SCU_NORMAL_DRIVE_DEFAULT(3)},
+            {GPIO_P5_9,  IOCON_D_DEFAULT(1)},
+            {GPIO_P3_1, IOCON_D_DEFAULT(3)},
     };
     static const T_LPC546xx_SCU_ConfigList pinsRX_WS[] = {
-            {GPIO_P5_8,  SCU_NORMAL_DRIVE_DEFAULT(1)},
-            {GPIO_P3_0, SCU_NORMAL_DRIVE_DEFAULT(3)},
+            {GPIO_P5_8,  IOCON_D_DEFAULT(1)},
+            {GPIO_P3_0, IOCON_D_DEFAULT(3)},
     };
     static const T_LPC546xx_SCU_ConfigList pinsRX_MCLK[] = {
-            {GPIO_PZ_0_P1_19, SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_PZ_1_P3_0, SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_PZ_4_P6_0, SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_PZ_0_P1_19, IOCON_D_DEFAULT(6)},
+            {GPIO_PZ_1_P3_0, IOCON_D_DEFAULT(6)},
+            {GPIO_PZ_4_P6_0, IOCON_D_DEFAULT(6)},
     };
 
     static const T_LPC546xx_SCU_ConfigList pinsTX_SCK[] = {
-            {GPIO_PZ_1_P3_0, SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_PZ_3_P4_7,  SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_PZ_1_P3_0, IOCON_D_DEFAULT(2)},
+            {GPIO_PZ_3_P4_7,  IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList pinsTX_SDA[] = {
-            {GPIO_P5_9, SCU_NORMAL_DRIVE_DEFAULT(0)},
-            {GPIO_P1_15,  SCU_NORMAL_DRIVE_DEFAULT(5)},
-            {GPIO_P3_10,  SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P4_15,  SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_11,  SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_9, IOCON_D_DEFAULT(0)},
+            {GPIO_P1_15,  IOCON_D_DEFAULT(5)},
+            {GPIO_P3_10,  IOCON_D_DEFAULT(2)},
+            {GPIO_P4_15,  IOCON_D_DEFAULT(4)},
+            {GPIO_P6_11,  IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList pinsTX_WS[] = {
-            {GPIO_P0_0,  SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P5_8,  SCU_NORMAL_DRIVE_DEFAULT(0)},
-            {GPIO_P1_14, SCU_NORMAL_DRIVE_DEFAULT(5)},
-            {GPIO_P3_9,  SCU_NORMAL_DRIVE_DEFAULT(2)},
-            {GPIO_P4_14, SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P6_12, SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P0_0,  IOCON_D_DEFAULT(6)},
+            {GPIO_P5_8,  IOCON_D_DEFAULT(0)},
+            {GPIO_P1_14, IOCON_D_DEFAULT(5)},
+            {GPIO_P3_9,  IOCON_D_DEFAULT(2)},
+            {GPIO_P4_14, IOCON_D_DEFAULT(4)},
+            {GPIO_P6_12, IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList pinsTX_MCLK[] = {
-            {GPIO_PZ_1_P3_0, SCU_NORMAL_DRIVE_DEFAULT(3)},
-            {GPIO_PZ_2_P3_3, SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_PZ_9_PF_4, SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_PZ_1_P3_0, IOCON_D_DEFAULT(3)},
+            {GPIO_PZ_2_P3_3, IOCON_D_DEFAULT(6)},
+            {GPIO_PZ_9_PF_4, IOCON_D_DEFAULT(6)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register I2S Bus drivers
     HALInterfaceRegister("I2S", (T_halInterface *)&G_LPC546xx_I2S_Interface, 0,
             0);
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_SCK, pinsRX_SCK,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_SCK, pinsRX_SCK,
             ARRAY_COUNT(pinsRX_SCK));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_SDA, pinsRX_SDA,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_SDA, pinsRX_SDA,
             ARRAY_COUNT(pinsRX_SDA));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_WS, pinsRX_WS,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_WS, pinsRX_WS,
             ARRAY_COUNT(pinsRX_WS));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iRX_MCLK, pinsRX_MCLK,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iRX_MCLK, pinsRX_MCLK,
             ARRAY_COUNT(pinsRX_MCLK));
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_SCK, pinsTX_SCK,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_SCK, pinsTX_SCK,
             ARRAY_COUNT(pinsTX_SCK));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_SDA, pinsTX_SDA,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_SDA, pinsTX_SDA,
             ARRAY_COUNT(pinsTX_SDA));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_WS, pinsTX_WS,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_WS, pinsTX_WS,
             ARRAY_COUNT(pinsTX_WS));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iTX_MCLK, pinsTX_MCLK,
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iTX_MCLK, pinsTX_MCLK,
             ARRAY_COUNT(pinsTX_MCLK));
 }
 

@@ -45,6 +45,7 @@
 
 #define SDCARD_FAILED_READ_RETRY_COUNT              5
 
+#define MULTIBLOCK_READ_SUPPORTED                   1 // set to 0 to turn off multiblock reads
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -713,15 +714,14 @@ static T_uezError SDCard_MS_SD_MMC_Read(
             error = UEZ_ERROR_INTERNAL_ERROR;
             break;
         }
-
-        // if high capacity card use block indexing
-        if (p->iCardType & CARD_TYPE_HC) {
-            index = aStart;
-        } else {
-            // Currently fixed at 512 bytes per block
-            index = aStart << 9;
-        }
-
+        
+        if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
+            index = aStart; 
+        } else {            
+            index = aStart << 9; // Currently fixed at 512 bytes per block
+        }       
+       
+#if (MULTIBLOCK_READ_SUPPORTED==1)
         // set number of bytes to read
         error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, aNumBlocks, 512,
             ISD_MMCCompleteRead, p, &numTransferring);
@@ -730,12 +730,39 @@ static T_uezError SDCard_MS_SD_MMC_Read(
             UEZFailureMsg("Transfer too big!");
         }
 
-        /* Select single or multiple read based on number of blocks */
+        // Select single or multiple read based on number of blocks 
         if (aNumBlocks == 1) {
             (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
         } else {
             (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
         }
+#else
+/* // Disabled till further testing or if needed.
+        // set number of bytes to read
+        error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, 1, 512,
+            ISD_MMCCompleteRead, p, &numTransferring);
+        
+        // Select single or multiple read based on number of blocks 
+        if (aNumBlocks == 1) {
+            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
+        } else {
+          numTransferring = aNumBlocks;
+          while(numTransferring > 0) {
+            numTransferring--;
+            TUInt32 dum = 0;
+            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);             
+            if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
+                index++;
+            } else { // Currently fixed at 512 bytes per block
+                index += 512;
+            }
+            aBuffer = (TUInt8 *) aBuffer +512;
+            error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, 1, 512,
+            ISD_MMCCompleteRead, p, &dum);
+          }
+           // (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
+        }*/
+#endif
 
         /* Wait for card program to finish or timeout (5 seconds is more than enough!) */
         error = UEZSemaphoreGrab(p->iIsCompleteRead, 500 * numTransferring);

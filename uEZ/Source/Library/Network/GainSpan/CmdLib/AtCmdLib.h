@@ -382,6 +382,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SetMAC(char *pAddr);
 ATLIBGS_MSG_ID_E AtLibGs_SetMAC2(char *pAddr);
 ATLIBGS_MSG_ID_E AtLibGs_GetMAC(char *mac);
 ATLIBGS_MSG_ID_E AtLibGs_GetMAC2(char *mac);
+ATLIBGS_MSG_ID_E AtLibGs_NCM_AutoConfig(uint32_t id, int32_t value);
 ATLIBGS_MSG_ID_E AtLibGs_CalcNStorePSK(char *pSsid, char *pPsk);
 //ATLIBGS_MSG_ID_E AtLibGs_WlanConnStat( ATLIBGS_N);
 ATLIBGS_MSG_ID_E AtLibGs_GetNetworkStatus(ATLIBGS_NetworkStatus *pStatus);

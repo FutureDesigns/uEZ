@@ -295,7 +295,7 @@ static __INLINE void __set_FPSCR(uint32_t fpscr)
 #elif defined ( __ICCARM__ ) /*------------------ ICC Compiler -------------------*/
 /* IAR iccarm specific functions */
 
-#include <cmsis_iar.h>
+#include <intrinsics.h> // Per IAR use this instead of cmsis_iar.h as cmsis_iar.h will be removed.
 
 #elif defined ( __GNUC__ ) /*------------------ GNU Compiler ---------------------*/
 /* GNU gcc specific functions */

@@ -28,52 +28,36 @@
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_I2C.h>
 
+//TODO: Remove
+#include "iar/Include/CMSIS/LPC54608.h"
+
 // Setup Master mode only.  Slave mode is a future version but we'll
 // leave some of the code in so we don't have to write it later.
 #define COMPILE_I2C_MASTER_MODE 1
-#define COMPILE_I2C_SLAVE_MODE  0
+#define COMPILE_I2C_SLAVE_MODE  0 //Not currently supported
 
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
-// I2CONSET:
-// Assert acknowledge flag
-#define I2CONSET_AA     (1<<2)
-// I2C interrupt flag
-#define I2CONSET_SI     (1<<3)
-// STOP flag
-#define I2CONSET_STO    (1<<4)
-// START flag
-#define I2CONSET_STA    (1<<5)
-// I2C interface enable
-#define I2CONSET_I2EN   (1<<6)
-// I2STAT:
-// Status
-#define I2STAT_STATUS_MASK  (0x1F<<3)
-// I2DAT:
-// I2ADR:
-#define I2ADR_GC        (1<<0)
-// I2SCLH:
-// I2SCLL:
-// I2CONCLR:
-// Assert acknowledge Clear bit
-#define I2CONCLR_AAC    (1<<2)
-// I2C interrupt Clear bit
-#define I2CONCLR_SIC    (1<<3)
-// START flag Clear bit
-#define I2CONCLR_STAC   (1<<5)
-// I2C interface Disable bit
-#define I2CONCLR_I2ENC  (1<<6)
+typedef enum{
+    I2C_STATE_IDLE = 0,
+    I2C_STATE_START,
+    I2C_STATE_SUBADDRESS,
+    I2C_STATE_TRANSMIT,
+    I2C_STATE_RECEIVE,
+    I2C_STATE_STOP,
+}T_I2CState;
 
+typedef enum{
+    I2C_DIR_READ = 0,
+    I2C_DIR_WRITE,
+}T_Direction;
 
-#define SCL_EFP         0
-#define SCL_EHD         2
-#define SCL_EZI         3
-#define SCL_ZIF         7
-#define SDA_EFP         8
-#define SDA_EHD         10
-#define SDA_EZI         11
-#define SDA_ZIF         15
+typedef struct{
+    T_I2CState iState;
+    T_Direction iDir;
+    TUInt32 iTransferCount;
+}T_TransferState;
 
 #if 0
 typedef TBool (*I2CSlaveIsLastReceiveByte)(T_LPC546xx_I2C_Workspace *aWorkspace);
@@ -85,7 +69,7 @@ typedef TUInt8 (*I2CSlaveGetTransmitByte)(T_LPC546xx_I2C_Workspace *aWorkspace);
 
 typedef struct {
     const HAL_I2CBus *iHAL;
-    LPC_I2Cn_Type *iRegs;
+    I2C_Type *iRegs;
     I2C_Request *iRequest;
     TUInt8 iAddress;
     TUInt8 *iData;
@@ -96,7 +80,7 @@ typedef struct {
     TUInt16 iPowerBits;
     T_uezGPIOPortPin iSDAPin;
     T_uezGPIOPortPin iSCLPin;
-
+    T_TransferState iTransferState;
     volatile TBool iDoneFlag;
 #if COMPILE_I2C_SLAVE_MODE
 I2CSlaveIsLastReceiveByte iI2CSlaveIsLastReceiveByte;
@@ -114,30 +98,24 @@ typedef TUInt8 T_LPC546xx_i2cMode;
 /*-------------------------------------------------------------------------*
  * Macros:
  *-------------------------------------------------------------------------*/
-#define I2C_ENABLE(p)       (((p)->iRegs)->CONSET) = I2CONSET_I2EN
-#define I2C_DISABLE(p)      (((p)->iRegs)->CONCLR) = I2CONCLR_I2ENC
-#define STA_SET(p)          (((p)->iRegs)->CONSET) = I2CONSET_STA
-#define STA_CLEAR(p)        (((p)->iRegs)->CONCLR) = I2CONCLR_STAC
-#define STO_SET(p)          (((p)->iRegs)->CONSET) = I2CONSET_STO
-#define STO_CLEAR(p)        /* automatically cleared by hardware */
-#define AA_SET(p)           (((p)->iRegs)->CONSET) = I2CONSET_AA
-#define AA_CLEAR(p)         (((p)->iRegs)->CONCLR) = I2CONCLR_AAC
-#define SI_CLEAR(p)         (((p)->iRegs)->CONCLR) = I2CONCLR_SIC
-#define I2DAT_WRITE(p, v)   (((p)->iRegs)->DAT) = (v)
-#define I2DAT_READ(p)       (((p)->iRegs)->DAT)
+#define STAT_MASK                   (I2C_STAT_MSTARBLOSS_MASK | I2C_STAT_MSTSTSTPERR_MASK)
+#define I2C_STAT_MSTCODE_IDLE       (0)    /*!< Master Idle State Code */
+#define I2C_STAT_MSTCODE_RXREADY    (1) /*!< Master Receive Ready State Code */
+#define I2C_STAT_MSTCODE_TXREADY    (2) /*!< Master Transmit Ready State Code */
+#define I2C_STAT_MSTCODE_NACKADR    (3) /*!< Master NACK by slave on address State Code */
+#define I2C_STAT_MSTCODE_NACKDAT    (4) /*!< Master NACK by slave on data State Code */
+
+#define I2C_SRC_CLOCK_RATE          (12000000)
 
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
-static T_LPC546xx_I2C_Workspace *G_LPC546xx_i2c0Workspace;
-static T_LPC546xx_I2C_Workspace *G_LPC546xx_i2c1Workspace;
-
+static T_LPC546xx_I2C_Workspace *G_LPC546xx_i2c2Workspace;
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
  *-------------------------------------------------------------------------*/
-IRQ_ROUTINE(ILPC546xx_I2C0InterruptHandler);
-IRQ_ROUTINE(ILPC546xx_I2C1InterruptHandler);
+IRQ_ROUTINE(ILPC546xx_I2C2InterruptHandler);
 
 void ILPC546xx_ProcessState(T_LPC546xx_I2C_Workspace *p);
 
@@ -179,42 +157,68 @@ static TUInt8 ILPC546xx_I2CSlaveGetTransmitByte(T_LPC546xx_I2C_Workspace *aWorks
 }
 #endif
 
-void ILPC546xx_I2CSetSpeed(LPC_I2Cn_Type *aRegs, TUInt16 aSpeed)
+void ILPC546xx_I2CSetSpeed(I2C_Type *aRegs, TUInt16 aSpeed)
 {
-    // Calculate the speed value to use
-    TUInt16 v;
+    TUInt32 scl, divider;
+    TUInt32 best_scl, best_sch, best_div;
+    TUInt32 err, best_err;
+    TUInt32 speed = aSpeed * 1000;
 
-    // Calculate from kHz to cycles (based on PCLK)
-    v = (PCLK_FREQUENCY / 1000) / aSpeed;
+    best_err = 0;
 
-    if (aSpeed == 400){
-    	// Set 46%/54% duty cycle to satisfy 1.3us low pulse width requirement for fast mode
-    	aRegs->SCLL = ((v / 2) + 51);
-    	aRegs->SCLH = ((v / 2) - 59);
-    } else if (aSpeed == 1000){
-    	// Set 46%/54% duty cycle to satisfy 0.5us low pulse width requirement for fast mode plus, currently untested
-    	aRegs->SCLL = ((v / 2) + 8);
-    	aRegs->SCLH = ((v / 2) - 8);
-    } else {
-    	// Set 50% duty cycle
-    	aRegs->SCLL = (v / 2);
-    	aRegs->SCLH = (v / 2);
+    for (scl = 9; scl >= 2; scl--)
+    {
+        /* calculated ideal divider value for given scl */
+        divider = I2C_SRC_CLOCK_RATE / (speed * scl * 2u);
+
+        /* adjust it if it is out of range */
+        divider = (divider > 0x10000u) ? 0x10000 : divider;
+
+        /* calculate error */
+        err = I2C_SRC_CLOCK_RATE - (speed * scl * 2u * divider);
+        if ((err < best_err) || (best_err == 0))
+        {
+            best_div = divider;
+            best_scl = scl;
+            best_err = err;
+        }
+
+        if ((err == 0) || (divider >= 0x10000u))
+        {
+            /* either exact value was found
+               or divider is at its max (it would even greater in the next iteration for sure) */
+            break;
+        }
     }
+
+    if(aSpeed == 400){
+        best_sch = best_scl - 2;
+        best_scl -= 1;
+    } else if (aSpeed == 100){
+        best_sch = best_scl;   
+    }
+    aRegs->CLKDIV = I2C_CLKDIV_DIVVAL(best_div - 1);
+    aRegs->MSTTIME = I2C_MSTTIME_MSTSCLLOW(best_scl - 2u) | I2C_MSTTIME_MSTSCLHIGH(best_sch - 2u);
 }
 
 void ILPC546xx_I2CInit(T_LPC546xx_I2C_Workspace *p)
 {
-    // Turn on the power
-    //TODO: turn on main clock here.
+    //Reset the controller
+    p->iRegs->CFG &= ~(I2C_CFG_MSTEN_MASK);
 
-    // Clear all the flags
-    p->iRegs->CONCLR = I2CONSET_AA | I2CONSET_SI | I2CONSET_STA | I2CONSET_I2EN;
+    //Enable the controller
+    p->iRegs->CFG = (p->iRegs->CFG & 0x1F) | I2C_CFG_MSTEN_MASK;
 
     // Program the speed
     ILPC546xx_I2CSetSpeed(p->iRegs, p->iRequest->iSpeed);
+}
 
-    // Enable the I2C
-    I2C_ENABLE(p);
+static void ILPC546xx_I2C_PrepStateMachine(T_TransferState *aState,
+        T_Direction aDirection)
+{
+    aState->iState = I2C_STATE_START;
+    aState->iTransferCount = 0;
+    aState->iDir = aDirection;
 }
 
 static void ILPC546xx_I2C_StartWrite(
@@ -236,11 +240,26 @@ static void ILPC546xx_I2C_StartWrite(
     p->iDoneFlag = EFalse;
     p->iRequest->iStatus = I2C_BUSY;
 
-    // Initialize the I2C
+    //Return if busy
+    //TODO
+
     ILPC546xx_I2CInit(p);
 
-    // Kick off the transfer with a start bit
-    STA_SET(p);
+    //Disable interrupts
+    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                         I2C_INTSTAT_MSTSTSTPERR_MASK;
+
+    //Prepare transfer state machine
+    ILPC546xx_I2C_PrepStateMachine(&p->iTransferState, I2C_DIR_WRITE);
+
+    //Clear Interrupt status flag
+    p->iRegs->STAT = I2C_STAT_MSTARBLOSS_MASK | I2C_STAT_MSTSTSTPERR_MASK;
+
+    //Enable interrupts
+    p->iRegs->INTENSET = I2C_INTSTAT_MSTPENDING_MASK |
+                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                         I2C_INTSTAT_MSTSTSTPERR_MASK;
 }
 
 static void ILPC546xx_I2C_StartRead(
@@ -262,11 +281,26 @@ static void ILPC546xx_I2C_StartRead(
     p->iDoneFlag = EFalse;
     p->iRequest->iStatus = I2C_BUSY;
 
-    // Initialize the I2C
+    //Return if busy
+    //TODO
+
+    //Disable interrupts
+    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                         I2C_INTSTAT_MSTSTSTPERR_MASK;
+
     ILPC546xx_I2CInit(p);
 
-    // Kick off the transfer with a start bit
-    STA_SET(p);
+    //Prepare transfer state machine
+    ILPC546xx_I2C_PrepStateMachine(&p->iTransferState, I2C_DIR_READ);
+
+    //Clear Interrupt status flag
+    p->iRegs->STAT = I2C_STAT_MSTARBLOSS_MASK | I2C_STAT_MSTSTSTPERR_MASK;
+
+    //Enable interrupts
+    p->iRegs->INTENSET = I2C_INTSTAT_MSTPENDING_MASK |
+                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                         I2C_INTSTAT_MSTSTSTPERR_MASK;
 }
 
 /*-------------------------------------------------------------------------*
@@ -277,257 +311,156 @@ static void ILPC546xx_I2C_StartRead(
  *-------------------------------------------------------------------------*/
 void ILPC546xx_ProcessState(T_LPC546xx_I2C_Workspace *p)
 {
-    TUInt8 c;
-    TUInt8 status = p->iRegs->STAT;
+    TUInt32 status = 0;
+    TUInt32 master_state = 0;
 
-    //SerialSendChar(SERIAL_PORT_UART0, '$');
-    //SerialSendHex(SERIAL_PORT_UART0, status);
-    //ConsolePrintf("$%02X", status);
-    switch (status) {
-#if COMPILE_I2C_MASTER_MODE
-        // Start condition tranmitted
-        case 0x08:
+    status = p->iRegs->STAT;
 
-            // Repeat start condition transmitted
-        case 0x10:
-            // Send the slave address
-            I2DAT_WRITE(p, p->iAddress);
-            //            (((p)->iRegs)->DAT) = (p->iAddress);
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            p->iIndex = 0;
-            break;
-
-            // MASTER TRANSMITTER
-            // Slave Address + Write transmitted, and got ACK from slave
-        case 0x18:
-            // Transmit a byte
-            I2DAT_WRITE(p, p->iData[p->iIndex]);
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            break;
-
-            // Slave Address transmitted, no ACK received
-        case 0x20:
-            // Generate a stop condition and report error status
-            STA_CLEAR(p);
-            STO_SET(p);
-            p->iRequest->iStatus = I2C_ERROR;
-            p->iDoneFlag = ETrue;
+    if(status & I2C_STAT_MSTARBLOSS_MASK){
+        p->iRegs->STAT = (I2C_STAT_MSTARBLOSS_MASK & STAT_MASK);
+        p->iRequest->iStatus = I2C_ERROR;
+        if(p->iCompleteFunc){
             p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-
-            // Data byte written and ACK received.
-        case 0x28:
-            // Last byte?
-            p->iIndex++;
-            if (p->iIndex >= p->iDataLen) {
-                // Yes, last.  Generate a stop condition
-                STA_CLEAR(p);
-                STO_SET(p);
-                p->iRequest->iStatus = I2C_OK;
-                p->iDoneFlag = ETrue;
-                p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            } else {
-                // Send the next byte
-                I2DAT_WRITE(p, p->iData[p->iIndex]);
-                STA_CLEAR(p);
-                STO_CLEAR(p);
-            }
-            break;
-
-            // Data byte written but no ACK received
-        case 0x30:
-            // Generate a stop condition
-            STA_CLEAR(p);
-            STO_SET(p);
-            p->iRequest->iStatus = I2C_ERROR;
-            p->iDoneFlag = ETrue;
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-
-            // Arbitration was lost
-        case 0x38:
-            // Generate a start condition and try again
-            STA_SET(p);
-            STO_CLEAR(p);
-            break;
-
-            // MASTER RECEIVER
-            // Slave address + Read sent, ACK received
-        case 0x40:
-            // Are we to receive more?
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            if ((p->iIndex + 1) >= p->iDataLen) {
-                // No more needed.
-                // return NACK for data byte
-                AA_CLEAR(p);
-            } else {
-                // More bytes needed.
-                // return ACK for data byte
-                AA_SET(p);
-            }
-            break;
-
-            // Slave address + Read sent, NO ACK received
-        case 0x48:
-            // Generate a stop condition
-            STA_CLEAR(p);
-            STO_SET(p);
-            p->iRequest->iStatus = I2C_ERROR;
-            p->iDoneFlag = ETrue;
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-
-            // Data byte received with ACK
-        case 0x50:
-            // Store received byte
-            c = I2DAT_READ(p);
-            if (p->iIndex < p->iDataLen)
-                p->iData[p->iIndex++] = c;
-
-            // Are we to receive more?
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            if ((p->iIndex + 1) >= p->iDataLen) {
-                // return NACK for next data byte
-                AA_CLEAR(p);
-            } else {
-                // return ACK for next data byte
-                AA_SET(p);
-            }
-            break;
-
-            // Data byte received with NACK (last byte)
-        case 0x58:
-            // Store last byte
-            c = I2DAT_READ(p);
-            if (p->iIndex < p->iDataLen)
-                p->iData[p->iIndex++] = c;
-
-            // Generate a stop condition, but report OK
-            STA_CLEAR(p);
-            STO_SET(p);
-            p->iRequest->iStatus = I2C_OK;
-            p->iDoneFlag = ETrue;
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-#endif // COMPILE_I2C_MASTER_MODE
-#if COMPILE_I2C_SLAVE_MODE
-            // SLAVE RECEIVER
-            case 0x60:
-            case 0x68:
-            case 0x70:
-            case 0x78:
-            // Start of slave transaction
-            // slave address + W received, or general call address received,
-            // or lost arbitration, slave address + W received, or
-            // lost arbitration, general call address received.
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            p->iIndex = 0;
-            p->iDoneFlag = EFalse;
-            // Is this the last byte?
-            if (p->iI2CSlaveIsLastReceiveByte(p)) {
-                // Not allowed to send more bytes
-                AA_CLEAR(p);
-            } else {
-                // Allowed to send more bytes
-                AA_SET(p);
-            }
-            break;
-            case 0x80:
-            case 0x90:
-            // Data received
-            p->iI2CSlaveReceiveByte(p, I2DAT_READ(p));
-            p->iIndex++;
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            // Is this the last byte?
-            if (p->iI2CSlaveIsLastReceiveByte(p)) {
-                // Not allowed to send more bytes
-                AA_CLEAR(p);
-            } else {
-                // Allowed to send more bytes
-                AA_SET(p);
-            }
-            break;
-            case 0x88:
-            case 0x98:
-            // Data received, NACK returned (signaling last byte)
-            p->iI2CSlaveReceiveByte(p, I2DAT_READ(p));
-            p->iIndex++;
-            p->iRequest->iStatus = I2C_OK;
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            AA_SET(p);
-            p->iDoneFlag = ETrue;
-            p->iI2CTransferComplete(p);
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-            case 0xA0:
-            // Stop condition received
-            p->iRequest->iStatus = I2C_OK;
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            AA_SET(p);
-            p->iDoneFlag = ETrue;
-            p->iI2CTransferComplete(p);
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-
-            // SLAVE TRANSMITTER
-            // ACK returned on Slave Address + R received; or
-            // arbitration lost, slave address + R received, ACK returned; or
-            // data byte transmitted, ACK received
-            case 0xA8:
-            case 0xB0:
-            p->iIndex = 0;
-            case 0xB8:
-            c = p->iI2CSlaveGetTransmitByte(p);
-            p->iIndex++;
-            I2DAT_WRITE(p, c);
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            if (p->iI2CSlaveIsLastTransmitByte(p)) {
-                // No more data
-                AA_CLEAR(p);
-            } else {
-                // more data bytes to transmit
-                AA_SET(p);
-            }
-            break;
-            case 0xC0:
-            case 0xC8:
-            // data byte transmitted, NACK received
-            // last data byte transmitted, NACK received
-            p->iRequest->iStatus = I2C_OK;
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            AA_SET(p);
-            p->iDoneFlag = ETrue;
-            p->iI2CTransferComplete(p);
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
-#endif // #if COMPILE_I2C_SLAVE_MODE
-            // Unhandled state
-        default:
-            // Generate a stop condition
-            STA_CLEAR(p);
-            STO_CLEAR(p);
-            AA_SET(p);
-            p->iRequest->iStatus = I2C_ERROR;
-            p->iDoneFlag = ETrue;
-#if COMPILE_I2C_SLAVE_MODE
-            p->iI2CTransferComplete(p);
-#endif
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
-            break;
+        }
+        //Disable interrupts
+        p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                             I2C_INTSTAT_MSTARBLOSS_MASK |
+                             I2C_INTSTAT_MSTSTSTPERR_MASK;
+        return;
     }
 
-    // clear interrupt flag
-    SI_CLEAR(p);
+    if(status & I2C_STAT_MSTSTSTPERR_MASK){
+        p->iRegs->STAT = (I2C_STAT_MSTSTSTPERR_MASK & STAT_MASK);
+        p->iRequest->iStatus = I2C_ERROR;
+        if(p->iCompleteFunc){
+            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+        }
+        //Disable interrupts
+        p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                             I2C_INTSTAT_MSTARBLOSS_MASK |
+                             I2C_INTSTAT_MSTSTSTPERR_MASK;
+        return;
+    }
+
+    if((status & I2C_STAT_MSTPENDING_MASK) == 0){
+        p->iRequest->iStatus = I2C_ERROR;
+        if(p->iCompleteFunc){
+            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+        }
+        //Disable interrupts
+        p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                             I2C_INTSTAT_MSTARBLOSS_MASK |
+                             I2C_INTSTAT_MSTSTSTPERR_MASK;
+        return;
+    }
+
+    master_state = (p->iRegs->STAT & 0x06) >> I2C_STAT_MSTSTATE_SHIFT;
+
+    if ((master_state == I2C_STAT_MSTCODE_NACKADR)
+            || (master_state == I2C_STAT_MSTCODE_NACKDAT)) {
+        p->iRegs->MSTCTL = I2C_MSTCTL_MSTSTOP_MASK;
+        p->iRequest->iStatus = I2C_NAK;
+        if(p->iCompleteFunc){
+            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+        }
+        //Disable interrupts
+        p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                             I2C_INTSTAT_MSTARBLOSS_MASK |
+                             I2C_INTSTAT_MSTSTSTPERR_MASK;
+        return;
+    }
+
+    p->iRequest->iStatus = I2C_OK;
+    switch(p->iTransferState.iState){
+        case I2C_STATE_START:
+            if(p->iTransferState.iDir == I2C_DIR_WRITE){
+                p->iRegs->MSTDAT = (TUInt32)p->iRequest->iAddr << 1;
+                p->iTransferState.iState = p->iDataLen ?
+                        I2C_STATE_TRANSMIT : I2C_STATE_STOP;
+            } else { //Read
+                p->iRegs->MSTDAT = (TUInt32)p->iRequest->iAddr << 1 | 1;
+                p->iTransferState.iState = p->iDataLen ?
+                        I2C_STATE_RECEIVE : I2C_STATE_STOP;
+            }
+            /* Send start condition */
+            p->iRegs->MSTCTL = I2C_MSTCTL_MSTSTART_MASK;
+            break;
+        case I2C_STATE_SUBADDRESS:
+            //TODO: Decide if needed
+            break;
+        case I2C_STATE_TRANSMIT:
+            if (master_state != I2C_STAT_MSTCODE_TXREADY){
+                p->iRequest->iStatus = I2C_ERROR;
+                if(p->iCompleteFunc){
+                    p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+                    //Disable interrupts
+                    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                                         I2C_INTSTAT_MSTSTSTPERR_MASK;
+                    return;
+                }
+            }
+            p->iRegs->MSTDAT = p->iData[p->iIndex++];
+            p->iRegs->MSTCTL = I2C_MSTCTL_MSTCONTINUE_MASK;
+            p->iDataLen--;
+            if(p->iDataLen == 0){
+                p->iTransferState.iState = I2C_STATE_STOP;
+            }
+            break;
+        case I2C_STATE_RECEIVE:
+            if (master_state != I2C_STAT_MSTCODE_RXREADY){
+                p->iRequest->iStatus = I2C_ERROR;
+                if(p->iCompleteFunc){
+                    p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+                    //Disable interrupts
+                    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                                         I2C_INTSTAT_MSTSTSTPERR_MASK;
+                    return;
+                }
+            }
+            p->iData[p->iIndex++] = p->iRegs->MSTDAT;
+            p->iDataLen--;
+            if(p->iDataLen == 0){
+                p->iTransferState.iState = I2C_STATE_STOP;
+                p->iRegs->MSTCTL = I2C_MSTCTL_MSTSTOP_MASK;
+                p->iRequest->iStatus = I2C_OK;
+                if(p->iCompleteFunc){
+                    p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+                    //Disable interrupts
+                    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                                         I2C_INTSTAT_MSTSTSTPERR_MASK;
+                    return;
+                }
+            } else {
+                p->iRegs->MSTCTL = I2C_MSTCTL_MSTCONTINUE_MASK;
+            }
+            break;
+        case I2C_STATE_STOP:
+            p->iRegs->MSTCTL = I2C_MSTCTL_MSTSTOP_MASK;
+            p->iRequest->iStatus = I2C_OK;
+            if(p->iCompleteFunc){
+                p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+                //Disable interrupts
+                p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                                     I2C_INTSTAT_MSTARBLOSS_MASK |
+                                     I2C_INTSTAT_MSTSTSTPERR_MASK;
+                return;
+            }
+            break;
+        case I2C_STATE_IDLE:
+        default:
+            p->iRequest->iStatus = I2C_ERROR;
+            if(p->iCompleteFunc){
+                p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+                //Disable interrupts
+                p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                                     I2C_INTSTAT_MSTARBLOSS_MASK |
+                                     I2C_INTSTAT_MSTSTSTPERR_MASK;
+            }
+            break;
+    }
 }
 
 T_uezError ILPC546xx_I2C_IsHung(void *aWorkspace, TBool *aBool)
@@ -551,79 +484,60 @@ T_uezError ILPC546xx_I2C_IsHung(void *aWorkspace, TBool *aBool)
 T_uezError ILPC546xx_I2C_ResetBus(void *aWorkspace)
 {
     T_uezError error = UEZ_ERROR_NONE;
-    //T_LPC546xx_I2C_Workspace *p = (T_LPC546xx_I2C_Workspace *)aWorkspace;
-    //TODO: implement reset functionality.
+    T_LPC546xx_I2C_Workspace *p = (T_LPC546xx_I2C_Workspace *)aWorkspace;
+
+    //Disable interrupts
+    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                         I2C_INTSTAT_MSTSTSTPERR_MASK;
 
     return error;
 }
 
-IRQ_ROUTINE(ILPC546xx_I2C0InterruptHandler)
+T_uezError ILPC546xx_I2C_Disable(void *aWorkspace)
 {
-    IRQ_START();
-    ILPC546xx_ProcessState(G_LPC546xx_i2c0Workspace);
-    IRQ_END()
-    ;
+    T_uezError error = UEZ_ERROR_NONE;
+    T_LPC546xx_I2C_Workspace *p = (T_LPC546xx_I2C_Workspace *)aWorkspace;
+
+    //Disable interrupts
+    p->iRegs->INTENCLR = I2C_INTSTAT_MSTPENDING_MASK |
+                         I2C_INTSTAT_MSTARBLOSS_MASK |
+                         I2C_INTSTAT_MSTSTSTPERR_MASK;
+
+    return error;
 }
 
-IRQ_ROUTINE(ILPC546xx_I2C1InterruptHandler)
+IRQ_ROUTINE(ILPC546xx_I2C2InterruptHandler)
 {
     IRQ_START();
-    ILPC546xx_ProcessState(G_LPC546xx_i2c1Workspace);
-    IRQ_END()
-    ;
+    ILPC546xx_ProcessState(G_LPC546xx_i2c2Workspace);
+    IRQ_END();
 }
 
 
 /*---------------------------------------------------------------------------*
- * Routine:  LPC546xx_I2C_Bus0_InitializeWorkspace
+ * Routine:  LPC546xx_I2C_Bus2_InitializeWorkspace
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the LPC546xx I2C Bus0 workspace.
+ *      Setup the LPC546xx I2C Bus2 workspace.
  * Inputs:
  *      void *aW                    -- Particular I2C workspace
  * Outputs:
  *      T_uezError                   -- Error code
  *---------------------------------------------------------------------------*/
-T_uezError LPC546xx_I2C_Bus0_InitializeWorkspace(void *aWorkspace)
+T_uezError LPC546xx_I2C_Bus2_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC546xx_I2C_Workspace *p = (T_LPC546xx_I2C_Workspace *)aWorkspace;
-    p->iRegs = LPC_I2C0;
+    p->iRegs = I2C2;
     p->iDoneFlag = ETrue;
     p->iCompleteFunc = 0;
-    G_LPC546xx_i2c0Workspace = p;
-    p->iPowerBits = 7;
-
-    // Setup interrupt vector
-    InterruptRegister(I2C0_IRQn, ILPC546xx_I2C0InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C0");
-    InterruptEnable(I2C0_IRQn);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LPC546xx_I2C_Bus1_InitializeWorkspace
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the LPC546xx I2C Bus1 workspace.
- * Inputs:
- *      void *aW                    -- Particular I2C workspace
- * Outputs:
- *      T_uezError                   -- Error code
- *---------------------------------------------------------------------------*/
-T_uezError LPC546xx_I2C_Bus1_InitializeWorkspace(void *aWorkspace)
-{
-    T_LPC546xx_I2C_Workspace *p = (T_LPC546xx_I2C_Workspace *)aWorkspace;
-    p->iRegs = LPC_I2C1;
-    p->iDoneFlag = ETrue;
-    p->iCompleteFunc = 0;
-    G_LPC546xx_i2c1Workspace = p;
+    G_LPC546xx_i2c2Workspace = p;
     p->iPowerBits = 19;
 
     // Setup interrupt vector
-    InterruptRegister(I2C1_IRQn, ILPC546xx_I2C1InterruptHandler,
+    InterruptRegister(FLEXCOMM2_IRQn, ILPC546xx_I2C2InterruptHandler,
             INTERRUPT_PRIORITY_NORMAL, "I2C1");
-    InterruptEnable(I2C1_IRQn);
+    InterruptEnable(FLEXCOMM2_IRQn);
 
     return UEZ_ERROR_NONE;
 }
@@ -631,62 +545,58 @@ T_uezError LPC546xx_I2C_Bus1_InitializeWorkspace(void *aWorkspace)
 /*---------------------------------------------------------------------------*
  * HAL Interface tables:
  *---------------------------------------------------------------------------*/
-const HAL_I2CBus I2C_LPC546xx_Bus0_Interface = { {
-        "LPC546xx I2C Bus0",
-        0x0100,
-        LPC546xx_I2C_Bus0_InitializeWorkspace,
-        sizeof(T_LPC546xx_I2C_Workspace), },
-
-        ILPC546xx_I2C_StartRead, ILPC546xx_I2C_StartWrite,
-        0,0,0,
-        ILPC546xx_I2C_IsHung, ILPC546xx_I2C_ResetBus
-};
-
-const HAL_I2CBus I2C_LPC546xx_Bus1_Interface = { {
+const HAL_I2CBus I2C_LPC546xx_Bus2_Interface = { {
         "LPC546xx I2C Bus1",
         0x0100,
-        LPC546xx_I2C_Bus1_InitializeWorkspace,
+        LPC546xx_I2C_Bus2_InitializeWorkspace,
         sizeof(T_LPC546xx_I2C_Workspace), },
 
-        ILPC546xx_I2C_StartRead, ILPC546xx_I2C_StartWrite,
-        0,0,0,
-        ILPC546xx_I2C_IsHung, ILPC546xx_I2C_ResetBus
+        ILPC546xx_I2C_StartRead,
+        ILPC546xx_I2C_StartWrite,
+        0,0,
+        ILPC546xx_I2C_Disable,
+        ILPC546xx_I2C_IsHung,
+        ILPC546xx_I2C_ResetBus
 };
 
+#define IOCON_D_DEFAULT(funcNum)  \
+    IOCON_D(IOCON_FUNC(funcNum), \
+            IOCON_PULL_UP, \
+            IOCON_INVERT_DISABLE, \
+            IOCON_DIGITAL, \
+            IOCON_FILTER_ON, \
+            IOCON_SLEW_STANDARD, \
+            IOCON_NORMAL)
 
 /*---------------------------------------------------------------------------*
  * Requirement routines:
  *---------------------------------------------------------------------------*/
-void LPC546xx_I2C0_Require()
+void LPC546xx_I2C2_Require(T_uezGPIOPortPin aPinSDA, T_uezGPIOPortPin aPinSCL)
 {
     T_LPC546xx_I2C_Workspace *p;
 
-    HAL_DEVICE_REQUIRE_ONCE();
-    // Register I2C0 Bus driver
-    HALInterfaceRegister("I2C0", (T_halInterface *)&I2C_LPC546xx_Bus0_Interface,
-            0, (T_halWorkspace **)&p);
-
-    LPC_SCU->SFSI2C0 = SCU_I2C_SDA_SCL_DEFAULT;
-
-    //Fixed function pins
-    p->iSCLPin = GPIO_NONE;
-    p->iSDAPin = GPIO_NONE;
-}
-
-void LPC546xx_I2C1_Require(T_uezGPIOPortPin aPinSDA1, T_uezGPIOPortPin aPinSCL1)
-{
-    static const T_LPC546xx_SCU_ConfigList sda1[] = {
-            {GPIO_P5_3     ,SCU_NORMAL_DRIVE_DEFAULT(1)},
+    static const T_LPC546xx_ICON_ConfigList sda1[] = {
+            {GPIO_P4_20     , IOCON_D_DEFAULT(3)},
     };
-    static const T_LPC546xx_SCU_ConfigList scl1[] = {
-            {GPIO_P5_4     ,SCU_NORMAL_DRIVE_DEFAULT(1)},
+    static const T_LPC546xx_ICON_ConfigList scl1[] = {
+            {GPIO_P4_21     , IOCON_D_DEFAULT(3)},
     };
 
-    HALInterfaceRegister("I2C1",
-            (T_halInterface *)&I2C_LPC546xx_Bus1_Interface, 0, 0);
+    HALInterfaceRegister("I2C2",
+            (T_halInterface *)&I2C_LPC546xx_Bus2_Interface, 0,
+            (T_halWorkspace **)&p);
 
-    LPC546xx_SCU_ConfigPinOrNone(aPinSDA1, sda1, ARRAY_COUNT(sda1));
-    LPC546xx_SCU_ConfigPinOrNone(aPinSCL1, scl1, ARRAY_COUNT(scl1));
+    //Setup and lock the Flexcomm for I2C mode
+    LPC546xxPowerOn(kCLOCK_FlexComm2);
+    SYSCON->FCLKSEL[2] = 0x00; //FRO 12MHz
+    FLEXCOMM2->PSELID = 0x03; //Lock, I2C mode
+    FLEXCOMM2->PSELID |= (1<<3);
+
+    LPC546xx_ICON_ConfigPinOrNone(aPinSDA, sda1, ARRAY_COUNT(sda1));
+    LPC546xx_ICON_ConfigPinOrNone(aPinSCL, scl1, ARRAY_COUNT(scl1));
+
+    p->iSCLPin = aPinSCL;
+    p->iSDAPin = aPinSDA;
 }
 
 /*-------------------------------------------------------------------------*

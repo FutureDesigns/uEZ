@@ -53,6 +53,7 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <Source/Library/Network/GainSpan/CmdLib/AtCmdLib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -134,6 +135,7 @@ typedef struct {
     TInt32 iRSSILevel;
     TUInt32 iChannel;
     T_uezNetworkSecurityMode iSecurityMode;
+    char iBSSID[ATLIBGS_BSSID_MAX_LENGTH];
 } T_uezNetworkInfo;
 
 typedef TBool (*T_uezNetworkScanCallback)(

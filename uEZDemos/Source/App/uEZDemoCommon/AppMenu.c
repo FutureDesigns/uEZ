@@ -69,6 +69,8 @@
 #define MAX_ICONS_VERTICAL      (SCREEN_USABLE_HEIGHT/(ICON_MIN_PADDING_Y+ICON_HEIGHT))
 #define MAX_ICONS               (MAX_ICONS_HORIZONTAL * MAX_ICONS_VERTICAL)
 
+#define LCD_BORDER_TEST      0 // set to 1 so that the border is exactly one pixel for checking pixel alignment.
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
@@ -127,7 +129,13 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
 
     // setup a standard window
     swim_window_open(&aWS->iWin, DISPLAY_WIDTH, DISPLAY_HEIGHT, pixels, 0, 0,
-            DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, 2, YELLOW, RGB(0, 0, 0), RED);
+            DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, 
+#if LCD_BORDER_TEST
+            1,
+#else
+            2,      
+#endif
+            YELLOW, RGB(0, 0, 0), RED);
     swim_set_font(&aWS->iWin, &APP_DEMO_DEFAULT_FONT);
     if(G_romChecksumCalculated){
         sprintf(title, "%s CS: 0x%08X", aWS->iMenu->iTitle, G_romChecksum);

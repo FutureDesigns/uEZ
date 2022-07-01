@@ -63,6 +63,8 @@
 #define BULK_TRANSFER_ENABLED                   1
 #define MAX_DATA_TRANSFER_LEN                   1500//255
 
+#define MAX_NW_SCAN_ENTRIES 50 // Previous default was 10
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
@@ -243,7 +245,20 @@ static T_uezError IStartup(
     // Start with a full reset
     AtLibGs_Reset();
 
-    gsError = AtLibGs_GetMAC(mac); // for debug
+    gsError = AtLibGs_GetMAC(mac); // for debug	
+	AtLibGs_Version(); // Print version information on screen
+
+	// Run this command multiple times to configure roaming mode if NCM is included
+	AtLibGs_NCM_AutoConfig(16,1);  // Enable Roaming // TODO verify exactly if 0, 1, or some other input is enable.
+	AtLibGs_NCM_AutoConfig(17,-70); // Low RSSI Threshold
+	AtLibGs_NCM_AutoConfig(18,-50); // High RSSI Threshold
+	AtLibGs_NCM_AutoConfig(19,1000); // Time Between Background Scans
+	AtLibGs_NCM_AutoConfig(20,3); // Low Threshold Trigger count
+	AtLibGs_NCM_AutoConfig(21,1); // Maintain L3
+	// Optional
+	//AtLibGs_NCM_AutoConfig(22,); // Maintain L4
+	//AtLibGs_NCM_AutoConfig(23,); // Scan Retry
+	//AtLibGs_NCM_AutoConfig(24,); // Scan Pause
 
     if(gsError == ATLIBGS_MSG_ID_NONE){
         // Set the MAC address if its non-zero
@@ -382,6 +397,10 @@ T_uezError Network_GainSpan_Scan(
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
     T_uezNetworkInfo scanInfo;
+    ATLIBGS_NetworkScanEntry entry[MAX_NW_SCAN_ENTRIES];
+    TUInt8 numSSIDs;
+    ATLIBGS_MSG_ID_E G_Error;
+    TUInt32 i;
 
     PARAM_NOT_USED(aCallback);PARAM_NOT_USED(aCallbackWorkspace);
 
@@ -397,10 +416,44 @@ T_uezError Network_GainSpan_Scan(
     scanInfo.iChannel = 0;
     strcpy(scanInfo.iName, "GainSpan");
     p->iInfo = scanInfo;
+    G_Error = AtLibGs_NetworkScan(aScanSSID, aChannelNumber, aTimeout, entry, MAX_NW_SCAN_ENTRIES, &numSSIDs);
     p->iScanStatus = UEZ_NETWORK_SCAN_STATUS_COMPLETE;
 
-    if (aCallback) {
-        aCallback(aCallbackWorkspace, &scanInfo);
+    error = IConvertErrorCode(G_Error);
+
+    if (aCallback && error == UEZ_ERROR_NONE) {
+        for(i = 0; i < numSSIDs; i++){
+            scanInfo.iChannel = entry[i].channel;
+            strcpy(scanInfo.iName, entry[i].ssid);
+            scanInfo.iRSSILevel = entry[i].signal;
+            switch(entry[i].security){
+                case ATLIBGS_SMAUTO:
+
+                    break;
+                case ATLIBGS_SMOPEN:
+                    scanInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_OPEN;
+                    break;
+                case ATLIBGS_SMWEP:
+                    scanInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WEP;
+                    break;
+                case ATLIBGS_SMWPAPSK:
+                    scanInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WPA;
+                    break;
+                case ATLIBGS_SMWPA2PSK:
+                    scanInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WPA2;
+                    break;
+                case ATLIBGS_SMWPA2E:
+                    scanInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WPA2_ENTERPRISE;
+                    break;
+                default:
+                    scanInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_UNKNOWN;
+                    break;
+            }
+            strcpy(scanInfo.iBSSID, entry[i].bssid);
+            aCallback(aCallbackWorkspace, &scanInfo);
+        }
+    } else { // There was a scan error.
+        
     }
 
     UEZSemaphoreRelease(p->iSem);
@@ -637,6 +690,9 @@ static T_uezError Network_GainSpan_GetStatus(
     aStatus->iSubnetMask.v4[1] = status.subnet.ipv4[1];
     aStatus->iSubnetMask.v4[2] = status.subnet.ipv4[2];
     aStatus->iSubnetMask.v4[3] = status.subnet.ipv4[3];
+
+    strcpy(aStatus->iInfo.iName, status.ssid);
+    strcpy(aStatus->iInfo.iBSSID, status.bssid);
 
     aStatus->iJoinStatus = p->iJoinStatus;
     aStatus->iScanStatus = p->iScanStatus;

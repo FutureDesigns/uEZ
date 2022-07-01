@@ -18,6 +18,7 @@
 #define UEZ_REGISTER              			0
 #else
 #define UEZ_REGISTER              			1  //Used for registering Queues and Semaphores in the RTOS
+#define SEGGER_ENABLE_SYSTEM_VIEW           1
 #endif
 
 // Components to allow to run

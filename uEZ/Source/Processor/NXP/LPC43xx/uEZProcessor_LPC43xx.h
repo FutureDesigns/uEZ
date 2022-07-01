@@ -38,7 +38,7 @@
 #define _UEZPROCESSOR_LPC43xx_H_
 
 #include <Config.h>
-#include <CMSIS/lpc43xx.h>
+#include <CMSIS/LPC43xx.h>
 #include <Types/GPIO.h>
 #include "LPC43xx_UtilityFuncs.h"
 
@@ -106,7 +106,7 @@
                     funcname(param);\
                     IRQ_END()
 #define     __packed        __attribute__((packed))
-#define     INLINE          inline
+#define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
 #endif // (COMPILER_TYPE==RowleyARM)
 
@@ -121,7 +121,7 @@
                     funcname(param);\
                     IRQ_END()
 #define     __packed        __attribute__((packed))
-#define     INLINE          inline
+#define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
 #endif // (COMPILER_TYPE==GCC)
 

@@ -168,6 +168,7 @@ void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);
 void UEZPlatform_Minimal_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
+void UEZPlatform_System_Reset(void);
 
 #ifdef __cplusplus
 }

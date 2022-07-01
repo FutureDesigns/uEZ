@@ -14,6 +14,9 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
+#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_SYSTEM_VIEW           0
+
 #ifdef NDEBUG
 #define UEZ_REGISTER              			0
 #else
@@ -25,9 +28,9 @@
 #define UEZ_ENABLE_USB_DEVICE_STACK         1
 #define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
-#define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
+#define UEZ_HTTP_SERVER                     0
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
-#define UEZ_BASIC_WEB_SERVER                0
+#define UEZ_BASIC_WEB_SERVER                UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
 
@@ -52,16 +55,16 @@
 #define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               0
 
-#define INCLUDE_EMWIN                       1
+#define INCLUDE_EMWIN                       0
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
 #define APP_DEMO_YOUR_APP                   0
 #define SHOW_GUIDEMO_AUTOMOTIVE             1
-#define SHOW_GUIDEMO_GRAPH                  1
-#define SHOW_GUIDEMO_LISTVIE                1
-#define SHOW_GUIDEMO_SPEED                  1
+#define SHOW_GUIDEMO_GRAPH                  0
+#define SHOW_GUIDEMO_LISTVIE                0
+#define SHOW_GUIDEMO_SPEED                  0
 #define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-1788-43WQR"

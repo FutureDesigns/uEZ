@@ -50,8 +50,11 @@ BOOL
 xMBPortEventInit( void )
 {
     eMailBoxEvent = EV_READY;
-    // TODO MJH added size param of 0
+#if LWIP_2_0_x
+    sys_mbox_new(&xMailBox, 0 );
+#else
     xMailBox = sys_mbox_new( 0 );
+#endif
     return xMailBox != SYS_MBOX_NULL ? TRUE : FALSE;
 }
 
@@ -60,7 +63,11 @@ vMBPortEventClose( void )
 {
     if( xMailBox != SYS_MBOX_NULL )
     {
+#if LWIP_2_0_x
+        sys_mbox_free( &xMailBox );
+#else
         sys_mbox_free( xMailBox );
+#endif
     }
 }
 
@@ -103,7 +110,11 @@ xMBPortEventPost( eMBEventType eEvent, void *session, USHORT len, UCHAR *data )
       postEvent->session = session;
       postEvent->len = len;
       memcpy(&postEvent->data[0], data, len);
+#if LWIP_2_0_x
+      sys_mbox_post( &xMailBox, postEvent );
+#else
       sys_mbox_post( xMailBox, postEvent );
+#endif
       return TRUE;
     }
     
@@ -117,7 +128,11 @@ xMBPortEventGet( eMBEventType * eEvent, void **session, USHORT *len, UCHAR *data
     BOOL            xEventHappend = FALSE;
     u32_t           uiTimeSpent;
 
+#if LWIP_2_0_x
+    uiTimeSpent = sys_arch_mbox_fetch( &xMailBox, (void *)&peGetEvent, MB_POLL_CYCLETIME );
+#else
     uiTimeSpent = sys_arch_mbox_fetch( xMailBox, (void *)&peGetEvent, MB_POLL_CYCLETIME );
+#endif
     if( uiTimeSpent != SYS_ARCH_TIMEOUT )
     {
         *eEvent = peGetEvent->event;

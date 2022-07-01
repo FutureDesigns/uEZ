@@ -374,6 +374,86 @@ T_uezError Accelerometer_Freescale_MMA7455_I2C_ReadXYZ(
     return error;
 }
 
+T_uezError Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Single(
+        void *aWorkspace,
+        AccelerometerReading *aReading,
+        TUInt32 aTimeout)
+{
+    /*TUInt8 status;
+    T_uezError error;
+    T_Accelerometer_Freescale_MMA7455_I2C_Workspace *p =
+            (T_Accelerometer_Freescale_MMA7455_I2C_Workspace *)aWorkspace;
+    TUInt8 accdata[0x20];
+    TUInt32 start;
+    TBool success = EFalse;*/
+
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED; // TODO this is a placeholder function
+	/*
+    // Allow only one transfer at a time
+    error = UEZSemaphoreGrab(p->iSem, aTimeout);
+    if (error)
+        return error;
+
+    // A reading is available every 4 ms
+    start = UEZTickCounterGet();
+    while (UEZTickCounterGetDelta(start) < 10) { // try up to 10 ms
+        memset(accdata, 0xCC, sizeof(accdata));
+        error = IReadData(p, accdata + Freescale_MMA7455_REG_STATUS, 0x00, 1,
+                100);
+        if (!error) {
+            status = accdata[Freescale_MMA7455_REG_STATUS];
+            if (status & Freescale_MMA7455_STATUS_DRDY) {
+                error = IReadData(p, accdata, 0x00, 9, 100);
+                if (!error) {
+#if (FREESCALE_MMA7455_G_MODE==8)
+#if 0
+                    printf("x:%02X%02X y:%02X%02X z:%02X%02X\r\n",
+                            accdata[Freescale_MMA7455_REG_XOUT10_MSB],
+                            accdata[Freescale_MMA7455_REG_XOUT10_LSB],
+                            accdata[Freescale_MMA7455_REG_YOUT10_MSB],
+                            accdata[Freescale_MMA7455_REG_YOUT10_LSB],
+                            accdata[Freescale_MMA7455_REG_ZOUT10_MSB],
+                            accdata[Freescale_MMA7455_REG_ZOUT10_LSB]);
+#endif												
+                    aReading->iX = ICalc10Bit8G(
+                            accdata[Freescale_MMA7455_REG_XOUT10_MSB],
+                            accdata[Freescale_MMA7455_REG_XOUT10_LSB]);
+                    aReading->iY = ICalc10Bit8G(
+                            accdata[Freescale_MMA7455_REG_YOUT10_MSB],
+                            accdata[Freescale_MMA7455_REG_YOUT10_LSB]);
+                    aReading->iZ = ICalc10Bit8G(
+                            accdata[Freescale_MMA7455_REG_ZOUT10_MSB],
+                            accdata[Freescale_MMA7455_REG_ZOUT10_LSB]);
+#elif (FREESCALE_MMA7455_G_MODE==2)
+                    aReading->iX = ICalc8Bit2G(
+                            accdata[Freescale_MMA7455_REG_XOUT8]);
+                    aReading->iY = ICalc8Bit2G(
+                            accdata[Freescale_MMA7455_REG_YOUT8]);
+                    aReading->iZ = ICalc8Bit2G(
+                            accdata[Freescale_MMA7455_REG_ZOUT8]);
+#endif
+                    p->iLastReading = *aReading;
+                    success = ETrue;
+                    break; // break if successful
+                }
+            }
+        }
+        // Let another task run awhile as we wait for a response
+        UEZTaskDelay(1);
+    }
+    if (!success) {
+        // Go with the last reading
+        *aReading = p->iLastReading;
+    }
+    UEZSemaphoreRelease(p->iSem);
+
+    return error;*/
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  Accelerometer_Freescale_MMA7455_I2C_Configure
  *---------------------------------------------------------------------------*
@@ -440,6 +520,60 @@ T_uezError Accelerometer_Freescale_MMA7455_I2C_Configure(
     return error;
 }
 
+
+
+T_uezError Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Float(
+        void *aWorkspace, 
+        AccelerometerReadingFloat *aReading,
+        TUInt32 aTimeout)
+{
+    /*T_uezError error;
+	T_Accelerometer_Freescale_MMA7455_I2C_Workspace *p =
+        (T_Accelerometer_Freescale_MMA7455_I2C_Workspace *)aWorkspace;*/
+	
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+/*
+    // Allow only one transfer at a time
+    error = UEZSemaphoreGrab(p->iSem, aTimeout);
+    if (error) { // do nothiing on error		
+	} else {
+
+
+		UEZSemaphoreRelease(p->iSem);
+	}
+    return error;*/
+}
+
+T_uezError Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Float_Single(
+        void *aWorkspace, 
+        AccelerometerReadingFloat *aReading,
+        TUInt32 aTimeout)
+{
+    /*T_uezError error;
+	T_Accelerometer_Freescale_MMA7455_I2C_Workspace *p =
+        (T_Accelerometer_Freescale_MMA7455_I2C_Workspace *)aWorkspace;*/
+	
+    aReading->iX = 0;
+    aReading->iY = 0;
+    aReading->iZ = 0;
+		
+    return UEZ_ERROR_NOT_SUPPORTED;
+/*
+    // Allow only one transfer at a time
+    error = UEZSemaphoreGrab(p->iSem, aTimeout);
+    if (error) { // do nothiing on error		
+	} else {
+
+
+		UEZSemaphoreRelease(p->iSem);
+	}
+    return error;*/
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  Accelerometer_Freescale_MMA7455_I2C_Create
  *---------------------------------------------------------------------------*
@@ -487,7 +621,11 @@ const DEVICE_Accelerometer Accelerometer_Freescale_MMA7455_I2C_Interface = {
 
         // Functions
         Accelerometer_Freescale_MMA7455_I2C_GetInfo,
-        Accelerometer_Freescale_MMA7455_I2C_ReadXYZ, };
+        Accelerometer_Freescale_MMA7455_I2C_ReadXYZ, 
+		Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Single,
+		Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Float,
+		Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Float_Single,
+};
 
 /*-------------------------------------------------------------------------*
  * End of File:  Freescale_MMA7455_driver.c

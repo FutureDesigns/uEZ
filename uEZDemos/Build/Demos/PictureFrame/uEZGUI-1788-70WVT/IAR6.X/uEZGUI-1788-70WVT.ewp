@@ -250,7 +250,7 @@
         <option>
           <name>IExtraOptions</name>
           <state>--no_unaligned_access</state>
-          <state>--enum_is_int</state>
+          
         </option>
         <option>
           <name>CCLangConformance</name>
@@ -1201,7 +1201,7 @@
         <option>
           <name>IExtraOptions</name>
           <state>--no_unaligned_access</state>
-          <state>--enum_is_int</state>
+          
         </option>
         <option>
           <name>CCLangConformance</name>

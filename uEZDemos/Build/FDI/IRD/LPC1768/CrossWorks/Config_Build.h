@@ -19,6 +19,7 @@
 #define UEZ_REGISTER              			0
 #else
 #define UEZ_REGISTER              			1  //Used for registering Queues and Semaphores in the RTOS
+#define SEGGER_ENABLE_SYSTEM_VIEW           1
 #endif
 // Modify the default accelerometer demo settings
 #define ACCEL_DEMO_SWAP_XY        0

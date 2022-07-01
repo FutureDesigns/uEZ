@@ -185,6 +185,10 @@ void WriteBE16U(volatile TUInt8 *pmem, TUInt16 val)
 void CPUDisableInterrupts(void)
 {
     __set_BASEPRI(16UL << (8 - 5));
+    /* // In the LPC4357 IAP this was used instead.
+    portDISABLE_INTERRUPTS();
+    return;
+    */
 }
 
 /*-------------------------------------------------------------------------*
@@ -196,6 +200,10 @@ void CPUDisableInterrupts(void)
 void CPUEnableInterrupts(void)
 {
     __set_BASEPRI(0UL);
+    /* // In the LPC4357 IAP this was used instead.
+    portENABLE_INTERRUPTS();
+    return;
+    */
 }
 
 //ToDo: remove these functions

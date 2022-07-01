@@ -175,9 +175,15 @@ T_uezError UEZAudioMixerRegister(T_uezAudioMixerOutput aOutput, T_AudioMixer_Cal
        iHaveRun = ETrue;
     }
 
+#ifdef __clang__ // Clang thinks the comparison is always true. Is there a better way to check this?
+    if(((!aOutput) == UEZ_AUDIO_MIXER_OUTPUT_MASTER)){
+        G_AudioMixer[aOutput].iCallback = *aCallback;
+    }
+#else
     if(((!aOutput) == UEZ_AUDIO_MIXER_OUTPUT_MASTER) && (aOutput < MAX_AUDIO_MIXER_OUTPUTS)){
         G_AudioMixer[aOutput].iCallback = *aCallback;
     }
+#endif    
     return error;
 }
 

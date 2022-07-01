@@ -28,7 +28,7 @@
 #include <uEZBSP.h>
 
 #if FREERTOS_PLUS_TRACE //LPC1788/LPC4088 only as of uEZ v2.06
-#include "trcUser.h"
+#include "Include/trcUser.h"
 #endif
 
 static xSemaphoreHandle G_startingTaskReady;
@@ -550,7 +550,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
     error = uEZHandleGet(aSemaphore, &ulHandleType, (TUInt32 *)&Semaphore, 0, 0);
 
     if (error == UEZ_ERROR_NONE) {
-        if (pcSemaphoreName == '\0') {
+        if (*pcSemaphoreName == '\0') {
             if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_SEMAPHORE){
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
@@ -818,7 +818,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
     error = uEZHandleGet(aQueue, &ulHandleType, (TUInt32 *)&Queue, 0, 0);
 
     if (error == UEZ_ERROR_NONE) {
-        if (pcQueueName == '\0') {
+        if (*pcQueueName == '\0') {
             if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_QUEUE){
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
@@ -1062,7 +1062,7 @@ T_uezError UEZQueueGetCount(T_uezQueue aQueue, TUInt32 *aCount)
     return error;
 }
 
-#include <UEZProcessor.h>
+#include <uEZProcessor.h>
 TUInt32 UEZTickCounterGet(void)
 {
 #if (UEZ_PROCESSOR_CORE_TYPE == CORE_TYPE_CORTEX_M4 || UEZ_PROCESSOR_CORE_TYPE == CORE_TYPE_CORTEX_M3)

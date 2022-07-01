@@ -134,7 +134,18 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+ 
+/*-------------------------------------------------------------------------*
+ * General Purpose Pin Mappings to CPU:
+ *-------------------------------------------------------------------------*/
+// HW Reset pin in Rev X PCB
+#define PIN_HW_RESET  GPIO_NONE 
 
+// LED pin(s)
+#define GPIO_HEARTBEAT_LED  		GPIO_P1_13
+
+// TODO add GPIOs on ALT PWR COM, PMOD here
+ 
 /*-------------------------------------------------------------------------*
  * Expansion Connector Header Pin Mappings to CPU:
  *-------------------------------------------------------------------------*/
@@ -369,6 +380,7 @@ TBool UEZPlatform_Host_Port_B_Detect();
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
+void UEZPlatform_System_Reset(void);
 
 // Utility function to connect to the Wired Network
 T_uezError UEZPlatform_WiredNetwork0_Connect(

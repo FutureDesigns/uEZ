@@ -176,12 +176,13 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
     T_uezTSReading reading;
     T_uezInputEvent inputEvent;
 
+    UEZTaskDelay(100);
+	
     for (;;) {
         IUEZTSGrab();
         p = G_tsDevices;
         while (p) {
-            if (UEZTSGetReading(p->iDevice, &reading) == UEZ_ERROR_NONE)  {
-            
+            if (UEZTSGetReading(p->iDevice, &reading) == UEZ_ERROR_NONE)  {            
                 if(reading.iFlags & TSFLAG_PEN_DOWN) {
                     UEZLCDScreensaverWake();
                     
@@ -206,7 +207,7 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
             p = p->iNext;
         }
         IUEZTSRelease();
-        UEZTaskDelay(10);
+        UEZTaskDelay(10); // TODO implement variable for touch rate
     }
 }
 

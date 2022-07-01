@@ -95,7 +95,7 @@
 
 #if configUSE_TRACE_FACILITY
     #if ((COMPILER_TYPE!=IAR)||(defined(__ICCARM__)))
-        #include <trcKernelPort.h>
+        #include <Include/trcKernelPort.h>
     #endif
 #endif
 
@@ -159,6 +159,13 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
+#ifndef INCLUDE_xTaskGetIdleTaskHandle  
+    #define INCLUDE_xTaskGetIdleTaskHandle      1
+#endif
+#ifndef INCLUDE_pxTaskGetStackStart 
+    #define INCLUDE_pxTaskGetStackStart         1
+#endif
+
 #ifndef INCLUDE_vTaskPrioritySet
     #define INCLUDE_vTaskPrioritySet            1
 #endif
@@ -189,14 +196,28 @@ to exclude the API function. */
 #define configCHECK_FOR_STACK_OVERFLOW 2
 #endif
 
-#endif /* FREERTOS_CONFIG_H */
+// We cannot include //#include <uEZProcessor.h> here so we must set Priobits manually per MCU if needed!
+
+#ifdef GCC_ARMCM0
+    /* Use the system definition, if there is one */
+    #ifdef __NVIC_PRIO_BITS
+        #define configPRIO_BITS       __NVIC_PRIO_BITS // Cccan be vender specific
+    #else
+        #define configPRIO_BITS       2        // min 4+ priority levels for CM0/CM0+
+    #endif
+
+    /* The lowest priority. */
+    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
+    /* Priority 5, or 160 as only the top three bits are implemented. */
+    #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
+#endif
 
 #ifdef GCC_ARMCM3
     /* Use the system definition, if there is one */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
     #else
-        #define configPRIO_BITS       5        /* 32 priority levels */
+        #define configPRIO_BITS       5        /* 32 priority levels */ // TODO Cortex-M3 is minimum 3, so make this 3 if specific number not known
     #endif
 
     /* The lowest priority. */
@@ -210,7 +231,7 @@ to exclude the API function. */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
     #else
-        #define configPRIO_BITS       5        /* 32 priority levels */
+        #define configPRIO_BITS       5        /* 32 priority levels */ // TODO Cortex-M4 is minimum 3, so make this 3 if specific number not known
     #endif
 
     /* The lowest priority. */
@@ -224,8 +245,11 @@ to exclude the API function. */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
     #else
-//CS, LPC43xx not setup properly
-        #define configPRIO_BITS       3        /* 32 priority levels */
+        #if (UEZ_PROCESSOR == NXP_LPC4357)      //CS, LPC43xx not setup properly
+          #define configPRIO_BITS       3        /* 8 priority levels */
+        #else
+          #define configPRIO_BITS       5        /* 32 priority levels */
+        #endif
     #endif
 
     /* The lowest priority. */
@@ -253,8 +277,6 @@ to exclude the API function. */
 
 #ifndef BIT
 #define BIT(x)	(1 << (x))
-
-
 #endif
 
 #endif
@@ -272,3 +294,42 @@ to exclude the API function. */
 
 // Allow a few named queue entries
 #define configQUEUE_REGISTRY_SIZE			( 30 )
+
+// Currently we are missing vApplicationMallocFailedHook in the code
+#define configUSE_MALLOC_FAILED_HOOK        ( 0 ) //CS Added
+
+#if FREERTOS_PLUS_TRACE 
+  // Don't enable SystemView with FreeRTOS+Trace
+#else // Otherwise SystemView can be enabled
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
+
+#if (COMPILER_TYPE == IAR)
+#ifdef __ICCARM__  
+     //Ensure the #include is only used by the compiler, and not the assembler.
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+#endif
+
+#if (COMPILER_TYPE == RowleyARM) // TODO compiler not verified yet
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+
+#if (COMPILER_TYPE == HEW) // TODO compiler not verified yet
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+
+#if (COMPILER_TYPE == Keil4) // TODO compiler not verified yet
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+
+#if (COMPILER_TYPE == GCC) // TODO compiler not verified yet
+#ifdef __clang__ // include in case CLANG needs special treatment
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+
+#endif
+#endif
+
+#endif /* FREERTOS_CONFIG_H */

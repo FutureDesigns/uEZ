@@ -133,6 +133,8 @@
 
 extern int MainTask(void);
 
+#define SD_LOW_POWER_SUPP   (0) // set to 1 to enable the power pin on SD card
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -568,6 +570,20 @@ void UEZPlatform_I2C0_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_I2C1_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the I2C1 device driver
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_I2C1_Require(void)
+{
+    DEVICE_CREATE_ONCE();
+
+    LPC43xx_I2C1_Require(GPIO_P5_3, GPIO_P5_4);
+    I2C_Generic_Create("I2C1", "I2C1", 0);
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2S_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -639,14 +655,74 @@ void UEZPlatform_SD_MMC_Require(void)
         GPIO_P6_9,      // CMD
         GPIO_P6_7,      // Card Detect
         GPIO_NONE,      // Write Protect Detect
-        GPIO_P6_15,     // Power Output
+#if (defined SD_LOW_POWER_SUPP && SD_LOW_POWER_SUPP == 1)
+        GPIO_P6_15,     // Power Output Control, High On
     };
 
     DEVICE_CREATE_ONCE();
 
     LPC43xx_GPIO6_Require();
     LPC43xx_GPIOZ_Require();
+#else    
+        GPIO_NONE, //GPIO_P6_15 // Power Output Control, High On
+    };
 
+    TUInt32 value;
+    DEVICE_CREATE_ONCE();
+    
+    LPC43xx_GPIO6_Require();
+    LPC43xx_GPIOZ_Require();
+
+    //dprintf("Reboot SD card\n");
+    
+    // Make sure that DAT0 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_3); 
+    UEZGPIOSetMux(GPIO_P6_3, (GPIO_P6_3 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_3 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_3, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_3);
+    // Make sure that DAT1 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_4); 
+    UEZGPIOSetMux(GPIO_P6_4, (GPIO_P6_4 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_4 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_4, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_4);
+    // Make sure that DAT2 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_5); 
+    UEZGPIOSetMux(GPIO_P6_5, (GPIO_P6_5 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_5 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_5, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_5);
+    // Make sure that DAT3 does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_6); 
+    UEZGPIOSetMux(GPIO_P6_6, (GPIO_P6_6 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_6 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_6, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_6);
+    // Make sure that CLK does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_PZ_Z_PC_0); 
+    UEZGPIOSetMux(GPIO_PZ_Z_PC_0, (GPIO_PZ_Z_PC_0 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_PZ_Z_PC_0 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_PZ_Z_PC_0, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_PZ_Z_PC_0);
+    // Make sure that CMD does not draw power from MCU by setting low.
+    UEZGPIOOutput(GPIO_P6_9); 
+    UEZGPIOSetMux(GPIO_P6_9, (GPIO_P6_9 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_9 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_9, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_9);   
+    // First hold SD card power low for 200 ms to allow for full power down.
+    UEZGPIOOutput(GPIO_P6_15); 
+    UEZGPIOSetMux(GPIO_P6_15, (GPIO_P6_15 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P6_15 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P6_15, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(GPIO_P6_15);
+    UEZTaskDelay(200); // Power off delay
+    // Manually turn SDcard power on and keep it on
+    UEZGPIOSet(GPIO_P6_15);
+    UEZGPIOLock(GPIO_P6_15); // Prevent pin from being re-configured.
+    UEZTaskDelay(50); // MMC spec said to wait 35ms after power on before CMD.
+#endif        
     LPC43xx_SD_MMC_Require(&pins);
 }
 
@@ -1458,7 +1534,13 @@ void UEZPlatform_USBHost_PortA_Require(void)
 
     LPC43xx_GPIO5_Require();
 
-    UEZGPIOSetMux(GPIO_P5_18, 2); // Turn on USB0_PPWR USB1
+    // If the expansion board USB1H_PPWR is active high you can use the USB mode.
+    // Otherwise we MUST set GPIO low to enable power on existing boards.
+    //UEZGPIOSetMux(GPIO_P5_18, 2); // Turn on USB0_PPWR USB1 peripheral mode
+    UEZGPIOControl(GPIO_P5_18, GPIO_CONTROL_SET_CONFIG_BITS, ((1 << 7) | (1 << 6)));
+    UEZGPIOSetMux(GPIO_P5_18, 4); // Turn on GPIO mode
+    UEZGPIOClear(GPIO_P5_18);
+    UEZGPIOOutput(GPIO_P5_18);
     InterruptRegister(USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
         INTERRUPT_PRIORITY_NORMAL, "USB1");
 #endif
@@ -1480,7 +1562,7 @@ void UEZPlatform_USBHost_PortB_Require(void)
 
     LPC43xx_GPIO3_Require();
 
-    UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on USB0_PPWR USB 0
+    UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on USB0_PPWR USB 0 peripheral mode
     InterruptRegister(USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
         INTERRUPT_PRIORITY_NORMAL, "USB0");
 #endif
@@ -1551,6 +1633,40 @@ void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
     UEZDeviceTableFind("MS0", &ms0);
     UEZDeviceTableGetWorkspace(ms0, (T_uezDeviceWorkspace **)&p_ms0);
     FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms0);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+    // Turn off LED before init clocks. 
+    // Then it will only start blinking after RTOS
+    // TODO need to test this code. It most likely doesn't work.
+    LPC_SCU->SFSP1_4 = (0x3 << 3) | 0;
+    LPC_GPIO_PORT->DIR[0] |= (1<<11);
+    LPC_GPIO_PORT->CLR[0] |= 1 << 11;// off
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    // By default use HW reset pin on this board.
+	// TODO rewrite to using lower level pin code
+    UEZGPIOSetMux(PIN_HW_RESET, 4);
+    UEZGPIOClear(PIN_HW_RESET);
+    UEZGPIOOutput(PIN_HW_RESET);
+    //NVIC_SystemReset();
 }
 
 /*---------------------------------------------------------------------------*

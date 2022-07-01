@@ -686,36 +686,36 @@ const HAL_Timer LPC546xx_Timer3_Interface = {
 void LPC546xx_Timer0_Require(const T_LPC546xx_Timer_Settings *aSettings)
 {
     static const T_LPC546xx_SCU_ConfigList cap0[] = {
-            {GPIO_P4_4     ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P4_4     ,IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList cap1[] = {
-            {GPIO_P1_5     ,SCU_NORMAL_DRIVE_DEFAULT(3)},
-            {GPIO_P4_5     ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P1_5     ,IOCON_D_DEFAULT(3)},
+            {GPIO_P4_5     ,IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList cap2[] = {
-            {GPIO_P0_15     ,SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P4_6     ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_15     ,IOCON_D_DEFAULT(4)},
+            {GPIO_P4_6     ,IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList cap3[] = {
-            {GPIO_P0_4     ,SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P4_7     ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_4     ,IOCON_D_DEFAULT(4)},
+            {GPIO_P4_7     ,IOCON_D_DEFAULT(7)},
     };
 
     static const T_LPC546xx_SCU_ConfigList mat0[] = {
-            {GPIO_P0_3    ,SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P4_0    ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_3    ,IOCON_D_DEFAULT(4)},
+            {GPIO_P4_0    ,IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList mat1[] = {
-            {GPIO_P0_2    ,SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P4_1    ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_2    ,IOCON_D_DEFAULT(4)},
+            {GPIO_P4_1    ,IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList mat2[] = {
-            {GPIO_P1_7    ,SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P4_2    ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P1_7    ,IOCON_D_DEFAULT(4)},
+            {GPIO_P4_2    ,IOCON_D_DEFAULT(7)},
     };
     static const T_LPC546xx_SCU_ConfigList mat3[] = {
-            {GPIO_P0_13   ,SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P4_3    ,SCU_NORMAL_DRIVE_DEFAULT(7)},
+            {GPIO_P0_13   ,IOCON_D_DEFAULT(4)},
+            {GPIO_P4_3    ,IOCON_D_DEFAULT(7)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
@@ -723,152 +723,152 @@ void LPC546xx_Timer0_Require(const T_LPC546xx_Timer_Settings *aSettings)
     HALInterfaceRegister("Timer0", (T_halInterface *)&LPC546xx_Timer0_Interface,
             0, 0);
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
 }
 
 void LPC546xx_Timer1_Require(const T_LPC546xx_Timer_Settings *aSettings)
 {
     static const T_LPC546xx_SCU_ConfigList cap0[] = {
-            {GPIO_P1_6    , SCU_NORMAL_DRIVE_DEFAULT(4)},
-            {GPIO_P2_9    , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P1_6    , IOCON_D_DEFAULT(4)},
+            {GPIO_P2_9    , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList cap1[] = {
-            {GPIO_P2_10   , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_10   , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList cap2[] = {
-            {GPIO_P2_11   , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_11   , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList cap3[] = {
-            {GPIO_P2_12   , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_12   , IOCON_D_DEFAULT(5)},
     };
 
     static const T_LPC546xx_SCU_ConfigList mat0[] = {
-            {GPIO_P2_13   , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_13   , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList mat1[] = {
-            {GPIO_P2_14   , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_14   , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList mat2[] = {
-            {GPIO_P2_15   , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_15   , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList mat3[] = {
-            {GPIO_P2_7    , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P2_7    , IOCON_D_DEFAULT(5)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register Timer1
     HALInterfaceRegister("Timer1", (T_halInterface *)&LPC546xx_Timer1_Interface,
             0, 0);
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
 }
 
 void LPC546xx_Timer2_Require(const T_LPC546xx_Timer_Settings *aSettings)
 {
     static const T_LPC546xx_SCU_ConfigList cap0[] = {
-            {GPIO_P3_0     , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P3_0     , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList cap1[] = {
-            {GPIO_P3_1     , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P3_1     , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList cap2[] = {
-            {GPIO_P3_2     , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P3_2     , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList cap3[] = {
-            {GPIO_P0_5     , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P0_5     , IOCON_D_DEFAULT(5)},
     };
 
     static const T_LPC546xx_SCU_ConfigList mat0[] = {
-            {GPIO_P5_15    , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P5_15    , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList mat1[] = {
-            {GPIO_P5_16    , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P5_16    , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList mat2[] = {
-            {GPIO_P3_5     , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P3_5     , IOCON_D_DEFAULT(5)},
     };
     static const T_LPC546xx_SCU_ConfigList mat3[] = {
-            {GPIO_P3_7     , SCU_NORMAL_DRIVE_DEFAULT(5)},
+            {GPIO_P3_7     , IOCON_D_DEFAULT(5)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register Timer2
     HALInterfaceRegister("Timer2", (T_halInterface *)&LPC546xx_Timer2_Interface,
             0, 0);
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
 }
 
 void LPC546xx_Timer3_Require(const T_LPC546xx_Timer_Settings *aSettings)
 {
     static const T_LPC546xx_SCU_ConfigList cap0[] = {
-            {GPIO_P6_0    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P6_0    , IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList cap1[] = {
-            {GPIO_P5_1    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_3    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_1    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_3    , IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList cap2[] = {
-            {GPIO_P5_2    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_4    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_2    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_4    , IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList cap3[] = {
-            {GPIO_P5_6    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_5    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_6    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_5    , IOCON_D_DEFAULT(6)},
     };
 
     static const T_LPC546xx_SCU_ConfigList mat0[] = {
-            {GPIO_P5_3    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_6    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_3    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_6    , IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList mat1[] = {
-            {GPIO_P5_4    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_7    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_4    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_7    , IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList mat2[] = {
-            {GPIO_P5_5    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_8    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P5_5    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_8    , IOCON_D_DEFAULT(6)},
     };
     static const T_LPC546xx_SCU_ConfigList mat3[] = {
-            {GPIO_P0_7    , SCU_NORMAL_DRIVE_DEFAULT(6)},
-            {GPIO_P6_9    , SCU_NORMAL_DRIVE_DEFAULT(6)},
+            {GPIO_P0_7    , IOCON_D_DEFAULT(6)},
+            {GPIO_P6_9    , IOCON_D_DEFAULT(6)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
     // Register Timer3
     HALInterfaceRegister("Timer3", (T_halInterface *)&LPC546xx_Timer3_Interface,
             0, 0);
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[0], cap0, ARRAY_COUNT(cap0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[1], cap1, ARRAY_COUNT(cap1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[2], cap2, ARRAY_COUNT(cap2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iCAP[3], cap3, ARRAY_COUNT(cap3));
 
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
-    LPC546xx_SCU_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[0], mat0, ARRAY_COUNT(mat0));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[1], mat1, ARRAY_COUNT(mat1));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[2], mat2, ARRAY_COUNT(mat2));
+    LPC546xx_ICON_ConfigPinOrNone(aSettings->iMAT[3], mat3, ARRAY_COUNT(mat3));
 }
 
 /*-------------------------------------------------------------------------*

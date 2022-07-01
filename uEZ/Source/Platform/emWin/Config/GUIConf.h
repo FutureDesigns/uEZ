@@ -63,7 +63,7 @@ extern TUInt32 UEZEmWinGetRAMSize(void);
 //
 // Define the number of available virtual displays for the GUI
 //
-#define GUI_NUM_VIRTUAL_DISPLAYS  2
+#define GUI_NUM_VIRTUAL_DISPLAYS  MAX_NUM_FRAMES // default of 2
 
 //
 // Pixel width in bytes

@@ -516,6 +516,22 @@ T_uezError LPC43xx_Serial_SetSerialSettings(
             return UEZ_ERROR_NOT_SUPPORTED;
     }
 
+	switch (aSettings->iFlowControl) {
+        case SERIAL_FLOW_CONTROL_NONE:
+            // default register settings are for none
+            p_info->iUART->MCR |= (0 << 6); // Disable auto RTS
+            p_info->iUART->MCR |= (0 << 7); // Disable auto CTS
+            break;
+        case SERIAL_FLOW_CONTROL_XON_XOFF:
+            return UEZ_ERROR_NOT_SUPPORTED; // TODO
+        case SERIAL_FLOW_CONTROL_HARDWARE:
+            p_info->iUART->MCR |= (1 << 6); // Auto RTS enable bit
+            p_info->iUART->MCR |= (1 << 7); // Auto CTS enable bit
+            break;
+        default:
+            return UEZ_ERROR_NOT_SUPPORTED;
+    }    
+	
     return UEZ_ERROR_NONE;
 }
 
@@ -619,7 +635,7 @@ T_serialStatusByte LPC43xx_Serial_GetStatus(void *aWorkspace)
 // List of serial port HAL interfaces
 const HAL_Serial G_LPC43xx_Serial_UART0 = {
         {
-        "Serial:LCP1788 UART0",
+        "Serial:LPC43XX UART0",
         0x0100,
         LPC43xx_Serial_InitializeWorkspace_UART0,
         sizeof(T_Serial_LPC43xx_Workspace),
@@ -637,7 +653,7 @@ const HAL_Serial G_LPC43xx_Serial_UART0 = {
 
 const HAL_Serial G_LPC43xx_Serial_UART1 = {
         {
-        "Serial:LCP1788 UART1",
+        "Serial:LPC43XX UART1",
         0x0100,
         LPC43xx_Serial_InitializeWorkspace_UART1,
         sizeof(T_Serial_LPC43xx_Workspace),
@@ -655,7 +671,7 @@ const HAL_Serial G_LPC43xx_Serial_UART1 = {
 
 const HAL_Serial G_LPC43xx_Serial_UART2 = {
         {
-        "Serial:LCP1788 UART2",
+        "Serial:LPC43XX UART2",
         0x0100,
         LPC43xx_Serial_InitializeWorkspace_UART2,
         sizeof(T_Serial_LPC43xx_Workspace),
@@ -673,7 +689,7 @@ const HAL_Serial G_LPC43xx_Serial_UART2 = {
 
 const HAL_Serial G_LPC43xx_Serial_UART3 = {
         {
-        "Serial:LCP1788 UART3",
+        "Serial:LPC43XX UART3",
         0x0100,
         LPC43xx_Serial_InitializeWorkspace_UART3,
         sizeof(T_Serial_LPC43xx_Workspace),

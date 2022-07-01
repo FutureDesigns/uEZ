@@ -1866,6 +1866,39 @@ void UEZPlatform_ButtonBoard_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+	// Initial state is pull up mode.
+	// Turn off LED before init clocks. 
+	// Then it will only start blinking after RTOS
+
+	// Configure status led to be fully in our control
+	// Make P4.23 be a GPIO pin
+	LPC_GPIO4->PIN &= ~(3 << 14);
+	// and an output pin
+	LPC_GPIO4->DIR |= (1 << 23);
+	LPC_GPIO4->SET |= (1 << 23); // off
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    NVIC_SystemReset();
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
  *---------------------------------------------------------------------------*
  * Description:

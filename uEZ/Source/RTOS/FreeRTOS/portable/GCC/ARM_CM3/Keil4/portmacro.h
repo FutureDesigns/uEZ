@@ -99,7 +99,8 @@ extern void vPortYield( void );
 extern void vPortYieldFromISR( void );
 
 #define portYIELD()					vPortYieldFromISR()
-#define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired ) vPortYieldFromISR()
+//#define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired != pdFALSE ) portYIELD()
+#define portEND_SWITCHING_ISR( xSwitchRequired ) { if( xSwitchRequired != pdFALSE ) { traceISR_EXIT_TO_SCHEDULER(); portYIELD(); } else { traceISR_EXIT(); } } // SystemView
 /*-----------------------------------------------------------*/
 
 

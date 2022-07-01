@@ -36,7 +36,7 @@
 #include "AppDemo.h"
 #include "VideoPlayer.h"
 #include <uEZKeypad.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 #include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
 
 
@@ -138,7 +138,7 @@ void VideoPlayer_Screen(T_VideoPlayerWorkspace *p_ws, TUInt8 aFrame) {
 }
 
 #if (COMPILER_TYPE==RowleyARM)
-#define ATTR_LOAD_SPACE __attribute__((section(".loadspace")))
+#define ATTR_LOAD_SPACE 
 #else
 #define ATTR_LOAD_SPACE
 #endif

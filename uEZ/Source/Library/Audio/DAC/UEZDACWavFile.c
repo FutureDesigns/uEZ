@@ -34,9 +34,9 @@
 #include <uEZAudioAmp.h>
 #include <uEZFile.h>
 #include <uEZRTOS.h>
-#include "UEZDACWAVFile.h"
+#include "uEZDACWAVFile.h"
 #include <uEZPlatform.h>
-#include <UEZAudioMixer.h>
+#include <uEZAudioMixer.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:

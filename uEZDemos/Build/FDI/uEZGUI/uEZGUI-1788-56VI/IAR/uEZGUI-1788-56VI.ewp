@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.1.13270</state>
+                    <state>8.22.2.15993</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -82,7 +82,7 @@
                 </option>
                 <option>
                     <name>GenLowLevelInterface</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>GEndianModeBE</name>
@@ -116,7 +116,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -133,7 +133,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -156,7 +156,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -196,6 +196,14 @@
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -211,7 +219,9 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state></state>
+                    <state>IAR_ARM_CM3</state>
+                    <state>CORE_M3</state>
+                    <state>LWIP_2_0_x</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -293,7 +303,7 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    <state>--enum_is_int</state>
+                    
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -345,13 +355,16 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
@@ -617,7 +630,6 @@
                 <option>
                     <name>AUserIncludes</name>
                     <state>$PROJ_DIR$/../../../../../../uEZ</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-43WQS/IAR</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI</state>
@@ -625,15 +637,18 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
+                    <state>G:\FDI\uEZ\TrunkOnly\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -1056,7 +1071,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1161,7 +1176,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1178,7 +1193,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1201,7 +1216,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1241,6 +1256,14 @@
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1256,6 +1279,7 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
+                    <state>LWIP_2_0_x</state>
                     <state>NDEBUG</state>
                 </option>
                 <option>
@@ -1338,7 +1362,7 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    <state>--enum_is_int</state>
+                    
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -1390,13 +1414,16 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
@@ -1662,23 +1689,25 @@
                 <option>
                     <name>AUserIncludes</name>
                     <state>$PROJ_DIR$/../../../../../../uEZ</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-43WQS/IAR</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>                    
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -2101,7 +2130,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>30</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -2206,7 +2235,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -2223,7 +2252,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -2246,7 +2275,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>25</version>
+                    <version>26</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -2286,6 +2315,14 @@
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>TrustZone</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2302,6 +2339,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>FREERTOS_PLUS_TRACE</state>
+                    <state>LWIP_2_0_x</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -2383,7 +2421,7 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    <state>--enum_is_int</state>
+                    
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -2435,14 +2473,18 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
@@ -2708,23 +2750,25 @@
                 <option>
                     <name>AUserIncludes</name>
                     <state>$PROJ_DIR$/../../../../../../uEZ</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-43WQS/IAR</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>                    
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR/</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>

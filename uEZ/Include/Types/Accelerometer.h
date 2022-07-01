@@ -73,14 +73,21 @@ typedef struct {
     TUInt32 iRevision;
 } AccelerometerInfo;
 
-/** Three signed readings from accelerometer (x, y, and z).
- * Readings are in g's with signed 15.16 fixed notation
- */
+// Three signed readings from accelerometer (x, y, and z).
+// Readings are in g's with signed 15.16 fixed notation
 typedef struct {
     TInt32 iX;
     TInt32 iY;
     TInt32 iZ;
 } AccelerometerReading;
+
+// Three signed readings from accelerometer (x, y, and z).
+// Readings are in floating point notation in G's
+typedef struct {
+    float iX;
+    float iY;
+    float iZ;
+} AccelerometerReadingFloat;
 
 #ifdef __cplusplus
 }

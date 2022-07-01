@@ -120,6 +120,17 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+ 
+/*-------------------------------------------------------------------------*
+ * General Purpose Pin Mappings to CPU:
+ *-------------------------------------------------------------------------*/
+// HW Reset pin in Rev X PCB
+#define PIN_HW_RESET  GPIO_NONE 
+
+// LED pin(s)
+#define GPIO_HEARTBEAT_LED  		GPIO_P1_13
+
+// TODO add GPIOs on ALT PWR COM, PMOD here
 
 /*-------------------------------------------------------------------------*
  * Expansion Connector Header Pin Mappings to CPU:
@@ -348,6 +359,7 @@ void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_I2S_Require(void);
 TBool UEZPlatform_Host_Port_B_Detect();
 void UEZPlatform_USBHost_PortB_Require(void);
+void UEZPlatform_System_Reset(void);
 
 void UEZPlatform_Require(void);
 void UEZPlatform_Standard_Require(void);

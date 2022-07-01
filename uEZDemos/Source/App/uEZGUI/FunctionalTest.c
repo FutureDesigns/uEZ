@@ -382,7 +382,7 @@ void FuncTestAccelerometer(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBu
         }
     } else if (aButton == 0) {
         (*p->iAccel)->ReadXYZ(p->iAccel, &p->iReading, 250);
-        y = p->iReading.iY>>10;
+        y = p->iReading.iY; // TODO need to verify the new accelerometer numbers
         if (p->iSubstep == 0) {
             sprintf(p->iLine, "  Tilt the board to the back (%d)", y);
             aAPI->iTextLine(aData, 1, p->iLine);
@@ -1842,6 +1842,157 @@ const T_gpioTestEntry G_gpioTestArray[] = {
     { FCTPIN_P3_12,         FCTPIN_P6_29,               "P3[12] -> P6[29]"},
     { FCTPIN_P7_22,         FCTPIN_P6_30,               "P7[22] -> P6[30]"}
 };
+
+#elif (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2 && UEZ_PROCESSOR == NXP_LPC4357) // 6.29 changed to 4.10
+static const T_gpioMapping G_gpioMapping[] = {
+    #define FCTPIN_P0_13        (1<<0) //J6 38
+    { 0,   13, "P0[13]" },
+    #define FCTPIN_P0_15        (1<<1)
+    { 0,   15, "P0[15]" },
+    #define FCTPIN_P0_1         (1<<2)
+    { 0,   1,  "P0[1]"  },
+    #define FCTPIN_P0_3         (1<<3)
+    { 0,   3,  "P0[3]"  },
+    #define FCTPIN_P0_2         (1<<4)
+    { 0,   2,  "P0[2]"  },
+    #define FCTPIN_P0_0         (1<<5)
+    { 0,   0,  "P0[0]"  },
+    //#define FCTPIN_P6_8         (1<<6)
+    //{ 6,   8,  "P6[8]"  },
+    //#define FCTPIN_             (1<<7) //J6 30 no GPIO function on this pin
+    //{ 0,   0, "" },
+    #define FCTPIN_P6_0         (1<<6)
+    { 6,   0,  "P6[0]" },
+    #define FCTPIN_P0_12        (1<<7)
+    { 0,   12, "P0[12]" },
+    #define FCTPIN_P2_1         (1<<8)
+    { 2,   1,  "P2[1]"  },
+    #define FCTPIN_P2_4         (1<<9)
+    { 2,   4,  "P2[4]"  },
+    //#define FCTPIN_             (1<<11) //J6 21 no GPIO functions on this pin
+    //{ 0,   0, "" },
+    //#define FCTPIN_P5_8         (1<<12)
+    //{ 5,   8,  "P5[8]"  },
+    #define FCTPIN_P5_9         (1<<10)
+    { 5,   9,  "P5[9]"  },
+    //#define FCTPIN_             (1<<14) //J6 18 no GPIO functions on this pin
+    //{ 0,    0, "" },
+    //#define FCTPIN_P4_13        (1<<15)
+    //{ 4,   13, "P4[13]" },
+    #define FCTPIN_P4_14        (1<<11)
+    { 4,   14, "P4[14]" },
+    #define FCTPIN_P5_18        (1<<12)
+    { 5,   18, "P5[18]" },
+    #define FCTPIN_P4_11        (1<<13)
+    { 4,   11, "P4[11]" },
+    #define FCTPIN_P5_5         (1<<14)
+    { 5,   5,  "P5[5]"  },
+    //#define FCTPIN_             (1<<20) //J6 12 no GPIO functions on this pin
+    //{ 0,   0, "" },
+    //#define FCTPIN_             (1<<21) //J6 11 no GPIO functions on this pin
+    //{ 0,   0, "" },
+    #define FCTPIN_P6_12        (1<<15)
+    { 6,   12, "P6[12]" },
+    #define FCTPIN_P6_13        (1<<16)
+    { 6,   13, "P6[13]" },
+    #define FCTPIN_P6_1         (1<<17)
+    { 6,   1,  "P6[1]"  },
+    #define FCTPIN_P6_2         (1<<18)
+    { 6,   2,  "P6[2]"  },
+    #define FCTPIN_P4_8         (1<<19)
+    { 4,   8,  "P4[8]"  },
+    #define FCTPIN_P4_12        (1<<20)
+    { 4,   12, "P4[12]" },
+    #define FCTPIN_P5_3         (1<<21)
+    { 5,   3,  "P5[3]"  },
+    #define FCTPIN_P5_4         (1<<22) //J6 2
+    { 5,   4,  "P5[4]"  },
+
+    //Secondary Pins
+    #define FCTPIN_P6_30        (((TUInt64)1)<<23)
+    { 6,   30,    "P6[30]" },
+    #define FCTPIN_P4_10        (((TUInt64)1)<<24)
+    { 4,   10,    "P4[10]" },
+    #define FCTPIN_P6_28        (((TUInt64)1)<<25)
+    { 6,   28,    "P6[28]" },
+    #define FCTPIN_P6_27        (((TUInt64)1)<<26)
+    { 6,   27,    "P6[27]" },
+    #define FCTPIN_P6_26        (((TUInt64)1)<<27)
+    { 6,   26,    "P6[26]" },
+    #define FCTPIN_P6_25        (((TUInt64)1)<<28)
+    { 6,    25,   "P6[25]" },
+    #define FCTPIN_P6_24        (((TUInt64)1)<<29)
+    { 6,    24,   "P6[24]" },
+    #define FCTPIN_P5_17        (((TUInt64)1)<<30)
+    { 5,    17,   "P5[17]" },
+    #define FCTPIN_P4_15        (((TUInt64)1)<<31)
+    { 4,    15,   "P4[15]" },
+    #define FCTPIN_P4_9         (((TUInt64)1)<<32)
+    { 4,    9,    "P4[9]"  },
+    #define FCTPIN_P3_8         (((TUInt64)1)<<33)
+    { 3,    8,    "P3[8]"  },
+    #define FCTPIN_P3_13        (((TUInt64)1)<<34)
+    { 3,    13,   "P3[13]" },
+    #define FCTPIN_P3_12        (((TUInt64)1)<<35)
+    { 3,    12,   "P3[12]" },
+    #define FCTPIN_P7_22        (((TUInt64)1)<<36)
+    { 7,    22,   "P7[22]" },
+    //#define FCTPIN_P7_20        (((TUInt64)1)<<32) //J5 18 not connected on loopback
+    //{ 7,    20,   "P7[20]" },
+    //#define FCTPIN_P7_19        (((TUInt64)1)<<31) //J5 19 not connected on loopback
+    //{ 7,    19,   "P7[19]" },
+};
+
+const T_gpioTestEntry G_gpioTestArray[] = {
+    { FCTPIN_P0_13,         FCTPIN_P4_12,               "P0[13] -> P4[12]" },
+    { FCTPIN_P0_15,         FCTPIN_P3_8,                "P0[15] -> P3[8]" },
+    { FCTPIN_P0_1,          FCTPIN_P6_2,                "P0[1]  -> P6[2]" },
+    { FCTPIN_P0_3,          FCTPIN_P6_1,                "P0[3]  -> P6[1]" },
+    { FCTPIN_P0_2,          FCTPIN_P6_13,               "P0[2]  -> P6[13]" },
+    { FCTPIN_P0_0,          FCTPIN_P6_12,               "P0[0]  -> P6[12]" },
+    //{ FCTPIN_P6_8,          FCTPIN_,                    ""},
+    //{ FCTPIN_,              FCTPIN_,                    "" },
+    { FCTPIN_P6_0,          FCTPIN_P5_5  | FCTPIN_P5_3, "P6[0]  -> P5[5]/P5_3" },
+    { FCTPIN_P0_12,         FCTPIN_P4_11,               "P0[12] -> P4[11]" },
+    { FCTPIN_P2_1,          FCTPIN_P5_18,               "P2[1]  -> P5[18]" },
+    { FCTPIN_P2_4,          FCTPIN_P4_14 | FCTPIN_P5_9, "P2[4]  -> P4[14]/P5_9" },
+    //{ FCTPIN_,              FCTPIN_P4_13,               "" },
+    //{ FCTPIN_P5_8,          FCTPIN_,                    ""},
+    //{ FCTPIN_,              FCTPIN_P5_8,                "" },
+    //{ FCTPIN_P4_13,         FCTPIN_,                    "" },
+    { FCTPIN_P4_14,         FCTPIN_P2_4  | FCTPIN_P5_9, "P4[14] -> P2[4]/P5[9]" },
+    { FCTPIN_P5_18,         FCTPIN_P2_1,                "P5[18] -> P2[1]" },
+    { FCTPIN_P4_11,         FCTPIN_P0_12,               "P4[11] -> P0[12]" },
+    { FCTPIN_P5_5,          FCTPIN_P6_0  | FCTPIN_P5_3, "P5[5]  -> P6[0]/P5[3]" },
+    //{ FCTPIN_,              FCTPIN_,                    "" },
+    //{ FCTPIN_,              FCTPIN_P6_8,                "" },
+    { FCTPIN_P6_12,         FCTPIN_P0_0,                "P6[12] -> P0[0]" },
+    { FCTPIN_P6_13,         FCTPIN_P0_2,                "P6[13] -> P0[2]" },
+    { FCTPIN_P6_1,          FCTPIN_P0_3,                "P6[1]  -> P0[3]" },
+    { FCTPIN_P6_2,          FCTPIN_P0_1,                "P6[2]  -> P0[1]" },
+    { FCTPIN_P3_8,          FCTPIN_P0_15,               "P3[8]  -> P0[15]" },
+    { FCTPIN_P4_12,         FCTPIN_P0_13,               "P4[12] -> P0[13]" },
+
+    { FCTPIN_P5_3,          FCTPIN_P6_0 | FCTPIN_P5_5,  "P5[8]  -> P6[0]/P5[5]" },
+    { FCTPIN_P5_9,          FCTPIN_P4_14 | FCTPIN_P2_4, "P5[9]  -> P4[14]/P2[4]" },
+
+    // Secondary Connector:
+    { FCTPIN_P6_30,         FCTPIN_P7_22,               "P6[30] -> P7[22]"},
+    { FCTPIN_P4_10,         FCTPIN_P3_12,               "P4[10] -> P3[12]"},
+    { FCTPIN_P6_28,         FCTPIN_P3_13,               "P6[28] -> P3[13]"},
+    { FCTPIN_P6_27,         FCTPIN_P4_8,                "P6[27] -> P4[8]" },
+    { FCTPIN_P6_26,         FCTPIN_P4_9,                "P6[26] -> P4[9]" },
+    { FCTPIN_P6_25,         FCTPIN_P4_15,               "P6[25] -> P4[15]"},
+    { FCTPIN_P6_24,         FCTPIN_P5_17,               "P6[24] -> P5[17]"},
+    { FCTPIN_P5_17,         FCTPIN_P6_24,               "P5[17] -> P6[24]"},
+    { FCTPIN_P4_15,         FCTPIN_P6_25,               "P4[15] -> P6[25]"},
+    { FCTPIN_P4_9,          FCTPIN_P6_26,               "P4[9]  -> P6[26]"},
+    { FCTPIN_P4_8,          FCTPIN_P6_27,               "P4[8]  -> P1[27]"},
+    { FCTPIN_P3_13,         FCTPIN_P6_28,               "P3[13] -> P6[28]"},
+    { FCTPIN_P3_12,         FCTPIN_P4_10,               "P3[12] -> P4[10]"},
+    { FCTPIN_P7_22,         FCTPIN_P6_30,               "P7[22] -> P6[30]"}
+};
+
 #else
 static const T_gpioMapping G_gpioMapping[] = {
     #define FCTPIN_P1_4            (1<<0)

@@ -61,6 +61,10 @@ typedef TUInt8 T_LPC546xx_ADC_UsedChannels;
 #define LPC546xx_ADC0_USE_CHANNEL5       (1<<5)
 #define LPC546xx_ADC0_USE_CHANNEL6       (1<<6)
 #define LPC546xx_ADC0_USE_CHANNEL7       (1<<7)
+#define LPC546xx_ADC0_USE_CHANNEL8       (1<<8)
+#define LPC546xx_ADC0_USE_CHANNEL9       (1<<9)
+#define LPC546xx_ADC0_USE_CHANNEL10      (1<<10)
+#define LPC546xx_ADC0_USE_CHANNEL11      (1<<11)
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -77,14 +81,10 @@ void LPC546xx_ADC0_4_Require(T_uezGPIOPortPin aPin);
 void LPC546xx_ADC0_5_Require(T_uezGPIOPortPin aPin);
 void LPC546xx_ADC0_6_Require(T_uezGPIOPortPin aPin);
 void LPC546xx_ADC0_7_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_0_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_1_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_2_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_3_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_4_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_5_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_6_Require(T_uezGPIOPortPin aPin);
-void LPC546xx_ADC1_7_Require(T_uezGPIOPortPin aPin);
+void LPC546xx_ADC0_8_Require(T_uezGPIOPortPin aPin);
+void LPC546xx_ADC0_9_Require(T_uezGPIOPortPin aPin);
+void LPC546xx_ADC0_10_Require(T_uezGPIOPortPin aPin);
+void LPC546xx_ADC0_11_Require(T_uezGPIOPortPin aPin);
 
 #endif // LPC546xx_ADCBANK_H_
 /*-------------------------------------------------------------------------*

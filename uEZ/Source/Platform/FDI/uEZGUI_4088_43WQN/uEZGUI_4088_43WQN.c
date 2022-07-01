@@ -381,11 +381,13 @@ void UEZBSP_InterruptsReset(void)
  *---------------------------------------------------------------------------*
  * Description:
  *      Immediately configure the port pins
+ *      Called after PLL is working at rated speed
  *---------------------------------------------------------------------------*/
 void UEZBSP_CPU_PinConfigInit(void)
 {
     // Place any pin configuration that MUST be initially here (at power up
     // but before even SDRAM is initialized)
+    // Can chage LED state here if troubleshooting SDRAM or want CLK OK signal 
 }
 
 /*---------------------------------------------------------------------------*
@@ -1744,7 +1746,7 @@ void UEZPlatform_AudioMixer_Require(void)
 
     UEZPlatform_AudioAmp_Require();
     UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &UEZGUI43WQR_AudioMixerCallback);
-    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 255);
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 128);
     UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER);
 }
 
@@ -2117,8 +2119,7 @@ void UEZPlatform_WiFiProgramMode(TBool runMode)
     UEZGPIOUnlock(GPIO_P0_16);      // WIFI RX
     UEZGPIOSetMux(GPIO_P0_16, 0);
     UEZGPIOInput(GPIO_P0_16);
-
-    //UEZTaskDelay(1000); // for debug
+    
     UEZGPIOSet(GPIO_WIFI_SRSTn);          // WIFI_SRSTn
 
     CPUDisableInterrupts();
@@ -2197,6 +2198,42 @@ void UEZPlatform_ButtonBoard_I2C1_Require(void) {
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Pre_PLL_SystemInit(void) {
+  // PIO1_13 initial state is pull up mode.
+  // Turn off LED before init clocks. 
+  // Then it will only start blinking after RTOS
+
+  // Configure status led to be fully in our control
+  // Make P1.13 be a GPIO pin
+  LPC_GPIO1->PIN &= ~(3 << 3);
+  LPC_GPIO1->CLR |= (1 << 13); // off
+  // and an output pin    
+  LPC_GPIO1->DIR |= (1 << 13);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button.
+ *      This is necessary to insure a full hardware reset across all lines
+ *      with minimum reset hold timing.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void) {  
+  // No HW reset on board
+  //GPIO->CLR[UEZ_GPIO_PORT_FROM_PORT_PIN(PIN_HW_RESET)] |= (1 << UEZ_GPIO_PIN_FROM_PORT_PIN(PIN_HW_RESET)); //UEZGPIOClear(PIN_HW_RESET);
+  //GPIO->DIR[UEZ_GPIO_PORT_FROM_PORT_PIN(PIN_HW_RESET)] |= (1 << UEZ_GPIO_PIN_FROM_PORT_PIN(PIN_HW_RESET)); //UEZGPIOOutput(PIN_HW_RESET);
+  NVIC_SystemReset();
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
  *---------------------------------------------------------------------------*
  * Description:
@@ -2213,8 +2250,8 @@ void UEZPlatform_Standard_Require(void)
 #if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
     LPC17xx_40xx_GPIO2_Require();
     UEZGPIOSetMux(GPIO_P2_0, 0);
+    UEZGPIOClear(GPIO_P2_0);    
     UEZGPIOOutput(GPIO_P2_0);
-    UEZGPIOClear(GPIO_P2_0);
     UEZGPIOLock(GPIO_P2_0); 
 #endif
     

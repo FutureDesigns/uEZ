@@ -144,14 +144,14 @@ T_uezError ADC_Generic_RequestSingle(
     T_ADC_Generic_Workspace *p = (T_ADC_Generic_Workspace *)aWorkspace;
 
     // Allow only one transfer at a time
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 500);
 
     // Put in the request and when the ISR calls the callback, the
     // semaphore will be released.
     error = (*p->iADCBank)->RequestSingle(p->iADCBank, aRequest);
 
     // Wait until it is released (if not already)
-    UEZSemaphoreGrab(p->iPending, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iPending, 500);
 
     // Data is ready, but may disappear soon.  Grab what we need
 

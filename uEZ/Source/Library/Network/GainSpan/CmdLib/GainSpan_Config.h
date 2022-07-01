@@ -23,7 +23,7 @@
 #endif
 
 #ifndef ATLIBGS_RX_CMD_MAX_SIZE
-#define ATLIBGS_RX_CMD_MAX_SIZE         (1536)
+#define ATLIBGS_RX_CMD_MAX_SIZE         (5120) //(1536) // Increased buffer to support scans with many APs
 #endif
 #ifndef GAINSPAN_SPI_RX_BUFFER_SIZE
 #define GAINSPAN_SPI_RX_BUFFER_SIZE     (4096) // Must be 4x TX_BUFFER

@@ -393,7 +393,7 @@ static TUInt32 BasicTCPServer(T_uezTask aMyTask, void *aParams)
         CO_AddString("\r\n\r\nWaiting...\r\n");			
         /* wait for a call */  			
         len = sizeof(rem);
-        ClntDescriptor = accept(SrvrDescriptor,(struct sockaddr*)&rem,&len);			
+        ClntDescriptor = accept(SrvrDescriptor,(struct sockaddr*)&rem, (u32_t *) &len);			
         CO_AddString("Connected!\r\n");
         needPrompt = ETrue;
 

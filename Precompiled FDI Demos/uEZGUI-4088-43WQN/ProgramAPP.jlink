@@ -1,8 +1,0 @@
-exec device = LPC4088
-speed 4000
-rx 200
-h
-loadbin "uEZGUI-4088-43WQN_IAR_APP.BIN", 0
-rx 200
-g
-q

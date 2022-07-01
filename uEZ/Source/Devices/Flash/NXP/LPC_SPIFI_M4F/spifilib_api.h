@@ -416,6 +416,17 @@ SPIFI_ERR_T spifiRead(const SPIFI_HANDLE_T *pHandle, uint32_t addr, uint32_t *re
  */
 SPIFI_ERR_T spifiErase(const SPIFI_HANDLE_T *pHandle, uint32_t firstBlock, uint32_t numBlocks);
 
+/** added by FDI to support sub block erasing
+ * @brief   Erase multiple sub blocks
+ * @param   pHandle     : Pointer to a LPCSPIFILIB device handle
+ * @param   firstSubBlock  : First block number to erase
+ * @param   numSubBlocks   : Number of blocks to erase
+ * @return  A SPIFI_ERR_xxx error code (SPIFI_ERR_NONE is no errors)
+ * @note    If any of the specified params are invalid, the operation is aborted
+ * before any sectors are erased. This function only works in blocking mode.
+ */
+SPIFI_ERR_T spifiEraseSubBlocks(const SPIFI_HANDLE_T *pHandle, uint32_t firstSubBlock, uint32_t numSubBlocks);
+
 /**
  * @brief	Erase multiple blocks by address range
  * @param	pHandle		: Pointer to a LPCSPIFILIB device handle

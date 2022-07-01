@@ -105,12 +105,12 @@ T_uezError UEZAccelerometerClose(T_uezDevice aDevice);
  *
  *  @return T_uezError
  */
-T_uezError UEZAccelerometerGetInfo(
-        T_uezDevice aDevice,
+T_uezError UEZAccelerometerGetInfo(T_uezDevice aDevice,
         AccelerometerInfo *aInfo);
 
 /*!
  *  Get the current XYZ status of the accelerometer
+ *  signed 15.16 fixed notation reading
  *
  *  @param [in] aDevice     Device handle of accelerometer
  *  @param [out] *aReading  Readings structure to fill with return values
@@ -118,11 +118,47 @@ T_uezError UEZAccelerometerGetInfo(
  *
  *  @return T_uezError
  */
-
-T_uezError UEZAccelerometerReadXYZ(
-        T_uezDevice aDevice,
-        AccelerometerReading *aReading,
-        TUInt32 aTimeout);
+T_uezError UEZAccelerometerReadXYZ(T_uezDevice aDevice,
+        AccelerometerReading *aReading, TUInt32 aTimeout);
+		
+/*!
+ *  Get the current XYZ status of the accelerometer
+ *  Single signed 15.16 fixed notation reading
+ *
+ *  @param [in] aDevice     Device handle of accelerometer
+ *  @param [out] *aReading  Readings structure to fill with return values
+ *  @param [in] aTimeout    Maximum number of milliseconds to wait for data
+ *
+ *  @return T_uezError
+ */
+T_uezError UEZAccelerometerReadXYZSingle(T_uezDevice aDevice,
+        AccelerometerReading *aReading, TUInt32 aTimeout);
+		
+/*!
+ *  Get the current XYZ status of the accelerometer
+ *  Float reading
+ *
+ *  @param [in] aDevice     Device handle of accelerometer
+ *  @param [out] *aReading  Readings structure to fill with return values
+ *  @param [in] aTimeout    Maximum number of milliseconds to wait for data
+ *
+ *  @return T_uezError
+ */
+T_uezError UEZAccelerometerReadXYZFloat(T_uezDevice aDevice,
+        AccelerometerReadingFloat *aReading, TUInt32 aTimeout);
+		
+/*!
+ *  Get the current XYZ status of the accelerometer
+ *  Single float reading
+ *
+ *  @param [in] aDevice     Device handle of accelerometer
+ *  @param [out] *aReading  Readings structure to fill with return values
+ *  @param [in] aTimeout    Maximum number of milliseconds to wait for data
+ *
+ *  @return T_uezError
+ */
+T_uezError UEZAccelerometerReadXYZFloatSingle(T_uezDevice aDevice,
+        AccelerometerReadingFloat *aReading, TUInt32 aTimeout);
 
 #ifdef __cplusplus
 }

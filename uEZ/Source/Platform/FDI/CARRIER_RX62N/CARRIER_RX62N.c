@@ -1354,6 +1354,18 @@ void ForceCodeNotToBeRemovedDuringOptimizedLink(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    //NVIC_SystemReset();
+	// need equiv for RX here
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  main
  *---------------------------------------------------------------------------*
  * Description:

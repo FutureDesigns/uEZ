@@ -483,7 +483,7 @@ void UEZBSP_RAMInit(void)
 	PORTD.DSCR.BYTE = 0xFF;
 	PORTE.DSCR.BYTE = 0xFF;
 	
-#if 0
+#if 1
         MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
 #endif
 }
@@ -1185,6 +1185,18 @@ void UEZPlatform_LED_Require(void)
         0,
         &p_led0);
     LED_NXP_PCA9551_Configure(p_led0, (DEVICE_I2C_BUS **)p_i2c0, 0xC0>>1);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_System_Reset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do a board specific system reset. In some cases we have a pin that
+ *      can trigger POR as if you pushed a physical reset button
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_System_Reset(void){
+    //NVIC_SystemReset();
+	// need equiv for RX here
 }
 
 /*---------------------------------------------------------------------------*
