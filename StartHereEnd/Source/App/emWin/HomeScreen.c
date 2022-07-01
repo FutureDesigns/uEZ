@@ -70,7 +70,7 @@ static TBool G_Active = EFalse; // Active Flag, tell the dialog when it receives
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
  *-------------------------------------------------------------------------*/
-static TBool IHandeSecondScreen(WM_MESSAGE * pMsg, int aNCode, int aID);
+static TBool IHandleSecondScreen(WM_MESSAGE * pMsg, int aNCode, int aID);
 
 
 /*---------------------------------------------------------------------------*
@@ -90,7 +90,7 @@ static T_LAFMapping HomeScreenMapping[] = {
     // ID                       Text                                 Background Color        Text Color              Font Size               Setup Function          Handle Function
     { ID_WINDOW                 , ""                                 , GUI_BLACK             , GUI_WHITE             , &FONT_SMALL           , LAFSetupWindow        , 0},
     { ID_TITLE_TEXT             , "My Main Screen"                   , GUI_BLACK             , GUI_WHITE             , &FONT_LARGE           , LAFSetupText          , 0},
-    { ID_MYBUTTON_BUTTON        , "Temperature"                      , GUI_GRAY              , GUI_BLACK             , &FONT_LARGE           , LAFSetupButton        , IHandeSecondScreen},
+    { ID_MYBUTTON_BUTTON        , "Temperature"                      , GUI_GRAY              , GUI_BLACK             , &FONT_LARGE           , LAFSetupButton        , (TBool (*)(WM_MESSAGE *, int, int))IHandleSecondScreen},
     { ID_FDIINFO_TEXT           , "Future Designs, Inc. 2016                       www.TeamFDI.com"
                                                                      , GUI_BLACK             , GUI_WHITE             , FONTSIZE              , LAFSetupText          , 0},
     {0},
@@ -98,12 +98,12 @@ static T_LAFMapping HomeScreenMapping[] = {
 
 
 /*-------------------------------------------------------------------------*
- * Routine:    IHandeSecondScreen
+ * Routine:    IHandleSecondScreen
  *-------------------------------------------------------------------------*
  * Description:
  *      Change to the second screen when the temperature button is pressed.
  *-------------------------------------------------------------------------*/
-static TBool IHandeSecondScreen(WM_MESSAGE * pMsg, int aNCode, int aID)
+static TBool IHandleSecondScreen(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         WindowManager_Show_Window(SECOND_SCREEN);

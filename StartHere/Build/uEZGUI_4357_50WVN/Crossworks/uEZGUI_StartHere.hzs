@@ -1,0 +1,39 @@
+<!DOCTYPE CrossStudio_Session_File>
+<session>
+ <Bookmarks/>
+ <Breakpoints/>
+ <ExecutionProfileWindow/>
+ <FrameBufferWindow>
+  <FrameBufferWindow addressText="" bufferWidth="-1" bufferHeight="-1" addressSpace="" />
+ </FrameBufferWindow>
+ <Memory1/>
+ <Memory2/>
+ <Memory3/>
+ <Memory4/>
+ <Project>
+  <ProjectSessionItem path="uEZGUI_StartHere" name="unnamed" />
+  <ProjectSessionItem path="uEZGUI_StartHere;uEZGUI_StartHere" name="unnamed" />
+ </Project>
+ <Register1/>
+ <Register2/>
+ <Register3/>
+ <Register4/>
+ <TargetWindow programAction="" uploadFileType="" programLoadAddress="" programSize="" uploadFileName="" uploadMemoryInterface="" programFileName="" uploadStartAddress="" programFileType="" uploadSize="" programMemoryInterface="" />
+ <TraceWindow>
+  <Trace enabled="Yes" />
+ </TraceWindow>
+ <Watch1>
+  <Watches active="1" update="Never" />
+ </Watch1>
+ <Watch2>
+  <Watches active="0" update="Never" />
+ </Watch2>
+ <Watch3>
+  <Watches active="0" update="Never" />
+ </Watch3>
+ <Watch4>
+  <Watches active="0" update="Never" />
+ </Watch4>
+ <Files/>
+ <ARMCrossStudioWindow activeProject="uEZGUI_StartHere" autoConnectTarget="" debugSearchFileMap="" fileDialogInitialDirectory="" fileDialogDefaultFilter="*.c" autoConnectCapabilities="0" debugSearchPath="" buildConfiguration="THUMB Flash Debug" />
+</session>

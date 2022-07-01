@@ -90,12 +90,9 @@ TUInt32 GUIInterfaceTask(T_uezTask aMyTask, void *aParams)
  *      In the uEZ system, main() is a task.  Do not exit this task
  *      unless you want to the board to reset.  This function should
  *      setup the system and then run the main loop of the program.
- * Outputs:
- *      TInt32                     -- Output error code
  *---------------------------------------------------------------------------*/
 void MainTask(void)
 {
-
     printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
 
 // Load the settings from non-volatile memory
@@ -128,6 +125,42 @@ void MainTask(void)
 }
 
 /*---------------------------------------------------------------------------*
+* Function:  uEZPlatformStartup_NO_EXP
+*---------------------------------------------------------------------------*
+* Description:
+*      Configure the uEZGUI without an expanion board connected
+*---------------------------------------------------------------------------*/
+void uEZPlatformStartup_NO_EXP()
+{
+    TBool usbIsDevice = ETrue; //Default value
+
+    UEZPlatform_Timer2_Require();
+    UEZPlatform_DAC0_Require();
+    UEZPlatform_SDCard_Drive_Require(1);
+
+#if USB_PORT_B_HOST_DETECT_ENABLED
+    usbIsDevice = UEZPlatform_Host_Port_B_Detect();
+#endif
+    if (usbIsDevice) {
+        #if UEZ_ENABLE_USB_DEVICE_STACK
+            #if (UEZ_PROCESSOR != NXP_LPC4357)
+            UEZPlatform_USBDevice_Require();
+            #else				
+            #endif //(UEZ_PROCESSOR != NXP_LPC4357)
+        #endif //UEZ_ENABLE_USB_DEVICE_STACK
+        #if UEZ_ENABLE_USB_HOST_STACK
+            UEZPlatform_USBHost_PortA_Require();
+            UEZPlatform_USBFlash_Drive_Require(0);
+        #endif //UEZ_ENABLE_USB_HOST_STACK
+    } else {
+        #if UEZ_ENABLE_USB_HOST_STACK
+            UEZPlatform_USBHost_PortB_Require();
+            UEZPlatform_USBFlash_Drive_Require(0);
+        #endif
+    }    
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformStartup
  *---------------------------------------------------------------------------*
  * Description:
@@ -150,7 +183,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 #if UEZGUI_EXPANSION_DEVKIT
     uEZPlatformStartup_EXP_DK();
 #else
-    //uEZPlatformStartup_NO_EXP();
+    uEZPlatformStartup_NO_EXP();
 #endif
 
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
@@ -169,6 +202,11 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     return 0;
 }
 
+#if (UEZ_PROCESSOR != NXP_LPC4357)
+#define EMWIN_BASE_ADDRESS  0xA0200000
+#else
+#define EMWIN_BASE_ADDRESS  0x28200000
+#endif
 /*---------------------------------------------------------------------------*
  * Routine:  UEZEmWinGetRAMAddr
  *---------------------------------------------------------------------------*
@@ -177,12 +215,12 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
  *---------------------------------------------------------------------------*/
 TUInt32 UEZEmWinGetRAMAddr(void)
 {
-    static TBool init = EFalse;
-    if (!init) {
-        memset((void *)0x28200000, 0x00, 0x00200000);
-        init = ETrue;
-    }
-    return 0x28200000;
+     static TBool init = EFalse;
+     if (!init) {
+          memset((void *)EMWIN_BASE_ADDRESS, 0x00, 0x00200000);
+          init = ETrue;
+     }
+     return EMWIN_BASE_ADDRESS;
 }
 
 /*---------------------------------------------------------------------------*
@@ -203,8 +241,7 @@ TUInt32 UEZEmWinGetRAMSize(void)
  *      This function is a hook for freeRTOS that configures a timer for
  *      run time stats.
  *---------------------------------------------------------------------------*/
-void ConfigureTimerForRunTimeStats(void)
-{ /* no config needed */
+void ConfigureTimerForRunTimeStats(void){ /* no config needed */ 
 }
 
 /*---------------------------------------------------------------------------*
@@ -230,15 +267,6 @@ void UEZBSP_VectorTableInit()
     /* No current implementation */
 }
 
-void FuncTestPageHit(void)
-{
-  
-}
-
-//void *emWin_memcpy(void *aDest, const void *aSource, long aSize)
-//{
-//    memcpy(aDest, aSource, aSize);
-//}
 /*-------------------------------------------------------------------------*
  * File:  main.c
  *-------------------------------------------------------------------------*/

@@ -139,12 +139,12 @@ void LAFSetupScrollbar(const T_LAFMapping *p, WM_HWIN hItem)
  * Inputs:
  *      WM_HWIN hWin -- Handle of window with the items being setup for
  *          this look and feel.
- *      TInt32 aWindowID -- ID of the root window
+ *      int aWindowID -- ID of the root window
  *      const T_LAFMapping *aMapping -- Array of mappings
  *---------------------------------------------------------------------------*/
 void LAFSetup(
         WM_HWIN hWin,
-        TInt32 aWindowID,
+        int aWindowID,
         const T_LAFMapping *aMapping)
 {
     const T_LAFMapping *p = aMapping;
@@ -171,16 +171,16 @@ void LAFSetup(
  * Inputs:
  *      const T_LAFMapping *aMapping -- Mapping to searching
  *      WM_MESSAGE *pMsg -- message structure to handle
- *      TInt32 aNCode -- Type of event received to process.
- *      TInt32 aID -- ID of window receiving this
+ *      int aNCode -- Type of event received to process.
+ *      int aID -- ID of window receiving this
  * Outputs:
  *      TBool -- EFalse is not problems, else ETrue.
  *---------------------------------------------------------------------------*/
 TBool LAFHandleEvent(
         const T_LAFMapping *aMapping,
         WM_MESSAGE * pMsg,
-        TInt32 aNCode,
-        TInt32 aID)
+        int aNCode,
+        int aID)
 {
     TBool handled = EFalse;
     const T_LAFMapping *p = aMapping;
@@ -218,7 +218,7 @@ TBool LAFHandleEvent(
 void TouchscreenClearPresses(void)
 {
     GUI_PID_STATE state;
-    TInt32 i;
+    int i;
 
     for (i = 0; i < 10; i++) {
         GUI_PID_GetState(&state);

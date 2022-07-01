@@ -23,7 +23,6 @@
 #include "WindowManager.h"
 #include "Graphics/Graphics.h"
 #include "Fonts/Fonts.h"
- 
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -66,14 +65,14 @@
 /*---------------------------------------------------------------------------*
  * Global Data:
  *---------------------------------------------------------------------------*/
-TInt32 G_WhichWindow; // Variable to hold the ID of the active window
+int G_WhichWindow; // Variable to hold the ID of the active window
 static TBool G_Active = EFalse; // Active Flag, tell the dialog when it receives messages that the screen is in the foreground
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
  *-------------------------------------------------------------------------*/
 void UpdateTemp(char *myString);
-static TBool IHandeBackButton(WM_MESSAGE * pMsg, int aNCode, int aID);
+static TBool IHandleBackButton(WM_MESSAGE * pMsg, int aNCode, int aID);
 
 /*---------------------------------------------------------------------------*
  * Local Data:
@@ -93,10 +92,9 @@ static T_LAFMapping SecondScreenMapping[] = {
     { ID_WINDOW                 , ""                                , GUI_BLACK             , GUI_WHITE             , &FONT_SMALL           , LAFSetupWindow       , 0},
     { ID_TITLE_TEXT             , "Temperature Screen"              , GUI_BLACK             , GUI_WHITE             , &FONT_LARGE           , LAFSetupText         , 0},
     { ID_TEMP_TEXT              , "Temp"                            , GUI_BLACK             , GUI_WHITE             , &FONT_LARGE           , LAFSetupText         , 0},
-    { ID_BACK_BUTTON            , "Back"                            , GUI_GRAY              , GUI_BLACK             , &FONT_LARGE           , LAFSetupButton       , IHandeBackButton},
+    { ID_BACK_BUTTON            , "Back"                            , GUI_GRAY              , GUI_BLACK             , &FONT_LARGE           , LAFSetupButton       , (TBool (*)(WM_MESSAGE *, int, int)) IHandleBackButton},
     {0},
 };
-
 
 /*-------------------------------------------------------------------------*
  * Routine:    UpdateTemp
@@ -111,12 +109,12 @@ void UpdateTemp(char *myString)
 
 
 /*-------------------------------------------------------------------------*
- * Routine:    IHandeBackButton
+ * Routine:    IHandleBackButton
  *-------------------------------------------------------------------------*
  * Description:
  *      Change to the home screen when the back button is pressed.
  *-------------------------------------------------------------------------*/
-static TBool IHandeBackButton(WM_MESSAGE * pMsg, int aNCode, int aID)
+static TBool IHandleBackButton(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         WindowManager_Show_Window(HOME_SCREEN);
