@@ -209,8 +209,6 @@ void TitleScreen(void)
 
     if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-        UEZLCDBacklight(lcd, 0);
-        UEZLCDOff(lcd);
 
         swim_window_open(
             &G_mmWin,
@@ -232,11 +230,7 @@ void TitleScreen(void)
 			G_uEZLogo,
             (DISPLAY_WIDTH-UEZ_ICON_WIDTH)/2,
             (DISPLAY_HEIGHT-UEZ_ICON_HEIGHT)/2);
-
-        UEZLCDOn(lcd);
-        UEZLCDBacklight(lcd, 0);
-        // Allow for LCD to fully power on before turning up the BL
-        UEZTaskDelay(100);  
+        
 #if FAST_STARTUP
         UEZLCDBacklight(lcd, 255);
 #else

@@ -118,6 +118,7 @@ extern int MainTask(void);
  *---------------------------------------------------------------------------*/
 #define NOR_FLASH_BASE_ADDR             0x80000000
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
+#define USING_43WQN_BA_REV1             1 // set to 1 for 1.X revisions for I2C power fix
 
 #ifndef UEZGUI_EXP_BRK_OUT
 #define UEZGUI_EXP_BRK_OUT              0
@@ -183,7 +184,7 @@ void UEZBSPDelay1MS(void)
     TUInt32 i;
 
     // Approximate delays here
-    for (i = 0; i < 1000; i++)
+    for (i = 0; i < 650; i++)
         UEZBSPDelay1US();
 }
 
@@ -247,10 +248,10 @@ void UEZBSP_ROMInit(void)
             EFalse,
 
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 18),
             EMC_STATIC_CYCLES(25),
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 4.9),
             1, };
     LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
@@ -1048,7 +1049,6 @@ void UEZPlatform_LCD_Require(void)
             GPIO_NONE,  // LCD_LE
             GPIO_P2_5,  // LCD_LP
 
-            {
             GPIO_NONE,  // LCD_VD0
             GPIO_NONE,  // LCD_VD1
             GPIO_P4_28, // LCD_VD2
@@ -1075,13 +1075,15 @@ void UEZPlatform_LCD_Require(void)
             GPIO_P1_27, // LCD_VD21
             GPIO_P1_28, // LCD_VD22
             GPIO_P1_29, // LCD_VD23
-            },
 
             GPIO_NONE,  // LCD_CLKIN
 
-            GPIO_P2_0, // No power pin
+#if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
+            GPIO_NONE,
+#else       
+            GPIO_P2_0, // P2.0 is power pin, GPIO controlled
+#endif
             EFalse,
-            0,
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1094,6 +1096,7 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+    UEZPlatform_Timer0_Require();
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -1910,6 +1913,13 @@ void uEZPlatformInit(void)
 
 void UEZPlatform_Standard_Require(void)
 {
+#if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
+    LPC17xx_40xx_GPIO2_Require();
+    UEZGPIOSetMux(GPIO_P2_0, 0);
+    UEZGPIOOutput(GPIO_P2_0);
+    UEZGPIOClear(GPIO_P2_0);
+    UEZGPIOLock(GPIO_P2_0); 
+#endif
 #if !UEZGUI_EXP_DK_FCT_TEST
     UEZPlatform_Console_Expansion_Require(
         UEZ_CONSOLE_WRITE_BUFFER_SIZE,

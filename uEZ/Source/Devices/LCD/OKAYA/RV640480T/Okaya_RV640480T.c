@@ -18,10 +18,14 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include <uEZ.h>
 #include <HAL/LCDController.h>
+#include <HAL/GPIO.h>
+#include <uEZDeviceTable.h>
 #include "Okaya_RV640480T.h"
+#include <uEZGPIO.h>
+#include <uEZTimer.h>
+#include <uEZPlatformAPI.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -41,7 +45,11 @@ typedef struct {
     HAL_LCDController **iLCDController;
     DEVICE_Backlight **iBacklight;
     const T_uezLCDConfiguration *iConfiguration;
-	T_uezSemaphore iVSyncSem;
+    T_uezSemaphore iVSyncSem;
+    int aTimerEvent;
+    T_uezDevice itimer;
+    T_uezTimerCallback icallback;
+    TBool itimerDone;
 } T_RV640480TWorkspace;
 
 /*---------------------------------------------------------------------------*
@@ -255,6 +263,154 @@ T_uezError LCD_RV640480T_InitializeWorkspace_8Bit(void *aW)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  LCD_RV640480T_SetBacklightLevel
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on or off the backlight.  A value of 0 is off and values of 1
+ *      or higher is higher levels of brightness (dependent on the LCD
+ *      display).  If a display is on/off only, this value will be 1 or 0
+ *      respectively.
+ * Inputs:
+ *      void *aW                -- Workspace
+ *      TUInt32 aLevel          -- Level of backlight
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *                                  If the backlight intensity level is
+ *                                  invalid, returns UEZ_ERROR_OUT_OF_RANGE.
+ *                                  Returns UEZ_ERROR_NOT_SUPPORTED if
+ *                                  no backlight for LCD.
+ *---------------------------------------------------------------------------*/
+T_uezError LCD_RV640480T_SetBacklightLevel(void *aW, TUInt32 aLevel)
+{
+    T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
+    TUInt16 level;
+
+    if (!p->iBacklight)
+        return UEZ_ERROR_NOT_SUPPORTED;
+
+    // Limit the backlight level
+    if (aLevel > p->iConfiguration->iNumBacklightLevels)
+        aLevel = p->iConfiguration->iNumBacklightLevels;
+
+    // Remember this level and use it
+    p->iBacklightLevel = aLevel;
+
+    // Scale backlight to be 0 - 0xFFFF
+    level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
+
+    return (*p->iBacklight)->SetRatio(p->iBacklight, level);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_RV640480T_MSTimerStart
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup MS timer in one function to avoid cluttering up the open function
+ * Inputs:
+*      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+*---------------------------------------------------------------------------*/
+static T_uezError LCD_RV640480T_MSTimerStart(void *aW, float milliseconds){
+  T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
+  T_uezError error = UEZ_ERROR_NONE;
+  p->itimerDone = EFalse; // set to true when timer finishes
+  error = UEZTimerSetupOneShot(p->itimer,
+                               1,
+                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+                               &p->icallback);
+  if(error == UEZ_ERROR_NONE) {
+    error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);
+    error = UEZTimerReset(p->itimer);
+    UEZTimerEnable(p->itimer);
+  }  
+  return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_RV640480T_TimerCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Timer callback to set pins immediately when the target time is reached.
+ * Needed for LCDs with sub-ms and ms range accuracy for bring up sequencing.
+ * Inputs:
+ *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+ *---------------------------------------------------------------------------*/
+static void LCD_RV640480T_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
+  T_RV640480TWorkspace *p = aCallbackWorkspace->iData;
+  UEZTimerClose(p->itimer);    
+  p->itimerDone = ETrue;
+  if(p->aTimerEvent == 1) {
+    (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+    LCD_RV640480T_SetBacklightLevel(p, p->iBacklightLevel);
+  } else if(p->aTimerEvent == 2){// backlight cooldown is now finished
+  } else { // should not get here
+  }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_RV640480T_On
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+T_uezError LCD_RV640480T_On(void *aW)
+{
+    // Turn back on to the remembered level
+    T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_RV640480T_TimerCallback;
+    p->icallback.iData = p;
+  
+    (*p->iLCDController)->On(p->iLCDController);
+    if (p->iBacklight){
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+         p->aTimerEvent = 1;// start first time critical stage 
+         LCD_RV640480T_MSTimerStart(p, 167.0); // no minimum specified but clear 10 frames just in case.
+         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+      }
+    }
+    return UEZ_ERROR_NONE;    
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_RV640480T_Off
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns off the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+T_uezError LCD_RV640480T_Off(void *aW)
+{
+    // Turn off, but don't remember the level
+    T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;    
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_RV640480T_TimerCallback;
+    p->icallback.iData = p;
+    
+    // Turn off
+    if (p->iBacklight){
+      (*p->iBacklight)->Off(p->iBacklight);
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+        p->aTimerEvent = 2; // start second time critical stage 
+        LCD_RV640480T_MSTimerStart(p, 1.0); // no delay specified so make it 1ms in case a new data-sheet specifies timing
+        while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+      }   
+    }    
+    (*p->iLCDController)->Off(p->iLCDController);
+    return UEZ_ERROR_NONE;    
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  LCD_RV640480T_Open
  *---------------------------------------------------------------------------*
  * Description:
@@ -270,6 +426,8 @@ T_uezError LCD_RV640480T_Open(void *aW)
 {
     T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
     HAL_LCDController **plcdc;
+    T_uezError error = UEZ_ERROR_NONE;
+		int i;
     p->aNumOpen++;
     if (p->aNumOpen == 1) {
         plcdc = p->iLCDController;
@@ -287,11 +445,18 @@ T_uezError LCD_RV640480T_Open(void *aW)
                 break;
         }
         LCD_RV640480T_settings.iBaseAddress = p->iBaseAddress;
-
-        return (*plcdc)->Configure(plcdc, &LCD_RV640480T_settings);
+        //pre-configure LCD controller first so that there is no delay for turn on  
+        error = (*plcdc)->Configure(plcdc, &LCD_RV640480T_settings);        
+        
+        for (i=0; i<640*480*2; i+=2) {// black screen to clear any leftovers in memory
+                *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; 
+        }
+        
+        if (!error) {
+        LCD_RV640480T_On(p); // start DOTCLK/HSYNC/VSYNC immediately
+        }  
     }
-
-    return UEZ_ERROR_NONE;
+  return error;    
 }
 
 /*---------------------------------------------------------------------------*
@@ -405,90 +570,6 @@ T_uezError LCD_RV640480T_ShowFrame(void *aW, TUInt32 aFrame)
             EFalse);
 
     return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_RV640480T_On
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-T_uezError LCD_RV640480T_On(void *aW)
-{
-    // Turn back on to the remembered level
-    T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
-    (*p->iLCDController)->On(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->On(p->iBacklight);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_RV640480T_Off
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns off the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-T_uezError LCD_RV640480T_Off(void *aW)
-{
-    // Turn off, but don't remember the level
-    T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
-    (*p->iLCDController)->Off(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->Off(p->iBacklight);
-
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_RV640480T_SetBacklightLevel
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on or off the backlight.  A value of 0 is off and values of 1
- *      or higher is higher levels of brightness (dependent on the LCD
- *      display).  If a display is on/off only, this value will be 1 or 0
- *      respectively.
- * Inputs:
- *      void *aW                -- Workspace
- *      TUInt32 aLevel          -- Level of backlight
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *                                  If the backlight intensity level is
- *                                  invalid, returns UEZ_ERROR_OUT_OF_RANGE.
- *                                  Returns UEZ_ERROR_NOT_SUPPORTED if
- *                                  no backlight for LCD.
- *---------------------------------------------------------------------------*/
-T_uezError LCD_RV640480T_SetBacklightLevel(void *aW, TUInt32 aLevel)
-{
-    T_RV640480TWorkspace *p = (T_RV640480TWorkspace *)aW;
-    TUInt16 level;
-
-    if (!p->iBacklight)
-        return UEZ_ERROR_NOT_SUPPORTED;
-
-    // Limit the backlight level
-    if (aLevel > p->iConfiguration->iNumBacklightLevels)
-        aLevel = p->iConfiguration->iNumBacklightLevels;
-
-    // Remember this level and use it
-    p->iBacklightLevel = aLevel;
-
-    // Scale backlight to be 0 - 0xFFFF
-    level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
-
-    return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
 /*---------------------------------------------------------------------------*

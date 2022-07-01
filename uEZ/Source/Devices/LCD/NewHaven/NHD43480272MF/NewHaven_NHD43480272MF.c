@@ -19,9 +19,14 @@
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
-#include <Device/LCD.h>
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
+#include <uEZDeviceTable.h>
+#include "NewHaven_NHD43480272MF.h"
+#include <uEZGPIO.h>
+#include <uEZTimer.h>
+#include <uEZPlatformAPI.h>
+
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -47,9 +52,12 @@ typedef struct {
     TUInt32 iCSGPIOBit;
     HAL_GPIOPort **iResetGPIOPort;
     TUInt32 iResetGPIOBit;
-	T_uezSemaphore iVSyncSem;
+    T_uezSemaphore iVSyncSem;
+    int aTimerEvent;
+    T_uezDevice itimer;
+    T_uezTimerCallback icallback;
+    TBool itimerDone;
 } T_NHD43480272MFWorkspace;
-
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -260,57 +268,6 @@ T_uezError LCD_NHD43480272MF_InitializeWorkspace_8Bit(void *aW)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  LCD_NHD43480272MF_Open
- *---------------------------------------------------------------------------*
- * Description:
- *      Start the LCD screen.  If this is the first open, initialize the
- *      screen.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If the device is opened, returns
- *                                  UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_NHD43480272MF_Open(void *aW)
-{
-    T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;
-    HAL_LCDController **plcdc;
-    T_uezError error = UEZ_ERROR_NONE;
-
-    p->aNumOpen++;
-
-    if (p->aNumOpen == 1) {
-        plcdc = p->iLCDController;
-        if (!error) {
-            switch (p->iConfiguration->iColorDepth) {
-                case UEZLCD_COLOR_DEPTH_8_BIT:
-                    LCD_NHD43480272MF_settings = LCD_NHD43480272MF_params8bit;
-                    break;
-                default:
-                case UEZLCD_COLOR_DEPTH_16_BIT:
-                    LCD_NHD43480272MF_settings = LCD_NHD43480272MF_params16bit;
-                    break;
-                case UEZLCD_COLOR_DEPTH_I15_BIT:
-                    LCD_NHD43480272MF_settings = LCD_NHD43480272MF_paramsI15bit;
-                    break;
-            }
-            LCD_NHD43480272MF_settings.iBaseAddress = p->iBaseAddress;
-            error = (*plcdc)->Configure(plcdc, &LCD_NHD43480272MF_settings);
-
-            if (!error) {
-//                for (i=0; i<480*272*2; i+=2) {
-//                    *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; // black
-//                }
-                (*p->iLCDController)->On(p->iLCDController);
-
-            }
-        }
-    }
-
-    return error;
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272MF_Close
  *---------------------------------------------------------------------------*
  * Description:
@@ -423,51 +380,6 @@ static T_uezError LCD_NHD43480272MF_ShowFrame(void *aW, TUInt32 aFrame)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  LCD_NHD43480272MF_On
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_NHD43480272MF_On(void *aW)
-{
-    // Turn back on to the remembered level
-    T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;
-    (*p->iLCDController)->On(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->On(p->iBacklight);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_NHD43480272MF_Off
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns off the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_NHD43480272MF_Off(void *aW)
-{
-    // Turn off, but don't remember the level
-    T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;
-    (*p->iLCDController)->Off(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->Off(p->iBacklight);
-
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272MF_SetBacklightLevel
  *---------------------------------------------------------------------------*
  * Description:
@@ -504,6 +416,164 @@ static T_uezError LCD_NHD43480272MF_SetBacklightLevel(void *aW, TUInt32 aLevel)
     level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
 
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_NHD43480272MF_MSTimerStart
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup MS timer in one function to avoid cluttering up the open function
+ * Inputs:
+*      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+*---------------------------------------------------------------------------*/
+static T_uezError LCD_NHD43480272MF_MSTimerStart(void *aW, float milliseconds){
+  T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;
+  T_uezError error = UEZ_ERROR_NONE;
+  p->itimerDone = EFalse; // set to true when timer finishes
+  error = UEZTimerSetupOneShot(p->itimer,
+                               1,
+                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+                               &p->icallback);
+  if(error == UEZ_ERROR_NONE) {
+    error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);
+    error = UEZTimerReset(p->itimer);
+    UEZTimerEnable(p->itimer);
+  }  
+  return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_NHD43480272MF_TimerCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Timer callback to set pins immediately when the target time is reached.
+ * Needed for LCDs with sub-ms and ms range accuracy for bring up sequencing.
+ * Inputs:
+ *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+ *---------------------------------------------------------------------------*/
+static void LCD_NHD43480272MF_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
+  T_NHD43480272MFWorkspace *p = aCallbackWorkspace->iData;
+  p->itimerDone = ETrue;
+  UEZTimerClose(p->itimer);    
+  if(p->aTimerEvent == 1) {
+   // (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+    LCD_NHD43480272MF_SetBacklightLevel(p, p->iBacklightLevel);
+  } else if(p->aTimerEvent == 2){ // backlight cool down finished
+  } else { // should not get here
+  }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_NHD43480272MF_On
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_NHD43480272MF_On(void *aW) {  
+    // Turn back on to the remembered level
+    T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_NHD43480272MF_TimerCallback;
+    p->icallback.iData = p;
+  
+    (*p->iLCDController)->On(p->iLCDController);
+    if (p->iBacklight){
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+         p->aTimerEvent = 1;// start first time critical stage 
+         LCD_NHD43480272MF_MSTimerStart(p, 167.0); // minimum 167ms timer
+         while (p->itimerDone == EFalse){;} // wait for timer before continuing
+      }
+    }
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_NHD43480272MF_Off
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns off the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_NHD43480272MF_Off(void *aW) {
+    T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;    
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_NHD43480272MF_TimerCallback;
+    p->icallback.iData = p;
+    
+    // Turn off
+    if (p->iBacklight){
+      (*p->iBacklight)->Off(p->iBacklight);
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+        p->aTimerEvent = 2; // start second time critical stage 
+        LCD_NHD43480272MF_MSTimerStart(p, 167.0); // minimum 167ms timer
+        while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+      }   
+    }    
+    (*p->iLCDController)->Off(p->iLCDController);
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_NHD43480272MF_Open
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Start the LCD screen.  If this is the first open, initialize the
+ *      screen.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If the device is opened, returns
+ *                                  UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_NHD43480272MF_Open(void *aW)
+{
+    T_NHD43480272MFWorkspace *p = (T_NHD43480272MFWorkspace *)aW;
+    HAL_LCDController **plcdc;
+    T_uezError error = UEZ_ERROR_NONE;
+    int i;
+
+    p->aNumOpen++;
+
+    if (p->aNumOpen == 1) {
+        plcdc = p->iLCDController;
+        if (!error) {
+            switch (p->iConfiguration->iColorDepth) {
+                case UEZLCD_COLOR_DEPTH_8_BIT:
+                    LCD_NHD43480272MF_settings = LCD_NHD43480272MF_params8bit;
+                    break;
+                default:
+                case UEZLCD_COLOR_DEPTH_16_BIT:
+                    LCD_NHD43480272MF_settings = LCD_NHD43480272MF_params16bit;
+                    break;
+                case UEZLCD_COLOR_DEPTH_I15_BIT:
+                    LCD_NHD43480272MF_settings = LCD_NHD43480272MF_paramsI15bit;
+                    break;
+            }
+            LCD_NHD43480272MF_settings.iBaseAddress = p->iBaseAddress;
+            error = (*plcdc)->Configure(plcdc, &LCD_NHD43480272MF_settings);
+
+            for (i=0; i<480*272*2; i+=2) {// black screen to clear any leftovers in memory
+                *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; 
+            }
+
+            if (!error) {
+                LCD_NHD43480272MF_On(p);
+            }
+        }
+    }
+
+    return error;
 }
 
 /*---------------------------------------------------------------------------*

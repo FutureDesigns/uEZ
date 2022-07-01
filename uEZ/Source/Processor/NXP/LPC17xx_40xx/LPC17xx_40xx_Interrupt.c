@@ -170,7 +170,11 @@ DEFAULT_IRQ_HANDLER(SSP2_IRQHandler, SSP2_IRQn);
 DEFAULT_IRQ_HANDLER(LCD_IRQHandler, LCD_IRQn);
 DEFAULT_IRQ_HANDLER(GPIO_IRQHandler, GPIO_IRQn);
 DEFAULT_IRQ_HANDLER(PWM0_IRQHandler, PWM0_IRQn);
+#if (UEZ_PROCESSOR == NXP_LPC4088)
+DEFAULT_IRQ_HANDLER(KFLASH_IRQHandler, EEPROM_IRQn);
+#else
 DEFAULT_IRQ_HANDLER(KFLASH_IRQHandler, KFLASH_IRQn);
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  InterruptUnregister

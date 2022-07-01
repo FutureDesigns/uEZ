@@ -1016,7 +1016,6 @@ void UEZPlatform_LCD_Require(void)
 
             GPIO_NONE, // No power pin
             EFalse,
-            0,
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1028,6 +1027,7 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+    UEZPlatform_Timer0_Require();
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 

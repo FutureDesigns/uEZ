@@ -233,9 +233,15 @@ void ILPC17xx_40xx_I2CSetSpeed(LPC_I2C_TypeDef *aRegs, TUInt16 aSpeed)
     // Calculate from kHz to cycles (based on PCLK)
     v = (PCLK_FREQUENCY / 1000) / aSpeed;
 
+    if (aSpeed == 400){
+    // Set 44.6%/55.3% duty cycle to satisfy 1.3us low pulse width requirement for fast mode
+    aRegs->SCLL = ((v / 2) + 8);
+    aRegs->SCLH = ((v / 2) - 8);
+    } else {
     // Set 50% duty cycle
-    aRegs->SCLL = v / 2;
-    aRegs->SCLH = v / 2;
+    aRegs->SCLL = (v / 2);
+    aRegs->SCLH = (v / 2);
+    }
 }
 
 void ILPC17xx_40xx_I2CInit(T_LPC17xx_40xx_I2C_Workspace *p)

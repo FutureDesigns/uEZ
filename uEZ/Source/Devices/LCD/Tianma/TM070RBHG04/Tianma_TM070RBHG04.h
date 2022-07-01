@@ -44,6 +44,7 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <Device/LCD.h>
+#include <uEZGPIO.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -64,6 +65,9 @@ extern const T_uezDeviceInterface *LCD_Hitachi_TX11D06VM2APA_InterfaceArray[];
 extern const DEVICE_LCD LCD_Tianma_TM070RBHG04_Interface_8Bit;
 extern const DEVICE_LCD LCD_Tianma_TM070RBHG04_Interface_I15Bit;
 extern const DEVICE_LCD LCD_Tianma_TM070RBHG04_Interface_16Bit;
+void LCD_Tianma_TM070RBHG04_Create(char* aName,
+                              T_uezGPIOPortPin aUpDownPin,
+                              T_uezGPIOPortPin aLeftRightPin);
 
 #endif // TIANMA_TM070RBHG04_H_
 /*-------------------------------------------------------------------------*

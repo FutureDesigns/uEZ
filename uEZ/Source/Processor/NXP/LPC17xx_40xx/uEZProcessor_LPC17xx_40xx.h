@@ -22,7 +22,7 @@
 #if (UEZ_PROCESSOR == NXP_LPC1788)
 #include <CMSIS/LPC1788.h>
 #elif (UEZ_PROCESSOR == NXP_LPC4088)
-#include <CMSIS/LPC1788.h>//#include <CMSIS/LPC407x_8x.h>
+#include <CMSIS/LPC407x_8x.h>
 #endif
 #include <Types/GPIO.h>
 #include "LPC17xx_40xx_UtilityFuncs.h"

@@ -87,6 +87,6 @@
 #define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME        			"DK-LPC1788"
-#define SLIDESHOW_PREFETCH_AHEAD            5
+#define SLIDESHOW_PREFETCH_AHEAD            4
 #define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         5
+#define SLIDESHOW_NUM_CACHED_SLIDES         4

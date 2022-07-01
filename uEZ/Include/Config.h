@@ -25,8 +25,8 @@
 
 #define UEZ_VERSION_MAJOR           2
 #define UEZ_VERSION_MINOR           06
-#define UEZ_VERSION_STRING          "2.06"
-#define UEZ_VERSION_DATE            "12/02/2013" /** MM/DD/YYYY */
+#define UEZ_VERSION_STRING          "2.06c"
+#define UEZ_VERSION_DATE            "05/07/2015" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler

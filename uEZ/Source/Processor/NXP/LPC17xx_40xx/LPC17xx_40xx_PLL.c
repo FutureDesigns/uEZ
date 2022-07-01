@@ -121,7 +121,7 @@ void LPC17xx_40xx_PLL_SetFrequencies(const T_LPC17xx_40xx_PLL_Frequencies *aFreq
 
     /* It seems that the LPC_SC->SPIFISEL is W only */
 #if (UEZ_PROCESSOR == NXP_LPC4088)
-    LPC_SC->SPIFISEL = 2;
+    LPC_SC->SPIFICLKSEL = (1 << 8) | 2;
 #endif
     /* Setup USB Clock Divider on PLL1 with a divide by 1 */
     LPC_SC->USBCLKSEL = 1;

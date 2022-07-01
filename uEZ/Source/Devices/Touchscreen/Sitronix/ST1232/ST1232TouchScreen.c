@@ -200,7 +200,7 @@ T_uezError TS_ST1232_Configure(T_uezDeviceWorkspace *aW)
     UEZGPIOOutput(p->iResetPin);
     UEZGPIOClear(p->iResetPin);
 
-    UEZTaskDelay(1);
+    UEZBSPDelayMS(10); // Reset Pulse width of 10ms
     UEZGPIOConfigureInterruptCallback(
         UEZ_GPIO_PORT_FROM_PORT_PIN(p->iInteruptPin),
         TS_ST1232_InterruptISR,
@@ -330,7 +330,7 @@ T_uezError TS_ST1232_Poll(void *aWorkspace, T_uezTSReading *aReading)
             if(error != UEZ_ERROR_NONE){
                 UEZGPIOClearIRQ(p->iInteruptPin);
                 UEZGPIOClear(p->iResetPin);
-                UEZTaskDelay(1);
+                UEZBSPDelayMS(10); // Reset Pulse width of 10ms
                 UEZGPIOSet(p->iResetPin);
                 break;
             }

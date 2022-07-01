@@ -64,7 +64,6 @@ typedef struct {
     
     T_uezGPIOPortPin iPowerPin;
     TBool iPowerPinIsActiveHigh;
-    TUInt32 iPowerOnDelay;
 } T_LPC17xx_40xx_LCDController_Pins;
 
 /*-------------------------------------------------------------------------*
@@ -76,8 +75,7 @@ extern T_uezError LCDController_LPC17xx_40xx_ConfigurePowerPin(
             void *aWorkspace,
             HAL_GPIOPort **aPowerPort,
             TUInt32 aPowerPinIndex,
-            TBool aPowerPinIsActiveHigh,
-            TUInt32 aPowerOnDelay);
+            TBool aPowerPinIsActiveHigh);
 
 #endif // LPC17xx_40xx_LCDCONTROLLER_H_
 /*-------------------------------------------------------------------------*

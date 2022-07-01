@@ -57,6 +57,7 @@
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
+#include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
 #include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
@@ -151,6 +152,13 @@ void UEZBSPDelay1US(void)
     nop();
     nop();
     nop();
+#elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    nops50();
+    nops50();
+    nop();
+    nop();
+    nop();
+    nop();
 #else
     #error "1 microSecond delay not defined for CPU speed"
 #endif
@@ -166,7 +174,7 @@ void UEZBSPDelay1MS(void)
     TUInt32 i;
 
     // Approximate delays here
-    for (i = 0; i < 1000; i++)
+    for (i = 0; i < 650; i++)
         UEZBSPDelay1US();
 }
 
@@ -228,10 +236,10 @@ void UEZBSP_ROMInit(void)
             EFalse,
 
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 18),
             EMC_STATIC_CYCLES(25),
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 4.9),
             1, };
     LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
@@ -1029,7 +1037,6 @@ void UEZPlatform_LCD_Require(void)
 
             GPIO_P4_31, // Power on P4_31
             EFalse,
-            250,
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1041,6 +1048,7 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+    UEZPlatform_Timer0_Require();
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -1713,6 +1721,7 @@ void UEZPlatform_Timer0_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer0_Require(&settings);
+    Timer_Generic_Create("Timer0", "Timer0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1734,6 +1743,7 @@ void UEZPlatform_Timer1_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer1_Require(&settings);
+    Timer_Generic_Create("Timer1", "Timer1");
 }
 
 /*---------------------------------------------------------------------------*

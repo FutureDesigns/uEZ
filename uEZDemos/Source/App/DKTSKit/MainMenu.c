@@ -183,8 +183,6 @@ void TitleScreen(void)
 
     if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-        UEZLCDBacklight(lcd, 0);
-        UEZLCDOff(lcd);
 
         SUIHidePage0();
 
@@ -218,7 +216,6 @@ void TitleScreen(void)
 
         SUIShowPage0();
 
-        UEZLCDOn(lcd);
 #if FAST_STARTUP
         UEZLCDBacklight(lcd, 255);
 #else
@@ -264,7 +261,6 @@ void MainMenu(void)
         // Open the LCD and get the pixel buffer
         if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
             UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-            UEZLCDOn(lcd);
 
 #if (!FAST_STARTUP)
             // Clear the screen

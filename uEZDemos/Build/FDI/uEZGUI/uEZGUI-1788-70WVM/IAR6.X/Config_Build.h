@@ -6,6 +6,7 @@
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 #define USB_PORT_B_HOST_DETECT_ENABLED      1
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_MICROTIPS_UMSH_8596MD_20T
+#define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J11 header
 
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY            1
