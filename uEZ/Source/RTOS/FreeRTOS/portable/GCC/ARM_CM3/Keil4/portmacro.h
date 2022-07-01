@@ -114,7 +114,7 @@ extern void vPortExitCritical( void );
 #define portENABLE_INTERRUPTS()					vPortClearInterruptMask()
 #define portENTER_CRITICAL()					vPortEnterCritical()
 #define portEXIT_CRITICAL()						vPortExitCritical()
-#define portSET_INTERRUPT_MASK_FROM_ISR()		0;vPortSetInterruptMask()
+#define portSET_INTERRUPT_MASK_FROM_ISR()		vPortSetInterruptMask()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortClearInterruptMask();(void)x
 
 /*-----------------------------------------------------------*/

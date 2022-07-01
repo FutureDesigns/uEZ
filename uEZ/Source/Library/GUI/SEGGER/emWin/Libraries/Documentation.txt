@@ -1,0 +1,3 @@
+See the below websites for the latest emWin documentation and NXP pre-compiled libraries.
+https://www.segger.com/emwin.html
+http://www.lpcware.com/content/project/emwin-graphics-library

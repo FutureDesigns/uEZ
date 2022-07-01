@@ -6,25 +6,23 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
-
 #include <uEZ.h>
 #include "AppDemo.h"
 #include "Audio.h"
 #include <uEZToneGenerator.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -36,18 +34,7 @@
  *---------------------------------------------------------------------------*/
 static volatile TUInt32 G_dummyCounter = 0;
 static T_uezDevice G_ToneGenerator;
-
-/*---------------------------------------------------------------------------*
- * Routine:  CalibrateAudioTiming
- *---------------------------------------------------------------------------*
- * Description:
- *      Do a rough LPC2478 specific calibration method to determine
- *      how fast to control the lines to the audio.  Yes, this is crude.
- *---------------------------------------------------------------------------*/
-void AudioStart(void)
-{
-    UEZToneGeneratorOpen("Speaker", &G_ToneGenerator);
-}
+TBool G_audioIsStarted = EFalse;
 
 /*---------------------------------------------------------------------------*
  * Routine:  PlayAudio
@@ -60,6 +47,11 @@ void AudioStart(void)
  *---------------------------------------------------------------------------*/
 void PlayAudio(TUInt32 aHz, TUInt32 aMS)
 {
+    if(!G_audioIsStarted) {
+        UEZToneGeneratorOpen("Speaker", &G_ToneGenerator);
+        G_audioIsStarted = ETrue;
+    }
+    
     UEZToneGeneratorPlayTone(G_ToneGenerator,TONE_GENERATOR_HZ(aHz), aMS);
 }
 

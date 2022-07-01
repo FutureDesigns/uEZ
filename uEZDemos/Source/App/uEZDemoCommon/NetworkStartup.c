@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -25,8 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <uEZ.h>
-#include "Source/Library/Web/BasicWeb/BasicWeb.h"
-#include <UEZPlatform.h>
+#include "Source/Library/Web/BasicWeb/BasicWEB.h"
+#include <uEZPlatform.h>
 #include <NVSettings.h>
 #include "AppHTTPServer.h"
 
@@ -361,7 +361,12 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 #endif
 
 #if UEZ_HTTP_SERVER
-    App_HTTPServerStart(wired_network);
+    #if UEZ_ENABLE_WIRED_NETWORK
+      App_HTTPServerStart(wired_network);
+    #endif
+    #if UEZ_ENABLE_WIRELESS_NETWORK
+      App_HTTPServerStart(wireless_network);
+    #endif
 #endif
 
     return 0;

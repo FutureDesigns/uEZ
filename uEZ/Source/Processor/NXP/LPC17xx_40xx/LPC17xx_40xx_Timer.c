@@ -8,13 +8,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -808,7 +808,7 @@ void LPC17xx_40xx_Timer2_Require(const T_LPC17xx_40xx_Timer_Settings *aSettings)
             ARRAY_COUNT(pinsMAT1));
     LPC17xx_40xx_IOCON_ConfigPinOrNone(aSettings->iMAT[2], pinsMAT2,
             ARRAY_COUNT(pinsMAT2));
-    LPC17xx_40xx_IOCON_ConfigPinOrNone(aSettings->iMAT[2], pinsMAT3,
+    LPC17xx_40xx_IOCON_ConfigPinOrNone(aSettings->iMAT[3], pinsMAT3,
             ARRAY_COUNT(pinsMAT3));
 }
 
@@ -858,7 +858,7 @@ void LPC17xx_40xx_Timer3_Require(const T_LPC17xx_40xx_Timer_Settings *aSettings)
             ARRAY_COUNT(pinsMAT1));
     LPC17xx_40xx_IOCON_ConfigPinOrNone(aSettings->iMAT[2], pinsMAT2,
             ARRAY_COUNT(pinsMAT2));
-    LPC17xx_40xx_IOCON_ConfigPinOrNone(aSettings->iMAT[2], pinsMAT3,
+    LPC17xx_40xx_IOCON_ConfigPinOrNone(aSettings->iMAT[3], pinsMAT3,
             ARRAY_COUNT(pinsMAT3));
 }
 

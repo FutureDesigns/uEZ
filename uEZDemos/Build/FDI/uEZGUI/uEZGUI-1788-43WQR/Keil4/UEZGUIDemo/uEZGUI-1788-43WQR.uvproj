@@ -12,14 +12,14 @@
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
         <TargetCommonOption>
-          <Device>LPC1788</Device>
+          <Device>LPC4088</Device>
           <Vendor>NXP (founded by Philips)</Vendor>
-          <Cpu>IRAM(0x10000000-0x1000FFFF) IRAM2(0x20000000-0x20007FFF) IROM(0-0x7FFFF) CLOCK(12000000) CPUTYPE("Cortex-M3")</Cpu>
+          <Cpu>IRAM(0x10000000-0x1000FFFF) IRAM2(0x20000000-0x20007FFF) IROM(0-0x7FFFF) CLOCK(12000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
-          <StartupFile>"STARTUP\NXP\LPC177x_8x\startup_LPC177x_8x.s" ("NXP LPC177x_8x Startup Code")</StartupFile>
-          <FlashDriverDll>UL2CM3(-O463 -S0 -C0 -FO7 -FD10000000 -FC800 -FN1 -FF0LPC_IAP_512 -FS00 -FL080000)</FlashDriverDll>
-          <DeviceId>5325</DeviceId>
-          <RegisterFile>LPC177x_8x.H</RegisterFile>
+          <StartupFile>"STARTUP\NXP\LPC407x_8x_177x_8x\startup_LPC407x_8x_177x_8x.s" ("NXP LPC407x_8x_177x_8x Startup Code")</StartupFile>
+          <FlashDriverDll>UL2CM3(-O4303 -S0 -C0 -FO7 -FD10000000 -FC800 -FN1 -FF0LPC_IAP_512 -FS00 -FL080000)</FlashDriverDll>
+          <DeviceId>6493</DeviceId>
+          <RegisterFile>LPC407x_8x_177x_8x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -29,13 +29,13 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile></SFDFile>
+          <SFDFile>SFD\NXP\LPC407x_8x_177x_8x\LPC408x_7x.SFR</SFDFile>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath>NXP\LPC177x_8x\</RegisterFilePath>
-          <DBRegisterFilePath>NXP\LPC177x_8x\</DBRegisterFilePath>
+          <RegisterFilePath>NXP\LPC407x_8x_177x_8x\</RegisterFilePath>
+          <DBRegisterFilePath>NXP\LPC407x_8x_177x_8x\</DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -101,12 +101,12 @@
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments>-MPU</SimDllArguments>
-          <SimDlgDll>DARMP1.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pLPC1788</SimDlgDllArguments>
+          <SimDlgDll>DCM.DLL</SimDlgDll>
+          <SimDlgDllArguments>-pCM4</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments>-MPU</TargetDllArguments>
-          <TargetDlgDll>TARMP1.DLL</TargetDlgDll>
-          <TargetDlgDllArguments>-pLPC1788</TargetDlgDllArguments>
+          <TargetDlgDll>TCM.DLL</TargetDlgDll>
+          <TargetDlgDllArguments>-pCM4</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
           <OPTHX>
@@ -165,9 +165,8 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
         </Utilities>
         <TargetArmAds>
@@ -199,7 +198,7 @@
             <AdsLsxf>1</AdsLsxf>
             <RvctClst>0</RvctClst>
             <GenPPlst>0</GenPPlst>
-            <AdsCpuType>"Cortex-M3"</AdsCpuType>
+            <AdsCpuType>"Cortex-M4"</AdsCpuType>
             <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
             <uocRom>0</uocRom>
@@ -208,7 +207,7 @@
             <hadIRAM>1</hadIRAM>
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
-            <RvdsVP>0</RvdsVP>
+            <RvdsVP>2</RvdsVP>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -834,9 +833,9 @@
           <GroupName>Library/Segger/emWin</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1016,7 +1015,6 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -1685,9 +1683,9 @@
           <GroupName>Library/Segger/emWin</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1867,7 +1865,6 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -2536,9 +2533,9 @@
           <GroupName>Library/Segger/emWin</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -32,10 +32,10 @@
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      WAVPlay <wavefile>
+ *      WAVPlay (wavefile)
  *
  *  Where,
- *      <wavfile> Name of file to play
+ *      (wavfile) Name of file to play
  *
  *  Plays a 16-bit 22 kHz WAV file out the I2S (or whatever is hooked up to
  *  UEZWAVPlay).

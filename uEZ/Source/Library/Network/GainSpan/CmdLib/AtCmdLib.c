@@ -3279,20 +3279,39 @@ ATLIBGS_MSG_ID_E AtLibGs_NetworkScan(
 
     *numEntries = 0;
 
-    strcpy(cmd, "AT+WS=");
-    if (SSID != NULL)
+    strcpy(cmd, "AT+WS");
+#if 0
+    if (SSID != NULL) {
+        strcat(cmd, "=");
         strcat(cmd, SSID);
-    strcat(cmd, ",");
+        strcat(cmd, ",");
+        if (channel) {
+            sprintf(text, _F8_, channel);
+            strcat(cmd, text);
+            strcat(cmd, ",");
+        }
+        if (scantime != 0) {
+            sprintf(text, _F8_, scantime);
+            strcat(cmd, text);
+        }
+    }
+#endif
+    if (SSID != NULL){
+        strcat(cmd, "=");
+        strcat(cmd, SSID);
+    }
     if (channel) {
+        strcat(cmd, ",");
         sprintf(text, _F8_, channel);
         strcat(cmd, text);
     }
-    strcat(cmd, ",");
     if (scantime != 0) {
-        sprintf(text, _F8_, scantime);
-        strcat(cmd, text);
+        //strcat(cmd, ",");
+        //sprintf(text, _F8_, scantime);
+        //strcat(cmd, text);
     }
     strcat(cmd, "\r\n");
+
     rxMsgId = AtLibGs_CommandSendString(cmd);
     if (rxMsgId == ATLIBGS_MSG_ID_OK) {
         numLines = AtLibGs_ParseIntoLines(MRBuffer, lines, 50);

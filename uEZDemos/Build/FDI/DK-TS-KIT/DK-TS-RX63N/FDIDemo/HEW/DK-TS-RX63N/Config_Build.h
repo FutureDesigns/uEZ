@@ -66,8 +66,8 @@
 
 #define APP_DEMO_DRAW               		1
 #define APP_DEMO_APPS               		1
+#define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_COM                        1
-#define APP_SLIDESHOW                		1
 
 #define INCLUDE_EMWIN               		0
 #define EMWIN_LOAD_ONCE             		1

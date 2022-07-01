@@ -1628,8 +1628,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</PathWithFileName>
-      <FilenameWithoutPath>emWin_522_Keil460_M3_LE.lib</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</PathWithFileName>
+      <FilenameWithoutPath>emWin_522_Keil_M3.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

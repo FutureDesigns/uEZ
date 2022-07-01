@@ -43,7 +43,7 @@
  * will be set to standard values. Override anything you dont like!
  */
 #include <Config.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 #include "lwip/debug.h"
 
 /*

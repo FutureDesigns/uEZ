@@ -4,7 +4,8 @@
 /* This is a stub disk I/O module that acts as front end of the existing */
 /* disk I/O modules and attach it to FatFs module with common interface. */
 /*-----------------------------------------------------------------------*/
-
+#include <string.h>
+#include <stdio.h>
 #include <uEZ.h>
 #include <Device/MassStorage.h>
 #include <string.h>
@@ -15,6 +16,7 @@ typedef unsigned short	WORD;
 typedef unsigned long	DWORD;
 typedef unsigned char	BYTE;
 typedef unsigned int	UINT;
+typedef unsigned short  WCHAR;
 #include "diskio.h"
 //#include "mci.h"
 //#include "usbhost_ms.h"
@@ -40,6 +42,7 @@ T_uezError FATFS_RegisterMassStorageDevice(
         TUInt32 aSlot,
         DEVICE_MassStorage **aMS)
 {
+    char message[10];
     IEnsureInit();
     if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
         return UEZ_ERROR_OUT_OF_RANGE;
@@ -49,7 +52,8 @@ T_uezError FATFS_RegisterMassStorageDevice(
 
     G_fatfsMassStorageDevices[aSlot] = aMS;
 //    f_mount(aSlot, &G_fatfs[aSlot]);
-    f_mount(aSlot, G_fatfs+aSlot);
+    sprintf(message, "%d:", aSlot);
+    f_mount(G_fatfs+aSlot, message, 1);
 
     return UEZ_ERROR_NONE;
 }

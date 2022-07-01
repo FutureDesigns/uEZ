@@ -2273,7 +2273,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWatchdog.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZWAVFile.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWAVFile.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\unistd.h</name>
@@ -2744,69 +2744,6 @@
       </group>
       <group>
         <name>Network</name>
-        <group>
-          <name>Redpine</name>
-          <group>
-            <name>RS9110_N_11_22</name>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\includes.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\internals.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22_driver.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_firmware.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_bus.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_pine.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_ssp_hcd.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_api.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_compiler.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_nic.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.h</name>
-            </file>
-          </group>
-        </group>
       </group>
       <group>
         <name>PWM</name>

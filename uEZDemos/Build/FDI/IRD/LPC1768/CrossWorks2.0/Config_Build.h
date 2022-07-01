@@ -26,6 +26,7 @@
 #define APP_DEMO_COM                1
 #define APP_DEMO_DRAW               1
 #define APP_DEMO_APPS               1
+#define APP_DEMO_SLIDESHOW          1
 #define UEZ_ENABLE_TCPIP_STACK      1
 #define UEZ_ENABLE_USB_HOST_STACK   1
 

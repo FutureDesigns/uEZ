@@ -37,6 +37,7 @@
 Includes “Glyph config Include”
 ******************************************************************************/
 #include "..\glyph_cfg.h"
+#include <stdint.h>
 
 // const uint8_t FontWinFreeSystem14x16_char_0[] = {};
 // const uint8_t FontWinFreeSystem14x16_char_1[] = {};

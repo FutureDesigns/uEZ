@@ -14,6 +14,7 @@
 #define LCD_FRAME_BUFFER            UEZPlatform_LCDGetFrameBuffer()
 #define FRAME_SIZE                  UEZPlatform_LCDGetFrameSize()
 #define GUI_COLOR_CONVERSION        UEZPlatform_GUIColorConversion()
+#define GUI_DISPLAY_DRIVER          UEZPlatform_GUIDisplayDriver()
 #define LCD_DISPLAY_BASE_ADDRESS    UEZPlatform_GetBaseAddress()
 
 #define SERIAL_PORTS_DEFAULT_BAUD   UEZPlatform_SerialGetDefaultBaud()
@@ -25,6 +26,7 @@
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY  1
 #define configUSE_TIMERS          1
+#define USE_PRIMASK_CS            1
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
@@ -33,3 +35,5 @@
 #else
 #define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
 #endif
+
+#define asm												__asm

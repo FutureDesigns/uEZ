@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -986,6 +986,24 @@ T_uezError Network_lwIP_InfrastructureTakeDown(void *aWorkspace)
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
+T_uezError Network_lwIP_GetConnectionInfo(void *aWorkspace,
+		T_uezNetworkSocket aSocket,
+		T_uEZNetworkConnectionInfo *aConnection)
+{
+	T_uezError error = UEZ_ERROR_NONE;
+	T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
+	T_lwIPSocket *p_socket = p->iSockets + aSocket;
+	struct ip_addr ip;
+
+    error = IConvertErrorCode(netconn_getaddr(p_socket->iNetconn, &ip, &aConnection->iConnectedPort, 0));
+    aConnection->iIPConnectedAddr[3] = (ip.addr>> 24) &0xFF;
+    aConnection->iIPConnectedAddr[2] = (ip.addr>> 16) &0xFF;
+    aConnection->iIPConnectedAddr[1] = (ip.addr>> 8) &0xFF;
+    aConnection->iIPConnectedAddr[0] = (ip.addr>> 0) &0xFF;
+
+	return error;
+}
+
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -1021,6 +1039,8 @@ const DEVICE_Network lwIP_Network_Interface = { {
     Network_lwIP_InfrastructureConfigure,
     Network_lwIP_InfrastructureBringUp,
     Network_lwIP_InfrastructureTakeDown,
+    //uEZ v2.07
+    Network_lwIP_GetConnectionInfo,
 };
 
 /*-------------------------------------------------------------------------*

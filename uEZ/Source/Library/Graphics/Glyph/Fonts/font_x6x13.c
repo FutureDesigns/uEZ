@@ -38,6 +38,7 @@
 Includes “Glyph config Include”
 ******************************************************************************/
 #include "..\glyph_cfg.h"
+#include <stdint.h>
 
 const uint8_t Fontx6x13_char_0[] = {
     0x06, 0x0D, // width=6, height=13

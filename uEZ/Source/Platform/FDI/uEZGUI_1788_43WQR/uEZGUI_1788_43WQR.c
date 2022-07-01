@@ -4,21 +4,30 @@
  * Description:
  *      Bring up the uEZGUI-1788-43WQR
  *-------------------------------------------------------------------------*/
-
+ 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
 
+/**
+ *    @addtogroup uEZGUI-1788-43WQR
+ *  @{
+ *  @brief     uEZGUI-1788-43WQR platform
+ *  @see http://www.teamfdi.com/uez/
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *
+ *    The uEZGUI-1788-43WQR platform interface.
+*/
 #include <Config.h>
 #include <stdio.h>
 #include <string.h>
@@ -57,6 +66,7 @@
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
+#include <Source/Devices/Serial/RS485/Generic/Generic_RS485.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
 #include <Source/Devices/Timer/Generic/Timer_Generic.h>
@@ -104,7 +114,7 @@
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 
 extern int MainTask(void);
@@ -142,22 +152,16 @@ T_uezTask G_mainTask;
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPDelayMS
- *---------------------------------------------------------------------------*
- * Description:
- *      Use a delay loop to approximate the time to delay.
- *      Should use UEZTaskDelayMS() when in a task instead.
  *---------------------------------------------------------------------------*/
+/**
+ *  Use a delay loop to approximate the time to delay.
+ *      Should use UEZTaskDelayMS() when in a task instead.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSPDelay1US(void)
 {
     //Based on Flash Accelerator being on and Flash Access Time set to 6 CPU Cycles
 #if ( PROCESSOR_OSCILLATOR_FREQUENCY == 120000000)
-    nops50();
-    nops50();
-    nop();
-    nop();
-    nop();
-    nop();
-#elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
     nops50();
     nops50();
     nop();
@@ -192,10 +196,11 @@ void UEZBSPDelayMS(unsigned int aMilliseconds)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPSDRAMInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Initialize the external SDRAM.
  *---------------------------------------------------------------------------*/
+/**
+ *  Initialize the external SDRAM.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
 {
     static const T_LPC17xx_40xx_SDRAM_Configuration sdramConfig_MT48LC2M32B2P = {
@@ -227,10 +232,11 @@ void UEZBSP_RAMInit(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_ROMInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Configure the NOR Flash
  *---------------------------------------------------------------------------*/
+/**
+ *  Configure the NOR Flash
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSP_ROMInit(void)
 {
 #if 1
@@ -245,6 +251,7 @@ void UEZBSP_ROMInit(void)
             EMC_STATIC_CYCLES(25),
             EMC_STATIC_CYCLES(0),
             EMC_STATIC_CYCLES(90 + 4.9),
+
             1, };
     LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
@@ -266,17 +273,58 @@ void UEZBSP_ROMInit(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_PLLConfigure
- *---------------------------------------------------------------------------*
- * Description:
- *      Configure the PLL
  *---------------------------------------------------------------------------*/
+/**
+ *  Configure the PLL
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSP_PLLConfigure(void)
 {
+#if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    const T_LPC17xx_40xx_PLL_Frequencies freq_CPU72MHz_Peripheral60Mhz_USB48MHz = {
+            12000000,
+
+            // Run PLL0 at 120 MHz
+            PROCESSOR_OSCILLATOR_FREQUENCY,
+
+            // Run PLL1 at 48 MHz
+            48000000,
+
+            // Use the main oscillator of 12 MHz as a source
+            LPC17xx_40xx_CLKSRC_SELECT_MAIN_OSCILLATOR,
+
+            // Use PLL0 for the CCLK, PCLK, and EMC Clk source (before dividers)
+            LPC17xx_40xx_CPU_CLOCK_SELECT_PLL_CLK,
+
+            // Use PPL1 (alt) for the USB
+            LPC17xx_40xx_USB_CLOCK_SELECT_ALT_PLL_CLK,
+
+            // CPU Clock is PLL0 / 1 or 120 MHz / 1 = 120 MHz
+            1,
+
+            // PCLK is PLL0 / 2, or 60 MHz
+            1,
+
+            // EMC runs at PLL0 / 2, or 60 MHz
+            1,
+
+            // USB Clock = PLL1 / 1 (48 MHz / 1)
+            1,
+
+            // CLKOUT is on the EMC CLK and at 60 MHz (60 MHz / 1)
+            LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
+            1,
+            ETrue, };
+
+    LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU72MHz_Peripheral60Mhz_USB48MHz);
+
+#else // 120000000 MHz
+
     const T_LPC17xx_40xx_PLL_Frequencies freq_CPU120MHz_Peripheral60Mhz_USB48MHz = {
             12000000,
 
             // Run PLL0 at 120 MHz
-            120000000,
+            PROCESSOR_OSCILLATOR_FREQUENCY,
 
             // Run PLL1 at 48 MHz
             48000000,
@@ -306,15 +354,19 @@ void UEZBSP_PLLConfigure(void)
             LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
             1,
             ETrue, };
+
     LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU120MHz_Peripheral60Mhz_USB48MHz);
+
+#endif
 }
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_InterruptsReset
- *---------------------------------------------------------------------------*
- * Description:
- *      Do the first initialization of the interrupts.
  *---------------------------------------------------------------------------*/
+/**
+ *  Do the first initialization of the interrupts.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSP_InterruptsReset(void)
 {
     InterruptsReset();
@@ -322,10 +374,11 @@ void UEZBSP_InterruptsReset(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_CPU_PinConfigInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Immediately configure the port pins
  *---------------------------------------------------------------------------*/
+/**
+ *  Immediately configure the port pins
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSP_CPU_PinConfigInit(void)
 {
     // Place any pin configuration that MUST be initially here (at power up
@@ -334,15 +387,14 @@ void UEZBSP_CPU_PinConfigInit(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_FatalError
- *---------------------------------------------------------------------------*
- * Description:
- *      A fatal error in uEZ will come here last.  We must turn off
- *      interrupts and put the platform in a halted state with a blinking
- *      LED.
- * Inputs:
- *      int aErrorCode -- Blink the LED a number of times equal to
- *          the error code.
  *---------------------------------------------------------------------------*/
+/**
+ *  A fatal error in uEZ will come here last.  We must turn off
+ *    interrupts and put the platform in a halted state with a blinking LED.
+ *  @param [in]     aErrorCode -- Blink the LED a number of times equal to
+ *          the error code.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZBSP_FatalError(int aErrorCode)
 {
     register TUInt32 i;
@@ -380,10 +432,11 @@ void UEZBSP_FatalError(int aErrorCode)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2C0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the I2C0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2C0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_I2C0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -396,10 +449,11 @@ void UEZPlatform_I2C0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2C1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the I2C1 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2C1 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_I2C1_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -412,11 +466,12 @@ void UEZPlatform_I2C1_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2C2_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the I2C2 device driver.  Usually only used when connecting
- *      to the external header.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2C2 device driver.  Usually only used when connecting
+ *      to the external header.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_I2C2_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -430,10 +485,11 @@ void UEZPlatform_I2C2_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Temp0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Temperature0 device driver.
  *---------------------------------------------------------------------------*/
+/**
+ *   Setup the Temperature0 device driver.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Temp0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -444,10 +500,11 @@ void UEZPlatform_Temp0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Accel0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Accelerometer 0 device driver.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Accelerometer 0 device driver.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Accel0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -459,10 +516,11 @@ void UEZPlatform_Accel0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_GPDMAx_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the General Purpose DMA drivers.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the General Purpose DMA drivers.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_GPDMA0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -528,15 +586,116 @@ void UEZPlatform_GPDMA7_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_Console_FullDuplex_UART_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART.
- * Inputs:
- *      const char *aHALSerialName -- Name of UART serial driver to use
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ * Routine:  UEZPlatform_FullDuplex_UART0_Require
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the full duplex UART using UART0.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.2/P0.3
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART0_Require(GPIO_P0_2, GPIO_P0_3);
+    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_UART1_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the raw UART1 driver.  No stream is attached.
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_UART1_Require(void)
+{
+    // UART1 on P0.15/P0.16
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART1_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the full duplex UART using UART1.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART1_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART1 on P0.15/P0.16
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
+    Serial_Generic_FullDuplex_Stream_Create("UART1", "UART1",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART2_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the full duplex UART using UART2.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART2_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.10/P0.11
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART0_Require(GPIO_P0_10, GPIO_P0_11);
+    Serial_Generic_FullDuplex_Stream_Create("UART2", "UART2",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART4_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the full duplex UART using UART4.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART4_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART1 on P5.3(RXD)/P5.4(TXD)
+    LPC17xx_40xx_GPIO5_Require();
+    LPC17xx_40xx_UART4_Require(GPIO_P5_4, GPIO_P5_3);
+    Serial_Generic_FullDuplex_Stream_Create("UART4", "UART4",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Console_FullDuplex_UART_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console using a full duplex UART.
+ *
+ *  @param [in]     *aHALSerialName     Name of UART serial driver to use
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_FullDuplex_UART_Require(
         const char *aHALSerialName,
         TUInt32 aWriteBufferSize,
@@ -556,18 +715,19 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_HalfDuplex_UART_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a half duplex UART.
- * Inputs:
- *      const char *aHALSerialName -- Name of UART serial driver to use
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *      T_uezGPIOPortPin aDriveEnablePortPin -- GPIO for drive enable
- *      TBool aDriveEnablePolarity -- ETrue for high true, else EFalse
- *      TUInt32 aDriveEnableReleaseTime -- Milliseconds to wait before
- *          changing drive enable direction.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console using a half duplex UART.
+ *    
+ *  @param [in] *aHALSerialName         Name of UART serial driver to use
+ *  @param [in] aWriteBufferSize        Size in bytes of outgoing buffer
+ *  @param [in] aReadBufferSize         Size in bytes of incoming buffer
+ *  @param [in] aDriveEnablePortPin     GPIO for drive enable
+ *  @param [in] aDriveEnablePolarity    ETrue for high true, else EFalse
+ *  @param [in] aDriveEnableReleaseTime Milliseconds to wait before
+ *                                      changing drive enable direction.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_HalfDuplex_UART_Require(
         const char *aHALSerialName,
         TUInt32 aWriteBufferSize,
@@ -592,14 +752,67 @@ void UEZPlatform_Console_HalfDuplex_UART_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_Console_FullDuplex_UART0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART0.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ * Routine:  UEZPlatform_Console_HalfDuplex_RS485_Require
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the half-duplex RS485 driver for UART1 as the uEZGUI Console.
+ *
+ *  @param [in] aHALSerialName            Serial Port Name 
+ *  @param [in] aWriteBufferSize          Size in bytes of outgoing buffer
+ *  @param [in] aReadBufferSize           Size in bytes of incoming buffer
+ *  @param [in] aDriveEnablePortPin       Drive enable GPIO pin
+ *  @param [in] aDriveEnablePolarity      Drive enable polarity (ETrue = HIGH true)
+ *  @param [in] aDriveEnableReleaseTime   Drive enable release time (in ms)
+ *  @param [in] aReceiveEnablePortPin     Receive enable GPIO pin
+ *  @param [in] aReceiveEnablePolarity    Receive enable polarity (EFalse = LOW true)
+ *  @param [in] aReceiveEnableReleaseTime Receive enable release time (in ms)
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_Console_HalfDuplex_RS485_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize,
+        T_uezGPIOPortPin aDriveEnablePortPin,
+        TBool aDriveEnablePolarity,
+        TUInt32 aDriveEnableReleaseTime,
+        T_uezGPIOPortPin aReceiveEnablePortPin,
+        TBool aReceiveEnablePolarity,
+        TUInt32 aReceiveEnableReleaseTime)
+{
+    T_RS485_GenericHalfDuplex_Settings aSettings;
+    DEVICE_CREATE_ONCE();
+    LPC17xx_40xx_GPIO0_Require(); // UART1 on P0.15/P0.16
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
+  
+    aSettings.iSerialName = aHALSerialName; 
+    aSettings.iQueueSendSize = aWriteBufferSize;
+    aSettings.iQueueReceiveSize = aReadBufferSize;
+    aSettings.iDriveEnable = aDriveEnablePortPin;
+    aSettings.iDriveEnablePolarity = aDriveEnablePolarity;
+    aSettings.iDriveEnableReleaseTime = aDriveEnableReleaseTime;
+    aSettings.iReceiveEnable = aReceiveEnablePortPin;
+    aSettings.iReceiveEnablePolarity = aReceiveEnablePolarity;
+    aSettings.aReceiveEnableReleaseTime = aReceiveEnableReleaseTime;
+
+    RS485_GenericHalfDuplex_Create("Console", &aSettings);
+    // Set standard output to console
+    UEZStreamOpen("Console", &G_stdout);
+    G_stdin = G_stdout;
+    StdinRedirect(G_stdin);
+    StdoutRedirect(G_stdout);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Console_FullDuplex_UART0_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console using a full duplex UART using UART0.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_FullDuplex_UART0_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
@@ -612,92 +825,15 @@ void UEZPlatform_Console_FullDuplex_UART0_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART0.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART0_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART0 on P0.2/P0.3
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART0_Require(GPIO_P0_2, GPIO_P0_3);
-    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
-            aWriteBufferSize, aReadBufferSize);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_UART1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the raw UART1 driver.  No stream is attached.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_UART1_Require(void)
-{
-    // UART1 on P0.15/P0.16
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
-            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART1.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART1_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART1 on P0.15/P0.16
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
-            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
-    Serial_Generic_FullDuplex_Stream_Create("UART1", "UART1",
-            aWriteBufferSize, aReadBufferSize);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART4_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the full duplex UART using UART4.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART4_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART1 on P5.3(RXD)/P5.4(TXD)
-    LPC17xx_40xx_GPIO5_Require();
-    LPC17xx_40xx_UART4_Require(GPIO_P5_4, GPIO_P5_3);
-    Serial_Generic_FullDuplex_Stream_Create("UART4", "UART4",
-            aWriteBufferSize, aReadBufferSize);
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_FullDuplex_UART1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART1.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console using a full duplex UART using UART1.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_FullDuplex_UART1_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
@@ -712,13 +848,14 @@ void UEZPlatform_Console_FullDuplex_UART1_Require(
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_FullDuplex_UART2_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART2.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console using a full duplex UART using UART2.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_FullDuplex_UART2_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
@@ -732,13 +869,14 @@ void UEZPlatform_Console_FullDuplex_UART2_Require(
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_FullDuplex_UART3_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART3.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console using a full duplex UART using UART3.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_FullDuplex_UART3_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
@@ -752,13 +890,14 @@ void UEZPlatform_Console_FullDuplex_UART3_Require(
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_FullDuplex_ISPHeader_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console to be a full duplex UART on the ISP header
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console to be a full duplex UART on the ISP header
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_ISPHeader_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
@@ -769,15 +908,16 @@ void UEZPlatform_Console_ISPHeader_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_Console_Expansion_ISPHeader_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console to be a full duplex UART on the expansion header
- *      NOTE: On expansion header
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ * Routine:  UEZPlatform_Console_Expansion_Require
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console to be a full duplex UART on the expansion header
+ *      NOTE: On expansion header
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
@@ -788,11 +928,31 @@ void UEZPlatform_Console_Expansion_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_SSP0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the SSP0 to be a SPI driver
+ * Routine:  UEZPlatform_Console_ALT_PWR_COM_Require
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the console to be a full duplex UART on the ALT PWR COM header
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_Console_ALT_PWR_COM_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // Standard Expansion board serial console is on UART2
+    UEZPlatform_Console_FullDuplex_UART2_Require(aWriteBufferSize,
+            aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_SSP0_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the SSP0 to be a SPI driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_SSP0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -806,11 +966,11 @@ void UEZPlatform_SSP0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_SSP1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the SSP1 to be a SPI driver.
- *      NOTE: On expansion header
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the SSP1 to be a SPI driver. NOTE: On expansion header
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_SSP1_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -824,10 +984,11 @@ void UEZPlatform_SSP1_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0 device driver.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0 device driver.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -837,10 +998,11 @@ void UEZPlatform_ADC0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_0 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_0 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -850,10 +1012,11 @@ void UEZPlatform_ADC0_0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_1 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_1 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_1_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -863,10 +1026,11 @@ void UEZPlatform_ADC0_1_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_2_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_2 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_2 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_2_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -876,10 +1040,11 @@ void UEZPlatform_ADC0_2_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_3_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_3 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_3 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_3_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -889,10 +1054,11 @@ void UEZPlatform_ADC0_3_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_4_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_4 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_4 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_4_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -902,10 +1068,11 @@ void UEZPlatform_ADC0_4_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_5_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_5 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_5 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_5_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -915,10 +1082,11 @@ void UEZPlatform_ADC0_5_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_6_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_6 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_6 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_6_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -928,10 +1096,11 @@ void UEZPlatform_ADC0_6_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ADC0_7_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the ADC0_7 channel on the ADC0 device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the ADC0_7 channel on the ADC0 device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ADC0_7_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -941,11 +1110,12 @@ void UEZPlatform_ADC0_7_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_DAC0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the DAC0 device driver
- *      NOTE: Goes to P0.26_AD03_AOUT_RD3
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the DAC0 device driver
+ *      NOTE: Goes to P0.26_AD03_AOUT_RD3
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_DAC0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -955,10 +1125,11 @@ void UEZPlatform_DAC0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Flash0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Flash0 device driver for the external NOR Flash
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Flash0 device driver for the external NOR Flash
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Flash0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -967,10 +1138,11 @@ void UEZPlatform_Flash0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_IAP_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the IAP flash device driver for the internal flash
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the IAP flash device driver for the internal flash
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_IAP_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -979,10 +1151,11 @@ void UEZPlatform_IAP_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Backlight_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Backlight device driver for the LCD
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Backlight device driver for the LCD
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Backlight_Require(void)
 {
     const T_backlightGenericPWMSettings settings = {
@@ -1002,10 +1175,11 @@ void UEZPlatform_Backlight_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_LCD_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the LCD device driver and its backlight
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the LCD device driver and its backlight
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_LCD_Require(void)
 {
     const T_LPC17xx_40xx_LCDController_Pins pins = {
@@ -1089,10 +1263,11 @@ void UEZPlatform_LCD_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Speaker_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Speaker device driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Speaker device driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Speaker_Require(void)
 {
     const T_ToneGenerator_Generic_PWM_Settings settings = {
@@ -1112,11 +1287,12 @@ void UEZPlatform_Speaker_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_IRTC_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the internal RTC device driver.  Not compatible with the
- *      external RTC.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the internal RTC device driver.  Not compatible with the
+ *      external RTC.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_IRTC_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1127,11 +1303,12 @@ void UEZPlatform_IRTC_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_IRTC_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the external RTC device driver.  Not compatible with the
- *      internal RTC.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the external RTC device driver.  Not compatible with the
+ *      internal RTC.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ERTC_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1142,10 +1319,11 @@ void UEZPlatform_ERTC_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_RTC_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the RTC device driver and check it for validity
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the RTC device driver and check it for validity
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_RTC_Require(void)
 {
     T_uezDevice rtcDev;
@@ -1186,10 +1364,11 @@ void UEZPlatform_RTC_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_EEPROM_I2C_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the external EEPROM over I2C.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the external EEPROM over I2C.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_EEPROM_I2C_Require(void)
 {
     const T_EEPROMConfig eeprom_config = {EEPROM_CONFIG_PCA24S08};
@@ -1201,10 +1380,11 @@ void UEZPlatform_EEPROM_I2C_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_EEPROM_I2C_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the internal EEPROM in the LPC17xx_40xx
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the internal EEPROM in the LPC17xx_40xx
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_EEPROM_LPC17xx_40xx_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1213,10 +1393,11 @@ void UEZPlatform_EEPROM_LPC17xx_40xx_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_EEPROM0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the default EEPROM0 driver (usually internal LPC17xx_40xx)
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the default EEPROM0 driver (usually internal LPC17xx_40xx)
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_EEPROM0_Require(void)
 {
     // Pick one of these two for the type of EEPROM
@@ -1226,10 +1407,11 @@ void UEZPlatform_EEPROM0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Watchdog_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the internal watchdog.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the internal watchdog.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Watchdog_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1239,10 +1421,11 @@ void UEZPlatform_Watchdog_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_USBHost_PortA_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Host on Port A (expansion board).
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the USB Host on Port A (expansion board).
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_USBHost_PortA_Require(void)
 {
     const T_LPC17xx_40xx_USBHost_Settings portASettings = {
@@ -1277,10 +1460,11 @@ void UEZPlatform_USBHost_PortA_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_USBHost_PortB_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Host on Port B.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the USB Host on Port B.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_USBHost_PortB_Require(void)
 {
 //    GPIO_P1_30,     // USB_VBUS2        = USB2_VBUS
@@ -1321,10 +1505,11 @@ void UEZPlatform_USBHost_PortB_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_USBHost_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Host.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the USB Host.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_USBHost_Require(void)
 {
     UEZPlatform_USBHost_PortA_Require();
@@ -1332,10 +1517,11 @@ void UEZPlatform_USBHost_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_FileSystem_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the File System using FATFS
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the File System using FATFS
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_FileSystem_Require(void)
 {
     T_uezDevice dev_fs;
@@ -1350,10 +1536,11 @@ void UEZPlatform_FileSystem_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_MS0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Mass Storage device MS0 using USBHost flash drive.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Mass Storage device MS0 using USBHost flash drive.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_MS0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1362,10 +1549,11 @@ void UEZPlatform_MS0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_MS1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Mass Storage device MS1 using SDCard drive.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Mass Storage device MS1 using SDCard drive.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_MS1_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1378,10 +1566,11 @@ void UEZPlatform_MS1_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_MCI_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the MCI Peripheral
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the MCI Peripheral
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_MCI_Require(void)
 {
     const T_LPC17xx_40xx_MCI_Pins pins = {
@@ -1405,10 +1594,11 @@ void UEZPlatform_MCI_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_MS1_MCI_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Mass Storage device MS1 using high speed SDCard drive.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Mass Storage device MS1 using high speed SDCard drive.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_MS1_MCI_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1420,10 +1610,13 @@ void UEZPlatform_MS1_MCI_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_SDCard_MCI_Drive_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the high speed SDCard drive using MS1 on the given drive number
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the high speed SDCard drive using MS1 on the given drive number
+ *
+ *  @param [in]     aDriveNum       Drive numer (either 1 or 0)
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum)
 {
     T_uezDevice ms1;
@@ -1441,10 +1634,11 @@ void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioCodec_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Wolfson WM8731 audio codec over I2S
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_AudioCodec_Require(void)
 {
     T_uezDevice p_ac;
@@ -1461,10 +1655,13 @@ void UEZPlatform_AudioCodec_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_USBFlash_Drive_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USB Flash drive using MS0 on the given drive number
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the USB Flash drive using MS0 on the given drive number
+ *
+ *  @param [in]     aDriveNum       Drive numer (either 1 or 0)
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
 {
     T_uezDevice ms0;
@@ -1483,10 +1680,13 @@ void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_SDCard_Drive_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the SDCard drive using MS1 on the given drive number
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the SDCard drive using MS1 on the given drive number
+ *
+ *  @param [in]     aDriveNum       Drive numer (either 1 or 0)
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
 {
     T_uezDevice ms1;
@@ -1505,10 +1705,11 @@ void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum)
 static T_uezDevice G_Amp;
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioAmp_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Audio Amp driver and set the default level
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Audio Amp driver and set the default level
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_AudioAmp_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1523,10 +1724,23 @@ void UEZPlatform_AudioAmp_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZGUI70WVT_AudioMixerCallback
- *---------------------------------------------------------------------------*
- * Description:
- *
  *---------------------------------------------------------------------------*/
+/**
+ *  
+ *
+ *  @param [in]     
+ *  @param [out]    
+ *
+ *  @return         T_uezError
+ *
+ *  @par Example Code:
+ *  This is an example of how to set new settings for the device.
+ *  @par
+ *  @code
+ *  #include <uEZ.h>
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
 static T_uezError UEZGUI43WQR_AudioMixerCallback(
         T_uezAudioMixerOutput aChangedOutput,
             TBool aMute,
@@ -1553,10 +1767,11 @@ static T_uezError UEZGUI43WQR_AudioMixerCallback(
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioMixer_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Audio Mixer driver and callback function
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Audio Mixer driver and callback function
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_AudioMixer_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1569,10 +1784,11 @@ void UEZPlatform_AudioMixer_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_CRC0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the CRC0 drivers for doing CRC calculations
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the CRC0 drivers for doing CRC calculations
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_CRC0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1583,10 +1799,11 @@ void UEZPlatform_CRC0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_PWM0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the PWM0 drivers
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the PWM0 drivers
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_PWM0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1605,10 +1822,11 @@ void UEZPlatform_PWM0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_PWM1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the PWM1 driver
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the PWM1 driver
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_PWM1_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1628,10 +1846,11 @@ void UEZPlatform_PWM1_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Touchscreen_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the touchscreen and touch sensitivity for four wire resistive
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the touchscreen and touch sensitivity for four wire resistive
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Touchscreen_Require(void)
 {
     T_uezDevice ts;
@@ -1666,10 +1885,11 @@ void UEZPlatform_Touchscreen_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_USBDevice_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the USBDevice controller.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the USB Device controller.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_USBDevice_Require(void)
 {
     const T_LPC17xx_40xx_USBDevice_Settings portBSettings = {
@@ -1687,10 +1907,11 @@ void UEZPlatform_USBDevice_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_EMAC_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the EMAC controller for networking.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the EMAC controller for networking.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_EMAC_Require(void)
 {
     // This EMAC is RMII (less pins)
@@ -1721,11 +1942,12 @@ void UEZPlatform_EMAC_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Timer0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Timer0 drivers, but don't set any capture sources or
- *      match registers.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Timer0 drivers, but don't set any capture sources or
+ *      match registers.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Timer0_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
@@ -1747,11 +1969,12 @@ void UEZPlatform_Timer0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Timer1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Timer1 drivers, but don't set any capture sources or
- *      match registers.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Timer1 drivers, but don't set any capture sources or
+ *      match registers.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Timer1_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
@@ -1773,11 +1996,12 @@ void UEZPlatform_Timer1_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Timer2_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Timer2 drivers, but don't set any capture sources or
- *      match registers.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Timer2 drivers, but don't set any capture sources or
+ *      match registers.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Timer2_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
@@ -1799,11 +2023,12 @@ void UEZPlatform_Timer2_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Timer3_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the Timer3 drivers, but don't set any capture sources or
- *      match registers.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the Timer3 drivers, but don't set any capture sources or
+ *      match registers.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_Timer3_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
@@ -1825,10 +2050,11 @@ void UEZPlatform_Timer3_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_WiredNetwork0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the networking for Wired connections.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the networking for Wired connections.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_WiredNetwork0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -1843,10 +2069,11 @@ void UEZPlatform_WiredNetwork0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2S_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the I2S drivers for talking to the expansion board.
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2S drivers for talking to the expansion board.
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_I2S_Require(void)
 {
     static const T_LPC17xx_40xx_I2S_Settings settings = {
@@ -1866,10 +2093,11 @@ void UEZPlatform_I2S_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_ButtonBoard_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the I2C GPIO drivers for talking to the button board
  *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2C GPIO drivers for talking to the button board
+ */
+/*---------------------------------------------------------------------------*/
 void UEZPlatform_ButtonBoard_Require(void)
 {
     static const T_GPIOKeypadAssignment keyAssignment[] = {
@@ -1892,25 +2120,35 @@ void UEZPlatform_ButtonBoard_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Initialize the board with all the proper settings.
- *      Registers all peripherals specific to this board.
  *---------------------------------------------------------------------------*/
+/**
+ *  Initialize the board with all the proper settings.
+ *      Registers all peripherals specific to this board.
+ */
+/*---------------------------------------------------------------------------*/
 void uEZPlatformInit(void)
 {
-    // Do any initialiation necessary before the RTOS is started
+    // Do any initialization necessary before the RTOS is started
 }
 
 void UEZPlatform_Standard_Require(void)
 {
-#if !UEZGUI_EXP_DK_FCT_TEST
-    UEZPlatform_Console_Expansion_Require(
+#if UEZ_ENABLE_CONSOLE_ALT_PWR_COM
+  UEZPlatform_Console_ALT_PWR_COM_Require(
+        UEZ_CONSOLE_WRITE_BUFFER_SIZE,
+        UEZ_CONSOLE_READ_BUFFER_SIZE);
+#else
+  UEZPlatform_Console_Expansion_Require(
         UEZ_CONSOLE_WRITE_BUFFER_SIZE,
         UEZ_CONSOLE_READ_BUFFER_SIZE);
 #endif
-    UEZPlatform_LCD_Require();
+        
+// Example for console on UART 1 RS485 half duplex
+// UEZPlatform_Console_HalfDuplex_RS485_Require("UART1",
+// 1024, 256, GPIO_P0_22, ETrue, 2, GPIO_P0_17, EFalse, 2);        
 
+    
+    UEZPlatform_LCD_Require();
     UEZPlatform_I2C0_Require();
     UEZPlatform_I2C1_Require();
     UEZPlatform_Temp0_Require();
@@ -1922,7 +2160,6 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_ADC0_2_Require();
     UEZPlatform_Flash0_Require();
     UEZPlatform_EEPROM0_Require();
-
     UEZPlatform_AudioAmp_Require();
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
@@ -1937,6 +2174,62 @@ void UEZPlatform_Require(void)
 {
     // Choose one:
     UEZPlatform_Standard_Require();
+}
+
+// Modify pins for expansion board before use
+void UEZPlatform_WiFiProgramMode(TBool runMode)
+{    
+    if(runMode == ETrue) {
+        printf("GainSpan Run Mode ...\n");        
+    } else {
+        printf("GainSpan Programming Mode ...\n");
+    }
+    RTOS_ENTER_CRITICAL()    ;
+    
+    UEZGPIOClear(GPIO_P1_5);        // WIFI_SRSTn
+    UEZGPIOSetMux(GPIO_P1_5, 0);
+    UEZGPIOOutput(GPIO_P1_5);       // WIFI_SRSTn
+    
+    UEZGPIOInput(GPIO_P2_11);       // WIFI IRQ
+
+    if(runMode == ETrue) {
+        UEZGPIOClear(GPIO_P1_6);        // WIFI RUN MODE
+    } else {
+        UEZGPIOSet(GPIO_P1_6);          // WIFI PROGRAM ON
+    }
+    UEZGPIOOutput(GPIO_P1_6);       
+                
+    UEZGPIOUnlock(GPIO_P0_2);       // 1788 TX
+    UEZGPIOSetMux(GPIO_P0_2, 0);
+    UEZGPIOOutput(GPIO_P0_2);
+
+    UEZGPIOUnlock(GPIO_P0_3);       // 1788 RX
+    UEZGPIOSetMux(GPIO_P0_3, 0);
+    UEZGPIOInput(GPIO_P0_3);
+
+    UEZGPIOUnlock(GPIO_P0_15);      // WIFI TX
+    UEZGPIOSetMux(GPIO_P0_15, 0);
+    UEZGPIOOutput(GPIO_P0_15);
+
+    UEZGPIOUnlock(GPIO_P0_16);      // WIFI RX
+    UEZGPIOSetMux(GPIO_P0_16, 0);
+    UEZGPIOInput(GPIO_P0_16);
+
+    //UEZTaskDelay(1000); // for debug
+    UEZGPIOSet(GPIO_P1_5);          // WIFI_SRSTn
+
+    CPUDisableInterrupts();
+    while (1) {
+        if (LPC_GPIO0->PIN & (1 << 3)) // 1788 RX = GPIO_P0_3
+            LPC_GPIO0->SET = (1 << 15); // WIFI TX = GPIO_P0_15
+        else
+            LPC_GPIO0->CLR = (1 << 15);
+
+        if (LPC_GPIO0->PIN & (1 << 16)) // WIFI RX = GPIO_P0_16
+            LPC_GPIO0->SET = (1 << 2);  // 1788 TX = GPIO_P0_2
+        else
+            LPC_GPIO0->CLR = (1 << 2);  // 1788 TX = GPIO_P0_2
+    }
 }
 
 TBool UEZPlatform_Host_Port_B_Detect()
@@ -1955,41 +2248,6 @@ TBool UEZPlatform_Host_Port_B_Detect()
         UEZGPIOClear(GPIO_P0_12);// enable MIC2025
     }
     return IsDevice;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZGUIIsLoopbackBoardConnected
- *---------------------------------------------------------------------------*
- * Description:
- *      Determines if a loopback board for testing is connected
- * Outputs:
- *      TBool -- ETrue if connected, else EFalse
- *---------------------------------------------------------------------------*/
-TBool UEZGUIIsLoopbackBoardConnected(void)
-{
-    TUInt32 readSet;
-    TUInt32 readClear;
-
-    LPC17xx_40xx_GPIO0_Require();
-
-    // Check to see that P0.26 goes high when P0.6 is high
-    UEZGPIOSetMux(GPIO_P0_6, 0); // GPIO mode
-    UEZGPIOOutput(GPIO_P0_6);
-    UEZGPIOSetMux(GPIO_P0_26, 0); // GPIO mode
-    UEZGPIOInput(GPIO_P0_26);
-    UEZGPIOSet(GPIO_P0_6);
-    readSet = UEZGPIORead(GPIO_P0_26);
-    UEZGPIOClear(GPIO_P0_6);
-    readClear = UEZGPIORead(GPIO_P0_26);
-    UEZGPIOInput(GPIO_P0_6);
-    UEZGPIOInput(GPIO_P0_26);
-
-    // If the pin wiggled, then the loop back is  in place
-    if (readSet && !readClear)
-        return ETrue;
-
-    // Otherwise it is not set.
-    return EFalse;
 }
 
 TUInt16 UEZPlatform_LCDGetHeight(void)
@@ -2023,17 +2281,37 @@ TUInt32 UEZPlatform_ProcessorGetFrequency(void)
 }
 TUInt32 UEZPlatform_GetPCLKFrequency(void)
 {
+#if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    return 72000000;
+#else
     return 60000000;
+#endif
 }
 TUInt32 UEZPlatform_GetBaseAddress(void)
 {
     return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
-#include "LCD.h"
+#include <Source/Library/GUI/SEGGER/emWin/LCD.h>
+#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
 const void* UEZPlatform_GUIColorConversion(void)
 {
-    return GUICC_M1555I;//GUICC_M565;
+    return GUICC_M555;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return &GUIDRV_Lin_16_API;
+}
+#else
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return 0;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return 0;
 }
 #endif
 
@@ -2103,23 +2381,23 @@ unsigned long ulStacked_pc = 0UL;
     for( ;; );
 }
 #endif
-
 /*---------------------------------------------------------------------------*
  * Routine:  main
- *---------------------------------------------------------------------------*
- * Description:
- *      The main() routine in UEZ is only a stub that is used to start
- *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
- * Outputs:
- *      int -- not used, 0
  *---------------------------------------------------------------------------*/
+/**
+ *  The main() routine in UEZ is only a stub that is used to start
+ *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
+ *
+ *  @return         int
+ */
+/*---------------------------------------------------------------------------*/
 int main(void)
 {
     UEZBSP_Startup();
     while (1) {
     } // never should get here
 }
-
+/** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZPlatform.c
  *-------------------------------------------------------------------------*/

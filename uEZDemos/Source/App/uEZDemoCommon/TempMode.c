@@ -1,21 +1,19 @@
 /*-------------------------------------------------------------------------*
- * File:  TimeDateMode
+ * File:  TempMode.c
  *-------------------------------------------------------------------------*
  * Description:
  *      Example program that tests the LCD, Queue, Semaphore, and
  *      touchscreen features.
- *
- * Implementation:
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -25,7 +23,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <Device/Temperature.h>
 #include <Device/RTC.h>
 #include <uEZDeviceTable.h>
@@ -36,8 +34,8 @@
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/Graphics/SWIM/lpc_droidsansr76.h>
 #include <uEZTemperature.h>
-#include <UEZLCD.h>
-#include <UEZKeypad.h>
+#include <uEZLCD.h>
+#include <uEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -363,8 +361,8 @@ void TempMode(const T_choice *aChoice)
         }
         UEZTemperatureClose(G_ws->iTemperature);
     }
-    /* <<< WHIS >>> Potential memory leak in FreeRTOS version as G_ws is not
-     free'd. */
+    UEZMemFree(G_ws);
+    G_ws = 0;
 }
 
 /*-------------------------------------------------------------------------*

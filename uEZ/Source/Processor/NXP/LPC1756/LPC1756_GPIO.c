@@ -9,13 +9,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -26,6 +26,7 @@
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC1756/LPC1756_GPIO.h>
 #include <HAL/Interrupt.h>
+#include <stdio.h>
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -567,10 +568,18 @@ T_uezError LPC1756_GPIO_Control(
 
 T_uezError LPC1756_GPIO_Lock(void *aWorkspace, TUInt32 aPortPins)
 {
+#ifndef NDEBUG
+    char buffer [50];
+#endif
     T_LPC1756_GPIO_Workspace *p = (T_LPC1756_GPIO_Workspace *)aWorkspace;
     // Any pins already locked?
     if (p->iLocked & aPortPins) {
-        UEZFailureMsg("PinLock");
+        #ifndef NDEBUG
+          sprintf (buffer, "PinLock on %s Pin %d", p->iHAL->iInterface.iName, aPortPins);
+          UEZFailureMsg(buffer);
+        #else
+          UEZFailureMsg("PinLock");
+        #endif
         return UEZ_ERROR_NOT_AVAILABLE;
     }
     p->iLocked |= aPortPins;

@@ -1,11 +1,15 @@
 /*-------------------------------------------------------------------------*
  * File:  uEZRandom.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *      <DESCRIPTION>
  *-------------------------------------------------------------------------*/
+
 /*--------------------------------------------------------------------------
  * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
@@ -22,7 +26,7 @@
  *  @{
  *  @brief     uEZ Random Interface
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *    The uEZ Random interface.
  *

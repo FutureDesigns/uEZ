@@ -4,31 +4,33 @@
     <configuration
       Name="Common"
       Target="LPC4088"
-      arm_architecture="v7M"
-      arm_core_type="Cortex-M3"
+      arm_architecture="v7EM"
+      arm_core_type="Cortex-M4"
+      arm_fp_abi="SoftFP"
       arm_fpu_type="FPv4-SP-D16"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
       arm_linker_heap_size="500000"
-      arm_linker_process_stack_size="0"
-      arm_linker_stack_size="2048"
+      arm_linker_process_stack_size="2024"
+      arm_linker_stack_size="2024"
       arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll"
       arm_simulator_memory_simulation_parameter="LPC407x_8x;0x80000;0x10000;0x8000"
       arm_target_debug_interface_type="ADIv5"
       arm_target_loader_parameter="12000000"
-      batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug-Trace;THUMB Flash Release"
+      batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug-Trace;THUMB Flash Debug-Trace CLANG;THUMB Flash Release"
       build_output_directory="$(Configuration)"
       c_only_additional_options="-fms-extensions"
-      c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET"
+      c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM4F;STARTUP_FROM_RESET"
       c_user_include_directories="$(TargetsDir)/LPC1000/include/CMSIS;$(TargetsDir)/CMSIS_3/CMSIS/Include;$(TargetsDir)/LPC1000/include;.;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4088_43WQN;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/CrossWorks2.0/include;../../../../../../uEZ/Source/Library/lwIP/src/include;../../../../../../uEZ/Source/Library/lwIP/src;../../../../../../uEZ/Source/Library/lwIP/Include;../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
       link_include_startup_code="No"
       linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-4088-43WQN_MemoryMap.xml"
       linker_output_format="hex"
-      linker_printf_enabled="Yes"
-      linker_scanf_enabled="Yes"
+      linker_printf_fp_enabled="Yes"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-4088-43WQN_placement.xml"
+      macros="LPC1000_Series=LPC407x_8x"
       oscillator_frequency="12MHz"
+      package_dependencies="LPC1000"
       project_directory=""
       project_type="Executable"
       property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups407x_8x.xml" />
@@ -42,7 +44,6 @@
     <configuration
       Name="RAM"
       Placement="RAM"
-      c_preprocessor_definitions="__RAM_MODE__"
       linker_section_placement_file="$(TargetsDir)/LPC1000/ram_placement.xml"
       target_reset_script="SRAMReset()" />
     <folder Name="Source">
@@ -141,7 +142,7 @@
               <folder Name="Libraries">
                 <folder Name="NXP">
                   <folder Name="CrossWorks">
-                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_522_LPCXpresso510_M3_LE_Redlib.a" />
+                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_522_LPCXpresso_M4.a" />
                   </folder>
                 </folder>
               </folder>
@@ -172,7 +173,7 @@
       <folder Name="Processor">
         <folder Name="NXP">
           <folder Name="LPC17xx_40xx">
-            <folder Name="CrossWorks3.0">
+            <folder Name="CrossWorks2.0">
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/CrossWorks2.0/LPC177x_8x_Target.js">
                 <configuration Name="Common" file_type="Reset Script" />
               </file>
@@ -209,6 +210,9 @@
       <configuration
         Name="THUMB Flash Debug-Trace"
         build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Debug-Trace CLANG"
+        build_exclude_from_build="Yes" />
     </file>
     <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC4088/FreeRTOS/CrossWorks3.x/Release/uEZ_NXP_LPC4088_FreeRTOS_CrossWorks3_Release.a">
       <configuration
@@ -216,6 +220,9 @@
         build_exclude_from_build="Yes" />
       <configuration
         Name="THUMB Flash Debug-Trace"
+        build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Debug-Trace CLANG"
         build_exclude_from_build="Yes" />
     </file>
     <configuration
@@ -232,6 +239,20 @@
       <configuration
         Name="THUMB Flash Release"
         build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Debug-Trace CLANG"
+        build_exclude_from_build="Yes" />
+    </file>
+    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC4088/FreeRTOS/CrossWorks3.x/Debug-Trace CLANG/uEZ_NXP_LPC4088_FreeRTOS_CrossWorks3_Debug-Trace CLANG.a">
+      <configuration
+        Name="THUMB Flash Debug"
+        build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Release"
+        build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Debug-Trace"
+        build_exclude_from_build="Yes" />
     </file>
     <configuration
       Name="THUMB Flash Debug-Trace"
@@ -242,6 +263,9 @@
     <configuration
       Name="THUMB Flash Debug"
       arm_linker_no_warn_on_mismatch="Yes" />
+    <configuration
+      Name="THUMB Flash Debug-Trace CLANG"
+      arm_compiler_variant="clang" />
   </project>
   <configuration
     Name="THUMB Flash Debug"
@@ -275,4 +299,7 @@
   <configuration
     Name="THUMB Flash Debug-Trace"
     inherited_configurations="Debug;Flash;THUMB" />
+  <configuration
+    Name="THUMB Flash Debug-Trace CLANG"
+    inherited_configurations="THUMB;Flash;Debug" />
 </solution>

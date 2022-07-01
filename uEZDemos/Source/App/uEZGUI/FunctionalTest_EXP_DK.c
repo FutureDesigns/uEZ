@@ -1,24 +1,24 @@
-/* File:  FunctionalTest_EXP_DK.c
-*-------------------------------------------------------------------------*
-* Description:
-*      Functional test procedure for uEZGUI-EXP-DK
-*
-* Implementation:
-*-------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------*
+ * File:  FunctionalTest_EXP_DK.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *      Functional test procedure for uEZGUI-EXP-DK
+ *-------------------------------------------------------------------------*/
+
 
 /*--------------------------------------------------------------------------
-* uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
-*--------------------------------------------------------------------------
-* This file is part of the uEZ(R) distribution.  See the included
-* uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
-*
-*    *===============================================================*
-*    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
-*    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
-*    *===============================================================*
-*
-*-------------------------------------------------------------------------*/
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -53,11 +53,11 @@
 #include <Include/Device/Network.h>
 #include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
 #include <Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.h>
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 #include <uEZKeypad.h>
 #include <HAL/GPIO.h>
 #include <HAL/USBHost.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <Device/Accelerometer.h>
 #include <Device/ButtonBank.h>
 #include <Device/EEPROM.h>
@@ -65,7 +65,7 @@
 #include <Device/Temperature.h>
 #include <Device/RTC.h>
 #include <Types/TimeDate.h>
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
 
 #include <uEZProcessor.h>
 #include <uEZPlatform.h>
@@ -167,7 +167,6 @@ extern void IHidePage0(void);
 extern void IShowPage0(void);
 extern void PlayAudio(TUInt32 aHz, TUInt32 aMS);
 extern void FunctionalTestScreen_EXP_DK(T_testData *aData);
-extern TBool UEZGUIIsLoopbackBoardConnected();
 extern T_uezError USBHost_SwitchPort(void *aWorkspace, TUInt32 aPort);
 
 /*---------------------------------------------------------------------------*
@@ -1305,7 +1304,7 @@ void FunctionalTest_EXP_DK(const T_choice *aChoice)
      const T_testState *lastTestState = 0;
      TBool isCancelled = EFalse;
      TBool isPausing = EFalse;
-     TBool haveLoopback = UEZGUIIsLoopbackBoardConnected();
+     
 #if ENABLE_UEZ_BUTTON
      T_uezDevice keypadDevice;
 #endif
@@ -1336,12 +1335,6 @@ void FunctionalTest_EXP_DK(const T_choice *aChoice)
                     
                     for (;(testState->iTitle) && !isCancelled;) {
                          if ((testState->iIgnoreIfExpansionBoard)) {
-                              G_results_EXP_DK[testState-G_testStates_EXP_DK] = TEST_RESULT_IGNORE;
-                              testState++;
-                              continue;
-                         }
-                         
-                         if ((testState->iIgnoreIfNoLoopbackBoard) && (!haveLoopback)) {
                               G_results_EXP_DK[testState-G_testStates_EXP_DK] = TEST_RESULT_IGNORE;
                               testState++;
                               continue;

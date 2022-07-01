@@ -1,0 +1,91 @@
+Porting freemodbus-v1.5.0 to uEZ 1788 environment
+
+unzip in ModbusTCPIP/Source/App/freemodbus
+
+In Project create App/freemodbus
+ Add the following directories/files
+        freemodbus/modbus
+                mb.c
+        freemodbus/modbus/functions
+                mbfunccoils.c
+                mbfuncdiag.c
+                mbfuncdisc.c
+                mbfuncholding.c
+                mbfuncinput.c
+                mbfuncother.c
+                mbutils.c
+        freemodbus/modbus/include
+                mb.h
+                mbconfig.h
+                mbframe.h
+                mbfunc.h
+                mbport.h
+                mbproto.h
+                mbutils.h
+        freemodbus/modbus/tcp
+                mbtcp.c
+                mbtcp.h
+        freemodbus/demo/FDI1788/port
+                port.h
+                portevent.c
+                portother.c
+                porttcp.c
+
+Notice freemodbus/modbus/ascii and freemodbus/modbus/rtu were not included as they are the serial port protocols.  Also the tools and doc directory
+are not needed.  Most of the demo folders are not needed.  We created a new freemodbus/demo/FDI1788 folder to handle the porting specifics for our
+target board.  Since our development environment already has lwIP and freertos we only needed to create a port directory and include a few files.
+
+In the App directory we created a new ModbusTCPIPTask.h and ModbusTCPIPTask.c file to create the modbus tcp task and it also includes the callbacks
+to populate the function responses.  This was taken from demo.c under freemodbus/demo/MCF5235TCP.  The ModbusTCPTask will be started at the end of
+NetworkStartup (similar to the Http servers) so that lwIP is initialized.
+
+To compile the appropriate include paths will need to be added to the project's includes.  These are freemodbus/modbus/include, freemodbus/modbus/tcp,
+and freemodbus/demo/FDI1788/port.
+
+.;
+../../../Source/App/freemodbus/modbus/include;
+../../../Source/App/freemodbus/modbus/tcp;
+../../../Source/App/freemodbus/demo/FDI1788/port
+
+ModbusTCPTask.c initializes the ModbusTCP protocol stack (eMBTCPInit()).  The Modbus TCP protocol stack creates a server task that blocks while
+accepting client connections.  When a new client connection is accepted, it will be handled by one of N listener tasks, where N is the 
+number of MB_TCP_MAX_CLIENTS defined in porttcp.c.  These listener tasks are persistent, but only run when a client connection is active.
+When messages are received the protocol stack will call the user populated callbacks.
+
+The user needs to provide these callbacks (defined in mb.h, examples in ModbusTCPIPTask.c):
+        eMBErrorCode    eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress,
+                                       USHORT usNRegs );
+                                       USHORT usNRegs, eMBRegisterMode eMode );
+        eMBErrorCode    eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress,
+                                         USHORT usNRegs, eMBRegisterMode eMode );
+        eMBErrorCode    eMBRegCoilsCB( UCHAR * pucRegBuffer, USHORT usAddress,
+                                       USHORT usNCoils, eMBRegisterMode eMode );
+        eMBErrorCode    eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress,
+                                          USHORT usNDiscrete );
+
+Additionally the user can use these functions to configure TCP settings (defined in mbport.h, examples in ModbusTCPIPTask.c) 
+and provide callbacks for TCP Connection attempts and Connection close notifications.
+        void            xMBTCPPortSetConnectionTimeout( USHORT usTimeout );
+
+        typedef         BOOL( *pxMBTCPConnectionAttemptCB ) ( T_uEZNetworkConnectionInfo *aConnection );
+        typedef         void( *pxMBTCPConnectionCloseCB ) ( T_uEZNetworkConnectionInfo *aConnection );
+
+        void            xMBTCPPortRegisterConnectionAttemptCB( pxMBTCPConnectionAttemptCB pCB );
+        void            xMBTCPPortRegisterConnectionCloseCB( pxMBTCPConnectionCloseCB pCB );
+
+porttcp.c provides a few #defines which can be modified as necessary.
+        #define MB_TCP_CONNECTION_TIMEOUT 120     // seconds
+        #define MB_TCP_MAX_CLIENTS 5
+
+Debug:
+        In port.h MB_TCP_DEBUG can be defined.  When enabled, the functions in portother.c can be used to provide debug information and also
+to print the details of the modbus packets.
+
+The uEZ library will potentially need to be modified to support the desired number of MB_TCP_MAX_CLIENTS.
+        Source/Devices/Network/lwIPNetwork_lwIP.h
+                #define NETWORK_LWIP_MAX_NUM_SOCKETS
+        Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks2.x/lwipopts.h
+                #define MEMP_NUM_NETBUF
+                #define MEMP_NUM_NETCONN
+
+

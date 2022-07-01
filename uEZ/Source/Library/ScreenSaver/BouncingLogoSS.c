@@ -35,15 +35,15 @@ void BouncingLogoSS_Start() {
     
     UEZTaskSchedulerSuspend();
     lastWin = *SUIGetDrawWindow();
-
-    UEZLCDShowFrame(lcd, 2);
     
-    UEZLCDGetFrame(lcd, 2, (void **)&pixels);
+    UEZLCDGetFrame(lcd, 2, (void **)&pixels); // clear first image to black before show frame below
     swim_window_open(&G_ssWin, G_displayWidth, G_displayHeight, pixels, 0, 0,
             G_displayWidth - 1, G_displayHeight - 1, 2, BLACK, RGB(0, 0, 0), RED);
     
     G_SS_X_pos = G_displayWidth/2 - G_ImageWidth/2;
     G_SS_Y_pos = G_displayHeight/2 - G_ImageHeight/2;
+
+    UEZLCDShowFrame(lcd, 2);
 
     SUISetDrawWindow(&lastWin);
     UEZTaskSchedulerResume();

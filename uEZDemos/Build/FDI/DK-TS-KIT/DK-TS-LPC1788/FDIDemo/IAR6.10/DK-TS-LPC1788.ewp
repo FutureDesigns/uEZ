@@ -3302,7 +3302,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR_M3.a</name>
                 </file>
               </group>
             </group>

@@ -6,19 +6,18 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include "Config.h"
 #include "FreeRTOS.h"
 #include "semphr.h"
@@ -28,7 +27,7 @@
 #include "uEZRTOS.h"
 #include <uEZBSP.h>
 
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#if FREERTOS_PLUS_TRACE //LPC1788/LPC4088 only as of uEZ v2.06
 #include "trcUser.h"
 #endif
 
@@ -136,7 +135,7 @@ T_uezError UEZTaskCreate(
         // Start a task creation, but make it wait
         error = xTaskCreate(
                     ITaskStartup,
-                    (const signed char *)aName,
+                    (const char *)aName,
                     (TUInt16)(aStackSize+20), // TBD: is this enough for ITaskStartup?
                     (void *)(taskHandle),
                     tskIDLE_PRIORITY+aPriority,
@@ -564,7 +563,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
             if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_SEMAPHORE){
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
-                vQueueAddToRegistry(Semaphore, (signed char *)pcSemaphoreName);
+                vQueueAddToRegistry(Semaphore, (char *)pcSemaphoreName);
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 if(aInterfaceName[0] != '\0'){
                     sscanf(aInterfaceName, "%s %s", data, interface);
@@ -832,7 +831,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
             if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_QUEUE){
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
-                vQueueAddToRegistry(Queue, (signed char *)pcQueueName);
+                vQueueAddToRegistry(Queue, (char *)pcQueueName);
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 if(aInterfaceName[0] != '\0'){
                     sscanf(aInterfaceName, "%s %s", data, interface);

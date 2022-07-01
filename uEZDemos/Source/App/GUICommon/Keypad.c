@@ -9,23 +9,22 @@
 /*-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(R) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include "GUI.h"
 #include "GUI_FontIntern.h"
-#include <Button.h>
-#include <Text.h>
+#include <BUTTON.h>
+#include <TEXT.h>
 #include <WM.h>
 #include <DIALOG.h>
 #include "EDIT.h"

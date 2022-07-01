@@ -4,41 +4,47 @@
  * Description:
  *      Functional test framework routines
  *-------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------
- * This software and associated documentation files (the "Software")
- * are copyright 2008 Future Designs, Inc. All Rights Reserved.
- *
- * A copyright license is hereby granted for redistribution and use of
- * the Software in source and binary forms, with or without modification,
- * provided that the following conditions are met:
- * 	-   Redistributions of source code must retain the above copyright
- *      notice, this copyright license and the following disclaimer.
- * 	-   Redistributions in binary form must reproduce the above copyright
- *      notice, this copyright license and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- * 	-   Neither the name of Future Designs, Inc. nor the names of its
- *      subsidiaries may be used to endorse or promote products
- *      derived from the Software without specific prior written permission.
- *
- * 	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- * 	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * 	MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * 	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * 	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * 	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * 	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * 	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * 	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * 	OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * 	EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *-------------------------------------------------------------------------*/
 #ifndef _FUNC_TEST_FRAMEWORK_H_
 #define _FUNC_TEST_FRAMEWORK_H_
 
+/*--------------------------------------------------------------------------
+* uEZ(r) - Copyright (C) 2007-2015 Future Designs, Inc.
+*--------------------------------------------------------------------------
+* This file is part of the uEZ(r) distribution.
+*
+* uEZ(r) is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* uEZ(r) is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with uEZ(r); if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*
+* A special exception to the GPL can be applied should you wish to
+* distribute a combined work that includes uEZ(r), without being obliged
+* to provide the source code for any proprietary components.  See the
+* licensing section of http://www.teamfdi.com/uez for full details of how
+* and when the exception can be applied.
+*
+*    *===============================================================*
+*    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+*    |             We can get you up and running fast!               |
+*    |      See http://www.teamfdi.com/uez for more details.         |
+*    *===============================================================*
+*
+*-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <Source/Library/Graphics/SWIM/lpc_swim.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -99,6 +105,10 @@ typedef struct {
     TBool iIgnoreIfExpansionBoard;
     TBool iIgnoreIfNoLoopbackBoard;
 } T_testState;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _FUNC_TEST_FRAMEWORK_H_
 /*-------------------------------------------------------------------------*

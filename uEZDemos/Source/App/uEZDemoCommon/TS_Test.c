@@ -1,13 +1,28 @@
 /*-------------------------------------------------------------------------*
- * File: TS_Test.c
- *-------------------------------------------------------------------------*/
-/** @addtogroup TS_Test
- * @{
- *     @brief Implements Layout and functionality of TS_Test.c.
+ * File:  TS_Test.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *      Implements Layout and functionality of TS_Test.c.
  * 
- *     How it works in detail goes here ....
- */
-/*-------------------------------------------------------------------------*/
+ *     This runs a touchscreen test using an emWin GUI. Output is also 
+ *     printed to the serial console as well. This test is geared towards
+ *     capacitive touch displays to check that they are properly calibrated.
+ *-------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
+
 //Includes needed by emWin
 #include "GUI.h"
 #include "BUTTON.h"
@@ -17,6 +32,17 @@
 #include "WM.h"
 #include <string.h>
 #include <stdio.h>
+
+#include <uEZDeviceTable.h>
+#include <HAL/HAL.h>
+#include <uEZGPIO.h>
+#include <uEZProcessor.h>
+#include <UEZPlatform.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <Device/Stream.h>
+#include <uEZStream.h>
+#include <Types/Serial.h>
 
 //uEZ and Application Includes
 #include <uEZ.h>
@@ -46,6 +72,10 @@
 #define BUTTON_COLOR_NOT_SLECTED    (GUI_WHITE)
 
 static TUInt32 G_Button_ID = (GUI_ID_USER + 0x01);
+static int lastX = 0;
+static int lastY = 0;
+static int expectedX = 0;
+static int expectedY = 0;
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -82,7 +112,7 @@ static T_LAFMapping TS_TestMapping[NUM_BUTTONS + 2] = {
 };
 
 /** Active Flag, tell the dialog when it receives messages that the screen is in the foreground*/
-static TBool G_Active = EFalse;
+//static TBool G_Active = EFalse;
 
 /*---------------------------------------------------------------------------*
  * Routine:  IHandleButton
@@ -104,6 +134,10 @@ static TBool IHandleButton(WM_MESSAGE * pMsg, int aNCode, int aID)
         } else {
             BUTTON_SetBkColor(WM_GetDialogItem(pMsg->hWin, aID), BUTTON_CI_UNPRESSED, BUTTON_COLOR_NOT_SLECTED);
         }
+        int buttonNum = aID - GUI_ID_USER;
+        expectedX = _iTS_TestDialog[buttonNum].x0 + (BUTTON_XSIZE/2);
+        expectedY = _iTS_TestDialog[buttonNum].y0 + (BUTTON_YSIZE/2);
+        printf("%03d,%03d,%03d,%03d,%03d\n\r", expectedX, lastX, expectedY, lastY, buttonNum);
     }
     return EFalse;
 }
@@ -207,8 +241,6 @@ void TS_Test_Demo(const T_choice *aChoice)
     //T_uezDevice    hLCD;
     U32            FrameBufferSize;
     T_uezTask      hTouchTask;
-    SWIM_WINDOW_T window;
-    T_pixelColor *pixels;
 
     IFillStructures();
 
@@ -236,7 +268,7 @@ void TS_Test_Demo(const T_choice *aChoice)
     GUI_SetFont(&GUI_Font32_ASCII);
     WM_SetDesktopColor(GUI_BLACK);
     WM_MULTIBUF_Enable(1); // enable automatic mult-buffering
-    GUI_DispStringHCenterAt("TS APP Demo Tasks approximately 1.5 minutes to load.\n Reset is required to exit the APP!", (WINDOW_XSIZE / 2), (WINDOW_YSIZE / 2));
+    GUI_DispStringHCenterAt("TS APP Demo Task.\n Reset is required to exit the APP!", (WINDOW_XSIZE / 2), (WINDOW_YSIZE / 2));
     //
     // Open the LCD
     //
@@ -293,7 +325,7 @@ void TS_Test_Demo(const T_choice *aChoice)
  *---------------------------------------------------------------------------*/
 static U32 _TouchTask(T_uezTask aMyTask, void *aParameters) {
     T_uezInputEvent inputEvent;
-    GUI_PID_STATE  State = { 0 };
+    static GUI_PID_STATE  State = { 0 };
 
     (void)aMyTask;
     (void)aParameters;
@@ -312,6 +344,8 @@ static U32 _TouchTask(T_uezTask aMyTask, void *aParameters) {
               State.x       = inputEvent.iEvent.iXY.iX;
               State.y       = inputEvent.iEvent.iXY.iY;
               State.Pressed = 1;
+              lastX = State.x;
+              lastY = State.y;              
           } else {
               State.x       = -1;
               State.y       = -1;

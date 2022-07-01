@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -51,7 +51,7 @@
 typedef struct {
     const DEVICE_LCD *iHAL;
     TUInt32 iBaseAddress;
-    int aNumOpen;
+    TUInt32 aNumOpen;
     TUInt32 iBacklightLevel;
     HAL_LCDController **iLCDController;
     DEVICE_Backlight **iBacklight;
@@ -62,7 +62,6 @@ typedef struct {
     T_uezGPIOPortPin iResetGPIOPin;
     T_uezGPIOPortPin iShutGPIOPin;
     T_uezSemaphore iVSyncSem;
-    int aTimerEvent;
     T_uezDevice itimer;
     T_uezTimerCallback icallback;
     TBool itimerDone;
@@ -275,7 +274,7 @@ T_uezError LCD_LQ043T1DG28_InitializeWorkspace_16Bit(void *aW)
     T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
     p->iBaseAddress = 0xA0000000;
     p->aNumOpen = 0;
-    p->iBacklightLevel = 256; // 100%
+    p->iBacklightLevel = 0; // 0%
     p->iConfiguration = &LCD_LQ043T1DG28_configuration_16Bit;
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
 }
@@ -295,7 +294,7 @@ T_uezError LCD_LQ043T1DG28_InitializeWorkspace_I15Bit(void *aW)
     T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
     p->iBaseAddress = 0xA0000000;
     p->aNumOpen = 0;
-    p->iBacklightLevel = 256; // 100%
+    p->iBacklightLevel = 0; // 0%
     p->iConfiguration = &LCD_LQ043T1DG28_configuration_I15Bit;
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
 }
@@ -315,7 +314,7 @@ T_uezError LCD_LQ043T1DG28_InitializeWorkspace_8Bit(void *aW)
     T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
     p->iBaseAddress = 0xA0000000;
     p->aNumOpen = 0;
-    p->iBacklightLevel = 256; // 100%
+    p->iBacklightLevel = 0; // 0%
     p->iConfiguration = &LCD_LQ043T1DG28_configuration_8Bit;
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
 }
@@ -355,7 +354,7 @@ static T_uezError LCD_LQ043T1DG28_SetBacklightLevel(void *aW, TUInt32 aLevel)
 
     // Scale backlight to be 0 - 0xFFFF
     level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
-
+    
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
@@ -480,17 +479,71 @@ static T_uezError LCD_LQ043T1DG28_MSTimerStart(void *aW, float milliseconds){
 static void LCD_LQ043T1DG28_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
   T_LQ043T1DG28Workspace *p = aCallbackWorkspace->iData;
   p->itimerDone = ETrue;  
-  UEZTimerClose(p->itimer);    
-  if(p->aTimerEvent == 1) {
-    UEZGPIOSet(p->iResetGPIOPin);     
-    (*p->iLCDController)->On(p->iLCDController); // max 100us delay, start DOTCLK/HSYNC/VSYNC immediately
-  } else if(p->aTimerEvent == 2){
-    UEZGPIOClear(p->iShutGPIOPin); // go to normal mode from sleep mode by clearing SHUT
-  } else if(p->aTimerEvent == 3){
-    (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
-    LCD_LQ043T1DG28_SetBacklightLevel(p, p->iBacklightLevel);
-  } else {// should not get here
-  }
+  UEZTimerClose(p->itimer);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_LQ043T1DG28_On
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_LQ043T1DG28_On(void *aW) {
+    T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
+    T_uezError error = UEZ_ERROR_NONE;
+   
+    if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+        // Toggle the reset pin and hold SHUT H until programming done
+        UEZGPIOClear(p->iResetGPIOPin);
+        UEZGPIOSet(p->iShutGPIOPin);
+        LCD_LQ043T1DG28_MSTimerStart(p, 1.25); // 1.25ms itimer, minimum 1ms needed
+        while (p->itimerDone == EFalse){;} // wait for itimer to finish, there will be a small task delay of a few hundred uS
+        UEZGPIOSet(p->iResetGPIOPin);
+        (*p->iLCDController)->On(p->iLCDController); // max 100us delay, start DOTCLK/HSYNC/VSYNC immediately
+        error = ISPIConfigure(p); // program registers, configure the LCD over the SPI port
+        
+        LCD_LQ043T1DG28_MSTimerStart(p, 6.25);// 6.25ms itimer, minimum 5ms
+        while (p->itimerDone == EFalse){;} // wait for timer before starting next stage
+        UEZGPIOClear(p->iShutGPIOPin); // go to normal mode from sleep mode by clearing SHUT
+        
+        LCD_LQ043T1DG28_MSTimerStart(p, 184.0); // minimum 166ms timer, 184ms = 11 frame skip
+        // Backlight will turn on when timer callback is called, then timer will be closed
+        while (p->itimerDone == EFalse){;} // wait for timer before continuing
+        (*p->iBacklight)->On(p->iBacklight); // turn backlight on
+        LCD_LQ043T1DG28_SetBacklightLevel(p, p->iBacklightLevel);
+      }
+   
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_LQ043T1DG28_Off
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns off the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_LQ043T1DG28_Off(void *aW)
+{
+    T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
+
+    if (p->iBacklight){ // Turn off backlight
+      (*p->iBacklight)->Off(p->iBacklight);
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+        LCD_LQ043T1DG28_MSTimerStart(p, 166.6); // minimum 166.6ms timer
+        while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+      }   
+    } 
+    UEZGPIOSet(p->iShutGPIOPin); // go to sleep mode by setting SHUT
+    //(*p->iLCDController)->Off(p->iLCDController); // turn off LCD
+    return UEZ_ERROR_NONE;
 }
 
 /*---------------------------------------------------------------------------*
@@ -510,7 +563,7 @@ static T_uezError LCD_LQ043T1DG28_Open(void *aW)
   T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
   HAL_LCDController **plcdc;
   T_uezError error = UEZ_ERROR_NONE;
-	int i;
+  TUInt32 i;
   
   p->icallback.iTimer = p->itimer; // Setup callback information for itimer
   p->icallback.iMatchRegister = 1;
@@ -523,7 +576,6 @@ static T_uezError LCD_LQ043T1DG28_Open(void *aW)
     UEZGPIOOutput(p->iResetGPIOPin);
     UEZGPIOOutput(p->iShutGPIOPin);
     plcdc = p->iLCDController;
-    if (!error) {
       switch (p->iConfiguration->iColorDepth) {
       case UEZLCD_COLOR_DEPTH_8_BIT:
         LCD_LQ043T1DG28_settings = LCD_LQ043T1DG28_params8bit;
@@ -537,7 +589,6 @@ static T_uezError LCD_LQ043T1DG28_Open(void *aW)
         break;
       }
       LCD_LQ043T1DG28_settings.iBaseAddress = p->iBaseAddress;
-      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         //pre-configure LCD controller first so that there is no delay for turn on
         error = (*plcdc)->Configure(plcdc, &LCD_LQ043T1DG28_settings);
         
@@ -545,24 +596,9 @@ static T_uezError LCD_LQ043T1DG28_Open(void *aW)
             *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; 
         }
 
-        p->aTimerEvent = 1;// start first time critical stage 
-        // Toggle the reset pin and hold SHUT H until programming done
-        UEZGPIOClear(p->iResetGPIOPin);
-        UEZGPIOSet(p->iShutGPIOPin);
-        LCD_LQ043T1DG28_MSTimerStart(p, 1.25); // 1.25ms itimer, minimum 1ms needed
-        while (p->itimerDone == EFalse){;} // wait for itimer to finish, there will be a small task delay of a few hundred uS
-        error = ISPIConfigure(p); // program registers, configure the LCD over the SPI port
-        
-        p->aTimerEvent = 2;// start second time critical stage now that LCD programming is finished
-        LCD_LQ043T1DG28_MSTimerStart(p, 6.25);// 6.25ms itimer, minimum 5ms
-        while (p->itimerDone == EFalse){;} // wait for timer before starting next stage       
-        
-        p->aTimerEvent = 3; // start second time critical stage for min 10 frame delay on backlight turn on
-        LCD_LQ043T1DG28_MSTimerStart(p, 184.0); // minimum 166ms timer, 184ms = 11 frame skip
-        // Backlight will turn on when timer callback is called, then timer will be closed
-        while (p->itimerDone == EFalse){;} // wait for timer before continuing       
-      }
-    }
+        if (!error) {        
+            error = LCD_LQ043T1DG28_On(p); 
+        }      
   }
   return error;
 }
@@ -675,50 +711,6 @@ static T_uezError LCD_LQ043T1DG28_ShowFrame(void *aW, TUInt32 aFrame)
             p->iLCDController,
             p->iBaseAddress + aFrame * RESOLUTION_X * RESOLUTION_Y * 2,
             EFalse);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_LQ043T1DG28_On
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_LQ043T1DG28_On(void *aW)
-{
-    // Turn back on to the remembered level
-    T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
-    (*p->iLCDController)->On(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->On(p->iBacklight);
-    
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_LQ043T1DG28_Off
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns off the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_LQ043T1DG28_Off(void *aW)
-{
-    // Turn off, but don't remember the level
-    T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
-    (*p->iLCDController)->Off(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->Off(p->iBacklight);
 
     return UEZ_ERROR_NONE;
 }

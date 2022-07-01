@@ -1038,7 +1038,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1558,7 +1558,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>uEZGUI-1788-43WQR.hex</state>
+          <state>uEZGUI-1788-70WVT.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -3117,7 +3117,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZI2C.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZLCD.h</name>
@@ -3414,7 +3414,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR_M3.a</name>
                 </file>
               </group>
             </group>
@@ -3735,7 +3735,7 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\uEZGUI_1788_70WVT.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\UEZPlatform.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVT\uEZPlatform.h</name>
           </file>
         </group>
       </group>

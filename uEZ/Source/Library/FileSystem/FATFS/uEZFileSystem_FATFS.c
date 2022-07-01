@@ -1,12 +1,15 @@
 /*-------------------------------------------------------------------------*
  * File:  uEZFileSystem_FATFS.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *      UEZlex File System to the NXP USB Host driver
  *-------------------------------------------------------------------------*/
 /*
  *    @addtogroup uEZFileSystem_FATFS
  *  @{
  *  @brief     uEZ FAT FileSystem Interface
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *    Description:
  *      UEZlex File System to the NXP USB Host driver
@@ -24,13 +27,13 @@
  * @endcode
  */
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -47,6 +50,7 @@ typedef unsigned short	WORD;
 typedef unsigned long	DWORD;
 typedef unsigned char	BYTE;
 typedef unsigned int	UINT;
+typedef unsigned short  WCHAR;
 #include "ff.h"
 
 typedef struct {
@@ -246,8 +250,8 @@ static T_uezError IFATFS_ConvertResultCodeToErrorCode(FRESULT res)
             return UEZ_ERROR_ILLEGAL_OPERATION;
         case FR_EXIST:
             return UEZ_ERROR_ALREADY_EXISTS;
-	    case FR_RW_ERROR:
-            return UEZ_ERROR_READ_WRITE_ERROR;
+	    //case FR_RW_ERROR:
+        //    return UEZ_ERROR_READ_WRITE_ERROR;
         case FR_WRITE_PROTECTED:
             return UEZ_ERROR_PROTECTED;
         case FR_NOT_ENABLED:
@@ -705,7 +709,15 @@ static void ITranslateFileInfo(T_uezFileEntry *aEntry, FILINFO *finfo)
     IFat16ToUEZTime(&aEntry->iCreateTime, finfo->ftime);
     IFat16ToUEZDate(&aEntry->iModifiedDate, finfo->fdate);
     IFat16ToUEZTime(&aEntry->iModifiedTime, finfo->ftime);
+#if _USE_LFN
+    if(finfo->lfname[0] != '\0'){
+        strcpy(aEntry->iFilename, finfo->lfname);
+    } else {
+        strcpy(aEntry->iFilename, finfo->fname);
+    }
+#else
     strcpy(aEntry->iFilename, finfo->fname);
+#endif
     aEntry->iFilesize = finfo->fsize;
 }
 
@@ -747,6 +759,7 @@ T_uezError FS_FATFS_FindFirst(
     IRelease(p);
 #else
     p_session = UEZMemAlloc(sizeof(FS_FATFS_FindSession));
+    memset(p_session, 0, sizeof(FS_FATFS_FindSession));
 #endif
     
     // Remember this block of data
@@ -801,6 +814,10 @@ T_uezError FS_FATFS_FindNext(
     // Grab the next entry in the list
     IGrab(p);
     p_info->fname[0] = '\0';
+#if _USE_LFN
+    p_info->lfname[0] = '\0';
+    p_info->lfsize = _MAX_LFN;
+#endif
     res = f_readdir(&p_session->iDir, p_info);
     IRelease(p);
 
@@ -1268,7 +1285,7 @@ T_uezError FileSystem_FATFS_GetVolumeInfo(
 
         // Report the sectors per cluster, and the bytes per sector
         aInfo->iSectorsPerCluster = p_fs->csize;
-        aInfo->iBytesPerSector = S_MAX_SIZ;
+        aInfo->iBytesPerSector = _MAX_SS;
     }
     IRelease(p);
 

@@ -11,7 +11,7 @@
  *  @{
  *  @brief     uEZ WAVE File Interface
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *    The uEZ WAVE File interface.
  *
@@ -43,6 +43,19 @@
  *  }
  *  @endcode
  */
+/*--------------------------------------------------------------------------
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
 #include "Config.h"
 #include "uEZDevice.h"
 #include <uEZ.h>
@@ -53,22 +66,11 @@
 #include <Device/I2S.h>
 #include <HAL/I2SBus.h>
 #include <uEZRTOS.h>
-#include <UEZFile.h>
-#include <UEZWAVFile.h>
+#include <uEZFile.h>
+#include <uEZWAVFile.h>
 #include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
-/*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
- *--------------------------------------------------------------------------
- * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
- *
- *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
- *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
- *    *===============================================================*
- *
- *-------------------------------------------------------------------------*/
+
+
 T_uezFile file;
 TUInt32 numBytesRead, numBytesRead2 = 1;
 TInt32 *wav, *wav2;

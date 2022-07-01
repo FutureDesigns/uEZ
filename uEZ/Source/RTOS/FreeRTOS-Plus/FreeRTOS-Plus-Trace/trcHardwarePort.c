@@ -1,5 +1,5 @@
 /******************************************************************************* 
- * Tracealyzer v2.5.0 Recorder Library
+ * Tracealyzer v2.6.0 Recorder Library
  * Percepio AB, www.percepio.com
  *
  * trcHardwarePort.c
@@ -36,11 +36,14 @@
  * www.percepio.com
  ******************************************************************************/
 
+#include <Config.h>
 #include "trcHardwarePort.h"
+#include "trcKernelPort.h"
 
 #if (USE_TRACEALYZER_RECORDER == 1)
 
 #include <stdint.h>
+#include <UEZPlatform.h>
 
 uint32_t trace_disable_timestamp = 0;
 uint32_t last_timestamp = 0;
@@ -54,6 +57,55 @@ uint32_t last_timestamp = 0;
  * give sufficient flexibility.
  ******************************************************************************/
 uint32_t uiTraceTickCount = 0;
+
+uint32_t DWT_CYCLES_ADDED = 0;
+
+#if (SELECTED_PORT == PORT_ARM_CortexM)
+
+void prvTraceEnableIRQ(void)
+{
+	asm volatile ("cpsie i");
+}
+
+void prvTraceDisableIRQ(void)
+{
+	asm volatile ("cpsid i");
+}
+
+void prvTraceSetIRQMask(uint32_t priMask)
+{
+#if (COMPILER_TYPE==Keil4)
+	  register uint32_t __regPriMask         asm("primask");
+  __regPriMask = (priMask);
+#else
+	asm volatile ("MSR primask, %0" : : "r" (priMask) );
+#endif
+}
+
+uint32_t prvTraceGetIRQMask(void)
+{
+	uint32_t result;
+#if (COMPILER_TYPE==Keil4)
+	  register uint32_t __regPriMask         asm("primask");
+  return(__regPriMask);
+#else
+	asm volatile ("MRS %0, primask" : "=r" (result) );
+#endif
+	return result;
+}
+
+void prvTraceInitCortexM()
+{
+	DWT_CTRL_REG |= 1;     /* Enable the cycle counter */
+	DWT_CYCLE_COUNTER = 0;
+	
+	if (RecorderDataPtr->frequency == 0)
+	{		
+		RecorderDataPtr->frequency = TRACE_CPU_CLOCK_HZ / HWTC_DIVISOR;
+	}
+}
+
+#endif
 
 /******************************************************************************
  * vTracePortGetTimeStamp

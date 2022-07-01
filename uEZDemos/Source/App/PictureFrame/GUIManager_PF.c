@@ -1,5 +1,12 @@
 /*-------------------------------------------------------------------------*
  * File:  main.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *     The code in this file takes care of starting and stopping emWin,
+ *     emWin is never closed in the application but the code was put in
+ *     any. It also handles opening the LCD and turning on the backlight
+ *     for the first time, when emWin is started. The screens are managed
+ *     by showing the desired dialog, hiding is taken care of internally.
  *-------------------------------------------------------------------------*/
 /** @addtogroup WindowMangaerPictureFame
  * @{
@@ -12,6 +19,20 @@
  *     by showing the desired dialog, hiding is taken care of internally.
  */
 /*-------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <stdio.h>
 #include <stdlib.h>

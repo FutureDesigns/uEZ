@@ -4,14 +4,15 @@
  * Description:
  *     I2C Interface
  *-------------------------------------------------------------------------*/
+
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -22,7 +23,7 @@
  *  @{
  *  @brief     uEZ I2C Interface
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *    The uEZ I2C interface.
  *
@@ -576,12 +577,13 @@ T_uezError UEZI2CDisable(T_uezDevice aDevice)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZI2CDisable
+ * Routine:  UEZI2CIsHung
  *---------------------------------------------------------------------------*/
 /**
- *  Disable the specified I2C device.
+ *  Check if the specified I2C device is hung.
  *
  *  @param [in]    aDevice          Handle to opened I2C device.
+ *  @param [out]   aBool            True if hung
  *
  *  @return        T_uezError       If successful, returns UEZ_ERROR_NONE.  If
  *                                  an invalid device handle, returns

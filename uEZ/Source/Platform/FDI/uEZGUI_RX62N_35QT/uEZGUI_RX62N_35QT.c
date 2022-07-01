@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -50,6 +50,7 @@
 #include <Source/Devices/Flash/Renesas/RX62N/Flash_Renesas_RX62N.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
 #include <Source/Devices/Network/lwIP/Network_lwIP.h>
+#include <Source/Devices/Serial/RS485/Generic/Generic_RS485.h>
 #include <Source/Devices/Touchscreen/Generic/DirectDrive/DirectDrive_TS.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 
@@ -431,6 +432,25 @@ void UEZPlatform_Console_Expansion_Require(
 	RX62N_SCI6_A_Require();
     UEZPlatform_Console_FullDuplex_SCI_Require("SCI6", aWriteBufferSize,
             aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Console_ALT_PWR_COM_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console to be a full duplex UART on the ALT PWR COM header
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Console_ALT_PWR_COM_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // Standard Expansion board serial console is on UART SCI2-A
+    RX62N_SCI2_A_Require();
+    UEZPlatform_Console_FullDuplex_SCI_Require("SCI2", aWriteBufferSize,
+            aReadBufferSize);       
 }
 
 /*---------------------------------------------------------------------------*
@@ -851,11 +871,18 @@ void uEZPlatformInit(void)
 
 void UEZPlatform_Standard_Require(void)
 {
+// Setup console immediately
+#if UEZ_ENABLE_CONSOLE_ALT_PWR_COM
+    UEZPlatform_Console_ALT_PWR_COM_Require(
+        UEZ_CONSOLE_WRITE_BUFFER_SIZE,
+        UEZ_CONSOLE_READ_BUFFER_SIZE);
+#else
+    UEZPlatform_Console_Expansion_Require(
+        UEZ_CONSOLE_WRITE_BUFFER_SIZE,
+        UEZ_CONSOLE_READ_BUFFER_SIZE);
+#endif
+
 	UEZPlatform_LCD_Require();
-	
-    // Setup console immediately
-    UEZPlatform_Console_Expansion_Require(UEZ_CONSOLE_WRITE_BUFFER_SIZE,
-            UEZ_CONSOLE_READ_BUFFER_SIZE);
     
 	UEZPlatform_Touchscreen_Require();
 	UEZPlatform_DataFlash_Require();
@@ -869,43 +896,70 @@ void UEZPlatform_Standard_Require(void)
     //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 } 
 
-/*---------------------------------------------------------------------------*
- * Routine:  UEZGUIIsLoopbackBoardConnected
- *---------------------------------------------------------------------------*
- * Description:
- *      Determines if a loopback board for testing is connected
- * Outputs:
- *      TBool -- ETrue if connected, else EFalse
- *---------------------------------------------------------------------------*/
-TBool UEZGUIIsLoopbackBoardConnected(void)
-{
-    TBool readSet;
-    TBool readClear;
+// Modify pins for expansion before use, modify get, set, clear routine for RX
+void UEZPlatform_WiFiProgramMode(TBool runMode)
+{    
+#define GPIO_WIFI_FAC_RST       GPIO_NONE
+#define GPIO_WIFI_SRSTn         GPIO_NONE
+#define GPIO_WIFI_IRQ           GPIO_NONE
+#define GPIO_WIFI_MODE          GPIO_NONE
 
-	// When the uEZGUI RX 3.5 loopback board is connected, P41 and P16 are shorted
-	// Run a quick GPIO loopback test on these pins.
+    if(runMode == ETrue) {
+        printf("GainSpan Run Mode ...\n");        
+    } else {
+        printf("GainSpan Programming Mode ...\n");
+    }
+    RTOS_ENTER_CRITICAL();
+    
+    UEZGPIOSet(GPIO_WIFI_FAC_RST);        // WIFI_FAC_RST
+    UEZGPIOSetMux(GPIO_WIFI_FAC_RST, 0);
+    UEZGPIOOutput(GPIO_WIFI_FAC_RST);
+    
+    UEZGPIOClear(GPIO_WIFI_SRSTn);        // WIFI_SRSTn
+    UEZGPIOSetMux(GPIO_WIFI_SRSTn, 0);
+    UEZGPIOOutput(GPIO_WIFI_SRSTn);       // WIFI_SRSTn
+    
+    UEZGPIOInput(GPIO_WIFI_IRQ);       // WIFI IRQ
 
-	UEZGPIOSetMux(GPIO_P41, 0); // GPIO mode
-	UEZGPIOOutput(GPIO_P41);
-	UEZGPIOSetMux(GPIO_P16, 0); // GPIO mode
-	UEZGPIOInput(GPIO_P16);
-	
-	UEZGPIOSet(GPIO_P41);
-	UEZTaskDelay(1);
-	readSet = UEZGPIORead(GPIO_P16);
-	UEZTaskDelay(1);
-	UEZGPIOClear(GPIO_P41);
-	UEZTaskDelay(1);
-	readClear = UEZGPIORead(GPIO_P16);
-	
-	UEZGPIOInput(GPIO_P41);
+    if(runMode == ETrue) {
+        UEZGPIOClear(GPIO_WIFI_MODE);  // WIFI RUN MODE
+    } else {
+        UEZGPIOSet(GPIO_WIFI_MODE);    // WIFI PROGRAM ON
+    }
+    UEZGPIOOutput(GPIO_WIFI_MODE);       
+                
+    UEZGPIOUnlock(GPIO_P00);       // RX6XN TX
+    UEZGPIOSetMux(GPIO_P00, 0);
+    UEZGPIOOutput(GPIO_P00);
 
-    // If the pin wiggled, then the loop back is in place
-    if (readSet && !readClear)
-        return ETrue;
+    UEZGPIOUnlock(GPIO_P01);       // RX6XN RX
+    UEZGPIOSetMux(GPIO_P01, 0);
+    UEZGPIOInput(GPIO_P01);
 
-    // Otherwise it is not set.
-    return EFalse;
+    UEZGPIOUnlock(GPIO_NONE);      // WIFI TX
+    UEZGPIOSetMux(GPIO_NONE, 0);
+    UEZGPIOOutput(GPIO_NONE);
+
+    UEZGPIOUnlock(GPIO_NONE);      // WIFI RX
+    UEZGPIOSetMux(GPIO_NONE, 0);
+    UEZGPIOInput(GPIO_NONE);
+
+    //UEZTaskDelay(1000); // for debug
+    UEZGPIOSet(GPIO_WIFI_SRSTn);          // WIFI_SRSTn
+
+    //CPUDisableInterrupts(); // need to change to RX version
+    while (1) {
+        /*if (LPC_GPIO0->PIN & (1 << 3))  // RX6XN RX = GPIO_P01
+            LPC_GPIO0->SET = (1 << 15); // WIFI TX = ?
+        else
+            LPC_GPIO0->CLR = (1 << 15);
+
+        if (LPC_GPIO0->PIN & (1 << 16)) // WIFI RX = ?
+            LPC_GPIO0->SET = (1 << 2);  // RX6XN TX = GPIO_P00
+        else
+            LPC_GPIO0->CLR = (1 << 2);  // RX6XN TX = GPIO_P00
+            */
+    }
 }
 
 TUInt16 UEZPlatform_LCDGetHeight(void)
@@ -948,9 +1002,25 @@ TUInt32 UEZPlatform_GetBaseAddress(void)
 
 #if INCLUDE_EMWIN
 #include <Source/Library/GUI/SEGGER/emWin/LCD.h>
+#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
 const void* UEZPlatform_GUIColorConversion(void)
 {
     return GUICC_M565;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return &GUIDRV_Lin_16_API;
+}
+#else
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return 0;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return 0;
 }
 #endif
 

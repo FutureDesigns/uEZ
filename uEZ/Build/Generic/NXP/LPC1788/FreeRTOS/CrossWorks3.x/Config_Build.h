@@ -25,6 +25,7 @@
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY  1
 #define configUSE_TIMERS          1
+#define USE_PRIMASK_CS            1
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 

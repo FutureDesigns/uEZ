@@ -73,7 +73,7 @@
 #endif
 
 #ifndef configMAX_PRIORITIES
-    #define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 7 )
+    #define configMAX_PRIORITIES		( 7 )
 #endif
 
 #ifndef configMINIMAL_STACK_SIZE
@@ -202,7 +202,21 @@ to exclude the API function. */
     /* The lowest priority. */
     #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
     /* Priority 5, or 160 as only the top three bits are implemented. */
-    #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 5 << (8 - configPRIO_BITS) )
+    #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
+#endif
+
+#ifdef GCC_ARMCM4F
+    /* Use the system definition, if there is one */
+    #ifdef __NVIC_PRIO_BITS
+        #define configPRIO_BITS       __NVIC_PRIO_BITS
+    #else
+        #define configPRIO_BITS       5        /* 32 priority levels */
+    #endif
+
+    /* The lowest priority. */
+    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
+    /* Priority 5, or 160 as only the top three bits are implemented. */
+    #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #endif
 
 #if (COMPILER_TYPE==IAR)
@@ -216,7 +230,7 @@ to exclude the API function. */
     /* The lowest priority. */
     #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
     /* Priority 5, or 160 as only the top three bits are implemented. */
-    #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 5 << (8 - configPRIO_BITS) )
+    #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #endif
 
 #if 0 // ???

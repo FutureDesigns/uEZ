@@ -266,27 +266,6 @@
           <folder Name="lwIP">
             <file file_name="../../../../../../Source/Devices/Network/lwIP/Network_lwIP.c"/>
           </folder>
-          <folder Name="RS9110_N_11_22">
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/includes.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/internals.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/network_config.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/network_config.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/process_data.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/process_data.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/Redpine_RS9110_N_11_22.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/Redpine_RS9110_N_11_22_driver.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_firmware.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_spi_bus.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_spi_pine.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_ssp_hcd.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_api.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_compiler.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_nic.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_spi.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_spi.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_util.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_util.h"/>
-          </folder>
         </folder>
         <folder Name="Audio Codec">
           <folder Name="Wolfson">
@@ -361,6 +340,9 @@
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.c"/>
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.c"/>
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.c"/>
+            <folder Name="option" file_name="">
+              <file file_name="../../../../../../Source/Library/FileSystem/FATFS/option/unicode.c"/>
+            </folder>
           </folder>
         </folder>
         <folder Name="Graphics">

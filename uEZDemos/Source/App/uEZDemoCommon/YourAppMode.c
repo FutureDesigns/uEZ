@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------*
- * File:  YourAppMode
+ * File:  YourAppMode.c
  *-------------------------------------------------------------------------*
  * Description:
  *      Simple display to show that your application can go here
@@ -8,13 +8,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
 #include <uEZTimeDate.h>
@@ -32,8 +32,8 @@
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 //#include <Source/Library/Graphics/SWIM/lpc_droidsansr76.h>
-#include <UEZLCD.h>
-#include <UEZKeypad.h>
+#include <uEZLCD.h>
+#include <uEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -310,5 +310,5 @@ void YourAppMode(const T_choice *aChoice)
 }
 
 /*-------------------------------------------------------------------------*
- * File:  YourAppMode
+ * File:  YourAppMode.c
  *-------------------------------------------------------------------------*/

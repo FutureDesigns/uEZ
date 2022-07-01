@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -33,14 +33,14 @@
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      FILETESTWRITE <filename> <size> <numTimes>
+ *      FILETESTWRITE (filename) (size) (numTimes)
  *
  *  Where,
- *      <filename> Name of test file, usually including 0:/ or 1:/ prefix
- *      <size>     Size of file to write for testing
- *      <size block> Size of memory block to use per write instruction
+ *      (filename) Name of test file, usually including 0:/ or 1:/ prefix
+ *      (size)     Size of file to write for testing
+ *      (size block) Size of memory block to use per write instruction
  *                      (NOTE: This is memory limited)
- *      <numTimes> Number of times to execute this test
+ *      (numTimes) Number of times to execute this test
  *
  *  A file is written with a semi-random pattern of bytes, then read to verify
  *  the same pattern of bytes.  This process is repeated a number of times with

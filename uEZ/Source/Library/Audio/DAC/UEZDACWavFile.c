@@ -1,38 +1,27 @@
 /*-------------------------------------------------------------------------*
- * File:  uEZDACWAVFile.c
+ * File:  UEZDACWAVFile.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *     
  *-------------------------------------------------------------------------*/
-/**
- *    @addtogroup uEZDACWAVFile
- *  @{
- *  @brief     uEZ DAC wav file player
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
- *
- * 		The driver is timer based and plays 22050Hz, Mono, 16-bit
- *      Windows based wav files.
- *
- * @par Example code:
- * Example task to 
- * @par
- * @code
- * #include <uEZ.h>
- *
- * @endcode
- */
+
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
  
+/*-------------------------------------------------------------------------*
+ * Includes:
+ *-------------------------------------------------------------------------*/
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
@@ -44,22 +33,33 @@
 #include <uEZProcessor.h>
 #include <uEZAudioAmp.h>
 #include <uEZFile.h>
-#include <Types/WAVFile.h>
 #include <UEZRTOS.h>
 #include "UEZDACWAVFile.h"
 #include <uEZPlatform.h>
 #include <UEZAudioMixer.h>
 
-/*---------------------------------------------------------------------------*
-* Constants:
-*---------------------------------------------------------------------------*/
-#ifndef UEZ_DAC_WAV_FILE_TASK_BASED
-#define UEZ_DAC_WAV_FILE_TASK_BASED   0
+/*-------------------------------------------------------------------------*
+ * Constants:
+ *-------------------------------------------------------------------------*/
+#ifndef DAC_AUDIO_BUFFER_SIZE
+    #define DAC_AUDIO_BUFFER_SIZE           1024*12  // 8k buffers
 #endif
 
-/*---------------------------------------------------------------------------*
-* Types:
-*---------------------------------------------------------------------------*/
+#ifdef UEZ_DAC_WAV_FILE_SAMPLE_RATE
+    #define SAMPLE_RATE                     UEZ_DAC_WAV_FILE_SAMPLE_RATE
+#else
+    #define SAMPLE_RATE                     22050   //11025Hz is the fastest supported sample rate
+#endif
+
+#ifndef DAC_AUDIO_TASK_STACK_SIZE
+    #define DAC_AUDIO_TASK_STACK_SIZE       UEZ_TASK_STACK_BYTES(2*1024)
+#endif
+
+#define MONO                                (1)
+
+/*-------------------------------------------------------------------------*
+ * Types:
+ *-------------------------------------------------------------------------*/
 typedef struct{
     T_uezSemaphore iSem;
     T_uezSemaphore iSemFeed;
@@ -72,6 +72,8 @@ typedef struct{
     TUInt8 *iBuffer2;
     TUInt32 iBytesBuffer2;
     TBool iNeedFillBuffer2;
+    TUInt8 *iMemBuffer;
+    TUInt32 iMemBufferSize;
     TUInt32 iCount;
     wavFileHeader iHeader;
     TUInt32 iNumBytesReadHeader;
@@ -81,326 +83,148 @@ typedef struct{
     TBool iPlayFromFile;
     TBool iPlayFromMem;
     TBool iPause;
-
     TUInt16 iVolume;
     TUInt32 iSamplePos;
+    T_uezSemaphore iDACAudioTaskSem;
+    T_uezSemaphore iStopSem;
+    TBool iConfigured;
 }T_UEZDACWAVFile_Workspace;
 
+/*-------------------------------------------------------------------------*
+ * Globals:
+ *-------------------------------------------------------------------------*/
+static T_UEZDACWAVFile_Workspace G_DACFileWorkspace;
+static T_uezTask G_DACAudioTask=0;
+static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams);
+
+/*-------------------------------------------------------------------------*
+ * Prototypes:
+ *-------------------------------------------------------------------------*/
+static T_HALTimer_Callback playDACAudio(void * workspace);
+static void DACAudioTask();
+
+
+//Public functions
 /*---------------------------------------------------------------------------*
-* Globals:
-*---------------------------------------------------------------------------*/
-static T_UEZDACWAVFile_Workspace G_DACWAV_Workspace1;
-T_UEZDACWAVFile_Workspace *G_DACWAV_Workspace = &G_DACWAV_Workspace1;
-T_uezTask G_DACAudioTask=0;
-static T_uezSemaphore G_StopSem = 0;
-
-/*---------------------------------------------------------------------------*
-* Macros:
-*---------------------------------------------------------------------------*/
-#ifndef DAC_AUDIO_BUFFER_SIZE
-    #define DAC_AUDIO_BUFFER_SIZE           1024*8  // 8k buffers
-#endif
-
-#ifdef UEZ_DAC_WAV_FILE_SAMPLE_RATE
-    #define SAMPLE_RATE                     UEZ_DAC_WAV_FILE_SAMPLE_RATE
-#else
-    #define SAMPLE_RATE                     22050 // 11025   //11025Hz is the fastest supported sample rate
-#endif
-
-#ifndef DAC_AUDIO_TASK_STACK_SIZE
-    #define DAC_AUDIO_TASK_STACK_SIZE       UEZ_TASK_STACK_BYTES(2*1024)
-#endif
-
-#ifndef DAC_WAV_IS_8BIT
-#define DAC_WAV_IS_8BIT                     0
-#endif
-
-#define MONO                                1       //MONO is the only supported format for wav files
-
-/*---------------------------------------------------------------------------*
-* Routine:  playDACAudio
+* Routine:  UEZDACWAVGetStatus
  *---------------------------------------------------------------------------*/
 /**
- *  Timer callback routine to put data into the DAC
+ *  Return if audio is playing or not
  *
- *  @param [in]    *workspace 				callback functions workspace
- *
- *  @return        T_HALTimer_Callback		Callback 
+ *  @return TBool       True if playing False if not
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-T_HALTimer_Callback playDACAudio(void * workspace)
+TBool UEZDACWAVGetStatus()
 {
-    TUInt32 v;
-    TUInt16 r;
+    return G_DACFileWorkspace.iPlaying;
+}
 
-    if(!G_DACWAV_Workspace->iPause){
-        if (!G_DACWAV_Workspace->iPlayFromMem) {
-            if (G_DACWAV_Workspace->iUseBuffer1) { // if use buffer1
-                if (!G_DACWAV_Workspace->iNeedFillBuffer1) {
-#if DAC_WAV_IS_8BIT
-                    v = G_DACWAV_Workspace->iBuffer1[G_DACWAV_Workspace->iCount++]
-                                                     << 2;
-                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
-#else
-                    v = (*((TUInt16 *)(G_DACWAV_Workspace->iBuffer1 + G_DACWAV_Workspace->iCount)) + 0x8000) & 0xFFFF;
-                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
-                    v >>= 6;
-                    G_DACWAV_Workspace->iCount+=2;
-#endif
-                    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-                    G_DACWAV_Workspace->iSamplePos++;
+/*---------------------------------------------------------------------------*
+* Routine:  UEZDACWaveSetVolume
+ *---------------------------------------------------------------------------*/
+/**
+ *  Set Volume
+ *
+ *  @param [in]     aVolume         Volume to set (Range of 0-256)
+ */
+/*---------------------------------------------------------------------------*/
+void UEZDACWaveSetVolume(TUInt16 aVolume)
+{
+    if(G_DACFileWorkspace.iConfigured){
+        G_DACFileWorkspace.iVolume = aVolume;
+    }
+}
 
-                    if (G_DACWAV_Workspace->iCount
-                            >= G_DACWAV_Workspace->iBytesBuffer1) {
-                        G_DACWAV_Workspace->iNeedFillBuffer1 = ETrue;
-                        G_DACWAV_Workspace->iUseBuffer1 = EFalse;
-                        G_DACWAV_Workspace->iCount = 0;
-                        G_DACWAV_Workspace->iBytesBuffer1 = 0;
-                        _isr_UEZSemaphoreRelease(G_DACWAV_Workspace->iSemFeed);
-                    }
-                }
-            } else {
-                if (!G_DACWAV_Workspace->iNeedFillBuffer2) {
-#if DAC_WAV_IS_8BIT
-                    v = G_DACWAV_Workspace->iBuffer2[G_DACWAV_Workspace->iCount++]
-                                                     << 2;
-                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
-                    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-                    G_DACWAV_Workspace->iSamplePos++;
-#else
-                    v = (*((TUInt16 *)(G_DACWAV_Workspace->iBuffer2 + G_DACWAV_Workspace->iCount)) + 0x8000) & 0xFFFF;
-                    v = (v * G_DACWAV_Workspace->iVolume) / 256;
-                    v >>= 6;
-                    G_DACWAV_Workspace->iCount+=2;
-#endif
-                    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-                    G_DACWAV_Workspace->iSamplePos++;
+/*---------------------------------------------------------------------------*
+* Routine:  UEZDACWAVGetSamplePos
+ *---------------------------------------------------------------------------*/
+/**
+ *  Set Volume
+ *
+ *  @return pos
+ */
+/*---------------------------------------------------------------------------*/
+TUInt32 UEZDACWAVGetSamplePos(void)
+{
+    TUInt32 pos = 0;
 
-                    if (G_DACWAV_Workspace->iCount
-                            >= G_DACWAV_Workspace->iBytesBuffer2) {
-                        G_DACWAV_Workspace->iNeedFillBuffer2 = ETrue;
-                        G_DACWAV_Workspace->iUseBuffer1 = ETrue;
-                        G_DACWAV_Workspace->iCount = 0;
-                        G_DACWAV_Workspace->iBytesBuffer2 = 0;
-                        _isr_UEZSemaphoreRelease(G_DACWAV_Workspace->iSemFeed);
-                    }
-                }
+    if(G_DACFileWorkspace.iConfigured){
+        RTOS_ENTER_CRITICAL();
+        pos = G_DACFileWorkspace.iSamplePos;
+        RTOS_EXIT_CRITICAL();
+    }
+
+    return pos;
+}
+
+/*---------------------------------------------------------------------------*
+* Routine:  UEZDACWAVIsDone
+ *---------------------------------------------------------------------------*/
+/**
+ *  Set Volume
+ *
+ *  @return       bool
+ */
+/*---------------------------------------------------------------------------*/
+TBool UEZDACWAVIsDone(void)
+{
+    // True if we are not playing anything
+    return G_DACFileWorkspace.iPlaying;//((G_DACFileWorkspace.iPlayFromMem == EFalse)
+        //&& (G_DACFileWorkspace.iPlayFromFile == EFalse));
+}
+
+static TUInt32 IPopulateHeader(T_uezFile aFile, wavFileHeader *aHeader)
+{
+    TUInt32 startOfData = 48;
+    char *s;
+    TUInt8 buffer[512];
+    TUInt32 bytesRead;
+
+    memset((void*)aHeader, 0, sizeof(wavFileHeader));
+
+    UEZFileRead(aFile, buffer, sizeof(buffer), &bytesRead);
+    if(bytesRead){
+        s = strstr((char*)buffer+44, "INFO");
+        if(s){
+            //populate with metadata
+            memcpy((void*)aHeader, buffer, 44);
+            s = strstr(s, "INAM");
+            if(s){
+                s +=8;
+                memcpy((void*)aHeader->iSongName, (void*)s, 20);
+            }
+            s += strlen((char*)aHeader->iSongName) + 1;
+            s = strstr(s, "IART");
+            if(s){
+                s +=8;
+                memcpy((void*)aHeader->iArtist, (void*)s, 20);
             }
         } else {
-            if (G_DACWAV_Workspace->iCount >= G_DACWAV_Workspace->iBytesBuffer1) {
-                (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, 0);
-                G_DACWAV_Workspace->iPlaying = EFalse;
-                (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
-                if(G_StopSem){
-                    _isr_UEZSemaphoreRelease(G_StopSem);
-                }
-
-            } else {
-                r = G_DACWAV_Workspace->iBuffer1[G_DACWAV_Workspace->iCount++] << 2;
-                r = (r * G_DACWAV_Workspace->iVolume) / 256;
-                (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, r);
-            }
+            memcpy((void*)aHeader, buffer, 44);
         }
+    } else {
+        return 0;
     }
-    return 0;
-}
-
-/*---------------------------------------------------------------------------*
-* Routine: DACAudioTask 
- *---------------------------------------------------------------------------*/
-/**
- *  Tasked to feed the buffers and start the timer
- *
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  
- *
- *  @endcode
- */
-/*---------------------------------------------------------------------------*/
-void DACAudioTask()
-{
-    (*G_DACWAV_Workspace->iTimer)->Enable(G_DACWAV_Workspace->iTimer);
-
-    while (1) {
-        if (!G_DACWAV_Workspace->iPlayFromMem) {
-            UEZSemaphoreGrab(G_DACWAV_Workspace->iSemFeed,
-                UEZ_TIMEOUT_INFINITE);
-            if (G_DACWAV_Workspace->iNeedFillBuffer1) {
-                UEZFileRead(G_DACWAV_Workspace->iFile,
-                    G_DACWAV_Workspace->iBuffer1,
-                    DAC_AUDIO_BUFFER_SIZE, &G_DACWAV_Workspace->iBytesBuffer1);
-                G_DACWAV_Workspace->iNeedFillBuffer1 = EFalse;
-                if (G_DACWAV_Workspace->iBytesBuffer1 == 0){
-                    //UEZDACWAVStop();
-                    break;
-                }
-            }
-            if (G_DACWAV_Workspace->iNeedFillBuffer2) {
-                UEZFileRead(G_DACWAV_Workspace->iFile,
-                    G_DACWAV_Workspace->iBuffer2,
-                    DAC_AUDIO_BUFFER_SIZE, &G_DACWAV_Workspace->iBytesBuffer2);
-                G_DACWAV_Workspace->iNeedFillBuffer2 = EFalse;
-                if (G_DACWAV_Workspace->iBytesBuffer2 == 0){
-                    //UEZDACWAVStop();
-                    break;
-                }
-            }
-        } else {
-            if (G_DACWAV_Workspace->iCount
-                >= G_DACWAV_Workspace->iBytesBuffer1) {
-                // I'm done, I'm leaving ... cya!
-                UEZDACWAVStop();
-                UEZSemaphoreGrab(G_DACWAV_Workspace->iSem,
-                    UEZ_TIMEOUT_INFINITE);
-                G_DACAudioTask = 0;
-                UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-                G_DACWAV_Workspace->iPlaying = EFalse;
-                break;
-            }
+    s = (char*)&buffer;
+    startOfData = 0;
+    while(startOfData < sizeof(buffer)){
+        if(s[0] == '\0' && s[1] == 'd' && s[2] == 'a' && s[3] == 't' && s[4] == 'a'){
+            break;
         }
+        startOfData++;
+        s++;
     }
-    G_DACWAV_Workspace->iPlaying = EFalse;
-    G_DACAudioTask = 0;
+    startOfData += 7;
+    return startOfData;
 }
-
 /*---------------------------------------------------------------------------*
-* Routine: UEZDACWAVConfig 
- *---------------------------------------------------------------------------*/
-/**
- *  Setups the DAC, Timer, and allocated memory for the buffers
- *
- *  @param [in] 	*aTimer			Timer to use eg "Timer0"
- *                  
- *	@return			T_uezError		UEZ_ERROR_NONE if success
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  
- *
- *  @endcode
- */
-/*---------------------------------------------------------------------------*/
-T_uezError UEZDACWAVConfig(const char* aTimer)
-{
-    T_uezError error;
-    TUInt32 v;
-        
-    // Return an error if either "DAC0" or "Timer0" are not registered
-    if ( (!UEZDeviceTableIsRegistered("DAC0")) ||
-          (!UEZDeviceTableIsRegistered("Timer2")) )
-        return UEZ_ERROR_DEVICE_NOT_FOUND;
-    
-    G_DACWAV_Workspace->iVolume = 256; // 100%
-    
-    //create the semiphore
-    UEZSemaphoreCreateBinary(&G_DACWAV_Workspace->iSem);
-    UEZSemaphoreCreateBinary(&G_DACWAV_Workspace->iSemFeed);
-    
-    HALInterfaceFind(aTimer, (T_halWorkspace **)&G_DACWAV_Workspace->iTimer);
-    HALInterfaceFind("DAC0", (T_halWorkspace **)&G_DACWAV_Workspace->iDac);
-    
-    //Configure the DAC
-    error = (*G_DACWAV_Workspace->iDac)->SetBias((void*)G_DACWAV_Workspace->iDac, EFalse);
-    error = (*G_DACWAV_Workspace->iDac)->SetVRef((void*)G_DACWAV_Workspace->iDac, 3300);
-    
-    // Configure the DAC midpoint
-    v = 0x8000;
-    v = (v * G_DACWAV_Workspace->iVolume) / 256;
-    v >>= 6;
-    (*G_DACWAV_Workspace->iDac)->Write(G_DACWAV_Workspace->iDac, v);
-    
-    if(error)
-        return error;
-        
-    //Setup the timer
-    error = (*G_DACWAV_Workspace->iTimer)->SetMatchRegister(G_DACWAV_Workspace->iTimer,
-                                                            0,
-                                                            (PROCESSOR_OSCILLATOR_FREQUENCY/1)/SAMPLE_RATE,
-                                                            ETrue,
-                                                            ETrue,
-                                                            EFalse);
-    error = (*G_DACWAV_Workspace->iTimer)->SetMatchCallback(G_DACWAV_Workspace->iTimer,
-                                                           0,
-                                                           (T_HALTimer_Callback)&playDACAudio,
-                                                           G_DACWAV_Workspace);
-    if(error)
-        return error;                                                   
-       
-    G_DACWAV_Workspace->iPlaying = EFalse;
-    
-    G_DACWAV_Workspace->iPlayFromMem = EFalse;
-    G_DACWAV_Workspace->iPlayFromFile = EFalse;
-    G_DACWAV_Workspace->iFile = 0;
-    
-        //Allocate the memory for the buffers
-    G_DACWAV_Workspace->iBuffer1 = UEZMemAlloc(DAC_AUDIO_BUFFER_SIZE);
-    G_DACWAV_Workspace->iBuffer2 = UEZMemAlloc(DAC_AUDIO_BUFFER_SIZE);
-    
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
-* Routine:  UEZDACWAVStop
- *---------------------------------------------------------------------------*/
-/**
- *  Stop audio from playing, remove the task, and close the file
- *
- *  @return			T_uezError		UEZ_ERROR_NONE if success       
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  
- *
- *  @endcode
- */
-/*---------------------------------------------------------------------------*/
-T_uezError UEZDACWAVStop()
-{
-    if(G_DACWAV_Workspace->iSem){
-        UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
-        if(G_DACWAV_Workspace->iPlaying){
-            (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
-            if (G_DACWAV_Workspace->iPlayFromMem) {
-                // Point to the end so the task closes out naturally
-                G_DACWAV_Workspace->iCount = G_DACWAV_Workspace->iBytesBuffer1;
-            }
-            G_DACWAV_Workspace->iPlaying = EFalse;
-            if(G_DACWAV_Workspace->iPlayFromFile){
-                if(G_DACWAV_Workspace->iFileOpen == ETrue){
-                    G_DACWAV_Workspace->iFileOpen = EFalse;
-                    UEZFileClose(G_DACWAV_Workspace->iFile);
-                    G_DACWAV_Workspace->iFile = 0;
-                }
-            }
-        }
-#if 1
-        if(G_DACAudioTask && (UEZTaskGetCurrent() != G_DACAudioTask)){
-            UEZTaskDelete(G_DACAudioTask);
-            G_DACAudioTask = 0;
-        }
-#endif
-        if(G_DACWAV_Workspace->iFile){
-            UEZFileClose(G_DACWAV_Workspace->iFile);
-            G_DACWAV_Workspace->iFile = 0;
-        }
-        G_DACWAV_Workspace->iPlayFromMem = EFalse;
-        G_DACWAV_Workspace->iPlayFromFile = EFalse;
-        UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-        UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    }
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
-* Routine:  UEZDACWAVPlayPause
+* Routine:  UEZDACWAVPlay
  *---------------------------------------------------------------------------*/
 /**
  *  Play the specifed WAV file
@@ -416,90 +240,63 @@ T_uezError UEZDACWAVStop()
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-T_uezError UEZDACWAVPlayPause(TBool aBool)
+T_uezError UEZDACWAVPlay(char* aFileName, wavFileHeader *aHeader)
 {
-    G_DACWAV_Workspace->iPause = aBool;
-    return UEZ_ERROR_NONE;
-}
+    T_uezError error = UEZ_ERROR_NONE;
+    TUInt32 pos; //Starting point of the data
 
-/*---------------------------------------------------------------------------*
-* Routine:  UEZDACWAVPlay
- *---------------------------------------------------------------------------*/
-/**
- *  Play the specifed WAV file
- *
- *	@param [in] 	*aFileName		Name of file to be played eg "1:file.wav"
- *                                       for SD or "0:file.wav" for USB Drive
- *	@return			T_uezError		UEZ_ERROR_NONE if success     
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  
- *
- *  @endcode
- */
-/*---------------------------------------------------------------------------*/
-T_uezError UEZDACWAVPlay(char* aFileName)
-{
-    T_uezError error;
-    
-    if(G_DACWAV_Workspace == NULL)
-        return UEZ_ERROR_NOT_ACTIVE; // Must call config first
+    if(G_DACFileWorkspace.iConfigured){
+        UEZSemaphoreGrab(G_DACFileWorkspace.iSem, UEZ_TIMEOUT_INFINITE);
 
-    G_DACWAV_Workspace->iPlayFromFile = ETrue;
-    G_DACWAV_Workspace->iPlayFromMem = EFalse;
-    G_DACWAV_Workspace->iPause = EFalse;
+        if(UEZFileOpen(aFileName, FILE_FLAG_READ_ONLY, &G_DACFileWorkspace.iFile) == UEZ_ERROR_NONE){
+            G_DACFileWorkspace.iFileOpen = ETrue;
+            //UEZFileRead(G_DACFileWorkspace.iFile, &G_DACFileWorkspace.iHeader, 44, &G_DACFileWorkspace.iNumBytesReadHeader);
+            pos = IPopulateHeader(G_DACFileWorkspace.iFile, &G_DACFileWorkspace.iHeader);
+            memcpy((void*)aHeader, (void*)&G_DACFileWorkspace.iHeader, sizeof(G_DACFileWorkspace.iHeader));
+            if(G_DACFileWorkspace.iHeader.iNumChannels != MONO || pos == 0){//|| G_DACFileWorkspace.iHeader.sampleRate != SAMPLE_RATE){
+                UEZFileClose(G_DACFileWorkspace.iFile);
+                G_DACFileWorkspace.iFile = 0;
+                UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
+                return UEZ_ERROR_INVALID;
+            }
+            error = (*G_DACFileWorkspace.iTimer)->SetMatchRegister(G_DACFileWorkspace.iTimer,
+                                                                    0,
+                                                                    (PROCESSOR_OSCILLATOR_FREQUENCY/1)/G_DACFileWorkspace.iHeader.iSampleRate,
+                                                                    ETrue,
+                                                                    ETrue,
+                                                                    EFalse);
+            UEZFileSeekPosition(G_DACFileWorkspace.iFile, pos);
+            UEZFileRead(G_DACFileWorkspace.iFile,
+                              G_DACFileWorkspace.iBuffer1,
+                              DAC_AUDIO_BUFFER_SIZE,
+                              &G_DACFileWorkspace.iBytesBuffer1);
+            UEZFileRead(G_DACFileWorkspace.iFile,
+                              G_DACFileWorkspace.iBuffer2,
+                              DAC_AUDIO_BUFFER_SIZE,
+                              &G_DACFileWorkspace.iBytesBuffer2);
 
-    UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
-    if (G_DACWAV_Workspace->iPlaying == ETrue) {
-        UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-        return UEZ_ERROR_ILLEGAL_OPERATION;
-    }
-    
-    if(UEZFileOpen(aFileName, FILE_FLAG_READ_ONLY, &G_DACWAV_Workspace->iFile) == UEZ_ERROR_NONE){
-        G_DACWAV_Workspace->iFileOpen = ETrue;
-        UEZFileRead(G_DACWAV_Workspace->iFile, &G_DACWAV_Workspace->iHeader, 44, &G_DACWAV_Workspace->iNumBytesReadHeader);
-        if(G_DACWAV_Workspace->iHeader.numChannels != MONO || G_DACWAV_Workspace->iHeader.sampleRate != SAMPLE_RATE){
-            UEZFileClose(G_DACWAV_Workspace->iFile);
-            G_DACWAV_Workspace->iFile = 0;
-            UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-            return UEZ_ERROR_INVALID;
+            G_DACFileWorkspace.iUseBuffer1 = ETrue;
+            G_DACFileWorkspace.iNeedFillBuffer1 = EFalse;
+            G_DACFileWorkspace.iNeedFillBuffer2 = EFalse;
+            G_DACFileWorkspace.iCount = 0;
+            G_DACFileWorkspace.iSamplePos = 0;
+            G_DACFileWorkspace.iPlaying = ETrue;
+            G_DACFileWorkspace.iPlayFromFile = ETrue;
+            G_DACFileWorkspace.iPlayFromMem = EFalse;
+            G_DACFileWorkspace.iPause = EFalse;
+
+            UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+            error = UEZSemaphoreRelease(G_DACFileWorkspace.iDACAudioTaskSem);
+        } else {
+            error = UEZ_ERROR_INCOMPLETE_CONFIGURATION;
         }
-        UEZFileRead(G_DACWAV_Workspace->iFile,
-                          G_DACWAV_Workspace->iBuffer1,
-                          DAC_AUDIO_BUFFER_SIZE,
-                          &G_DACWAV_Workspace->iBytesBuffer1);
-        UEZFileRead(G_DACWAV_Workspace->iFile,
-                          G_DACWAV_Workspace->iBuffer2,
-                          DAC_AUDIO_BUFFER_SIZE,
-                          &G_DACWAV_Workspace->iBytesBuffer2);
-    }
-    else {
-        UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-        return UEZ_ERROR_NOT_FOUND;
-    }
-    //Inilize the workspace
-    G_DACWAV_Workspace->iUseBuffer1 = ETrue;
-    G_DACWAV_Workspace->iNeedFillBuffer1 = EFalse;
-    G_DACWAV_Workspace->iNeedFillBuffer2 = EFalse;
-    G_DACWAV_Workspace->iCount = 0;
-    G_DACWAV_Workspace->iSamplePos = 0;
-    
-    G_DACWAV_Workspace->iPlaying = ETrue;
-    
-    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    error = UEZTaskCreate((T_uezTaskFunction)DACAudioTask, "DAC Audio",
-                          DAC_AUDIO_TASK_STACK_SIZE, 0, UEZ_PRIORITY_HIGH,
-                          &G_DACAudioTask);
-    UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-    return error;
-}
 
-static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams)
-{
-    UEZSemaphoreGrab(G_StopSem, UEZ_TIMEOUT_INFINITE);
-    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    return 1;
+        UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
+    } else {
+        error = UEZ_ERROR_DEVICE_NOT_FOUND;
+    }
+
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -508,68 +305,222 @@ static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams)
 /**
  *  Play the specifed WAV buffer
  *
- *  @param [in]    *aBuffer 	Pointer to buffer to play
+ *  @param [in]    *aBuffer     Pointer to buffer to play
  *
- *	@param [in]	   aSize		Buffer size
+ *  @param [in]    aSize        Buffer size
  *
- *	@return		   T_uezError	UEZ_ERROR_NONE if success       
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  
- *
- *  @endcode
+ *  @return        T_uezError   UEZ_ERROR_NONE if success
+
  */
 /*---------------------------------------------------------------------------*/
 T_uezError UEZDACWAVPlayBuffer(TUInt8 *aBuffer, TUInt32 aSize)
 {
-    T_uezError error;
-    
-    if(G_DACWAV_Workspace == NULL)
-        return UEZ_ERROR_NOT_ACTIVE; // Must call config first
-    
-    if(!G_StopSem){
-        UEZSemaphoreCreateBinary(&G_StopSem);
-        UEZSemaphoreGrab(G_StopSem, UEZ_TIMEOUT_INFINITE);
+    T_uezError error = UEZ_ERROR_NONE;
+
+    if(G_DACFileWorkspace.iConfigured){
+        UEZSemaphoreGrab(G_DACFileWorkspace.iSem, UEZ_TIMEOUT_INFINITE);
+
+        if(!G_DACFileWorkspace.iPlaying){
+            G_DACFileWorkspace.iPlayFromMem = ETrue;
+            G_DACFileWorkspace.iPlayFromFile = EFalse;
+            G_DACFileWorkspace.iPause = EFalse;
+            G_DACFileWorkspace.iCount = 0;
+
+            G_DACFileWorkspace.iMemBuffer = aBuffer;
+            G_DACFileWorkspace.iMemBufferSize = aSize;
+
+            UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+            G_DACFileWorkspace.iPlaying = ETrue;
+            (*G_DACFileWorkspace.iTimer)->Enable(G_DACFileWorkspace.iTimer);
+            UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
+        } else {
+            error = UEZ_ERROR_ILLEGAL_OPERATION;
+        }
+    } else {
+        error = UEZ_ERROR_DEVICE_NOT_FOUND;
+    }
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+* Routine:  UEZDACWAVPlayPause
+ *---------------------------------------------------------------------------*/
+/**
+ *  Pause the DAC playback
+ *
+ *  @param [in]     *aBool          If true, pause, if False then unpause
+ *
+ *  @return         T_uezError      UEZ_ERROR_NONE if success
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *
+ *
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZDACWAVPlayPause(TBool aBool)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+
+    if(G_DACFileWorkspace.iConfigured){
+        G_DACFileWorkspace.iPause = aBool;
+    } else {
+        error = UEZ_ERROR_DEVICE_NOT_FOUND;
+    }
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+* Routine:  UEZDACWAVStop
+ *---------------------------------------------------------------------------*/
+/**
+ *  Stop audio from playing, remove the task, and close the file
+ *
+ *  @return         T_uezError      UEZ_ERROR_NONE if success
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *
+ *
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZDACWAVStop()
+{
+    T_uezError error = UEZ_ERROR_NONE;
+
+    if(G_DACFileWorkspace.iConfigured){
+        UEZSemaphoreGrab(G_DACFileWorkspace.iSem, UEZ_TIMEOUT_INFINITE);
+        if(G_DACFileWorkspace.iPlaying){
+            (*G_DACFileWorkspace.iTimer)->Disable(G_DACFileWorkspace.iTimer);
+            if (G_DACFileWorkspace.iPlayFromMem) {
+                // Point to the end so the task closes out naturally
+                G_DACFileWorkspace.iCount = G_DACFileWorkspace.iBytesBuffer1;
+            }
+            G_DACFileWorkspace.iPlaying = EFalse;
+            if(G_DACFileWorkspace.iPlayFromFile){
+                if(G_DACFileWorkspace.iFileOpen == ETrue){
+                    G_DACFileWorkspace.iFileOpen = EFalse;
+                    UEZFileClose(G_DACFileWorkspace.iFile);
+                    G_DACFileWorkspace.iFile = 0;
+                }
+            }
+        }
+
+        if(G_DACFileWorkspace.iFile){
+            UEZFileClose(G_DACFileWorkspace.iFile);
+            G_DACFileWorkspace.iFile = 0;
+        }
+        G_DACFileWorkspace.iPlayFromMem = EFalse;
+        G_DACFileWorkspace.iPlayFromFile = EFalse;
+        UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
+        UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+
+        UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
+    } else {
+        error = UEZ_ERROR_DEVICE_NOT_FOUND;
     }
 
-    UEZTaskCreate(MuteTask, "MuteTask", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+    return error;
+}
 
-    G_DACWAV_Workspace->iPlayFromMem = ETrue;
-    G_DACWAV_Workspace->iPlayFromFile = EFalse;
-    G_DACWAV_Workspace->iPause = EFalse;
+/*---------------------------------------------------------------------------*
+* Routine: UEZDACWAVConfig
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setups the DAC, Timer, and allocated memory for the buffers
+ *  This driver uses the HAL Layer for the timer and DAC, should these device
+ *  be used else where this driver may not function properly. Use of the HAL
+ *  Layer is required for speed.
+ *
+ * @return T_uezError, UEZ_ERROR_NONE if successful
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZDACWAVConfig(const char* aTimer)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    static TBool runOnce = EFalse;
+    TUInt32 v;
 
-    UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
-    if (G_DACWAV_Workspace->iPlaying == ETrue) {
-        UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
-        return UEZ_ERROR_ILLEGAL_OPERATION;
+    if(!runOnce){
+        runOnce = ETrue;
+        memset((void*)&G_DACFileWorkspace, 0 , sizeof(G_DACFileWorkspace));
+
+        //Check to see if the time and DAC are registered
+        if ((!UEZDeviceTableIsRegistered("DAC0")) ||
+              (!UEZDeviceTableIsRegistered(aTimer)) ){
+            //the devices have not been required, add the correct require routines to the startup
+            return UEZ_ERROR_DEVICE_NOT_FOUND;
+        }
+
+        //Setup the workspace
+        G_DACFileWorkspace.iVolume = 256; // 100%
+        UEZSemaphoreCreateBinary(&G_DACFileWorkspace.iSem);
+        UEZSemaphoreCreateBinary(&G_DACFileWorkspace.iSemFeed);
+        UEZSemaphoreCreateBinary(&G_DACFileWorkspace.iDACAudioTaskSem);
+        UEZSemaphoreCreateBinary(&G_DACFileWorkspace.iStopSem);
+
+        //Grab the semaphore to hold the task when it gets created
+        UEZSemaphoreGrab(G_DACFileWorkspace.iDACAudioTaskSem, UEZ_TIMEOUT_INFINITE);
+        UEZSemaphoreGrab(G_DACFileWorkspace.iStopSem, UEZ_TIMEOUT_INFINITE);
+
+        //Configure the DAC
+        if(HALInterfaceFind("DAC0", (T_halWorkspace **)&G_DACFileWorkspace.iDac) == UEZ_ERROR_NONE){
+            v = 0x8000;
+            v = (v * G_DACFileWorkspace.iVolume) / 256;
+            v >>= 6;
+            error = (*G_DACFileWorkspace.iDac)->Write(G_DACFileWorkspace.iDac, v);
+        } else {
+            error = UEZ_ERROR_DEVICE_NOT_FOUND;
+        }
+
+        if(error == UEZ_ERROR_NONE){
+            //DAC is configured with not problems, configure the timer
+            if(HALInterfaceFind(aTimer, (T_halWorkspace **)&G_DACFileWorkspace.iTimer) == UEZ_ERROR_NONE){
+                error = (*G_DACFileWorkspace.iTimer)->SetMatchRegister(G_DACFileWorkspace.iTimer,
+                                                                        0,
+                                                                        (PROCESSOR_OSCILLATOR_FREQUENCY/1)/SAMPLE_RATE,
+                                                                        ETrue,
+                                                                        ETrue,
+                                                                        EFalse);
+
+                if(error == UEZ_ERROR_NONE){
+                    error = (*G_DACFileWorkspace.iTimer)->SetMatchCallback(G_DACFileWorkspace.iTimer,
+                                                                           0,
+                                                                           (T_HALTimer_Callback)&playDACAudio,
+                                                                           &G_DACFileWorkspace);
+                }
+
+            } else {
+                error = UEZ_ERROR_DEVICE_NOT_FOUND;
+            }
+        }
+
+        //Timer configured
+        if(error == UEZ_ERROR_NONE){
+            //Setup the rest of the workspace, allocate memory for the buffers, and create the feed task
+            G_DACFileWorkspace.iPlaying = EFalse;
+
+            G_DACFileWorkspace.iPlayFromMem = EFalse;
+            G_DACFileWorkspace.iPlayFromFile = EFalse;
+            G_DACFileWorkspace.iFile = 0;
+
+                //Allocate the memory for the buffers
+            G_DACFileWorkspace.iBuffer1 = UEZMemAlloc(DAC_AUDIO_BUFFER_SIZE);
+            G_DACFileWorkspace.iBuffer2 = UEZMemAlloc(DAC_AUDIO_BUFFER_SIZE);
+
+
+            error = UEZTaskCreate((T_uezTaskFunction)DACAudioTask, "DAC Audio",
+                                  DAC_AUDIO_TASK_STACK_SIZE, 0, UEZ_PRIORITY_HIGH,
+                                  &G_DACAudioTask);
+
+            UEZTaskCreate(MuteTask, "MuteTask", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+        }
+        if(error == UEZ_ERROR_NONE){
+            G_DACFileWorkspace.iConfigured = ETrue;
+        }
     }
-    
-    G_DACWAV_Workspace->iUseBuffer1 = ETrue;
-    G_DACWAV_Workspace->iNeedFillBuffer1 = EFalse;
-    G_DACWAV_Workspace->iNeedFillBuffer2 = EFalse;
-    G_DACWAV_Workspace->iCount = 0;
-    
-    //G_DACWAV_Workspace->iBuffer1 = aBuffer;
-    memcpy((void*)G_DACWAV_Workspace->iBuffer1, (void*)aBuffer, aSize);
-    G_DACWAV_Workspace->iBytesBuffer1 = aSize;
-    
-    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    G_DACWAV_Workspace->iPlaying = ETrue;
-    G_DACAudioTask = 0;
-
-#if UEZ_DAC_WAV_FILE_TASK_BASED
-    error = UEZTaskCreate((T_uezTaskFunction)DACAudioTask, "DAC Audio",
-                          DAC_AUDIO_TASK_STACK_SIZE, 0, UEZ_PRIORITY_NORMAL,
-                          &G_DACAudioTask);
-    if (error) {
-        UEZFailureMsg("UEZDAVWAVPlayBuffer failed to create task!");
-    }
-#else
-   (*G_DACWAV_Workspace->iTimer)->Enable(G_DACWAV_Workspace->iTimer);
-    error = UEZ_ERROR_NONE;
-#endif
-    UEZSemaphoreRelease(G_DACWAV_Workspace->iSem);
     return error;
 }
 
@@ -577,90 +528,199 @@ T_uezError UEZDACWAVPlayBuffer(TUInt8 *aBuffer, TUInt32 aSize)
 * Routine:  UEZDACWAVCleanUp
  *---------------------------------------------------------------------------*/
 /**
- *  Free all allocaed memory
- * 
- *  @par Example Code:
- *  @code
- *  #include <uEZ.h>
- *  
+ *  Free all allocated memory, this driver can not be restarted after this call
+ *  is made.
  *
- *  @endcode
  */
 /*---------------------------------------------------------------------------*/
 void UEZDACWAVCleanUp()
 {
-    if(G_DACWAV_Workspace){
-       (*G_DACWAV_Workspace->iTimer)->Disable(G_DACWAV_Workspace->iTimer);
-        UEZSemaphoreGrab(G_DACWAV_Workspace->iSem, UEZ_TIMEOUT_INFINITE);
-        if(G_DACWAV_Workspace->iPlayFromFile){
-            UEZMemFree(G_DACWAV_Workspace->iBuffer1);
-            UEZMemFree(G_DACWAV_Workspace->iBuffer2);
-        }
+    if(G_DACFileWorkspace.iConfigured){
+        //Deallocate buffers
+        UEZMemFree(G_DACFileWorkspace.iBuffer1);
+        UEZMemFree(G_DACFileWorkspace.iBuffer2);
 
-        UEZSemaphoreDelete(G_DACWAV_Workspace->iSem);
-        G_DACWAV_Workspace->iSem = 0;
-        UEZSemaphoreDelete(G_DACWAV_Workspace->iSemFeed);
-        G_DACWAV_Workspace->iBuffer1 = 0;
-        G_DACWAV_Workspace->iBuffer2 = 0;
-        G_DACWAV_Workspace->iPlayFromMem = EFalse;
-        G_DACWAV_Workspace->iPlayFromFile = EFalse;
-        //UEZMemFree(G_DACWAV_Workspace);
-        //G_DACWAV_Workspace = 0;
+        //Delete the feed task
+        UEZTaskDelete(G_DACAudioTask);
+
+        //close the time and dac
+        //not required when using the HAL layer
+
+        //delete the semaphores
+        UEZSemaphoreDelete(G_DACFileWorkspace.iSem);
+        UEZSemaphoreDelete(G_DACFileWorkspace.iSemFeed);
+        UEZSemaphoreDelete(G_DACFileWorkspace.iDACAudioTaskSem);
+        UEZSemaphoreDelete(G_DACFileWorkspace.iStopSem);
+
+        //clear the workspace
+        memset((void*)&G_DACFileWorkspace, 0 , sizeof(G_DACFileWorkspace));
     }
 }
 
+//private functions
 /*---------------------------------------------------------------------------*
-* Routine:  UEZDACWAVGetStatus
+* Routine:  playDACAudio
  *---------------------------------------------------------------------------*/
 /**
- *  Return if audio is playing or not
+ *  Timer callback routine to put data into the DAC
  *
- *  @return TBool 		True if playing False if not
+ *  @param [in]    *workspace               callback functions workspace
+ *
+ *  @return        T_HALTimer_Callback      Callback
+ */
+/*---------------------------------------------------------------------------*/
+static T_HALTimer_Callback playDACAudio(void * workspace)
+{
+    TUInt32 v;
+    TUInt16 r;
+
+    if(!G_DACFileWorkspace.iPause){
+        if (!G_DACFileWorkspace.iPlayFromMem) {
+            if (G_DACFileWorkspace.iUseBuffer1) { // if use buffer1
+                if (!G_DACFileWorkspace.iNeedFillBuffer1) {
+#if DAC_WAV_IS_8BIT
+                    v = G_DACFileWorkspace.iBuffer1[G_DACFileWorkspace.iCount++]
+                                                     << 2;
+                    v = (v * G_DACFileWorkspace.iVolume) / 256;
+#else
+                    v = (*((TUInt16 *)(G_DACFileWorkspace.iBuffer1 + G_DACFileWorkspace.iCount)) + 0x8000) & 0xFFFF;
+                    v = (v * G_DACFileWorkspace.iVolume) / 256;
+                    v >>= 6;
+                    G_DACFileWorkspace.iCount+=2;
+#endif
+                    (*G_DACFileWorkspace.iDac)->Write(G_DACFileWorkspace.iDac, v);
+                    G_DACFileWorkspace.iSamplePos++;
+
+                    if (G_DACFileWorkspace.iCount
+                            >= G_DACFileWorkspace.iBytesBuffer1) {
+                        G_DACFileWorkspace.iNeedFillBuffer1 = ETrue;
+                        G_DACFileWorkspace.iUseBuffer1 = EFalse;
+                        G_DACFileWorkspace.iCount = 0;
+                        G_DACFileWorkspace.iBytesBuffer1 = 0;
+                        _isr_UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
+                    }
+                }
+            } else {
+                if (!G_DACFileWorkspace.iNeedFillBuffer2) {
+#if DAC_WAV_IS_8BIT
+                    v = G_DACFileWorkspace.iBuffer2[G_DACFileWorkspace.iCount++]
+                                                     << 2;
+                    v = (v * G_DACFileWorkspace.iVolume) / 256;
+                    (*G_DACFileWorkspace.iDac)->Write(G_DACFileWorkspace.iDac, v);
+                    G_DACFileWorkspace.iSamplePos++;
+#else
+                    v = (*((TUInt16 *)(G_DACFileWorkspace.iBuffer2 + G_DACFileWorkspace.iCount)) + 0x8000) & 0xFFFF;
+                    v = (v * G_DACFileWorkspace.iVolume) / 256;
+                    v >>= 6;
+                    G_DACFileWorkspace.iCount+=2;
+#endif
+                    (*G_DACFileWorkspace.iDac)->Write(G_DACFileWorkspace.iDac, v);
+                    G_DACFileWorkspace.iSamplePos++;
+
+                    if (G_DACFileWorkspace.iCount
+                            >= G_DACFileWorkspace.iBytesBuffer2) {
+                        G_DACFileWorkspace.iNeedFillBuffer2 = ETrue;
+                        G_DACFileWorkspace.iUseBuffer1 = ETrue;
+                        G_DACFileWorkspace.iCount = 0;
+                        G_DACFileWorkspace.iBytesBuffer2 = 0;
+                        _isr_UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
+                    }
+                }
+            }
+        } else {
+            if (G_DACFileWorkspace.iCount >= G_DACFileWorkspace.iMemBufferSize) {
+                (*G_DACFileWorkspace.iDac)->Write(G_DACFileWorkspace.iDac, 0);
+                G_DACFileWorkspace.iPlaying = EFalse;
+                (*G_DACFileWorkspace.iTimer)->Disable(G_DACFileWorkspace.iTimer);
+                if(G_DACFileWorkspace.iStopSem){
+                    _isr_UEZSemaphoreRelease(G_DACFileWorkspace.iStopSem);
+                }
+
+            } else {
+                r = G_DACFileWorkspace.iMemBuffer[G_DACFileWorkspace.iCount++] << 2;
+                r = (r * G_DACFileWorkspace.iVolume) / 256;
+                (*G_DACFileWorkspace.iDac)->Write(G_DACFileWorkspace.iDac, r);
+            }
+        }
+    }
+    return 0;
+}
+
+/*---------------------------------------------------------------------------*
+* Routine: DACAudioTask
+ *---------------------------------------------------------------------------*/
+/**
+ *  Tasked to feed the buffers and start the timer
+ *
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
- *  
+ *
  *
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-TBool UEZDACWAVGetStatus()
+static void DACAudioTask()
 {
-    return G_DACWAV_Workspace->iPlaying;
+    TBool forever = ETrue;
+
+    while(forever){
+        //wait here until time to play
+        UEZSemaphoreGrab(G_DACFileWorkspace.iDACAudioTaskSem, UEZ_TIMEOUT_INFINITE);
+        (*G_DACFileWorkspace.iTimer)->Enable(G_DACFileWorkspace.iTimer);
+        while(1){
+            if(G_DACFileWorkspace.iPlayFromFile){
+                //Playing from a file, check to see if new data needs to be put in the buffers
+                if(G_DACFileWorkspace.iNeedFillBuffer1){
+                    UEZSemaphoreGrab(G_DACFileWorkspace.iSemFeed, UEZ_TIMEOUT_INFINITE);
+                    UEZFileRead(G_DACFileWorkspace.iFile,
+                            G_DACFileWorkspace.iBuffer1,
+                        DAC_AUDIO_BUFFER_SIZE, &G_DACFileWorkspace.iBytesBuffer1);
+                    G_DACFileWorkspace.iNeedFillBuffer1 = EFalse;
+                    UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
+                    if (G_DACFileWorkspace.iBytesBuffer1 == 0){
+                        //UEZDACWAVStop();
+                        break;
+                    }
+                }
+                if(G_DACFileWorkspace.iNeedFillBuffer2){
+                    UEZSemaphoreGrab(G_DACFileWorkspace.iSemFeed, UEZ_TIMEOUT_INFINITE);
+                    UEZFileRead(G_DACFileWorkspace.iFile,
+                            G_DACFileWorkspace.iBuffer2,
+                        DAC_AUDIO_BUFFER_SIZE, &G_DACFileWorkspace.iBytesBuffer2);
+                    G_DACFileWorkspace.iNeedFillBuffer2 = EFalse;
+                    UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
+                    if (G_DACFileWorkspace.iBytesBuffer2 == 0){
+                        //UEZDACWAVStop();
+                        break;
+                    }
+                }
+            } else if(G_DACFileWorkspace.iPlayFromMem){
+                //playing from memory
+                if (G_DACFileWorkspace.iCount
+                    >= G_DACFileWorkspace.iMemBufferSize) {
+                    // I'm done, I'm leaving ... cya!
+                    UEZDACWAVStop();
+                    break;
+                }
+
+            } else {
+                break;
+            }
+            UEZTaskDelay(1);
+        }
+        G_DACFileWorkspace.iPlaying = EFalse;
+    }
 }
 
-/*---------------------------------------------------------------------------*
-* Routine:  UEZDACWaveSetVolume
- *---------------------------------------------------------------------------*/
-/**
- *  Set Volume
- *
- *  @param [in] 	aVolume			Volume to set (Range of 0-256)
- */
-/*---------------------------------------------------------------------------*/
-void UEZDACWaveSetVolume(TUInt16 aVolume)
+//used with Play buffer
+static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams)
 {
-    G_DACWAV_Workspace->iVolume = aVolume;
+    UEZSemaphoreGrab(G_DACFileWorkspace.iStopSem, UEZ_TIMEOUT_INFINITE);
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    return 1;
 }
 
-TUInt32 UEZDACWAVGetSamplePos(void)
-{
-    TUInt32 pos;
-
-    RTOS_ENTER_CRITICAL();
-    pos = G_DACWAV_Workspace->iSamplePos;
-    RTOS_EXIT_CRITICAL();
-
-    return pos;
-}
-
-TBool UEZDACWAVIsDone(void)
-{
-    // True if we are not playing anything
-    return ((G_DACWAV_Workspace->iPlayFromMem == EFalse)
-        && (G_DACWAV_Workspace->iPlayFromFile == EFalse));
-}
-
-
-/** @} */
-
+/*-------------------------------------------------------------------------*
+ * End of File:  UEZDACWAVFile.c
+ *-------------------------------------------------------------------------*/

@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -24,7 +24,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZI2C.h>
-#include <Source/Library/Audio/DAC/UEZDACWavFile.h>
+#include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
 #include <Source/Library/Console/FDICmd/FDICmd.h>
 #include "FDICmd_AudioDAC.h"
 #include <math.h>
@@ -42,13 +42,13 @@
  *---------------------------------------------------------------------------*/
 /**
  *  Process the given command:
- *      AUDIODAC <frequency> <sample rate> <ms to play> <timer>
+ *      AUDIODAC (frequency) (sample rate) (ms to play) (timer)
  *
  *  Where,
- *      <frequency> is the Hz of sinewave to create
- *      <sample rate> is the Hz of the sample to create (usually 22100)
- *      <ms> is the length to play the tone
- *      <timer> Timer to use for playing (usually Timer0)
+ *      (frequency) is the Hz of sinewave to create
+ *      (sample rate) is the Hz of the sample to create (usually 22100)
+ *      (ms) is the length to play the tone
+ *      (timer) Timer to use for playing (usually Timer0)
  *
  *  A 16-bit sample is created in memory, played, and then removed from memory.
  *  If there is not enough memory, a memory failure will be reported.

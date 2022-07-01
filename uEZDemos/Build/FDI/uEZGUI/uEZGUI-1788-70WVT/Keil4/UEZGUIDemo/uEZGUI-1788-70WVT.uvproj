@@ -824,9 +824,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1665,9 +1665,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -2506,9 +2506,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>

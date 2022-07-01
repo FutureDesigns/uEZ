@@ -12,6 +12,7 @@
 #define LCD_FRAME_BUFFER            UEZPlatform_LCDGetFrameBuffer()
 #define FRAME_SIZE                  UEZPlatform_LCDGetFrameSize()
 #define GUI_COLOR_CONVERSION        UEZPlatform_GUIColorConversion()
+#define GUI_DISPLAY_DRIVER          UEZPlatform_GUIDisplayDriver()
 #define LCD_DISPLAY_BASE_ADDRESS    UEZPlatform_GetBaseAddress()
 
 #define SERIAL_PORTS_DEFAULT_BAUD   UEZPlatform_SerialGetDefaultBaud()

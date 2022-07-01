@@ -74,6 +74,7 @@
 
 #define APP_DEMO_DRAW               		1
 #define APP_DEMO_APPS               		1
+#define APP_DEMO_SLIDESHOW             		1
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
@@ -87,6 +88,6 @@
 #define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME        			"DK-LPC1788"
-#define SLIDESHOW_PREFETCH_AHEAD            4
+#define SLIDESHOW_PREFETCH_AHEAD            5
 #define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         4
+#define SLIDESHOW_NUM_CACHED_SLIDES         5

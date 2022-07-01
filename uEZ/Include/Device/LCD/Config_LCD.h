@@ -8,18 +8,38 @@
 #define _CONFIG_LCD_H_
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
- *--------------------------------------------------------------------------
- * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
- *
- *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
- *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
- *    *===============================================================*
- *
- *-------------------------------------------------------------------------*/
+* uEZ(r) - Copyright (C) 2007-2015 Future Designs, Inc.
+*--------------------------------------------------------------------------
+* This file is part of the uEZ(r) distribution.
+*
+* uEZ(r) is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* uEZ(r) is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with uEZ(r); if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*
+* A special exception to the GPL can be applied should you wish to
+* distribute a combined work that includes uEZ(r), without being obliged
+* to provide the source code for any proprietary components.  See the
+* licensing section of http://www.teamfdi.com/uez for full details of how
+* and when the exception can be applied.
+*
+*    *===============================================================*
+*    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+*    |             We can get you up and running fast!               |
+*    |      See http://www.teamfdi.com/uez for more details.         |
+*    *===============================================================*
+*
+*-------------------------------------------------------------------------*/
+
  /*-------------------------------------------------------------------------*
  * LCD Configurations:
  *-------------------------------------------------------------------------*/
@@ -64,16 +84,64 @@
 #define LCD_CONFIG_MICROTIPS_UMSH_8253MD_3T         25
 #define LCD_CONFIG_MICROTIPS_AWT_800480T50P03       26
 #define LCD_CONFIG_MICROTIPS_UMSH_8596MD_20T        27
-#define LCD_CONFIG_INTELTRONIC_LMTDA043ZHN3      	28
+#define LCD_CONFIG_INTELTRONIC_LMTDA043ZHN3         28
+#define LCD_CONFIG_KYOCERA_TCG043WQLBAANN           29
+#define LCD_CONFIG_SHARP_LQ070Y3LW01                30
+#define LCD_CONFIG_SHARP_LQ040Y3DX80A               31
+#define LCD_CONFIG_KOE_TX18D35VM0APB                32
+#define LCD_CONFIG_TIANMA_TM070RVHG01               33
 
 #define LCD_RES_VGA                         1
 #define LCD_RES_QVGA                        2
 #define LCD_RES_480x272                     3
 #define LCD_RES_WVGA                        4
 
-#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_NEWHAVEN_NHD43480272MF)
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_TIANMA_TM070RVHG01)
     #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
-    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272MF_InterfaceArray
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_Tianma_TM070RVHG01_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           800
+    #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+/** Configure PWM of backlight settings */
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+#endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_KOE_TX18D35VM0APB)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH      UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_KOE_TX18D35VM0APB_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           800
+    #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+/**
+ * Configure PWM of backlight settings
+ */
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        700   //0x2000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         200   //0x1000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x0C04,                     0x204C,                     1 }, \
+        { 0,    0x6F2A,                     0x2134,                     1 }, \
+        { 0,    0x0C58,                     0x6012,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_KYOCERA_TCG043WQLBAANN)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_Kyocera_TCG043WQLBAANN_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
@@ -99,6 +167,38 @@
         { 0,    0x0C04,                     0x204C,                     1 }, \
         { 0,    0x6F2A,                     0x2134,                     1 }, \
         { 0,    0x0C58,                     0x6012,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_NEWHAVEN_NHD43480272MF)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272MF_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           480
+    #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
         { 0,    0x6F2C,                     0x5DBA,                     1 }, \
         { 0,    0x3C6A,                     0x4098,                     1 },
 #endif
@@ -396,6 +496,29 @@
         { 0,    0x3f47,                     0x3de0,                     1 },
 #endif
 
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ040Y3DX80A)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT//UEZLCD_COLOR_DEPTH_16_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ040Y3DX80A_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           480
+    #define UEZ_LCD_DISPLAY_HEIGHT          800
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    /**
+     * Configure PWM of backlight settings (fast control)
+     */
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD   45000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  45000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   45000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x13f6,                     0x58ec,                     1 }, \
+        { 0,    0x6aa3,                     0x58f0,                     1 }, \
+        { 0,    0x12d8,                     0x22cd,                     1 }, \
+        { 0,    0x6616,                     0x1f62,                     1 }, \
+        { 0,    0x3f47,                     0x3de0,                     1 },
+#endif
+
 #if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_NEC_VGA)
     #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NEC_NL6448BC_InterfaceArray
@@ -651,9 +774,7 @@
     #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
     #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
 
-    /**
-     * The Seiko 7" display needs different touchscreen sensitivity levels
-     */
+    // Configure touchscreen levels
     #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        700   //0x2000
     #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         200   //0x1000
 
@@ -664,6 +785,36 @@
         { 0,    0x11D7,                     0x1BFB,                     1 }, \
         { 0,    0x4036,                     0x3F62,                     1 },
 #endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ070Y3LW01)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH      UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ070Y3LW01_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           800
+    #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    /**
+     * Configure PWM of backlight settings
+     */
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    // Configure touchscreen levels
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        700   //0x2000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         200   //0x1000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x6F1C,                     0x620D,                     1 }, \
+        { 0,    0x118B,                     0x628A,                     1 }, \
+        { 0,    0x6F01,                     0x1BF4,                     1 }, \
+        { 0,    0x11D7,                     0x1BFB,                     1 }, \
+        { 0,    0x4036,                     0x3F62,                     1 },
+#endif
+
+
 #ifndef UEZ_LCD_COLOR_DEPTH
     #define UEZ_LCD_COLOR_DEPTH                 UEZ_LCD_DEFAULT_COLOR_DEPTH
 #endif

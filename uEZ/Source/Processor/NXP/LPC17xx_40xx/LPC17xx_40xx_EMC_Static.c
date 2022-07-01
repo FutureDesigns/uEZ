@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -99,7 +99,11 @@ void LPC17xx_40xx_EMC_Static_Init(const T_LPC17xx_40xx_EMC_Static_Configuration 
     // Delay from chip select or address change, whichever is later to
     // the output enable
     // Use tAVQV = tACC = Address valid to Output Valid
-    emc->StaticWaitOen = aConfig->iStaticWaitOen;
+    if(aConfig->iStaticWaitOen != 0){
+        emc->StaticWaitOen = aConfig->iStaticWaitOen - 1;
+    } else {
+        emc->StaticWaitOen = aConfig->iStaticWaitOen;
+    }
 
     // Delay from the chip select to the read access
     // Use tELQV = tEn = Address valid to Next Address Valid

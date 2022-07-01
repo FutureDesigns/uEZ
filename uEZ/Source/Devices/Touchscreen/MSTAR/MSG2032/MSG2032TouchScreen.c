@@ -7,13 +7,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -35,7 +35,7 @@
  *---------------------------------------------------------------------------*/
 
 #define MSG2032_I2C_SPEED         100 //kHz
-#define MSG2032_I2C_ADDRESS       (0x26<<1) //(0x62)
+#define MSG2032_I2C_ADDRESS       (0x26)//(0x60)
 
 #define MSG2032_DEVICE_MODE       0x00
 #define MSG2032_GUEST_ID          0x01
@@ -187,6 +187,8 @@ T_uezError TS_MSG2032_Configure(T_uezDeviceWorkspace *aW)
 
     UEZGPIOSetMux(p->iResetPin, 0);//Set to GPIO
     UEZGPIOOutput(p->iResetPin);
+    UEZGPIOSet(p->iResetPin);
+    UEZTaskDelay(200);
     UEZGPIOClear(p->iResetPin);
 
     UEZTaskDelay(1);
@@ -194,9 +196,10 @@ T_uezError TS_MSG2032_Configure(T_uezDeviceWorkspace *aW)
         UEZ_GPIO_PORT_FROM_PORT_PIN(p->iInteruptPin),
         TS_MSG2032_InterruptISR,
         p);
-    UEZGPIOEnableIRQ(p->iInteruptPin, GPIO_INTERRUPT_FALLING_EDGE);
+    UEZGPIOEnableIRQ(p->iInteruptPin, GPIO_INTERRUPT_RISING_EDGE);
 
     UEZGPIOSet(p->iResetPin);
+    UEZTaskDelay(200);
 
     return UEZ_ERROR_NONE;
 }
@@ -296,7 +299,7 @@ T_uezError TS_MSG2032_Poll(void *aWorkspace, T_uezTSReading *aReading)
     }
     else
     {
-#if 1
+#if 0
         TUInt8 addr = 0x00;
         dataOut[0] = 0x00;
         TUInt8 addresses[50];
@@ -320,7 +323,7 @@ T_uezError TS_MSG2032_Poll(void *aWorkspace, T_uezTSReading *aReading)
             }
         }
 #endif
-        dataOut[0] = 0x13;
+        dataOut[0] = 0x00;
         dataOut[1] = 0x00;
         error = UEZI2CWrite(i2c0,
                 MSG2032_I2C_ADDRESS,
@@ -336,13 +339,16 @@ T_uezError TS_MSG2032_Poll(void *aWorkspace, T_uezTSReading *aReading)
                 0x26,
                 50);
         
-        x = (((dataIn[0x12] & 0x70)<<4) | dataIn[0x13]);
+        x = (((dataIn[0x1] & 0xF0)<<4) | dataIn[0x2]);
 
-        y = (((dataIn[0x12] & 0x07)<<8) | dataIn[0x14]);
+        y = (((dataIn[0x1] & 0x0F)<<8) | dataIn[0x3]);
         
-        y = (UEZ_LCD_DISPLAY_HEIGHT) - y;
+        x = ( x * UEZ_LCD_DISPLAY_WIDTH) / 2047;
+        y = ( y * UEZ_LCD_DISPLAY_HEIGHT) / 2047;
+        y = (UEZ_LCD_DISPLAY_HEIGHT - 1) - y;
+        x = (UEZ_LCD_DISPLAY_WIDTH - 1) - x;
 
-        if((dataIn[0x12] & 0x80) == 0x80)
+        if((dataIn[0x0] == 0X52) && dataIn[0x5] != 0xFF)
         {
             (aReading->iFlags) = (p->iLastTouch) = TSFLAG_PEN_DOWN;
             (aReading->iX) = (p->iLastX)= x;
@@ -367,7 +373,7 @@ T_uezError TS_MSG2032_Poll(void *aWorkspace, T_uezTSReading *aReading)
                     (TUInt32 *) &aReading->iY);
         }
 
-        UEZGPIOClearIRQ(GPIO_P0_22);
+        UEZGPIOClearIRQ(p->iInteruptPin);
         return error;
     }
 }
