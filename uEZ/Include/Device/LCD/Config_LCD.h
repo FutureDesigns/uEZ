@@ -29,13 +29,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -90,11 +90,15 @@
 #define LCD_CONFIG_SHARP_LQ040Y3DX80A               31
 #define LCD_CONFIG_KOE_TX18D35VM0APB                32
 #define LCD_CONFIG_TIANMA_TM070RVHG01               33
+#define LCD_CONFIG_NEWHAVEN_NHD50800480TF           34
 
-#define LCD_RES_VGA                         1
-#define LCD_RES_QVGA                        2
-#define LCD_RES_480x272                     3
-#define LCD_RES_WVGA                        4
+#define LCD_RES_VGA                                 1
+#define LCD_RES_QVGA                                2
+#define LCD_RES_480x272                             3
+#define LCD_RES_WVGA                                4
+
+#define TOUCH_RESISTIVE                             1
+#define TOUCH_PCAP                                  2
 
 #if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_TIANMA_TM070RVHG01)
     #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
@@ -102,6 +106,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /** Configure PWM of backlight settings */
     #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
     #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
@@ -117,6 +122,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
  * Configure PWM of backlight settings
  */
@@ -145,6 +151,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
  * Configure PWM of backlight settings (fast control)
  */
@@ -177,6 +184,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
  * Configure PWM of backlight settings (fast control)
  */
@@ -209,6 +217,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
  * Configure PWM of backlight settings (fast control)
  */
@@ -231,6 +240,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
  * Configure PWM of backlight settings
  */
@@ -259,6 +269,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
  * Configure PWM of backlight settings
  */
@@ -287,6 +298,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -303,6 +315,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -333,6 +346,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -350,6 +364,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -385,6 +400,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -401,6 +417,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -423,6 +440,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -439,6 +457,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     #define UEZ_DEFAULT_LCD_RES_480x272     1
     /**
      * Configure PWM of backlight settings (fast control)
@@ -456,6 +475,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -479,6 +499,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -502,6 +523,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          800
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -525,6 +547,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -545,6 +568,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 
     /**
      * Configure PWM of backlight settings
@@ -566,6 +590,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -594,6 +619,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -608,6 +634,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -622,6 +649,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -638,6 +666,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -652,6 +681,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -668,6 +698,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -691,6 +722,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings (fast control)
      */
@@ -714,6 +746,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
     /**
      * Configure PWM of backlight settings
      */
@@ -731,6 +764,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
     /**
      * Configure PWM of backlight settings
      */
@@ -748,6 +782,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
  * Configure PWM of backlight settings
  */
@@ -764,6 +799,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
     /**
      * Configure PWM of backlight settings
      */
@@ -792,6 +828,7 @@
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
      * Configure PWM of backlight settings
      */
@@ -814,6 +851,42 @@
         { 0,    0x4036,                     0x3F62,                     1 },
 #endif
 
+#if (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD50800480TF)
+#if TOUCHGFX
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_16_BIT //TouchGFX
+#else
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+#endif
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD50800480TF_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           800
+    #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
 
 #ifndef UEZ_LCD_COLOR_DEPTH
     #define UEZ_LCD_COLOR_DEPTH                 UEZ_LCD_DEFAULT_COLOR_DEPTH
@@ -821,6 +894,10 @@
 
 #ifndef UEZ_DEFAULT_LCD
     #define UEZ_DEFAULT_LCD                     LCD_RES_QVGA
+#endif
+
+#ifndef UEZ_DEFAULT_TOUCH
+    #define UEZ_DEFAULT_TOUCH                   TOUCH_RESISTIVE
 #endif
 
 #if (UEZ_DEFAULT_LCD==LCD_RES_VGA)

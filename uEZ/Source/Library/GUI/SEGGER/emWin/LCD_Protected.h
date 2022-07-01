@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : LCD_Protected.h
 Purpose     : LCD level - To be used only internally by the GUI
@@ -77,7 +88,7 @@ void LCD_DrawBitmap(int x0,    int y0,
                     int xMul,  int yMul,
                     int BitsPerPixel,
                     int BytesPerLine,
-                    const U8 GUI_UNI_PTR * pPixel,
+                    const U8 * pPixel,
                     const LCD_PIXELINDEX * pTrans);
 
 void LCD__DrawBitmap_1bpp(int x0,    int y0,
@@ -85,7 +96,7 @@ void LCD__DrawBitmap_1bpp(int x0,    int y0,
                           int xMul,  int yMul,
                           int BitsPerPixel,
                           int BytesPerLine,
-                          const U8 GUI_UNI_PTR * pPixel,
+                          const U8 * pPixel,
                           const LCD_PIXELINDEX * pTrans,
                           int OffData);
 
@@ -104,6 +115,7 @@ tLCDDEV_Index2Color LCD_Index2Color_565;
 tLCDDEV_Index2Color LCD_Index2Color_8666;
 tLCDDEV_Index2Color LCD_Index2Color_888;
 tLCDDEV_Index2Color LCD_Index2Color_8888;
+tLCDDEV_Index2Color LCD_Index2Color_M8888I;
 tLCDDEV_Index2Color LCD_Index2Color_M555;
 tLCDDEV_Index2Color LCD_Index2Color_M565;
 tLCDDEV_Index2Color LCD_Index2Color_M888;

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.18 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : GUITDRV_ADS7846.h
 Purpose     : Touch screen driver include
 ----------------------------------------------------------------------
@@ -33,8 +44,7 @@ Notes
 =====
 (1) The driver needs some function pointer to be filled correctly to be able
     to communicate with the external peripheral correctly. The correct assignment
-    of these function pointers is checked during driver configuration and leads
-    to an abort to GUI_Error() .
+    of these function pointers is checked during driver configuration.
     
 (2) The driver needs some configuration variables filled in to be able to calculate
     the logical screen coordinates from the physical AD values.

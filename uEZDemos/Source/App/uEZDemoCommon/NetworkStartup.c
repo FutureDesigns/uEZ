@@ -47,14 +47,14 @@ void INetworkConfigureWirelessConnection(T_uezDevice network)
 
     /* -------------- General Network configuration ---------------- */
     // MAC Address (if not hardware defined)
-        { 0, 0, 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0, 0, 0 }},
 
         // IP Address
-        { 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0 }},
         // Subnet mask
-        { 255, 255, 255, 0 },
+        {{ 255, 255, 255, 0 }},
         // Gateway address
-        { 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0 }},
 
         /* ------------- Wireless network specific settings -------------- */
         // Auto scan channel (0=Auto)
@@ -122,16 +122,16 @@ void INetworkConfigureWirelessAccessPoint(T_uezDevice network)
 
         /* -------------- General Network configuration ---------------- */
         // MAC Address (if not hardware defined)
-        { 0, 0, 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0, 0, 0 }},
 
         // IP Address
-        { 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0 }},
 
         // Subnet mask
-        { 255, 255, 255, 0 },
+        {{ 255, 255, 255, 0 }},
 
         // Gateway address
-        { 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0 }},
 
         /* ------------- Wireless network specific settings -------------- */
         // Auto scan channel (0=Auto)
@@ -199,14 +199,14 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
 
     /* -------------- General Network configuration ---------------- */
     // MAC Address (if not hardware defined)
-        { 0, 0, 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0, 0, 0 }},
 
         // IP Address
-        { 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0 }},
         // Subnet mask
-        { 255, 255, 255, 0 },
+        {{ 255, 255, 255, 0 }},
         // Gateway address
-        { 0, 0, 0, 0 },
+        {{ 0, 0, 0, 0 }},
 
         /* ------------- Wireless network specific settings -------------- */
         // Auto scan channel (0=Auto)
@@ -225,7 +225,7 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
         UEZ_NETWORK_SECURITY_MODE_OPEN,
 
         // SSID (if ad-hoc)
-        0,
+        {0},
 
         // DHCP Server is disabled
         EFalse,
@@ -274,6 +274,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 #endif
 
 #if UEZ_ENABLE_WIRELESS_NETWORK
+    int wirelessStarted = 0;
     T_uezDevice wireless_network;
     extern void UEZPlatform_WirelessNetwork0_Require(void);
 #endif
@@ -325,22 +326,28 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     // First, get the Wireless Network connection
     UEZPlatform_WirelessNetwork0_Require();
     error = UEZNetworkOpen("WirelessNetwork0", &wireless_network);
-    if (error)
-        UEZFailureMsg("NetworkStartup: Wireless failed to start");
+    if (error) {
+        // UEZFailureMsg("NetworkStartup: Wireless failed to start");
+         wirelessStarted = 0;
+    } else {
+         wirelessStarted = 1;
+    }
 
-    // Configure the type of network desired
-    INetworkConfigureWirelessAccessPoint(wireless_network);
-    //INetworkConfigureWirelessConnection(wireless_network);
+    if (wirelessStarted) {
+        // Configure the type of network desired
+        INetworkConfigureWirelessAccessPoint(wireless_network);
+        //INetworkConfigureWirelessConnection(wireless_network);
 
-    // Bring up the infrastructure
-    error = UEZNetworkInfrastructureBringUp(wireless_network);
+        // Bring up the infrastructure
+        error = UEZNetworkInfrastructureBringUp(wireless_network);
 
-    // If no problem bringing up the infrastructure, join the network
-    if (!error)
-        error = UEZNetworkJoin(wireless_network, "uEZ", "fdifdifdiFDI", 5000);
+        // If no problem bringing up the infrastructure, join the network
+        if (!error)
+            error = UEZNetworkJoin(wireless_network, "uEZ", "fdifdifdiFDI", 5000);
 
-    // Let the last messages through (debug only)
-    UEZTaskDelay(1000);
+        // Let the last messages through (debug only)
+        UEZTaskDelay(1000);
+    }
 
     // Report the result
     if (error) {
@@ -365,7 +372,8 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
       App_HTTPServerStart(wired_network);
     #endif
     #if UEZ_ENABLE_WIRELESS_NETWORK
-      App_HTTPServerStart(wireless_network);
+    if (wirelessStarted)
+        App_HTTPServerStart(wireless_network);
     #endif
 #endif
 

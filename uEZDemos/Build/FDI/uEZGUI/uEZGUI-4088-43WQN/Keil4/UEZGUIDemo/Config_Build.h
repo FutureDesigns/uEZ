@@ -13,6 +13,12 @@
 #define configUSE_TIMERS                    1
 #define SELECTED_PORT PORT_ARM_CortexM
 #define APP_DEMO_VIDEO_PLAYER               0
+#define UEZ_ENABLE_USB_HOST_STACK           0
+#define UEZ_ENABLE_USB_DEVICE_STACK         0
+#else
+
+#define UEZ_ENABLE_USB_HOST_STACK           1
+#define UEZ_ENABLE_USB_DEVICE_STACK         1
 #endif
 
 #ifdef NDEBUG
@@ -22,8 +28,6 @@
 #endif
 
 #define UEZ_ENABLE_AUDIO_AMP                1
-#define UEZ_ENABLE_USB_HOST_STACK           1
-#define UEZ_ENABLE_USB_DEVICE_STACK         1
 #define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
@@ -48,7 +52,7 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
-#define APP_DEMO_SLIDESHOW             		1
+#define APP_DEMO_SLIDESHOW             			1
 #ifndef APP_DEMO_VIDEO_PLAYER
 #define APP_DEMO_VIDEO_PLAYER               1
 #endif
@@ -56,13 +60,13 @@
 #define INCLUDE_EMWIN                       0
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN // must be disabled for KEIL for now
 #ifndef FREERTOS_PLUS_TRACE
-#define APP_DEMO_COM                        1
+#define APP_DEMO_COM                        0
 #endif
-#define SHOW_GUIDEMO_AUTOMOTIVE             1
-#define SHOW_GUIDEMO_GRAPH                  1
-#define SHOW_GUIDEMO_LISTVIEW               1
-#define SHOW_GUIDEMO_SPEED                  1
-#define SHOW_GUIDEMO_TREEVIEW               1
+#define SHOW_GUIDEMO_AUTOMOTIVE             0
+#define SHOW_GUIDEMO_GRAPH                  0
+#define SHOW_GUIDEMO_LISTVIEW               0
+#define SHOW_GUIDEMO_SPEED                  0
+#define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-4088-43WQN"
 #define SLIDESHOW_PREFETCH_AHEAD            5

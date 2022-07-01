@@ -14,12 +14,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -36,7 +36,7 @@
  * Registers:
  *---------------------------------------------------------------------------*/
 #define USB_INT_BASE_ADDR	0xE01FC1C0
-#define USB_INT_STAT    (SC->USBIntSt)
+#define USB_INT_STAT    (LPC_SC->USBIntSt)
 
 #define TIMEOUT_STANDARD        10000   // 10 SECONDS
 
@@ -212,8 +212,8 @@ static void Host_Isr_Process (T_LPC1768_USBHost_Workspace *p)
     TUInt32   ie_status;
 
     if ((USB_INT_STAT & 0x00000008) > 0) {
-        int_status    = USB->HcInterruptStatus;                          /* Read Interrupt Status                */
-        ie_status     = USB->HcInterruptEnable;                          /* Read Interrupt enable status         */
+        int_status    = LPC_USB->HcInterruptStatus;                          /* Read Interrupt Status                */
+        ie_status     = LPC_USB->HcInterruptEnable;                          /* Read Interrupt enable status         */
 
         if (!(int_status & ie_status)) {
             return;
@@ -246,7 +246,7 @@ static void Host_Isr_Process (T_LPC1768_USBHost_Workspace *p)
             if (int_status & OR_INTR_STATUS_WDH) {                  /* Writeback Done Head interrupt        */
                 HOST_WdhIntr = 1;
             }
-            USB->HcInterruptStatus = int_status;                         /* Clear interrupt status register      */
+            LPC_USB->HcInterruptStatus = int_status;                         /* Clear interrupt status register      */
         }
     }
 }
@@ -470,7 +470,7 @@ static T_uezError LPC1768_USBHost_InitializeWorkspace_PortA(void *aWorkspace)
 {
     T_LPC1768_USBHost_Workspace *p = (T_LPC1768_USBHost_Workspace *)aWorkspace;
     p->iPortIndex = USB_HOST_PORT_INDEX_PORT_A;
-    p->iPortStatus = (volatile TUInt32 *)&USB->HcRhPortStatus1;
+    p->iPortStatus = (volatile TUInt32 *)&LPC_USB->HcRhPortStatus1;
     p->iAllocRemaining = 0; // Not ready yet
     p->iCallbackAPI = 0;
     p->iCallbackWorkspace = 0;
@@ -496,21 +496,21 @@ static T_uezError Host_Init(void *aWorkspace)
     p->iAllocRemaining = 6*1024;
 
     // Ensure power to the USB is on
-    SC->PCONP         |= (1UL<<31);
+    LPC_SC->PCONP         |= (1UL<<31);
 
     // Enable the USB interrupt source
     if (p->iPortIndex == USB_HOST_PORT_INDEX_PORT_A) {
-        USB->u1.OTGClkCtrl = 0x0000001B;
+        LPC_USB->OTGClkCtrl = 0x0000001B;
 
-        while ((USB->u2.OTGClkSt & 0x0000001B) != 0x1B) {
+        while ((LPC_USB->OTGClkSt & 0x0000001B) != 0x1B) {
             ;
         }
 
-        USB->OTGStCtrl = 0x00000003;
+        LPC_USB->OTGStCtrl = 0x00000003;
     } else if (p->iPortIndex == USB_HOST_PORT_INDEX_PORT_B) {
-        USB->u1.OTGClkCtrl = 0x00000001;
+        LPC_USB->OTGClkCtrl = 0x00000001;
 
-        while ((USB->u2.OTGClkSt & 0x00000001) == 0) {
+        while ((LPC_USB->OTGClkSt & 0x00000001) == 0) {
             ;
         }
     }
@@ -534,18 +534,18 @@ static T_uezError Host_Init(void *aWorkspace)
 
     // About to reset, first delay
     Host_DelayMS(50);
-    USB->HcControl       = 0;
-    USB->HcControlHeadED = 0;
-    USB->HcBulkHeadED    = 0;
+    LPC_USB->HcControl       = 0;
+    LPC_USB->HcControlHeadED = 0;
+    LPC_USB->HcBulkHeadED    = 0;
 
     // Now do the software reset and go back to the largest packet size
-    USB->HcCommandStatus = OR_CMD_STATUS_HCR;
-    USB->HcFmInterval    = DEFAULT_FMINTERVAL;
+    LPC_USB->HcCommandStatus = OR_CMD_STATUS_HCR;
+    LPC_USB->HcFmInterval    = DEFAULT_FMINTERVAL;
 
     // Put HC in operational state and set global power
-    USB->HcControl  = (USB->HcControl & (~OR_CONTROL_HCFS)) | OR_CONTROL_HC_OPER;
-    USB->HcRhStatus = OR_RH_STATUS_LPSC;
-    USB->HcHCCA = (TUInt32)Hcca;
+    LPC_USB->HcControl  = (LPC_USB->HcControl & (~OR_CONTROL_HCFS)) | OR_CONTROL_HC_OPER;
+    LPC_USB->HcRhStatus = OR_RH_STATUS_LPSC;
+    LPC_USB->HcHCCA = (TUInt32)Hcca;
 
     // Remember the workspace for the interrupt routine
     // This also indirectly flags the interrupt routine by letting
@@ -557,8 +557,8 @@ static T_uezError Host_Init(void *aWorkspace)
     }
 
     // Enable these interrupts
-    USB->HcInterruptStatus |= USB->HcInterruptStatus;
-    USB->HcInterruptEnable  = OR_INTR_ENABLE_MIE |
+    LPC_USB->HcInterruptStatus |= LPC_USB->HcInterruptStatus;
+    LPC_USB->HcInterruptEnable  = OR_INTR_ENABLE_MIE |
                          OR_INTR_ENABLE_WDH |
                          OR_INTR_ENABLE_RHSC;
 
@@ -653,14 +653,14 @@ static T_uezError Host_ProcessTD(
     // Are we a control endpoint or a bulk endpoint?
     if (aEndDesc == EDCtrl) {
         // If control, setup for control transfer
-        USB->HcControlHeadED = (TUInt32)aEndDesc;
-        USB->HcCommandStatus = USB->HcCommandStatus | OR_CMD_STATUS_CLF;
-        USB->HcControl       = USB->HcControl       | OR_CONTROL_CLE;
+        LPC_USB->HcControlHeadED = (TUInt32)aEndDesc;
+        LPC_USB->HcCommandStatus = LPC_USB->HcCommandStatus | OR_CMD_STATUS_CLF;
+        LPC_USB->HcControl       = LPC_USB->HcControl       | OR_CONTROL_CLE;
     } else {
         // Otherwise, setup for bulk transfer
-        USB->HcBulkHeadED    = (TUInt32)aEndDesc;
-        USB->HcCommandStatus = USB->HcCommandStatus | OR_CMD_STATUS_BLF;
-        USB->HcControl       = USB->HcControl       | OR_CONTROL_BLE;
+        LPC_USB->HcBulkHeadED    = (TUInt32)aEndDesc;
+        LPC_USB->HcCommandStatus = LPC_USB->HcCommandStatus | OR_CMD_STATUS_BLF;
+        LPC_USB->HcControl       = LPC_USB->HcControl       | OR_CONTROL_BLE;
     }
 
     // Wait for transfer to complete

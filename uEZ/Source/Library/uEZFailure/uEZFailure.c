@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -114,25 +114,27 @@ void HardFault_HandlerC(
     G_exceptionInformation.iPC = aHardFaultArgs->iPC;
     G_exceptionInformation.iPSR = aHardFaultArgs->iPSR;
 
-    BSODStart("** uEZ Hard Fault Exception! **\n");
-    sprintf(BSODLine, "R0 : %08X", G_exceptionInformation.iR0);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "R1 : %08X", G_exceptionInformation.iR1);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "R2 : %08X", G_exceptionInformation.iR2);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "R3 : %08X", G_exceptionInformation.iR3);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "R12: %08X", G_exceptionInformation.iR12);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "LR : %08X", G_exceptionInformation.iLR);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "PC : %08X", G_exceptionInformation.iPC);
-    BSODPrint(BSODLine);
-    sprintf(BSODLine, "PSR: %08X", G_exceptionInformation.iPSR);
-    BSODPrint(BSODLine);
     while (1)
         UEZBSP_FatalError(aExceptionCode);
+
+//BSOD no longer works with FreeRTOS changes
+//    BSODStart("** uEZ Hard Fault Exception! **\n");
+//    sprintf(BSODLine, "R0 : %08X", G_exceptionInformation.iR0);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "R1 : %08X", G_exceptionInformation.iR1);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "R2 : %08X", G_exceptionInformation.iR2);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "R3 : %08X", G_exceptionInformation.iR3);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "R12: %08X", G_exceptionInformation.iR12);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "LR : %08X", G_exceptionInformation.iLR);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "PC : %08X", G_exceptionInformation.iPC);
+//    BSODPrint(BSODLine);
+//    sprintf(BSODLine, "PSR: %08X", G_exceptionInformation.iPSR);
+//    BSODPrint(BSODLine);
 }
 
 /*-------------------------------------------------------------------------*

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : LISTWHEEL.h
 Purpose     : LISTWHEEL widget include
 --------------------END-OF-HEADER-------------------------------------
@@ -34,13 +45,13 @@ Purpose     : LISTWHEEL widget include
 #define LISTWHEEL_H
 
 #include "WM.h"
-#include "WIDGET.h"             /* Req. for WIDGET_DRAW_ITEM_FUNC */
-#include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
+#include "DIALOG_Intern.h"
+#include "WIDGET.h"
 
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {        // Make sure we have C-declarations in C++ programs
 #endif
 
 /*********************************************************************
@@ -66,7 +77,6 @@ typedef WM_HMEM LISTWHEEL_Handle;
 *
 **********************************************************************
 */
-
 /*********************************************************************
 *
 *       Create functions
@@ -109,10 +119,12 @@ int       LISTWHEEL_GetSel         (LISTWHEEL_Handle hObj);
 int       LISTWHEEL_GetSnapPosition(LISTWHEEL_Handle hObj);
 int       LISTWHEEL_GetTextAlign   (LISTWHEEL_Handle hObj);
 int       LISTWHEEL_GetUserData    (LISTWHEEL_Handle hObj, void * pDest, int NumBytes);
+int       LISTWHEEL_IsMoving       (LISTWHEEL_Handle hObj);
 void      LISTWHEEL_MoveToPos      (LISTWHEEL_Handle hObj, unsigned int Index);
 int       LISTWHEEL_OwnerDraw      (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
 void      LISTWHEEL_SetBkColor     (LISTWHEEL_Handle hObj, unsigned int Index, GUI_COLOR Color);
-void      LISTWHEEL_SetFont        (LISTWHEEL_Handle hObj, const GUI_FONT GUI_UNI_PTR * pFont);
+void      LISTWHEEL_SetDeceleration(LISTWHEEL_Handle hObj, unsigned Deceleration);
+void      LISTWHEEL_SetFont        (LISTWHEEL_Handle hObj, const GUI_FONT * pFont);
 void      LISTWHEEL_SetItemData    (LISTWHEEL_Handle hObj, unsigned Index, void * pData); /* not to be documented */
 void      LISTWHEEL_SetLBorder     (LISTWHEEL_Handle hObj, unsigned BorderSize);
 void      LISTWHEEL_SetLineHeight  (LISTWHEEL_Handle hObj, unsigned LineHeight);
@@ -124,22 +136,17 @@ void      LISTWHEEL_SetSnapPosition(LISTWHEEL_Handle hObj, int SnapPosition);
 void      LISTWHEEL_SetText        (LISTWHEEL_Handle hObj, const GUI_ConstString * ppText);
 void      LISTWHEEL_SetTextAlign   (LISTWHEEL_Handle hObj, int Align);
 void      LISTWHEEL_SetTextColor   (LISTWHEEL_Handle hObj, unsigned int Index, GUI_COLOR Color);
-void      LISTWHEEL_SetTimerPeriod (LISTWHEEL_Handle hObj, unsigned TimerPeriod);
+void      LISTWHEEL_SetTimerPeriod (LISTWHEEL_Handle hObj, GUI_TIMER_TIME TimerPeriod);
 int       LISTWHEEL_SetUserData    (LISTWHEEL_Handle hObj, const void * pSrc, int NumBytes);
 void      LISTWHEEL_SetVelocity    (LISTWHEEL_Handle hObj, int Velocity);
 
-const GUI_FONT GUI_UNI_PTR * LISTWHEEL_GetFont(LISTWHEEL_Handle hObj);
-
-/*********************************************************************
-*
-*       Global functions
-*
-**********************************************************************
-*/
+const GUI_FONT * LISTWHEEL_GetFont(LISTWHEEL_Handle hObj);
 
 #if defined(__cplusplus)
   }
 #endif
 
-#endif   /* GUI_WINSUPPORT */
-#endif   /* LISTWHEEL_H */
+#endif  // GUI_WINSUPPORT
+#endif  // LISTWHEEL_H
+
+/*************************** End of file ****************************/

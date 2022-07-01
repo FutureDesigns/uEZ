@@ -3,17 +3,27 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2010  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2014  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.06 - Graphical user interface for embedded applications **
-emWin is protected by international copyright laws.   Knowledge of the
+** emWin V5.24 - Graphical user interface for embedded applications **
+All  Intellectual Property rights  in the Software belongs to  SEGGER.
+emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
-only be used in accordance with a license and should not be re-
-distributed in any way. We appreciate your understanding and fairness.
+only be used in accordance with the following terms:
+
+The software has been licensed to  NXP Semiconductors USA, Inc.  whose
+registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
+CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
+NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
+distributed under the terms and conditions of the NXP End User License
+Agreement.
+Full source code is available at: www.segger.com
+
+We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 File        : LCDConf.c
 Purpose     : Display controller configuration (single layer)
@@ -84,11 +94,16 @@ Purpose     : Display controller configuration (single layer)
 //
 #define DISPLAY_DRIVER  GUI_DISPLAY_DRIVER
 
-
 //
 // Video RAM address
 //
 #define VRAM_ADDR  LCD_DISPLAY_BASE_ADDRESS
+
+//
+// Buffers / VScreens
+//
+#define NUM_BUFFERS  1 // Number of multiple buffers to be used
+#define NUM_VSCREENS 1 // Number of virtual screens to be used
 
 /*********************************************************************
 *
@@ -117,6 +132,17 @@ Purpose     : Display controller configuration (single layer)
 #endif
 #ifndef   DISPLAY_DRIVER
   #error No display driver defined!
+#endif
+// emwin 5.24 additions
+#ifndef   NUM_VSCREENS
+  #define NUM_VSCREENS 1
+#else
+  #if (NUM_VSCREENS <= 0)
+    #error At least one screeen needs to be defined!
+  #endif
+#endif
+#if (NUM_VSCREENS > 1) && (NUM_BUFFERS > 1)
+  #error Virtual screens and multiple buffers are not allowed!
 #endif
 
 /*********************************************************************
@@ -222,7 +248,9 @@ void LCD_X_Config(void) {
     //
     // Initialize multibuffering
     //
-    GUI_MULTIBUF_Config(GUI_NUM_VIRTUAL_DISPLAYS);
+   #if (NUM_BUFFERS > 1)
+    GUI_MULTIBUF_Config(NUM_BUFFERS);
+  #endif
   #endif
   //
   // Set display driver and color conversion for 1st layer
@@ -237,8 +265,13 @@ void LCD_X_Config(void) {
   //
   // Display driver configuration, required for Lin-driver
   //
-  LCD_SetSizeEx    (0, XSIZE_PHYS,   YSIZE_PHYS);
-  LCD_SetVSizeEx   (0, VXSIZE_PHYS,  VYSIZE_PHYS);
+  if (LCD_GetSwapXY()) {
+    LCD_SetSizeEx (0, YSIZE_PHYS, XSIZE_PHYS);
+    LCD_SetVSizeEx(0, YSIZE_PHYS * NUM_VSCREENS, XSIZE_PHYS);
+  } else {
+    LCD_SetSizeEx (0, XSIZE_PHYS, YSIZE_PHYS);
+    LCD_SetVSizeEx(0, XSIZE_PHYS, YSIZE_PHYS * NUM_VSCREENS);
+  }
   LCD_SetVRAMAddrEx(0, (void*)VRAM_ADDR);
   //
   // Set user palette data (only required if no fixed palette is used)

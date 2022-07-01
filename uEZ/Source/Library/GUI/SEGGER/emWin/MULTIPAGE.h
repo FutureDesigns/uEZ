@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : MULTIPAGE.h
 Purpose     : MULTIPAGE include
@@ -72,6 +83,13 @@ Purpose     : MULTIPAGE include
 #define MULTIPAGE_SKINFLEX_PI_SELECTED  1
 #define MULTIPAGE_SKINFLEX_PI_DISABLED  2
 
+#define SCROLLBAR_SIZE                 32 // Defines the space for the scrollbar arrows
+
+#define MULTIPAGE_BI_SELECTED           0
+#define MULTIPAGE_BI_UNSELECTED         1
+#define MULTIPAGE_BI_DISABLED           2
+#define MULTIPAGE_BI_MAX                3  // The defines above are used as array indices.
+
 /*********************************************************************
 *
 *       Public Types
@@ -89,18 +107,20 @@ typedef struct {
 } MULTIPAGE_SKINFLEX_PROPS;
 
 typedef struct {
-  U16 StartOff;                 // Offset to use when drawing the unselected item 0.
   U8  SelSideBorderInc;         // Number of pixels to add on both sides when drawing the selected item.
-  U8  UnselTopBorderDec;        // Number of pixels to decrease the height of unselected items.
+  U8  SelTopBorderInc;          // Number of pixels to add on top of selected items.
 } MULTIPAGE_SKIN_PROPS;
 
 typedef struct {
-  GUI_ROTATION * pRotation;
-  unsigned       Align;
-  int            Sel;
-  U16            State;
-  U8             FrameFlags;    // Flags to let the drawing function know which parts of the frame to display.
-  U8             PageStatus;
+  #if GUI_SUPPORT_ROTATION
+    GUI_ROTATION  * pRotation;
+  #endif
+  unsigned          Align;
+  int               Sel;
+  U16               State;
+  U8                FrameFlags;    // Flags to let the drawing function know which parts of the frame to display.
+  U8                PageStatus;
+  GUI_DRAW_HANDLE * pDrawObj;
 } MULTIPAGE_SKIN_INFO;
 
 /*********************************************************************
@@ -129,26 +149,32 @@ void MULTIPAGE_Callback(WM_MESSAGE * pMsg);
 *
 **********************************************************************
 */
-void             MULTIPAGE_AddPage       (MULTIPAGE_Handle hObj, WM_HWIN hWin ,const char * pText);
-void             MULTIPAGE_AddEmptyPage  (MULTIPAGE_Handle hObj, WM_HWIN hWin ,const char * pText);
-WM_HWIN          MULTIPAGE_AttachWindow  (MULTIPAGE_Handle hObj, unsigned Index, WM_HWIN hWin);
-void             MULTIPAGE_DeletePage    (MULTIPAGE_Handle hObj, unsigned Index, int Delete);
-void             MULTIPAGE_DisablePage   (MULTIPAGE_Handle hObj, unsigned Index);
-void             MULTIPAGE_EnablePage    (MULTIPAGE_Handle hObj, unsigned Index);
-const GUI_FONT * MULTIPAGE_GetFont       (MULTIPAGE_Handle hObj);
-int              MULTIPAGE_GetSelection  (MULTIPAGE_Handle hObj);
-int              MULTIPAGE_GetPageText   (MULTIPAGE_Handle hObj, unsigned Index, char * pBuffer, int MaxLen);
-int              MULTIPAGE_GetUserData   (MULTIPAGE_Handle hObj, void * pDest, int NumBytes);
-WM_HWIN          MULTIPAGE_GetWindow     (MULTIPAGE_Handle hObj, unsigned Index);
-int              MULTIPAGE_IsPageEnabled (MULTIPAGE_Handle hObj, unsigned Index);
-void             MULTIPAGE_SelectPage    (MULTIPAGE_Handle hObj, unsigned Index);
-void             MULTIPAGE_SetAlign      (MULTIPAGE_Handle hObj, unsigned Align);
-void             MULTIPAGE_SetBkColor    (MULTIPAGE_Handle hObj, GUI_COLOR Color, unsigned Index);
-void             MULTIPAGE_SetFont       (MULTIPAGE_Handle hObj, const GUI_FONT GUI_UNI_PTR * pFont);
-void             MULTIPAGE_SetRotation   (MULTIPAGE_Handle hObj, unsigned Rotation);
-void             MULTIPAGE_SetText       (MULTIPAGE_Handle hObj, const char * pText, unsigned Index);
-void             MULTIPAGE_SetTextColor  (MULTIPAGE_Handle hObj, GUI_COLOR Color, unsigned Index);
-int              MULTIPAGE_SetUserData   (MULTIPAGE_Handle hObj, const void * pSrc, int NumBytes);
+void             MULTIPAGE_AddEmptyPage   (MULTIPAGE_Handle hObj, WM_HWIN hWin ,const char * pText);
+void             MULTIPAGE_AddPage        (MULTIPAGE_Handle hObj, WM_HWIN hWin ,const char * pText);
+WM_HWIN          MULTIPAGE_AttachWindow   (MULTIPAGE_Handle hObj, unsigned Index, WM_HWIN hWin);
+void             MULTIPAGE_DeletePage     (MULTIPAGE_Handle hObj, unsigned Index, int Delete);
+void             MULTIPAGE_DisablePage    (MULTIPAGE_Handle hObj, unsigned Index);
+void             MULTIPAGE_EnablePage     (MULTIPAGE_Handle hObj, unsigned Index);
+void             MULTIPAGE_EnableScrollbar(MULTIPAGE_Handle hObj, unsigned OnOff);
+const GUI_FONT * MULTIPAGE_GetFont        (MULTIPAGE_Handle hObj);
+int              MULTIPAGE_GetSelection   (MULTIPAGE_Handle hObj);
+int              MULTIPAGE_GetPageText    (MULTIPAGE_Handle hObj, unsigned Index, char * pBuffer, int MaxLen);
+int              MULTIPAGE_GetUserData    (MULTIPAGE_Handle hObj, void * pDest, int NumBytes);
+WM_HWIN          MULTIPAGE_GetWindow      (MULTIPAGE_Handle hObj, unsigned Index);
+int              MULTIPAGE_IsPageEnabled  (MULTIPAGE_Handle hObj, unsigned Index);
+void             MULTIPAGE_SelectPage     (MULTIPAGE_Handle hObj, unsigned Index);
+void             MULTIPAGE_SetAlign       (MULTIPAGE_Handle hObj, unsigned Align);
+int              MULTIPAGE_SetBitmapEx    (MULTIPAGE_Handle hObj, const GUI_BITMAP * pBitmap, int x, int y, int Index, int State);
+int              MULTIPAGE_SetBitmap      (MULTIPAGE_Handle hObj, const GUI_BITMAP * pBitmap, int Index, int State);
+void             MULTIPAGE_SetBkColor     (MULTIPAGE_Handle hObj, GUI_COLOR Color, unsigned Index);
+void             MULTIPAGE_SetFont        (MULTIPAGE_Handle hObj, const GUI_FONT * pFont);
+void             MULTIPAGE_SetRotation    (MULTIPAGE_Handle hObj, unsigned Rotation);
+void             MULTIPAGE_SetTabWidth    (MULTIPAGE_Handle hObj, int Width, int Index);
+void             MULTIPAGE_SetTabHeight   (MULTIPAGE_Handle hObj, int Height);
+void             MULTIPAGE_SetTextAlign   (MULTIPAGE_Handle hObj, unsigned Align);
+void             MULTIPAGE_SetText        (MULTIPAGE_Handle hObj, const char * pText, unsigned Index);
+void             MULTIPAGE_SetTextColor   (MULTIPAGE_Handle hObj, GUI_COLOR Color, unsigned Index);
+int              MULTIPAGE_SetUserData    (MULTIPAGE_Handle hObj, const void * pSrc, int NumBytes);
 
 /*********************************************************************
 *
@@ -156,19 +182,21 @@ int              MULTIPAGE_SetUserData   (MULTIPAGE_Handle hObj, const void * pS
 *
 **********************************************************************
 */
-unsigned                     MULTIPAGE_GetDefaultAlign    (void);
-GUI_COLOR                    MULTIPAGE_GetDefaultBkColor  (unsigned Index);
-const GUI_FONT GUI_UNI_PTR * MULTIPAGE_GetDefaultFont     (void);
-GUI_COLOR                    MULTIPAGE_GetDefaultTextColor(unsigned Index);
+unsigned         MULTIPAGE_GetDefaultAlign      (void);
+GUI_COLOR        MULTIPAGE_GetDefaultBkColor    (unsigned Index);
+const GUI_FONT * MULTIPAGE_GetDefaultFont       (void);
+GUI_COLOR        MULTIPAGE_GetDefaultTextColor  (unsigned Index);
 
-void                         MULTIPAGE_SetDefaultAlign    (unsigned Align);
-void                         MULTIPAGE_SetDefaultBkColor  (GUI_COLOR Color, unsigned Index);
-void                         MULTIPAGE_SetDefaultFont     (const GUI_FONT GUI_UNI_PTR * pFont);
-void                         MULTIPAGE_SetDefaultTextColor(GUI_COLOR Color, unsigned Index);
+void             MULTIPAGE_SetDefaultAlign      (unsigned Align);
+void             MULTIPAGE_SetDefaultBkColor    (GUI_COLOR Color, unsigned Index);
+void             MULTIPAGE_SetDefaultBorderSizeX(unsigned Size);
+void             MULTIPAGE_SetDefaultBorderSizeY(unsigned Size);
+void             MULTIPAGE_SetDefaultFont       (const GUI_FONT * pFont);
+void             MULTIPAGE_SetDefaultTextColor  (GUI_COLOR Color, unsigned Index);
 
-void                         MULTIPAGE_SetEffectColor     (unsigned Index, GUI_COLOR Color);
-GUI_COLOR                    MULTIPAGE_GetEffectColor     (unsigned Index);
-int                          MULTIPAGE_GetNumEffectColors (void);
+void             MULTIPAGE_SetEffectColor       (unsigned Index, GUI_COLOR Color);
+GUI_COLOR        MULTIPAGE_GetEffectColor       (unsigned Index);
+int              MULTIPAGE_GetNumEffectColors   (void);
 
 /*********************************************************************
 *

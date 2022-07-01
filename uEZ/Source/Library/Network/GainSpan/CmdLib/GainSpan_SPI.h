@@ -29,19 +29,24 @@
 #define GAINSPAN_SPI_CHAR_INACTIVE_LINK2    0xFF
 #define GAINSPAN_SPI_CHAR_LINK_READY        0xF3
 
+#define GAINSPAN_SPI_CHAR_UNKNOWN_F1		0xF1
+#define GAINSPAN_SPI_CHAR_UNKNOWN_F4		0xF4
+#define GAINSPAN_SPI_CHAR_UNKNOWN_F7		0xF7
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
 void GainSpan_SPI_Start(void);
 void GainSpan_SPI_Stop(void);
 bool GainSpan_SPI_ReceiveByte(uint8_t channel, uint8_t *aByte);
-bool GainSpan_SPI_SendByte(uint8_t aByte);
+//bool GainSpan_SPI_SendByte(uint8_t aByte);
 uint16_t GainSpan_SPI_SendData(const uint8_t *aData, uint16_t aLen);
 void GainSpan_SPI_SendDataBlock(uint8_t channel, const uint8_t *aData, uint16_t aLen);
 bool GainSpan_SPI_IsTransmitEmpty(void);
 void GainSpan_SPI_Update(uint8_t channel);
 bool GainSpan_SPI_SendByteLowLevel(uint8_t aByte);
 bool GainSpan_SPI_IsLinkActive(void);
+void GainSpan_SPI_FlowAllowed(void);
 
 #endif // _GainSpan_SPI_H
 /*-------------------------------------------------------------------------*

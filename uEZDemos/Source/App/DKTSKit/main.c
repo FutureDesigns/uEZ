@@ -143,11 +143,15 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     #endif
 
     // USB Flash drive needed?
+#if UEZ_ENABLE_USB_HOST_STACK
     UEZPlatform_USBHost_PortA_Require();
     UEZPlatform_USBFlash_Drive_Require(0);
+#endif
 
     // USB Device needed?
+#if UEZ_ENABLE_USB_DEVICE_STACK
     UEZPlatform_USBDevice_Require();
+#endif
 
     // SDCard needed?
     UEZPlatform_SDCard_Drive_Require(1);

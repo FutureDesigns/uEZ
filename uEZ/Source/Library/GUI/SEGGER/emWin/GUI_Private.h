@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : GUI_Private.h
 Purpose     : GUI internal declarations
@@ -209,8 +220,13 @@ void              GUI_MEMDEV__WriteToActiveAt    (GUI_MEMDEV_Handle hMem,int x, 
 void              GUI_MEMDEV__WriteToActiveOpaque(GUI_MEMDEV_Handle hMem,int x, int y);
 void            * GUI_MEMDEV__XY2PTR             (int x,int y);
 void            * GUI_MEMDEV__XY2PTREx           (GUI_MEMDEV * pDev, int x,int y);
+void              GUI_MEMDEV__BlendColor32       (GUI_MEMDEV_Handle hMem, U32 BlendColor, U8 BlendIntens);
 
-unsigned GUI__AlphaSuppressMixing(int OnOff);
+unsigned GUI__AlphaPreserveTrans(int OnOff);
+
+extern unsigned GUI_MEMDEV__TimePerFrame;
+
+#define GUI_TIME_PER_FRAME (GUI_TIMER_TIME)GUI_MEMDEV__TimePerFrame
 
 #define GUI_POS_AUTO -4095   /* Position value for auto-pos */
 
@@ -238,43 +254,50 @@ int  GUI_cos(int angle);
 int  GUI_sin(int angle);
 extern const U32 GUI_Pow10[10];
 
+/* Multi-touch */
+void GUI_MTOUCH__ManagePID(int OnOff);
+
 /* Anti-aliased drawing */
 int  GUI_AA_Init       (int x0, int x1);
 int  GUI_AA_Init_HiRes (int x0, int x1);
 void GUI_AA_Exit       (void);
 I16  GUI_AA_HiRes2Pixel(int HiRes);
 
-void GL_FillCircleAA_HiRes(int x0, int y0, int r);
+void GL_FillCircleAA_HiRes (int x0, int y0, int r);
+void GL_FillEllipseAA_HiRes(int x0, int y0, int rx, int ry);
 
 void GUI_AA__DrawCharAA2(int x0, int y0, int XSize, int YSize, int BytesPerLine, const U8 * pData);
 void GUI_AA__DrawCharAA4(int x0, int y0, int XSize, int YSize, int BytesPerLine, const U8 * pData);
+void GUI_AA__DrawCharAA8(int x0, int y0, int XSize, int YSize, int BytesPerLine, const U8 * pData);
 
 /* Alpha blending helper functions */
-int   GUI__GetAlphaBuffer  (U32 ** ppCurrent, U32 ** ppConvert, U32 ** ppData, int * pVXSizeMax);
-int   GUI__AllocAlphaBuffer(int AllocDataBuffer);
-U32 * GUI__DoAlphaBlending (int x, int y, U32 * pData, int xSize, tLCDDEV_Index2Color * pfIndex2Color_DEV, int * pDone);
-void  GUI__SetAlphaBufferSize(int xSize);
+#define GUI_ALPHABLENDING_DONE  (1 << 0)
+
+int      GUI__GetAlphaBuffer    (U32 ** ppCurrent, U32 ** ppConvert, U32 ** ppData, int * pVXSizeMax);
+int      GUI__AllocAlphaBuffer  (int AllocDataBuffer);
+U32    * GUI__DoAlphaBlending   (int x, int y, U32 * pData, int xSize, tLCDDEV_Index2Color * pfIndex2Color_DEV, int * pDone);
+unsigned GUI__SetAlphaBufferSize(int xSize);
 
 /* System independent font routines */
 int        GUI_SIF__GetCharDistX       (U16P c, int * pSizeX);
-void       GUI_SIF__GetFontInfo        (const GUI_FONT GUI_UNI_PTR * pFont, GUI_FONTINFO * pfi);
-char       GUI_SIF__IsInFont           (const GUI_FONT GUI_UNI_PTR * pFont, U16 c);
-const U8 * GUI_SIF__GetpCharInfo       (const GUI_FONT GUI_UNI_PTR * pFont, U16P c, unsigned SizeOfCharInfo);
-int        GUI_SIF__GetNumCharAreas    (const GUI_FONT GUI_UNI_PTR * pFont);
+void       GUI_SIF__GetFontInfo        (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
+char       GUI_SIF__IsInFont           (const GUI_FONT * pFont, U16 c);
+const U8 * GUI_SIF__GetpCharInfo       (const GUI_FONT * pFont, U16P c, unsigned SizeOfCharInfo);
+int        GUI_SIF__GetNumCharAreas    (const GUI_FONT * pFont);
 int        GUI_SIF__GetCharDistX_ExtFrm(U16P c, int * pSizeX);
-void       GUI_SIF__GetFontInfo_ExtFrm (const GUI_FONT GUI_UNI_PTR * pFont, GUI_FONTINFO * pfi);
-char       GUI_SIF__IsInFont_ExtFrm    (const GUI_FONT GUI_UNI_PTR * pFont, U16 c);
+void       GUI_SIF__GetFontInfo_ExtFrm (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
+char       GUI_SIF__IsInFont_ExtFrm    (const GUI_FONT * pFont, U16 c);
 int        GUI_SIF__GetCharInfo_ExtFrm (U16P c, GUI_CHARINFO_EXT * pInfo);
-void       GUI_SIF__ClearLine_ExtFrm   (const char GUI_UNI_PTR * s, int Len);
+void       GUI_SIF__ClearLine_ExtFrm   (const char * s, int Len);
 
 /* External binary font routines */
 int        GUI_XBF__GetOff       (const GUI_XBF_DATA * pXBF_Data, unsigned c, U32 * pOff);
 int        GUI_XBF__GetOffAndSize(const GUI_XBF_DATA * pXBF_Data, unsigned c, U32 * pOff, U16 * pSize);
 int        GUI_XBF__GetCharDistX (U16P c, int * pSizeX);
-void       GUI_XBF__GetFontInfo  (const GUI_FONT GUI_UNI_PTR * pFont, GUI_FONTINFO * pInfo);
-char       GUI_XBF__IsInFont     (const GUI_FONT GUI_UNI_PTR * pFont, U16 c);
+void       GUI_XBF__GetFontInfo  (const GUI_FONT * pFont, GUI_FONTINFO * pInfo);
+char       GUI_XBF__IsInFont     (const GUI_FONT * pFont, U16 c);
 int        GUI_XBF__GetCharInfo  (U16P c, GUI_CHARINFO_EXT * pInfo);
-void       GUI_XBF__ClearLine    (const char GUI_UNI_PTR * s, int Len);
+void       GUI_XBF__ClearLine    (const char * s, int Len);
 
 /* Conversion routines */
 void GUI_AddHex     (U32 v, U8 Len, char ** ps);
@@ -289,78 +312,80 @@ int  GUI_Long2Len   (I32 v);
 #define GUI_UC__GetCharCode(sText)  GUI_pUC_API->pfGetCharCode(sText)
 
 int   GUI_UC__CalcSizeOfChar   (U16 Char);
-U16   GUI_UC__GetCharCodeInc   (const char GUI_UNI_PTR ** ps);
-int   GUI_UC__NumChars2NumBytes(const char GUI_UNI_PTR * s, int NumChars);
-int   GUI_UC__NumBytes2NumChars(const char GUI_UNI_PTR * s, int NumBytes);
+U16   GUI_UC__GetCharCodeInc   (const char ** ps);
+int   GUI_UC__NumChars2NumBytes(const char * s, int NumChars);
+int   GUI_UC__NumBytes2NumChars(const char * s, int NumBytes);
 
-int  GUI__GetLineNumChars  (const char GUI_UNI_PTR * s, int MaxNumChars);
-int  GUI__GetNumChars      (const char GUI_UNI_PTR * s);
+int  GUI__GetLineNumChars  (const char * s, int MaxNumChars);
+int  GUI__GetNumChars      (const char * s);
 int  GUI__GetOverlap       (U16 Char);
-int  GUI__GetLineDistX     (const char GUI_UNI_PTR * s, int Len);
+int  GUI__GetLineDistX     (const char * s, int Len);
 int  GUI__GetFontSizeY     (void);
-int  GUI__HandleEOLine     (const char GUI_UNI_PTR ** ps);
-void GUI__DispLine         (const char GUI_UNI_PTR * s, int Len, const GUI_RECT * pr);
+int  GUI__HandleEOLine     (const char ** ps);
+void GUI__DispLine         (const char * s, int Len, const GUI_RECT * pr);
 void GUI__AddSpaceHex      (U32 v, U8 Len, char ** ps);
-void GUI__CalcTextRect     (const char GUI_UNI_PTR * pText, const GUI_RECT * pTextRectIn, GUI_RECT * pTextRectOut, int TextAlign);
+void GUI__CalcTextRect     (const char * pText, const GUI_RECT * pTextRectIn, GUI_RECT * pTextRectOut, int TextAlign);
 
-int  GUI__WrapGetNumCharsDisp       (const char GUI_UNI_PTR * pText, int xSize, GUI_WRAPMODE WrapMode);
-int  GUI__WrapGetNumCharsToNextLine (const char GUI_UNI_PTR * pText, int xSize, GUI_WRAPMODE WrapMode);
-int  GUI__WrapGetNumBytesToNextLine (const char GUI_UNI_PTR * pText, int xSize, GUI_WRAPMODE WrapMode);
+void GUI__ClearTextBackground(int xDist, int yDist);
+
+int  GUI__WrapGetNumCharsDisp       (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
+int  GUI__WrapGetNumCharsToNextLine (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
+int  GUI__WrapGetNumBytesToNextLine (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
 void GUI__memset    (U8  * p, U8 Fill, int NumBytes);
 void GUI__memset16  (U16 * p, U16 Fill, int NumWords);
-int  GUI__strlen    (const char GUI_UNI_PTR * s);
-int  GUI__strcmp    (const char GUI_UNI_PTR * s0, const char GUI_UNI_PTR * s1);
-int  GUI__strcmp_hp (GUI_HMEM hs0, const char GUI_UNI_PTR * s1);
+int  GUI__strlen    (const char * s);
+int  GUI__strcmp    (const char * s0, const char * s1);
+int  GUI__strcmp_hp (GUI_HMEM hs0, const char * s1);
 
 /* Get cursor position */
-int  GUI__GetCursorPosX     (const char GUI_UNI_PTR * s, int Index, int MaxNumChars);
-int  GUI__GetCursorPosChar  (const char GUI_UNI_PTR * s, int x, int NumCharsToNextLine);
-U16  GUI__GetCursorCharacter(const char GUI_UNI_PTR * s, int Index, int MaxNumChars, int * pIsRTL);
+int  GUI__GetCursorPosX     (const char * s, int Index, int MaxNumChars);
+int  GUI__GetCursorPosChar  (const char * s, int x, int NumCharsToNextLine);
+U16  GUI__GetCursorCharacter(const char * s, int Index, int MaxNumChars, int * pIsRTL);
 
 /* Arabic support (tbd) */
-U16  GUI__GetPresentationForm     (U16 Char, U16 Next, U16 Prev, int * pIgnoreNext, const char GUI_UNI_PTR * s);
+U16  GUI__GetPresentationForm     (U16 Char, U16 Next, U16 Prev, int * pIgnoreNext, const char * s);
 int  GUI__IsArabicCharacter       (U16 c);
 
 /* BiDi support */
-int  GUI__BIDI_Log2Vis           (const char GUI_UNI_PTR * s, int NumChars, char * pBuffer, int BufferSize);
-int  GUI__BIDI_GetCursorPosX     (const char GUI_UNI_PTR * s, int NumChars, int Index);
-int  GUI__BIDI_GetCursorPosChar  (const char GUI_UNI_PTR * s, int NumChars, int x);
-U16  GUI__BIDI_GetLogChar        (const char GUI_UNI_PTR * s, int NumChars, int Index);
-int  GUI__BIDI_GetCharDir        (const char GUI_UNI_PTR * s, int NumChars, int Index);
+int  GUI__BIDI_Log2Vis           (const char * s, int NumChars, char * pBuffer, int BufferSize);
+int  GUI__BIDI_GetCursorPosX     (const char * s, int NumChars, int Index);
+int  GUI__BIDI_GetCursorPosChar  (const char * s, int NumChars, int x);
+U16  GUI__BIDI_GetLogChar        (const char * s, int NumChars, int Index);
+int  GUI__BIDI_GetCharDir        (const char * s, int NumChars, int Index);
 int  GUI__BIDI_IsNSM             (U16 Char);
-U16  GUI__BIDI_GetCursorCharacter(const char GUI_UNI_PTR * s, int Index, int MaxNumChars, int * pIsRTL);
-int  GUI__BIDI_GetWordWrap       (const char GUI_UNI_PTR * s, int xSize, int * pxDist);
-int  GUI__BIDI_GetCharWrap       (const char GUI_UNI_PTR * s, int xSize);
+U16  GUI__BIDI_GetCursorCharacter(const char * s, int Index, int MaxNumChars, int * pIsRTL);
+int  GUI__BIDI_GetWordWrap       (const char * s, int xSize, int * pxDist);
+int  GUI__BIDI_GetCharWrap       (const char * s, int xSize);
 
-const char GUI_UNI_PTR * GUI__BIDI_Log2VisBuffered(const char GUI_UNI_PTR * s, int * pMaxNumChars);
+const char * GUI__BIDI_Log2VisBuffered(const char * s, int * pMaxNumChars);
 
 extern int GUI__BIDI_Enabled;
 
-extern int (* _pfGUI__BIDI_Log2Vis         )(const char GUI_UNI_PTR * s, int NumChars, char * pBuffer, int BufferSize);
-extern int (* _pfGUI__BIDI_GetCursorPosX   )(const char GUI_UNI_PTR * s, int NumChars, int Index);
-extern int (* _pfGUI__BIDI_GetCursorPosChar)(const char GUI_UNI_PTR * s, int NumChars, int x);
-extern U16 (* _pfGUI__BIDI_GetLogChar      )(const char GUI_UNI_PTR * s, int NumChars, int Index);
-extern int (* _pfGUI__BIDI_GetCharDir      )(const char GUI_UNI_PTR * s, int NumChars, int Index);
+extern int (* _pfGUI__BIDI_Log2Vis         )(const char * s, int NumChars, char * pBuffer, int BufferSize);
+extern int (* _pfGUI__BIDI_GetCursorPosX   )(const char * s, int NumChars, int Index);
+extern int (* _pfGUI__BIDI_GetCursorPosChar)(const char * s, int NumChars, int x);
+extern U16 (* _pfGUI__BIDI_GetLogChar      )(const char * s, int NumChars, int Index);
+extern int (* _pfGUI__BIDI_GetCharDir      )(const char * s, int NumChars, int Index);
 extern int (* _pfGUI__BIDI_IsNSM           )(U16 Char);
 
 /* BiDi-related function pointers */
-extern const char GUI_UNI_PTR * (* GUI_CharLine_pfLog2Vis)(const char GUI_UNI_PTR * s, int * pMaxNumChars);
+extern const char * (* GUI_CharLine_pfLog2Vis)(const char * s, int * pMaxNumChars);
 
-extern int (* GUI__GetCursorPos_pfGetPosX)     (const char GUI_UNI_PTR * s, int MaxNumChars, int Index);
-extern int (* GUI__GetCursorPos_pfGetPosChar)  (const char GUI_UNI_PTR * s, int MaxNumChars, int x);
-extern U16 (* GUI__GetCursorPos_pfGetCharacter)(const char GUI_UNI_PTR * s, int MaxNumChars, int Index, int * pIsRTL);
+extern int (* GUI__GetCursorPos_pfGetPosX)     (const char * s, int MaxNumChars, int Index);
+extern int (* GUI__GetCursorPos_pfGetPosChar)  (const char * s, int MaxNumChars, int x);
+extern U16 (* GUI__GetCursorPos_pfGetCharacter)(const char * s, int MaxNumChars, int Index, int * pIsRTL);
 
-extern int (* GUI__Wrap_pfGetWordWrap)(const char GUI_UNI_PTR * s, int xSize, int * pxDist);
-extern int (* GUI__Wrap_pfGetCharWrap)(const char GUI_UNI_PTR * s, int xSize);
+extern int (* GUI__Wrap_pfGetWordWrap)(const char * s, int xSize, int * pxDist);
+extern int (* GUI__Wrap_pfGetCharWrap)(const char * s, int xSize);
 
 /* Proportional  font support */
 const GUI_FONT_PROP * GUIPROP__FindChar(const GUI_FONT_PROP * pProp, U16P c);
 
 /* Extended proportional font support */
-const GUI_FONT_PROP_EXT GUI_UNI_PTR * GUIPROP_EXT__FindChar(const GUI_FONT_PROP_EXT GUI_UNI_PTR * pPropExt, U16P c);
-void  GUIPROP_EXT__DispLine      (const char GUI_UNI_PTR * s, int Len);
-void  GUIPROP_EXT__ClearLine     (const char GUI_UNI_PTR * s, int Len);
-void  GUIPROP_EXT__SetfpClearLine(void (* fpClearLine)(const char GUI_UNI_PTR * s, int Len));
+const GUI_FONT_PROP_EXT * GUIPROP_EXT__FindChar(const GUI_FONT_PROP_EXT * pPropExt, U16P c);
+void  GUIPROP_EXT__DispLine      (const char * s, int Len);
+void  GUIPROP_EXT__ClearLine     (const char * s, int Len);
+void  GUIPROP_EXT__SetfpClearLine(void (* fpClearLine)(const char * s, int Len));
 
 /* Reading data routines */
 U16 GUI__Read16(const U8 ** ppData);
@@ -383,12 +408,12 @@ tLCDDEV_Color2Index * GUI_GetpfColor2IndexEx(int LayerIndex);
 
 int GUI_GetBitsPerPixelEx(int LayerIndex);
 
-LCD_PIXELINDEX * LCD_GetpPalConvTable        (const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal);
-LCD_PIXELINDEX * LCD_GetpPalConvTableUncached(const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal);
-LCD_PIXELINDEX * LCD_GetpPalConvTableBM      (const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, const GUI_BITMAP GUI_UNI_PTR * pBitmap, int LayerIndex);
+LCD_PIXELINDEX * LCD_GetpPalConvTable        (const LCD_LOGPALETTE * pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTableUncached(const LCD_LOGPALETTE * pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTableBM      (const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex);
 
 /* Setting a function for converting a color palette to an array of index values */
-void GUI_SetFuncGetpPalConvTable(LCD_PIXELINDEX * (* pFunc)(const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, const GUI_BITMAP GUI_UNI_PTR * pBitmap, int LayerIndex));
+void GUI_SetFuncGetpPalConvTable(LCD_PIXELINDEX * (* pFunc)(const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex));
 
 /*********************************************************************
 *
@@ -416,6 +441,12 @@ void GUI_SetFuncGetpPalConvTable(LCD_PIXELINDEX * (* pFunc)(const LCD_LOGPALETTE
 #define GUI_STREAM_FORMAT_M444_12_1  22  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_444_16     23  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_M444_16    24  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_A555       25  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_AM555      26  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_A565       27  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_AM565      28  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_M8888I     29  /* DO NOT CHANGE */
+
 
 void GUI__ReadHeaderFromStream  (GUI_BITMAP_STREAM * pBitmapHeader, const U8 * pData);
 void GUI__CreateBitmapFromStream(const GUI_BITMAP_STREAM * pBitmapHeader, const void * pData, GUI_BITMAP * pBMP, GUI_LOGPALETTE * pPAL, const GUI_BITMAP_METHODS * pMethods);
@@ -432,7 +463,7 @@ int GUI__ManageCacheEx(int LayerIndex, int Cmd);
 */
 void GL_DispChar         (U16 c);
 void GL_DrawArc          (int x0, int y0, int rx, int ry, int a0, int a1);
-void GL_DrawBitmap       (const GUI_BITMAP GUI_UNI_PTR * pBM, int x0, int y0);
+void GL_DrawBitmap       (const GUI_BITMAP * pBM, int x0, int y0);
 void GL_DrawCircle       (int x0, int y0, int r);
 void GL_DrawEllipse      (int x0, int y0, int rx, int ry, int w);
 void GL_DrawHLine        (int y0, int x0, int x1);
@@ -513,14 +544,15 @@ extern int GUITASK__EntranceCnt;
 **********************************************************************
 */
 
-int       GUI_GetBitmapPixelIndex(const GUI_BITMAP GUI_UNI_PTR * pBMP, unsigned x, unsigned y);
-GUI_COLOR GUI_GetBitmapPixelColor(const GUI_BITMAP GUI_UNI_PTR * pBMP, unsigned x, unsigned y);
-int       GUI_GetBitmapPixelIndexEx(int BitsPerPixel, int BytesPerLine, const U8 GUI_UNI_PTR * pData, unsigned x, unsigned y);
+int       GUI_GetBitmapPixelIndex(const GUI_BITMAP * pBMP, unsigned x, unsigned y);
+GUI_COLOR GUI_GetBitmapPixelColor(const GUI_BITMAP * pBMP, unsigned x, unsigned y);
+int       GUI_GetBitmapPixelIndexEx(int BitsPerPixel, int BytesPerLine, const U8 * pData, unsigned x, unsigned y);
 
-void      GUI__DrawBitmap16bpp(int x0, int y0, int xsize, int ysize, const U8 GUI_UNI_PTR * pPixel, const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, int xMag, int yMag, tLCDDEV_Index2Color * pfIndex2Color);
-void      GUI__SetPixelAlpha  (int x, int y, U8 Alpha, LCD_COLOR Color);
-LCD_COLOR GUI__MixColors      (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
-void      GUI__MixColorsBulk  (U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
+void      GUI__DrawBitmap16bpp (int x0, int y0, int xsize, int ysize, const U8 * pPixel, const LCD_LOGPALETTE * pLogPal, int xMag, int yMag, tLCDDEV_Index2Color * pfIndex2Color, const LCD_API_COLOR_CONV * pColorConvAPI);
+void      GUI__DrawBitmapA16bpp(int x0, int y0, int xSize, int ySize, const U8 * pPixel, const LCD_LOGPALETTE * pLogPal, int xMag, int yMag, tLCDDEV_Index2Color * pfIndex2Color);
+void      GUI__SetPixelAlpha   (int x, int y, U8 Alpha, LCD_COLOR Color);
+LCD_COLOR GUI__MixColors       (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
+void      GUI__MixColorsBulk   (U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
 
 extern const GUI_UC_ENC_APILIST GUI_UC_None;
 
@@ -580,7 +612,7 @@ extern const LCD_SET_COLOR_API * LCD__pSetColorAPI;
 *
 **********************************************************************
 */
-extern const GUI_FONT GUI_UNI_PTR * GUI__pFontDefault;
+extern const GUI_FONT * GUI__pFontDefault;
 
 extern GUI_SADDR GUI_CONTEXT * GUI_pContext;
 
@@ -589,7 +621,7 @@ extern GUI_DEVICE * GUI__apDevice[GUI_NUM_LAYERS];
 //
 // Function pointer for converting a palette containing a color array into an index array
 //
-extern LCD_PIXELINDEX * (* GUI_pfGetpPalConvTable)(const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, const GUI_BITMAP GUI_UNI_PTR * pBitmap, int LayerIndex);
+extern LCD_PIXELINDEX * (* GUI_pfGetpPalConvTable)(const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex);
 
 //
 // Function pointer for mixing up 2 colors
@@ -601,11 +633,25 @@ extern LCD_COLOR (* GUI__pfMixColors)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Int
 //
 extern void (* GUI__pfMixColorsBulk)(U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
 
+//
+// API list to be used for MultiBuffering
+//
+extern const GUI_MULTIBUF_API    GUI_MULTIBUF_APIList;
+extern const GUI_MULTIBUF_API_EX GUI_MULTIBUF_APIListEx;
+
 #ifdef  GL_CORE_C
   #define GUI_EXTERN
 #else
   #define GUI_EXTERN extern
 #endif
+
+GUI_EXTERN   int  (* GUI_pfUpdateSoftLayer)(void);
+
+#ifdef WIN32
+  GUI_EXTERN void (* GUI_pfSoftlayerGetPixel)(int x, int y, void * p);
+#endif
+
+GUI_EXTERN void (* GUI_pfHookMTOUCH)(const GUI_MTOUCH_STATE * pState);
 
 GUI_EXTERN const GUI_UC_ENC_APILIST * GUI_pUC_API; /* Unicode encoding API */
 
@@ -614,6 +660,12 @@ GUI_EXTERN           GUI_tfTimer    * GUI_pfTimerExec;
 GUI_EXTERN           WM_tfHandlePID * WM_pfHandlePID;
 GUI_EXTERN   void (* GUI_pfDispCharStyle)(U16 Char);
 
+GUI_EXTERN           int GUI__BufferSize; // Required buffer size in pixels for alpha blending and/or antialiasing
+GUI_EXTERN           int GUI_AA__ClipX0;  // x0-clipping value for AA module
+
+GUI_EXTERN           I8  GUI__aNumBuffers[GUI_NUM_LAYERS]; // Number of buffers used per layer
+GUI_EXTERN           U8  GUI__PreserveTrans;
+
 #if GUI_SUPPORT_ROTATION
   GUI_EXTERN const tLCD_APIList * GUI_pLCD_APIList; /* Used for rotating text */
 #endif
@@ -621,7 +673,6 @@ GUI_EXTERN   void (* GUI_pfDispCharStyle)(U16 Char);
 GUI_EXTERN I16 GUI_OrgX, GUI_OrgY;
 
 #undef GUI_EXTERN
-
 
 #if defined(__cplusplus)
 }

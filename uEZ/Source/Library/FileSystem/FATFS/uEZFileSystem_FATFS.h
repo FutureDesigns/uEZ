@@ -29,13 +29,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -70,6 +70,7 @@ extern const DEVICE_FileSystem FATFS_FileSystem_ReadOnly_Interface;
 T_uezError FATFS_RegisterMassStorageDevice(
         TUInt32 aSlot,
         DEVICE_MassStorage **aMS);
+T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot);
 void FileSystem_FATFS_Create(const char *aName);
 void FileSystem_FATFS_Create_ReadOnly(const char *aName);
 

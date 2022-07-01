@@ -350,7 +350,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM4F, DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl\ctaocrypt;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl\openssl</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2342,6 +2342,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</FilePath>
             </File>
+            <File>
+              <FileName>LPC17xx_40xx_EINT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EINT.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2990,31 +2995,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>NXP_SPIFI_M4</GroupName>
-          <Files>
-            <File>
-              <FileName>Flash_NXP_LPC_SPIFI_M4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\Flash_NXP_LPC_SPIFI_M4.h</FilePath>
-            </File>
-            <File>
-              <FileName>Flash_NXP_LPC_SPIFI_M4_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\Flash_NXP_LPC_SPIFI_M4_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>spifi_drv_M4.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\spifi_drv_M4.lib</FilePath>
-            </File>
-            <File>
-              <FileName>spifi_rom_api.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\spifi_rom_api.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Newhaven</GroupName>
           <Files>
             <File>
@@ -3030,12 +3010,187 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Devices\Accelerometer\ST</GroupName>
+          <GroupName>Devices\Accelerometer\ST\LIS3DH</GroupName>
           <Files>
             <File>
               <FileName>ST_LIS3DH_I2C_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Encryption/CyaSSL</GroupName>
+          <Files>
+            <File>
+              <FileName>aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\aes.c</FilePath>
+            </File>
+            <File>
+              <FileName>arc4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\arc4.c</FilePath>
+            </File>
+            <File>
+              <FileName>asn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\asn.c</FilePath>
+            </File>
+            <File>
+              <FileName>coding.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\coding.c</FilePath>
+            </File>
+            <File>
+              <FileName>des3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\des3.c</FilePath>
+            </File>
+            <File>
+              <FileName>dh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\dh.c</FilePath>
+            </File>
+            <File>
+              <FileName>dsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\dsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>error.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\error.c</FilePath>
+            </File>
+            <File>
+              <FileName>hc128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\hc128.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\hmac.c</FilePath>
+            </File>
+            <File>
+              <FileName>integer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\integer.c</FilePath>
+            </File>
+            <File>
+              <FileName>logging.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\logging.c</FilePath>
+            </File>
+            <File>
+              <FileName>md4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\md4.c</FilePath>
+            </File>
+            <File>
+              <FileName>memory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\memory.c</FilePath>
+            </File>
+            <File>
+              <FileName>misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwdbased.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\pwdbased.c</FilePath>
+            </File>
+            <File>
+              <FileName>rabbit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\rabbit.c</FilePath>
+            </File>
+            <File>
+              <FileName>random.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\random.c</FilePath>
+            </File>
+            <File>
+              <FileName>ripemd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\ripemd.c</FilePath>
+            </File>
+            <File>
+              <FileName>rsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\rsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha512.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha512.c</FilePath>
+            </File>
+            <File>
+              <FileName>tfm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\tfm.c</FilePath>
+            </File>
+            <File>
+              <FileName>wc_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\wc_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>internal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\internal.c</FilePath>
+            </File>
+            <File>
+              <FileName>io.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>keys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\keys.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\ssl.c</FilePath>
+            </File>
+            <File>
+              <FileName>tls.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\tls.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/Flash/NXP/LPC_SPIFI_M4</GroupName>
+          <Files>
+            <File>
+              <FileName>spifilib_dev_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\spifilib_dev_common.c</FilePath>
+            </File>
+            <File>
+              <FileName>spifilib_fam_standard_cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\spifilib_fam_standard_cmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>Flash_NXP_LPC_SPIFI_M4_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\Flash_NXP_LPC_SPIFI_M4_driver.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3369,7 +3524,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
@@ -3385,7 +3540,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM4F, DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl\ctaocrypt;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl\openssl</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -5377,6 +5532,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</FilePath>
             </File>
+            <File>
+              <FileName>LPC17xx_40xx_EINT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EINT.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6025,31 +6185,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>NXP_SPIFI_M4</GroupName>
-          <Files>
-            <File>
-              <FileName>Flash_NXP_LPC_SPIFI_M4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\Flash_NXP_LPC_SPIFI_M4.h</FilePath>
-            </File>
-            <File>
-              <FileName>Flash_NXP_LPC_SPIFI_M4_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\Flash_NXP_LPC_SPIFI_M4_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>spifi_drv_M4.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\spifi_drv_M4.lib</FilePath>
-            </File>
-            <File>
-              <FileName>spifi_rom_api.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\spifi_rom_api.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Newhaven</GroupName>
           <Files>
             <File>
@@ -6065,12 +6200,187 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Devices\Accelerometer\ST</GroupName>
+          <GroupName>Devices\Accelerometer\ST\LIS3DH</GroupName>
           <Files>
             <File>
               <FileName>ST_LIS3DH_I2C_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Encryption/CyaSSL</GroupName>
+          <Files>
+            <File>
+              <FileName>aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\aes.c</FilePath>
+            </File>
+            <File>
+              <FileName>arc4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\arc4.c</FilePath>
+            </File>
+            <File>
+              <FileName>asn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\asn.c</FilePath>
+            </File>
+            <File>
+              <FileName>coding.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\coding.c</FilePath>
+            </File>
+            <File>
+              <FileName>des3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\des3.c</FilePath>
+            </File>
+            <File>
+              <FileName>dh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\dh.c</FilePath>
+            </File>
+            <File>
+              <FileName>dsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\dsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>error.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\error.c</FilePath>
+            </File>
+            <File>
+              <FileName>hc128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\hc128.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\hmac.c</FilePath>
+            </File>
+            <File>
+              <FileName>integer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\integer.c</FilePath>
+            </File>
+            <File>
+              <FileName>logging.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\logging.c</FilePath>
+            </File>
+            <File>
+              <FileName>md4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\md4.c</FilePath>
+            </File>
+            <File>
+              <FileName>memory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\memory.c</FilePath>
+            </File>
+            <File>
+              <FileName>misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwdbased.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\pwdbased.c</FilePath>
+            </File>
+            <File>
+              <FileName>rabbit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\rabbit.c</FilePath>
+            </File>
+            <File>
+              <FileName>random.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\random.c</FilePath>
+            </File>
+            <File>
+              <FileName>ripemd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\ripemd.c</FilePath>
+            </File>
+            <File>
+              <FileName>rsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\rsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha512.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha512.c</FilePath>
+            </File>
+            <File>
+              <FileName>tfm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\tfm.c</FilePath>
+            </File>
+            <File>
+              <FileName>wc_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\wc_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>internal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\internal.c</FilePath>
+            </File>
+            <File>
+              <FileName>io.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>keys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\keys.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\ssl.c</FilePath>
+            </File>
+            <File>
+              <FileName>tls.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\tls.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/Flash/NXP/LPC_SPIFI_M4</GroupName>
+          <Files>
+            <File>
+              <FileName>spifilib_dev_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\spifilib_dev_common.c</FilePath>
+            </File>
+            <File>
+              <FileName>spifilib_fam_standard_cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\spifilib_fam_standard_cmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>Flash_NXP_LPC_SPIFI_M4_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\Flash_NXP_LPC_SPIFI_M4_driver.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6420,7 +6730,7 @@
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM4F, DEBUG, FREERTOS_PLUS_TRACE, SELECTED_PORT=PORT_ARM_CortexM</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc;..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\include</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc;..\..\..\..\..\..\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\include;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl\ctaocrypt;..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\cyassl\openssl</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -8412,6 +8722,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</FilePath>
             </File>
+            <File>
+              <FileName>LPC17xx_40xx_EINT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_EINT.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8860,31 +9175,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>NXP_SPIFI_M4</GroupName>
-          <Files>
-            <File>
-              <FileName>Flash_NXP_LPC_SPIFI_M4.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\Flash_NXP_LPC_SPIFI_M4.h</FilePath>
-            </File>
-            <File>
-              <FileName>Flash_NXP_LPC_SPIFI_M4_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\Flash_NXP_LPC_SPIFI_M4_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>spifi_drv_M4.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\spifi_drv_M4.lib</FilePath>
-            </File>
-            <File>
-              <FileName>spifi_rom_api.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4\spifi_rom_api.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Newhaven</GroupName>
           <Files>
             <File>
@@ -8900,12 +9190,187 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Devices\Accelerometer\ST</GroupName>
+          <GroupName>Devices\Accelerometer\ST\LIS3DH</GroupName>
           <Files>
             <File>
               <FileName>ST_LIS3DH_I2C_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Encryption/CyaSSL</GroupName>
+          <Files>
+            <File>
+              <FileName>aes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\aes.c</FilePath>
+            </File>
+            <File>
+              <FileName>arc4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\arc4.c</FilePath>
+            </File>
+            <File>
+              <FileName>asn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\asn.c</FilePath>
+            </File>
+            <File>
+              <FileName>coding.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\coding.c</FilePath>
+            </File>
+            <File>
+              <FileName>des3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\des3.c</FilePath>
+            </File>
+            <File>
+              <FileName>dh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\dh.c</FilePath>
+            </File>
+            <File>
+              <FileName>dsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\dsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>error.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\error.c</FilePath>
+            </File>
+            <File>
+              <FileName>hc128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\hc128.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\hmac.c</FilePath>
+            </File>
+            <File>
+              <FileName>integer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\integer.c</FilePath>
+            </File>
+            <File>
+              <FileName>logging.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\logging.c</FilePath>
+            </File>
+            <File>
+              <FileName>md4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\md4.c</FilePath>
+            </File>
+            <File>
+              <FileName>memory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\memory.c</FilePath>
+            </File>
+            <File>
+              <FileName>misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwdbased.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\pwdbased.c</FilePath>
+            </File>
+            <File>
+              <FileName>rabbit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\rabbit.c</FilePath>
+            </File>
+            <File>
+              <FileName>random.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\random.c</FilePath>
+            </File>
+            <File>
+              <FileName>ripemd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\ripemd.c</FilePath>
+            </File>
+            <File>
+              <FileName>rsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\rsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha512.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\sha512.c</FilePath>
+            </File>
+            <File>
+              <FileName>tfm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\tfm.c</FilePath>
+            </File>
+            <File>
+              <FileName>wc_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\ctaocrypt\src\wc_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>internal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\internal.c</FilePath>
+            </File>
+            <File>
+              <FileName>io.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\io.c</FilePath>
+            </File>
+            <File>
+              <FileName>keys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\keys.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\ssl.c</FilePath>
+            </File>
+            <File>
+              <FileName>tls.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\Encryption\CyaSSL\src\tls.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Device/Flash/NXP/LPC_SPIFI_M4</GroupName>
+          <Files>
+            <File>
+              <FileName>spifilib_dev_common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\spifilib_dev_common.c</FilePath>
+            </File>
+            <File>
+              <FileName>spifilib_fam_standard_cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\spifilib_fam_standard_cmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>Flash_NXP_LPC_SPIFI_M4_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Flash\NXP\LPC_SPIFI_M4F\Flash_NXP_LPC_SPIFI_M4_driver.c</FilePath>
             </File>
           </Files>
         </Group>

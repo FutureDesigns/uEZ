@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -83,7 +83,7 @@ void LPC1768_I2S_GetDat(T_lpc1768_i2s_Workspace *p)
     p->iTransmitLowFunc(p->iCallBackWorkspace, sample, 4);//p->iSettings->iLowLevel);
 
     for (i = 0; i < 4; i++) {
-        I2S->I2STXFIFO = sample[i];
+        LPC_I2S->I2STXFIFO = sample[i];
     }
 }
 
@@ -137,7 +137,7 @@ T_uezError LPC1768_I2S_Stop(void *aWorkspace)
 {
     //Turn off Interrupts
     InterruptDisable(I2S_IRQn);
-    I2S->I2SIRQ &= ~2;
+    LPC_I2S->I2SIRQ &= ~2;
     return UEZ_ERROR_NONE;
 }
 /*---------------------------------------------------------------------------*
@@ -153,16 +153,16 @@ T_uezError LPC1768_I2S_Stop(void *aWorkspace)
 T_uezError LPC1768_I2S_Start(void *aWorkspace)//transmit low functions ?
 {
     //Turn on transmit Interrupt
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
-    I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
+    LPC_I2S->I2STXFIFO = 0;
     InterruptEnable(I2S_IRQn);
-    I2S->I2SIRQ |= 2;
+    LPC_I2S->I2SIRQ |= 2;
     return UEZ_ERROR_NONE;
 }
 /*---------------------------------------------------------------------------*
@@ -193,28 +193,28 @@ T_uezError LPC1768_I2S_config_TX(
 
     //Setup the SDAO register
     //Disable data output (stop and reset, then release reset)
-    I2S->I2SDAO |= 0x18;
+    LPC_I2S->I2SDAO |= 0x18;
     //I2SDAO &= 0x10;
     //Configure I2S output for
-    I2S->I2SDAO = 0x18 | (I2S_SETTING_SAMPLE_SIZE_16BIT << 0)
+    LPC_I2S->I2SDAO = 0x18 | (I2S_SETTING_SAMPLE_SIZE_16BIT << 0)
             | (I2S_SETTING_SAMPLE_FORMAT_MONO << 2) | (0 << 5) | //only supporting mater mode at this time
             (15 << 6);
 
     //Cacluate the RATE and configure the register
-    I2S->I2STXRATE = (1 << 8) | 2;
+    LPC_I2S->I2STXRATE = (1 << 8) | 2;
 
-    I2S->I2STXBITRATE = (((PROCESSOR_OSCILLATOR_FREQUENCY) / 2) / (44100 * 16
+    LPC_I2S->I2STXBITRATE = (((PROCESSOR_OSCILLATOR_FREQUENCY) / 2) / (44100 * 16
             * 1));
     //Set the frequency of the I2S to be 36 MHz (divide 72 MHz PCLK by 2)
     //divided by a 44 kHz signal of 16 bits by 2
 
-    I2S->I2SIRQ = 0;
+    LPC_I2S->I2SIRQ = 0;
     // Set the TXFIFO depth to be 4 (sets irq flag)
-    I2S->I2SIRQ &= ~(0xFF << 16);
-    I2S->I2SIRQ |= (4 << 16);
+    LPC_I2S->I2SIRQ &= ~(0xFF << 16);
+    LPC_I2S->I2SIRQ |= (4 << 16);
 
     //Enable DAO (go and release reset)
-    I2S->I2SDAO &= ~0x18;
+    LPC_I2S->I2SDAO &= ~0x18;
 
     if (!intRegistered) {
         InterruptRegister(I2S_IRQn, ILPC1768_I2SInterruptHandler,

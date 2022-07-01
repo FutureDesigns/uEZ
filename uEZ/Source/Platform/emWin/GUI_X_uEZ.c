@@ -21,6 +21,7 @@ Purpose     : Config / System dependent externals for GUI
 */
 
 #include <stdio.h>
+#include <string.h>
 #include "uEZRTOS.h"
 #include "GUI.h"
 //#include <intrinsics.h>
@@ -131,4 +132,8 @@ void GUI_X_Log     (const char *s) { OS_SendString(s); }
 void GUI_X_Warn    (const char *s) { OS_SendString(s); }
 void GUI_X_ErrorOut(const char *s) { OS_SendString(s); }
 
+void *emWin_memcpy(void *pDst, const void *pSrc, long size)
+{
+	return (void*)memcpy(pDst, pSrc, size);
+}
 /*************************** End of file ****************************/

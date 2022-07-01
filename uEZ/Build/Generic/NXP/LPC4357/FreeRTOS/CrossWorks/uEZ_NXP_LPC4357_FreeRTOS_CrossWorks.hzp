@@ -1,0 +1,1318 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="uEZ_NXP_LPC4357_FreeRTOS_CrossWorks" target="8" version="2">
+  <project Name="uEZ_NXP_LPC4357_FreeRTOS_CrossWorks">
+    <configuration
+      Name="Common"
+      Placement="Flash A"
+      Target="LPC4357"
+      arm_architecture="v7EM"
+      arm_core_type="Cortex-M4"
+      arm_fp_abi="Hard"
+      arm_fpu_type="FPv4-SP-D16"
+      arm_interwork="No"
+      arm_linker_heap_size="128"
+      arm_linker_jtag_pad_post_dr="0"
+      arm_linker_jtag_pad_post_ir="0"
+      arm_linker_jtag_pad_pre_dr="1"
+      arm_linker_jtag_pad_pre_ir="4"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="256"
+      arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC4300/LPC4300SimulatorMemory.dll"
+      arm_simulator_memory_simulation_parameter="LPC4357;$(SPIFI_SIZE:0);$(CS0_SIZE:0);$(CS1_SIZE:0);$(CS2_SIZE:0);$(CS3_SIZE:0)"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_interface_type="SWD"
+      arm_target_loader_applicable_loaders="Flash"
+      arm_target_loader_default_loader="Flash"
+      batch_build_configurations="Debug;Debug-Trace;Release;ReleaseOptForSize"
+      build_output_directory="$(Configuration)"
+      build_output_file_name="$(OutDir)/$(ProjectName)_$(Configuration)$(LIB)"
+      c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
+      c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
+      c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;UEZ_LIBRARY"
+      c_user_include_directories=".;../../../../../../.;../../../../../../Include;../../../../../../Source/RTOS/FreeRTOS/include;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../../../Source/Processor/NXP/LPC43xx;../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks;../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/CMSIS;../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/include;../../../../../../Source/Library/lwIP/src/include;../../../../../../Source/Library/lwIP/src;../../../../../../Source/Library/lwIP/Include;../../../../../../Source/Library/lwIP/src/include/ipv4;../../../../../../Source/Library/GUI/SEGGER/emWin;../../../../../../Source/Library/LPCOpen;../../../../../../Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../Source/Platform/emWin/Inc;../../../../../../Source/Platform/emWin/Config;../../../../../../Source/Library/Encryption/CyaSSL;../../../../../../Source/Library/Encryption/CyaSSL/cyassl;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/ctaocrypt;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/openssl"
+      debug_register_definition_file="$(TargetsDir)/LPC4300/LPC4300_Peripherals.xml"
+      debug_startup_completion_point="main"
+      gcc_wchar_size="32-Bit"
+      link_include_startup_code="No"
+      linker_memory_map_file="$(ProjectDir)/uEZGUI-4357-50WVN_MemoryMap.xml"
+      linker_output_format="hex"
+      linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
+      linker_section_placement_file="$(StudioDir)/targets/Cortex_M/flash_placement.xml"
+      linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SRAM1"
+      oscillator_frequency="12MHz"
+      package_dependencies="LPC4300_V3"
+      project_directory=""
+      project_type="Library"
+      property_groups_file_path="$(TargetsDir)/LPC4300/propertyGroups.xml"
+      target_get_partname_script="GetPartName()"
+      target_match_partname_script="MatchPartName(&quot;$(Target)&quot;)"
+      target_reset_script="Reset(4)"
+      target_script_file="$(TargetsDir)/LPC4300/LPC4300_Target.js"
+      target_trace_initialize_script="EnableTrace(&quot;$(TraceInterfaceType)&quot;)" />
+    <configuration Name="Flash" Placement="Flash" />
+    <configuration Name="RAM" Placement="RAM" />
+    <file file_name="Config_Build.h" />
+    <file file_name="lwipopts.h" />
+    <file file_name="uEZPlatform.h" />
+    <folder Name="Source">
+      <folder Name="Devices">
+        <folder Name="Accelerometer">
+          <folder Name="Freescale">
+            <folder Name="MMA7455">
+              <file file_name="../../../../../../Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455_driver.c" />
+            </folder>
+          </folder>
+          <folder Name="Analog Devices">
+            <folder Name="ADXL345">
+              <file file_name="../../../../../../Source/Devices/Accelerometer/Analog Devices/ADXL345/Accelerometer_ADXL345.c" />
+              <file file_name="../../../../../../Source/Devices/Accelerometer/Analog Devices/ADXL345/Accelerometer_ADXL345.h" />
+            </folder>
+          </folder>
+          <folder Name="Bosch">
+            <folder Name="BMA150">
+              <file file_name="../../../../../../Source/Devices/Accelerometer/Bosch/BMA150/Bosch_BMA150_I2C.h" />
+              <file file_name="../../../../../../Source/Devices/Accelerometer/Bosch/BMA150/Bosch_BMA150_I2C_driver.c" />
+            </folder>
+          </folder>
+          <folder Name="ST">
+            <folder Name="LIS3LV02DQ">
+              <file file_name="../../../../../../Source/Devices/Accelerometer/ST/LIS3LV02DQ/ST_LIS3LV02DQ_I2C.h" />
+              <file file_name="../../../../../../Source/Devices/Accelerometer/ST/LIS3LV02DQ/ST_LIS3LV02DQ_I2C_driver.c" />
+            </folder>
+            <folder Name="LIS3DH">
+              <file file_name="../../../../../../Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C_driver.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="ADC">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/ADC/Generic/Generic_adc.c" />
+          </folder>
+        </folder>
+        <folder Name="AudioAmp">
+          <folder Name="NXP">
+            <folder Name="TDA8551_T">
+              <file file_name="../../../../../../Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_8551T.c" />
+              <file file_name="../../../../../../Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h" />
+            </folder>
+          </folder>
+          <folder Name="TI">
+            <folder Name="LM48100" />
+            <file file_name="../../../../../../Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.c" />
+            <file file_name="../../../../../../Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h" />
+          </folder>
+          <folder Name="Wolfson">
+            <folder Name="WM8731">
+              <file file_name="../../../../../../Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Backlight">
+          <folder Name="Generic">
+            <folder Name="BacklightOWMControlled">
+              <file file_name="../../../../../../Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWMControlled.c" />
+              <file file_name="../../../../../../Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="DAC">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/DAC/Generic/DAC_Generic.c" />
+            <file file_name="../../../../../../Source/Devices/DAC/Generic/DAC_Generic.h" />
+          </folder>
+        </folder>
+        <folder Name="EEPROM">
+          <folder Name="I2C">
+            <file file_name="../../../../../../Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C_driver.c" />
+            <file file_name="../../../../../../Source/Devices/EEPROM/Generic/I2C/EEPROM_Generic_I2C.h" />
+            <file file_name="../../../../../../Source/Devices/EEPROM/Generic/I2C/EEPROM_Generic_I2C_driver.c" />
+            <file file_name="../../../../../../Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C.h" />
+          </folder>
+          <folder Name="NXP">
+            <folder Name="LPC43xx">
+              <file file_name="../../../../../../Source/Devices/EEPROM/NXP/LPC43xx/EEPROM_NXP_LPC43xx.c" />
+              <file file_name="../../../../../../Source/Devices/EEPROM/NXP/LPC43xx/EEPROM_NXP_LPC43xx.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="FLASH">
+          <folder Name="NXP">
+            <folder Name="LPC43xx">
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.c" />
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.h" />
+            </folder>
+            <folder Name="LPC_SPIFI_M4F">
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4_driver.c" />
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_dev_common.c" />
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_fam_standard_cmd.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="GPDMA">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/GPDMA/Generic/Generic_GPDMA.c" />
+          </folder>
+        </folder>
+        <folder Name="I2C">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/I2C/Generic/Generic_i2c.c" />
+          </folder>
+          <folder Name="Mux">
+            <folder Name="PCA9546">
+              <file file_name="../../../../../../Source/Devices/I2C/Mux/PCA9546/I2C_Mux_PCA9546.c" />
+              <file file_name="../../../../../../Source/Devices/I2C/Mux/PCA9546/I2C_Mux_PCA9546.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="LCD">
+          <folder Name="Sharp">
+            <folder Name="LQ043T1DG01">
+              <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T1DG01/Sharp_LQ043T1DG01.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T1DG01/Sharp_LQ043T1DG01.h" />
+            </folder>
+            <folder Name="LQ043T3DG02">
+              <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T3DG02/Sharp_LQ043T3DG02.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T3DG02/Sharp_LQ043T3DG02.h" />
+            </folder>
+            <folder Name="LQ043T1DG28">
+              <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T1DG28/Sharp_LQ043T1DG28.c" />
+            </folder>
+          </folder>
+          <folder Name="DigitalImage">
+            <folder Name="FG050720DSSWDG01">
+              <file file_name="../../../../../../Source/Devices/LCD/DigitalImage/FG050720DSSWDG01/LCD_DigitalImage_FG050720DSSWDG01.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/DigitalImage/FG050720DSSWDG01/LCD_DigitalImage_FG050720DSSWDG01.h" />
+            </folder>
+          </folder>
+          <folder Name="Hitachi">
+            <folder Name="TX11D06VM2APA">
+              <file file_name="../../../../../../Source/Devices/LCD/Hitachi/TX11D06VM2APA/Hitachi_TX11D06VM2APA.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Hitachi/TX11D06VM2APA/Hitachi_TX11D06VM2APA.h" />
+            </folder>
+          </folder>
+          <folder Name="Inteltronic">
+            <folder Name="LMIX0560NTN53V1">
+              <file file_name="../../../../../../Source/Devices/LCD/Inteltronic/LMIX0560NTN53V1/Inteltronic_LMIX0560NTN53V1.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Inteltronic/LMIX0560NTN53V1/Inteltronic_LMIX0560NTN53V1.h" />
+            </folder>
+          </folder>
+          <folder Name="NEC">
+            <folder Name="NL6448BC18-03F">
+              <file file_name="../../../../../../Source/Devices/LCD/NEC/NL6448BC18-03F/NEC-NL6448Bc18.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/NEC/NL6448BC18-03F/NEC-NL6448BC18.h" />
+            </folder>
+          </folder>
+          <folder Name="OKAYA">
+            <folder Name="RH320240T">
+              <file file_name="../../../../../../Source/Devices/LCD/OKAYA/RH320240T/Okaya_rh320240t.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/OKAYA/RH320240T/Okaya_RH320240T.h" />
+            </folder>
+            <folder Name="RV320240T">
+              <file file_name="../../../../../../Source/Devices/LCD/OKAYA/RV320240T/Okaya_rv320240t.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/OKAYA/RV320240T/Okaya_RV320240T.h" />
+            </folder>
+            <folder Name="RV640480T">
+              <file file_name="../../../../../../Source/Devices/LCD/OKAYA/RV640480T/Okaya_RV640480T.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/OKAYA/RV640480T/Okaya_RV640480T.h" />
+            </folder>
+          </folder>
+          <folder Name="Seiko">
+            <folder Name="43WQW1T">
+              <file file_name="../../../../../../Source/Devices/LCD/Seiko/43WQW1T/Seiko_43WQW1T.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Seiko/43WQW1T/Seiko_43WQW1T.h" />
+            </folder>
+            <folder Name="70WVW2T">
+              <file file_name="../../../../../../Source/Devices/LCD/Seiko/70WVW2T/Seiko_70WVW2T.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Seiko/70WVW2T/Seiko_70WVW2T.h" />
+            </folder>
+          </folder>
+          <folder Name="Tianma">
+            <folder Name="TM043NBH02">
+              <file file_name="../../../../../../Source/Devices/LCD/Tianma/TM043NBH02/Tianma_TM043NBH02.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Tianma/TM043NBH02/Tianma_TM043NBH02.h" />
+            </folder>
+            <folder Name="TM047NBH01">
+              <file file_name="../../../../../../Source/Devices/LCD/Tianma/TM047NBH01/Tianma_TM047NBH01.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Tianma/TM047NBH01/Tianma_TM047NBH01.h" />
+            </folder>
+            <folder Name="TM070RBHG04">
+              <file file_name="../../../../../../Source/Devices/LCD/Tianma/TM070RBHG04/Tianma_TM070RBHG04.c" />
+            </folder>
+          </folder>
+          <folder Name="Toshiba">
+            <folder Name="LTA057A347F">
+              <file file_name="../../../../../../Source/Devices/LCD/Toshiba/LTA057A347F/Toshiba_LTA057A347F.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Toshiba/LTA057A347F/Toshiba_LTA057A347F.h" />
+            </folder>
+          </folder>
+          <folder Name="Microtips">
+            <folder Name="UMSH-8596MD-20T">
+              <file file_name="../../../../../../Source/Devices/LCD/MicroTips/UMSH-8596MD-20T/Microtips_UMSH_8596MD_20T.c" />
+            </folder>
+          </folder>
+          <folder Name="Newhaven">
+            <folder Name="NHD43480272MF">
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD43480272MF/NewHaven_NHD43480272MF.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD43480272MF/NewHaven_NHD43480272MF.h" />
+            </folder>
+            <folder Name="NHD43480272MF">
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Mass Storage">
+          <folder Name="SD Card">
+            <file file_name="../../../../../../Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SD_MMC.c" />
+            <file file_name="../../../../../../Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SD_MMC.h" />
+            <file file_name="../../../../../../Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.c" />
+            <file file_name="../../../../../../Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h" />
+          </folder>
+          <folder Name="LPCUSBLib">
+            <file file_name="../../../../../../Source/Devices/MassStorage/LPCUSBLib/LPCUSBLib_MS.c" />
+            <file file_name="../../../../../../Source/Devices/MassStorage/LPCUSBLib/LPCUSBLib_MS.h" />
+          </folder>
+        </folder>
+        <folder Name="PWM">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/PWM/Generic/Generic_PWM.c" />
+          </folder>
+        </folder>
+        <folder Name="RTC">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/RTC/Generic/generic_rtc.c" />
+          </folder>
+          <folder Name="NXP">
+            <folder Name="PCF8563">
+              <file file_name="../../../../../../Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Serial">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/Serial/Generic/uEZSerialGeneric.c" />
+            <file file_name="../../../../../../Source/Devices/Serial/Generic/uEZSerialGenericHalfDuplex.c" />
+          </folder>
+          <folder Name="RS485">
+            <folder Name="Generic">
+              <file file_name="../../../../../../Source/Devices/Serial/RS485/Generic/Generic_RS485.h" />
+              <file file_name="../../../../../../Source/Devices/Serial/RS485/Generic/Generic_RS485_Timer.c" />
+              <file file_name="../../../../../../Source/Devices/Serial/RS485/Generic/Generic_RS485_Timer.h" />
+              <file file_name="../../../../../../Source/Devices/Serial/RS485/Generic/Generic_RS485.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Temperature">
+          <folder Name="NXP">
+            <folder Name="LM75A">
+              <file file_name="../../../../../../Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A_driver.c" />
+            </folder>
+            <folder Name="SA56004X">
+              <file file_name="../../../../../../Source/Devices/Temperature/NXP/SA56004X/Temperature_SA56004X.h" />
+              <file file_name="../../../../../../Source/Devices/Temperature/NXP/SA56004X/Temperature_SA56004X_driver.c" />
+            </folder>
+          </folder>
+          <folder Name="Analog Devices">
+            <folder Name="ADT7420">
+              <file file_name="../../../../../../Source/Devices/Temperature/Analog Devices/ADT7420/Temperature_ADT7420.c" />
+              <file file_name="../../../../../../Source/Devices/Temperature/Analog Devices/ADT7420/Temperature_ADT7420.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Tone Generator">
+          <folder Name="Generic">
+            <folder Name="PWM">
+              <file file_name="../../../../../../Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM_driver.c" />
+            </folder>
+            <folder Name="Timer">
+              <file file_name="../../../../../../Source/Devices/ToneGenerator/Generic/Timer/ToneGenerator_Generic_Timer_driver.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Touchscreen">
+          <folder Name="Generic">
+            <folder Name="FourWireTouchResist">
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.c" />
+            </folder>
+          </folder>
+          <folder Name="Sitronix">
+            <folder Name="ST1232">
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Sitronix/ST1232/ST1232TouchScreen.c" />
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Sitronix/ST1232/ST1232TouchScreen.h" />
+            </folder>
+          </folder>
+          <folder Name="Newhaven">
+            <folder Name="FT5306DE4">
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Newhaven/FT5306DE4/FT5306DE4TouchScreen.c" />
+              <file file_name="../../../../../../Source/Devices/Touchscreen/Newhaven/FT5306DE4/FT5306DE4TouchScreen.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="USB Host">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/USBHost/Generic/Generic_USBHost.c" />
+          </folder>
+        </folder>
+        <folder Name="Watchdog">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/Watchdog/Generic/Watchdog_Generic_driver.c" />
+          </folder>
+        </folder>
+        <folder Name="SPI">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/SPI/Generic/Generic_spi.c" />
+            <file file_name="../../../../../../Source/Devices/SPI/Generic/Generic_SPI.h" />
+          </folder>
+        </folder>
+        <folder Name="Network">
+          <folder Name="lwIP">
+            <file file_name="../../../../../../Source/Devices/Network/lwIP/Network_lwIP.c" />
+          </folder>
+          <folder Name="GainSpan">
+            <file file_name="../../../../../../Source/Devices/Network/GainSpan/Network_GainSpan.c" />
+            <file file_name="../../../../../../Source/Devices/Network/GainSpan/Network_GainSpan.h" />
+          </folder>
+        </folder>
+        <folder Name="Audio Codec">
+          <folder Name="Wolfson">
+            <folder Name="WM8731">
+              <file file_name="../../../../../../Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.c" />
+              <file file_name="../../../../../../Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="ExternalInterrupt">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/ExternalInterrupt/Generic/ExternalInterrupt_Generic.c" />
+            <file file_name="../../../../../../Source/Devices/ExternalInterrupt/Generic/ExternalInterrupt_Generic.h" />
+          </folder>
+        </folder>
+        <folder Name="HID">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/HID/Generic/HID_Generic.c" />
+            <file file_name="../../../../../../Source/Devices/HID/Generic/HID_Generic.h" />
+          </folder>
+        </folder>
+        <folder Name="I2S">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/I2S/Generic/Generic_i2s.c" />
+            <file file_name="../../../../../../Source/Devices/I2S/Generic/Generic_I2S.h" />
+          </folder>
+        </folder>
+        <folder Name="Keypad">
+          <folder Name="NXP">
+            <folder Name="I2C_Keypad">
+              <file file_name="../../../../../../Source/Devices/Keypad/NXP/I2C_Keypad/Keypad_NXP_I2C_PCA9555.h" />
+              <file file_name="../../../../../../Source/Devices/Keypad/NXP/I2C_Keypad/Keypad_NXP_I2C_PCA9555_driver.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="LED">
+          <folder Name="Generic">
+            <folder Name="GPIO">
+              <file file_name="../../../../../../Source/Devices/LED/Generic/GPIO/LED_Generic_GPIO.c" />
+              <file file_name="../../../../../../Source/Devices/LED/Generic/GPIO/LED_Generic_GPIO.h" />
+            </folder>
+          </folder>
+          <folder Name="NXP">
+            <folder Name="PCA9551">
+              <file file_name="../../../../../../Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h" />
+              <file file_name="../../../../../../Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551_driver.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Timer">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/Timer/Generic/Timer_Generic.c" />
+            <file file_name="../../../../../../Source/Devices/Timer/Generic/Timer_Generic.h" />
+          </folder>
+        </folder>
+        <folder Name="Button">
+          <folder Name="NXP">
+            <folder Name="PCA9551">
+              <file file_name="../../../../../../Source/Devices/Button/NXP/PCA9551/Button_NXP_PCA9551_driver.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="CRC">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/CRC/Generic/CRC_Generic.c" />
+            <file file_name="../../../../../../Source/Devices/CRC/Generic/CRC_Generic.h" />
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Library">
+        <folder Name="FileSystem">
+          <folder Name="FATFS">
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.h" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.h" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/integer.h" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.h" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.c" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.c" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.c" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.c" />
+            <folder Name="option">
+              <file file_name="../../../../../../Source/Library/FileSystem/FATFS/option/unicode.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Graphics">
+          <folder Name="SWIM">
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_x6x13.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/droidsansr32.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_colors.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_droidsansr14.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_droidsansr76.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_fonts.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_helvr10.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_rom8x8.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_rom8x16.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim_font.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim_image.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_types.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_x5x7.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_x6x13.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/droidsansr32.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_droidsansr14.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_droidsansr76.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_helvr10.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_rom8x8.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_rom8x16.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim_font.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim_image.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_x5x7.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_winfreesystem14x16_subset.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_winfreesystem14x16_subset.h" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim_driver.c" />
+            <file file_name="../../../../../../Source/Library/Graphics/SWIM/lpc_swim_driver.h" />
+          </folder>
+        </folder>
+        <folder Name="GUI">
+          <folder Name="FDI">
+            <folder Name="SimpleUI">
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI.h" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Choices.h" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Drawing.h" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Regions.h" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.h" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Choices.c" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Drawing.c" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_Regions.c" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.c" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_DrawBitmap.c" />
+              <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI_DrawBitmap.h" />
+            </folder>
+          </folder>
+          <folder Name="Segger">
+            <folder Name="emWin">
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/BUTTON.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/CALENDAR.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/CHECKBOX.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/CHOOSECOLOR.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/CHOOSEFILE.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/DIALOG.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/DIALOG_Intern.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/DROPDOWN.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/EDIT.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/FRAMEWIN.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/Global.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GRAPH.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_ARRAY.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_ConfDefaults.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_Debug.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_FontIntern.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_HOOK.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_SetOrientation.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_SetOrientationCX.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_Type.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_Version.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_VNC.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_BitPlains.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_DCache.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Dist.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_FlexColor.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_IST3088.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin_Opt_8.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin_Opt_16.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin_Opt_24.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin_Opt_32.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_NoOpt_1_8.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_S1D15G00.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_S1D13748.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_S1D13781.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_SLin.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_SPage.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_SSD1926.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Template.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_TemplateI.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUITDRV_ADS7846.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/HEADER.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/ICONVIEW.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/IMAGE.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/IMAGE_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/KNOB.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LCD.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LCD_ConfDefaults.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LCD_Protected.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LCD_SIM.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LISTBOX.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LISTVIEW.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LISTWHEEL.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/MENU.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/MESSAGEBOX.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/MULTIEDIT.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/MULTIPAGE.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/PROGBAR.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/RADIO.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SCROLLBAR.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SLIDER.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SPINBOX.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/TEXT.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/TREEVIEW.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WIDGET.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WM.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WM_GUI.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WM_Intern.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="lwIP">
+          <folder Name="src">
+            <folder Name="api">
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/tcpip.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/api_lib.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/api_msg.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/err.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/netbuf.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/netdb.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/netifapi.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/api/sockets.c">
+                <configuration Name="Common" c_only_additional_options="-w" />
+              </file>
+            </folder>
+            <folder Name="arch">
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/sys_arch.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/bpstruct.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/cc.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/clock.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/epstruct.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/ethernetif.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/lwIP_EMAC.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/perf.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/sys_arch.h" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/arch/clock.c" />
+            </folder>
+            <folder Name="core">
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/udp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/dhcp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/dns.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/init.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/mem.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/memp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/netif.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/pbuf.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/raw.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/stats.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/sys.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/tcp.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/tcp_in.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/core/tcp_out.c" />
+              <folder Name="ipv4">
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/ip_frag.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/autoip.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/icmp.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/igmp.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/inet.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/inet_chksum.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/ip.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/ipv4/ip_addr.c" />
+              </folder>
+              <folder Name="snmp">
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/msg_out.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/asn1_dec.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/asn1_enc.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/mib2.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/mib_structs.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/core/snmp/msg_in.c" />
+              </folder>
+            </folder>
+            <folder Name="include">
+              <folder Name="ipv4">
+                <folder Name="lwip">
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/autoip.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/icmp.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/igmp.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/inet.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/inet_chksum.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/ip.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/ip_addr.h" />
+                  <file file_name="../../../../../../Source/Library/lwIP/src/include/ipv4/lwip/ip_frag.h" />
+                </folder>
+              </folder>
+              <folder Name="lwip">
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/udp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/api.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/api_msg.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/arch.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/debug.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/def.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/dhcp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/dns.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/err.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/init.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/mem.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/memp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/memp_std.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netbuf.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netdb.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netif.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/netifapi.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/opt.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/pbuf.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/raw.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/sio.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp_asn1.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp_msg.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/snmp_structs.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/sockets.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/stats.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/sys.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/tcp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/lwip/tcpip.h" />
+              </folder>
+              <folder Name="netif">
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/etharp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/loopif.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/ppp_oe.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/include/netif/slipif.h" />
+              </folder>
+            </folder>
+            <folder Name="netif">
+              <folder Name="ppp">
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/vj.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/auth.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chap.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chpms.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/fsm.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ipcp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/lcp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/magic.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/md5.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/pap.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ppp.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/pppdebug.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/randm.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/vj.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/vjbsdhdr.h" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/auth.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chap.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/chpms.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/fsm.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ipcp.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/lcp.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/magic.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/md5.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/pap.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ppp.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/ppp_oe.c" />
+                <file file_name="../../../../../../Source/Library/lwIP/src/netif/ppp/randm.c" />
+              </folder>
+              <file file_name="../../../../../../Source/Library/lwIP/src/netif/etharp.c">
+                <configuration
+                  Name="Common"
+                  c_only_additional_options="-Wno-strict-aliasing" />
+              </file>
+              <file file_name="../../../../../../Source/Library/lwIP/src/netif/ethernetif.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/netif/loopif.c" />
+              <file file_name="../../../../../../Source/Library/lwIP/src/netif/slipif.c" />
+            </folder>
+          </folder>
+          <file file_name="../../../../../../Source/Library/lwIP/uEZEMAC_lwIP.c" />
+          <configuration
+            Name="Debug"
+            gcc_optimization_level="Optimize For Size" />
+        </folder>
+        <folder Name="USBDevice">
+          <folder Name="LPCUSBLib">
+            <folder Name="VirtualComm">
+              <file file_name="../../../../../../Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c" />
+              <file file_name="../../../../../../Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.h" />
+            </folder>
+            <folder Name="MassStorage">
+              <file file_name="../../../../../../Source/Library/USBDevice/LPCUSBLib/MassStorage/USBMSDrive.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Console">
+          <folder Name="FDI">
+            <file file_name="../../../../../../Source/Library/Console/FDICmd/FDICmd.c" />
+            <folder Name="Commands">
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_File.c" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_File.h" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_I2C.c" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_I2C.h" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_AudioDAC.c" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_AudioDAC.h" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_WAVPlay.c" />
+              <file file_name="../../../../../../Source/Library/Console/FDICmd/Commands/FDICmd_WAVPlay.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="StreamIO">
+          <folder Name="StdInOut">
+            <folder Name="CrossWorks">
+              <file file_name="../../../../../../Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+            </folder>
+            <file file_name="../../../../../../Source/Library/StreamIO/StdInOut/StdInOut.c" />
+            <file file_name="../../../../../../Source/Library/StreamIO/StdInOut/StdInOut.h" />
+          </folder>
+        </folder>
+        <folder Name="Memory">
+          <folder Name="MemoryTest">
+            <file file_name="../../../../../../Source/Library/Memory/MemoryTest/MemoryTest.c" />
+          </folder>
+        </folder>
+        <folder Name="Web">
+          <folder Name="BasicWeb">
+            <file file_name="../../../../../../Source/Library/Web/BasicWeb/BasicWEB.c" />
+            <file file_name="../../../../../../Source/Library/Web/BasicWeb/BasicWEB.h" />
+          </folder>
+          <folder Name="HTTPServer">
+            <file file_name="../../../../../../Source/Library/Web/HTTPServer/HTTPServer.c" />
+            <file file_name="../../../../../../Source/Library/Web/HTTPServer/HTTPServer.h" />
+          </folder>
+        </folder>
+        <folder Name="Parser">
+          <folder Name="IntelHexParser">
+            <file file_name="../../../../../../Source/Library/Parser/IntelHexParser/IntelHexParser.c" />
+            <file file_name="../../../../../../Source/Library/Parser/IntelHexParser/IntelHexParser.h" />
+          </folder>
+        </folder>
+        <folder Name="Language">
+          <folder Name="C">
+            <file file_name="../../../../../../Source/Library/Language/C/C.h" />
+            <file file_name="../../../../../../Source/Library/Language/C/ultoa.c" />
+          </folder>
+        </folder>
+        <folder Name="uEZFailure">
+          <file file_name="../../../../../../Source/Library/uEZFailure/FatalError.c" />
+          <file file_name="../../../../../../Source/Library/uEZFailure/uEZFailure.c" />
+        </folder>
+        <folder Name="Network">
+          <folder Name="PHY">
+            <folder Name="MDIOBitBang">
+              <file file_name="../../../../../../Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.c" />
+              <file file_name="../../../../../../Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.h" />
+            </folder>
+          </folder>
+          <folder Name="GainSpan">
+            <folder Name="CmdLib">
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/AtCmdLib.c" />
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/AtCmdLib.h" />
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.c" />
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.h" />
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_Config.h" />
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.c" />
+              <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.h" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="ScreenSaver">
+          <file file_name="../../../../../../Source/Library/ScreenSaver/BouncingLogoSS.c" />
+        </folder>
+        <folder Name="Audio">
+          <folder Name="DAC">
+            <file file_name="../../../../../../Source/Library/Audio/DAC/uEZDACWAVFile.c" />
+            <file file_name="../../../../../../Source/Library/Audio/DAC/uEZDACWAVFile.h" />
+          </folder>
+        </folder>
+        <folder Name="Tests">
+          <folder Name="ALS">
+            <folder Name="Vishay">
+              <folder Name="VCNL4010">
+                <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.c" />
+                <file file_name="../../../../../../Source/Library/Tests/ALS/Vishay/VCNL4010/TestVCNL4010.h" />
+              </folder>
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="Encryption">
+          <folder Name="CyaSSL">
+            <folder Name="craocrypt">
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/aes.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/arc4.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/coding.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/des3.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/dh.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/dsa.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/error.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/hc128.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/hmac.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/integer.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/logging.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/md4.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/memory.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/misc.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/pwdbased.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/rabbit.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/random.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/ripemd.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/rsa.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/sha.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/sha256.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/sha512.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/tfm.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/wc_port.c" />
+            </folder>
+            <folder Name="src">
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/internal.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/io.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/keys.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/ssl.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/tls.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="LPCOpen">
+          <folder Name="chip_18xx_43xx">
+            <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/chip_18xx_43xx.c" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/clock_18xx_43xx.c" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/enet_18xx_43xx.c" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/rgu_18xx_43xx.c" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/sdif_18xx_43xx.c" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/sdmmc_18xx_43xx.c" />
+          </folder>
+          <folder Name="LPCUSBLib">
+            <folder Name="Drivers">
+              <folder Name="USB">
+                <folder Name="Class">
+                  <folder Name="Common">
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/AudioClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/CDCClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/HIDClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/HIDParser.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/HIDParser.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/HIDReportData.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/MassStorageClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/MIDIClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/PrinterClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/RNDISClassCommon.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Common/StillImageClassCommon.h" />
+                  </folder>
+                  <folder Name="Device">
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/AudioClassDevice.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/AudioClassDevice.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/CDCClassDevice.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/CDCClassDevice.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/HIDClassDevice.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/HIDClassDevice.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/MassStorageClassDevice.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/MassStorageClassDevice.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/MIDIClassDevice.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/MIDIClassDevice.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/RNDISClassDevice.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Device/RNDISClassDevice.h" />
+                  </folder>
+                  <folder Name="Host">
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/CDCClassHost.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/CDCClassHost.h" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/MassStorageClassHost.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/MassStorageClassHost.h" />
+                  </folder>
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/CDCClass.h" />
+                </folder>
+                <folder Name="Core">
+                  <folder Name="DCD">
+                    <folder Name="LPC18xx">
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC18XX/Device_LPC18xx.h" />
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC18XX/Endpoint_LPC18xx.c" />
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC18XX/Endpoint_LPC18xx.h" />
+                    </folder>
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/EndpointCommon.h" />
+                  </folder>
+                  <folder Name="HAL">
+                    <folder Name="LPC18xx">
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC18XX/HAL_LPC18xx.c" />
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC18XX/HAL_LPC18xx.h" />
+                    </folder>
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/HAL.h" />
+                  </folder>
+                  <folder Name="HCD">
+                    <folder Name="EHCI">
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/EHCI/EHCI.c" />
+                      <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/EHCI/EHCI.h" />
+                    </folder>
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/HCD.c" />
+                    <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/HCD.h" />
+                  </folder>
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/ConfigDescriptor.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/ConfigDescriptor.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Device.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Device.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DeviceStandardReq.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DeviceStandardReq.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Endpoint.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Endpoint.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/EndpointStream.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/EndpointStream.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Events.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Events.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Host.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Host.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HostStandardReq.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HostStandardReq.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/OTG.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Pipe.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/Pipe.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/PipeStream.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/PipeStream.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/StdDescriptors.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/StdRequestType.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBController.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBController.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBInterrupt.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBMemory.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBMemory.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBMode.h" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBTask.c" />
+                  <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/USBTask.h" />
+                </folder>
+              </folder>
+            </folder>
+            <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/LPCUSBLib_uEZ.c" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/LPCUSBLib_uEZ.h" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/LPCUSBlibConfig.h" />
+            <file file_name="../../../../../../Source/Library/LPCOpen/LPCUSBLib/Version.h" />
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Processor">
+        <folder Name="NXP">
+          <folder Name="LPC43xx">
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_ADCBank.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_DAC.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_EMAC.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_ExternalBus.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_ExternalBus.h" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_GPDMA.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_GPIO.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_HALInit.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_I2C.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_I2S.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Interrupt.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_LCDController.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_MCI.h" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PLL.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PLL.h" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PWM.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_RTC.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SD_MMC.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SD_MMC.h" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SDRAM.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Serial.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SSP.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Timer.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Watchdog.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/uEZProcessor_LPC43xx.h" />
+            <folder Name="CrossWorks">
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/thumb_crt0.s" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/LPC4300_Startup.s" />
+              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/CrossWorks/LPC4300_Target.js">
+                <configuration Name="Common" file_type="Target Script" />
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="RTOS">
+        <folder Name="FreeRTOS">
+          <folder Name="include">
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/croutine.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/FreeRTOS.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/list.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/mpu_wrappers.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/portable.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/projdefs.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/queue.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/semphr.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/StackMacros.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/task.h" />
+          </folder>
+          <folder Name="portable">
+            <folder Name="MemMang">
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/MemMang/heap_3.c">
+                <configuration Name="Debug" build_exclude_from_build="No" />
+              </file>
+            </folder>
+            <folder Name="GCC">
+              <folder Name="ARM_CM4F">
+                <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F/port.c" />
+                <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" />
+              </folder>
+            </folder>
+          </folder>
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/tasks.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/croutine.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/list.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/queue.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/timers.c" />
+        </folder>
+        <file file_name="../../../../../../Source/RTOS/uEZRTOS.c" />
+        <folder Name="FreeRTOS-Plus">
+          <folder Name="FreeRTOS-Plus-Trace">
+            <folder Name="Include">
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcBase.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcConfig.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcHardwarePort.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernel.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernelHooks.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernelPort.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcTypes.h" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcUser.h" />
+            </folder>
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcBase.c" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcHardwarePort.c" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcKernel.c" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcKernelPort.c" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcUser.c" />
+          </folder>
+          <configuration Name="Debug" build_exclude_from_build="Yes" />
+          <configuration Name="Release" build_exclude_from_build="Yes" />
+          <configuration
+            Name="ReleaseOptForSize"
+            build_exclude_from_build="Yes" />
+        </folder>
+      </folder>
+      <folder Name="uEZSystem">
+        <file file_name="../../../../../../Source/uEZSystem/HAL.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZADC.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZAudioAmp.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZCharDisplay.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZDAC.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZDeviceTable.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZFile.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZFlash.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZHandles.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZI2C.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZInit.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZKeypad.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZLCD.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZLEDBank.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZMemory.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZPWM.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZSPI.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZStream.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZTemperature.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZTimeDate.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZToneGenerator.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZTS.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZWatchdog.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZINI.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZGPIO.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZBSPInit.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZNetwork.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZAccelerometer.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZButton.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZEINT.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZHandles.h" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZHID.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZRandom.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZResourceCache.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZTimer.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZWAVFile.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZEEPROM.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZCRC.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZAudioMixer.c" />
+      </folder>
+      <folder Name="Platform">
+        <folder Name="emWin">
+          <folder Name="Inc">
+            <file file_name="../../../../../../Source/Platform/emWin/Inc/SEGGER.h" />
+          </folder>
+          <folder Name="Config">
+            <file file_name="../../../../../../Source/Platform/emWin/Config/GUIConf.c" />
+            <file file_name="../../../../../../Source/Platform/emWin/Config/GUIConf.h" />
+            <file file_name="../../../../../../Source/Platform/emWin/Config/LCDConf.c" />
+            <file file_name="../../../../../../Source/Platform/emWin/Config/LCDConf.h" />
+          </folder>
+          <file file_name="../../../../../../Source/Platform/emWin/GUI_X_uEZ.c" />
+        </folder>
+      </folder>
+    </folder>
+    <folder Name="Include">
+      <folder Name="Device">
+        <folder Name="LCD">
+          <file file_name="../../../../../../Include/Device/LCD/Config_LCD.h" />
+          <file file_name="../../../../../../Include/Device/Watchdog.h" />
+          <file file_name="../../../../../../Include/Device/Accelerometer.h" />
+          <file file_name="../../../../../../Include/Device/ADCBank.h" />
+          <file file_name="../../../../../../Include/Device/AudioAmp.h" />
+          <file file_name="../../../../../../Include/Device/AudioCodec.h" />
+          <file file_name="../../../../../../Include/Device/Backlight.h" />
+          <file file_name="../../../../../../Include/Device/ButtonBank.h" />
+          <file file_name="../../../../../../Include/Device/CharDisplay.h" />
+          <file file_name="../../../../../../Include/Device/DAC.h" />
+          <file file_name="../../../../../../Include/Device/EEPROM.h" />
+          <file file_name="../../../../../../Include/Device/ExternalInterrupt.h" />
+          <file file_name="../../../../../../Include/Device/FileSystem.h" />
+          <file file_name="../../../../../../Include/Device/Flash.h" />
+          <file file_name="../../../../../../Include/Device/GPDMA.h" />
+          <file file_name="../../../../../../Include/Device/I2CBus.h" />
+          <file file_name="../../../../../../Include/Device/I2S.h" />
+          <file file_name="../../../../../../Include/Device/Keypad.h" />
+          <file file_name="../../../../../../Include/Device/LCD.h" />
+          <file file_name="../../../../../../Include/Device/LEDBank.h" />
+          <file file_name="../../../../../../Include/Device/LightSensor.h" />
+          <file file_name="../../../../../../Include/Device/MassStorage.h" />
+          <file file_name="../../../../../../Include/Device/Network.h" />
+          <file file_name="../../../../../../Include/Device/PWM.h" />
+          <file file_name="../../../../../../Include/Device/RTC.h" />
+          <file file_name="../../../../../../Include/Device/SPIBus.h" />
+          <file file_name="../../../../../../Include/Device/Stream.h" />
+          <file file_name="../../../../../../Include/Device/Temperature.h" />
+          <file file_name="../../../../../../Include/Device/ToneGenerator.h" />
+          <file file_name="../../../../../../Include/Device/Touchscreen.h" />
+          <file file_name="../../../../../../Include/Device/USBDevice.h" />
+          <file file_name="../../../../../../Include/Device/USBHost.h" />
+        </folder>
+      </folder>
+      <folder Name="HAL">
+        <file file_name="../../../../../../Include/HAL/Watchdog.h" />
+        <file file_name="../../../../../../Include/HAL/ADCBank.h" />
+        <file file_name="../../../../../../Include/HAL/BatteryRAM.h" />
+        <file file_name="../../../../../../Include/HAL/DAC.h" />
+        <file file_name="../../../../../../Include/HAL/EEPROM.h" />
+        <file file_name="../../../../../../Include/HAL/EMAC.h" />
+        <file file_name="../../../../../../Include/HAL/GPDMA.h" />
+        <file file_name="../../../../../../Include/HAL/GPIO.h" />
+        <file file_name="../../../../../../Include/HAL/HAL.h" />
+        <file file_name="../../../../../../Include/HAL/I2CBus.h" />
+        <file file_name="../../../../../../Include/HAL/I2SBus.h" />
+        <file file_name="../../../../../../Include/HAL/Interrupt.h" />
+        <file file_name="../../../../../../Include/HAL/LCDController.h" />
+        <file file_name="../../../../../../Include/HAL/PWM.h" />
+        <file file_name="../../../../../../Include/HAL/RTC.h" />
+        <file file_name="../../../../../../Include/HAL/Serial.h" />
+        <file file_name="../../../../../../Include/HAL/SPI.h" />
+        <file file_name="../../../../../../Include/HAL/Timer.h" />
+        <file file_name="../../../../../../Include/HAL/USBDeviceController.h" />
+        <file file_name="../../../../../../Include/HAL/USBHost.h" />
+      </folder>
+      <folder Name="netinet">
+        <file file_name="../../../../../../Include/netinet/in.h" />
+      </folder>
+      <folder Name="sys">
+        <file file_name="../../../../../../Include/sys/types.h" />
+        <file file_name="../../../../../../Include/sys/mman.h" />
+        <file file_name="../../../../../../Include/sys/socket.h" />
+        <file file_name="../../../../../../Include/sys/stat.h" />
+        <file file_name="../../../../../../Include/sys/time.h" />
+      </folder>
+      <folder Name="Types">
+        <file file_name="../../../../../../Include/Types/USBHost.h" />
+        <file file_name="../../../../../../Include/Types/Accelerometer.h" />
+        <file file_name="../../../../../../Include/Types/ADC.h" />
+        <file file_name="../../../../../../Include/Types/EEPROM.h" />
+        <file file_name="../../../../../../Include/Types/EMAC.h" />
+        <file file_name="../../../../../../Include/Types/File.h" />
+        <file file_name="../../../../../../Include/Types/Flash.h" />
+        <file file_name="../../../../../../Include/Types/GPDMA.h" />
+        <file file_name="../../../../../../Include/Types/I2C.h" />
+        <file file_name="../../../../../../Include/Types/I2S.h" />
+        <file file_name="../../../../../../Include/Types/InputEvent.h" />
+        <file file_name="../../../../../../Include/Types/LCD.h" />
+        <file file_name="../../../../../../Include/Types/Network.h" />
+        <file file_name="../../../../../../Include/Types/Serial.h" />
+        <file file_name="../../../../../../Include/Types/SPI.h" />
+        <file file_name="../../../../../../Include/Types/TimeDate.h" />
+        <file file_name="../../../../../../Include/Types/USBDevice.h" />
+      </folder>
+      <file file_name="../../../../../../Include/unistd.h" />
+      <file file_name="../../../../../../Include/Config.h" />
+      <file file_name="../../../../../../Include/fcntl.h" />
+      <file file_name="../../../../../../Include/netdb.h" />
+      <file file_name="../../../../../../Include/signal.h" />
+      <file file_name="../../../../../../Include/uEZ.h" />
+      <file file_name="../../../../../../Include/uEZADC.h" />
+      <file file_name="../../../../../../Include/uEZAudioAmp.h" />
+      <file file_name="../../../../../../Include/uEZCharDisplay.h" />
+      <file file_name="../../../../../../Include/uEZDAC.h" />
+      <file file_name="../../../../../../Include/uEZDevice.h" />
+      <file file_name="../../../../../../Include/uEZDeviceTable.h" />
+      <file file_name="../../../../../../Include/uEZEINT.h" />
+      <file file_name="../../../../../../Include/uEZErrors.h" />
+      <file file_name="../../../../../../Include/uEZFile.h" />
+      <file file_name="../../../../../../Include/uEZFlash.h" />
+      <file file_name="../../../../../../Include/uEZI2C.h" />
+      <file file_name="../../../../../../Include/uEZInline.h" />
+      <file file_name="../../../../../../Include/uEZKeypad.h" />
+      <file file_name="../../../../../../Include/uEZLCD.h" />
+      <file file_name="../../../../../../Include/uEZLEDBank.h" />
+      <file file_name="../../../../../../Include/uEZMemory.h" />
+      <file file_name="../../../../../../Include/uEZNetwork.h" />
+      <file file_name="../../../../../../Include/uEZPacked.h" />
+      <file file_name="../../../../../../Include/uEZProcessor.h" />
+      <file file_name="../../../../../../Include/uEZPWM.h" />
+      <file file_name="../../../../../../Include/uEZRTOS.h" />
+      <file file_name="../../../../../../Include/uEZSPI.h" />
+      <file file_name="../../../../../../Include/uEZStream.h" />
+      <file file_name="../../../../../../Include/uEZTemperature.h" />
+      <file file_name="../../../../../../Include/uEZTickCounter.h" />
+      <file file_name="../../../../../../Include/uEZTimeDate.h" />
+      <file file_name="../../../../../../Include/uEZToneGenerator.h" />
+      <file file_name="../../../../../../Include/uEZTS.h" />
+      <file file_name="../../../../../../Include/uEZTypes.h" />
+      <file file_name="../../../../../../Include/uEZWatchdog.h" />
+      <file file_name="../../../../../../Include/uEZGPIO.h" />
+      <file file_name="../../../../../../Include/uEZPlatformAPI.h" />
+    </folder>
+    <configuration Name="Debug-Trace CLANG" arm_compiler_variant="clang" />
+  </project>
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="Thumb"
+    arm_library_instruction_set="Thumb"
+    c_preprocessor_definitions="__THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="Flash"
+    c_preprocessor_definitions="__FLASH_BUILD"
+    hidden="Yes" />
+  <configuration
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG"
+    gcc_debugging_level="Level 3"
+    gcc_optimization_level="None"
+    hidden="Yes" />
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_debugging_level="Level 1"
+    gcc_optimization_level="Level 1"
+    hidden="Yes" />
+  <configuration
+    Name="ReleaseOptForSize"
+    gcc_optimization_level="Optimize For Size" />
+  <configuration
+    Name="Debug-Trace"
+    build_output_file_name="$(OutDir)/$(ProjectName)_$(Configuration)$(LIB)"
+    c_preprocessor_definitions="FREERTOS_PLUS_TRACE"
+    inherited_configurations="THUMB;Flash" />
+  <configuration Name="Debug" inherited_configurations="Flash;THUMB" />
+  <configuration Name="Release" inherited_configurations="Flash;THUMB" />
+  <configuration
+    Name="Debug-Trace CLANG"
+    inherited_configurations="Flash;THUMB" />
+</solution>

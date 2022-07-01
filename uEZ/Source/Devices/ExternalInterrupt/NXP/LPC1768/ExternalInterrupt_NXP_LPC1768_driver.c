@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -109,7 +109,7 @@ static void ILPC1768_ProcessExternalInterrupt(TUInt8 aChannel)
     if (G_eintCallbacks[aChannel].iCallbackFunc(
             G_eintCallbacks[aChannel].iCallbackWorkspace,
             aChannel))
-        SC->EXTINT = (1<<aChannel);
+        LPC_SC->EXTINT = (1<<aChannel);
 }
 static IRQ_ROUTINE(LPC1768_EINT0_Callback)
 {
@@ -206,23 +206,23 @@ T_uezError ExternalInterrupt_NXP_LPC1768_Set(
         // Setup the proper mode (edge or level)
         if ((aTrigger == EINT_TRIGGER_EDGE_FALLING) || (aTrigger == EINT_TRIGGER_EDGE_RISING)) {
             // Edge triggered
-            SC->EXTMODE |= (1 << aChannel);
+            LPC_SC->EXTMODE |= (1 << aChannel);
         } else {
             // Level triggered
-            SC->EXTMODE &= ~(1 << aChannel);
+            LPC_SC->EXTMODE &= ~(1 << aChannel);
         }
 
         // Setup the proper polarity
         if ((aTrigger == EINT_TRIGGER_LEVEL_HIGH) || (aTrigger == EINT_TRIGGER_EDGE_RISING)) {
             // high or rising is 1
-            SC->EXTPOLAR |= (1 << aChannel);
+            LPC_SC->EXTPOLAR |= (1 << aChannel);
         } else {
             // low or falling is 0
-            SC->EXTPOLAR &= ~(1 << aChannel);
+            LPC_SC->EXTPOLAR &= ~(1 << aChannel);
         }
 
         // Make sure the external interrupt has been cleared
-        SC->EXTINT = (1<<aChannel);
+        LPC_SC->EXTINT = (1<<aChannel);
 
         // Do not loop
         break;
@@ -461,7 +461,7 @@ const DEVICE_ExternalInterrupt ExternalInterrupt_NXP_LPC1768_Interface = {
 	    ExternalInterrupt_NXP_LPC1768_InitializeWorkspace,
 	    sizeof(T_ExternalInterrupt_NXP_LPC1768_Workspace),
 	},
-	
+
     // Functions
     ExternalInterrupt_NXP_LPC1768_Set,
     ExternalInterrupt_NXP_LPC1768_Reset,

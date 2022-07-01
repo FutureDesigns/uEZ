@@ -77,7 +77,9 @@
 #ifndef UEZ_ENABLE_USB_DEVICE_STACK
 #define UEZ_ENABLE_USB_DEVICE_STACK         1
 #endif
+#ifndef COMPILE_OPTION_USB_SDCARD_DISK
 #define COMPILE_OPTION_USB_SDCARD_DISK      UEZ_ENABLE_USB_DEVICE_STACK
+#endif
 
 #ifndef UEZ_ENABLE_USB_DEVICE
 #define UEZ_ENABLE_USB_DEVICE               UEZ_ENABLE_USB_DEVICE_STACK
@@ -92,7 +94,7 @@
 #if (RTOS == FreeRTOS)
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
 #endif
-	
+
 #ifndef APP_MENU_ALLOW_TEST_MODE
 #define APP_MENU_ALLOW_TEST_MODE            1
 #endif
@@ -178,11 +180,12 @@ extern unsigned char __demoframe_end__;
 #define LOAD_SPACE              ((unsigned char *)&__loadspace_start__)
 
 #else
-#define LCD_FRAMES_START    ((TUInt8 *)0xA0000000)
-#define LCD_FRAMES_END      ((TUInt8 *)0xA05DCFFF)
-#define LCD_FRAMES_SIZE     (LCD_FRAMES_END-LCD_FRAME_BUFFER)
 // Use hard code location if we don't know what compiler is used
-#define LOAD_SPACE ((unsigned char *)0xA05DD000)
+#define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
+#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + 0x5DCFFF)
+#define LOAD_SPACE              ((unsigned char *)(LCD_DISPLAY_BASE_ADDRESS + 0x5DD000))
+
+#define LCD_FRAMES_SIZE         (LCD_FRAMES_END-LCD_FRAME_BUFFER)
 #define LCD_FRAME_BUFFER        LCD_FRAMES_START
 #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define FRAMES_MEMORY           LCD_FRAMES_SIZE

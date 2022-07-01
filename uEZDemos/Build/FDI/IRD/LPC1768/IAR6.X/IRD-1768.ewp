@@ -2279,13 +2279,13 @@
     <name>$PROJ_DIR$\IRD-1768.icf</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1768\FreeRTOS\IAR6.x\Debug\Exe\uEZ_NXP_LPC1768_FreeRTOS_IAR6_Debug.a</name>
+    <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1768\FreeRTOS\IAR\Debug\Exe\uEZ_NXP_LPC1768_FreeRTOS_IAR_Debug.a</name>
     <excluded>
       <configuration>Release</configuration>
     </excluded>
   </file>
   <file>
-    <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1768\FreeRTOS\IAR6.x\Release\Exe\uEZ_NXP_LPC1768_FreeRTOS_IAR6_Release.a</name>
+    <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1768\FreeRTOS\IAR\Release\Exe\uEZ_NXP_LPC1768_FreeRTOS_IAR_Release.a</name>
     <excluded>
       <configuration>Debug</configuration>
     </excluded>

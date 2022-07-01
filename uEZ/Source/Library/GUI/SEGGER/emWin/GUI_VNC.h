@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : GUI_VNC.h
 Purpose     : Publics for the VNC server
 ---------------------------END-OF-HEADER------------------------------
@@ -38,6 +49,7 @@ Attention : Do not modify this file ! If you do, you will not
 #define  GUI_VNC_H
 
 #include "GUI_Private.h"
+#include "GUI_Type.h"
 
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */
@@ -63,9 +75,6 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 **********************************************************************
 */
-typedef int (*GUI_tSend)   (const U8 * pData, int len, void* pConnectInfo);
-typedef int (*GUI_tReceive)(      U8 * pData, int len, void* pConnectInfo);
-
 typedef struct GUI_VNC_CONTEXT {
   GUI_DEVICE * pDevice;
   struct GUI_VNC_CONTEXT * pNext;
@@ -76,14 +85,14 @@ typedef struct GUI_VNC_CONTEXT {
   // Connection related data
   //
   GUI_tSend    pfSend;
-  GUI_tReceive pfReceive;
+  GUI_tRecv    pfReceive;
   void       * pConnectInfo;
   U16          ServerIndex;
   //
   // Display related info
   //
   int x0Dirty, y0Dirty, x1Dirty, y1Dirty;
-  int XSize, YSize;
+  int xSize, ySize;
   int xOrg, yOrg, xOrgNew, yOrgNew;
   int OrgLock;
   //
@@ -116,7 +125,7 @@ void GUI_VNC_DoDES    (U8 * pInblock, U8 * pOutblock);
 void GUI_VNC_AttachToLayer      (GUI_VNC_CONTEXT * pContext, int LayerIndex);
 void GUI_VNC_EnableKeyboardInput(int OnOff);
 int  GUI_VNC_GetNumConnections  (void);
-int  GUI_VNC_Process            (GUI_VNC_CONTEXT * pContext, GUI_tSend pfSend, GUI_tReceive pfReceive, void * pConnectInfo);
+int  GUI_VNC_Process            (GUI_VNC_CONTEXT * pContext, GUI_tSend pfSend, GUI_tRecv pfReceive, void * pConnectInfo);
 void GUI_VNC_RingBell           (void);
 void GUI_VNC_SetAuthentication  (GUI_VNC_AUTHENTICATION * pAuthentication);
 void GUI_VNC_SetPassword        (U8 * sPassword);

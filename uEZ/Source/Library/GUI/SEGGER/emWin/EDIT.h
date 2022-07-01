@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : EDIT.h
 Purpose     : EDIT include
 --------------------END-OF-HEADER-------------------------------------
@@ -34,12 +45,12 @@ Purpose     : EDIT include
 #define EDIT_H
 
 #include "WM.h"
-#include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
+#include "DIALOG_Intern.h" // Required for Create indirect data structure
 
 #if GUI_WINSUPPORT
 
 #if defined(__cplusplus)
-  extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {             // Make sure we have C-declarations in C++ programs
 #endif
 
 /*********************************************************************
@@ -129,44 +140,44 @@ void EDIT_SetDefaultTextColor(unsigned int Index, GUI_COLOR Color);
 //
 // Query preferences
 //
-GUI_COLOR                    EDIT_GetDefaultBkColor(unsigned int Index);
-const GUI_FONT GUI_UNI_PTR * EDIT_GetDefaultFont(void);
-int                          EDIT_GetDefaultTextAlign(void);
-GUI_COLOR                    EDIT_GetDefaultTextColor(unsigned int Index);
+GUI_COLOR        EDIT_GetDefaultBkColor(unsigned int Index);
+const GUI_FONT * EDIT_GetDefaultFont(void);
+int              EDIT_GetDefaultTextAlign(void);
+GUI_COLOR        EDIT_GetDefaultTextColor(unsigned int Index);
 //
 // Methods changing properties
 //
-void EDIT_AddKey            (EDIT_Handle hObj, int Key);
-void EDIT_EnableBlink       (EDIT_Handle hObj, int Period, int OnOff);
-GUI_COLOR EDIT_GetBkColor   (EDIT_Handle hObj, unsigned int Index);
-void EDIT_SetBkColor        (EDIT_Handle hObj, unsigned int Index, GUI_COLOR color);
-void EDIT_SetCursorAtChar   (EDIT_Handle hObj, int Pos);
-void EDIT_SetCursorAtPixel  (EDIT_Handle hObj, int xPos);
-void EDIT_SetFocussable     (EDIT_Handle hObj, int State);
-void EDIT_SetFont           (EDIT_Handle hObj, const GUI_FONT GUI_UNI_PTR * pfont);
-int  EDIT_SetInsertMode     (EDIT_Handle hObj, int OnOff);
-void EDIT_SetMaxLen         (EDIT_Handle hObj, int MaxLen);
-void EDIT_SetpfAddKeyEx     (EDIT_Handle hObj, tEDIT_AddKeyEx * pfAddKeyEx);
-void EDIT_SetpfUpdateBuffer (EDIT_Handle hObj, tEDIT_UpdateBuffer * pfUpdateBuffer);
-void EDIT_SetText           (EDIT_Handle hObj, const char* s);
-void EDIT_SetTextAlign      (EDIT_Handle hObj, int Align);
-GUI_COLOR EDIT_GetTextColor (EDIT_Handle hObj, unsigned int Index);
-void EDIT_SetTextColor      (EDIT_Handle hObj, unsigned int Index, GUI_COLOR color);
-void EDIT_SetSel            (EDIT_Handle hObj, int FirstChar, int LastChar);
-int  EDIT_SetUserData       (EDIT_Handle hObj, const void * pSrc, int NumBytes);
+void EDIT_AddKey           (EDIT_Handle hObj, int Key);
+void EDIT_EnableBlink      (EDIT_Handle hObj, int Period, int OnOff);
+GUI_COLOR EDIT_GetBkColor  (EDIT_Handle hObj, unsigned int Index);
+void EDIT_SetBkColor       (EDIT_Handle hObj, unsigned int Index, GUI_COLOR color);
+void EDIT_SetCursorAtChar  (EDIT_Handle hObj, int Pos);
+void EDIT_SetCursorAtPixel (EDIT_Handle hObj, int xPos);
+void EDIT_SetFocussable    (EDIT_Handle hObj, int State);
+void EDIT_SetFont          (EDIT_Handle hObj, const GUI_FONT * pFont);
+int  EDIT_SetInsertMode    (EDIT_Handle hObj, int OnOff);
+void EDIT_SetMaxLen        (EDIT_Handle hObj, int MaxLen);
+void EDIT_SetpfAddKeyEx    (EDIT_Handle hObj, tEDIT_AddKeyEx * pfAddKeyEx);
+void EDIT_SetpfUpdateBuffer(EDIT_Handle hObj, tEDIT_UpdateBuffer * pfUpdateBuffer);
+void EDIT_SetText          (EDIT_Handle hObj, const char * s);
+void EDIT_SetTextAlign     (EDIT_Handle hObj, int Align);
+GUI_COLOR EDIT_GetTextColor(EDIT_Handle hObj, unsigned int Index);
+void EDIT_SetTextColor     (EDIT_Handle hObj, unsigned int Index, GUI_COLOR Color);
+void EDIT_SetSel           (EDIT_Handle hObj, int FirstChar, int LastChar);
+int  EDIT_SetUserData      (EDIT_Handle hObj, const void * pSrc, int NumBytes);
 //
 // Get/Set user input
 //
-int   EDIT_GetCursorCharPos (EDIT_Handle hObj);
-void  EDIT_GetCursorPixelPos(EDIT_Handle hObj, int * pxPos, int * pyPos);
-float EDIT_GetFloatValue    (EDIT_Handle hObj);
-const GUI_FONT GUI_UNI_PTR * EDIT_GetFont(EDIT_Handle hObj);
-int   EDIT_GetNumChars      (EDIT_Handle hObj);
-void  EDIT_GetText          (EDIT_Handle hObj, char* sDest, int MaxLen);
-I32   EDIT_GetValue         (EDIT_Handle hObj);
-void  EDIT_SetFloatValue    (EDIT_Handle hObj, float Value);
-int   EDIT_GetUserData      (EDIT_Handle hObj, void * pDest, int NumBytes);
-void  EDIT_SetValue         (EDIT_Handle hObj, I32 Value);
+int   EDIT_GetCursorCharPos  (EDIT_Handle hObj);
+void  EDIT_GetCursorPixelPos (EDIT_Handle hObj, int * pxPos, int * pyPos);
+float EDIT_GetFloatValue     (EDIT_Handle hObj);
+const GUI_FONT * EDIT_GetFont(EDIT_Handle hObj);
+int   EDIT_GetNumChars       (EDIT_Handle hObj);
+void  EDIT_GetText           (EDIT_Handle hObj, char * sDest, int MaxLen);
+I32   EDIT_GetValue          (EDIT_Handle hObj);
+void  EDIT_SetFloatValue     (EDIT_Handle hObj, float Value);
+int   EDIT_GetUserData       (EDIT_Handle hObj, void * pDest, int NumBytes);
+void  EDIT_SetValue          (EDIT_Handle hObj, I32 Value);
 
 /*********************************************************************
 *

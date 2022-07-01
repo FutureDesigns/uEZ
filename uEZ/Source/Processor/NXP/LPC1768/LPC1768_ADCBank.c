@@ -12,12 +12,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -37,19 +37,19 @@
  *---------------------------------------------------------------------------*/
 #if 0
 typedef struct {
-    TVUInt32 iCR;       // 0x00 - A/D Control Register
-    TVUInt32 iGDR;      // 0x04 - A/D Global Data Register
-    TVUInt32 reserved;  // 0x08
-    TVUInt32 iINTEN;    // 0x0C - A/D Interrupt Enable
-    TVUInt32 iDR[8];    // 0x10-0x2C - A/D Channel 0 through 7 Data Registers
-    TVUInt32 iSTAT;     // 0x30 - A/D Status Register
-} ADC_TypeDef;
+    TVUInt32 iCR; // 0x00 - A/D Control Register
+    TVUInt32 iGDR; // 0x04 - A/D Global Data Register
+    TVUInt32 reserved; // 0x08
+    TVUInt32 iINTEN; // 0x0C - A/D Interrupt Enable
+    TVUInt32 iDR[8]; // 0x10-0x2C - A/D Channel 0 through 7 Data Registers
+    TVUInt32 iSTAT; // 0x30 - A/D Status Register
+    TVUInt32 iADTRM; // 0x34 -
+} T_LPC1768_ADC_Registers;
 #endif
-
 
 typedef struct {
     const HAL_ADCBank *iHAL;
-    ADC_TypeDef *iReg;
+    LPC_ADC_TypeDef *iReg;
     ADC_RequestSingle iRequest; // Current request settings
     void *iCallbackWorkspace;
     const T_adcBankCallbackInterface *iCallbackAPI;
@@ -129,7 +129,7 @@ static void IADCConfig(
     };
 
     // Ensure the power is on
-    SC->PCONP |= (1<<12);
+    LPC_SC->PCONP |= (1<<12);
 
     // Setup control register
     p->iReg->ADCR =
@@ -228,7 +228,7 @@ T_uezError ADC_LPC1768_Configure_ADC0(
 T_uezError LPC1768_ADC_ADC0_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_ADC_Workspace *p = (T_LPC1768_ADC_Workspace *)aWorkspace;
-    p->iReg = ADC;
+    p->iReg = (LPC_ADC_TypeDef *)LPC_ADC_BASE;
     G_adc0Workspace = p;
     p->iInterruptChannel = ADC_IRQn;
 

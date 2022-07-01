@@ -102,7 +102,7 @@
 #define portNVIC_PEND_SYSTICK_CLEAR_BIT		( 1UL << 25UL )
 
 #define portNVIC_PENDSV_PRI					( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) << 16UL )
-#define portNVIC_SYSTICK_PRI				( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) << 24UL )
+#define portNVIC_SYSTICK_PRI				( ( ( uint32_t ) (( uint8_t)configKERNEL_INTERRUPT_PRIORITY) ) << 24UL )
 
 /* Constants required to check the validity of an interrupt priority. */
 #define portFIRST_USER_INTERRUPT_NUMBER		( 16 )

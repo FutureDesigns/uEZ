@@ -21,7 +21,7 @@
 #include "AtCmdLib.h"
 #include "GainSpan_Config.h"
 
-#define ATLIBGS_DEBUG_ENABLE
+//#define ATLIBGS_DEBUG_ENABLE
 #define ConsolePrintf printf
 
 /*-------------------------------------------------------------------------*
@@ -36,6 +36,13 @@
 #error "ATLIBGS_RX_CMD_MAX_SIZE must be defined in platform.h"
 #endif
 
+#define ANSI_OFF "\033[0m"
+#define ANSI_RED "\033[31m"
+#define ANSI_GREEN "\033[32m"
+#define ANSI_YELLOW "\033[33m"
+#define ANSI_BLUE "\033[34m"
+#define ANSI_MAGENTA "\033[35m"
+
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
@@ -46,7 +53,32 @@ uint16_t MRBufferIndex = 0;
 /* Flag to indicate whether S2w Node is currently associated or not */
 static uint8_t nodeAssociationFlag = false;
 /* Flag to indicate whether S2w Node has rebooted after initialisation  */
-static uint8_t nodeResetFlag = false; 
+static uint8_t nodeResetFlag = false;
+typedef struct {
+	uint8_t iState;
+		#define CID_STATE_FREE			0
+		#define CID_STATE_CONNECTED		1
+		#define CID_STATE_DISCONNECTED	2
+		#define CID_STATE_CONNECTING	3
+	uint8_t iType;
+		#define CID_TYPE_NONE		0
+		#define CID_TYPE_TCP		1
+		#define CID_TYPE_UDP		2
+	uint8_t iIsServer;	// 1=server, 0=client
+
+    // Which server created this connection?
+    uint8_t server_cid;
+
+    // Newly created cid for communication
+    uint8_t cid;
+
+    // IP number of incoming connection
+    char ip[16];
+
+    // Connection port (local allocated port number)
+    uint16_t port;
+} T_cidInfo ;
+static T_cidInfo G_cidState[16];
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
@@ -339,7 +371,7 @@ void AtLibGs_FlushRxBuffer(void);
 /**   Send command:
  *          AT
  *      and wait for response.
- *  @param [in] timeout -- timeout for check to see if module preset and ready
+ *  @param [in] timeout -- timeout for check to see if module present and ready
  *  @return     ATLIBGS_MSG_ID_E -- response type
  */
 /*--------------------------------------------------------------------------*/
@@ -598,6 +630,7 @@ ATLIBGS_MSG_ID_E AtLibGs_TCPClientStart(
     char cmd[80];
     ATLIBGS_MSG_ID_E rxMsgId;
     char *result;
+	  int cidIndex;
 
     sprintf(cmd, "AT+NCTCP=%s," _F16_ "\r\n", pRemoteTcpSrvIp,
             pRemoteTcpSrvPort);
@@ -605,8 +638,12 @@ ATLIBGS_MSG_ID_E AtLibGs_TCPClientStart(
     rxMsgId = AtLibGs_CommandSendString(cmd);
     if (rxMsgId == ATLIBGS_MSG_ID_OK) {
         if ((result = strstr(MRBuffer, "CONNECT")) != NULL) {
-            /* Succesfull connection done for TCP client */
+            /* Succesful connection done for TCP client */
             *cid = result[8];
+            cidIndex = AtLibGs_CIDToIndex(*cid);
+            G_cidState[cidIndex].iState = CID_STATE_CONNECTED;
+            G_cidState[cidIndex].iType = CID_TYPE_TCP;
+            G_cidState[cidIndex].iIsServer = 0;
         } else {
             /* Not able to extract the CID */
             *cid = ATLIBGS_INVALID_CID;
@@ -1025,7 +1062,13 @@ ATLIBGS_MSG_ID_E AtLibGs_UDPServer_Start(uint16_t pUdpSrvPort, uint8_t *cid)
     rxMsgId = AtLibGs_CommandSendString(cmd);
     if (rxMsgId == ATLIBGS_MSG_ID_OK) {
         if ((result = strstr((const char *)MRBuffer, "CONNECT")) != NULL) {
+        	int cidIndex;
+
             *cid = result[8];
+            cidIndex = AtLibGs_CIDToIndex(*cid);
+            G_cidState[cidIndex].iState = CID_STATE_CONNECTED;
+            G_cidState[cidIndex].iType = CID_TYPE_UDP;
+            G_cidState[cidIndex].iIsServer = 0;
         } else if (((result = strstr((const char *)MRBuffer, "DISASSOCIATED"))
                 != NULL) || (strstr((const char *)MRBuffer, "SOCKET FAILURE")
                 != NULL)) {
@@ -1067,7 +1110,13 @@ ATLIBGS_MSG_ID_E AtLibGs_TCPServer_Start(uint16_t pTcpSrvPort, uint8_t *cid)
 
     if (rxMsgId == ATLIBGS_MSG_ID_OK) {
         if ((pSubStr = strstr((const char *)MRBuffer, "CONNECT")) != NULL) {
+        	int cidIndex;
+
             *cid = pSubStr[8];
+            cidIndex = AtLibGs_CIDToIndex(*cid);
+            G_cidState[cidIndex].iState = CID_STATE_CONNECTED;
+            G_cidState[cidIndex].iType = CID_TYPE_TCP;
+            G_cidState[cidIndex].iIsServer = 1;
         } else if (((strstr((const char *)MRBuffer, "DISASSOCIATED")) != NULL)
                 || (strstr((const char *)MRBuffer, "SOCKET FAILURE") != NULL)) {
             /* Failed  */
@@ -1119,6 +1168,9 @@ ATLIBGS_MSG_ID_E AtLibGs_Close(uint8_t cid)
 {
     char cmd[20];
 
+#ifdef ATLIBGS_DEBUG_ENABLE
+	printf("Request closing of %c\n", cid);
+#endif	
     sprintf(cmd, "AT+NCLOSE=%c\r\n", cid);
 
     return AtLibGs_CommandSendString(cmd);
@@ -1727,10 +1779,15 @@ uint8_t AtLibGs_ParseUDPClientCid(void)
 {
     uint8_t cid;
     char *result = NULL;
+    int cidIndex;
 
     if ((result = strstr((const char *)MRBuffer, "CONNECT")) != NULL) {
         /* Succesfull connection done for UDP client */
         cid = result[ATLIBGS_UDP_CLIENT_CID_OFFSET_BYTE];
+        cidIndex = AtLibGs_CIDToIndex(cid);
+        G_cidState[cidIndex].iState = CID_STATE_CONNECTED;
+        G_cidState[cidIndex].iType = CID_TYPE_UDP;
+        G_cidState[cidIndex].iIsServer = 0;
     } else {
         /* Not able to extract the CID */
         cid = ATLIBGS_INVALID_CID;
@@ -1882,11 +1939,12 @@ ATLIBGS_MSG_ID_E AtLibGs_CommandSendString(char *aString)
     ConsolePrintf(">%s\n", aString);
 #endif
 
+    App_EnsureFlow();
     /* Now send the command to S2w App node */
     App_Write((char *)aString, strlen(aString));
 
     /* Wait for the response while collecting data into the MRBuffer */
-    return AtLibGs_ResponseHandle();
+    return AtLibGs_ResponseHandle(ATLIBGS_INVALID_CID);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1930,9 +1988,16 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPData(
     ATLIBGS_MSG_ID_E rxMsgId;
     uint16_t i;
     uint8_t *p;
+    int cidIndex;
 
     if (cid == ATLIBGS_INVALID_CID)
         return ATLIBGS_MSG_ID_ERROR_SOCKET_FAIL;
+
+    cidIndex = AtLibGs_CIDToIndex(cid);
+
+    // Are we still a valid connection?
+    if (G_cidState[cidIndex].iState != CID_STATE_CONNECTED)
+    	return ATLIBGS_MSG_ID_DISCONNECT;
 
     /* Construct the data start indication message */
     sprintf(cmd, "%c%c%c", ATLIBGS_ESC_CHAR, 'S', cid);
@@ -1941,7 +2006,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPData(
     App_Write(cmd, 3);
 
     /* Look for an immediate OK or Fail response */
-    rxMsgId = AtLibGs_ResponseHandle();
+	rxMsgId = AtLibGs_ResponseHandle(cid);
     if (rxMsgId == ATLIBGS_MSG_ID_ESC_CMD_OK) {
         /* Now send the actual data, but replace ESC with two ESC */
         //AtLibGs_DataSend(txBuf, dataLen);
@@ -1952,13 +2017,13 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPData(
                 AtLibGs_DataSend(p, 1);
         }
 
-        /* Construct the data start indication message */
+        /* Construct the data end indication message */
         sprintf(cmd, "%c%c", ATLIBGS_ESC_CHAR, 'E');
 
         /* Now send the data END indication message  to S2w node */
         App_Write(cmd, 2);
 
-        rxMsgId = AtLibGs_ResponseHandle();
+        rxMsgId = AtLibGs_ResponseHandle(cid);
         if (rxMsgId == ATLIBGS_MSG_ID_ESC_CMD_OK)
             rxMsgId = ATLIBGS_MSG_ID_OK;
     } else {
@@ -1970,11 +2035,60 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPData(
         App_Write(cmd, 2);
 
         // Get the response, but ignore it (we already have an error)
-        AtLibGs_ResponseHandle();
+        AtLibGs_ResponseHandle(cid);
     }
 
     return rxMsgId;
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  AtLibGs_SendTCPBulkData
+ *--------------------------------------------------------------------------*/
+/**   Send data to the given TCP connection.  The data is converted into
+ *      the following byte format:
+ *          [ESC]['Z'][cid][len][N bytes]
+ *              [ESC] is the escape character 0x1B
+ *              ['Z'] is the letter 'Z'
+ *              [cid] is the connection ID.
+ *              [len] is the num bytes to send (4 digits)
+ *              [N bytes] is a number of bytes
+ *  @param [in] cid -- Connection ID
+ *  @param [in] txBuf -- Data to send to the TCP connection
+ *  @param [in] dataLen -- Length of data to send
+ *  @return     ATLIBGS_MSG_ID_E -- ATLIBGS_MSG_ID_OK if properly sent, else
+ *              error code
+ */
+/*--------------------------------------------------------------------------*/
+ATLIBGS_MSG_ID_E AtLibGs_SendTCPBulkData(
+        uint8_t cid,
+        const void *txBuf,
+        uint16_t dataLen)
+{
+    ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_OK;
+    int cidIndex;
+
+    if (cid == ATLIBGS_INVALID_CID)
+        return ATLIBGS_MSG_ID_ERROR_SOCKET_FAIL;
+
+    App_EnsureFlow();
+
+    // Are we still a valid connection?
+    cidIndex = AtLibGs_CIDToIndex(cid);
+    if (G_cidState[cidIndex].iState != CID_STATE_CONNECTED)
+    	return ATLIBGS_MSG_ID_DISCONNECT;
+
+    rxMsgId = AtLibGs_BulkDataTransfer(cid, txBuf, dataLen);
+
+    //rxMsgId = AtLibGs_ResponseHandle(cid);
+    if (rxMsgId == ATLIBGS_MSG_ID_DISCONNECT) {
+    	rxMsgId = AtLibGs_ResponseHandle(cid); // get the following fail message too
+    }
+    if (rxMsgId == ATLIBGS_MSG_ID_ESC_CMD_OK)
+        rxMsgId = ATLIBGS_MSG_ID_OK;
+
+    return rxMsgId;
+}
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  AtLibGs_SendUDPData
@@ -2012,8 +2126,17 @@ ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
 {
     char cmd[30];
     ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_INVALID_INPUT;
+    int cidIndex;
 
     if (ATLIBGS_INVALID_CID != cid) {
+        // Are we still a valid connection?
+    	cidIndex = AtLibGs_CIDToIndex(cid);
+
+        if (G_cidState[cidIndex].iState != CID_STATE_CONNECTED)
+        	return ATLIBGS_MSG_ID_DISCONNECT;
+
+        App_EnsureFlow();
+
         /* Construct the data start indication message */
         if (ATLIBGS_CON_UDP_SERVER == conType) {
             /* [ESC] [ U]  [cid] [ip address][:] [port numer][:] [data] [ESC] [ E] */
@@ -2026,7 +2149,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
 
         /* Now send the data START indication message  to S2w node */
         App_Write(cmd, strlen(cmd));
-        rxMsgId = AtLibGs_ResponseHandle();
+        rxMsgId = AtLibGs_ResponseHandle(cid);
         if (rxMsgId == ATLIBGS_MSG_ID_ESC_CMD_OK) {
 
             /* Now send the actual data */
@@ -2038,18 +2161,18 @@ ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
             /* Now send the data END indication message  to S2w node */
             App_Write(cmd, strlen(cmd));
 
-            rxMsgId = AtLibGs_ResponseHandle();
+            rxMsgId = AtLibGs_ResponseHandle(cid);
             if (rxMsgId == ATLIBGS_MSG_ID_ESC_CMD_OK)
                 rxMsgId = ATLIBGS_MSG_ID_OK;
         } else {
-            /* Construct the data start indication message  */
+            /* Construct the data end indication message  */
             sprintf(cmd, "%c%c", ATLIBGS_ESC_CHAR, 'E');
 
             /* Now send the data END indication message  to S2w node */
             App_Write(cmd, strlen(cmd));
 
             // Get the response, but ignore it (we already have an error)
-            AtLibGs_ResponseHandle();
+            AtLibGs_ResponseHandle(cid);
         }
 
     }
@@ -2074,25 +2197,81 @@ ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
  *  @return     void
  */
 /*--------------------------------------------------------------------------*/
-void AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16_t dataLen)
+ATLIBGS_MSG_ID_E AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16_t dataLen)
 {
+	ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_OK;
+
     /*[Esc] [Z] [Cid] [Data Length xxxx 4 ascii char] [data] */
     char digits[5];
     char cmd[20];
 
-    /* Construct the bulk data start indication message  */
-    AtLibGs_ConvertNumberTo4DigitASCII(dataLen, digits);
-    sprintf(cmd, "%c%c%c%s", ATLIBGS_ESC_CHAR, 'Z', cid, digits);
+    App_EnsureFlow();
 
-    /* Now send the bulk data START indication message  to S2w node */
+    /* Construct the bulk data start indication message  */
+    sprintf(cmd, "%c%c%c", ATLIBGS_ESC_CHAR, ATLIBGS_DATA_MODE_BULK_START_CHAR_Z, cid);
     App_Write(cmd, strlen(cmd));
 
-    /* wait for GS1011 to process above command LeZ */
-    /* TODO: Why the delay? */
-    App_DelayMS(1000);
+#if 0
+    for (int i=0; i<50; i++) {
+	if (GainSpan_SPI_IsDataReady(0)) {
+		printf("+");
+	} else {
+		printf("-");
+	}
+	UEZTaskDelay(1);
+}
+#endif
+    /* wait for GS1011 to process above command */
+    /// Do we really need this?  App_DelayMS(10);
+	rxMsgId = AtLibGs_ResponseHandle(cid);
+    if (rxMsgId == ATLIBGS_MSG_ID_ESC_CMD_OK) {
+        AtLibGs_ConvertNumberTo4DigitASCII(dataLen, digits);
+        sprintf(cmd, "%s", digits);
 
-    /* Now send the actual data */
-    App_Write(pData, dataLen);
+        /* Now send the bulk data START indication message  to S2w node */
+        App_Write(cmd, strlen(cmd));
+
+		/* Now send the actual data */
+		App_Write(pData, dataLen);
+    } else {
+
+
+    }
+
+    return rxMsgId;
+}
+
+const char *IGetLastLine(const char *p)
+{
+    const char *p_last = p;
+    char c;
+    int isCRLF = 0;
+
+    while (*p) {
+        c = *p;
+        if (isCRLF) {
+            if ((c == '\r') || (c == '\n')) {
+                // Do nothing, just skip
+            } else {
+                // Found a character past a \r and/or \n
+                // Must be the start of another line
+                p_last = p;
+                isCRLF = 0;
+            }
+        } else {
+            if ((c == '\r') || (c == '\n')) {
+                // Seeing an end of line, start tracking this
+                isCRLF = 1;
+            } else {
+                // Just more characters in the line.  Ignore.
+            }
+        }
+        // Next character
+        p++;
+    }
+
+    // Return the last (or the very first) line found
+    return p_last;
 }
 
 /*---------------------------------------------------------------------------*
@@ -2105,15 +2284,15 @@ void AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16_t dataLen)
  *          if the passed line is not identified.
  */
 /*--------------------------------------------------------------------------*/
-ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBuffer)
+ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBufferInput)
 {
     const char *p;
     uint8_t numSpaces;
 
+    const char *pBuffer = IGetLastLine(pBufferInput);
+
     if ((strstr((const char *)pBuffer, "OK") != NULL)) {
         return ATLIBGS_MSG_ID_OK;
-    } else if ((strstr((const char *)pBuffer, "ERROR") != NULL)) {
-        return ATLIBGS_MSG_ID_ERROR;
     } else if ((strstr((const char *)pBuffer, "INVALID INPUT") != NULL)) {
         return ATLIBGS_MSG_ID_INVALID_INPUT;
     } else if ((strstr((const char *)pBuffer, "DISASSOCIATED") != NULL)) {
@@ -2123,6 +2302,17 @@ ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBuffer)
     } else if ((strstr((const char *)pBuffer, "ERROR: IP CONFIG FAIL") != NULL)) {
         return ATLIBGS_MSG_ID_ERROR_IP_CONFIG_FAIL;
     } else if (strstr((const char *)pBuffer, "ERROR: SOCKET FAILURE") != NULL) {
+    	if (pBuffer[21] == ' ') {
+    		// Socket failure on a connection also causes it to close
+			int cid = pBuffer[22];
+			int cidIndex;
+
+			cidIndex = AtLibGs_CIDToIndex(cid);
+
+			// Mark the connection as disconnected
+			G_cidState[cidIndex].iState = CID_STATE_DISCONNECTED;
+		}
+
         /* Reset the local flags */
         return ATLIBGS_MSG_ID_ERROR_SOCKET_FAIL;
     } else if ((strstr((const char *)pBuffer, "APP Reset-APP SW Reset"))
@@ -2130,9 +2320,26 @@ ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBuffer)
         /* Reset the local flags */
         AtLibGs_ClearNodeAssociationFlag();
         AtLibGs_SetNodeResetFlag();
+
+        // There are no connections anymore, either
+        memset(G_cidState, 0, sizeof(G_cidState));
+
         return ATLIBGS_MSG_ID_APP_RESET;
     } else if ((strstr((const char *)pBuffer, "DISCONNECT")) != NULL) {
         /* Reset the local flags */
+    	int cid = pBuffer[11];
+    	int cidIndex;
+#ifdef ATLIBGS_DEBUG_ENABLE
+		printf("Disconnecting CID [%c]\n", cid);
+#endif		
+
+		cidIndex = AtLibGs_CIDToIndex(cid);
+
+		// Mark the connection as disconnected
+		G_cidState[cidIndex].iState = CID_STATE_DISCONNECTED;
+
+		// Report that a disconnection has been detected.  It is up to the caller
+		// to decide to go again or stop immediately.
         return ATLIBGS_MSG_ID_DISCONNECT;
     } else if ((strstr((const char *)pBuffer, "Disassociation Event")) != NULL) {
         /* reset the association flag */
@@ -2166,50 +2373,40 @@ ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBuffer)
         while ((*p) && (*p != '\n')) {
             if (*p == ' ')
                 numSpaces++;
-            if (numSpaces >= 4)
+            if (numSpaces >= 4) {
+            	char buffer[100];
+                char *tokens[6];
+            	int cid = pBuffer[10];
+            	int cidIndex;
+            	strcpy(buffer, pBuffer);
+
+#ifdef ATLIBGS_DEBUG_ENABLE
+				printf("Connecting CID %c\n", cid);
+#endif				
+                AtLibGs_ParseIntoTokens(buffer, ' ', tokens, 6);
+
+                cidIndex = AtLibGs_CIDToIndex(cid);
+
+                // Parse the connection information
+                G_cidState[cidIndex].server_cid = *tokens[1];
+                G_cidState[cidIndex].cid = *tokens[2];
+				strcpy(G_cidState[cidIndex].ip, tokens[3]);
+				G_cidState[cidIndex].port = atoi(tokens[4]);
+
+				// and mark this as now formally connecting (not accepted yet)
+				G_cidState[cidIndex].iIsServer = 0;
+				G_cidState[cidIndex].iState = CID_STATE_CONNECTING;
+				G_cidState[cidIndex].iType = CID_TYPE_TCP;
+
                 return ATLIBGS_MSG_ID_TCP_SERVER_CONNECT;
+            }
             p++;
         }
+    } else if ((strstr((const char *)pBuffer, "ERROR") != NULL)) {
+        return ATLIBGS_MSG_ID_ERROR;
     }
 
     return ATLIBGS_MSG_ID_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  AtLibGs_ReceiveDataHandle
- *--------------------------------------------------------------------------*/
-/**   Handle data coming in on a TCP or UDP connection.  Process all
- *      non-blocking data reads and return.
- *  @param [in] timeout -- time in milliseconds before this command times out
- *  @return     ATLIBGS_MSG_ID_E -- error code.  ATLIBGS_MSG_ID_OK if data is
- *          received.  ATLIBGS_MSG_ID_RESPONSE_TIMEOUT if timeout occurred.
- */
-/*--------------------------------------------------------------------------*/
-ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataHandle(uint32_t timeout)
-{
-    uint8_t rxData;
-    uint32_t start = MSTimerGet();
-    ATLIBGS_MSG_ID_E rxMsgId;
-
-    /* Read one byte at a time - Use non-blocking call */
-    while (1) {
-        /* Has it taken too much time? */
-        if (MSTimerDelta(start) >= timeout) {
-            /* Yes, timeout */
-            rxMsgId = ATLIBGS_MSG_ID_RESPONSE_TIMEOUT;
-            break;
-        }
-
-        /* See if there is any data to process */
-        if (App_Read(&rxData, 1, 0)) {
-            /* Process this byte */
-            rxMsgId = AtLibGs_ReceiveDataProcess(rxData);
-            if (rxMsgId != ATLIBGS_MSG_ID_NONE)
-                break;
-        }
-    }
-
-    return rxMsgId;
 }
 
 /*---------------------------------------------------------------------------*
@@ -2271,11 +2468,31 @@ ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPConnection(
     char *p;
     char *tokens[6];
     uint16_t numTokens;
+    int i;
 
     /* wait until message received or timeout*/
     while (1) {
         if ((MSTimerDelta(start) >= timeout) && (timeout))
             break;
+
+        // First, check to see if there are any connecting sockets waiting for processing
+        for (i=0; i<16; i++) {
+        	if (G_cidState[i].iState == CID_STATE_CONNECTING) {
+        		// Found one!
+                // Copy over the connection information
+                connection->server_cid = G_cidState[i].server_cid;
+                connection->cid = G_cidState[i].cid;
+                strcpy(connection->ip, G_cidState[i].ip);
+                connection->port = G_cidState[i].port;
+
+                // Mark the port as now connected
+                G_cidState[i].iState = CID_STATE_CONNECTED;
+#ifdef ATLIBGS_DEBUG_ENABLE
+				printf("Changing connecting to connected [%c]\n", G_cidState[i].cid);
+#endif				
+                return ATLIBGS_MSG_ID_TCP_SERVER_CONNECT;
+        	}
+        }
 
         while (App_Read(&rxData, 1, 0)) {
             /* If we got data, reset the timeout */
@@ -2288,17 +2505,33 @@ ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPConnection(
                 p = strstr(MRBuffer, "CONNECT");
                 numTokens = AtLibGs_ParseIntoTokens(p, ' ', tokens, 6);
                 if (numTokens >= 5) {
+                	int cidIndex;
+
                     // Parse the connection information
                     connection->server_cid = *tokens[1];
                     connection->cid = *tokens[2];
                     strcpy(connection->ip, tokens[3]);
                     connection->port = atoi(tokens[4]);
+
+                    cidIndex = AtLibGs_CIDToIndex(connection->cid);
+
+                    G_cidState[cidIndex].cid = connection->cid;
+                    G_cidState[cidIndex].iIsServer = 0;
+                    G_cidState[cidIndex].iState = CID_STATE_CONNECTED;
+                    G_cidState[cidIndex].iType = CID_TYPE_TCP;
+#ifdef ATLIBGS_DEBUG_ENABLE
+					printf("CONNECT [%c]\n", G_cidState[cidIndex].cid);
+#endif					
+
                     return rxMsgId;
                 } else {
                     return ATLIBGS_MSG_ID_ERROR;
                 }
             }
         }
+
+        ///What do we do instead?
+        UEZTaskDelay(1);
     }
     return ATLIBGS_MSG_ID_RESPONSE_TIMEOUT;
 }
@@ -2309,21 +2542,32 @@ ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPConnection(
 /**   Waits for and parses a TCP message into CID and the message itself.
  *      If data is received, it is passed to the routine
  *      App_ProcessIncomingData.
+ *  @param [in] cid -- CID we're currently watching closely.  If it closes,
+ *  	report it closed.  (If another connection closes, we don't care yet)
  *  @param [in] timeout -- Timeout in milliseconds, 0 for no timeout
  *  @return     ATLIBGS_MSG_ID_E -- returns ATLIBGS_MSG_ID_RESPONSE_TIMEOUT if timeout,
  *          or ATLIBGS_MSG_ID_DATA_RX if TCP message found.
  */
 /*--------------------------------------------------------------------------*/
-ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPMessage(uint32_t timeout)
+ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPMessage(uint8_t cid, uint32_t timeout)
 {
     ATLIBGS_MSG_ID_E rxMsgId;
     uint8_t rxData;
     uint32_t start = MSTimerGet();
+    int cidIndex;
+
+    cidIndex = AtLibGs_CIDToIndex(cid);
 
     /* wait until message received or timeout*/
     while (1) {
         if ((MSTimerDelta(start) >= timeout) && (timeout))
             break;
+
+        // Check to see if the connection is still open here
+        if (G_cidState[cidIndex].iState != CID_STATE_CONNECTED) {
+        	// The connection went away, stop messing this this
+        	return ATLIBGS_MSG_ID_DISCONNECT;
+        }
 
         while (App_Read(&rxData, 1, 0)) {
             /* If we got data, reset the timeout */
@@ -2402,6 +2646,7 @@ void AtLibGs_ParseTCPData(
         // No data to report
         msg->numBytes = 0;
         msg->message = 0;
+        msg->cid = 0xFF;
     }
 }
 
@@ -2502,6 +2747,16 @@ void AtLibGs_ParseHTTPData(
     }
 }
 
+#if 0
+static void PrintByte(uint8_t c)
+{
+    if ((c >= 0x20) && (c <= 0x7F))
+        printf("%c", c);
+    else
+        printf("[%02X]", c);
+}
+#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  AtLibGs_ReceiveDataProcess
  *--------------------------------------------------------------------------*/
@@ -2534,6 +2789,7 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
                 case ATLIBGS_LF_CHAR:
                     /* CR and LF at the begining, just ignore it */
                     MRBufferIndex = 0;
+                    //printf(ANSI_MAGENTA "CR{" ANSI_OFF);
                     break;
 
                 case ATLIBGS_ESC_CHAR:
@@ -2541,12 +2797,21 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
                     receive_state = ATLIBGS_RX_STATE_ESCAPE_START;
                     MRBufferIndex = 0;
                     dataLength = 0;
+                    //printf(ANSI_MAGENTA "ESC{" ANSI_OFF);
                     break;
 
                 default:
                     /* Not start of ESC char, not start of any CR or NL */
                     MRBufferIndex = 0;
                     MRBuffer[MRBufferIndex] = rxData;
+#if 0
+    if ((rxData >= 0x20) && (rxData <= 0x7F))
+        printf(ANSI_MAGENTA "DEF{%c" ANSI_OFF, rxData);
+    else {
+        printf(ANSI_MAGENTA "DEF{[%02X]" ANSI_OFF, rxData);
+    }
+#endif
+
                     MRBufferIndex++;
                     receive_state = ATLIBGS_RX_STATE_CMD_RESP;
                     break;
@@ -2557,11 +2822,20 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
             if (ATLIBGS_LF_CHAR == rxData) {
                 /* LF detected - Messages from S2w node are terminated with LF/CR character */
                 MRBuffer[MRBufferIndex] = rxData;
+#if 0
+    if ((rxData >= 0x20) && (rxData <= 0x7F))
+        printf(ANSI_MAGENTA "%c" ANSI_OFF, rxData);
+    else {
+        printf(ANSI_MAGENTA "[%02X]" ANSI_OFF, rxData);
+    }
+#endif
 
                 /* terminate string with NULL for strstr() */
                 MRBufferIndex++;
                 MRBuffer[MRBufferIndex] = '\0';
+//printf(ANSI_MAGENTA "} EOFMSG " ANSI_OFF);
                 rxMsgId = AtLibGs_checkEOFMessage(MRBuffer);
+//printf(ANSI_MAGENTA "rxMsgId=%d " ANSI_OFF, rxMsgId);
 
                 if (ATLIBGS_MSG_ID_NONE != rxMsgId) {
                     /* command echo or end of response detected */
@@ -2582,10 +2856,18 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
             } else {
                 MRBuffer[MRBufferIndex] = rxData;
                 MRBufferIndex++;
+#if 0
+    if ((rxData >= 0x20) && (rxData <= 0x7F))
+        printf(ANSI_MAGENTA "%c" ANSI_OFF, rxData);
+    else {
+        printf(ANSI_MAGENTA "[%02X]" ANSI_OFF, rxData);
+    }
+#endif
 
                 if (MRBufferIndex >= ATLIBGS_RX_CMD_MAX_SIZE) {
                     /* Message buffer overflow. Something seriousely wrong. */
                     MRBufferIndex = 0;
+//printf(ANSI_MAGENTA "} MAX! " ANSI_OFF);
 
                     /* Now reset the  state machine */
                     receive_state = ATLIBGS_RX_STATE_START;
@@ -2619,6 +2901,7 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
                 /* acknowledgement S2w node */
                 receive_state = ATLIBGS_RX_STATE_START;
                 rxMsgId = ATLIBGS_MSG_ID_ESC_CMD_OK;
+                //printf(ANSI_YELLOW "Time: %d" ANSI_OFF, UEZTickCounterGet());
             } else if (ATLIBGS_DATA_MODE_ESC_FAIL_CHAR_F == rxData) {
                 /* ESC command response FAILED */
                 /* Note: Error reported from S2w node, you can use it */
@@ -2639,22 +2922,24 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
         case ATLIBGS_RX_STATE_DATA_HANDLE:
             /* Store the CID */
             App_ProcessIncomingData(rxData);
+            //PrintByte(rxData);
 
             /* Keep receiving data till you get ESC E */
             do {
                 App_Read(&rxData, 1, 1);
-//printf("#%02X", rxData);
+                //PrintByte(rxData);
 
                 /* Is this char an ESC? */
                 while (rxData == ATLIBGS_ESC_CHAR) {
-//printf("ESC!");
+                    //printf("[ESC!]");
                     /* What is the next character? */
                     App_Read(&rxData, 1, 1);
-//printf("#%02X", rxData);
+					//PrintByte(rxData);
                     /* Is it an 'E'? */
                     if (rxData == ATLIBGS_DATA_MODE_NORMAL_END_CHAR_E) {
-//printf("END!");
+					//printf("[END!]");
                         /* End of data detected */
+                        App_EndIncomingData();
                         receive_state = ATLIBGS_RX_STATE_START;
                         rxMsgId = ATLIBGS_MSG_ID_DATA_RX;
                         return rxMsgId;
@@ -2666,7 +2951,6 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
                 }
 
                 /* Store whatever character we were left holding */
-//printf("@%02X", rxData);
                 App_ProcessIncomingData(rxData);
             } while (receive_state != ATLIBGS_RX_STATE_START);
             break;
@@ -2711,6 +2995,7 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
                 App_ProcessIncomingData(rxData);
             }
             receive_state = ATLIBGS_RX_STATE_START;
+            rxMsgId = ATLIBGS_MSG_ID_DATA_RX;
             break;
 
         case ATLIBGS_RX_STATE_RAW_DATA_HANDLE:
@@ -2759,15 +3044,18 @@ ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData)
 /**   Wait for a response after sending a command.  Keep parsing the
  *      data until a response is found.
 
+ *  @param [in] cid -- CID of current thread looking for response.
  *  @return     ATLIBGS_MSG_ID_E -- error code
  */
 /*--------------------------------------------------------------------------*/
-ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(void)
+ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(uint8_t cid)
 {
     ATLIBGS_MSG_ID_E responseMsgId;
     uint8_t rxData;
     uint8_t gotData = 0;
     uint32_t iStart;
+
+    App_EnsureFlow();
 
     /* Reset the message ID */
     responseMsgId = ATLIBGS_MSG_ID_NONE;
@@ -2786,9 +3074,21 @@ ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(void)
         }
         if (gotData) {
             /* Process the received data */
-            responseMsgId = AtLibGs_ReceiveDataProcess(rxData);
+        	while (1) {
+        		responseMsgId = AtLibGs_ReceiveDataProcess(rxData);
+        		if (((responseMsgId == ATLIBGS_MSG_ID_DISCONNECT) || (responseMsgId == ATLIBGS_MSG_ID_TCP_SERVER_CONNECT)) && (cid != ATLIBGS_INVALID_CID)) {
+        			// Was this us?  If still connected, ignore it and repeat.
+        			// Otherwise, we'll fall through and report the disconnect
+        			int cidIndex = AtLibGs_CIDToIndex(cid);
+        			if (G_cidState[cidIndex].iState == CID_STATE_CONNECTED)
+        				continue;
+        		}
+
+        		// Unless repeated above, always fall out (fancy goto)
+        		break;
+        	}
             if (responseMsgId != ATLIBGS_MSG_ID_NONE) {
-                /* Message successfully received from S2w App node */
+                /* A message was successfully received from S2w App node */
                 break;
             }
         }
@@ -2974,6 +3274,7 @@ void AtLibGs_FlushRxBuffer(void)
     /* TODO: What do we do here now? */
     MRBufferIndex = 0;
     memset(MRBuffer, '\0', ATLIBGS_RX_CMD_MAX_SIZE);
+//printf(ANSI_MAGENTA " FLUSH " ANSI_OFF);
 }
 
 /*---------------------------------------------------------------------------*
@@ -2992,6 +3293,7 @@ void AtLibGs_Init(void)
     /* Reset the flags */
     nodeAssociationFlag = false;
     nodeResetFlag = false;
+    memset(G_cidState, 0, sizeof(G_cidState));
 }
 
 /*---------------------------------------------------------------------------*
@@ -3720,7 +4022,7 @@ ATLIBGS_MSG_ID_E AtLibGs_HTTPConf(ATLIBGS_HTTPCLIENT_E param, char value[])
     ConsolePrintf(">%s%s\n", cmd, value);
 #endif
     /* Wait for the response while collecting data into the MRBuffer */
-    return AtLibGs_ResponseHandle();
+    return AtLibGs_ResponseHandle(ATLIBGS_INVALID_CID);
 }
 
 /*---------------------------------------------------------------------------*
@@ -4548,6 +4850,11 @@ ATLIBGS_MSG_ID_E AtLibGs_HTTPSend(
     char cmd[50];
     ATLIBGS_MSG_ID_E msg = ATLIBGS_MSG_ID_INVALID_INPUT;
     if (ATLIBGS_INVALID_CID != cid) {
+        // Are we still a valid connection?
+    	int cidIndex = AtLibGs_CIDToIndex(cid);
+        if (G_cidState[cidIndex].iState != CID_STATE_CONNECTED)
+        	return ATLIBGS_MSG_ID_DISCONNECT;
+
 #ifdef ATLIBGS_DEBUG_ENABLE
         ConsolePrintf(">AT+HTTPSEND=%c," _F8_ "," _F16_ ",", cid, type,
                 timeout);
@@ -4559,7 +4866,7 @@ ATLIBGS_MSG_ID_E AtLibGs_HTTPSend(
         App_Write(page, strlen(page));
         sprintf(cmd, "," _F16_ "\r\n", size);
         App_Write(cmd, strlen(cmd));
-        msg = AtLibGs_ResponseHandle();
+        msg = AtLibGs_ResponseHandle(cid);
         if (msg == ATLIBGS_MSG_ID_OK) {
             /* Construct the data start indication message */
             sprintf(cmd, "%c%c%c", ATLIBGS_ESC_CHAR, 'H', cid);
@@ -4967,13 +5274,25 @@ ATLIBGS_MSG_ID_E AtLibGs_GetWebProvSettings(
 /*--------------------------------------------------------------------------*/
 void AtLibGs_IPv4AddressToString(ATLIBGS_IPv4 *ip, char *string)
 {
-    int v1, v2, v3, v4;
-    sprintf(string, "%d.%d.%d.%d", &v1, &v2, &v3, &v4);
-    (*ip)[0] = (uint8_t)v1;
-    (*ip)[1] = (uint8_t)v2;
-    (*ip)[2] = (uint8_t)v3;
-    (*ip)[3] = (uint8_t)v4;
+    sprintf(string, "%d.%d.%d.%d", (*ip)[0], (*ip)[1], (*ip)[2], (*ip)[3]);
 }
+
+int AtLibGs_CIDToIndex(uint8_t cid)
+{
+	// Convert '0'..'9' to 0..9
+	if ((cid >= '0') && (cid <= '9'))
+		return cid - '0';
+	// Convert 'a'..'f' to 10..15
+	if ((cid >= 'a') && (cid <= 'f'))
+		return 10 + (cid - 'a');
+	// Convert 'A'..'F' to 10..15
+	if ((cid >= 'A') && (cid <= 'F'))
+		return 10 + (cid - 'A');
+
+	// For all else, return 15
+	return 15;
+}
+
 /** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  AtCmdLib.c

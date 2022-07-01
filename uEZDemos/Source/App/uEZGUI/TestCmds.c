@@ -4,7 +4,7 @@
  * Description:
  *      UEZGUI Tester command console
  *-------------------------------------------------------------------------*/
- 
+
 /*--------------------------------------------------------------------------
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
@@ -38,13 +38,13 @@
 #include "NVSettings.h"
 #include <uEZToneGenerator.h>
 #include <uEZPlatform.h>
-#if UEZ_ENABLE_AUDIO_AMP
 #include <uEZAudioAmp.h>
 #include <uEZAudioMixer.h>
-#endif
 #include <uEZLCD.h>
 #include <uEZI2C.h>
 #include <uEZTimeDate.h>
+#include <UEZEEPROM.h>
+#include <UEZFile.h>
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -71,7 +71,7 @@ int UEZGUICmdEEPROM(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdTemperature(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[]);
-int UEZGUICmdUSBPort2(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdUSBPort0(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdLCD(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdTouchscreen(void *aWorkspace, int argc, char *argv[]);
@@ -96,8 +96,9 @@ int UEZGUICmdIPMaskAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdIPGatewayAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdGainSpan(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdGainSpanRun(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdCRC(void *aWorkspace, int argc, char *argv[]);
 extern T_uezError UEZToneGeneratorOpen(
-            const char * const aName, 
+            const char * const aName,
             T_uezDevice *aDevice);
 extern T_uezError UEZToneGeneratorPlayToneContinuous(
             T_uezDevice aDevice,
@@ -122,8 +123,8 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "LIGHTSENSOR", UEZGUICmdLightSensor },
 #endif
         { "RTC", UEZGUICmdRTC },
+        { "USB0", UEZGUICmdUSBPort0 },
         { "USB1", UEZGUICmdUSBPort1 },
-        { "USB2", UEZGUICmdUSBPort2 },
         { "BL", UEZGUICmdBacklight },
         { "LCD", UEZGUICmdLCD },
         { "TS", UEZGUICmdTouchscreen },
@@ -147,12 +148,13 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
 #if UEZ_WIRELESS_PROGRAM_MODE
         { "GAINSPANPROGRAM", UEZGUICmdGainSpan },
         { "GAINSPANRUNMODE", UEZGUICmdGainSpanRun },
-#endif  
+#endif
         { "I2CPROBE", UEZCmdI2CProbe },
         { "I2CWRITE", UEZCmdI2CWrite },
         { "I2CREAD", UEZCmdI2CRead },
         { "FILETESTWRITE", UEZCmdFileTestWrite },
         { "I2CBANG", UEZGUICmdI2CBang },
+        { "CRC" , UEZGUICmdCRC},
         { "END", UEZGUICmdEnd },
         { 0, 0 } // Place holder for the last one
 };
@@ -167,6 +169,43 @@ static const T_testAPI G_UEZGUITestAPI = {
         UEZGUITestShowResult,
         UEZGUITestSetTestResult,
         UEZGUITestNextTest, };
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZGUICmdGainSpan
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Place Unit into passthrough for GainSpan flashing (module flash)
+ * Inputs:
+ *      void *aWorkspace -- FDICmd workspace for output
+ *      int argc -- number of arguments to this command
+ *      char *argv[] -- pointer to a list of pointers for arguments
+ * Outputs:
+ *      int -- return value (0 for no errors)
+ *---------------------------------------------------------------------------*/
+extern TUInt32 G_romChecksum;
+extern TBool G_romChecksumCalculated;
+int UEZGUICmdCRC(void *aWorkspace, int argc, char *argv[])
+{
+    char message[20];
+
+    if(argc == 1){
+        sprintf(message, "0x%08X\n", G_romChecksumCalculated ? G_romChecksum : 0);
+        FDICmdSendString(aWorkspace, message);
+    } else if(argc == 2){
+        sprintf(message, "0x%08X", G_romChecksumCalculated ? G_romChecksum : 0);
+
+        if(strcmp(message, argv[1]) == 0){
+            sprintf(message, "PASS: 0x%08X\n", G_romChecksum);
+            FDICmdSendString(aWorkspace, message);
+        } else {
+            sprintf(message, "FAIL: 0x%08X\n", G_romChecksumCalculated ? G_romChecksum : 0);
+            FDICmdSendString(aWorkspace, message);
+        }
+    } else {
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect Parameters\n");
+    }
+    return 0;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZGUICmdGainSpan
@@ -209,7 +248,7 @@ int UEZGUICmdGainSpanRun(void *aWorkspace, int argc, char *argv[])
 {
     if (argc == 1) {
         // No Parameters (other than command) cause CMD to pass
-        FDICmdSendString(aWorkspace, "PASS: OK\n");        
+        FDICmdSendString(aWorkspace, "PASS: OK\n");
         UEZPlatform_WiFiProgramMode(ETrue);
     } else {
         // Parameters cause CMD to fail
@@ -466,18 +505,18 @@ int UEZGUICmdSPIFI(void *aWorkspace, int argc, char *argv[])
                     return -1;
                 }
 
-            // Do write/read test over 128K boundary
-            error = UEZFlashWrite(flash, 0x00700000+128*1024-4, "Hello ", 6);
+            // Do write/read test over 256K boundary
+            error = UEZFlashWrite(flash, 0x00700000+256*1024-4, (TUInt8*)"Hello ", 6);
             if (error){
                 FDICmdSendString(aWorkspace, "FAIL: Failed to write flash\n");
                 return -1;
             }
-            error = UEZFlashWrite(flash, 0x00700000+128*1024-4+6, "World ", 6);
+            error = UEZFlashWrite(flash, 0x00700000+256*1024-4+6, (TUInt8*)"World ", 6);
             if (error){
                 FDICmdSendString(aWorkspace, "FAIL: Failed to write flash\n");
                 return -1;
             }
-            error = UEZFlashRead(flash, 0x00700000+128*1024-4, buffer, 128);
+            error = UEZFlashRead(flash, 0x00700000+256*1024-4, buffer, 128);
             if (error){
                 FDICmdSendString(aWorkspace, "FAIL: Failed to read flash\n");
                 return -1;
@@ -628,7 +667,7 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
             FDICmdPrintf(aWorkspace, "FAIL: Reversed?\n");
             return -1;
         }
-        
+
         // Reset pins back to default state
         (*p_portA)->SetInputMode(p_portA, 1 << pinA);            // set to Input
         (*p_portA)->SetPull(p_portA, 1 << pinA, GPIO_PULL_NONE); // set to floating input mode
@@ -636,7 +675,7 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
         (*p_portB)->SetPull(p_portB, 1 << pinB, GPIO_PULL_NONE); // set to floating input mode
         (*p_portC)->SetInputMode(p_portC, 1 << pinC);            // set to Input
         (*p_portC)->SetPull(p_portC, 1 << pinC, GPIO_PULL_NONE); // set to floating input mode
-              
+
         // Test Pair BC
         (*p_portC)->SetOutputMode(p_portC, 1 << pinC); // set to Output
         (*p_portC)->SetMux(p_portC, pinC, 0); // set to GPIO
@@ -662,7 +701,7 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
             FDICmdPrintf(aWorkspace, "FAIL: Reversed?\n");
             return -1;
         }
-        
+
         // Reset pins back to default state
         (*p_portA)->SetInputMode(p_portA, 1 << pinA);            // set to Input
         (*p_portA)->SetPull(p_portA, 1 << pinA, GPIO_PULL_NONE); // set to floating input mode
@@ -670,7 +709,7 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
         (*p_portB)->SetPull(p_portB, 1 << pinB, GPIO_PULL_NONE); // set to floating input mode
         (*p_portC)->SetInputMode(p_portC, 1 << pinC);            // set to Input
         (*p_portC)->SetPull(p_portC, 1 << pinC, GPIO_PULL_NONE); // set to floating input mode
-        
+
         // Test Pair AC
         (*p_portA)->SetOutputMode(p_portA, 1 << pinA); // set to Output
         (*p_portA)->SetMux(p_portA, pinA, 0); // set to GPIO
@@ -696,7 +735,7 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
             FDICmdPrintf(aWorkspace, "FAIL: Reversed?\n");
             return -1;
         }
-        
+
         // High is high and low is low, good
         FDICmdPrintf(aWorkspace, "PASS: OK\n");
     } else if (argc == 1) {
@@ -723,16 +762,27 @@ int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[])
 {
-    // Read the GPIO for the 3VERR on P2_25
-    HAL_GPIOPort **p_gpio2;
-    const TUInt32 pin = 25;
+    // Read the GPIO for the 3VERR on P2_25 LPC1788_4088
+#if (UEZ_PROCESSOR != NXP_LPC4357)
+    T_uezGPIOPortPin gpioPin = GPIO_P2_25;
+#else
+    T_uezGPIOPortPin gpioPin = GPIO_P4_10;
+    TUInt32 value;
+#endif
+
     TUInt32 reading;
 
-    HALInterfaceFind("GPIO2", (T_halWorkspace **)&p_gpio2);
+#if (UEZ_PROCESSOR != NXP_LPC4357)
+    UEZGPIOSetMux(gpioPin, 0);
+#else
+    value = ((gpioPin >> 8) & 0x7) >= 5 ? 4 : 0;
+    value |= SCU_EPD_DISABLE | SCU_EPUN_DISABLE | SCU_EHS_FAST | SCU_EZI_ENABLE | SCU_ZIF_ENABLE;
+    UEZGPIOControl(gpioPin, GPIO_CONTROL_SET_CONFIG_BITS, value);
+#endif
 
     // All we do is determine if this pin is high or low.  High level is good,
     // low means we are tripping an error.
-    (*p_gpio2)->Read(p_gpio2, 1 << pin, &reading);
+    reading = UEZGPIORead(gpioPin);
     if (reading) {
         // High: good
         FDICmdSendString(aWorkspace, "PASS: OK\n");
@@ -745,12 +795,39 @@ int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdEEPROM(void *aWorkspace, int argc, char *argv[])
 {
+#if (UEZ_PROCESSOR != NXP_LPC4357)
     T_testData testData;
+#else
+    T_uezDevice eeprom;
+    TUInt8 data[15] = "Hello World!";
+    TUInt8 read[15] = {0};
+#endif
 
     if (argc == 1) {
         // Got no parameters
         // Now do the test
+#if (UEZ_PROCESSOR != NXP_LPC4357)
         IUEZGUICmdRunTest(aWorkspace, FuncTestEEPROM, &testData);
+#else
+        if(UEZEEPROMOpen("EEPROM0", &eeprom) == UEZ_ERROR_NONE){
+            if(UEZEEPROMWrite(eeprom, data, (1 * 1024), sizeof(data)) == UEZ_ERROR_NONE){
+                if(UEZEEPROMRead(eeprom, read, (1 * 1024), sizeof(read)) == UEZ_ERROR_NONE){
+                    if(memcmp((void*)data, (void*)read, sizeof(data)) == 0){
+                        FDICmdSendString(aWorkspace, "PASS: OK\n");
+                    } else {
+                        FDICmdSendString(aWorkspace, "FAIL: Compare\n");
+                    }
+                } else {
+                    FDICmdSendString(aWorkspace, "FAIL: to read\n");
+                }
+            } else {
+                FDICmdSendString(aWorkspace, "FAIL: to write\n");
+            }
+            UEZEEPROMClose(eeprom);
+        } else {
+            FDICmdSendString(aWorkspace, "FAIL: to open\n");
+        }
+#endif
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
@@ -864,9 +941,9 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
         td.iTime.iSecond = 0;
         // Set the time to 1/1/2013, 8:00:00
         UEZTimeDateSet(&td);
-        
-        UEZTaskDelay(3000);
-        
+
+        UEZTaskDelay(5000);
+
         UEZTimeDateGet(&td);
         if ((td.iDate.iMonth==1) &&
                 (td.iDate.iDay == 1) &&
@@ -878,7 +955,7 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
         } else {
             FDICmdSendString(aWorkspace, "FAIL: Not Incrementing\n");
         }
-        
+
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
@@ -887,26 +964,58 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[])
 {
+#if(UEZ_PROCESSOR != NXP_LPC4357)
     T_testData testData;
+#else
+    T_uezFile file;
+    T_uezError error;
+#endif
 
     if (argc == 1) {
         // Got no parameters
         // Now do the test
+#if(UEZ_PROCESSOR != NXP_LPC4357)
         IUEZGUICmdRunTest(aWorkspace, FuncTestUSBHost1, &testData);
+#else
+        error = UEZFileOpen("0:TESTUSB.TXT", FILE_FLAG_READ_ONLY, &file);
+        switch(error){
+            case UEZ_ERROR_NONE:
+                UEZFileClose(file);
+                FDICmdSendString(aWorkspace, "PASS: OK\n");
+                break;
+            case UEZ_ERROR_NOT_AVAILABLE:
+            case UEZ_ERROR_NOT_READY:
+                FDICmdSendString(aWorkspace, "FAIL: Drive not Found\n");
+                break;
+            case UEZ_ERROR_NOT_FOUND:
+                FDICmdSendString(aWorkspace, "FAIL: File not Found\n");
+                break;
+            default:
+                FDICmdSendString(aWorkspace, "FAIL: Error unknown\n");
+                break;
+        }
+
+#endif
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
     return 0;
 }
 
-int UEZGUICmdUSBPort2(void *aWorkspace, int argc, char *argv[])
+int UEZGUICmdUSBPort0(void *aWorkspace, int argc, char *argv[])
 {
+#if(UEZ_PROCESSOR != NXP_LPC4357)
     T_testData testData;
+#endif
 
     if (argc == 1) {
         // Got no parameters
         // Now do the test
+#if(UEZ_PROCESSOR != NXP_LPC4357)
         IUEZGUICmdRunTest(aWorkspace, FuncTestUSBHost2, &testData);
+#else
+        FDICmdSendString(aWorkspace, "FAIL: Not Supported\n");
+#endif
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
     }
@@ -917,7 +1026,7 @@ int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
 {
   T_testData testData;
   T_uezDevice lcd;
-  
+
   if (argc == 1) {
     // Got no parameters
     // Now do the test
@@ -925,7 +1034,7 @@ int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
     IUEZGUICmdRunTest(aWorkspace, FuncTestBacklightPWM, &testData);
 #else
     IUEZGUICmdRunTest(aWorkspace, FuncTestBacklightMonitor, &testData);
-#endif    
+#endif
   } else if(argc == 2){
       if(UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE){
           UEZLCDBacklight(lcd, FDICmdUValue(argv[1]));
@@ -963,7 +1072,7 @@ int UEZGUICmdTouchscreen(void *aWorkspace, int argc, char *argv[])
         TestModeSendCmd(TEST_MODE_TOUCHSCREEN);
 
         while(G_mmTestModeTouchscreenCalibrationBusy);
-        
+
         if (G_mmTestModeTouchscreenCalibrationValid)
             FDICmdSendString(aWorkspace, "PASS: OK\n");
         else
@@ -1352,7 +1461,7 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
 #else
         IWaitTouchscreen();
 #endif
-        
+
         G_mmTestModeColor = RGB(0, 255, 0);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
 #if ENABLE_UEZ_BUTTON
@@ -1360,7 +1469,7 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
 #else
         IWaitTouchscreen();
 #endif
-        
+
         G_mmTestModeColor = RGB(0, 0, 255);
         TestModeSendCmd(TEST_MODE_FILL_COLOR);
 #if ENABLE_UEZ_BUTTON
@@ -1402,12 +1511,12 @@ int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
     TUInt8 dataOut = 0;
     char printString[30];
     I2C_Request r;
-    
+
     if (argc == 4) {
         I2CNumber = FDICmdUValue(argv[1]);
         numBytes = FDICmdUValue(argv[2]);
         speed = FDICmdUValue(argv[3]);
-        
+
         if(I2CNumber == 0) {
             if(UEZI2COpen("I2C0", &I2C) != UEZ_ERROR_NONE)
                 FDICmdSendString(aWorkspace, "FAIL: Could not open I2C0\n");
@@ -1422,13 +1531,13 @@ int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
             FDICmdSendString(aWorkspace, "      Format: I2CBANG <I2C Bus #> <speed in kHz>\n");
             return 0;
         }
-        
+
         if((speed != 100) && (speed != 400)) {
             FDICmdSendString(aWorkspace, "FAIL: speed must be '100' or '400' in kHz\n");
             FDICmdSendString(aWorkspace, "      Format: I2CBANG <I2C Bus #> <speed in kHz>\n");
             return 0;
         }
-        
+
         r.iAddr = 0x48>>1;
         r.iSpeed = speed; //kHz
         r.iWriteData = &dataOut;
@@ -1437,23 +1546,23 @@ int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
         r.iReadData = &dataIn;
         r.iReadLength = 1; // read 1 byte
         r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
-        
+
         for(i=0; i<numBytes; i++) {
             if((i%1000)==0) {
                 FDICmdSendString(aWorkspace, ".");
             }
-            
+
             dataOut++;
             UEZI2CTransaction(I2C, &r);
-            
+
             if(dataIn != dataOut) {
                 sprintf(printString, "\nTest Failed on byte %d\n", i);
                 FDICmdSendString(aWorkspace, printString);
             }
         }
-        
+
         UEZI2CClose(I2C);
-        
+
     } else {
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters.\n");
         FDICmdSendString(aWorkspace, "      Format: I2CBANG <I2C Bus #> <speed in kHz>\n");

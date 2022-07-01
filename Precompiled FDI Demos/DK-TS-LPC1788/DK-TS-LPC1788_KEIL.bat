@@ -1,5 +1,5 @@
 @if not exist "DK-TS-LPC1788_KEIL_APP.bin" goto missing
-@DK-TS-LPC1788_KEIL.jlink
+@"..\JLink_V512j\JLink.exe" -jtagconf -1,-1 -autoconnect 1 -CommanderScript "DK-TS-LPC1788_KEIL.jlink"
 @goto end
 
 :missing

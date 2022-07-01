@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -129,15 +129,15 @@ IRQ_ROUTINE( IGPDMA)
  *---------------------------------------------------------------------------*/
 // Number of G_opened dma channels.
 static TUInt8 G_opened = 0;
-static GPDMACH_TypeDef * const G_channelRegs[8] = {
-        GPDMACH0,
-        GPDMACH1,
-        GPDMACH2,
-        GPDMACH3,
-        GPDMACH4,
-        GPDMACH5,
-        GPDMACH6,
-        GPDMACH7, };
+static LPC_GPDMACH_TypeDef * const G_channelRegs[8] = {
+        LPC_GPDMACH0,
+        LPC_GPDMACH1,
+        LPC_GPDMACH2,
+        LPC_GPDMACH3,
+        LPC_GPDMACH4,
+        LPC_GPDMACH5,
+        LPC_GPDMACH6,
+        LPC_GPDMACH7, };
 
 static T_LPC1768_GPDMA_Workspace * G_workspaceGPDMAChannel[8];
 
@@ -267,7 +267,7 @@ static TBool LPC1768_GPDMA_ChannelIsEnabled(void *aWorkspace)
     T_LPC1768_GPDMA_Workspace *p = (T_LPC1768_GPDMA_Workspace *)aWorkspace;
 
     // Enabled iChannel
-    return (GPDMA->DMACEnbldChns & (1 << p->iChannel)) ? ETrue : EFalse;
+    return (LPC_GPDMA->DMACEnbldChns & (1 << p->iChannel)) ? ETrue : EFalse;
 }
 
 /*---------------------------------------------------------------------------*
@@ -284,15 +284,15 @@ T_uezError LPC1768_GPDMA_Start(void *aWorkspace)
 {
 //    TUInt32 regValue = 0;
     T_LPC1768_GPDMA_Workspace *p = (T_LPC1768_GPDMA_Workspace *)aWorkspace;
-    GPDMACH_TypeDef *p_channel;
+    LPC_GPDMACH_TypeDef *p_channel;
 
     // Test if we can enable the iChannel.
     if (p->iControl == 0 || ETrue == LPC1768_GPDMA_ChannelIsEnabled(aWorkspace))
         return UEZ_ERROR_NOT_READY;
 
     //Clear any pending interrupts on the iChannel
-    GPDMA->DMACIntTCClear = 1 << p->iChannel;
-    GPDMA->DMACIntErrClr = 1 << p->iChannel;
+    LPC_GPDMA->DMACIntTCClear = 1 << p->iChannel;
+    LPC_GPDMA->DMACIntErrClr = 1 << p->iChannel;
 
     // Memory to memory transfer;
 //    regValue |= ((0x0 & DMACDMACCDMACConfiguration_FlowCntrl_MASK)
@@ -359,7 +359,7 @@ static void LPC1768_GPDMA_Enable(void *aWorkspace)
 
     // Enable GPDMA by writing ENABLE bit.
     // Always little-endian.
-    GPDMA->DMACConfig = DMACDMACCDMACConfiguration_E;
+    LPC_GPDMA->DMACConfig = DMACDMACCDMACConfiguration_E;
 }
 
 /*---------------------------------------------------------------------------*
@@ -497,9 +497,9 @@ static void IGPDMAProcessInterrupt(T_LPC1768_GPDMA_Workspace *p)
     T_gpdmaState state = GPDMA_UNKNOWN;
 
     // Check error state. Higher priority.
-    if (GPDMA->DMACIntErrStat & (1 << p->iChannel)) {
+    if (LPC_GPDMA->DMACIntErrStat & (1 << p->iChannel)) {
         state = GPDMA_FAIL;
-    } else if (GPDMA->DMACIntTCStat & (1 << p->iChannel)) {
+    } else if (LPC_GPDMA->DMACIntTCStat & (1 << p->iChannel)) {
         // Completed.
         state = GPDMA_SUCCESS;
     }
@@ -509,8 +509,8 @@ static void IGPDMAProcessInterrupt(T_LPC1768_GPDMA_Workspace *p)
         p->iISRCallback(p->iISRCallbackWorkspace, state);
 
     // Clear possible interrupt sources.
-    GPDMA->DMACIntTCClear = (1 << p->iChannel);
-    GPDMA->DMACIntErrClr = (1 << p->iChannel);
+    LPC_GPDMA->DMACIntTCClear = (1 << p->iChannel);
+    LPC_GPDMA->DMACIntErrClr = (1 << p->iChannel);
 }
 
 /*---------------------------------------------------------------------------*
@@ -523,35 +523,35 @@ IRQ_ROUTINE(IGPDMA)
 {
     IRQ_START();
     // Determine interrupt source.
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL0)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL0)) {
         //iChannel 0 - Enable callback
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[0]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL1)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL1)) {
         //iChannel 1
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[1]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL2)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL2)) {
         //iChannel 2
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[2]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL3)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL3)) {
         //iChannel 3
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[3]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL4)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL4)) {
         //iChannel 4
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[4]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL5)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL5)) {
         //iChannel 5
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[5]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL6)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL6)) {
         //iChannel 6
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[6]);
     }
-    if (GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL7)) {
+    if (LPC_GPDMA->DMACIntStat & (1 << GPDMA_CHANNEL7)) {
         //iChannel 7
         IGPDMAProcessInterrupt(G_workspaceGPDMAChannel[7]);
     }

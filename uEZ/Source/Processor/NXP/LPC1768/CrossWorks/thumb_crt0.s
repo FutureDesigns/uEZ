@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2009 Rowley Associates Limited.                             *
+ * Copyright (c) 2009-2013 Rowley Associates Limited.                        *
  *                                                                           *
  * This file may be distributed under the terms of the License Agreement     *
  * provided with this software.                                              *
@@ -15,11 +15,6 @@
  *
  *   Defines the application entry point function, if undefined this setting
  *   defaults to "main".
- *
- * USE_PROCESS_STACK
- *
- *   If defined, thread mode will be configured to use the process stack if
- *   the size of the process stack is greater than zero bytes in length.
  *
  * INITIALIZE_STACK
  *
@@ -39,11 +34,8 @@
  *  
  *  If not defined then
  *    - argc and argv are zero.
- *    - no exit symbol, code loops on return from main.
+ *    - the exit symbol is defined, executes on return from main and loops
  *****************************************************************************/
-
-#include "Config.h"
-#if (UEZ_PROCESSOR==NXP_LPC1768)
 
 #ifndef APP_ENTRY_POINT
 #define APP_ENTRY_POINT main
@@ -55,9 +47,7 @@
 
   .global _start
   .extern APP_ENTRY_POINT
-#ifdef FULL_LIBRARY
   .global exit
-#endif
 
   .section .init, "ax"
   .code 16
@@ -66,6 +56,10 @@
 
 _start:
   ldr r1, =__stack_end__
+#ifdef __ARM_EABI__
+  mov r2, #0x7
+  bic r1, r2
+#endif
   mov sp, r1
 #ifdef INITIALIZE_STACK
   mov r2, #0xCC
@@ -73,12 +67,15 @@ _start:
   bl memory_set
 #endif
 
-#ifdef USE_PROCESS_STACK
   /* Set up process stack if size > 0 */
   ldr r1, =__stack_process_end__
   ldr r0, =__stack_process_start__
   sub r2, r1, r0
   beq 1f
+#ifdef __ARM_EABI__
+  mov r2, #0x7
+  bic r1, r2
+#endif
   msr psp, r1
   mov r2, #2
   msr control, r2
@@ -87,7 +84,7 @@ _start:
   bl memory_set
 #endif
 1:
-#endif
+
   /* Copy initialised memory sections into RAM (if necessary). */
   ldr r0, =__data_load_start__
   ldr r1, =__data_start__
@@ -113,6 +110,10 @@ _start:
   ldr r1, =__rodata_start__
   ldr r2, =__rodata_end__
   bl memory_copy
+  ldr r0, =__tdata_load_start__
+  ldr r1, =__tdata_start__
+  ldr r2, =__tdata_end__
+  bl memory_copy
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__data2_load_start__
   ldr r1, =__data2_start__
@@ -133,6 +134,10 @@ _start:
   ldr r1, =__bss_end__
   mov r2, #0
   bl memory_set
+  ldr r0, =__tbss_start__
+  ldr r1, =__tbss_end__
+  mov r2, #0
+  bl memory_set
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__bss2_start__
   ldr r1, =__bss2_end__
@@ -144,10 +149,13 @@ _start:
   ldr r0, = __heap_start__
   ldr r1, = __heap_end__
   sub r1, r1, r0
+  cmp r1, #8
+  blt 1f
   mov r2, #0
   str r2, [r0]
   add r0, r0, #4
   str r1, [r0]
+1:
 
   /* Call constructors */
   ldr r0, =__ctors_start__
@@ -168,6 +176,7 @@ ctor_end:
   mov lr, r0
   mov r12, sp
 
+  .type start, function
 start:
   /* Jump to application entry point */
 #ifdef FULL_LIBRARY
@@ -183,9 +192,9 @@ start:
   ldr r2, =APP_ENTRY_POINT
   blx r2
 
-#ifdef FULL_LIBRARY  
   .thumb_func
 exit:
+#ifdef FULL_LIBRARY  
   mov r5, r0 // save the exit parameter/return result
 
   /* Call destructors */
@@ -216,6 +225,7 @@ dtor_end:
 exit_loop:
   b exit_loop
 
+  .thumb_func
 memory_copy:
   cmp r0, r1
   beq 2f
@@ -231,6 +241,7 @@ memory_copy:
 2:
   bx lr
 
+  .thumb_func
 memory_set:
   cmp r0, r1
   beq 1f
@@ -240,6 +251,47 @@ memory_set:
 1:
   bx lr
 
+  .global __getchar
+  .weak __getchar
+  .global __putchar
+  .weak __putchar
+  .thumb_func
+__getchar:
+  .thumb_func
+__putchar:
+  ldr r0, =-1 // EOF
+  bx lr
+  
+  // default C/C++ library helpers
+
+.macro HELPER helper_name
+  .section .text.\helper_name, "ax", %progbits
+  .global \helper_name
+  .weak \helper_name  
+\helper_name:
+  .thumb_func
+.endm
+
+HELPER __aeabi_read_tp
+  ldr r0, =__tbss_start__-8
+  bx lr
+HELPER __heap_lock
+  bx lr
+HELPER __heap_unlock
+  bx lr
+HELPER __printf_lock
+  bx lr
+HELPER __printf_unlock
+  bx lr
+HELPER __scanf_lock
+  bx lr
+HELPER __scanf_unlock
+  bx lr
+HELPER __debug_io_lock
+  bx lr
+HELPER __debug_io_unlock
+  bx lr
+ 
 #ifdef FULL_LIBRARY
   .bss
 args:
@@ -251,4 +303,3 @@ args:
   .section .stack_process, "wa", %nobits
   .section .heap, "wa", %nobits
 
-#endif // (UEZ_PROCESSOR==NXP_LPC1768)

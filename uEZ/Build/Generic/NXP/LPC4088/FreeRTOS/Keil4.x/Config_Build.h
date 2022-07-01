@@ -2,11 +2,9 @@
 #define UEZ_PROCESSOR               NXP_LPC4088
 #define COMPILER_TYPE               Keil4
 
-#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_SHARP_LQ043T3DG01
-
 #define FATFS_MAX_MASS_STORAGE_DEVICES      2
 
-#define UEZ_LCD_COLOR_DEPTH         UEZLCD_COLOR_DEPTH_16_BIT
+#define UEZ_LCD_COLOR_DEPTH         UEZLCD_COLOR_DEPTH_I15_BIT
 
 #define UEZ_LCD_DISPLAY_HEIGHT      UEZPlatform_LCDGetHeight()
 #define UEZ_LCD_DISPLAY_WIDTH       UEZPlatform_LCDGetWidth()

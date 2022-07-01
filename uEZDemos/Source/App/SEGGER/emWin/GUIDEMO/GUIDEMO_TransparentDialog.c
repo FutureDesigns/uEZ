@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2011  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.08 - Graphical user interface for embedded applications **
+** emWin V5.18 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with a license and should not be re-
@@ -21,10 +21,9 @@ Purpose     : Demo of a semi transparent dialog
 */
 
 #include "GUIDEMO.h"
+#include <stdlib.h>  // Definition of NULL
 
-#define GUI_BYTESPERPIXEL 4
-
-#if (SHOW_GUIDEMO_TRANSPARENTDIALOG && GUI_WINSUPPORT && GUI_SUPPORT_MEMDEV && (GUI_BYTESPERPIXEL >= 2))
+#if (SHOW_GUIDEMO_TRANSPARENTDIALOG && GUI_WINSUPPORT && GUI_SUPPORT_MEMDEV)
 
 /*********************************************************************
 *
@@ -32,10 +31,17 @@ Purpose     : Demo of a semi transparent dialog
 *
 **********************************************************************
 */
-#define APP_TIMER (WM_USER + 0)
-#define APP_INIT  (WM_USER + 1)
-#define PERIOD        40
-#define DURATION   10000
+#define APP_TIMER      (WM_USER + 0)
+#define APP_INIT       (WM_USER + 1)
+
+#define PERIOD         40
+#define DURATION       10000
+
+#define TRANSPARENCY   0xFF
+
+#define FRAMEWIN_XSIZE 220
+#define TEXT_XSIZE     90
+#define SLIDER_XSIZE   100
 
 /*********************************************************************
 *
@@ -44,6 +50,15 @@ Purpose     : Demo of a semi transparent dialog
 **********************************************************************
 */
 static GUI_CONST_STORAGE GUI_COLOR ColorsMap_400x320[] = {
+#if (GUI_USE_ARGB)
+     0xFFEEEEEE,0xFFFFCC99,0xFFCCFFCC,0xFFFFFFFF
+    ,0xFFCCCCCC,0xFFFF0000,0xFF888888,0xFF99CC99
+    ,0xFF000000,0xFFFFFF33,0xFF444444,0xFFDDDDDD
+    ,0xFFBBBBBB,0xFF777777,0xFFAAAAAA,0xFF555555
+    ,0xFFFFFF00,0xFF666666,0xFF999999,0xFF000066
+    ,0xFF669966,0xFFFFCCCC,0xFF3300CC,0xFF6600FF
+    ,0xFFFFFFCC,0xFFFF9999,0xFFFF6666,0xFFFFFF99
+#else
      0xEEEEEE,0x99CCFF,0xCCFFCC,0xFFFFFF
     ,0xCCCCCC,0x0000FF,0x888888,0x99CC99
     ,0x000000,0x33FFFF,0x444444,0xDDDDDD
@@ -51,6 +66,7 @@ static GUI_CONST_STORAGE GUI_COLOR ColorsMap_400x320[] = {
     ,0x00FFFF,0x666666,0x999999,0x660000
     ,0x669966,0xCCCCFF,0xCC0033,0xFF0066
     ,0xCCFFFF,0x9999FF,0x6666FF,0x99FFFF
+#endif
 };
 
 static GUI_CONST_STORAGE GUI_LOGPALETTE PalMap_400x320 = {
@@ -6691,8 +6707,6 @@ static GUI_CONST_STORAGE unsigned char acMap_400x320[] = {
   /* RLE: 059 Pixels @ 281,319*/ 59, 0x00,
   /* ABS: 009 Pixels @ 340,319*/ 0, 9, 0x03, 0x03, 0x00, 0x00, 0x03, 0x11, 0x0E, 0x03, 0x03,
   /* RLE: 051 Pixels @ 349,319*/ 51, 0x00,
-
-
   0};  /* 23077 for 128000 pixels */
 
 static GUI_CONST_STORAGE GUI_BITMAP _bmMap_400x320 = {
@@ -6705,17 +6719,15 @@ static GUI_CONST_STORAGE GUI_BITMAP _bmMap_400x320 = {
  ,GUI_DRAW_RLE8
 };
 
-static int _Alpha_0     = 85;
-static int _Alpha_1     = 0;
-
-static WM_CALLBACK * _pcbClient;
+static int _Alpha_0 = 85;
+static int _Alpha_1 = 0;
 
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { FRAMEWIN_CreateIndirect, "Transparent dialog", 0,                0,   0, 220, 100, FRAMEWIN_CF_MOVEABLE},
-  { TEXT_CreateIndirect,     "Background:",        GUI_ID_TEXT0,     5,  10,  90,  20, TEXT_CF_LEFT },
-  { TEXT_CreateIndirect,     "Title:",             GUI_ID_TEXT1,     5,  40,  90,  20, TEXT_CF_LEFT },
-  { SLIDER_CreateIndirect,   NULL,                 GUI_ID_SLIDER0, 100,  10, 100,  20 },
-  { SLIDER_CreateIndirect,   NULL,                 GUI_ID_SLIDER1, 100,  40, 100,  20 },
+  { FRAMEWIN_CreateIndirect, "Transparent dialog", 0,              0,   0,  FRAMEWIN_XSIZE, 100, FRAMEWIN_CF_MOVEABLE },
+  { TEXT_CreateIndirect,     "Background:",        GUI_ID_TEXT0,   5,   10, TEXT_XSIZE,     20,  TEXT_CF_LEFT         },
+  { TEXT_CreateIndirect,     "Title:",             GUI_ID_TEXT1,   5,   40, TEXT_XSIZE,     20,  TEXT_CF_LEFT         },
+  { SLIDER_CreateIndirect,   NULL,                 GUI_ID_SLIDER0, 100, 10, SLIDER_XSIZE,   20,  0                    },
+  { SLIDER_CreateIndirect,   NULL,                 GUI_ID_SLIDER1, 100, 40, SLIDER_XSIZE,   20,  0                    }
 };
 
 /*********************************************************************
@@ -6726,16 +6738,23 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 /*********************************************************************
 *
-*       _cbWin
+*       _cbBk
 *
-* Purpose:
-*   Callback routine of map window. On receiving a timer message it
-*   invalidates itself and restarts the timer.
+*  Function description
+*    Callback routine of map window. On receiving a timer message it
+*    invalidates itself and restarts the timer.
 */
-static void _cbWin(WM_MESSAGE * pMsg) {
-  static int xAdd,  yAdd,  xPos,     yPos;
-  int        xSize, ySize, xSizeBmp, ySizeBmp;
+static void _cbBk(WM_MESSAGE * pMsg) {
+  static int xAdd;
+  static int yAdd;
+  static int xPos;
+  static int yPos;
+  GUI_RECT   ClipRect;
   WM_HWIN    hWin;
+  int        xSizeBmp;
+  int        ySizeBmp;
+  int        xSize;
+  int        ySize;
 
   hWin     = pMsg->hWin;
   xSize    = LCD_GetXSize();
@@ -6748,7 +6767,83 @@ static void _cbWin(WM_MESSAGE * pMsg) {
       xAdd = 0;
       yAdd = 2;
     }
+    WM_CreateTimer(hWin, 0, PERIOD, 0);
+    break;
   case APP_TIMER:
+    xSizeBmp      = _bmMap_400x320.XSize;
+    ySizeBmp      = _bmMap_400x320.YSize;
+    if (xAdd < 0) {
+      if (xPos <= (xSize - xSizeBmp)) {
+        xAdd = 0;
+        yAdd = -2;
+      }
+    } else if (yAdd < 0) {
+      if (yPos <= (ySize - ySizeBmp)) {
+        xAdd = 2;
+        yAdd = 0;
+      }
+    } else if (xAdd > 0) {
+      if (xPos >= 0) {
+        xAdd = 0;
+        yAdd = 2;
+      }
+    } else if (yAdd > 0) {
+      if (yPos >= 0) {
+        xAdd = -2;
+        yAdd = 0;
+      }
+    }
+    if (xSize < xSizeBmp) {
+      xPos          += xAdd;
+    }
+    if (ySize < ySizeBmp) {
+      yPos          += yAdd;
+    }
+    WM_InvalidateWindow(hWin);
+    break;
+  case WM_PAINT:
+    if (xSize > xSizeBmp) {
+      xPos = (xSize - xSizeBmp) / 2;
+    }
+    if (ySize > ySizeBmp) {
+      yPos = (ySize - ySizeBmp) / 2;
+    }
+    GUI_DrawBitmap(&_bmMap_400x320, xPos, yPos);
+    if (xPos) {
+      ClipRect.x0 = 0;
+      ClipRect.y0 = 0;
+      ClipRect.x1 = xPos  - 1;
+      ClipRect.y1 = ySize - 1;
+      GUI_SetClipRect(&ClipRect);
+      GUIDEMO_DrawBk();
+    }
+    if ((xPos + xSizeBmp) < xSize) {
+      ClipRect.x0 = xPos + xSizeBmp;
+      ClipRect.y0 = 0;
+      ClipRect.x1 = xSize - 1;
+      ClipRect.y1 = ySize - 1;
+      GUI_SetClipRect(&ClipRect);
+      GUIDEMO_DrawBk();
+    }
+    if (yPos) {
+      ClipRect.x0 = xPos;
+      ClipRect.y0 = 0;
+      ClipRect.x1 = xPos + xSizeBmp - 1;
+      ClipRect.y1 = yPos - 1;
+      GUI_SetClipRect(&ClipRect);
+      GUIDEMO_DrawBk();
+    }
+    if ((yPos + ySizeBmp) < ySize) {
+      ClipRect.x0 = xPos;
+      ClipRect.y0 = yPos + ySizeBmp;
+      ClipRect.x1 = xPos + xSizeBmp - 1;
+      ClipRect.y1 = ySize - 1;
+      GUI_SetClipRect(&ClipRect);
+      GUIDEMO_DrawBk();
+    }
+    GUI_SetClipRect(NULL);
+    break;
+  case WM_TIMER:
     xSizeBmp = _bmMap_400x320.XSize;
     ySizeBmp = _bmMap_400x320.YSize;
     if (xAdd < 0) {
@@ -6778,29 +6873,10 @@ static void _cbWin(WM_MESSAGE * pMsg) {
     if (ySize < ySizeBmp) {
       yPos += yAdd;
     }
-    WM_InvalidateWindow(hWin);
+    WM_RestartTimer((WM_HTIMER)pMsg->Data.v, PERIOD);
     break;
-  case WM_PAINT:
-    if (xSize > xSizeBmp) {
-      xPos = (xSize - xSizeBmp) >> 1;
-    } 
-    if (ySize > ySizeBmp) {
-      yPos = (ySize - ySizeBmp) >> 1;
-    } 
-    GUI_DrawBitmap(&_bmMap_400x320, xPos, yPos);
-    if (xPos) {
-      GUI_ClearRect(0, 0, xPos - 1, ySize - 1);
-    }
-    if ((xPos + xSizeBmp) < xSize) {
-      GUI_ClearRect(xPos + xSizeBmp, 0, xSize - 1, ySize - 1);
-    }
-    if (yPos) {
-      GUI_ClearRect(xPos, 0, xPos + xSizeBmp - 1, yPos - 1);
-    }
-    if ((yPos + ySizeBmp) < ySize) {
-      GUI_ClearRect(xPos, yPos + ySizeBmp, xPos + xSizeBmp - 1, ySize - 1);
-    }
-    break;
+  default:
+    WM_DefaultProc(pMsg);
   }
 }
 
@@ -6808,19 +6884,20 @@ static void _cbWin(WM_MESSAGE * pMsg) {
 *
 *       _OnValueChanged
 */
-static void _OnValueChanged(WM_HWIN hDlg, int Id) {
+static void _OnValueChanged(WM_HWIN hWin, int Id) {
   WM_HWIN hItem;
-  int Value;
-  hItem = WM_GetDialogItem(hDlg, Id);
+  int     Value;
+
+  hItem = WM_GetDialogItem(hWin, Id);
   Value = SLIDER_GetValue(hItem);
   switch (Id) {
   case GUI_ID_SLIDER0:
     _Alpha_0 = Value;
-    WM_InvalidateWindow(hDlg);
+    WM_InvalidateWindow(hWin);
     break;
   case GUI_ID_SLIDER1:
     _Alpha_1 = Value;
-    WM_InvalidateWindow(WM_GetParent(hDlg));
+    WM_InvalidateWindow(WM_GetParent(hWin));
     break;
   }
 }
@@ -6829,40 +6906,33 @@ static void _OnValueChanged(WM_HWIN hDlg, int Id) {
 *
 *       _cbClient
 *
-* Purpose:
-*   Callback routine of property dialog
+*  Function description
+*   Callback function of the client window.
 */
 static void _cbClient(WM_MESSAGE * pMsg) {
-  WM_HWIN hDlg, hItem;
-  int NCode, Id;
-  hDlg = pMsg->hWin;
+  WM_HWIN hWin;
+  int     NCode;
+  int     Id;
+
+  hWin = pMsg->hWin;
   switch (pMsg->MsgId) {
-  case WM_INIT_DIALOG:
-    hItem = WM_GetDialogItem(hDlg, GUI_ID_SLIDER0);
-    SLIDER_SetRange(hItem, 0, 255);
-    SLIDER_SetValue(hItem, _Alpha_0);
-    hItem = WM_GetDialogItem(hDlg, GUI_ID_SLIDER1);
-    SLIDER_SetRange(hItem, 0, 255);
-    SLIDER_SetValue(hItem, _Alpha_1);
+  case WM_PAINT:
+    GUI_SetAlpha(GUI_MAKE_TRANS(_Alpha_0));   // Set alpha value for drawing operations
+    GUI_SetBkColor(GUI_MAKE_COLOR(0xAAAAAA)); // Draw gray background...
+    GUI_Clear();              // ...with alpha blending
+    GUI_SetAlpha(GUI_MAKE_TRANS(0));          // Set alpha value to default
     break;
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);      // Id of widget
     NCode = pMsg->Data.v;                 // Notification code
     switch (NCode) {
     case WM_NOTIFICATION_VALUE_CHANGED:   // Value has changed
-      _OnValueChanged(hDlg, Id);
+      _OnValueChanged(hWin, Id);
       break;
     }
     break;
-  case WM_PAINT:
-    GUI_SetAlpha(_Alpha_0);   // Set alpha value for drawing operations
-    GUI_SetBkColor(0xAAAAAA); // Draw gray background...
-    GUI_Clear();              // ...with alpha blending
-    GUI_SetAlpha(0);          // Set alpha value to default
-    return;
-  }
-  if (_pcbClient) {
-    _pcbClient(pMsg);
+  default:
+    WM_DefaultProc(pMsg);
   }
 }
 
@@ -6870,17 +6940,51 @@ static void _cbClient(WM_MESSAGE * pMsg) {
 *
 *       _cbFrame
 *
-* Purpose:
-*   Callback routine of frame window
+*  Function description
+*    Callback function of the frame window.
 */
 static void _cbFrame(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
   case WM_PAINT:
-    GUI_SetAlpha(_Alpha_1);
+    GUI_SetAlpha(GUI_MAKE_TRANS(_Alpha_1));
     break;
   }
   FRAMEWIN_Callback(pMsg);
-  GUI_SetAlpha(0);
+  GUI_SetAlpha(GUI_MAKE_TRANS(0));
+}
+
+/*********************************************************************
+*
+*       _cbDialog
+*
+*  Function description
+*    Callback function of the dialog.
+*/
+static void _cbDialog(WM_MESSAGE * pMsg) {
+  WM_HWIN hItem;
+  WM_HWIN hWin;
+
+  hWin = pMsg->hWin;
+  switch (pMsg->MsgId) {
+  case WM_INIT_DIALOG:
+    FRAMEWIN_SetFont(hWin, &GUI_FontComic18B_ASCII);
+    WM_SetHasTrans(hWin);
+    WM_SetCallback(hWin, _cbFrame);
+    hItem = WM_GetClientWindow(hWin);
+    WM_SetHasTrans(hItem);
+    WM_SetCallback(hItem, _cbClient);
+    hItem = WM_GetDialogItem(hWin, GUI_ID_TEXT0);
+    TEXT_SetFont(hItem, &GUI_FontComic18B_ASCII);
+    hItem = WM_GetDialogItem(hWin, GUI_ID_TEXT1);
+    TEXT_SetFont(hItem, &GUI_FontComic18B_ASCII);
+    hItem = WM_GetDialogItem(hWin, GUI_ID_SLIDER0);
+    SLIDER_SetRange(hItem, 0, TRANSPARENCY);
+    SLIDER_SetValue(hItem, _Alpha_0);
+    hItem = WM_GetDialogItem(hWin, GUI_ID_SLIDER1);
+    SLIDER_SetRange(hItem, 0, TRANSPARENCY);
+    SLIDER_SetValue(hItem, _Alpha_1);
+    return;
+  }
 }
 
 /*********************************************************************
@@ -6888,40 +6992,27 @@ static void _cbFrame(WM_MESSAGE * pMsg) {
 *       _TransparentDialog
 */
 static void _TransparentDialog(void) {
-  WM_HWIN hFrame, hClient, hSlider0, hSlider1;
-  int xSize, TimeNow, TimeNext, TimeStart, TimeUsed, Value;
-  const GUI_FONT GUI_UNI_PTR * pFontOld;
-  WM_CALLBACK * pCbOld;
+  WM_CALLBACK * pcbOld;
+  WM_HWIN       hSlider0;
+  WM_HWIN       hSlider1;
+  WM_HWIN       hFrame;
+  int           TimeStart;
+  int           TimeNext;
+  int           TimeUsed;
+  int           TimeNow;
+  int           Value;
+  int           xSize;
 
   xSize = LCD_GetXSize();
   //
-  // Set default properties
+  // Set the desktop window to display a moving bitmap.
   //
-  FRAMEWIN_SetDefaultFont(&GUI_FontComic18B_ASCII);
-  FRAMEWIN_SetDefaultTextAlign(GUI_TA_CENTER);
-  FRAMEWIN_SetDefaultBarColor(0, GUI_MAGENTA);
-  FRAMEWIN_SetDefaultBarColor(1, GUI_MAGENTA);
-  pFontOld = TEXT_GetDefaultFont();
-  TEXT_SetDefaultFont(&GUI_FontComic18B_ASCII);
-  TEXT_SetDefaultTextColor(GUI_BLUE);
-  //
-  // Create window with moving map
-  //
-  pCbOld = WM_SetCallback(WM_HBKWIN, _cbWin);
+  pcbOld = WM_SetCallback(WM_HBKWIN, _cbBk);
   WM_SendMessageNoPara(WM_HBKWIN, APP_INIT);
   //
   // Create dialog
   //
-  hFrame = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), 0, 0, (xSize - 220) / 2, 55);
-  WM_SetHasTrans(hFrame);           // Set transparency
-  WM_SetCallback(hFrame, _cbFrame); // Overwrite callback
-  //
-  // Set client attributes
-  //
-  hClient    = WM_GetClientWindow(hFrame);         // Get handle of client window
-  WM_SetHasTrans(hClient);                         // Set transparency
-  _pcbClient = WM_SetCallback(hClient, _cbClient); // Overwrite callback
-  WM_SendMessageNoPara(hClient, WM_INIT_DIALOG);   // Send WM_INIT_DIALOG
+  hFrame = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, (xSize - FRAMEWIN_XSIZE) / 2, 55);
   //
   // Get slider handles
   //
@@ -6930,10 +7021,10 @@ static void _TransparentDialog(void) {
   //
   // Loop
   //
-  TimeStart= GUIDEMO_GetTime();
-  TimeNext = TimeStart + PERIOD;
+  TimeStart = GUIDEMO_GetTime();
+  TimeNext  = TimeStart + PERIOD;
   do {
-    GUI_Delay(1);
+    GUI_Delay(20);
     TimeNow  = GUIDEMO_GetTime();
     TimeUsed = TimeNow - TimeStart;
     if (TimeNow >= TimeNext) {
@@ -6941,28 +7032,21 @@ static void _TransparentDialog(void) {
       WM_SendMessageNoPara(WM_HBKWIN, APP_TIMER);
       TimeUsed = TimeUsed % (DURATION / 2);
       if (TimeUsed < (DURATION / 4)) {
-        Value = (TimeUsed * 255 * 4) / DURATION;
+        Value = (TimeUsed * TRANSPARENCY * 4) / DURATION;
       } else {
-        Value = 255 - ((TimeUsed - (DURATION / 4)) * 255 * 4) / DURATION;
+        Value = TRANSPARENCY - ((TimeUsed - (DURATION / 4)) * TRANSPARENCY * 4) / DURATION;
       }
       SLIDER_SetValue(hSlider0, Value);
-      SLIDER_SetValue(hSlider1, 255 - Value);
+      SLIDER_SetValue(hSlider1, TRANSPARENCY - Value);
     }
   } while (((GUIDEMO_GetTime() - TimeStart) < DURATION) && (GUIDEMO_CheckCancel() == 0));
   //
   // Free memory
   //
   WM_DeleteWindow(hFrame);
-  //
-  // Set default values
-  //
-  FRAMEWIN_SetDefaultFont(&GUI_Font8_1);
-  FRAMEWIN_SetDefaultTextAlign(GUI_TA_LEFT);
-  FRAMEWIN_SetDefaultBarColor(0, 0x404040);
-  FRAMEWIN_SetDefaultBarColor(1, GUI_BLUE);
-  TEXT_SetDefaultFont(pFontOld);
-  TEXT_SetDefaultTextColor(GUI_BLACK);
-  WM_SetCallback(WM_HBKWIN, pCbOld);
+  if (pcbOld) {
+    WM_SetCallback(WM_HBKWIN, pcbOld);
+  }
 }
 
 /*********************************************************************
@@ -6976,17 +7060,15 @@ static void _TransparentDialog(void) {
 *       GUIDEMO_TransparentDialog
 */
 void GUIDEMO_TransparentDialog(void) {
-  GUIDEMO_ShowIntro("Transparent dialog",
-                    "Uses alpha blending\n"
-                    "for transparency effect");
-  GUIDEMO_HideInfoWin();
+  GUIDEMO_ConfigureDemo("Transparent dialog", "Uses alpha blending\nfor transparency effect.", GUIDEMO_SHOW_CURSOR | GUIDEMO_SHOW_CONTROL);
   _TransparentDialog();
 }
 
 #else
 
-void GUIDEMO_TransparentDialog(void) {}
+void GUIDEMO_TransparentDialog_C(void);
+void GUIDEMO_TransparentDialog_C(void) {}
 
-#endif
+#endif  // SHOW_GUIDEMO_TRANSPARENTDIALOG && GUI_WINSUPPORT && GUI_SUPPORT_MEMDEV
 
 /*************************** End of file ****************************/

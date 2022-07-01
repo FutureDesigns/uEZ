@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : LCD_SIM.h
 Purpose     : Declares LCD interface functions
 ----------------------------------------------------------------------
@@ -32,6 +43,11 @@ Purpose     : Declares LCD interface functions
 
 #ifndef LCDSIM_H
 #define LCDSIM_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include "LCD.h"
 
@@ -53,7 +69,6 @@ Purpose     : Declares LCD interface functions
 *
 *************************************************************
 */
-
 void  LCDSIM_PreInit(void);
 char* LCDSIM_Init(void);
 void  LCDSIM_Exit(void);
@@ -72,7 +87,6 @@ void  LCDSIM_SetRGBOrder(unsigned RGBOrder);
 *
 *************************************************************
 */
-
 void LCDSIM_FillRect(int x0, int y0, int x1, int y1, int Index, int LayerIndex);
 int  LCDSIM_GetModifyCnt(int LayerIndex);
 int  LCDSIM_GetModifyCntInfo(int LayerIndex);
@@ -99,6 +113,7 @@ void LCDSIM_SetChroma(int LayerIndex, LCD_COLOR ChromaMin, LCD_COLOR ChromaMax);
 void LCDSIM_SetCompositeColor(U32 Color);
 void LCDSIM_SetCompositeSize(int xSize, int ySize);
 void LCDSIM_CopyBuffer(int LayerIndex, int IndexSrc, int IndexDst);
+void LCDSIM_Invalidate(int LayerIndex);
 
 /********************************************************************
 *
@@ -122,6 +137,7 @@ void SIM_GUI_SetTransMode(int LayerIndex, int TransMode);
 void SIM_GUI_SetChroma(int LayerIndex, unsigned long ChromaMin, unsigned long ChromaMax);
 void SIM_GUI_UseCustomBitmaps(void);
 void SIM_GUI_SetAccellerator(int Accellerator);
+void SIM_GUI_SetMainScreenOffset(int x, int y);
 
 /********************************************************************
 *
@@ -143,7 +159,6 @@ int  SIM_GUI_GetTime(void);
 int  SIM_GUI_GetKey(void);
 int  SIM_GUI_WaitKey(void);
 void SIM_GUI_StoreKey(int);
-
 
 /********************************************************************
 *
@@ -188,6 +203,10 @@ unsigned long SIM_GUI_GetTaskID(void);
 void SIM_GUI_Lock(void);
 void SIM_GUI_Unlock(void);
 void SIM_GUI_InitOS(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LCD_H */
 

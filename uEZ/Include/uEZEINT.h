@@ -29,13 +29,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -102,7 +102,18 @@ T_uezError UEZEINTReset(T_uezDevice aDevice, TUInt32 aChannel);
 T_uezError UEZEINTClear(T_uezDevice aDevice, TUInt32 aChannel);
 
 /**
- *	Enables an EINT channel
+ *  Enables an EINT channel
+ *
+ *  @param[in]  aDevice     Device handle of the EINT
+ *  @param[in]  aDevice     Device handle of the EINT
+ *  @param[in]  aChannel    Channel Number
+ *
+ *  @return T_uezError
+ */
+T_uezError UEZEINTEnable(T_uezDevice aDevice, TUInt32 aChannel);
+
+/**
+ *	Disables an EINT channel
  *
  *	@param[in]	aDevice		Device handle of the EINT
  *	@param[in]	aDevice		Device handle of the EINT

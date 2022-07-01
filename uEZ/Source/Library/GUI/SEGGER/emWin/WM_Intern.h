@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : WM_Intern.h
 Purpose     : Windows manager internal include
@@ -112,6 +123,7 @@ extern WM_HWIN        WM__ahWinFocus[GUI_NUM_LAYERS];
 extern char           WM__CaptureReleaseAuto;
 extern WM_tfPollPID * WM_pfPollPID;
 extern U8             WM__PaintCallbackCnt;      /* Public for assertions only */
+extern WM_HWIN        WM__hCreateStatic;
 
 #if WM_SUPPORT_TRANSPARENCY
   extern int     WM__TransWindowCnt;
@@ -124,6 +136,7 @@ extern U8             WM__PaintCallbackCnt;      /* Public for assertions only *
 
 extern WM_CRITICAL_HANDLE     WM__aCHWinModal[GUI_NUM_LAYERS];
 extern WM_CRITICAL_HANDLE     WM__aCHWinLast[GUI_NUM_LAYERS];
+extern int                    WM__ModalLayer;
 
 #if GUI_SUPPORT_MOUSE
   extern WM_CRITICAL_HANDLE   WM__aCHWinMouseOver[GUI_NUM_LAYERS];
@@ -194,7 +207,6 @@ void    WM__MoveWindow              (WM_HWIN hWin, int dx, int dy);
 void    WM__NotifyVisChanged        (WM_HWIN hWin, GUI_RECT * pRect);
 int     WM__RectIsNZ                (const GUI_RECT * pr);
 void    WM__RemoveWindowFromList    (WM_HWIN hWin);
-void    WM__RemoveFromLinList       (WM_HWIN hWin);
 void    WM__Screen2Client           (const WM_Obj * pWin, GUI_RECT * pRect);
 void    WM__SelectTopLevelLayer     (WM_HWIN  hWin);
 void    WM__SendMsgNoData           (WM_HWIN hWin, U8 MsgId);
@@ -229,9 +241,9 @@ void    WM__SetLastTouched          (WM_HWIN hWin);
   } EFFECT_CONTEXT;
 
   int  GUI_MEMDEV__CalcParaFadeIn    (int Period, int TimeUsed);
-  void GUI_MEMDEV__ChangeBK          (EFFECT_CONTEXT * pContext);
+  void GUI_MEMDEV__ClipBK            (EFFECT_CONTEXT * pContext);
   void GUI_MEMDEV__RemoveStaticDevice(WM_HWIN hWin);
-  void GUI_MEMDEV__UndoBK            (EFFECT_CONTEXT * pContext);
+  void GUI_MEMDEV__UndoClipBK        (EFFECT_CONTEXT * pContext);
 #endif
 
 void WM__InvalidateParent(const GUI_RECT * pInvalidRect, WM_HWIN hParent, WM_HWIN hStop);

@@ -10,12 +10,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -201,7 +201,7 @@ T_uezError TS_HX8526A_Configure(T_uezDeviceWorkspace *aW)
 
     UEZTaskDelay(20);
     UEZGPIOConfigureInterruptCallback(
-            UEZ_GPIO_PORT_FROM_PORT_PIN(p->iInteruptPin),
+            p->iInteruptPin,
             TS_HX8526A_InterruptISR,
             p);
     

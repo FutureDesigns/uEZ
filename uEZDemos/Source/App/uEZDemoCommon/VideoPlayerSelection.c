@@ -76,7 +76,7 @@ static void VideoPlayerSelectScreen(T_uezDevice lcd);
 static void VideoPlayerSelectAction(const T_choice *aChoice)
 {
     VideoPlayer(aChoice);
-    
+
     VideoPlayerSelectScreen(G_ws->iLCD);
     VideoPlayerSelectChoices();
     VideoPlayerSelectDraw();
@@ -86,7 +86,7 @@ static void VideoPlayerSelectScrollUp(const T_choice *aChoice)
 {
     if(G_topFileIndex > 0) {
         G_topFileIndex--;
-        
+
         VideoPlayerSelectChoices();
         VideoPlayerSelectDraw();
     }
@@ -96,7 +96,7 @@ static void VideoPlayerSelectScrollDown(const T_choice *aChoice)
 {
     if((G_topFileIndex+5) < G_ws->iNumVideos) {
         G_topFileIndex++;
-        
+
         VideoPlayerSelectChoices();
         VideoPlayerSelectDraw();
     }
@@ -148,7 +148,7 @@ static void VideoPlayerSelectOptionDraw(const T_choice *p_choice)
         p_choice->iText,
         rtext.iLeft,
         rtext.iTop);
-	
+
 }
 
 static void VideoPlayerSelectChoices(void)
@@ -162,32 +162,32 @@ static void VideoPlayerSelectChoices(void)
     int i = 0;
     T_choice *p = G_ws->iChoices;
     int count = 0;
-    
+
     r.iLeft = 0;
     r.iTop = 0;
     r.iRight = G_win.xvsize;
     r.iBottom = G_win.yvsize;
-    
+
     swim_set_font(&G_win, &APP_DEMO_DEFAULT_FONT);
     fontHeight = swim_get_font_height(&G_win);
-    
+
     RegionShrink(&r, 5);
-    
+
     RegionSplitFromBottom(&r, &rbottom, 4+fontHeight+2+EXIT_BUTTON_HEIGHT, 2);
     rlist = r;
-    
+
     G_ws->iChoiceBox = rlist;
     RegionShrink(&rlist, 2);
-    
+
     lineHeight = fontHeight+4;
     if (lineHeight < VIDEO_ICON_HEIGHT+4)
         lineHeight = VIDEO_ICON_HEIGHT+4;
-    
+
     for (i=G_topFileIndex; i<MAX_VIDEOS; i++, p++) {
 
         if (i>=G_ws->iNumVideos)
             break;
-      
+
         // Stop if there is not enough room for another line
         if ((1+rlist.iBottom - rlist.iTop)<(lineHeight+1))
             break;
@@ -209,14 +209,14 @@ static void VideoPlayerSelectChoices(void)
 
         count++;
     }
-    
+
     /*
     // Added to make sure window goes to the bottom even if list is too small
     while ((1+rlist.iBottom - rlist.iTop)>=(lineHeight+1)) {
         RegionSplitFromTop(&rlist, &rline, lineHeight, 1);
     }
     */
-    
+
     // Now add the back button
     RegionShrink(&rbottom, 1);
     p->iLeft = rbottom.iLeft;
@@ -229,7 +229,7 @@ static void VideoPlayerSelectChoices(void)
     p->iData = 0;
     p->iDraw = 0; // Use default
     p++;
-	
+
 	// Now add the up button (but only if needed)
     if (count < G_ws->iNumVideos) {
         // Need to be able to scroll
@@ -245,7 +245,7 @@ static void VideoPlayerSelectChoices(void)
         p->iDraw = 0;
         p++;
     }
-	
+
 	// Now add the down button
     if (count < G_ws->iNumVideos) {
         RegionShrink(&rbottom, 1);
@@ -260,7 +260,7 @@ static void VideoPlayerSelectChoices(void)
         p->iDraw = 0;
         p++;
     }
-    
+
     // Next entry is the end of choices marker
     p->iText = 0; // end of list marker*/
 }
@@ -268,7 +268,11 @@ static void VideoPlayerSelectChoices(void)
 static void VideoPlayerSelectDraw(void)
 {
     static const char *noFiles = "< No audio files found >";
+#if(UEZ_PROCESSOR != NXP_LPC4357)
 	static const char *noDrive = "< No SD card found >";
+#else
+	static const char *noDrive = "< No drive found >";
+#endif
     const char *p_msg = noFiles;
     TUInt32 width;
     TUInt16 fontHeight;
@@ -280,7 +284,7 @@ static void VideoPlayerSelectDraw(void)
     swim_set_pen_color(&G_win, YELLOW);
     swim_set_fill_color(&G_win, BLACK);
 
-    swim_put_box(&G_win, 
+    swim_put_box(&G_win,
           G_ws->iChoiceBox.iLeft,
           G_ws->iChoiceBox.iTop,
           G_ws->iChoiceBox.iRight,
@@ -292,7 +296,7 @@ static void VideoPlayerSelectDraw(void)
             p_msg = noDrive;
         else if (G_ws->iDriveError == UEZ_ERROR_NOT_FOUND)
             p_msg = noFiles;
-        
+
         width = swim_get_text_line_width(&G_win, p_msg);
         RegionCenterLeftRight(&G_ws->iChoiceBox, &r1, width);
         RegionCenterTopBottom(&r1, &r2, fontHeight);
@@ -317,7 +321,7 @@ static void VideoPlayerSelectScreen(T_uezDevice lcd)
     SUIHidePage0();
 
     UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-	
+
     swim_window_open(
         &G_win,
         DISPLAY_WIDTH,
@@ -331,12 +335,12 @@ static void VideoPlayerSelectScreen(T_uezDevice lcd)
         YELLOW,
         RGB(0, 0, 0),
         RED);
-		
+
     swim_set_font(&G_win, &APP_DEMO_DEFAULT_FONT);
     swim_set_title(&G_win, "uEZ(tm) Video Player", BLUE);
     swim_set_pen_color(&G_win, YELLOW);
     swim_set_font(&G_win, &font_winfreesys14x16);
-    
+
     SUIShowPage0();
 }
 
@@ -349,73 +353,73 @@ T_uezError AudioPlayerSelectionLoad(TUInt32 aDrive)
     char filename[40];
     char type[20];
     TUInt8 i=0;
-    T_uezError error = UEZ_ERROR_NONE;
+    T_uezError error = UEZ_ERROR_NOT_READY;
 
     G_topFileIndex = 0;
     G_ws->iNumVideos = 0;
-    
+
     sprintf(filename, "%d:/VIDEOS.INI" , aDrive);
     if(UEZINIOpen(filename, &ini) == UEZ_ERROR_NONE){
 
         for(i=0; i<MAX_VIDEOS; i++) {
             error = UEZINIGotoSection(ini, "Videos");
-            
+
             if(!error) {
                 sprintf(key, "video%d", i+1);
                 if(UEZINIGetString(ini, key, "", section, 63) != UEZ_ERROR_NONE)
                     break; // Reached the end of the video list
             }
-            
+
             if(!error)
                 error = UEZINIGotoSection(ini, section);
-            
+
             if(!error)
                 error = UEZINIGetString(ini, "title", "", G_ws->iVideos[i].iTitle, 63);
-            
+
             if(!error) {
                 error = UEZINIGetString(ini, "type", "", type, 19);
-                
+
                 if(strcmp("BIN",type) == 0) {
                     G_ws->iVideos[i].iType = VIDEO_TYPE_BIN;
                 } else {
                     G_ws->iVideos[i].iType = VIDEO_TYPE_FRAMES;
                 }
             }
-            
+
             if(!error) {
                 if(UEZ_LCD_DEFAULT_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_I15_BIT)
                     error = UEZINIGetString(ini, "video555", "", G_ws->iVideos[i].iVideoPath, 127);
                 else
                     error = UEZINIGetString(ini, "video565", "", G_ws->iVideos[i].iVideoPath, 127);
             }
-            
+
             if(!error)
                 error = UEZINIGetString(ini, "audio", "", G_ws->iVideos[i].iAudioPath, 127);
-            
+
             if(!error)
                 error = UEZINIGetInteger32(ini, "fps", 10, (TInt32*)&G_ws->iVideos[i].iFPS);
-            
+
             if(!error)
                 error = UEZINIGetInteger32(ini, "height", 10, (TInt32*)&G_ws->iVideos[i].iVideoHeight);
-            
+
             if(!error)
                 error = UEZINIGetInteger32(ini, "width", 10, (TInt32*)&G_ws->iVideos[i].iVideoWidth);
-            
+
             // Check for text lines. Ignore error.
             UEZINIGetString(ini, "TextLine1", "", G_ws->iVideos[i].iTextLine1, 127);
             UEZINIGetString(ini, "TextLine2", "", G_ws->iVideos[i].iTextLine2, 127);
-            
+
             if(error != UEZ_ERROR_NONE)
                 break;
-            
+
             G_ws->iNumVideos++;
         }
-        
+        error = UEZ_ERROR_NONE;
         UEZINIClose(ini);
     }
     return error;
 }
-  
+
 /*---------------------------------------------------------------------------*
  * Routine:  VideoPlayerSelect
  *---------------------------------------------------------------------------*
@@ -435,7 +439,7 @@ void VideoPlayerSelection(const T_choice *aChoice)
 #if ENABLE_UEZ_BUTTON
     T_uezDevice keypadDevice;
 #endif
-    
+
     G_ws = UEZMemAlloc(sizeof(T_VideoPlayerSelectWorkspace));
     if (!G_ws)
         return;
@@ -454,12 +458,17 @@ void VideoPlayerSelection(const T_choice *aChoice)
                 G_ws->iLCD = lcd;
 
                 G_ws->iDriveError = AudioPlayerSelectionLoad(1);
+#if (UEZ_ENABLE_USB_HOST_STACK && (UEZ_USB_HOST_DRIVE_NUMBER == 0) && UEZ_PROCESSOR == NXP_LPC4357)
+                if(G_ws->iDriveError != UEZ_ERROR_NONE){
+                    G_ws->iDriveError = AudioPlayerSelectionLoad(0);
+                }
+#endif
                 VideoPlayerSelectScreen(lcd);
                 VideoPlayerSelectChoices();
                 VideoPlayerSelectDraw();
-                
+
                 // Sit here in a loop until we are done
-                while (!G_ws->iExit) 
+                while (!G_ws->iExit)
 				{
                     //Wait till we get a touchscreen event
                     if (UEZQueueReceive(queue, &inputEvent, UEZ_TIMEOUT_INFINITE)==UEZ_ERROR_NONE)
@@ -467,7 +476,7 @@ void VideoPlayerSelection(const T_choice *aChoice)
                         ChoicesUpdate(&G_win, G_ws->iChoices, queue, 500);
                     }
                 }
-                
+
                 UEZLCDClose(lcd);
             }
             UEZTSClose(ts, queue);

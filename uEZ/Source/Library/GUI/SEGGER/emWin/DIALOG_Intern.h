@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,11 +25,19 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : Dialog.h
 Purpose     : Dialog box include
-----------------------------------------------------------------------
-Open items:
-None
 --------------------END-OF-HEADER-------------------------------------
 */
 
@@ -40,9 +48,8 @@ None
 
 #if GUI_WINSUPPORT
 
-
 #if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+  extern "C" {        // Make sure we have C-declarations in C++ programs
 #endif
 
 /*********************************************************************
@@ -51,9 +58,8 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 **********************************************************************
 */
-
 typedef struct  GUI_WIDGET_CREATE_INFO_struct GUI_WIDGET_CREATE_INFO;
-typedef WM_HWIN GUI_WIDGET_CREATE_FUNC       (const GUI_WIDGET_CREATE_INFO * pCreate, WM_HWIN hWin, int x0, int y0, WM_CALLBACK * cb);
+typedef WM_HWIN GUI_WIDGET_CREATE_FUNC        (const GUI_WIDGET_CREATE_INFO * pCreate, WM_HWIN hWin, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -62,13 +68,16 @@ typedef WM_HWIN GUI_WIDGET_CREATE_FUNC       (const GUI_WIDGET_CREATE_INFO * pCr
 **********************************************************************
 */
 struct GUI_WIDGET_CREATE_INFO_struct {
-  GUI_WIDGET_CREATE_FUNC* pfCreateIndirect;
-  const char * pName;                    /* Text ... Not used on all widgets */
-  I16 Id;                                /* ID ... should be unique in a dialog */
-  I16 x0, y0, xSize, ySize;              /* Define position and size */
-  U16 Flags;                             /* Widget specific create flags (opt.) */
-  I32 Para;                              /* Widget specific parameter (opt.) */
-  U32 NumExtraBytes;                     /* Number of extra bytes usable with <WIDGET>_SetUserData & <WIDGET>_GetUserData */
+  GUI_WIDGET_CREATE_FUNC * pfCreateIndirect;
+  const char             * pName;            // Text ... Not used on all widgets
+  I16                      Id;               // ID ... should be unique in a dialog
+  I16                      x0;               // x position
+  I16                      y0;               // y position
+  I16                      xSize;            // x size
+  I16                      ySize;            // y size
+  U16                      Flags;            // Widget specific create flags (opt.)
+  I32                      Para;             // Widget specific parameter (opt.)
+  U32                      NumExtraBytes;    // Number of extra bytes usable with <WIDGET>_SetUserData & <WIDGET>_GetUserData
 };
 
 /*********************************************************************
@@ -77,20 +86,25 @@ struct GUI_WIDGET_CREATE_INFO_struct {
 *
 **********************************************************************
 */
-int     GUI_ExecDialogBox     (const GUI_WIDGET_CREATE_INFO * paWidget, int NumWidgets, WM_CALLBACK * cb, WM_HWIN hParent, int x0, int y0);
-int     GUI_ExecCreatedDialog (WM_HWIN hDialog);
-WM_HWIN GUI_CreateDialogBox   (const GUI_WIDGET_CREATE_INFO * paWidget, int NumWidgets, WM_CALLBACK * cb, WM_HWIN hParent, int x0, int y0);
-void    GUI_SetDialogStatusPtr(WM_HWIN hDialog, WM_DIALOG_STATUS * pDialogStatus); /* not to documented */
-WM_DIALOG_STATUS * GUI_GetDialogStatusPtr(WM_HWIN hDialog);                        /* not to documented */
-void    GUI_EndDialog(WM_HWIN hWin, int r);
-LCD_COLOR DIALOG_GetBkColor(void);                                                 /* obsolete */
-LCD_COLOR DIALOG_SetBkColor(LCD_COLOR BkColor);                                    /* obsolete */
+WM_HWIN            GUI_CreateDialogBox   (const GUI_WIDGET_CREATE_INFO * paWidget, int NumWidgets, WM_CALLBACK * cb, WM_HWIN hParent, int x0, int y0);
+void               GUI_EndDialog         (WM_HWIN hWin, int r);
+int                GUI_ExecDialogBox     (const GUI_WIDGET_CREATE_INFO * paWidget, int NumWidgets, WM_CALLBACK * cb, WM_HWIN hParent, int x0, int y0);
+int                GUI_ExecCreatedDialog (WM_HWIN hDialog);
+WM_DIALOG_STATUS * GUI_GetDialogStatusPtr(WM_HWIN hDialog);                                    // Not to be documented
+void               GUI_SetDialogStatusPtr(WM_HWIN hDialog, WM_DIALOG_STATUS * pDialogStatus);  // Not to be documented
+
+/*********************************************************************
+*
+*       Obsolete
+*/
+LCD_COLOR          DIALOG_GetBkColor(void);
+LCD_COLOR          DIALOG_SetBkColor(LCD_COLOR BkColor);
 
 #if defined(__cplusplus)
   }
 #endif
 
+#endif  // GUI_WINSUPPORT
+#endif  // DIALOG_INTERN_H
 
-#endif   /* GUI_WINSUPPORT */
-#endif
-
+/*************************** End of file ****************************/

@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <io.h>
 
-char G_imageTGA[1000000];
-char G_uncompressedTGA[1000000];
+char G_imageTGA[1500000];
+char G_uncompressedTGA[1500000];
 
-unsigned char G_memory[1000000];
+unsigned char G_memory[1500000];
 
 int G_VideoHeight;
 int G_VideoWidth;

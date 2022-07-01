@@ -1,7 +1,6 @@
-usb 228201270
-exec device = LPC1788
-speed 4000
-
+device LPC4088
+si JTAG
+speed 2000
 rx 200
 h
 w4 0x400FC1A0 0x20

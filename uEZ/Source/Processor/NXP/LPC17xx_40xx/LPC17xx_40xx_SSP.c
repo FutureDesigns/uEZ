@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -82,6 +82,7 @@ typedef struct {
     SPI_Request *iRequest;
     T_irqChannel iIRQChannel;
     TBool iIsBusy;
+    TUInt32 iLastRate;
 } T_LPC17xx_40xx_SSP_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -261,29 +262,34 @@ static void ISSPConfig(T_LPC17xx_40xx_SSP_Workspace *aW, SPI_Request *aRequest)
             aRequest->iCSGPIOBit);
 
 
-    // Make sure the SSP clock is PCLK/2
-    p->iCPSR = 2;
-    // Calculate the scr prescalar
-    scr = ((Fpclk/1000)/(p->iCPSR * aRequest->iRate));
-    // If too fast, run it down one more divider (this happenes when not
-    // exactly on the right divider)
-    while (((Fpclk/1000)/(p->iCPSR * scr)) > aRequest->iRate)
-        scr++;
-    // Final value of scr is one less
-    scr--;
-    
+    // Only configure the SSP if there is a change
+    if (aW->iLastRate != aRequest->iRate) {
+    	aW->iLastRate = aRequest->iRate;
 
-    p->iCR0 =
-    // Number of bits per transaction
-            (aRequest->iBitsPerTransfer - 1) |
-            // SPI interface only
-                    SSP_FRF_SPI |
-            // Clock out polarity
-                    (aRequest->iClockOutPolarity ? SSP_CPOL : 0)
-                    | (aRequest->iClockOutPhase ? SSP_CPHA : 0) | (scr << 8);
+		// Make sure the SSP clock is PCLK/2
+		p->iCPSR = 2;
+		// Calculate the scr prescalar
+		scr = ((Fpclk/1000)/(p->iCPSR * aRequest->iRate));
+		// If too fast, run it down one more divider (this happenes when not
+		// exactly on the right divider)
+		while (((Fpclk/1000)/(p->iCPSR * scr)) > aRequest->iRate)
+			scr++;
+		// Final value of scr is one less
+		if (scr > 0)
+			scr--;
 
-    // Enable the SSP
-    p->iCR1 = SSP_SSE;
+		p->iCR0 =
+		// Number of bits per transaction
+				(aRequest->iBitsPerTransfer - 1) |
+				// SPI interface only
+						SSP_FRF_SPI |
+				// Clock out polarity
+						(aRequest->iClockOutPolarity ? SSP_CPOL : 0)
+						| (aRequest->iClockOutPhase ? SSP_CPHA : 0) | (scr << 8);
+    }
+
+	// Enable the SSP
+	p->iCR1 = SSP_SSE;
 
     // Clear out the SSP buffer
     // First wait for any undone transfers
@@ -317,6 +323,7 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
     TUInt16 *p_dataMOSI16;
     TUInt16 *p_dataMISO16;
     TVUInt32 dummy;
+    int isToggling = aRequest->iFlags & SPI_REQUEST_TOGGLING_CS;
 
     // No interrupt processing
     InterruptDisable(aW->iIRQChannel);
@@ -328,7 +335,21 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
     ISSPStart(aRequest);
 
     // Are we transferring byte sized or word sized?
-    if (aRequest->iBitsPerTransfer <= 8) {
+    if (aRequest->iBitsPerTransfer == 1) {
+        // Optimized version for 1 byte
+        // Wait for SSP to be no longer busy and transmit to be empty
+        while ((p->iSR & SSP_BSY) || (!(p->iSR & SSP_TFE))) {
+            // TBD: Polling here instead of interrupt
+        }
+        p->iDR = (TUInt32)((aRequest->iDataMOSI)?*((TUInt8 *)aRequest->iDataMOSI):0xFF);
+        // Wait until SSP done  (transmit empty)
+        while ((p->iSR & SSP_BSY) || ((p->iSR & SSP_TFE) == 0)) {
+            // TBD: For polling this is fine, but we may need to yield at some point?
+        }
+        dummy = p->iDR;
+        if (aRequest->iDataMISO)
+            *((TUInt8 *)aRequest->iDataMISO) = dummy;
+    } else if (aRequest->iBitsPerTransfer <= 8) {
         // Doing bytes
         p_dataMOSI8 = (TUInt8 *)(aRequest->iDataMOSI);
         p_dataMISO8 = (TUInt8 *)(aRequest->iDataMISO);
@@ -339,9 +360,12 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
                 // TBD: Polling here instead of interrupt
             }
 
+            if (isToggling) {
+                ISSPStart(aRequest);
+            }
             if (p_dataMOSI8) {
                 // Send the SSP data (this also triggers a read in)
-                if ((i + 4) <= aRequest->iNumTransfers) {
+                if (((i + 4) <= aRequest->iNumTransfers) && (!isToggling)) {
                     // Do 4 at one time
                     p->iDR = (TUInt32)*(p_dataMOSI8++);
                     p->iDR = (TUInt32)*(p_dataMOSI8++);
@@ -352,7 +376,7 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
                 }
             } else {
                 // Send the SSP data (this also triggers a read in)
-                if ((i + 4) <= aRequest->iNumTransfers) {
+                if (((i + 4) <= aRequest->iNumTransfers) && (!isToggling)) {
                     // Do 4 at one time
                     p->iDR = (TUInt32)0xFF;
                     p->iDR = (TUInt32)0xFF;
@@ -371,7 +395,7 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
             // Store the SSP received over the data sent
             if (p_dataMISO8) {
                 // Store the SSP received over the data sent
-                if ((i + 4) <= aRequest->iNumTransfers) {
+                if (((i + 4) <= aRequest->iNumTransfers) && (!isToggling)) {
                     // Do 4 at one time
                     *(p_dataMISO8++) = p->iDR;
                     *(p_dataMISO8++) = p->iDR;
@@ -383,7 +407,7 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
                 }
             } else {
                 // Store the SSP received over the data sent
-                if ((i + 4) <= aRequest->iNumTransfers) {
+                if (((i + 4) <= aRequest->iNumTransfers) && (!isToggling)) {
                     // Do 4 at one time
                     dummy = p->iDR;
                     dummy = p->iDR;
@@ -393,6 +417,9 @@ T_uezError LPC17xx_40xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aReque
                 } else {
                     dummy = p->iDR;
                 }
+            }
+            if (isToggling) {
+                ISSPEnd(aRequest);
             }
         }
     } else {

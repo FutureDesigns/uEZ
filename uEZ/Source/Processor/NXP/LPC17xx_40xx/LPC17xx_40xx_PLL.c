@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -179,8 +179,24 @@ void LPC17xx_40xx_PLL_SetFrequencies(const T_LPC17xx_40xx_PLL_Frequencies *aFreq
     //               <4=> 5 CPU clocks (for CPU clock up to 100 MHz)
     //               <5=> 6 CPU clocks (for any CPU clock)
     // And turn on the Flash Accelerator functions
+#if 1
+    if(G_ProcessorFrequency < 20000000){
+        LPC_SC->FLASHCFG = (0<<12) | 0x3A;
+    } else if(G_ProcessorFrequency < 40000000){
+        LPC_SC->FLASHCFG = (1<<12) | 0x3A;
+    } else if(G_ProcessorFrequency < 60000000){
+        LPC_SC->FLASHCFG = (2<<12) | 0x3A;
+    } else if(G_ProcessorFrequency < 80000000){
+        LPC_SC->FLASHCFG = (3<<12) | 0x3A;
+    } else if(G_ProcessorFrequency <= 1200000000){ //Assumes power boost is left on
+        LPC_SC->FLASHCFG = (4<<12) | 0x3A;
+    } else {
+        LPC_SC->FLASHCFG = (5<<12) | 0x3A;
+    }
+#else
     LPC_SC->FLASHCFG = ((((G_ProcessorFrequency + 19999999) / 20000000) - 1)
             << 12) | 0x3A;
+#endif
 }
 
 /*-------------------------------------------------------------------------*

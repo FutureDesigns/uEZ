@@ -29,13 +29,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -48,16 +48,17 @@
 #include <Device/I2CBus.h>
 
 #ifdef __cplusplus
-extern “C” {
+extern "C" {
 #endif
 
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#define ADXL345_ADDR                 (0x3A>>1)    // 7 bit addr
+#define ADXL345_ADDR                (0x3A>>1)    // 7 bit address
+//#define ADXL345_ADDR                (0xA6>>1) // alternate address
 
 #ifndef ADXL345_SPEED
-#define ADXL345_SPEED                400     // kHz
+#define ADXL345_SPEED               400     // kHz
 #endif
 
 /*-------------------------------------------------------------------------*

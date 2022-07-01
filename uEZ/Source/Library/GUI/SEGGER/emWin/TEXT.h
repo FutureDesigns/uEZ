@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : TEXT.h
 Purpose     : TEXT include
@@ -116,16 +127,21 @@ void TEXT_Callback(WM_MESSAGE * pMsg);
 
 /* Methods changing properties */
 
-int  TEXT_GetNumLines (TEXT_Handle hObj);
-int  TEXT_GetText     (TEXT_Handle hObj, char * pDest, U32 BufferSize);
-int  TEXT_GetUserData (TEXT_Handle hObj, void * pDest, int NumBytes);
-void TEXT_SetBkColor  (TEXT_Handle hObj, GUI_COLOR Color); /* Obsolete. Left in GUI for compatibility to older versions */
-void TEXT_SetFont     (TEXT_Handle hObj, const GUI_FONT GUI_UNI_PTR * pFont);
-int  TEXT_SetText     (TEXT_Handle hObj, const char * s);
-void TEXT_SetTextAlign(TEXT_Handle hObj, int Align);
-void TEXT_SetTextColor(TEXT_Handle hObj, GUI_COLOR Color);
-int  TEXT_SetUserData (TEXT_Handle hObj, const void * pSrc, int NumBytes);
-void TEXT_SetWrapMode (TEXT_Handle hObj, GUI_WRAPMODE WrapMode);
+GUI_COLOR        TEXT_GetBkColor  (TEXT_Handle hObj); 
+const GUI_FONT * TEXT_GetFont     (TEXT_Handle hObj);
+int              TEXT_GetNumLines (TEXT_Handle hObj);
+int              TEXT_GetText     (TEXT_Handle hObj, char * pDest, U32 BufferSize);
+int              TEXT_GetTextAlign(TEXT_Handle hObj);
+GUI_COLOR        TEXT_GetTextColor(TEXT_Handle hObj);
+int              TEXT_GetUserData (TEXT_Handle hObj, void * pDest, int NumBytes);
+GUI_WRAPMODE     TEXT_GetWrapMode (TEXT_Handle hObj);
+void             TEXT_SetBkColor  (TEXT_Handle hObj, GUI_COLOR Color);
+void             TEXT_SetFont     (TEXT_Handle hObj, const GUI_FONT * pFont);
+int              TEXT_SetText     (TEXT_Handle hObj, const char * s);
+void             TEXT_SetTextAlign(TEXT_Handle hObj, int Align);
+void             TEXT_SetTextColor(TEXT_Handle hObj, GUI_COLOR Color);
+int              TEXT_SetUserData (TEXT_Handle hObj, const void * pSrc, int NumBytes);
+void             TEXT_SetWrapMode (TEXT_Handle hObj, GUI_WRAPMODE WrapMode);
 
 /*********************************************************************
 *
@@ -134,10 +150,12 @@ void TEXT_SetWrapMode (TEXT_Handle hObj, GUI_WRAPMODE WrapMode);
 **********************************************************************
 */
 
-void                         TEXT_SetDefaultFont     (const GUI_FONT GUI_UNI_PTR * pFont);
-const GUI_FONT GUI_UNI_PTR * TEXT_GetDefaultFont     (void);
-void                         TEXT_SetDefaultTextColor(GUI_COLOR Color);
-GUI_WRAPMODE                 TEXT_SetDefaultWrapMode (GUI_WRAPMODE WrapMode);
+const GUI_FONT * TEXT_GetDefaultFont     (void);
+GUI_COLOR        TEXT_GetDefaultTextColor(void);
+GUI_WRAPMODE     TEXT_GetDefaultWrapMode (void);
+void             TEXT_SetDefaultFont     (const GUI_FONT * pFont);
+void             TEXT_SetDefaultTextColor(GUI_COLOR Color);
+GUI_WRAPMODE     TEXT_SetDefaultWrapMode (GUI_WRAPMODE WrapMode);
 
 #if defined(__cplusplus)
   }

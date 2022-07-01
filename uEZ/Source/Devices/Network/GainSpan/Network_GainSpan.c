@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -46,7 +46,7 @@
 /*---------------------------------------------------------------------------*
  * Macros:
  *---------------------------------------------------------------------------*/
-#if 1
+#if 0 //Debugging turned of for performace
 #define dprintf printf
 #else
 #define dprintf(...)
@@ -55,16 +55,19 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-#define NETWORK_GAINSPAN_NUM_SOCKETS             NETWORK_GAINSPAN_MAX_NUM_SOCKETS
-#define NETWORK_GAINSPAN_LOCAL_PORT_START        0x8000
-#define NETWORK_GAINSPAN_LOCAL_PORT_END          0x9000
-#define APP_MAX_RECEIVED_DATA                    16000
+#define NETWORK_GAINSPAN_NUM_SOCKETS            NETWORK_GAINSPAN_MAX_NUM_SOCKETS
+#define NETWORK_GAINSPAN_LOCAL_PORT_START       0x8000
+#define NETWORK_GAINSPAN_LOCAL_PORT_END         0x9000
+#define APP_MAX_RECEIVED_DATA                   30000
+
+#define BULK_TRANSFER_ENABLED                   1
+#define MAX_DATA_TRANSFER_LEN                   1500//255
 
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
 typedef enum {
-    SOCKET_STATE_FREE, SOCKET_STATE_CREATED, SOCKET_STATE_LISTENING
+    SOCKET_STATE_FREE, SOCKET_STATE_CREATED, SOCKET_STATE_LISTENING, SOCKET_STATE_WAITING_WITH_DATA
 } T_GainSpanSocketState;
 
 typedef TUInt16 T_GainSpanSocketFlags;
@@ -103,16 +106,25 @@ typedef struct {
     T_GainSpan_CmdLib_SPISettings iSPISettings;
 
     uint8_t iReceived[APP_MAX_RECEIVED_DATA + 1];
+    unsigned int padding;
     unsigned int iReceivedCount;
 
     // Infrastructure settings
     T_uezNetworkSettings iInfrastructureSettings;
+
+    // If configured, then true, else false (if not configured, we block all commands)
+    bool iConfigured;
 } T_Network_GainSpan_Workspace;
 
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
 static T_Network_GainSpan_Workspace *G_GainSpan_Workspace;
+
+/*---------------------------------------------------------------------------*
+ * Prototypes:
+ *---------------------------------------------------------------------------*/
+static void INetwork_Gainspan_ParseReceived(T_Network_GainSpan_Workspace *p, uint8_t aCID);
 
 static T_uezError IConvertErrorCode(ATLIBGS_MSG_ID_E aGSError)
 {
@@ -191,6 +203,7 @@ T_uezError Network_GainSpan_InitializeWorkspace(void *aWorkspace)
     p->iJoinStatus = UEZ_NETWORK_JOIN_STATUS_IDLE;
     p->iScanStatus = UEZ_NETWORK_SCAN_STATUS_IDLE;
     p->iReceivedCount = 0;
+    p->iConfigured = false;
 
     return error;
 }
@@ -215,6 +228,7 @@ static T_uezError IStartup(
     char gateway[20];
     T_uezNetworkMACAddress nullMAC;
     char mac[30];
+    ATLIBGS_MSG_ID_E gsError;
 
     nullMAC.v4[0] = 0;
     nullMAC.v4[1] = 0;
@@ -223,39 +237,51 @@ static T_uezError IStartup(
     nullMAC.v4[4] = 0;
     nullMAC.v4[5] = 0;
 
-    AtLibGs_GetMAC(mac); // for debug
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
-    // Set the MAC address if its non-zero
-    if (memcmp(&p->iInfrastructureSettings.iMACAddress, &nullMAC, 6) != 0) {
-        AtLibGs_GetMAC2(mac); // for debug
-        sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X\n",
-            p->iInfrastructureSettings.iMACAddress.v4[0],
-            p->iInfrastructureSettings.iMACAddress.v4[1],
-            p->iInfrastructureSettings.iMACAddress.v4[2],
-            p->iInfrastructureSettings.iMACAddress.v4[3],
-            p->iInfrastructureSettings.iMACAddress.v4[4],
-            p->iInfrastructureSettings.iMACAddress.v4[5]);
-        AtLibGs_SetMAC(mac);
-        AtLibGs_SetMAC2(mac);
-    }
+    // Start with a full reset
+    AtLibGs_Reset();
 
-    // Only support infrastructure network types
-    if ((aSettings->iNetworkType == UEZ_NETWORK_TYPE_INFRASTRUCTURE)
-        || (aSettings->iNetworkType == UEZ_NETWORK_TYPE_ADHOC)
-        || (aSettings->iNetworkType == UEZ_NETWORK_TYPE_LIMITED_AP)) {
-        // Set the IP, Mask, and Gateway (when DHCP is not used)
-        sprintf(ip, "%d.%d.%d.%d", aSettings->iIPAddress.v4[0],
-            aSettings->iIPAddress.v4[1], aSettings->iIPAddress.v4[2],
-            aSettings->iIPAddress.v4[3]);
-        sprintf(mask, "%d.%d.%d.%d", aSettings->iSubnetMask.v4[0],
-            aSettings->iSubnetMask.v4[1], aSettings->iSubnetMask.v4[2],
-            aSettings->iSubnetMask.v4[3]);
-        sprintf(gateway, "%d.%d.%d.%d", aSettings->iGatewayAddress.v4[0],
-            aSettings->iGatewayAddress.v4[1], aSettings->iGatewayAddress.v4[2],
-            aSettings->iGatewayAddress.v4[3]);
-        AtLibGs_IPSet(ip, mask, gateway);
-    } else {
-        return UEZ_ERROR_INCORRECT_TYPE;
+    gsError = AtLibGs_GetMAC(mac); // for debug
+
+    if(gsError == ATLIBGS_MSG_ID_NONE){
+        // Set the MAC address if its non-zero
+        if (memcmp(&p->iInfrastructureSettings.iMACAddress, &nullMAC, 6) != 0) {
+            AtLibGs_GetMAC2(mac); // for debug
+            sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+                p->iInfrastructureSettings.iMACAddress.v4[0],
+                p->iInfrastructureSettings.iMACAddress.v4[1],
+                p->iInfrastructureSettings.iMACAddress.v4[2],
+                p->iInfrastructureSettings.iMACAddress.v4[3],
+                p->iInfrastructureSettings.iMACAddress.v4[4],
+                p->iInfrastructureSettings.iMACAddress.v4[5]);
+            AtLibGs_SetMAC(mac);
+            gsError = AtLibGs_SetMAC2(mac);
+            error = IConvertErrorCode(gsError);
+        }
+
+        // Only support infrastructure network types
+        if ((aSettings->iNetworkType == UEZ_NETWORK_TYPE_INFRASTRUCTURE)
+            || (aSettings->iNetworkType == UEZ_NETWORK_TYPE_ADHOC)
+            || (aSettings->iNetworkType == UEZ_NETWORK_TYPE_LIMITED_AP)) {
+            // Set the IP, Mask, and Gateway (when DHCP is not used)
+            sprintf(ip, "%d.%d.%d.%d", aSettings->iIPAddress.v4[0],
+                aSettings->iIPAddress.v4[1], aSettings->iIPAddress.v4[2],
+                aSettings->iIPAddress.v4[3]);
+            sprintf(mask, "%d.%d.%d.%d", aSettings->iSubnetMask.v4[0],
+                aSettings->iSubnetMask.v4[1], aSettings->iSubnetMask.v4[2],
+                aSettings->iSubnetMask.v4[3]);
+            sprintf(gateway, "%d.%d.%d.%d", aSettings->iGatewayAddress.v4[0],
+                aSettings->iGatewayAddress.v4[1], aSettings->iGatewayAddress.v4[2],
+                aSettings->iGatewayAddress.v4[3]);
+            gsError = AtLibGs_IPSet(ip, mask, gateway);
+            error = IConvertErrorCode(gsError);
+        } else {
+            return UEZ_ERROR_INCORRECT_TYPE;
+        }
+    } else{
+        error = IConvertErrorCode(gsError);
     }
 
     return error;
@@ -293,6 +319,9 @@ T_uezError Network_GainSpan_Open(void *aWorkspace)
 {
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
+
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
     p->iNumOpen++;
@@ -356,6 +385,9 @@ T_uezError Network_GainSpan_Scan(
 
     PARAM_NOT_USED(aCallback);PARAM_NOT_USED(aCallbackWorkspace);
 
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
+
     // Doing a scan is an exclusive command.  Nothing else can be
     // processing.
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
@@ -399,6 +431,9 @@ T_uezError Network_GainSpan_Join(
     T_uezError error = UEZ_ERROR_NONE;
     ATLIBGS_MSG_ID_E r;
     ATLIBGS_STATIONMODE_E mode;
+
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
     // Doing a join is an exclusive command.  Nothing else can be
     // processing.
@@ -510,6 +545,19 @@ void INetwork_GainSpan_Incoming(uint8_t aByte)
     if (p->iReceivedCount < APP_MAX_RECEIVED_DATA) {
 //printf(";");
         p->iReceived[p->iReceivedCount++] = aByte;
+    } else {
+//printf("OVERFLOW");
+    }
+}
+
+void INetwork_GainSpan_IncomingComplete(void)
+{
+    T_Network_GainSpan_Workspace *p = G_GainSpan_Workspace;
+
+    if (p->iReceivedCount > 0) {
+		dprintf("IncomingComplete: Received %d bytes!\n", p->iReceivedCount);
+        // Store the data in the right place
+        INetwork_Gainspan_ParseReceived(p, ATLIBGS_INVALID_CID);
     }
 }
 
@@ -523,11 +571,12 @@ void INetwork_GainSpan_Incoming(uint8_t aByte)
  * Inputs:
  *      void *aW                    -- Workspace
  *---------------------------------------------------------------------------*/
-void Network_GainSpan_Configure(
+T_uezError Network_GainSpan_Configure(
     void *aWorkspace,
     const T_GainSpan_Network_SPISettings *aSettings)
 {
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
+    T_uezError error;
 
     p->iSPISettings.iDataReadyIO = aSettings->iDataReadyIO;
     p->iSPISettings.iProgramMode = aSettings->iProgramMode;
@@ -537,9 +586,13 @@ void Network_GainSpan_Configure(
     p->iSPISettings.iSPIMode = aSettings->iSPIMode;
     p->iSPISettings.iSRSTn = aSettings->iSRSTn;
     p->iSPISettings.iIncomingDataFunc = INetwork_GainSpan_Incoming;
+    p->iSPISettings.iIncomingCompleteFunc = INetwork_GainSpan_IncomingComplete;
     G_GainSpan_Workspace = aWorkspace;
 
-    GainSpan_CmdLib_ConfigureForSPI(&p->iSPISettings);
+    error = GainSpan_CmdLib_ConfigureForSPI(&p->iSPISettings);
+	p->iConfigured = (error == UEZ_ERROR_NONE)?true:false;
+
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -601,30 +654,61 @@ static T_uezNetworkSocket ISocketCreate(
 {
     T_uezNetworkSocket i;
     T_uezNetworkSocket socket = 0; // none found yet
-    for (i = 1; i <= NETWORK_GAINSPAN_NUM_SOCKETS; i++) {
-        if (p->iSockets[i].iState == SOCKET_STATE_FREE) {
-            // We found a slot
-            // Can we get the socket from GainSpan?
-            if (aConnection) {
-                p->iSockets[i].iConnection = *aConnection;
-                p->iSockets[i].iCID = aConnection->cid;
-            } else {
-                p->iSockets[i].iConnection.cid = 0;
-                p->iSockets[i].iConnection.ip[0] = '\0';
-                p->iSockets[i].iConnection.port = 0;
-                p->iSockets[i].iConnection.server_cid = 0;
-            }
-            // Allocate this slot and report back this slot
-            p->iSockets[i].iState = SOCKET_STATE_CREATED;
-            p->iSockets[i].iType = aType;
-            p->iSockets[i].iFlags = 0;
+
+    // See if this CID is waiting already for a creator
+    for (i=1; i<=NETWORK_GAINSPAN_NUM_SOCKETS; i++) {
+        if (p->iSockets[i].iState == SOCKET_STATE_WAITING_WITH_DATA) {
+			//printf("Socket found with data waiting [%c/%d], has %d bytes remaining of %d bytes.\n", aConnection?aConnection->cid:'?', aConnection?aConnection->cid:'?', p->iSockets[i].iReceiveRemaining, p->iSockets[i].iReceiveLength);
+            // Found a socket waiting with data already
             socket = i;
-            // Either we got a socket or not.  Either way, stop here.
             break;
         }
     }
+    if (socket == 0) {
+        for (i = 1; i <= NETWORK_GAINSPAN_NUM_SOCKETS; i++) {
+            if (p->iSockets[i].iState == SOCKET_STATE_FREE) {
+                socket = i;
+                // Either we got a socket or not.  Either way, stop here.
+                break;
+            }
+        }
+    }
+    if (socket != 0) {
+        // We found a slot
+        // Can we get the socket from GainSpan?
+        if (aConnection) {
+            p->iSockets[i].iConnection = *aConnection;
+            p->iSockets[i].iCID = aConnection->cid;
+        } else {
+            p->iSockets[i].iConnection.cid = 0;
+            p->iSockets[i].iConnection.ip[0] = '\0';
+            p->iSockets[i].iConnection.port = 0;
+            p->iSockets[i].iConnection.server_cid = 0;
+        }
+        // Allocate this slot and report back this slot
+        p->iSockets[i].iState = SOCKET_STATE_CREATED;
+        p->iSockets[i].iType = aType;
+        p->iSockets[i].iFlags = 0;
+    }
     return socket;
 }
+
+static T_GainSpanSocket *ISocketCreateWaitingWithData(T_Network_GainSpan_Workspace *p)
+{
+    T_uezNetworkSocket i;
+
+    for (i = 1; i <= NETWORK_GAINSPAN_NUM_SOCKETS; i++) {
+        if (p->iSockets[i].iState == SOCKET_STATE_FREE) {
+            // We found a slot
+            // Allocate this slot and report back this slot
+            p->iSockets[i].iState = SOCKET_STATE_WAITING_WITH_DATA;
+            // Return the created socket
+            return p->iSockets + i;
+        }
+    }
+    return 0;
+}
+
 
 static void ISocketFree(T_Network_GainSpan_Workspace *p, T_uezNetworkSocket aSocket)
 {
@@ -661,6 +745,9 @@ T_uezError Network_GainSpan_SocketCreate(
     // Find a free socket slot
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
 
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
+
     // Only support TCP sockets currently
     if ((aType != UEZ_NETWORK_SOCKET_TYPE_TCP) && (aType
         != UEZ_NETWORK_SOCKET_TYPE_UDP))
@@ -686,6 +773,9 @@ T_uezError Network_GainSpan_SocketBind(
     T_GainSpanSocket *p_socket = p->iSockets + aSocket;
     ATLIBGS_MSG_ID_E r;
     PARAM_NOT_USED(aAddr);
+
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
     // Only valid sockets
     if ((aSocket == 0) || (aSocket > NETWORK_GAINSPAN_NUM_SOCKETS))
@@ -715,6 +805,9 @@ T_uezError Network_GainSpan_SocketConnect(
     char ipAddr[20];
     ATLIBGS_MSG_ID_E r = ATLIBGS_MSG_ID_NONE;
 
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
+
     // Only valid sockets
     if ((aSocket == 0) || (aSocket > NETWORK_GAINSPAN_NUM_SOCKETS))
         return UEZ_ERROR_HANDLE_INVALID;
@@ -730,6 +823,9 @@ T_uezError Network_GainSpan_SocketConnect(
 
         // Connect over TCP
         if (p_socket->iType == UEZ_NETWORK_SOCKET_TYPE_TCP) {
+#if BULK_TRANSFER_ENABLED
+            AtLibGs_BData(1);
+#endif
             r = AtLibGs_TCPClientStart(ipAddr, aPort, &p_socket->iCID);
         } else {
             // TODO: Need UDP
@@ -752,6 +848,9 @@ T_uezError Network_GainSpan_SocketListen(
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_UNKNOWN;
     T_GainSpanSocket *p_socket = p->iSockets + aSocket;
+
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
     // Only valid sockets
     if ((aSocket == 0) || (aSocket > NETWORK_GAINSPAN_NUM_SOCKETS))
@@ -782,6 +881,9 @@ T_uezError Network_GainSpan_SocketAccept(
     T_GainSpanSocket *p_socket = p->iSockets + aListenSocket;
     T_GainSpanSocket *p_newSocket;
     ATLIBGS_MSG_ID_E r = ATLIBGS_MSG_ID_NONE;
+
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
     // So far, we got nothing
     *aCreatedSocket = 0;
@@ -904,7 +1006,7 @@ T_uezError Network_GainSpan_SocketRead(
     T_GainSpanSocket *p_socket = p->iSockets + aSocket;
     TUInt16 numCopy;
     ATLIBGS_MSG_ID_E r;
-    ATLIBGS_TCPMessage msg;
+    static int lastCID = -1;
 
     // No bytes read yet
     *aNumBytesRead = 0;
@@ -921,6 +1023,10 @@ T_uezError Network_GainSpan_SocketRead(
     } else if (!AtLibGs_IsNodeAssociated()) {
         error = UEZ_ERROR_NOT_ACTIVE;
     } else {
+        if (p_socket->iCID != lastCID) {
+            dprintf("Reading from cid [%c], %d remain\n", p_socket->iCID, p_socket->iReceiveRemaining);
+            lastCID = p_socket->iCID;
+        }
         // Read segments of the incoming data while we need data
         while (aNumBytes) {
             // Do we have any data waiting to be read?
@@ -930,14 +1036,14 @@ T_uezError Network_GainSpan_SocketRead(
                     numCopy = (TUInt16)aNumBytes;
                 else
                     numCopy = p_socket->iReceiveRemaining;
-printf("N=%d ", numCopy);
+                dprintf("N=%d ", numCopy);
                 memcpy(aData, p_socket->iReceiveBuffer + p_socket->iReceiveLength
                     - p_socket->iReceiveRemaining, numCopy);
 
                 // Update counts and pointers
                 *aNumBytesRead += numCopy;
                 p_socket->iReceiveRemaining -= numCopy;
-printf("R=%d ", p_socket->iReceiveRemaining);
+                dprintf("R=%d ", p_socket->iReceiveRemaining);
                 aData = (void *)(((TUInt8 *)aData) + numCopy);
 
                 // Decrement the amount we are waiting on
@@ -947,27 +1053,31 @@ printf("R=%d ", p_socket->iReceiveRemaining);
             // If count goes to zero, then we need to release this pbuf
             // and go to the next.
             if ((p_socket->iReceiveRemaining == 0) && (aNumBytes)) {
-                r = AtLibGs_WaitForTCPMessage(aTimeout);
+            	int timeout = aTimeout;
+            	if (aTimeout == UEZ_TIMEOUT_INFINITE)
+            		timeout = 10; // 10 ms per poll
+            	if (timeout > 10)
+            		timeout = 10;
+
+                r = AtLibGs_WaitForTCPMessage(p_socket->iCID, timeout);
+
                 if (r == ATLIBGS_MSG_ID_DATA_RX) {
-                    // Parse the data in the receive buffer
-                    AtLibGs_ParseTCPData(p->iReceived, p->iReceivedCount, &msg);
-
-                    // Copy over the data to receive
-                    memcpy(p_socket->iReceiveBuffer, msg.message, msg.numBytes);
-                    p_socket->iReceiveLength = msg.numBytes;
-                    p_socket->iReceiveRemaining = msg.numBytes;
-printf("+%d\n", p_socket->iReceiveRemaining);
-
-                    printf("--RESET--\n");
-                    // Reset the bytes coming in for the next packet
-                    memset(p->iReceived, 0, sizeof(p->iReceived));
-                    p->iReceivedCount = 0;
+                    //NOT NEEDED ANYMORE
+                    //INetwork_Gainspan_ParseReceived(p, p_socket->iCID);
                 } else if (r == ATLIBGS_MSG_ID_RESPONSE_TIMEOUT) {
-                    // No data yet.  But stop here
-                    error = UEZ_ERROR_TIMEOUT;
-                    break;
+                	// Timeout from the attempt to read.  Keep going?
+                	if (aTimeout != UEZ_TIMEOUT_INFINITE)
+                		aTimeout -= timeout;
+
+                	// Out of attempts?  Then stop here
+                	if (aTimeout == 0) {
+						// No data yet.  But stop here
+						error = UEZ_ERROR_TIMEOUT;
+						break;
+                	}
                 } else {
                     // Got some type of error.  Assume we closed.
+					dprintf("Error while reading cid [%c]!\n", p_socket->iCID);                  
                     p_socket->iFlags &= ~SOCKET_FLAG_CONNECTED;
                     error = IConvertErrorCode(r);
                     break;
@@ -978,6 +1088,9 @@ printf("+%d\n", p_socket->iReceiveRemaining);
 
     UEZSemaphoreRelease(p->iSem);
 
+    if ((error != UEZ_ERROR_NONE) && (error != UEZ_ERROR_TIMEOUT)) {
+        dprintf("Read returning error %d\n", error);
+    }
     return error;
 }
 
@@ -1010,9 +1123,9 @@ T_uezError Network_GainSpan_SocketWrite(
         error = UEZ_ERROR_NOT_ACTIVE;
     } else {
         while (aNumBytes) {
-            // Send data up to a 255 bytes at a time
-            if (aNumBytes > 255)
-                numWrite = 255;
+            // Send data up to a MAX_DATA_TRANSFER_LEN bytes at a time
+            if (aNumBytes > MAX_DATA_TRANSFER_LEN)
+                numWrite = MAX_DATA_TRANSFER_LEN;
             else
                 numWrite = (TUInt16)aNumBytes;
 
@@ -1021,7 +1134,11 @@ T_uezError Network_GainSpan_SocketWrite(
 
             // Write out this segment (noting if there is data past this one)
             if (p_socket->iType == UEZ_NETWORK_SOCKET_TYPE_TCP) {
+#if BULK_TRANSFER_ENABLED
+                r = AtLibGs_SendTCPBulkData(p_socket->iCID, aData, numWrite);
+#else
                 r = AtLibGs_SendTCPData(p_socket->iCID, aData, numWrite);
+#endif
                 error = IConvertErrorCode(r);
             } else if (p_socket->iType == UEZ_NETWORK_SOCKET_TYPE_UDP) {
                 // TODO: UDP goes here
@@ -1048,6 +1165,9 @@ T_uezError Network_GainSpan_AuxControl(
 {
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
+
+    if (!p->iConfigured)
+    	return UEZ_ERROR_INCOMPLETE_CONFIGURATION;
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
 
@@ -1106,7 +1226,7 @@ T_uezError Network_GainSpan_ResolveAddress(
 
 
 
-void Network_GainSpan_Create(
+T_uezError Network_GainSpan_Create(
     const char *aName,
     const T_GainSpan_Network_SPISettings *aSettings)
 {
@@ -1133,7 +1253,7 @@ void Network_GainSpan_Create(
         UEZGPIOOutput(aSettings->iWIFIFactoryRestore);
     }
 
-    Network_GainSpan_Configure(p_wired, aSettings);
+    return Network_GainSpan_Configure(p_wired, aSettings);
 }
 
 T_uezError Network_GainSpan_InfrastructureConfigure(
@@ -1190,6 +1310,48 @@ T_uezError Network_GainSpan_GetConnectionInfo(void *aWorkspace,
 	return UEZ_ERROR_NOT_AVAILABLE;
 }
 
+static void INetwork_Gainspan_ParseReceived(T_Network_GainSpan_Workspace *p, uint8_t aCID)
+{
+    int s;
+    ATLIBGS_TCPMessage msg;
+
+    // Parse the data in the receive buffer
+    AtLibGs_ParseTCPData(p->iReceived, p->iReceivedCount, &msg);
+
+    dprintf("Receive [%c/%02X] data while watching [%c] stream\n", msg.cid, msg.cid, aCID);
+    // Find the socket
+    for (s=1; s<=NETWORK_GAINSPAN_NUM_SOCKETS; s++) {
+        T_GainSpanSocket *p_s = p->iSockets + s;
+        if (p_s->iCID == msg.cid) {
+            dprintf("Stuffing [%c] with %d bytes\n", msg.cid, msg.numBytes);
+            // Copy over the data to receive
+            memcpy(p_s->iReceiveBuffer, msg.message, msg.numBytes);
+            p_s->iReceiveLength = msg.numBytes;
+            p_s->iReceiveRemaining = msg.numBytes;
+            dprintf("+%d\n", p_s->iReceiveRemaining);
+            break;
+        }
+    }
+    if (s > NETWORK_GAINSPAN_NUM_SOCKETS) {
+        T_GainSpanSocket *p_s = ISocketCreateWaitingWithData(p);
+        if (p_s) {
+            dprintf("** Pre-stuffed data for [%c] with %d bytes\n", msg.cid, msg.numBytes);
+            // Copy the data into the receive buffer of this waiting connection.
+            // When the connection is really opened, the data will be waiting for it.
+            memcpy(p_s->iReceiveBuffer, msg.message, msg.numBytes);
+            p_s->iReceiveLength = msg.numBytes;
+            p_s->iReceiveRemaining = msg.numBytes;
+        } else {
+            dprintf("** Did not stuffing data for [%c]\n", msg.cid);
+        }
+    }
+
+
+    dprintf("--RESET--\n");
+    // Reset the bytes coming in for the next packet
+    memset(p->iReceived, 0, sizeof(p->iReceived));
+    p->iReceivedCount = 0;
+}
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/

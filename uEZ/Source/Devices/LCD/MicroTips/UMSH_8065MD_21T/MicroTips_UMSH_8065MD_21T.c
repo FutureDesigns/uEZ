@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -25,6 +25,7 @@
 #include <uEZDeviceTable.h>
 #include <string.h>
 #include <uEZGPIO.h>
+#include "uEZPlatform.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -94,7 +95,7 @@ static const T_LCDControllerSettings LCD_UMSH_8065MD_21T_params16bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
     LCD_CLOCK_RATE,
 };
 
@@ -127,7 +128,7 @@ static const T_LCDControllerSettings LCD_UMSH_8065MD_21T_paramsI15bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
     LCD_CLOCK_RATE,
 };
 
@@ -160,7 +161,7 @@ static const T_LCDControllerSettings LCD_UMSH_8065MD_21T_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
     LCD_CLOCK_RATE,
 };
 
@@ -237,7 +238,7 @@ extern const DEVICE_LCD LCD_MicroTips_UMSH_8065MD_21T_Interface;
 T_uezError LCD_UMSH_8065MD_21T_InitializeWorkspace_16Bit(void *aW)
 {
     T_UMSH_8065MD_21TWorkspace *p = (T_UMSH_8065MD_21TWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_UMSH_8065MD_21T_configuration_16Bit;
@@ -257,7 +258,7 @@ T_uezError LCD_UMSH_8065MD_21T_InitializeWorkspace_16Bit(void *aW)
 T_uezError LCD_UMSH_8065MD_21T_InitializeWorkspace_I15Bit(void *aW)
 {
     T_UMSH_8065MD_21TWorkspace *p = (T_UMSH_8065MD_21TWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_UMSH_8065MD_21T_configuration_I15Bit;
@@ -277,7 +278,7 @@ T_uezError LCD_UMSH_8065MD_21T_InitializeWorkspace_I15Bit(void *aW)
 T_uezError LCD_UMSH_8065MD_21T_InitializeWorkspace_8Bit(void *aW)
 {
     T_UMSH_8065MD_21TWorkspace *p = (T_UMSH_8065MD_21TWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_UMSH_8065MD_21T_configuration_8Bit;

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : WIDGET.h
 Purpose     : Widget interface
@@ -90,6 +101,7 @@ typedef struct {
 #define DROPDOWN_ID  0x44524f50UL /* DROP */
 #define EDIT_ID      0x45444954UL /* EDIT */
 #define FRAMEWIN_ID  0x4652414dUL /* FRAM */
+#define FRAMECLNT_ID 0x46524143UL /* FRAC */
 #define GRAPH_ID     0x47524150UL /* GRAP */
 #define HEADER_ID    0x48454144UL /* HEAD */
 #define LISTBOX_ID   0x4C495342UL /* LISB */
@@ -98,6 +110,7 @@ typedef struct {
 #define MENU_ID      0x4d454e55UL /* MENU */
 #define MULTIEDIT_ID 0x4d554c45UL /* MULE */
 #define MULTIPAGE_ID 0x4d554c50UL /* MULP */
+#define MPAGECLNT_ID 0x4d50434CUL /* MPCL */
 #define PROGBAR_ID   0x50524f47UL /* PROG */
 #define RADIO_ID     0x52414449UL /* RADI */
 #define SCROLLBAR_ID 0x5343524fUL /* SCRO */
@@ -107,6 +120,8 @@ typedef struct {
 #define ICONVIEW_ID  0x49434f4eUL /* ICON */
 #define IMAGE_ID     0x494d4147UL /* IMAG */
 #define SPINBOX_ID   0x5350494eUL /* SPIN */
+#define KNOB_ID      0x4b4e4f42UL /* KNOB */
+#define WINDOW_ID    0x57494e44UL /* WIND */
 
 #define WIDGET_LOCK(hWin)       ((WIDGET*)GUI_LOCK_H(hWin))
 
@@ -119,7 +134,7 @@ typedef struct {
   #define WIDGET_USE_PARENT_EFFECT 0
 #endif
 #ifndef   WIDGET_USE_FLEX_SKIN
-  #define WIDGET_USE_FLEX_SKIN     0
+  #define WIDGET_USE_FLEX_SKIN     1
 #endif
 #if !defined(WIDGET_USE_SCHEME_SMALL) && !defined(WIDGET_USE_SCHEME_MEDIUM) && !defined(WIDGET_USE_SCHEME_LARGE)
   #define WIDGET_USE_SCHEME_SMALL  1
@@ -226,6 +241,9 @@ typedef struct {
   const WIDGET_EFFECT* pEffect;
   I16 Id;
   U16 State;
+  #if GUI_DEBUG_LEVEL > 1
+    U32 DebugId;
+  #endif  
 } WIDGET;
 
 
@@ -307,7 +325,7 @@ void      WIDGET__GetInsideRect      (WIDGET * pWidget, GUI_RECT * pRect);
 void      WIDGET__Init               (WIDGET * pWidget, int Id, U16 State);
 void      WIDGET__RotateRect90       (WIDGET * pWidget, GUI_RECT * pDest, const GUI_RECT * pRect);
 void      WIDGET__SetScrollState     (WM_HWIN hWin, const WM_SCROLL_STATE * pVState, const WM_SCROLL_STATE * pState);
-void      WIDGET__FillStringInRect   (const char GUI_UNI_PTR * pText, const GUI_RECT * pFillRect, const GUI_RECT * pTextRectMax, const GUI_RECT * pTextRectAct);
+void      WIDGET__FillStringInRect   (const char * pText, const GUI_RECT * pFillRect, const GUI_RECT * pTextRectMax, const GUI_RECT * pTextRectAct);
 
 /*********************************************************************
 *

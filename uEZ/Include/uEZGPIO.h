@@ -51,13 +51,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -109,8 +109,9 @@ T_uezError UEZGPIODisableIRQ(
         T_uezGPIOPortPin aPortPin,
         T_gpioInterruptType aType);
 T_uezError UEZGPIOClearIRQ(T_uezGPIOPortPin aPortPin);
+//v2.08 Updating to support new MCU, changed Port to Port Pin
 T_uezError UEZGPIOConfigureInterruptCallback(
-        T_uezGPIOPort aPort,
+        T_uezGPIOPortPin aPortPin,
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace);
 T_uezError UEZGPIOControl(

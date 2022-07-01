@@ -13,12 +13,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -94,7 +94,7 @@ T_uezError LPC1768_DAC_Write(void *aWorkspace, TUInt32 aValue)
     }
 
     // Write modified value to the register.
-    DAC->DACR = aValue;
+    LPC_DAC->DACR = aValue;
 
     return UEZ_ERROR_NONE;
 }
@@ -135,7 +135,7 @@ T_uezError LPC1768_DAC_WriteMilliVolt(void *aWorkspace, TUInt32 aMilliVolts)
     }
 
     // Write modified value to the register.
-    DAC->DACR = aMilliVolts;
+    LPC_DAC->DACR = aMilliVolts;
 
     return UEZ_ERROR_NONE;
 }
@@ -154,7 +154,7 @@ T_uezError LPC1768_DAC_WriteMilliVolt(void *aWorkspace, TUInt32 aMilliVolts)
 T_uezError LPC1768_DAC_Read(void *aWorkspace, TUInt32 *aValue)
 {
     // Read value from DAC register, disable BIAS and reserved bits.
-    *aValue = (DAC->DACR & 0xFFC0) >> DADACR_VALUE_BIT;
+    *aValue = (LPC_DAC->DACR & 0xFFC0) >> DADACR_VALUE_BIT;
 
     return UEZ_ERROR_NONE;
 }
@@ -177,7 +177,7 @@ T_uezError LPC1768_DAC_ReadMilliVolt(void *aWorkspace, TUInt32 * aMilliVolts)
     T_LPC1768_DAC_Workspace *p = (T_LPC1768_DAC_Workspace *)aWorkspace;
 
     // Read value from DAC register, disable BIAS and reserved bits.
-    value = (DAC->DACR & 0xFFC0) >> DADACR_VALUE_BIT;
+    value = (LPC_DAC->DACR & 0xFFC0) >> DADACR_VALUE_BIT;
 
     // Convert value to millivolts.
     *aMilliVolts = (value * p->iVRef) / 1024;

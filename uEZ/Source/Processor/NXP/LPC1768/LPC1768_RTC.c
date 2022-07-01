@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -73,9 +73,9 @@ T_uezError LPC1768_RTC_Get(void *aWorkspace, T_uezTimeDate *aTimeDate)
     // changing.  If it just changes, then read again.  We don't
     // want to be caught reading between 11:59:59 and 0:00:00.
     do {
-        t = RTC->CTIME0;
-        d = RTC->CTIME1;
-    } while (t != RTC->CTIME0 || d != RTC->CTIME1);
+        t = LPC_RTC->CTIME0;
+        d = LPC_RTC->CTIME1;
+    } while (t != LPC_RTC->CTIME0 || d != LPC_RTC->CTIME1);
 
     // Now extract the consolidated registers into the structure
     // in a more useful form.
@@ -105,21 +105,21 @@ T_uezError LPC1768_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 //    T_LPC1768_RTC_Workspace *p = (T_LPC1768_RTC_Workspace *)aWorkspace;
 
     // Stop RTC (disable and reset)
-    RTC->CCR = 2;
+    LPC_RTC->CCR = 2;
 
     // Update RTC registers
-    RTC->SEC = aTimeDate->iTime.iSecond;
-    RTC->MIN = aTimeDate->iTime.iMinute;
-    RTC->HOUR = aTimeDate->iTime.iHour;
-    RTC->DOM = aTimeDate->iDate.iDay;
-    RTC->MONTH = aTimeDate->iDate.iMonth;
-    RTC->YEAR = aTimeDate->iDate.iYear;
+    LPC_RTC->SEC = aTimeDate->iTime.iSecond;
+    LPC_RTC->MIN = aTimeDate->iTime.iMinute;
+    LPC_RTC->HOUR = aTimeDate->iTime.iHour;
+    LPC_RTC->DOM = aTimeDate->iDate.iDay;
+    LPC_RTC->MONTH = aTimeDate->iDate.iMonth;
+    LPC_RTC->YEAR = aTimeDate->iDate.iYear;
 
     // Start RTC with external XTAL
-    RTC->CCR = 1;
+    LPC_RTC->CCR = 1;
 
     // Store our marker for validity (last general purpose register)
-    RTC->GPREG4 = RTC_VALID_MARKER;
+    LPC_RTC->GPREG4 = RTC_VALID_MARKER;
 
     return UEZ_ERROR_NONE;
 }
@@ -152,7 +152,7 @@ T_uezError LPC1768_RTC_Validate(
             || (time.iTime.iSecond >= 60) || (time.iDate.iMonth == 0)
             || (time.iDate.iMonth > 12) || (time.iDate.iDay == 0)
             || (time.iDate.iDay > 31) || (time.iDate.iYear > 9999) ||
-            (RTC->GPREG4 != RTC_VALID_MARKER))
+            (LPC_RTC->GPREG4 != RTC_VALID_MARKER))
         error = UEZ_ERROR_INVALID;
 
     if (error == UEZ_ERROR_INVALID) {

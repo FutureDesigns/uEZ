@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -27,6 +27,7 @@
 #include "Seiko_43WQW1T.h"
 #include <uEZGPIO.h>
 #include <string.h>
+#include "uEZPlatform.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -108,7 +109,7 @@ static const T_LCDControllerSettings LCD_43WQW1T_params16bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 9 MHz is datasheet typical value (Max 15 MHz)
 };
@@ -142,7 +143,7 @@ static T_LCDControllerSettings LCD_43WQW1T_paramsI15bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // RGB Color order
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 9 MHz is datasheet typical value (Max 15 MHz)
 };
@@ -176,7 +177,7 @@ static const T_LCDControllerSettings LCD_43WQW1T_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 9 MHz is datasheet typical value (Max 15 MHz)
 };
@@ -238,7 +239,7 @@ static void LCD_ConfigureSPI(T_43WQW1TWorkspace *p);
 T_uezError LCD_43WQW1T_InitializeWorkspace_16Bit(void *aW)
 {
     T_43WQW1TWorkspace *p = (T_43WQW1TWorkspace *)aW;
-    p->iBaseAddress = 0x80000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_43WQW1T_configuration_16Bit;
@@ -259,7 +260,7 @@ T_uezError LCD_43WQW1T_InitializeWorkspace_16Bit(void *aW)
 T_uezError LCD_43WQW1T_InitializeWorkspace_I15Bit(void *aW)
 {
     T_43WQW1TWorkspace *p = (T_43WQW1TWorkspace *)aW;
-    p->iBaseAddress = 0x80000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_43WQW1T_configuration_I15Bit;
@@ -280,7 +281,7 @@ T_uezError LCD_43WQW1T_InitializeWorkspace_I15Bit(void *aW)
 T_uezError LCD_43WQW1T_InitializeWorkspace_8Bit(void *aW)
 {
     T_43WQW1TWorkspace *p = (T_43WQW1TWorkspace *)aW;
-    p->iBaseAddress = 0x80000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_43WQW1T_configuration_8Bit;

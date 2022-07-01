@@ -1,28 +1,22 @@
 /*********************************************************************
-*                SEGGER MICROCONTROLLER SYSTEME GmbH                 *
+*                SEGGER MICROCONTROLLER GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2004  SEGGER Microcontroller Systeme GmbH        *
+*        (c) 2003-2013     SEGGER Microcontroller GmbH & Co KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
-
-***** emWin - Graphical user interface for embedded applications *****
-emWin is protected by international copyright laws.   Knowledge of the
-source code may not be used to write a similar product.  This file may
-only be used in accordance with a license and should not be re-
-distributed in any way. We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 File        : GUIDEMO_Graph.c
-Purpose     : Several GUIDEMO routines
+Purpose     : Demonstration of the GRAPH widget.
 ----------------------------------------------------------------------
 */
 
 #include "GUIDEMO.h"
 
-#if (SHOW_GUIDEMO_GRAPH && GUI_SUPPORT_MEMDEV)
+#if (SHOW_GUIDEMO_GRAPH && GUI_WINSUPPORT && GUI_SUPPORT_MEMDEV)
 
 /*********************************************************************
 *
@@ -30,38 +24,35 @@ Purpose     : Several GUIDEMO routines
 *
 **********************************************************************
 */
-#define MAX_GRAPH_SIZE_X 440
-#define MAX_GRAPH_SIZE_Y (MAX_GRAPH_SIZE_X * 11) / 20
+#define MAX_GRAPH_SIZE_X  440
+#define MAX_GRAPH_SIZE_Y  ((MAX_GRAPH_SIZE_X * 11) / 20)
 
-#define DIST_TO_BORDER   10
-#define DIST_TO_WIN      5
+#define DIST_TO_BORDER    10
+#define DIST_TO_WIN       5
 
-#define BORDER_TOP       0
-#define BORDER_BOTTOM    9
-#define BORDER_LEFT      19
-#define BORDER_RIGHT     0
+#define BORDER_TOP        0
+#define BORDER_BOTTOM     11
+#define BORDER_LEFT       19
+#define BORDER_RIGHT      0
 
-#define COLOR_BK         GUI_DARKGRAY
-#define COLOR_BORDER     BK_COLOR_1
-#define COLOR_FRAME      GUI_BLACK
-#define COLOR_GRID       GUI_GRAY
+#define COLOR_BK          GUI_DARKGRAY
+#define COLOR_BORDER      BK_COLOR_1
+#define COLOR_FRAME       GUI_BLACK
+#define COLOR_GRID        GUI_GRAY
 
-#define SCALE_H_HEIGHT   4
+#define SCALE_H_HEIGHT    4
 
-#define TICK_DIST_H      25
-#define TICK_DIST_V      20
+#define TICK_DIST_H       25
+#define TICK_DIST_V       20
 
-#define TIME_RUN         5000
-#define TIME_STEP        15
+#define TIME_RUN          5000
+#define TIME_STEP         15
 
-#define HEARTBEAT_TIME   1000
+#define MAX_NUM_DATA_OBJ  3
 
-#define MAX_NUM_DATA_OBJ 5
-
-#define GRAPH_DIV        9   // (2^9 = 512) If this value is changed _aWaves[] need to be changed too!
-#define GRID_DIST_X      25
-#define GRID_DIST_Y      10
-#define GRID_OFF_Y       25
+#define GRAPH_DIV         9   // (2^9 = 512) If this value is changed _aWaves[] need to be changed too!
+#define GRID_DIST_X       25
+#define GRID_DIST_Y       10
 
 /*********************************************************************
 *
@@ -70,7 +61,7 @@ Purpose     : Several GUIDEMO routines
 **********************************************************************
 */
 typedef struct {
-  char  * Name;
+  char  * pName;
   int     ScaleVOff;
   int     DataVOff;
   int     GridVOff;
@@ -89,15 +80,14 @@ static int _HeartBeat[] = {
 };
 
 static GUI_COLOR _aColorData[MAX_NUM_DATA_OBJ] = {
-  0x50C0FF,
-  0xFFC050,
-  0x50FFC0,
-  0x800000,
-  0x000080
+  GUI_MAKE_COLOR(0x50C0FF),
+  GUI_MAKE_COLOR(0xFFC050),
+  GUI_MAKE_COLOR(0x50FFC0),
 };
 
-GRAPH_SCALE_Handle _hScaleH, _hScaleV;
-static int         _DataAdjust;
+static GRAPH_SCALE_Handle _hScaleH;
+static GRAPH_SCALE_Handle _hScaleV;
+static int                _DataAdjust;
 
 /*********************************************************************
 *
@@ -112,7 +102,8 @@ static int         _DataAdjust;
 static void _AddData_Sine(GRAPH_DATA_Handle hData, int DataID) {
   static int x1000[MAX_NUM_DATA_OBJ];
   I32        SinHQ;
-  int        Multi, Step;
+  int        Multi;
+  int        Step;
 
   switch (DataID) {
   case 0:
@@ -132,7 +123,7 @@ static void _AddData_Sine(GRAPH_DATA_Handle hData, int DataID) {
   }
   SinHQ          = GUI__SinHQ(x1000[DataID]);
   x1000[DataID] += 1000 * Step;
-  GRAPH_DATA_YT_AddValue(hData, ((SinHQ * Multi) >> 16) + _DataAdjust);
+  GRAPH_DATA_YT_AddValue(hData, SHIFT_RIGHT_16(SinHQ * Multi) + _DataAdjust);
 }
 
 /*********************************************************************
@@ -167,8 +158,7 @@ GRAPH_WAVE _aWave[] = {
     23,
     _AddData_Sine,
     3
-  },
-  0
+  }
 };
 
 /*********************************************************************
@@ -176,9 +166,14 @@ GRAPH_WAVE _aWave[] = {
 *       _ShowGraph
 */
 static void _ShowGraph(GRAPH_Handle hGraph, GRAPH_DATA_Handle hData[], int DataCount, void (* pfAddData)(GRAPH_DATA_Handle hData, int DataID)) {
-  int Count, Data_xSize, xSize;
-  int TimeStart, TimeDiff, TimeStep;
-  int NextState, i, Flag;
+  int Data_xSize;
+  int NextState;
+  int TimeStart;
+  int TimeDiff;
+  int TimeStep;
+  int Count;
+  int xSize;
+  int i;
 
   xSize      = LCD_GetXSize();
   Data_xSize = xSize - (DIST_TO_BORDER << 1) - (BORDER_LEFT + BORDER_RIGHT);
@@ -203,18 +198,10 @@ static void _ShowGraph(GRAPH_Handle hGraph, GRAPH_DATA_Handle hData[], int DataC
   //
 
   TimeStart = GUIDEMO_GetTime();
-  Flag = 1;
   do {
     TimeDiff = GUIDEMO_GetTime() - TimeStart;
     for (i = 0; i < DataCount; i++) {
       pfAddData(hData[i], i);
-    }
-    if (Flag) {
-      Flag = 0;
-      GUI_Exec();
-      GRAPH_DetachScale(hGraph, _hScaleH);
-      GRAPH_DetachScale(hGraph, _hScaleV);
-      WM_ValidateWindow(hGraph);
     }
     NextState = GUIDEMO_CheckCancel();
     TimeStep  = GUIDEMO_GetTime() - TimeStart;
@@ -235,7 +222,7 @@ static void _ShowGraph(GRAPH_Handle hGraph, GRAPH_DATA_Handle hData[], int DataC
 static void _cbBk(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
   case WM_PAINT:
-    GUIDEMO_DrawBk(1);
+    GUIDEMO_DrawBk();
     break;
   default:
     WM_DefaultProc(pMsg);
@@ -248,11 +235,16 @@ static void _cbBk(WM_MESSAGE * pMsg) {
 */
 static void _GraphDemo(void) {
   const WIDGET_EFFECT * pEffectOld;
-  GRAPH_Handle          hGraph;
   GRAPH_DATA_Handle     hData[MAX_NUM_DATA_OBJ];
-  int                   xSize, ySize, i;
-  int                   Graph_xSize, Graph_ySize, Data_ySize;
-  int                   Graph_xPos, Graph_yPos;
+  GRAPH_Handle          hGraph;
+  unsigned              i;
+  int                   Graph_xSize;
+  int                   Graph_ySize;
+  int                   Graph_xPos;
+  int                   Graph_yPos;
+  int                   Data_ySize;
+  int                   xSize;
+  int                   ySize;
 
   xSize      = LCD_GetXSize();
   ySize      = LCD_GetYSize();
@@ -275,8 +267,8 @@ static void _GraphDemo(void) {
   //
   // Create and configure GRAPH_WIDGET
   //
-  Graph_xPos = (xSize - Graph_xSize) >> 1;
-  Graph_yPos = (ySize - Graph_ySize) >> 1;
+  Graph_xPos = (xSize - Graph_xSize) / 2;
+  Graph_yPos = (ySize - Graph_ySize) / 2;
   if (Graph_yPos < INFO_SIZE_Y + DIST_TO_WIN) {
     Graph_yPos = INFO_SIZE_Y + DIST_TO_WIN;
   }
@@ -306,21 +298,19 @@ static void _GraphDemo(void) {
   //
   _hScaleH = GRAPH_SCALE_Create(BORDER_BOTTOM >> 1, GUI_TA_VCENTER, GRAPH_SCALE_CF_HORIZONTAL, TICK_DIST_H);
   _hScaleV = GRAPH_SCALE_Create(BORDER_LEFT   >> 1, GUI_TA_HCENTER, GRAPH_SCALE_CF_VERTICAL,   TICK_DIST_V);
+  GRAPH_AttachScale(hGraph, _hScaleH);
+  GRAPH_AttachScale(hGraph, _hScaleV);
   GRAPH_SCALE_SetPos(_hScaleH, Graph_ySize - SCALE_H_HEIGHT);
   GRAPH_SCALE_SetOff(_hScaleH, -5);
   //
   // Show some graphs
   //
-  i = 0;
-  while (_aWave[i].pfAddData != 0) {
-    GUIDEMO_ShowInfo(_aWave[i].Name);
-    GRAPH_AttachScale(hGraph, _hScaleH);
-    GRAPH_AttachScale(hGraph, _hScaleV);
-    _DataAdjust = (Data_ySize * _aWave[i].DataVOff) >> GRAPH_DIV;
-    GRAPH_SetGridOffY (hGraph, (Data_ySize * _aWave[i].GridVOff) >> GRAPH_DIV);
-    GRAPH_SCALE_SetOff(_hScaleV, (((Data_ySize - BORDER_BOTTOM) * _aWave[i].ScaleVOff) >> GRAPH_DIV));
+  for (i = 0; i < GUI_COUNTOF(_aWave); i++) {
+    GUIDEMO_SetInfoText(_aWave[i].pName);
+    _DataAdjust = GUIDEMO_ShiftRight(Data_ySize * _aWave[i].DataVOff, GRAPH_DIV);
+    GRAPH_SetGridOffY (hGraph, GUIDEMO_ShiftRight(Data_ySize * _aWave[i].GridVOff, GRAPH_DIV));
+    GRAPH_SCALE_SetOff(_hScaleV, GUIDEMO_ShiftRight((Data_ySize - BORDER_BOTTOM) * _aWave[i].ScaleVOff, GRAPH_DIV));
     _ShowGraph(hGraph, hData, _aWave[i].NumWaves, _aWave[i].pfAddData);
-    i++;
   }
   //
   // Clean up
@@ -343,16 +333,16 @@ static void _GraphDemo(void) {
 **********************************************************************
 */
 void GUIDEMO_Graph(void) {
-  GUIDEMO_ShowIntro("Drawing a graph",
-                    "Optimized drawing routine\n"
-                    "for drawing graph data");
-  GUIDEMO_ShowInfoWin();
+  GUIDEMO_ConfigureDemo("Drawing a graph", "Optimized drawing routine\nfor drawing graph data", GUIDEMO_SHOW_CURSOR | GUIDEMO_SHOW_INFO | GUIDEMO_SHOW_CONTROL);
   _GraphDemo();
   GUIDEMO_NotifyStartNext();
 }
 
 #else
 
-void GUIDEMO_Graph(void) {}
+void GUIDEMO_Graph_C(void);
+void GUIDEMO_Graph_C(void) {}
 
-#endif
+#endif  // SHOW_GUIDEMO_GRAPH && GUI_WINSUPPORT && GUI_SUPPORT_MEMDEV
+
+/*************************** End of file ****************************/

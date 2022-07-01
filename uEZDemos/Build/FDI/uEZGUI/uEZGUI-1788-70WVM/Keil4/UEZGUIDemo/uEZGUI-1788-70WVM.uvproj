@@ -736,6 +736,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ZoomAndRotate.c</FilePath>
             </File>
+            <File>
+              <FileName>GUIDEMO_AntialiasedText.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_AntialiasedText.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_BarGraph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_BarGraph.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Conf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -800,9 +815,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil_M3.lib</FileName>
+              <FileName>emWin_530_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_530_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1553,6 +1568,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ZoomAndRotate.c</FilePath>
             </File>
+            <File>
+              <FileName>GUIDEMO_AntialiasedText.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_AntialiasedText.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_BarGraph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_BarGraph.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Conf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1590,6 +1620,24 @@
               <FileName>uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\Keil4.x\Release\uEZ_NXP_LPC1788_FreeRTOS_Keil_Release.lib</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                </CommonProperty>
+                <FileArmAds/>
+              </FileOption>
             </File>
           </Files>
         </Group>
@@ -1617,9 +1665,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil_M3.lib</FileName>
+              <FileName>emWin_530_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_530_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -2370,6 +2418,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ZoomAndRotate.c</FilePath>
             </File>
+            <File>
+              <FileName>GUIDEMO_AntialiasedText.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_AntialiasedText.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_BarGraph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_BarGraph.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUIDEMO_Conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Conf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2452,9 +2515,9 @@
           <GroupName>Source/Library/GUI/SEGGER/emWin/Library/Trai;</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil_M3.lib</FileName>
+              <FileName>emWin_530_Keil_M3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M3.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_530_Keil_M3.lib</FilePath>
             </File>
           </Files>
         </Group>

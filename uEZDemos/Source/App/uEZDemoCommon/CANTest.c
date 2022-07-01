@@ -91,7 +91,7 @@ void CANConfigure ( void )
         C1BTR        =        0x001C0011;        /* Set bit timing to 125k -- old value from 2119 0x1D */
         C1IER        =        0x00000000;        /* Disable the Receive interrupt */
         AFMR        =        0x00000002;        /* Bypass acceptance filters to receive all CAN traffic */
-        C1TFI1        =        0x00080000;        /* Set DLC to transmit 8 bytes */        
+        C1TFI1        =        0x00080000;        /* Set DLC to transmit 8 bytes */
         C1TID1        =        0x00000555;        /* Set CAN ID to '555' */
 #if 1
         C1MOD        =        0x00000000;        /* Release CAN controller */
@@ -108,7 +108,7 @@ void CANConfigure ( void )
     LPC_CAN1->BTR        =        0x001C0000|(30-1);        /* Set bit timing to 125k -- old value from 2119 0x1D */
     LPC_CAN1->IER        =        0x00000000;        /* Disable the Receive interrupt */
     LPC_CANAF->AFMR      =        0x00000002;        /* Bypass acceptance filters to receive all CAN traffic */
-    LPC_CAN1->TFI1        =        0x00080000;        /* Set DLC to transmit 8 bytes */        
+    LPC_CAN1->TFI1        =        0x00080000;        /* Set DLC to transmit 8 bytes */
     LPC_CAN1->TID1        =        0x00000555;        /* Set CAN ID to '555' */
 #if 1
     LPC_CAN1->MOD        =        0x00000000;        /* Release CAN controller */
@@ -119,7 +119,9 @@ void CANConfigure ( void )
 
 int CANReceive8(unsigned int *aCANByteA, unsigned int *aCANByteB)
 {
+#if(UEZ_PROCESSOR != NXP_LPC4357)
     unsigned CANrdy = 0;
+#endif
 
     if (!G_canConfigured)
         CANConfigure();
@@ -133,7 +135,7 @@ int CANReceive8(unsigned int *aCANByteA, unsigned int *aCANByteB)
           *aCANByteA = C1RDA; /* Get the first 4 bytes of the received CAN message */
           *aCANByteB = C1RDB; /* Get the last 4 bytes of the received CAN message */
 
-          C1CMR =   0x00000004; /* Release the receive buffer */      
+          C1CMR =   0x00000004; /* Release the receive buffer */
          }
 
     }
@@ -147,7 +149,7 @@ int CANReceive8(unsigned int *aCANByteA, unsigned int *aCANByteB)
           *aCANByteA = LPC_CAN1->RDA; /* Get the first 4 bytes of the received CAN message */
           *aCANByteB = LPC_CAN1->RDB; /* Get the last 4 bytes of the received CAN message */
 
-          LPC_CAN1->CMR =   0x00000004; /* Release the receive buffer */      
+          LPC_CAN1->CMR =   0x00000004; /* Release the receive buffer */
          }
 
     }
@@ -161,13 +163,12 @@ int CANReceive8(unsigned int *aCANByteA, unsigned int *aCANByteB)
           *aCANByteA = LPC_CAN1->RDA; /* Get the first 4 bytes of the received CAN message */
           *aCANByteB = LPC_CAN1->RDB; /* Get the last 4 bytes of the received CAN message */
 
-          LPC_CAN1->CMR =   0x00000004; /* Release the receive buffer */      
+          LPC_CAN1->CMR =   0x00000004; /* Release the receive buffer */
          }
 
     }
     return (CANrdy)?1:0;
 #else
-  CANrdy = 0;
   return 0;
 #endif //(UEZ_PROCESSOR==NXP_LPC2478)
 }/* vCANmsg */

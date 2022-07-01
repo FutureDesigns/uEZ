@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -22,8 +22,8 @@
  *    @addtogroup uEZGUI-1788-70WVM
  *  @{
  *  @brief     uEZGUI-1788-70WVM platform
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *  @see http://goo.gl/UDtTCR/
+ *  @see http://goo.gl/UDtTCR/files/uEZ License.pdf
  *
  *    The uEZGUI-1788-70WVM platform interface.
 */
@@ -695,7 +695,7 @@ void UEZPlatform_FullDuplex_UART2_Require(
 {
     // UART0 on P0.10/P0.11
     LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART0_Require(GPIO_P0_10, GPIO_P0_11);
+    LPC17xx_40xx_UART2_Require(GPIO_P0_10, GPIO_P0_11);
     Serial_Generic_FullDuplex_Stream_Create("UART2", "UART2",
             aWriteBufferSize, aReadBufferSize);
 }
@@ -1202,7 +1202,7 @@ void UEZPlatform_LCD_Require(void)
             GPIO_NONE,  // LCD_FP
             GPIO_NONE,  // LCD_LE
             GPIO_NONE,  // LCD_LP
-
+            {
             GPIO_NONE,  // LCD_VD0
             GPIO_NONE,  // LCD_VD1
             GPIO_P4_28, // LCD_VD2
@@ -1229,7 +1229,7 @@ void UEZPlatform_LCD_Require(void)
             GPIO_P1_27, // LCD_VD21
             GPIO_P1_28, // LCD_VD22
             GPIO_P1_29, // LCD_VD23
-
+            },
             GPIO_NONE,  // LCD_CLKIN
             
 #if USING_70WVM_BA_REV1_2 // Make sure that power to I2C devices cannot be turned off on these revisions
@@ -1238,6 +1238,7 @@ void UEZPlatform_LCD_Require(void)
             GPIO_P2_0, // P2.0 is power pin, GPIO controlled
 #endif
             EFalse, // Active LOW
+            0,
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1873,12 +1874,16 @@ void UEZPlatform_EMAC_Require(void)
 void UEZPlatform_Timer0_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
+            },
+            {
             GPIO_NONE,      // T0_MAT[0]
             GPIO_NONE,      // T0_MAT[1]
             GPIO_NONE,      // T0_MAT[2]
             GPIO_NONE,      // T0_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer0_Require(&settings);
@@ -1895,12 +1900,16 @@ void UEZPlatform_Timer0_Require(void)
 void UEZPlatform_Timer1_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
+            },
+            {
             GPIO_NONE,      // T0_MAT[0]
             GPIO_NONE,      // T0_MAT[1]
             GPIO_NONE,      // T0_MAT[2]
             GPIO_NONE,      // T0_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer1_Require(&settings);
@@ -1917,12 +1926,16 @@ void UEZPlatform_Timer1_Require(void)
 void UEZPlatform_Timer2_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
+            },
+            {
             GPIO_NONE,      // T0_MAT[0]
             GPIO_NONE,      // T0_MAT[1]
             GPIO_NONE,      // T0_MAT[2]
             GPIO_NONE,      // T0_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer2_Require(&settings);
@@ -1939,12 +1952,16 @@ void UEZPlatform_Timer2_Require(void)
 void UEZPlatform_Timer3_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
+            },
+            {
             GPIO_NONE,      // T0_MAT[0]
             GPIO_NONE,      // T0_MAT[1]
             GPIO_NONE,      // T0_MAT[2]
             GPIO_NONE,      // T0_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer3_Require(&settings);

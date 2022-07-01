@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : GUI_ConfDefaults.h
 Purpose     : Defaults for GUI config switches.
 ---------------------------END-OF-HEADER------------------------------
@@ -36,6 +47,11 @@ Attention : Do not modify this file ! If you do, you will not
 
 #ifndef  GUI_CONFDEFAULTS_H
 #define  GUI_CONFDEFAULTS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include "GUIConf.h"
 
@@ -63,15 +79,23 @@ Attention : Do not modify this file ! If you do, you will not
 ***********************************************************************
 */
 
+/* ATTENTION: This define swaps the meaning of a logical color from
+   ABGR to ARGB.
+   
+   It further swaps the meaning of a transparent pixel:
+   ABGR: 0x00 means opaque, 0xFF means transparent (default)
+   ARGB: 0x00 means transparent, 0xFF means opaque
+*/
+#ifndef GUI_USE_ARGB
+  #define GUI_USE_ARGB 0
+#endif
+
 /* Define "universal pointer". Normally, this is not needed (define will expand to nothing)
    However, on some systems (AVR - IAR compiler) it can be necessary ( -> __generic),
    since a default pointer can access RAM only, not the built-in Flash
 */
 #ifndef GUI_UNI_PTR
-  #define GUI_UNI_PTR
-  #define GUI_UNI_PTR_USED 0
-#else
-  #define GUI_UNI_PTR_USED 1
+  #define GUI_UNI_PTR /* Remains only for compatibility purpose, no longer used in emWin */
 #endif
 
 /* Define const storage. Normally, this is not needed (define will expand to const)
@@ -153,6 +177,19 @@ Attention : Do not modify this file ! If you do, you will not
   #define GUI_MEMSET GUI__memset
 #endif
 
+/* Optional custom drawing of memory devices */
+#ifndef   GUI_MEMDEV_SUPPORT_CUSTOMDRAW
+  #define GUI_MEMDEV_SUPPORT_CUSTOMDRAW 0
+#endif
+
+/* Clip static memory devices to parent borders */
+#ifndef   GUI_MEMDEV_CLIP_AT_PARENT
+  #define GUI_MEMDEV_CLIP_AT_PARENT 0
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif   /* ifdef GUI_CONFDEFAULTS_H */
 

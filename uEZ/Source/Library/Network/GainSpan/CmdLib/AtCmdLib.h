@@ -518,7 +518,7 @@ typedef struct {
     uint16_t port;
 } ATLIBGS_TCPConnection;
 
-ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPMessage(uint32_t timeout);
+ATLIBGS_MSG_ID_E AtLibGs_WaitForTCPMessage(uint8_t cid, uint32_t timeout);
 void AtLibGs_ParseTCPData(
         const uint8_t *received,
         uint16_t length,
@@ -721,6 +721,10 @@ ATLIBGS_MSG_ID_E AtLibGs_SendTCPData(
         uint8_t cid,
         const void *txBuf,
         uint16_t dataLen);
+ATLIBGS_MSG_ID_E AtLibGs_SendTCPBulkData(
+        uint8_t cid,
+        const void *txBuf,
+        uint16_t dataLen);
 ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
         uint8_t cid,
         const void *txBuf,
@@ -729,11 +733,10 @@ ATLIBGS_MSG_ID_E AtLibGs_SendUDPData(
         const char *pUdpClientIP,
         uint16_t udpClientPort);
 
-void AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16_t dataLen);
+ATLIBGS_MSG_ID_E AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16_t dataLen);
 ATLIBGS_MSG_ID_E AtLibGs_checkEOFMessage(const char *pBuffer);
-ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataHandle(uint32_t timeout);
 ATLIBGS_MSG_ID_E AtLibGs_ReceiveDataProcess(uint8_t rxData);
-ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(void);
+ATLIBGS_MSG_ID_E AtLibGs_ResponseHandle(uint8_t cid);
 ATLIBGS_MSG_ID_E AtLibGs_ProcessRxChunk(const void *rxBuf, uint16_t bufLen);
 void AtLibGs_LinkCheck(void);
 void AtLibGs_FlushIncomingMessage(void);
@@ -749,6 +752,7 @@ void AtLibGs_ConvertNumberTo4DigitASCII(uint16_t myNum, char *pStr);
 ATLIBGS_MSG_ID_E AtLibGs_GetWebProvSettings(
         ATLIBGS_WEB_PROV_SETTINGS *wp,
         uint32_t timeout);
+int AtLibGs_CIDToIndex(uint8_t cid);
 
 extern void AtLibGs_Init(void);
 

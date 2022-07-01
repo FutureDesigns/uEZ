@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : WM.h
 Purpose     : Windows manager include
@@ -113,6 +124,19 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 *       Data types
 */
+typedef struct WM_WINDOW_INFO WM_WINDOW_INFO;
+
+struct WM_WINDOW_INFO {
+  GUI_HMEM hWin;
+  GUI_HMEM hParent;
+  GUI_HMEM hFirstChild;
+  GUI_HMEM hNext;
+  GUI_RECT Rect;
+  U32      Status;
+  U32      DebugId;
+  WM_WINDOW_INFO * pNext;
+};
+
 typedef struct {
   int Key, PressedCnt;
 } WM_KEY_INFO;
@@ -133,24 +157,53 @@ typedef struct {
 } WM_PID_STATE_CHANGED_INFO;
 
 typedef struct {
-  void (* cbBegin)(void);
-  void (* cbEnd)  (void);
-} WM_MULTIBUF_API;
-
-typedef struct {
   int Cmd;
-  int dx, dy;
+  int dx, dy, da;
   int xPos, yPos;
   int Period;
   int SnapX;
   int SnapY;
   int FinalMove;
   U32 Flags;
+  GUI_PID_STATE * pState;
+  GUI_HMEM hContext;
 } WM_MOTION_INFO;
+
+typedef struct {
+  I32       FactorMin;   // Minimum factor to be used (<< 16)
+  I32       FactorMax;   // Maximum factor to be used (<< 16)
+  U32       xSize;       // Native xSize of window to be zoomed in pixels
+  U32       ySize;       // Native ySize of window to be zoomed in pixels
+  U32       xSizeParent; // xSize of parent window
+  U32       ySizeParent; // ySize of parent window
+  I32       Factor0;     // Primary factor when starting zoom gesture (<< 16)
+  int       xPos0;       // Primary window position in x when starting the gesture
+  int       yPos0;       // Primary window position in y when starting the gesture
+  GUI_POINT Center0;     // Primary center point when starting the gesture
+} WM_ZOOM_INFO;
+
+typedef struct {
+  int            Flags;     // Information regarding gesture type
+  GUI_POINT      Point;     // Relative movement
+  GUI_POINT      Center;    // Center point for zooming
+  I32            Angle;     // Angle between the touch points
+  I32            Factor;    // Current zoom factor
+  WM_ZOOM_INFO * pZoomInfo; // Pointer to WM_ZOOM_INFO structure
+} WM_GESTURE_INFO;
 
 typedef struct {
   int dx, dy;
 } WM_MOVE_INFO;
+
+/*********************************************************************
+*
+*       Gesture flags for multi touch support
+*/
+#define WM_GF_BEGIN  (1 << 0)
+#define WM_GF_END    (1 << 1)
+#define WM_GF_PAN    (1 << 2)
+#define WM_GF_ZOOM   (1 << 3)
+#define WM_GF_ROTATE (1 << 4)
 
 /*********************************************************************
 *
@@ -165,7 +218,7 @@ typedef struct {
 
 #define WM_DELETE                   11      /* Delete (Destroy) command: This tells the client to free its data strutures since the window
                                                it is associates with no longer exists.*/
-#define WM_TOUCH                    12      /* Touch screen message */
+#define WM_TOUCH                    0x0240  /* Touch screen message */
 #define WM_TOUCH_CHILD              13      /* Touch screen message to ancestors */
 #define WM_KEY                      14      /* Key has been pressed */
 
@@ -216,6 +269,13 @@ typedef struct {
 
 #define WM_MOTION                   48      /* Automatic motion messages */
 
+#define WM_GET_WINDOW_ID            49      /* Return widget type specific Id (DebugId) */
+
+#define WM_PRE_BANDING              50
+#define WM_POST_BANDING             51
+
+#define WM_GESTURE                  0x0119  /* Gesture message */
+
 #define WM_TIMER                    0x0113  /* Timer has expired              (Keep the same as WIN32) */
 #define WM_WIDGET                   0x0300  /* 256 messages reserved for Widget messages */
 #define WM_USER                     0x0400  /* Reserved for user messages ... (Keep the same as WIN32) */
@@ -227,6 +287,7 @@ typedef struct {
 #define WM_MOTION_INIT    0
 #define WM_MOTION_MOVE    1
 #define WM_MOTION_GETPOS  2
+#define WM_MOTION_GETCONTEXT 3
 
 /*********************************************************************
 *
@@ -270,7 +331,7 @@ typedef struct {
 *       Window defines
 */
 #define WM_HBKWIN      WM_GetDesktopWindow()                /* Handle of background window */
-#define WM_UNATTACHED  ((WM_HMEM)-1)                        /* Do not attach to a window */
+#define WM_UNATTACHED  ((WM_HMEM) - 1)                      /* Do not attach to a window */
 
 /*********************************************************************
 *
@@ -313,6 +374,12 @@ typedef struct {
 #define WM_CF_MOTION_X         (1UL << 17) /* Window can be moved automatically in X axis */
 #define WM_CF_MOTION_Y         (1UL << 18) /* Window can be moved automatically in Y axis */
 
+#define WM_CF_GESTURE          (1UL << 19) /* Marks the window to be a able to receive gesture messages */
+
+#define WM_CF_ZOOM             (1UL << 20) /* Window can be scaled automatically by multi touch gesture input */
+
+#define WM_CF_MOTION_R         (1UL << 21) // Window can be rotated
+
 /*********************************************************************
 *
 *       Window manager types
@@ -344,7 +411,6 @@ struct WM_Obj {
   #if WM_SUPPORT_STATIC_MEMDEV
     GUI_MEMDEV_Handle hMem; /* Static memory device */
   #endif
-#undef Status
   U32 Status;           /* Status flags */
   #if WM_SUPPORT_CPP
     void * ObjPtr;
@@ -356,7 +422,7 @@ typedef void WM_tfForEach(WM_HWIN hWin, void * pData);
 
 typedef void (* WM_tfInvalidateParent)  (const GUI_RECT * pInvalidRect, WM_HWIN hParent, WM_HWIN hStop);
 typedef void (* WM_tfInvalidateDrawFunc)(WM_HWIN hWin);
-typedef void (* WM_tfPaint1Func)        (WM_HWIN hWin/*, WM_Obj * pWin*/);
+typedef void (* WM_tfPaint1Func)        (WM_HWIN hWin);
 
 typedef struct {
   WM_HMEM  hTimer;
@@ -387,8 +453,11 @@ WM_HWIN WM_CreateWindow              (int x0, int y0, int xSize, int ySize, U32 
 WM_HWIN WM_CreateWindowAsChild       (int x0, int y0, int xSize, int ySize, WM_HWIN hWinParent, U32 Style, WM_CALLBACK* cb, int NumExtraBytes);
 void    WM_DeleteWindow              (WM_HWIN hWin);
 void    WM_DetachWindow              (WM_HWIN hWin);
+void    WM_EnableGestures            (WM_HWIN hWin, int OnOff);
 int     WM_GetHasTrans               (WM_HWIN hWin);
 WM_HWIN WM_GetFocussedWindow         (void);
+int     WM_GetInvalidRect            (WM_HWIN hWin, GUI_RECT * pRect);
+int     WM_GetStayOnTop              (WM_HWIN hWin);
 void    WM_HideWindow                (WM_HWIN hWin);
 void    WM_InvalidateArea            (const GUI_RECT * pRect);
 void    WM_InvalidateRect            (WM_HWIN hWin, const GUI_RECT * pRect);
@@ -396,21 +465,26 @@ void    WM_InvalidateWindow          (WM_HWIN hWin);
 void    WM_InvalidateWindowAndDescsEx(WM_HWIN hWin, const GUI_RECT * pInvalidRect, U16 Flags);
 void    WM_InvalidateWindowAndDescs  (WM_HWIN hWin);    /* not to be documented (may change in future version) */
 int     WM_IsEnabled                 (WM_HWIN hObj);
+char    WM_IsCompletelyCovered       (WM_HWIN hWin);    /* Checks if the window is completely covered by other windows */
+char    WM_IsCompletelyVisible       (WM_HWIN hWin);    /* Is the window completely visible ? */
 int     WM_IsFocussable              (WM_HWIN hWin);
 int     WM_IsVisible                 (WM_HWIN hWin);
 int     WM_IsWindow                  (WM_HWIN hWin);    /* Check validity */
-char    WM_IsCompletelyCovered       (WM_HWIN hWin);    /* Checks if the window is completely covered by other windows */
-char    WM_IsCompletelyVisible       (WM_HWIN hWin);    /* Is the window completely visible ? */
+void    WM_SetAnchor                 (WM_HWIN hWin, U16 AnchorFlags);
 void    WM_SetHasTrans               (WM_HWIN hWin);
 void    WM_SetId                     (WM_HWIN hObj, int Id);
+void    WM_SetStayOnTop              (WM_HWIN hWin, int OnOff);
 void    WM_SetTransState             (WM_HWIN hWin, unsigned State);
 void    WM_ShowWindow                (WM_HWIN hWin);
 void    WM_ValidateRect              (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM_ValidateWindow            (WM_HWIN hWin);
-int     WM_GetInvalidRect            (WM_HWIN hWin, GUI_RECT * pRect);
-void    WM_SetStayOnTop              (WM_HWIN hWin, int OnOff);
-int     WM_GetStayOnTop              (WM_HWIN hWin);
-void    WM_SetAnchor                 (WM_HWIN hWin, U16 AnchorFlags);
+
+/* Gesture support */
+void WM_GESTURE_Enable  (int OnOff);
+int  WM_GESTURE_EnableEx(int OnOff, int MaxFactor);
+void WM_GESTURE_Exec    (void);
+I32  WM_GESTURE_SetThresholdAngle(I32 ThresholdAngle);
+I32  WM_GESTURE_SetThresholdDist (I32 ThresholdDist);
 
 /* Motion support */
 void     WM_MOTION_Enable          (int OnOff);
@@ -421,8 +495,12 @@ void     WM_MOTION_SetDeceleration (WM_HWIN hWin, int Axis, I32 Deceleration);
 unsigned WM_MOTION_SetDefaultPeriod(unsigned Period);
 void     WM_MOTION_SetSpeed        (WM_HWIN hWin, int Axis, I32 Velocity);
 
+/* Motion support, private interface */
+WM_HMEM WM_MOTION__CreateContext(void);
+void    WM_MOTION__DeleteContext(WM_HMEM hContext);
+
 /* Motion support, private function(s) */
-void     WM__SetMotionCallback (void(* cbMotion) (GUI_PID_STATE * pState));
+void     WM__SetMotionCallback (void(* cbMotion) (GUI_PID_STATE * pState, void * p));
 
 /* Static memory devices */
 #if (GUI_SUPPORT_MEMDEV)
@@ -431,21 +509,23 @@ void     WM__SetMotionCallback (void(* cbMotion) (GUI_PID_STATE * pState));
   #define GUI_MEMDEV_EDGE_TOP    2
   #define GUI_MEMDEV_EDGE_BOTTOM 3
 
-  int               GUI_MEMDEV_BlurWinBk        (WM_HWIN hWin, int Period, U8 BlurDepth);
-  int               GUI_MEMDEV_BlurAndBlendWinBk(WM_HWIN hWin, int Period, U8 BlurDepth, U32 BlendColor, U8 BlendIntens);
-  void              GUI_MEMDEV_CreateStatic     (WM_HWIN hWin);
   int               GUI_MEMDEV_BlendWinBk       (WM_HWIN hWin, int Period, U32 BlendColor, U8 BlendIntens);
+  int               GUI_MEMDEV_BlurAndBlendWinBk(WM_HWIN hWin, int Period, U8 BlurDepth, U32 BlendColor, U8 BlendIntens);
+  int               GUI_MEMDEV_BlurWinBk        (WM_HWIN hWin, int Period, U8 BlurDepth);
+  void              GUI_MEMDEV_CreateStatic     (WM_HWIN hWin);
+  GUI_MEMDEV_Handle GUI_MEMDEV_CreateWindowDevice(WM_HWIN hWin);
   int               GUI_MEMDEV_FadeInWindow     (WM_HWIN hWin, int Period);
   int               GUI_MEMDEV_FadeOutWindow    (WM_HWIN hWin, int Period);
   GUI_MEMDEV_Handle GUI_MEMDEV_GetStaticDevice  (WM_HWIN hWin);
   GUI_MEMDEV_Handle GUI_MEMDEV_GetWindowDevice  (WM_HWIN hWin);
   int               GUI_MEMDEV_MoveInWindow     (WM_HWIN hWin, int x, int y, int a180, int Period);
   int               GUI_MEMDEV_MoveOutWindow    (WM_HWIN hWin, int x, int y, int a180, int Period);
-  void              GUI_MEMDEV_Paint1Static     (WM_HWIN hWin);
+  void              GUI_MEMDEV_Paint1Static     (WM_HWIN hWin);                                     /* not to be documented */
   int               GUI_MEMDEV_ShiftInWindow    (WM_HWIN hWin, int Period, int Direction);
   int               GUI_MEMDEV_ShiftOutWindow   (WM_HWIN hWin, int Period, int Direction);
   int               GUI_MEMDEV_SwapWindow       (WM_HWIN hWin, int Period, int Edge);
 
+  void              GUI_MEMDEV__CreateStatic    (WM_HWIN hWin);
 #endif
 
 /* Move/resize windows */
@@ -514,37 +594,37 @@ WM_CALLBACK * WM_SetCallback(WM_HWIN hWin, WM_CALLBACK * cb);
 WM_CALLBACK * WM_GetCallback(WM_HWIN hWin);
 
 /* Get size/origin of a window */
-void WM_GetClientRect             (GUI_RECT * pRect);
-void WM_GetClientRectEx           (WM_HWIN hWin, GUI_RECT * pRect);
-void WM_GetInsideRect             (GUI_RECT * pRect);
-void WM_GetInsideRectEx           (WM_HWIN hWin, GUI_RECT * pRect);
-void WM_GetInsideRectExScrollbar  (WM_HWIN hWin, GUI_RECT * pRect); /* not to be documented (may change in future version) */
-void WM_GetWindowRect             (GUI_RECT * pRect);
-void WM_GetWindowRectEx           (WM_HWIN hWin, GUI_RECT * pRect);
-int  WM_GetOrgX                   (void);
-int  WM_GetOrgY                   (void);
-int  WM_GetWindowOrgX             (WM_HWIN hWin);
-int  WM_GetWindowOrgY             (WM_HWIN hWin);
-int  WM_GetWindowSizeX            (WM_HWIN hWin);
-int  WM_GetWindowSizeY            (WM_HWIN hWin);
-WM_HWIN WM_GetFirstChild          (WM_HWIN hWin);
-WM_HWIN WM_GetNextSibling         (WM_HWIN hWin);
-WM_HWIN WM_GetParent              (WM_HWIN hWin);
-WM_HWIN WM_GetPrevSibling         (WM_HWIN hWin);
-int     WM_GetId                  (WM_HWIN hWin);
-WM_HWIN WM_GetScrollbarV          (WM_HWIN hWin);
-WM_HWIN WM_GetScrollbarH          (WM_HWIN hWin);
-WM_HWIN WM_GetScrollPartner       (WM_HWIN hWin);
-WM_HWIN WM_GetClientWindow        (WM_HWIN hObj);
-GUI_COLOR WM_GetBkColor           (WM_HWIN hObj);
+void      WM_GetClientRect           (GUI_RECT * pRect);
+void      WM_GetClientRectEx         (WM_HWIN hWin, GUI_RECT * pRect);
+void      WM_GetInsideRect           (GUI_RECT * pRect);
+void      WM_GetInsideRectEx         (WM_HWIN hWin, GUI_RECT * pRect);
+void      WM_GetInsideRectExScrollbar(WM_HWIN hWin, GUI_RECT * pRect); /* not to be documented (may change in future version) */
+void      WM_GetWindowRect           (GUI_RECT * pRect);
+void      WM_GetWindowRectEx         (WM_HWIN hWin, GUI_RECT * pRect);
+int       WM_GetOrgX                 (void);
+int       WM_GetOrgY                 (void);
+int       WM_GetWindowOrgX           (WM_HWIN hWin);
+int       WM_GetWindowOrgY           (WM_HWIN hWin);
+int       WM_GetWindowSizeX          (WM_HWIN hWin);
+int       WM_GetWindowSizeY          (WM_HWIN hWin);
+WM_HWIN   WM_GetFirstChild           (WM_HWIN hWin);
+WM_HWIN   WM_GetNextSibling          (WM_HWIN hWin);
+WM_HWIN   WM_GetParent               (WM_HWIN hWin);
+WM_HWIN   WM_GetPrevSibling          (WM_HWIN hWin);
+int       WM_GetId                   (WM_HWIN hWin);
+WM_HWIN   WM_GetScrollbarV           (WM_HWIN hWin);
+WM_HWIN   WM_GetScrollbarH           (WM_HWIN hWin);
+WM_HWIN   WM_GetScrollPartner        (WM_HWIN hWin);
+WM_HWIN   WM_GetClientWindow         (WM_HWIN hObj);
+GUI_COLOR WM_GetBkColor              (WM_HWIN hObj);
 
 /* Change Z-Order of windows */
 void WM_BringToBottom(WM_HWIN hWin);
 void WM_BringToTop(WM_HWIN hWin);
 
-GUI_COLOR WM_SetDesktopColor(GUI_COLOR Color);
+GUI_COLOR WM_SetDesktopColor  (GUI_COLOR Color);
 GUI_COLOR WM_SetDesktopColorEx(GUI_COLOR Color, unsigned int LayerIndex);
-void WM_SetDesktopColors(GUI_COLOR Color);
+void      WM_SetDesktopColors (GUI_COLOR Color);
 
 /* Select window used for drawing operations */
 WM_HWIN WM_SelectWindow           (WM_HWIN  hWin);
@@ -555,8 +635,8 @@ void    WM_PaintWindowAndDescs    (WM_HWIN hWin);
 void    WM_UpdateWindowAndDescs   (WM_HWIN hWin);
 
 /* Get foreground/background windows */
-WM_HWIN WM_GetDesktopWindow    (void);
-WM_HWIN WM_GetDesktopWindowEx  (unsigned int LayerIndex);
+WM_HWIN WM_GetDesktopWindow  (void);
+WM_HWIN WM_GetDesktopWindowEx(unsigned int LayerIndex);
 
 /* Reduce clipping area of a window */
 const GUI_RECT * WM_SetUserClipRect(const GUI_RECT * pRect);
@@ -569,11 +649,17 @@ void WM_DisableMemdev             (WM_HWIN hWin);
 /* Automatic use of multiple buffers */
 int WM_MULTIBUF_Enable(int OnOff);
 
-extern const WM_MULTIBUF_API * WM_MULTIBUF__pAPI;
+extern const GUI_MULTIBUF_API * WM_MULTIBUF__pAPI;
+
+typedef void (* T_WM_EXEC_GESTURE)(void);
+
+extern T_WM_EXEC_GESTURE WM__pExecGestures;
 
 /* ... */
 int WM_OnKey(int Key, int Pressed);
 void WM_MakeModal(WM_HWIN hWin);
+int WM_SetModalLayer(int LayerIndex);
+int WM_GetModalLayer(void);
 
 /*********************************************************************
 *
@@ -584,7 +670,7 @@ void WM_MakeModal(WM_HWIN hWin);
 */
 void      WM_NotifyParent         (WM_HWIN hWin, int Notification);
 void      WM_SendMessage          (WM_HWIN hWin, WM_MESSAGE * p);
-void      WM_SendMessageNoPara    (WM_HWIN hWin, int MsgId);             /* not to be documented (may change in future versionumented */
+void      WM_SendMessageNoPara    (WM_HWIN hWin, int MsgId);             /* not to be documented (may change in future */
 void      WM_DefaultProc          (WM_MESSAGE * pMsg);
 int       WM_BroadcastMessage     (WM_MESSAGE * pMsg);
 void      WM_SetScrollState       (WM_HWIN hWin, const WM_SCROLL_STATE * pState);
@@ -627,6 +713,7 @@ WM_HWIN   WM_Screen2hWinEx  (WM_HWIN hStop, int x, int y);
 void      WM_ForEachDesc    (WM_HWIN hWin, WM_tfForEach * pcb, void * pData);
 void      WM_SetScreenSize  (int xSize, int ySize);
 int       WM_PollSimMsg     (void);
+int       WM_GetWindowInfo  (WM_WINDOW_INFO * pInfo, int FirstWindow);
 
 /*********************************************************************
 *

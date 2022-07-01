@@ -12,12 +12,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -139,7 +139,7 @@ static TBool LPC1768_Watchdog_IsResetFromWatchdog(void *aWorkspace)
     // the watchdog
     // Look at the Reset Source Identification Register
     // (SC block, register RSID, bit WDTR
-    if (SC->RSID & (1<<2)) {
+    if (LPC_SC->RSID & (1<<2)) {
         return ETrue;
     } else {
         return EFalse;
@@ -159,8 +159,8 @@ static void LPC1768_Watchdog_ClearResetFlag(void *aWorkspace)
 {
     PARAM_NOT_USED(aWorkspace);
 
-    SC->RSID &= ~(1<<2);    // Clear the RSID's WDTR bit
-    WDT->WDMOD &= ~(1<<1);  // Clear the WDRESET bit
+    LPC_SC->RSID &= ~(1<<2);    // Clear the RSID's WDTR bit
+    LPC_WDT->WDMOD &= ~(1<<1);  // Clear the WDRESET bit
 }
 
 /*---------------------------------------------------------------------------*
@@ -205,22 +205,22 @@ static T_uezError LPC1768_Watchdog_Start(void *aWorkspace)
     p->iIsActive = ETrue;
 
     // Divide by 1, not by 4
-    SC->PCLKSEL0 &= ~3;
-    SC->PCLKSEL0 |= 1;
+    LPC_SC->PCLKSEL0 &= ~3;
+    LPC_SC->PCLKSEL0 |= 1;
 
     // Ensure WDTOF is off
-    WDT->WDMOD &= (~((1<<2)|(1<<3))); // clear WDTOF and WDINT in case set
-    WDT->WDCLKSEL = 1; // choose peripheral clock
-    WDT->WDTC = IMillisecondsToWatchdogCycles(p->iMaximumTime);
-    WDT->WDMOD |=
+    LPC_WDT->WDMOD &= (~((1<<2)|(1<<3))); // clear WDTOF and WDINT in case set
+    LPC_WDT->WDCLKSEL = 1; // choose peripheral clock
+    LPC_WDT->WDTC = IMillisecondsToWatchdogCycles(p->iMaximumTime);
+    LPC_WDT->WDMOD |=
           (1<<0) |  // WDEN: Enable to run
           (1<<1);   // WDRESET: Reset mode on!
 
     // Up to this point, the watchdog is NOT running
     // We have to feed it to make the little dog look for more food.
     // Start by feeding it
-    WDT->WDFEED = 0xAA;
-    WDT->WDFEED = 0x55;
+    LPC_WDT->WDFEED = 0xAA;
+    LPC_WDT->WDFEED = 0x55;
 
     // We're running ALIVE now.  Reset to occur in 5, 4, 3, ...
 
@@ -248,8 +248,8 @@ static T_uezError LPC1768_Watchdog_Feed(void *aWorkspace)
         return UEZ_ERROR_ILLEGAL_OPERATION;
 
     // Feed the watchdog by stuffing 0xAA and 0x55
-    WDT->WDFEED = 0xAA;
-    WDT->WDFEED = 0x55;
+    LPC_WDT->WDFEED = 0xAA;
+    LPC_WDT->WDFEED = 0x55;
 
     return UEZ_ERROR_NONE;
 }
@@ -274,11 +274,11 @@ static T_uezError LPC1768_Watchdog_Trip(void *aWorkspace)
         // Trip up the watchdog instantly
         // Do this by half way feeding the watchdog (per the specs, if you
         // touch any of the registers after feeding 0xAA, you'll get a reset).
-        WDT->WDFEED = 0xAA;
+        LPC_WDT->WDFEED = 0xAA;
         // Touch something bad
         // In this case, we'll go ahead and try to set the flag that is 1
         // when a reset occurs.
-        WDT->WDMOD |= (1 << 2);
+        LPC_WDT->WDMOD |= (1 << 2);
 
         // But, just in case the above fails to get a reset (plus, it takes
         // a couple of cycles before the reset occurs), sit here until death

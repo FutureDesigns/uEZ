@@ -15,12 +15,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -32,6 +32,17 @@
 #include <string.h>
 #include "GainSpan_Config.h"
 #include "GainSpan_SPI.h"
+
+#define ANSI_OFF "\033[0m"
+#define ANSI_RED "\033[31m"
+#define ANSI_GREEN "\033[32m"
+#define ANSI_BLUE "\033[34m"
+
+#define COLORED_DEBUG 0
+
+#ifndef GAINSPAN_SPI_ALLOW_FORCE_FLOW_CONTROL
+#define GAINSPAN_SPI_ALLOW_FORCE_FLOW_CONTROL	 0 // off by default, only works on GS1011M, not GS2011M
+#endif
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -64,6 +75,60 @@ static bool G_GainSpan_SPI_EscapeCode;
 static bool G_GainSpan_SPI_CanTransmit;
 static bool G_GainSpan_SPI_IsLinkActive;
 static uint8_t G_GainSpan_SPI_XONIdleChar;
+static bool G_GainSpan_SPI_needFlowAllowed;
+static volatile bool G_GainSpan_SPI_slowStartupMode;
+
+//----------------------------------------
+static T_uezSemaphore G_sem;
+#define IGrab() UEZSemaphoreGrab(G_sem, UEZ_TIMEOUT_INFINITE);
+#define IRelease() UEZSemaphoreRelease(G_sem);
+
+static int IGainSpan_SPI_Update(uint8_t channel);
+bool GainSpan_SPI_IsDataReady(uint8_t channel);
+bool GainSpan_SPI_SendTwoBytesLowLevel(uint8_t aByte1, uint8_t aByte2);
+//----------------------------------------
+
+static TUInt32 IGainSpan_SPI_Thread(T_uezTask aMyTask, void *aParameters)
+{
+	int isProcessing;
+	int struggling = 0;
+        TBool forever = ETrue;
+
+	while (forever) {
+	    IGrab();
+	    do {
+	    	isProcessing = IGainSpan_SPI_Update(0); // TODO: Default channel??
+
+	    	// If we are constantly seeing data with no end, then let's take a small breather
+	    	struggling++;
+	    	if (struggling == 10000) {
+		    	UEZTaskDelay(1);
+		    	struggling -= 100;
+	    	}
+	    } while (isProcessing);
+	    IRelease();
+
+	    if (GainSpan_SPI_IsDataReady(0)) {
+//	    	printf(".");
+	    } else {
+	    	//printf(",");
+	    	UEZTaskDelay(1);
+	    	struggling = 0;
+	    }
+    	if (G_GainSpan_SPI_slowStartupMode) {
+    		// Also, if we are not seeing activity, we start in slow mode (checking characters very briefly)
+    		// Once we get a real character (not even an idle character), we'll treat the Gainspan as there
+    		UEZTaskDelay(5);
+    	}
+//	    if (!isProcessing) {
+//	    	if (!GainSpan_SPI_IsDataReady(0)) {
+//				printf(".");
+//				UEZTaskDelay(1);
+//	    	}
+//	    }
+	}
+        return 0;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  GainSpan_SPI_Start
@@ -85,6 +150,14 @@ void GainSpan_SPI_Start(void)
     G_GainSpan_SPI_NumSent = 0;
     G_GainSpan_SPI_CanTransmit = true;
     G_GainSpan_SPI_IsLinkActive = false;
+    G_GainSpan_SPI_needFlowAllowed = true;
+    G_GainSpan_SPI_slowStartupMode = true;
+
+    // Create a semaphore for synchronizing with the background thread
+    UEZSemaphoreCreateBinary(&G_sem);
+
+    // Create a background task to handle all SPI communications
+    UEZTaskCreate(IGainSpan_SPI_Thread, "GS_SPI_Comm", UEZ_TASK_STACK_BYTES(1024), 0, UEZ_PRIORITY_HIGH, 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -154,6 +227,12 @@ static void GainSpan_SPI_ProcessIncomingChar(char c)
                 storeChar = false;
             } else if (c == GAINSPAN_SPI_CHAR_IDLE) {
                 storeChar = false;
+            } else if (c == GAINSPAN_SPI_CHAR_UNKNOWN_F1) {
+                storeChar = false;
+            } else if (c == GAINSPAN_SPI_CHAR_UNKNOWN_F4) {
+                storeChar = false;
+            } else if (c == GAINSPAN_SPI_CHAR_UNKNOWN_F7) {
+                storeChar = false;
             } else if (c == GAINSPAN_SPI_CHAR_FLOW_CONTROL_ON) {
                 G_GainSpan_SPI_CanTransmit = true;
                 storeChar = false;
@@ -164,6 +243,10 @@ static void GainSpan_SPI_ProcessIncomingChar(char c)
         }
     }
     if (storeChar) {
+    	// Storing a real character.  The Gainspan module must be there.  Stop going so slow
+    	// and let it rip.
+    	G_GainSpan_SPI_slowStartupMode = false;
+
         /* The character needs to be stored in the receive buffer */
         /* Is there room? */
         next = G_GainSpan_SPI_RXIn + 1;
@@ -172,6 +255,14 @@ static void GainSpan_SPI_ProcessIncomingChar(char c)
         if (next != G_GainSpan_SPI_RXOut) {
             /* Yes, room.  Store the character in the receive FIFO buffer */
 //printf("{%02x,%d}", c, G_GainSpan_SPI_RXIn);
+//printf(ANSI_BLUE "{%02x,%d}" ANSI_OFF, c, G_GainSpan_SPI_RXIn);
+#if COLORED_DEBUG
+        	if ((c >= 0x20) && (c <= 0x7F))
+                printf(ANSI_BLUE "%c" ANSI_OFF, c);
+            else {
+                printf(ANSI_BLUE "[%02X]" ANSI_OFF, c);
+            }
+#endif
             G_GainSpan_SPI_RXBuffer[G_GainSpan_SPI_RXIn] = c;
             G_GainSpan_SPI_RXIn = next;
         } else {
@@ -207,7 +298,7 @@ static void GainSpan_SPI_ProcessIncoming(void)
     next = G_GainSpan_SPI_RXIn + 1;
     if (next >= GAINSPAN_SPI_RX_BUFFER_SIZE)
         next = 0;
-    if (next != G_GainSpan_SPI_RXOut) {
+    //if (next != G_GainSpan_SPI_RXOut) {
         /* Was the last character sent used to watch for flow control? */
         if (!G_GainSpan_SPI_CanTransmit) {
             /* The returned character is now in the XON Idle character buffer */
@@ -232,7 +323,7 @@ static void GainSpan_SPI_ProcessIncoming(void)
                 }
             }
         }
-    }
+    //}
 }
 
 /*---------------------------------------------------------------------------*
@@ -247,6 +338,12 @@ static void GainSpan_SPI_ProcessIncoming(void)
 bool GainSpan_SPI_IsDataReady(uint8_t channel)
 {
     return GainSpan_IO_IsDataReady(channel);
+}
+
+void GainSpan_SPI_Update(uint8_t channel)
+{
+	// TODO: Old way of doing it, now we do in background task
+	// IGainSpan_SPI_Update(0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -265,15 +362,55 @@ bool GainSpan_SPI_IsDataReady(uint8_t channel)
  *  @return     void
  */
 /*---------------------------------------------------------------------------*/
-void GainSpan_SPI_Update(uint8_t channel)
+static int IGainSpan_SPI_Update(uint8_t channel)
 {
+#if 0
+	TUInt8 c;
+	// Any data to send?
+	if (G_GainSpan_SPI_CanTransmit) {
+		if (GainSpan_SPI_IsDataReady(GAINSPAN_SPI_CHANNEL)) {
+			// Send an IDLE character to look for the XON/XOFF */
+			c = GAINSPAN_SPI_CHAR_IDLE;
+			// No bytes from the buffer are being sent
+			G_GainSpan_SPI_NumSent = 0;
+			GainSpan_SPI_TransferPolled(GAINSPAN_SPI_CHANNEL, 1,
+					&c,
+					&c);
+			GainSpan_SPI_ProcessIncomingChar(c);
+			return 1;
+		} else if (G_GainSpan_SPI_TXIn != G_GainSpan_SPI_TXOut) {
+			G_GainSpan_SPI_NumSent = 1;
+			GainSpan_SPI_TransferPolled(GAINSPAN_SPI_CHANNEL, 1,
+					G_GainSpan_SPI_TXBuffer + G_GainSpan_SPI_TXOut,
+					G_GainSpan_SPI_TXBuffer + G_GainSpan_SPI_TXOut);
+			GainSpan_SPI_ProcessIncoming();
+						return 1;
+		}
+	} else {
+		// Send an IDLE character to look for the XON/XOFF */
+		G_GainSpan_SPI_XONIdleChar = GAINSPAN_SPI_CHAR_IDLE;
+		c = GAINSPAN_SPI_CHAR_IDLE;
+		// No bytes from the buffer are being sent
+		G_GainSpan_SPI_NumSent = 0;
+		GainSpan_SPI_TransferPolled(GAINSPAN_SPI_CHANNEL, 1,
+				&c,
+				&c);
+		GainSpan_SPI_ProcessIncomingChar(c);
+	}
+
+	return 0;
+#else
     uint16_t numBytes;
+    int processing = 0;
 
     /* Process any incoming bytes that were just sent */
     if (G_GainSpan_SPI_IsTransferComplete) {
         G_GainSpan_SPI_IsTransferComplete = false;
         GainSpan_SPI_ProcessIncoming();
         G_GainSpan_SPI_IsTransferActive = false;
+
+        // Finished, process one more time
+        processing = 1;
     } else {
         /* Is the SPI bus busy? We cannot start a transfer until it is free. */
         if ((!GainSpan_SPI_IsBusy(channel)) && (!G_GainSpan_SPI_IsTransferActive)) {
@@ -281,21 +418,35 @@ void GainSpan_SPI_Update(uint8_t channel)
             /* Try to send more data */
             /* Are we allowed to send data? (XON/XOFF) */
             if (G_GainSpan_SPI_CanTransmit) {
-                /* Is there more data to send? */
-                if (G_GainSpan_SPI_TXIn != G_GainSpan_SPI_TXOut) {
+                if (G_GainSpan_SPI_needFlowAllowed) {
+                    // Requested for a flow control, send it immediately
+#if GAINSPAN_SPI_ALLOW_FORCE_FLOW_CONTROL
+					// NOTE: This works well for the GS1011M module.  It ensures that the communications
+					// with the module keeps working.  On the GS2011M module, however, it does not
+					// work.  So the whole G_GainSpan_SPI_needFlowAllowed mechanism has to be disabled.
+					// I put in a compile option GAINSPAN_SPI_ALLOW_FORCE_FLOW_CONTROL in case you
+					// have a GS1011M that keeps losing flow control (really, I would turn it off).
+					// --lshields 07/07/2015
+                    GainSpan_SPI_SendByteLowLevel(GAINSPAN_SPI_CHAR_FLOW_CONTROL_ON);
+#endif
+                    G_GainSpan_SPI_needFlowAllowed = false;
+                } else if (G_GainSpan_SPI_TXIn != G_GainSpan_SPI_TXOut) {
+                    /* Is there more data to send? */
                     /* There is data to send, how many contiguous bytes can we send */
-#if 0
+#if 1
                     if (G_GainSpan_SPI_TXIn > G_GainSpan_SPI_TXOut) {
                         numBytes = G_GainSpan_SPI_TXIn - G_GainSpan_SPI_TXOut;
                     } else {
                         numBytes = GAINSPAN_SPI_TX_BUFFER_SIZE
                                 - G_GainSpan_SPI_TXOut;
                     }
-#endif
+                    //printf(ANSI_BLUE "(%d)" ANSI_OFF, numBytes);
+#else
 
                     // NOTE: Gainspan module wants only 1 byte per chip select cycle
                     numBytes = 1;
-
+printf(ANSI_BLUE "." ANSI_OFF);
+#endif
                     /* Remember how many bytes were sent in this transfer so */
                     /* the returned bytes can be processed later */
                     G_GainSpan_SPI_NumSent = numBytes;
@@ -306,6 +457,7 @@ void GainSpan_SPI_Update(uint8_t channel)
                             G_GainSpan_SPI_TXBuffer + G_GainSpan_SPI_TXOut,
                             G_GainSpan_SPI_TXBuffer + G_GainSpan_SPI_TXOut,
                             IGainSpan_SPI_TransferComplete);
+                    processing = 1;
                     //MSTimerDelay(1);
                 } else {
                     /* Nothing is being sent currently. */
@@ -313,6 +465,15 @@ void GainSpan_SPI_Update(uint8_t channel)
                     /* to start feeding out the data */
                     if (GainSpan_SPI_IsDataReady(GAINSPAN_SPI_CHANNEL)) {
                         GainSpan_SPI_SendByteLowLevel(GAINSPAN_SPI_CHAR_IDLE);
+                        // Send an IDLE character to look for the XON/XOFF */
+//                        G_GainSpan_SPI_XONIdleChar = GAINSPAN_SPI_CHAR_IDLE;
+//                        // No bytes from the buffer are being sent
+//                        G_GainSpan_SPI_NumSent = 0;
+//                        G_GainSpan_SPI_IsTransferActive = true;
+//                        GainSpan_SPI_Transfer(GAINSPAN_SPI_CHANNEL, 1,
+//                                &G_GainSpan_SPI_XONIdleChar,
+//                                &G_GainSpan_SPI_XONIdleChar,
+//                                IGainSpan_SPI_TransferComplete);
                     }
                 }
             } else {
@@ -330,7 +491,14 @@ void GainSpan_SPI_Update(uint8_t channel)
                 }
             }
         }
+
+        // If the above causes SPI to be active, keep processing
+        if (G_GainSpan_SPI_IsTransferActive)
+        	processing = 1;
     }
+
+    return processing;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -357,9 +525,12 @@ bool GainSpan_SPI_IsTransmitEmpty(void)
  *  @return     bool -- true if byte returned, else false
  */
 /*---------------------------------------------------------------------------*/
+
 bool GainSpan_SPI_ReceiveByte(uint8_t channel, uint8_t *aByte)
 {
     bool found = false;
+
+    IGrab();
 
     /* When looking for a byte, update the state */
     GainSpan_SPI_Update(channel);
@@ -369,19 +540,22 @@ bool GainSpan_SPI_ReceiveByte(uint8_t channel, uint8_t *aByte)
     if (G_GainSpan_SPI_RXIn != G_GainSpan_SPI_RXOut) {
 //printf("/%02x,%d/", G_GainSpan_SPI_RXBuffer[G_GainSpan_SPI_RXOut], G_GainSpan_SPI_RXOut);
         *aByte = G_GainSpan_SPI_RXBuffer[G_GainSpan_SPI_RXOut++];
-#if 0
-if (*aByte != 0xF5) {
+#if COLORED_DEBUG
     if ((*aByte >= 0x20) && (*aByte <= 0x7F))
-        printf("<%c", *aByte);
-    else
-        printf("[<%02X]", *aByte);
-}
+        printf(ANSI_GREEN "%c" ANSI_OFF, *aByte);
+    else {
+        printf(ANSI_GREEN "[%02X]" ANSI_OFF, *aByte);
+    }
 #endif
 
         if (G_GainSpan_SPI_RXOut >= GAINSPAN_SPI_RX_BUFFER_SIZE)
             G_GainSpan_SPI_RXOut = 0;
         found = true;
+    } else {
+//printf(".");
     }
+
+    IRelease();
 
     return found;
 }
@@ -402,13 +576,19 @@ bool GainSpan_SPI_SendByteLowLevel(uint8_t aByte)
     uint16_t next;
     bool placed = false;
 
-#if 0
+#if COLORED_DEBUG
 if (aByte != 0xF5) {
     if ((aByte >= 0x20) && (aByte <= 0x7F))
-        printf(">%c", aByte);
+        printf(ANSI_RED "%c" ANSI_OFF, aByte);
     else
-        printf("[>%02X]", aByte);
+        printf(ANSI_RED "[%02X]" ANSI_OFF, aByte);
 }
+#endif
+#if 0
+if ((aByte >= 0x20) && (aByte <= 0x7F))
+    printf("%c", aByte);
+else
+    printf("*");
 #endif
 
     /* Calculate where the next in position is in the FIFO */
@@ -431,6 +611,82 @@ if (aByte != 0xF5) {
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  GainSpan_SPI_SendTwoBytesLowLevel
+ *---------------------------------------------------------------------------*/
+/** Send two raw low level bytes out the GainSpan SPI transmit FIFO.  This
+ *      version of the routine does no escape characters or translating.
+ *
+ *  @param [in] aByte1 -- Byte 1 to send
+ *  @param [in] aByte2 -- Byte 2 to send
+ *  @return     bool -- true if byte was successfully placed in transmit FIFO, else
+ *          false.
+ */
+/*---------------------------------------------------------------------------*/
+bool GainSpan_SPI_SendTwoBytesLowLevel(uint8_t aByte1, uint8_t aByte2)
+{
+    uint16_t next;
+    uint16_t prev;
+    bool placed = false;
+
+#if COLORED_DEBUG
+if (aByte1 != 0xF5) {
+    if ((aByte1 >= 0x20) && (aByte1 <= 0x7F))
+        printf(ANSI_RED "%c" ANSI_OFF, aByte1);
+    else
+        printf(ANSI_RED "{%02X}" ANSI_OFF, aByte1);
+}
+if (aByte2 != 0xF5) {
+    if ((aByte2 >= 0x20) && (aByte2 <= 0x7F))
+        printf(ANSI_RED "%c" ANSI_OFF, aByte2);
+    else
+        printf(ANSI_RED "{%02X}" ANSI_OFF, aByte2);
+}
+#endif
+#if 0
+if (aByte1 != 0xF5) {
+    if ((aByte1 >= 0x20) && (aByte1 <= 0x7F))
+        printf("%c", aByte1);
+    else
+        printf("{%02X}", aByte1);
+}
+if (aByte2 != 0xF5) {
+    if ((aByte2 >= 0x20) && (aByte2 <= 0x7F))
+        printf("%c", aByte2);
+    else
+        printf("{%02X}", aByte2);
+}
+#endif
+
+    /* Calculate where the next in position is in the FIFO */
+    next = G_GainSpan_SPI_TXIn + 1;
+    if (next >= GAINSPAN_SPI_TX_BUFFER_SIZE)
+        next = 0;
+
+    /* Is there room in the transmit FIFO? */
+    if (next != G_GainSpan_SPI_TXOut) {
+        /* There is room, place a byte in the FIFO */
+        G_GainSpan_SPI_TXBuffer[G_GainSpan_SPI_TXIn] = aByte1;
+
+        prev = next;
+        next = prev + 1;
+        if (next >= GAINSPAN_SPI_TX_BUFFER_SIZE)
+            next = 0;
+        if (next != G_GainSpan_SPI_TXOut) {
+            G_GainSpan_SPI_TXBuffer[prev] = aByte2;
+			G_GainSpan_SPI_TXIn = next;
+			placed = true;
+        } else {
+        	placed = false;
+        }
+    } else {
+        /* There is no room in the FIFO, return the failed case */
+        placed = false;
+    }
+
+    return placed;
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  GainSpan_SPI_SendByte
  *---------------------------------------------------------------------------*/
 /** Send a byte out the transmit FIFO of the GainSpan_SPI driver.  If
@@ -443,7 +699,7 @@ if (aByte != 0xF5) {
  *          false.
  */
 /*---------------------------------------------------------------------------*/
-bool GainSpan_SPI_SendByte(uint8_t aByte)
+static bool GainSpan_SPI_SendByte(uint8_t aByte)
 {
     uint16_t next;
     bool placed = false;
@@ -467,8 +723,7 @@ bool GainSpan_SPI_SendByte(uint8_t aByte)
                     next = 0;
 
                 /* There is room for two bytes, now stuff the characters in */
-                GainSpan_SPI_SendByteLowLevel(GAINSPAN_SPI_CHAR_ESC);
-                placed = GainSpan_SPI_SendByteLowLevel(aByte ^ 0x20);
+                placed = GainSpan_SPI_SendTwoBytesLowLevel(GAINSPAN_SPI_CHAR_ESC, aByte ^ 0x20);
             }
             break;
         default:
@@ -495,11 +750,15 @@ uint16_t GainSpan_SPI_SendData(const uint8_t *aData, uint16_t aLen)
 {
     uint16_t i;
 
+    IGrab();
+
     /* Send each byte one at a time unless out of space */
     for (i = 0; i < aLen; ++i) {
         if (!GainSpan_SPI_SendByte(aData[i]))
             break;
     }
+
+    IRelease();
 
     /* Return the number of bytes that did get into the transmit FIFO */
     return i;
@@ -517,19 +776,23 @@ uint16_t GainSpan_SPI_SendData(const uint8_t *aData, uint16_t aLen)
  *  @return     void
  */
 /*---------------------------------------------------------------------------*/
-void GainSpan_SPI_SendDataBlock(uint8_t channel, const uint8_t *aData, uint16_t aLen)
-{
-    /* Send each byte one at a time unless out of space */
-    uint16_t i;
-
-    for (i = 0; i < aLen; ++i) {
-        while (1) {
-            if (GainSpan_SPI_SendByte(aData[i]))
-                break;
-            GainSpan_SPI_Update(channel);
-        }
-    }
-}
+//void GainSpan_SPI_SendDataBlock(uint8_t channel, const uint8_t *aData, uint16_t aLen)
+//{
+//    /* Send each byte one at a time unless out of space */
+//    uint16_t i;
+//
+//    IGrab();
+//
+//    for (i = 0; i < aLen; ++i) {
+//        while (1) {
+//            if (GainSpan_SPI_SendByte(aData[i]))
+//                break;
+//            GainSpan_SPI_Update(channel);
+//        }
+//    }
+//
+//    IRelease();
+//}
 
 /*---------------------------------------------------------------------------*
  * Routine:  GainSpan_SPI_IsLinkActive
@@ -546,6 +809,12 @@ void GainSpan_SPI_SendDataBlock(uint8_t channel, const uint8_t *aData, uint16_t 
 bool GainSpan_SPI_IsLinkActive(void)
 {
     return G_GainSpan_SPI_IsLinkActive;
+}
+
+void GainSpan_SPI_FlowAllowed(void)
+{
+    // Allow flowing (ON for flowing)
+    G_GainSpan_SPI_needFlowAllowed = true;
 }
 
 /** @} */

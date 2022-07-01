@@ -302,17 +302,23 @@ xMBRTUTransmitFSM( void )
         /* check if we are finished. */
         if( usSndBufferCount != 0 )
         {
-            xMBPortSerialPutByte( ( CHAR )*pucSndBufferCur );
-            pucSndBufferCur++;  /* next byte in sendbuffer. */
-            usSndBufferCount--;
-        }
-        else
-        {
+            xMBPortSerialPutByte( ( CHAR *)pucSndBufferCur, usSndBufferCount );
+            usSndBufferCount = 0;
             xNeedPoll = xMBPortEventPost( EV_FRAME_SENT );
             /* Disable transmitter. This prevents another transmit buffer
              * empty interrupt. */
             vMBPortSerialEnable( TRUE, FALSE );
             eSndState = STATE_TX_IDLE;
+            //pucSndBufferCur++;  /* next byte in sendbuffer. */
+            //usSndBufferCount--;
+        }
+        else
+        {
+//            xNeedPoll = xMBPortEventPost( EV_FRAME_SENT );
+//            /* Disable transmitter. This prevents another transmit buffer
+//             * empty interrupt. */
+//            vMBPortSerialEnable( TRUE, FALSE );
+//            eSndState = STATE_TX_IDLE;
         }
         break;
     }

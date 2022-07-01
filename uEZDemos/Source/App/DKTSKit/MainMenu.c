@@ -70,7 +70,7 @@ TUInt32 ROMChecksumCalculate()
     TUInt32 checksum = 0;
     TUInt32 count;
 
-    for (count=32; count<0x7E000; count++, p) {
+    for (count=32; count<0x7E000; count++) {
         checksum += *(p++);
     }
 
@@ -178,7 +178,7 @@ void TitleScreen(void)
     UEZTaskCreate(
                   (T_uezTaskFunction)CalcChecksumTask,
                   "Chksum",
-                  UEZ_TASK_STACK_BYTES(128),
+                  UEZ_TASK_STACK_BYTES(256),
                   (void *)0,
                   UEZ_PRIORITY_NORMAL,
                   0);
@@ -333,13 +333,13 @@ void MainMenu(void)
             UEZLCDBacklight(lcd, 255);
 #endif
 
-            // Set the screen saver icon
-            BouncingLogoSS_Setup(
-                (TUInt8 *)G_uEZLogo,
-                UEZ_ICON_WIDTH,
-                UEZ_ICON_HEIGHT,
-                DISPLAY_WIDTH,
-                DISPLAY_HEIGHT);
+        // Set the screen saver icon
+        //BouncingLogoSS_Setup(
+        //    (TUInt8 *)G_uEZLogo,
+        //    UEZ_ICON_WIDTH,
+        //    UEZ_ICON_HEIGHT,
+        //    DISPLAY_WIDTH,
+        //    DISPLAY_HEIGHT);
 
             AppMenu(&mainmenu);
             UEZLCDClose(lcd);
