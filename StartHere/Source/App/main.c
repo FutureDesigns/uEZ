@@ -33,11 +33,7 @@
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.h>
 #include <UEZPlatform.h>
 #include "emWin/WindowManager.h"
-
-// Include Calibration.h only for resitive touch
-#if (UEZ_DEFAULT_TOUCH != TOUCH_PCAP)
-#include <Calibration.h> 
-#endif
+#include <Calibration.h>
 
 #if COMPILE_OPTION_USB_SDCARD_DISK
 #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
@@ -101,8 +97,8 @@ void MainTask(void)
         NVSettingsSave();
     }
 
-// Calibration is only needed for rexistive touch and not capacitive or no touch.
-#if (UEZ_DEFAULT_TOUCH != TOUCH_PCAP)
+// Calibration is only needed for resistive touch and not capacitive or no touch.
+#if ((UEZ_DEFAULT_TOUCH != TOUCH_PCAP) || USE_RESISTIVE_TOUCH)
     Calibrate(CalibrateTestIfTouchscreenHeld());
 #endif
     
@@ -185,7 +181,6 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();
     printf("%x", traceAddressInMemory);
 #endif
-
 
     // Create a main task (not running yet)
     UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", 1024, 0,

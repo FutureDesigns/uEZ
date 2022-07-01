@@ -34,11 +34,7 @@
 #include <UEZPlatform.h>
 #include "emWin/WindowManager.h"
 #include "MyTask.h"
-
-// Include Calibration.h only for resitive touch
-#if (UEZ_DEFAULT_TOUCH != TOUCH_PCAP)
-#include <Calibration.h> 
-#endif
+#include <Calibration.h>
 
 #if COMPILE_OPTION_USB_SDCARD_DISK
 #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
@@ -69,9 +65,9 @@ TUInt32 GUIInterfaceTask(T_uezTask aMyTask, void *aParams)
     TBool done = EFalse;
 
     if (WindowManager_Start_emWin() != UEZ_ERROR_NONE) {
-        //UEZFatalError("Failed to start emWin!");
+        UEZFailureMsg("Failed to start emWin!");
     }
-    
+        
     WindowManager_Create_All_Active_Windows();
 
     WindowManager_Show_Window(HOME_SCREEN);
@@ -102,8 +98,8 @@ void MainTask(void)
         NVSettingsSave();
     }
 
-// Calibration is only needed for rexistive touch and not capacitive or no touch.
-#if (UEZ_DEFAULT_TOUCH != TOUCH_PCAP)
+// Calibration is only needed for resistive touch and not capacitive or no touch.
+#if ((UEZ_DEFAULT_TOUCH != TOUCH_PCAP) || USE_RESISTIVE_TOUCH)
     Calibrate(CalibrateTestIfTouchscreenHeld());
 #endif
 
