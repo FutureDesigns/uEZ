@@ -1,11 +1,23 @@
 usb 228201200
 exec device = LPC1788
 speed 4000
+
 rx 200
 h
+w4 0x400FC1A0 0x20
+w4 0x400FC104 0x01
+w4 0x400FC080 0x00
+w4 0x400FC08C 0xAA
+w4 0x400FC08C 0x55
+w4 0x400FC10C 0x01
+w4 0x400FC000 0x3A
+w4 0x400FC040 0x01
+
 loadbin "ProgramNORFlash1788.prog", 0
+
 rx 200
 g
+
 sleep 2000
 h
 loadbin "uEZGUI-1788-43WQR_IAR_DATA.BIN", 0xA0100000

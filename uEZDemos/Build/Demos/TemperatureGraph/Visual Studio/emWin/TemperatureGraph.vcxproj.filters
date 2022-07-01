@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.c">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\GUIConf.c">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\LCDConf.c">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\SIMConf.c">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Simulation\WinMain\WinMain.c">
+      <Filter>System\Simulation\WinMain</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\RTOS\uEZRTOS_FreeRTOS.c">
+      <Filter>uEZ\Source\RTOS</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZTS.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZLCD.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZTimeDate.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\LookAndFeel.c">
+      <Filter>App\TemperatureGraph\emWin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\TemperatureGraph.c">
+      <Filter>App\TemperatureGraph\emWin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\TemperatureGraph_SettingDLG.c">
+      <Filter>App\TemperatureGraph\emWin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\Fonts\Open Sans24.c">
+      <Filter>App\TemperatureGraph\emWin\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\Fonts\Open Sans49.c">
+      <Filter>App\TemperatureGraph\emWin\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\Fonts\Open Sans70_Bold.c">
+      <Filter>App\TemperatureGraph\emWin\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="uEZ\Source\uEZSystem\uEZTemperature.c">
+      <Filter>uEZ\Source\uEZSystem</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Config_App.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Config_Build.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\GUIConf.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\LCDConf.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Simulation\SIM.h">
+      <Filter>System\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Simulation\GUI_SIM_Win32.h">
+      <Filter>System\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Simulation\Res\ResourceSim.h">
+      <Filter>System\Simulation\Res</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\LookAndFeel.h">
+      <Filter>App\TemperatureGraph\emWin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\TemperatureGraph.h">
+      <Filter>App\TemperatureGraph\emWin</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="System\Simulation\Res\w.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Branding.rh">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\o.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\off.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\off1.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\s.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Simulation.ico">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\so.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\sw.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\n.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\Logo.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\nw.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="System\Simulation\Res\no.bmp">
+      <Filter>System\Simulation\Res</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Source\App\TemperatureGraph\emWin\README.txt">
+      <Filter>App\TemperatureGraph\emWin</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="App">
+      <UniqueIdentifier>{e2f2e8bf-5163-41ce-9246-68a8a6288909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\TemperatureGraph">
+      <UniqueIdentifier>{0fea40f4-90e2-48a9-82dd-be0550a20d01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\TemperatureGraph\emWin">
+      <UniqueIdentifier>{584ad692-ad7f-4ee6-8fbc-350a4dfc0c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{406b1215-b2b7-41dd-ae80-71da4636d9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{d9298134-e059-4d2f-a332-96d25e668c59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{89ff1e0f-ca6c-487c-ba38-f11ea5b99f8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Simulation">
+      <UniqueIdentifier>{76e13078-61dc-4a83-957c-26d1f4965746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Simulation\Res">
+      <UniqueIdentifier>{600dd114-2a09-4cf6-88bc-a3309ed67ea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Simulation\WinMain">
+      <UniqueIdentifier>{47841bc8-3bbf-420c-b99f-d6f7329d4638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ">
+      <UniqueIdentifier>{e33035f0-2fcf-4349-8ff2-b2859485e750}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ\Source">
+      <UniqueIdentifier>{a7b32eae-c96a-41a9-a98e-84003a18b5fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ\Source\RTOS">
+      <UniqueIdentifier>{5d75a491-c705-45e8-9b47-505ec946f6c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="uEZ\Source\uEZSystem">
+      <UniqueIdentifier>{c52fca04-f0d4-447e-a772-492e40bf6a2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\TemperatureGraph\emWin\Fonts">
+      <UniqueIdentifier>{e456da08-71b3-44d5-9d02-abf7a653563b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\TemperatureGraph\emWin\Graphics">
+      <UniqueIdentifier>{bce672b0-8ad7-4ccd-9a94-3c150476dcaf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="GUI\GUIx86.lib">
+      <Filter>GUI</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="System\Simulation\Res\Simulation.rc">
+      <Filter>System\Simulation\Res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

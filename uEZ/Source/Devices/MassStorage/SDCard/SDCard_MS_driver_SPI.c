@@ -8,13 +8,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -803,7 +803,7 @@ static T_uezError SDCard_MS_Init(void *aWorkspace, TUInt32 aAddress)
     (*p->iSPI)->Start(p->iSPI, &p->r);
     ISPIEnd(p);
 
-    /* Clock many times to activate it */
+    // Send minimum 72 clock cycles before initial command per SD spec
     for (i=0; i<10; i++)
         (*p->iSPI)->TransferInOut(p->iSPI, &p->r, 0xFF);
 

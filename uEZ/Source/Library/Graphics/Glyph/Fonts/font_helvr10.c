@@ -38,6 +38,7 @@
 Includes “Glyph config Include”
 ******************************************************************************/
 #include "..\glyph_cfg.h"
+#include <stdint.h>
 
 // const uint8_t FontHelvr10_char_0[] = {};
 // const uint8_t FontHelvr10_char_1[] = {};

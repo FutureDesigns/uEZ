@@ -561,7 +561,6 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-43WQS/IAR6.x</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVM</state>
@@ -661,7 +660,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-43WQR.out</state>
+          <state>uEZGUI-1788-70WVM.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1038,7 +1037,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1512,9 +1511,6 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-43WQS/IAR6.x</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVM</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
@@ -1558,7 +1554,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>uEZGUI-1788-43WQR.hex</state>
+          <state>uEZGUI-1788-70WVM.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1612,7 +1608,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-43WQR.out</state>
+          <state>uEZGUI-1788-70WVM.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1989,7 +1985,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -2464,9 +2460,6 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$/../../../../../../uEZ</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Build/uEZGUI/uEZGUI-1788-43WQS/IAR6.x</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/uEZGUI</state>
-          <state>$PROJ_DIR$/../../../../../../uEZ/Source/App/Demos/FDI/SEGGER/emWin/GUIDEMO</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVM</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/</state>
           <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
@@ -2510,7 +2503,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>uEZGUI-1788-43WQR.hex</state>
+          <state>uEZGUI-1788-70WVM.hex</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -2564,7 +2557,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>uEZGUI-1788-43WQR.out</state>
+          <state>uEZGUI-1788-70WVM.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -3117,7 +3110,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZI2C.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Include\uEZLCD.h</name>
@@ -3286,6 +3279,12 @@
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\DrawMode.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\GUICommon\LookAndFeel.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\GUICommon\LookAndFeel.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\MultiSlideshowMode.c</name>
         </file>
         <file>
@@ -3314,6 +3313,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\TimeDateMode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\TS_Test.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.c</name>
@@ -3414,7 +3416,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR650_M3_LE.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR_M3.a</name>
                 </file>
               </group>
             </group>
@@ -3735,7 +3737,7 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVM\uEZGUI_1788_70WVM.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVM\UEZPlatform.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Platform\FDI\uEZGUI_1788_70WVM\uEZPlatform.h</name>
           </file>
         </group>
       </group>

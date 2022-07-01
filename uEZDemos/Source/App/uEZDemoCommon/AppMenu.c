@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -27,8 +27,8 @@
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include "uEZDemoCommon.h"
-#include <UEZLCD.h>
-#include <UEZKeypad.h>
+#include <uEZLCD.h>
+#include <uEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -87,6 +87,9 @@ typedef struct {
 TBool volatile G_mmTestMode = EFalse;
 #endif
 
+extern TUInt32 G_romChecksum;
+extern TBool G_romChecksumCalculated;
+
 static void IAMExit(const T_choice *aChoice)
 {
     // Mark the workspace as exiting
@@ -112,6 +115,7 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
     TUInt32 x, y;
     TUInt32 h, v;
     TUInt32 fontHeight;
+    char title[60]; // DK-TS needs more than 50 for title and CS
 
     UEZLCDGetFrame(aWS->iLCD, 0, (void **)&pixels);
        
@@ -125,7 +129,12 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
     swim_window_open(&aWS->iWin, DISPLAY_WIDTH, DISPLAY_HEIGHT, pixels, 0, 0,
             DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, 2, YELLOW, RGB(0, 0, 0), RED);
     swim_set_font(&aWS->iWin, &APP_DEMO_DEFAULT_FONT);
-    swim_set_title(&aWS->iWin, aWS->iMenu->iTitle, BLUE);
+    if(G_romChecksumCalculated){
+        sprintf(title, "%s CS: 0x%08X", aWS->iMenu->iTitle, G_romChecksum);
+        swim_set_title(&aWS->iWin, title, BLUE);
+    } else {
+        swim_set_title(&aWS->iWin, aWS->iMenu->iTitle, BLUE);
+    }
     swim_set_fill_color(&aWS->iWin, BLACK);
     fontHeight = swim_get_font_height(&aWS->iWin);
 

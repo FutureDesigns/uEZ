@@ -173,6 +173,7 @@
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\ff.c" "User" "Source|Library|FileSystem|FATFS" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\ff.h" "User" "Source|Library|FileSystem|FATFS" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\integer.h" "User" "Source|Library|FileSystem|FATFS" 2 
+"R:\FDI\uEZ\Source\Library\FileSystem\FATFS\option\unicode.c" "User" "Source|Library|FileSystem|FATFS" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\rtc.c" "User" "Source|Library|FileSystem|FATFS" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\rtc.h" "User" "Source|Library|FileSystem|FATFS" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c" "User" "Source|Library|FileSystem|FATFS" 2 
@@ -554,6 +555,7 @@
 "R:\FDI\uEZ\Source\uEZSystem\uEZWatchdog.c" "User" "Source|uEZSystem" 2 
 [FOLDER]
 "Assembly source file" "Assembly source file" 
+"C source file" "C source file" 
 "Library file" "Library file" 
 "Source" "Source" 
 "Source|Devices" "" 
@@ -683,7 +685,7 @@
 [GENERAL_DATA_SESSION_DefaultSession]
 [GENERAL_DATA_SESSION_nodebug]
 [OPTIONS_Debug_Renesas OptLinker]
-"Single Shot" "040fa5868ba6ec10" 6 
+"Single Shot" "04fe516ceb180d10" 6 
 [OPTIONS_Debug_Renesas RX Assembler]
 "Assembly source file" "0b0278ded669dc10" 5 
 "Linkage symbol file" "0b0278ded669dc10" 5 
@@ -719,6 +721,7 @@
 "R:\FDI\uEZ\Source\Library\Console\FDICmd\FDICmd.c" "043a537f762cdc10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\diskio.c" "04b9474b068adc10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\ff.c" "04b9474b068adc10" 2 
+"R:\FDI\uEZ\Source\Library\FileSystem\FATFS\option\unicode.c" "06780e5ceb180d10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\rtc.c" "04b9474b068adc10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c" "04b9474b068adc10" 2 
 "R:\FDI\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.c" "04b9474b068adc10" 2 
@@ -868,7 +871,7 @@
 [OPTIONS_Debug_Renesas RX C/C++ Library Generator]
 "Single Shot" "05ef7ba05f2adc10" 1 
 [OPTIONS_Debug_Renesas RX Configurator]
-"Single Shot" "081a91868ba6ec10" 7 
+"Single Shot" "06780e5ceb180d10" 7 
 [OPTIONS_Debug]
 "" 0 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 7 
@@ -890,7 +893,7 @@
 [LINKAGE_ORDER_Debug]
 [GENERAL_DATA_CONFIGURATION_Debug]
 [OPTIONS_Release_Renesas OptLinker]
-"Single Shot" "040fa5868ba6ec10" 6 
+"Single Shot" "04fe516ceb180d10" 6 
 [OPTIONS_Release_Renesas RX Assembler]
 "Assembly source file" "07307ebedd2adc10" 5 
 "Linkage symbol file" "07307ebedd2adc10" 5 
@@ -926,6 +929,7 @@
 "R:\FDI\uEZ\Source\Library\Console\FDICmd\FDICmd.c" "043a537f762cdc10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\diskio.c" "098b6f66968adc10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\ff.c" "098b6f66968adc10" 2 
+"R:\FDI\uEZ\Source\Library\FileSystem\FATFS\option\unicode.c" "06780e5ceb180d10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\rtc.c" "098b6f66968adc10" 2 
 "R:\FDI\uEZ\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c" "098b6f66968adc10" 2 
 "R:\FDI\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.c" "098b6f66968adc10" 2 
@@ -1075,7 +1079,7 @@
 [OPTIONS_Release_Renesas RX C/C++ Library Generator]
 "Single Shot" "0620fda40f7cdc10" 1 
 [OPTIONS_Release_Renesas RX Configurator]
-"Single Shot" "081a91868ba6ec10" 7 
+"Single Shot" "06780e5ceb180d10" 7 
 [OPTIONS_Release]
 "" 0 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 7 

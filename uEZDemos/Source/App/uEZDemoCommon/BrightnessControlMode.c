@@ -9,13 +9,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -24,7 +24,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
 #include <uEZTimeDate.h>
@@ -32,14 +32,14 @@
 #include "uEZDemoCommon.h"
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
-#include <Source/Library/Screensaver/BouncingLogoSS.h>
+#include <Source/Library/ScreenSaver/BouncingLogoSS.h>
 #include <Types/InputEvent.h>
 #if UEZ_ENABLE_LIGHT_SENSOR
 #include "uEZRTOS.h"
 #include <Source/Devices/Light Sensor/ROHM/BH1721FVC/Light_Sensor_BH1721FVC.h>
 #endif
-#include <UEZLCD.h>
-#include <UEZKeypad.h>
+#include <uEZLCD.h>
+#include <uEZKeypad.h>
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
  *---------------------------------------------------------------------------*/
@@ -78,6 +78,26 @@
 #define MAX_CHOICES     3
 
 #define SCREEN_EDGE_MIN_PADDING         10
+
+#if UEZ_DEFAULT_LCD_RES_QVGA
+    #define UEZ_ICON_HEIGHT 64
+    #define UEZ_ICON_WIDTH 111
+#endif
+
+#if UEZ_DEFAULT_LCD_RES_VGA
+    #define UEZ_ICON_HEIGHT    118
+    #define UEZ_ICON_WIDTH   220
+#endif
+
+#if UEZ_DEFAULT_LCD_RES_WVGA
+    #define UEZ_ICON_HEIGHT    118
+    #define UEZ_ICON_WIDTH   220
+#endif
+
+#if (UEZ_DEFAULT_LCD==LCD_RES_480x272)
+    #define UEZ_ICON_HEIGHT 64
+    #define UEZ_ICON_WIDTH 111
+#endif
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -152,6 +172,12 @@ static void BCMScreenSaverToggle(const T_choice *aChoice)
         ssInfo.iCallback_AnimationUpdate = &BouncingLogoSS_Update;
         ssInfo.iCallback_AnimationSleep = &BouncingLogoSS_Sleep;
         ssInfo.iCallback_AnimationEnd = &BouncingLogoSS_End;
+        //Must be call before starting
+        BouncingLogoSS_Setup((TUInt8*)&G_uEZLogo,
+                UEZ_ICON_WIDTH,
+                UEZ_ICON_HEIGHT,
+                DISPLAY_WIDTH,
+                DISPLAY_HEIGHT);
         UEZLCDScreensaverStart(lcd, &ssInfo);
     }
     DrawScreenSaverBox(((T_brightnessControlWorkspace *)(aChoice->iData)));
@@ -538,8 +564,8 @@ void BrightnessControlMode(const T_choice *aChoice)
         UEZTaskResume(G_lightSensorTask);
 #endif
     }
-	/* <<< WHIS >>> Potential memory leak in FreeRTOS version as G_ws is not 
-	free'd. */
+    UEZMemFree(G_ws);
+    G_ws = 0;
 }
 
 /*-------------------------------------------------------------------------*

@@ -43,7 +43,7 @@
  *  @file   BasicWEB.c
  *  @brief  uEZ BasicWEB
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *  uEZ BasicWEB, includes task and start functions
  */

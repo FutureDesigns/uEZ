@@ -49,6 +49,7 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
+#define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               0
 
 #define INCLUDE_EMWIN                       0

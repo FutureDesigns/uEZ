@@ -8,13 +8,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -90,6 +90,9 @@ typedef struct {
     // Queue to receive events
     T_uezSemaphore iStatusChangeSem;
     T_uezSemaphore iWaitForIRQEvent;
+
+    //! Speed of this USBHost
+    T_usbHostSpeed iSpeed;
 } T_Generic_USBHost_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -254,6 +257,19 @@ static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
 
     (*p_usbHost)->Init(p_usbHost);
     (*p_usbHost)->ResetPort(p_usbHost);
+
+    // Wait for at least one registration (otherwise this monitor is really useless)
+    // (Waiting also ensures the usually one device needed is already configured)
+    // NOTE: This should be improved in the future so all registrations of device
+    // drivers is done BEFORE we start connecting/disconnecting.  Reason: the
+    // device may be already connected at power up (yielding a race condition)!
+    while (1) {
+        if (p->iRegistrations)
+            break;
+
+        // Check every half second
+        UEZTaskDelay(500);
+    }
     while (1) {
         // Wait for the event to be received (or kill thread if an error)
         if (UEZSemaphoreGrab(
@@ -265,7 +281,7 @@ static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
         retry = 5;
 
         while (retry--) {
-            UEZTaskDelay(50);
+            UEZTaskDelay(1);
             // Determine the state we are in
             if ((*p_usbHost)->GetState(p_usbHost) == USB_HOST_STATE_CONNECTED) {
                 event.iType = USBHOST_EVENT_TYPE_CONNECT;
@@ -285,7 +301,7 @@ static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
             retry = 3;
 
             while (retry--) {
-                UEZTaskDelay(50);
+                UEZTaskDelay(1);
                 // Determine the state we are in
                 if ((*p_usbHost)->GetState(p_usbHost) == USB_HOST_STATE_CONNECTED) {
                     event.iType = USBHOST_EVENT_TYPE_CONNECT;
@@ -305,6 +321,12 @@ static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
 
             (*p_usbHost)->ResetBuffers(p_usbHost);
             descBuf = (*p_usbHost)->AllocBuffer(p_usbHost, 128);
+
+            // What speed are we now?
+            p->iSpeed = (*p_usbHost)->GetRootPortDetectedSpeed(p_usbHost);
+
+            // Configure the root port to match
+            (*p_usbHost)->SetRootPortSpeed(p_usbHost, p->iSpeed);
 
             // Reset the port (and the allocated buffers)
 //                (*p_usbHost)->ResetPort(p_usbHost);
@@ -738,6 +760,36 @@ static T_uezError Generic_USBHost_InterruptIn(
     return error;
 }
 
+static T_uezError Generic_USBHost_ControlOut(
+            void *aWorkspace,
+            TUInt8 aDeviceAddress,
+            TUInt8 aBMRequestType,
+            TUInt8 aRequest,
+            TUInt16 aValue,
+            TUInt16 aIndex,
+            TUInt16 aLength,
+            void *aBuffer,
+            TUInt32 aTimeout)
+{
+    T_Generic_USBHost_Workspace *p = (T_Generic_USBHost_Workspace *)aWorkspace;
+    T_uezError error;
+
+    IGrab();
+    error = (*p->iUSBHost)->ControlOut(
+            p->iUSBHost,
+            aDeviceAddress,
+            aBMRequestType,
+            aRequest,
+            aValue,
+            aIndex,
+            aLength,
+            aBuffer,
+            aTimeout);
+    IRelease();
+
+    return error;
+}
+
 void USBHost_Generic_Create(const char *aName, const char *aHALUSBHostName)
 {
     T_halWorkspace *p_halUSBHost;
@@ -782,6 +834,8 @@ const DEVICE_USBHost G_Generic_USBHost_Interface = {
     Generic_USBHost_BulkIn,
     Generic_USBHost_InterruptOut,
     Generic_USBHost_InterruptIn,
+
+    Generic_USBHost_ControlOut,
 };
 
 

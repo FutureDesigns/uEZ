@@ -1,42 +1,27 @@
 /*-------------------------------------------------------------------------*
- * File:  UEZGUITestCmds.c
+ * File:  TestCmds.c
  *-------------------------------------------------------------------------*
  * Description:
  *      UEZGUI Tester command console
  *-------------------------------------------------------------------------*/
+ 
 /*--------------------------------------------------------------------------
- * This software and associated documentation files (the "Software")
- * are copyright 2010 Future Designs, Inc. All Rights Reserved.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
- * A copyright license is hereby granted for redistribution and use of
- * the Software in source and binary forms, with or without modification,
- * provided that the following conditions are met:
- * 	-   Redistributions of source code must retain the above copyright
- *      notice, this copyright license and the following disclaimer.
- * 	-   Redistributions in binary form must reproduce the above copyright
- *      notice, this copyright license and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- * 	-   Neither the name of Future Designs, Inc. nor the names of its
- *      subsidiaries may be used to endorse or promote products
- *      derived from the Software without specific prior written permission.
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
  *
- * 	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- * 	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * 	MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * 	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * 	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * 	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * 	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * 	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * 	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * 	OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * 	EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *-------------------------------------------------------------------------*/
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
+#if APP_MENU_ALLOW_TEST_MODE
 #include <uEZStream.h>
 #include <uEZSPI.h>
 #include <Source/Library/Console/FDICmd/FDICmd.h>
@@ -78,6 +63,7 @@ void UEZGUITestNextTest(T_testData *aData);
 int UEZGUICmdPing(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdSDRAM(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdNOR(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdSPIFI(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[]);
@@ -108,6 +94,8 @@ int UEZGUICmdMACAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdIPAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdIPMaskAddress(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdIPGatewayAddress(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdGainSpan(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdGainSpanRun(void *aWorkspace, int argc, char *argv[]);
 extern T_uezError UEZToneGeneratorOpen(
             const char * const aName, 
             T_uezDevice *aDevice);
@@ -123,6 +111,7 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "PING", UEZGUICmdPing },
         { "SDRAM", UEZGUICmdSDRAM },
         { "NOR", UEZGUICmdNOR },
+        { "SPIFI", UEZGUICmdSPIFI },
         { "GPIO", UEZGUICmdGPIO },
         { "5V", UEZGUICmd5V },
         { "3VERR", UEZGUICmd3VERR },
@@ -155,6 +144,10 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "IPADDR", UEZGUICmdIPAddress },
         { "IPMASK", UEZGUICmdIPMaskAddress },
         { "IPGATEWAY", UEZGUICmdIPGatewayAddress },
+#if UEZ_WIRELESS_PROGRAM_MODE
+        { "GAINSPANPROGRAM", UEZGUICmdGainSpan },
+        { "GAINSPANRUNMODE", UEZGUICmdGainSpanRun },
+#endif  
         { "I2CPROBE", UEZCmdI2CProbe },
         { "I2CWRITE", UEZCmdI2CWrite },
         { "I2CREAD", UEZCmdI2CRead },
@@ -174,6 +167,56 @@ static const T_testAPI G_UEZGUITestAPI = {
         UEZGUITestShowResult,
         UEZGUITestSetTestResult,
         UEZGUITestNextTest, };
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZGUICmdGainSpan
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Place Unit into passthrough for GainSpan flashing (module flash)
+ * Inputs:
+ *      void *aWorkspace -- FDICmd workspace for output
+ *      int argc -- number of arguments to this command
+ *      char *argv[] -- pointer to a list of pointers for arguments
+ * Outputs:
+ *      int -- return value (0 for no errors)
+ *---------------------------------------------------------------------------*/
+int UEZGUICmdGainSpan(void *aWorkspace, int argc, char *argv[])
+{
+    if (argc == 1) {
+        // No Parameters (other than command) cause CMD to pass
+        FDICmdSendString(aWorkspace, "PASS: OK\n");
+        UEZPlatform_WiFiProgramMode(EFalse);
+    } else {
+        // Parameters cause CMD to fail
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect Parameters\n");
+    }
+    return 0;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZGUICmdGainSpanRun
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Place Unit into passthrough for GainSpan run mode, for ext NOR flash
+ * Inputs:
+ *      void *aWorkspace -- FDICmd workspace for output
+ *      int argc -- number of arguments to this command
+ *      char *argv[] -- pointer to a list of pointers for arguments
+ * Outputs:
+ *      int -- return value (0 for no errors)
+ *---------------------------------------------------------------------------*/
+int UEZGUICmdGainSpanRun(void *aWorkspace, int argc, char *argv[])
+{
+    if (argc == 1) {
+        // No Parameters (other than command) cause CMD to pass
+        FDICmdSendString(aWorkspace, "PASS: OK\n");        
+        UEZPlatform_WiFiProgramMode(ETrue);
+    } else {
+        // Parameters cause CMD to fail
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect Parameters\n");
+    }
+    return 0;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZGUITestAddButtons
@@ -396,14 +439,72 @@ int UEZGUICmdNOR(void *aWorkspace, int argc, char *argv[])
     }
     return 0;
 }
+#include <uEZFlash.h>
+int UEZGUICmdSPIFI(void *aWorkspace, int argc, char *argv[])
+{
+    TUInt32 i;
+    T_uezDevice flash;
+    T_uezError error;
+    TUInt8 buffer[256];
+
+    if (argc == 1) {
+        if(UEZFlashOpen("Flash0", &flash) == UEZ_ERROR_NONE){
+            error = UEZFlashBlockErase(flash, 0x00700000, 256*1024); // first 256K
+            if (error){
+                FDICmdSendString(aWorkspace, "FAIL: Failed to erase flash\n");
+                return -1;
+            }
+            error = UEZFlashRead(flash, 0x00700000, buffer, 128);
+            if (error){
+                FDICmdSendString(aWorkspace, "FAIL: Failed to read flash\n");
+                return -1;
+            }
+            // Should be all 0xFF
+            for (i=0; i<128; i++)
+                if (buffer[i] != 0xFF){
+                    FDICmdSendString(aWorkspace, "FAIL: Flash not Erased\n");
+                    return -1;
+                }
+
+            // Do write/read test over 128K boundary
+            error = UEZFlashWrite(flash, 0x00700000+128*1024-4, "Hello ", 6);
+            if (error){
+                FDICmdSendString(aWorkspace, "FAIL: Failed to write flash\n");
+                return -1;
+            }
+            error = UEZFlashWrite(flash, 0x00700000+128*1024-4+6, "World ", 6);
+            if (error){
+                FDICmdSendString(aWorkspace, "FAIL: Failed to write flash\n");
+                return -1;
+            }
+            error = UEZFlashRead(flash, 0x00700000+128*1024-4, buffer, 128);
+            if (error){
+                FDICmdSendString(aWorkspace, "FAIL: Failed to read flash\n");
+                return -1;
+            }
+            if (memcmp(buffer, "Hello World ", 12) != 0){
+                FDICmdSendString(aWorkspace, "FAIL: Memory Compare Failed\n");
+                return -1;
+            }
+            FDICmdSendString(aWorkspace, "PASS: OK\n");
+            UEZFlashClose(flash);
+        } else {
+            FDICmdSendString(aWorkspace, "FAIL: Flash Not Enabled\n");
+        }
+    } else {
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+    }
+    return 0;
+}
 
 int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
 {
-    TUInt32 portA, pinA, portB, pinB;
+    TUInt32 portA, pinA, portB, pinB, portC, pinC;
     T_testData testData;
     extern HAL_GPIOPort **PortNumToPort(TUInt8 aPort);
     HAL_GPIOPort **p_portA;
     HAL_GPIOPort **p_portB;
+    HAL_GPIOPort **p_portC;
     TUInt32 high, low;
 
     if (argc == 5) {
@@ -464,6 +565,138 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
             return -1;
         }
 
+        // High is high and low is low, good
+        FDICmdPrintf(aWorkspace, "PASS: OK\n");
+    } else if (argc == 7) {
+        // Got all 7 parameters, parse them
+        portA = FDICmdUValue(argv[1]);
+        pinA = FDICmdUValue(argv[2]);
+        portB = FDICmdUValue(argv[3]);
+        pinB = FDICmdUValue(argv[4]);
+        portC = FDICmdUValue(argv[5]);
+        pinC = FDICmdUValue(argv[6]);
+
+        p_portA = PortNumToPort(portA);
+        if (!p_portA) {
+            FDICmdPrintf(aWorkspace, "FAIL: Unknown Port %d\n", portA);
+            return -1;
+        }
+        p_portB = PortNumToPort(portB);
+        if (!p_portB) {
+            FDICmdPrintf(aWorkspace, "FAIL: Unknown Port %d\n", portB);
+            return -1;
+        }
+        p_portC = PortNumToPort(portC);
+        if (!p_portC) {
+            FDICmdPrintf(aWorkspace, "FAIL: Unknown Port %d\n", portC);
+            return -1;
+        }
+
+        // Reset pins back to default state
+        (*p_portA)->SetInputMode(p_portA, 1 << pinA);            // set to Input
+        (*p_portA)->SetPull(p_portA, 1 << pinA, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portA)->SetMux(p_portA, pinA, 0);                    // set to GPIO
+        (*p_portB)->SetInputMode(p_portB, 1 << pinB);            // set to Input
+        (*p_portB)->SetPull(p_portB, 1 << pinB, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portB)->SetMux(p_portB, pinB, 0);                    // set to GPIO
+        (*p_portC)->SetInputMode(p_portC, 1 << pinC);            // set to Input
+        (*p_portC)->SetPull(p_portC, 1 << pinC, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portC)->SetMux(p_portC, pinC, 0);                    // set to GPIO
+
+        // Test Pair AB
+        (*p_portA)->SetOutputMode(p_portA, 1 << pinA); // set to Output
+        (*p_portA)->SetMux(p_portA, pinA, 0); // set to GPIO
+        (*p_portB)->SetPull(p_portB, pinB, GPIO_PULL_UP); // set to Pull up
+        (*p_portB)->SetInputMode(p_portB, 1 << pinB); // set to Input
+        (*p_portB)->SetMux(p_portB, pinB, 0); // set to GPIO
+        // Drive 1 on this pin
+        (*p_portA)->Set(p_portA, 1 << pinA);
+        UEZTaskDelay(1);         // Pause
+        (*p_portB)->Read(p_portB, 1 << pinB, &high); // Read high setting
+        (*p_portA)->Clear(p_portA, 1 << pinA); // Now change to a low setting
+        UEZTaskDelay(1); // Pause
+        (*p_portB)->Read(p_portB, 1 << pinB, &low); // Now read again
+        if (high && low) { // Are we stuck high or low?
+            FDICmdPrintf(aWorkspace, "FAIL: Stuck HIGH\n");
+            return -1;
+        }
+        if (!high && !low) {
+            FDICmdPrintf(aWorkspace, "FAIL: Stuck LOW\n");
+            return -1;
+        }
+        if (!high && low) {
+            FDICmdPrintf(aWorkspace, "FAIL: Reversed?\n");
+            return -1;
+        }
+        
+        // Reset pins back to default state
+        (*p_portA)->SetInputMode(p_portA, 1 << pinA);            // set to Input
+        (*p_portA)->SetPull(p_portA, 1 << pinA, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portB)->SetInputMode(p_portB, 1 << pinB);            // set to Input
+        (*p_portB)->SetPull(p_portB, 1 << pinB, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portC)->SetInputMode(p_portC, 1 << pinC);            // set to Input
+        (*p_portC)->SetPull(p_portC, 1 << pinC, GPIO_PULL_NONE); // set to floating input mode
+              
+        // Test Pair BC
+        (*p_portC)->SetOutputMode(p_portC, 1 << pinC); // set to Output
+        (*p_portC)->SetMux(p_portC, pinC, 0); // set to GPIO
+        (*p_portB)->SetPull(p_portB, pinB, GPIO_PULL_UP); // set to Pull up
+        (*p_portB)->SetInputMode(p_portB, 1 << pinB); // set to Input
+        (*p_portB)->SetMux(p_portB, pinB, 0); // set to GPIO
+        // Drive 1 on this pin
+        (*p_portC)->Set(p_portC, 1 << pinC);
+        UEZTaskDelay(1);         // Pause
+        (*p_portB)->Read(p_portB, 1 << pinB, &high); // Read high setting
+        (*p_portC)->Clear(p_portC, 1 << pinC); // Now change to a low setting
+        UEZTaskDelay(1); // Pause
+        (*p_portB)->Read(p_portB, 1 << pinB, &low); // Now read again
+        if (high && low) { // Are we stuck high or low?
+            FDICmdPrintf(aWorkspace, "FAIL: Stuck HIGH\n");
+            return -1;
+        }
+        if (!high && !low) {
+            FDICmdPrintf(aWorkspace, "FAIL: Stuck LOW\n");
+            return -1;
+        }
+        if (!high && low) {
+            FDICmdPrintf(aWorkspace, "FAIL: Reversed?\n");
+            return -1;
+        }
+        
+        // Reset pins back to default state
+        (*p_portA)->SetInputMode(p_portA, 1 << pinA);            // set to Input
+        (*p_portA)->SetPull(p_portA, 1 << pinA, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portB)->SetInputMode(p_portB, 1 << pinB);            // set to Input
+        (*p_portB)->SetPull(p_portB, 1 << pinB, GPIO_PULL_NONE); // set to floating input mode
+        (*p_portC)->SetInputMode(p_portC, 1 << pinC);            // set to Input
+        (*p_portC)->SetPull(p_portC, 1 << pinC, GPIO_PULL_NONE); // set to floating input mode
+        
+        // Test Pair AC
+        (*p_portA)->SetOutputMode(p_portA, 1 << pinA); // set to Output
+        (*p_portA)->SetMux(p_portA, pinA, 0); // set to GPIO
+        (*p_portC)->SetPull(p_portC, pinC, GPIO_PULL_UP); // set to Pull up
+        (*p_portC)->SetInputMode(p_portC, 1 << pinC); // set to Input
+        (*p_portC)->SetMux(p_portC, pinC, 0); // set to GPIO
+        // Drive 1 on this pin
+        (*p_portA)->Set(p_portA, 1 << pinA);
+        UEZTaskDelay(1);         // Pause
+        (*p_portC)->Read(p_portC, 1 << pinC, &high); // Read high setting
+        (*p_portA)->Clear(p_portA, 1 << pinA); // Now change to a low setting
+        UEZTaskDelay(1); // Pause
+        (*p_portC)->Read(p_portC, 1 << pinC, &low); // Now read again
+        if (high && low) { // Are we stuck high or low?
+            FDICmdPrintf(aWorkspace, "FAIL: Stuck HIGH\n");
+            return -1;
+        }
+        if (!high && !low) {
+            FDICmdPrintf(aWorkspace, "FAIL: Stuck LOW\n");
+            return -1;
+        }
+        if (!high && low) {
+            FDICmdPrintf(aWorkspace, "FAIL: Reversed?\n");
+            return -1;
+        }
+        
         // High is high and low is low, good
         FDICmdPrintf(aWorkspace, "PASS: OK\n");
     } else if (argc == 1) {
@@ -1277,6 +1510,7 @@ T_uezError UEZGUITestCmdsHalt(void)
     return FDICmdStop(G_UEZGUIWorkspace);
 }
 
+#endif
 /*-------------------------------------------------------------------------*
- * File:  UEZGUITestCmds.c
+ * File:  TestCmds.c
  *-------------------------------------------------------------------------*/

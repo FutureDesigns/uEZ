@@ -3,6 +3,7 @@
 #define COMPILER_TYPE       				RenesasRX
 #define UEZ_PROCESSOR       				RENESAS_RX62N
 #define UEZ_DEFAULT_LCD_CONFIG    			LCD_CONFIG_TIANMA_QVGA_LCDC_3_5
+#define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J2 header
 
 // Use up 50K of the heap
 #define configTOTAL_HEAP_SIZE        		( ( size_t ) (( 50 * 1024 ) - 64))
@@ -21,8 +22,8 @@
 #define UEZ_USE_EXTERNAL_EEPROM   			0 // no External EEPROM on uEZGUI-RX62N-35QT Rev 2.1
 #define GUI_SUPPORT_MEMDEV        			(1)
 
-// Expansion Options
-#define UEZGUI_EXP_BOARD                    UEZGUI_EXP_NONE
+// Expansion Options, set to 1 to enable an expansion board
+#define UEZGUI_EXPANSION_DEVKIT             0
 #define ENABLE_UEZ_BUTTON                   0
 
 //#define UEZ_ICONS_SET       				ICONS_SET_UEZ_OPEN_SOURCE
@@ -30,13 +31,14 @@
 //#define UEZ_ICONS_SET 					ICONS_SET_PROFESSIONAL_ICONS_LARGE
 #define SIMPLEUI_DOUBLE_SIZED_ICONS 		0 // 1 to 1 icons
 
-#define INCLUDE_EMWIN               		1
+#define APP_MENU_ALLOW_TEST_MODE            1
+#define INCLUDE_EMWIN               		0
 #define EMWIN_LOAD_ONCE             		1
 #define APP_DEMO_EMWIN              		INCLUDE_EMWIN 
-#define APP_SLIDESHOW               		1
+#define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_DRAW               		1
 #define UEZ_ENABLE_TCPIP_STACK      		1
-#define APP_DEMO_APPS               		0
+#define APP_DEMO_APPS               		1
 #define APP_DEMO_COM                		0
 #define UEZ_ENABLE_USB_HOST_STACK   		0
 #define UEZ_ENABLE_USB_DEVICE_STACK 		0

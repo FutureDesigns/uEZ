@@ -6,32 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(tm) - Copyright (C) 2007-2011 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
- * This file is part of the uEZ(tm) distribution.
- *
- * uEZ(tm) is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * uEZ(tm) is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with uEZ(tm); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * A special exception to the GPL can be applied should you wish to
- * distribute a combined work that includes uEZ(tm), without being obliged
- * to provide the source code for any proprietary components.  See the
- * licensing section of http://www.teamfdi.com/uez for full details of how
- * and when the exception can be applied.
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -55,11 +36,21 @@
 #define HID_SUBCLASS    0x00
 #define HID_PROTOCOL    0x00
 
-#define HID_SET_IDLE    0x0A
+#define HID_GET_REPORT      1
+#define HID_GET_IDLE        2
+#define HID_GET_PROTOCOL    3
+#define HID_SET_REPORT      9
+#define HID_SET_IDLE        10
+#define HID_SET_PROTOCOL    11
 
 #define HID_INDEFINITE_REPORT       0x0000
 
-#define MAX_LENGTH_REPORT_DESCRIPTOR    128
+#define MAX_LENGTH_REPORT_DESCRIPTOR    2048
+
+#define HID_TYPE_INPUT      1
+#define HID_TYPE_OUTPUT     2
+#define HID_TYPE_REPORT     3
+
 /*-------------------------------------------------------------------------*
  * Macros:
  *-------------------------------------------------------------------------*/
@@ -84,6 +75,8 @@ typedef struct {
     TUInt8 iEndpointInterruptIn;
     TUInt8 iEndpointInterruptOut;
     TUInt8 iInterval; // multiples of 4 ms (4 to 1020 ms intervals)
+
+    T_usbHIDDescriptor iHIDDescriptor;
 } T_Generic_HID_Workspace;
 
 /*-------------------------------------------------------------------------*
@@ -191,9 +184,10 @@ static T_uezError HID_Generic_ConnectedCheckMatch(
         switch (desc_ptr[1]) {
             case USB_DESCRIPTOR_TYPE_INTERFACE:
                 // Is this the right type of interface for HID device?
-                if (desc_ptr[5] == HID_CLASS && desc_ptr[6] == HID_SUBCLASS
-                    && desc_ptr[7] == HID_PROTOCOL)
+                if (desc_ptr[5] == HID_CLASS /*&& desc_ptr[6] == HID_SUBCLASS
+                    && desc_ptr[7] == HID_PROTOCOL*/) {
                     hid_int_found = 1;
+                }
                 break;
             case USB_DESCRIPTOR_TYPE_ENDPOINT:
                 // Found an endpoint descriptor
@@ -205,7 +199,7 @@ static T_uezError HID_Generic_ConnectedCheckMatch(
                 // desc_ptr[6] = Interval (ms)
                 // Is it an interrupt endpoint?
                 // (We're only configuring interrupt right now, ignore rest)
-                if ((desc_ptr[3] & 0x03) == 0x03) {
+                if ((desc_ptr[3] & 0x03) == USB_ENDPOINT_TYPE_INTERRUPT) {
                     if (desc_ptr[2] & 0x80) {
                         // IN endpoint
                         p->iEndpointInterruptIn = desc_ptr[2] & 0x7F;
@@ -215,13 +209,18 @@ static T_uezError HID_Generic_ConnectedCheckMatch(
                         p->iEndpointInterruptOut = desc_ptr[2] & 0x7F;
                     }
 
-                    // Configure the endpoint (either in or out)
+                    // Configure the endpoint (either in or out) with proper packet size limit
                     error = (*p->iUSBHost)->ConfigureEndpoint(p->iUSBHost,
                         aAddress, desc_ptr[2], ReadLE16U(&desc_ptr[4]));
                     if (error) {
                         return error;
                     }
                 }
+                break;
+            case USB_DESCRIPTOR_TYPE_HID:
+                // Found the HID descriptor too
+                // Copy over the descriptor (for use later)
+                p->iHIDDescriptor = *((T_usbHIDDescriptor *)desc_ptr);
                 break;
             default:
                 // All others, we ignore
@@ -251,10 +250,14 @@ static T_uezError HID_Generic_ConnectedCheckMatch(
         | USB_RECIPIENT_INTERFACE | USB_HOST_TO_DEVICE, HID_SET_IDLE,
         HID_INDEFINITE_REPORT, 0, 0, recv, 5000);
 
-    // Get report descriptor
+    // Get report descriptor (clip to the size we can handle)
+    descLen = p->iHIDDescriptor.iDescriptorLength;
+    if (descLen > MAX_LENGTH_REPORT_DESCRIPTOR)
+        descLen = MAX_LENGTH_REPORT_DESCRIPTOR;
     (*p->iUSBHost)->Control(p->iUSBHost, aAddress, USB_REQ_TYPE_STANDARD
         | USB_RECIPIENT_INTERFACE | USB_DEVICE_TO_HOST, GET_DESCRIPTOR,
-        USB_DESCRIPTOR_TYPE_REPORT_DESCRIPTOR, 0, 0x7F, p->iReportDesc, 5000);
+        ((p->iHIDDescriptor.iDescriptorType)<<8), 0, descLen,
+        p->iReportDesc, 5000);
     p->iIsConnected = ETrue;
 
     IRelease();
@@ -318,8 +321,8 @@ T_uezError HID_Generic_Read(
         return error;
     }
     return UEZ_ERROR_READ_WRITE_ERROR;
-
 }
+
 T_uezError HID_Generic_Write(
     void *aWorkspace,
     const TUInt8 *aData,
@@ -332,14 +335,23 @@ T_uezError HID_Generic_Write(
 
     if (p->iIsConnected) {
         IGrab();
-        error = (*p->iUSBHost)->InterruptOut(p->iUSBHost, p->iAddress,
-            p->iEndpointInterruptIn, aData, aLength, aTimeout);
+        error = (*p->iUSBHost)->ControlOut(
+                p->iUSBHost,
+                p->iAddress,
+                USB_HOST_TO_DEVICE | USB_REQ_TYPE_CLASS | USB_RECIPIENT_INTERFACE,
+                HID_SET_REPORT,
+                (0x00<<8)|0x00,
+                0,
+                aLength,
+                (void *)aData,
+                aTimeout);
         IRelease();
         return error;
     }
     return UEZ_ERROR_READ_WRITE_ERROR;
 
 }
+
 T_uezError HID_Generic_GetReportDescriptor(
     void *aWorkspace,
     TUInt8 *aData,
@@ -347,13 +359,15 @@ T_uezError HID_Generic_GetReportDescriptor(
 {
     T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
     TUInt32 len;
+
     IGrab();
     len = aMaxLength;
     if (len > MAX_LENGTH_REPORT_DESCRIPTOR)
         len = MAX_LENGTH_REPORT_DESCRIPTOR;
     memcpy(aData, p->iReportDesc, len);
     IRelease();
-    return UEZ_ERROR_NOT_SUPPORTED; // TODO: yet
+
+    return UEZ_ERROR_NONE;
 }
 
 T_uezError HID_Generic_Configure(void *aWorkspace, const char *aUSBHostName)
@@ -373,6 +387,158 @@ T_uezError HID_Generic_Configure(void *aWorkspace, const char *aUSBHostName)
 
     return error;
 }
+
+T_uezError HID_Generic_GetFeatureReport(
+    void *aWorkspace,
+    TUInt8 aReportID,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
+    T_uezError error;
+
+
+    if (p->iIsConnected) {
+        IGrab();
+        error = (*p->iUSBHost)->Control(
+                p->iUSBHost,
+                p->iAddress,
+                USB_DEVICE_TO_HOST | USB_REQ_TYPE_CLASS | USB_RECIPIENT_INTERFACE,
+                HID_GET_REPORT,
+                (HID_TYPE_REPORT<<8)|aReportID,
+                0,
+                aMaxLength,
+                aData,
+                aTimeout);
+
+        IRelease();
+        return error;
+    }
+    return UEZ_ERROR_READ_WRITE_ERROR;
+}
+
+T_uezError HID_Generic_GetInputReport(
+    void *aWorkspace,
+    TUInt8 aReportID,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
+    T_uezError error;
+
+    if (p->iIsConnected) {
+        IGrab();
+        error = (*p->iUSBHost)->Control(
+                p->iUSBHost,
+                p->iAddress,
+                USB_DEVICE_TO_HOST | USB_REQ_TYPE_CLASS | USB_RECIPIENT_INTERFACE,
+                HID_GET_REPORT,
+                (HID_TYPE_INPUT<<8)|aReportID,
+                0,
+                aMaxLength,
+                aData,
+                aTimeout);
+
+        IRelease();
+        return error;
+    }
+    return UEZ_ERROR_READ_WRITE_ERROR;
+}
+
+T_uezError HID_Generic_SetFeatureReport(
+    void *aWorkspace,
+    TUInt8 aReportID,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
+    T_uezError error;
+    char buffer[64];
+    TUInt32 len;
+
+    if (p->iIsConnected) {
+        len = aMaxLength+1;
+        if (len > 64)
+            len = 64;
+        buffer[0] = aReportID;
+        memcpy(buffer+1, aData, len-1);
+        IGrab();
+        error = (*p->iUSBHost)->ControlOut(
+                p->iUSBHost,
+                p->iAddress,
+                USB_HOST_TO_DEVICE | USB_REQ_TYPE_CLASS | USB_RECIPIENT_INTERFACE,
+                HID_SET_REPORT,
+                (HID_TYPE_REPORT<<8)|aReportID,
+                0,
+                len,
+                buffer,
+                aTimeout);
+
+        IRelease();
+        return error;
+    }
+    return UEZ_ERROR_READ_WRITE_ERROR;
+}
+
+T_uezError HID_Generic_SetOutputReport(
+    void *aWorkspace,
+    TUInt8 aReportID,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
+    T_uezError error;
+
+    if (p->iIsConnected) {
+        IGrab();
+        error = (*p->iUSBHost)->ControlOut(
+                p->iUSBHost,
+                p->iAddress,
+                USB_HOST_TO_DEVICE | USB_REQ_TYPE_CLASS | USB_RECIPIENT_INTERFACE,
+                HID_SET_REPORT,
+                (HID_TYPE_OUTPUT<<8)|aReportID,
+                0,
+                aMaxLength,
+                aData,
+                aTimeout);
+
+        IRelease();
+        return error;
+    }
+    return UEZ_ERROR_READ_WRITE_ERROR;
+}
+
+T_uezError HID_Generic_GetString(
+    void *aWorkspace,
+    TUInt8 aIndex,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
+    T_uezError error;
+
+
+    if (p->iIsConnected) {
+        IGrab();
+        error = (*p->iUSBHost)->GetString(
+                p->iUSBHost,
+                p->iAddress,
+                aIndex,
+                aData,
+                aMaxLength,
+                aTimeout);
+
+        IRelease();
+        return error;
+    }
+    return UEZ_ERROR_READ_WRITE_ERROR;
+}
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  HID_Generic_Create
@@ -410,7 +576,13 @@ const DEVICE_HID HID_Generic_Interface = { {
     HID_Generic_Close,
     HID_Generic_Read,
     HID_Generic_Write,
-    HID_Generic_GetReportDescriptor, };
+    HID_Generic_GetReportDescriptor,
+    HID_Generic_GetFeatureReport,
+    HID_Generic_SetFeatureReport,
+    HID_Generic_GetString,
+    HID_Generic_GetInputReport,
+    HID_Generic_SetOutputReport,
+};
 
 /*-------------------------------------------------------------------------*
  * End of File:  HID_Generic.c

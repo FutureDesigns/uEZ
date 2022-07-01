@@ -61,7 +61,7 @@
         <option>
           <name>FPU</name>
           <version>2</version>
-          <state>0</state>
+          <state>5</state>
         </option>
         <option>
           <name>OGCoreOrChip</name>
@@ -170,6 +170,7 @@
           <name>CCDefines</name>
           <state>LWIP_PROVIDE_ERRNO</state>
           <state>UEZ_LIBRARY</state>
+          <state>IAR_ARM_CM4F</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -306,7 +307,8 @@
           <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
-          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
+          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/</state>
+          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/Include</state>
@@ -973,7 +975,7 @@
         <option>
           <name>Variant</name>
           <version>20</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1004,7 +1006,7 @@
         <option>
           <name>FPU</name>
           <version>2</version>
-          <state>0</state>
+          <state>5</state>
         </option>
         <option>
           <name>OGCoreOrChip</name>
@@ -1030,7 +1032,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1042,7 +1044,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>LPC1778	NXP LPC1778</state>
+          <state>LPC4088	NXP LPC4088</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -1081,12 +1083,12 @@
         <option>
           <name>GFPUCoreSlave</name>
           <version>20</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
           <version>20</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1113,6 +1115,7 @@
           <name>CCDefines</name>
           <state>NDEBUG</state>
           <state>UEZ_LIBRARY</state>
+          <state>IAR_ARM_CM4F</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1249,7 +1252,8 @@
           <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
-          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
+          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/</state>
+          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/Include</state>
@@ -1916,7 +1920,7 @@
         <option>
           <name>Variant</name>
           <version>20</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1947,7 +1951,7 @@
         <option>
           <name>FPU</name>
           <version>2</version>
-          <state>0</state>
+          <state>5</state>
         </option>
         <option>
           <name>OGCoreOrChip</name>
@@ -1973,7 +1977,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1985,7 +1989,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>LPC1788	NXP LPC1788</state>
+          <state>LPC4088	NXP LPC4088</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -2024,12 +2028,12 @@
         <option>
           <name>GFPUCoreSlave</name>
           <version>20</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
           <version>20</version>
-          <state>38</state>
+          <state>39</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -2057,6 +2061,8 @@
           <state>LWIP_PROVIDE_ERRNO</state>
           <state>UEZ_LIBRARY</state>
           <state>FREERTOS_PLUS_TRACE</state>
+          <state>IAR_ARM_CM4F</state>
+          <state>SELECTED_PORT=PORT_ARM_CortexM</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -2193,7 +2199,8 @@
           <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC17xx_40xx/IAR/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
-          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
+          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/</state>
+          <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
           <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src/include</state>
           <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP/src</state>
@@ -3199,7 +3206,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPacked.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPlatformAPI.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZPlatformAPI.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZProcessor.h</name>
@@ -3294,15 +3301,6 @@
         </group>
         <group>
           <name>ST</name>
-          <group>
-            <name>LIS3DH</name>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</name>
-            </file>
-          </group>
           <group>
             <name>LIS3LV02DQ</name>
             <file>
@@ -3844,69 +3842,6 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\lwIP\Network_lwIP.c</name>
           </file>
         </group>
-        <group>
-          <name>Redpine</name>
-          <group>
-            <name>RS9110_N_11_22</name>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\includes.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\internals.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22_driver.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_firmware.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_bus.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_pine.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_ssp_hcd.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_api.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_compiler.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_nic.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.h</name>
-            </file>
-          </group>
-        </group>
       </group>
       <group>
         <name>PWM</name>
@@ -4135,7 +4070,7 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWAVFile.h</name>
           </file>
         </group>
       </group>
@@ -4182,6 +4117,12 @@
         <name>FileSystem</name>
         <group>
           <name>FATFS</name>
+          <group>
+            <name>option</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</name>
+            </file>
+          </group>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\diskio.c</name>
           </file>
@@ -5493,22 +5434,38 @@
           <group>
             <name>IAR</name>
             <group>
-              <name>ARM_CM3</name>
+              <name>ARM_CM4F</name>
               <file>
-                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\port.c</name>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\port.c</name>
               </file>
               <file>
-                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portasm.s</name>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portasm.s</name>
               </file>
               <file>
-                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h</name>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h</name>
               </file>
             </group>
           </group>
           <group>
             <name>MemMang</name>
             <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\MemMang\heap_2.c</name>
+              <excluded>
+                <configuration>Debug</configuration>
+                <configuration>Release</configuration>
+                <configuration>Debug-Trace</configuration>
+              </excluded>
+            </file>
+            <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\MemMang\heap_3.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\MemMang\heap_4.c</name>
+              <excluded>
+                <configuration>Debug</configuration>
+                <configuration>Release</configuration>
+                <configuration>Debug-Trace</configuration>
+              </excluded>
             </file>
           </group>
         </group>

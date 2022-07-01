@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -25,13 +25,13 @@
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_DrawBitmap.h>
-#include <Source/Library/Screensaver/BouncingLogoSS.h>
+#include <Source/Library/ScreenSaver/BouncingLogoSS.h>
 #include "AppDemo.h"
 #include "AppTasks.h"
 #include <HAL/GPDMA.h>
 #include <Device/GPDMA.h>
 #include <uEZDemoCommon.h>
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -60,8 +60,8 @@
  * Globals:
  *---------------------------------------------------------------------------*/
 static SWIM_WINDOW_T G_mmWin;
-static TUInt32 G_romChecksum;
-static TBool G_romChecksumCalculated;
+TUInt32 G_romChecksum;
+TBool G_romChecksumCalculated;
 
 #if TS_TEST_DEMO
 extern void TS_Test_Demo(const T_choice *aChoice);
@@ -69,6 +69,7 @@ extern void TS_Test_Demo(const T_choice *aChoice);
 /*---------------------------------------------------------------------------*
  * Globals: Main Menu
  *---------------------------------------------------------------------------*/
+#if APP_DEMO_APPS
 static const T_appMenuEntry apps_menu_entries[] = {
     { "Accelerometer", AccelDemoMode, G_accelIcon, 0 },
     { "Time & Date", TimeDateMode, G_timeDateIcon, 0 },
@@ -84,6 +85,7 @@ static const T_appMenu apps_submenu = {
     apps_menu_entries,
     ETrue, // can exit
 };
+#endif
 
 static const T_appMenuEntry settings_menu_entries[] = {
     { "Brightness", BrightnessControlMode, G_contrastIcon, 0 },
@@ -117,7 +119,9 @@ static const T_appMenu comm_submenu = {
 #endif
 
 static const T_appMenuEntry mainmenu_entries[] = {
+#if APP_DEMO_SLIDESHOW
    { "Slideshow", MultiSlideshowMode, G_slideshowIcon, 0 },
+#endif
 #if APP_DEMO_APPS
    { "Apps", AppSubmenu, G_appFolderIcon, (void *)&apps_submenu },
 #endif
@@ -209,7 +213,7 @@ void TitleScreen(void)
 
     if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-
+        
         swim_window_open(
             &G_mmWin,
             DISPLAY_WIDTH,
@@ -230,7 +234,7 @@ void TitleScreen(void)
 			G_uEZLogo,
             (DISPLAY_WIDTH-UEZ_ICON_WIDTH)/2,
             (DISPLAY_HEIGHT-UEZ_ICON_HEIGHT)/2);
-        
+
 #if FAST_STARTUP
         UEZLCDBacklight(lcd, 255);
 #else
@@ -273,7 +277,7 @@ void MainMenu(void)
     if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
 
-#if (!FAsT_STARTUP)
+#if (!FAST_STARTUP)
         // Clear the screen
         TitleScreen();
 	
@@ -296,12 +300,12 @@ void MainMenu(void)
 #endif
         
         // Set the screen saver icon
-        BouncingLogoSS_Setup(
-            (TUInt8 *)G_uEZLogo,
-            UEZ_ICON_WIDTH,
-            UEZ_ICON_HEIGHT,
-            DISPLAY_WIDTH,
-            DISPLAY_HEIGHT);
+        //BouncingLogoSS_Setup(
+        //    (TUInt8 *)G_uEZLogo,
+        //    UEZ_ICON_WIDTH,
+        //    UEZ_ICON_HEIGHT,
+        //    DISPLAY_WIDTH,
+        //    DISPLAY_HEIGHT);
         
         AppMenu(&mainmenu);
         UEZLCDClose(lcd);

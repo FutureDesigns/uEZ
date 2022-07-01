@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -51,7 +51,7 @@
 typedef struct {
     const DEVICE_LCD *iHAL;
     TUInt32 iBaseAddress;
-    int aNumOpen;
+    TUInt32 aNumOpen;
     TUInt32 iBacklightLevel;
     HAL_LCDController **iLCDController;
     DEVICE_Backlight **iBacklight;
@@ -63,7 +63,6 @@ typedef struct {
     //T_uezGPIOPortPin iLCDPWMPin;
     //T_uezGPIOPortPin iBackLightEnablePin;
     T_uezSemaphore iVSyncSem;
-    int aTimerEvent;
     T_uezDevice itimer;
     T_uezTimerCallback icallback;
     TBool itimerDone;
@@ -229,7 +228,7 @@ T_uezError LCD_TM070RBHG04_InitializeWorkspace_16Bit(void *aW)
     T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
     p->iBaseAddress = 0xA0000000;
     p->aNumOpen = 0;
-    p->iBacklightLevel = 256; // 100%
+    p->iBacklightLevel = 0; // 0%
     p->iConfiguration = &LCD_TM070RBHG04_configuration_16Bit;
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
@@ -250,7 +249,7 @@ T_uezError LCD_TM070RBHG04_InitializeWorkspace_I15Bit(void *aW)
     T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
     p->iBaseAddress = 0xA0000000;
     p->aNumOpen = 0;
-    p->iBacklightLevel = 256; // 100%
+    p->iBacklightLevel = 0; // 0%
     p->iConfiguration = &LCD_TM070RBHG04_configuration_I15Bit;
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
@@ -271,7 +270,7 @@ T_uezError LCD_TM070RBHG04_InitializeWorkspace_8Bit(void *aW)
     T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
     p->iBaseAddress = 0xA0000000;
     p->aNumOpen = 0;
-    p->iBacklightLevel = 256; // 100%
+    p->iBacklightLevel = 0; // 0%
     p->iConfiguration = &LCD_TM070RBHG04_configuration_8Bit;
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
@@ -353,12 +352,6 @@ static void LCD_TM070RBHG04_TimerCallback(T_uezTimerCallback *aCallbackWorkspace
   T_TM070RBHG04Workspace *p = aCallbackWorkspace->iData;
   UEZTimerClose(p->itimer);    
   p->itimerDone = ETrue;
-  if(p->aTimerEvent == 1) {
-    (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
-    LCD_TM070RBHG04_SetBacklightLevel(p, p->iBacklightLevel);
-  } else if(p->aTimerEvent == 2){// backlight cooldown is now finished
-  } else { // should not get here
-  }
 }
 
 /*---------------------------------------------------------------------------*
@@ -372,20 +365,15 @@ static void LCD_TM070RBHG04_TimerCallback(T_uezTimerCallback *aCallbackWorkspace
  *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_TM070RBHG04_On(void *aW) {  
-    // Turn back on to the remembered level
     T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
-    p->icallback.iTimer = p->itimer; // Setup callback information for timer
-    p->icallback.iMatchRegister = 1;
-    p->icallback.iTriggerSem = 0;
-    p->icallback.iCallback = LCD_TM070RBHG04_TimerCallback;
-    p->icallback.iData = p;
   
-    (*p->iLCDController)->On(p->iLCDController);
+    (*p->iLCDController)->On(p->iLCDController); // turn on LCD
     if (p->iBacklight){
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
-         p->aTimerEvent = 1;// start first time critical stage 
          LCD_TM070RBHG04_MSTimerStart(p, 200.0); // minimum 200ms timer           
          while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+         (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+         LCD_TM070RBHG04_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
       }
     }
     return UEZ_ERROR_NONE;
@@ -403,22 +391,15 @@ static T_uezError LCD_TM070RBHG04_On(void *aW) {
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_TM070RBHG04_Off(void *aW) {
     T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;    
-    p->icallback.iTimer = p->itimer; // Setup callback information for timer
-    p->icallback.iMatchRegister = 1;
-    p->icallback.iTriggerSem = 0;
-    p->icallback.iCallback = LCD_TM070RBHG04_TimerCallback;
-    p->icallback.iData = p;
-    
-    // Turn off
-    if (p->iBacklight){
+        
+    if (p->iBacklight){ // Turn off backlight
       (*p->iBacklight)->Off(p->iBacklight);
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
-        p->aTimerEvent = 2; // start second time critical stage 
         LCD_TM070RBHG04_MSTimerStart(p, 200.0); // minimum 200ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
       }   
     }    
-    (*p->iLCDController)->Off(p->iLCDController);
+    (*p->iLCDController)->Off(p->iLCDController); // turn off LCD
     return UEZ_ERROR_NONE;
 }
 
@@ -439,7 +420,13 @@ static T_uezError LCD_TM070RBHG04_Open(void *aW)
   T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
   HAL_LCDController **plcdc;
   T_uezError error = UEZ_ERROR_NONE;
-	int i;
+  TUInt32 i;
+    
+  p->icallback.iTimer = p->itimer; // Setup callback information for timer
+  p->icallback.iMatchRegister = 1;
+  p->icallback.iTriggerSem = 0;
+  p->icallback.iCallback = LCD_TM070RBHG04_TimerCallback;
+  p->icallback.iData = p;
 
   p->aNumOpen++;
   if (p->aNumOpen == 1) {    

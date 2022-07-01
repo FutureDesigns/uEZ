@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -27,7 +27,7 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZFile.h>
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 #include <uEZRTOS.h>
 #include <uEZTickCounter.h>
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
@@ -35,9 +35,9 @@
 #include "uEZDemoCommon.h"
 #include "AppDemo.h"
 #include "VideoPlayer.h"
-#include <UEZKeypad.h>
+#include <uEZKeypad.h>
 
-#include <Source/Library/Audio/DAC/uEZDACWavFile.h>
+#include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
 
 
 /*-------------------------------------------------------------------------*
@@ -68,6 +68,7 @@ typedef struct {
  * Globals:
  *-------------------------------------------------------------------------*/
 T_VideoInfo *G_pVideoInfo;
+static wavFileHeader G_WaveFile;
 
 void VideoPlayer_Open(T_VideoPlayerWorkspace *p_ws)
 {
@@ -179,7 +180,7 @@ void VideoPlayer_SyncWithAudio(T_VideoPlayerWorkspace *p_ws) {
     TUInt32 soundPos, soundMS, soundNext, skipCount, filePosition;
     
     soundPos = UEZDACWAVGetSamplePos();
-    soundMS = soundPos*100 / 2205;
+    soundMS = soundPos*100 / (G_WaveFile.iSampleRate/10);//2205;
     
     // At 15 fps (66.66 ms per frame), where should we be next?
     soundNext = (p_ws->iFrame + 1) * p_ws->iMSPerFrame;
@@ -263,7 +264,7 @@ void VideoPlayer(const T_choice *aChoice)
     VideoPlayer_Screen(&ws, 0);
     VideoPlayer_Screen(&ws, 1);
 
-    error = UEZDACWAVPlay(G_pVideoInfo->iAudioPath);
+    error = UEZDACWAVPlay(G_pVideoInfo->iAudioPath, &G_WaveFile);
     if(error == UEZ_ERROR_NONE)
         isAudioPlaying = ETrue;
     else

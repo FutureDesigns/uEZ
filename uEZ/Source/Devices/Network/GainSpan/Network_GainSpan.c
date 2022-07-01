@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -1183,6 +1183,12 @@ T_uezError Network_GainSpan_InfrastructureTakeDown(void *aWorkspace)
     return error;
 }
 
+T_uezError Network_GainSpan_GetConnectionInfo(void *aWorkspace,
+		T_uezNetworkSocket aSocket,
+		T_uEZNetworkConnectionInfo *aConnection)
+{
+	return UEZ_ERROR_NOT_AVAILABLE;
+}
 
 /*---------------------------------------------------------------------------*
  * Device Interface table:
@@ -1220,6 +1226,9 @@ const DEVICE_Network GainSpan_Network_Interface = { {
     Network_GainSpan_InfrastructureConfigure,
     Network_GainSpan_InfrastructureBringUp,
     Network_GainSpan_InfrastructureTakeDown,
+
+    //uEZ v2.07
+    Network_GainSpan_GetConnectionInfo,
 };
 
 /*-------------------------------------------------------------------------*

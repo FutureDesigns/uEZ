@@ -28,7 +28,7 @@ Purpose     : emWin demo
 #include "GUI.h"
 #include "GUIDEMO/GUIDEMO.h"
 #include <string.h>
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 
 #ifndef EMWIN_LOAD_ONCE
 #define EMWIN_LOAD_ONCE 0

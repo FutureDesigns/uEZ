@@ -2,7 +2,7 @@
 /*  RTC controls                                                            */
 
 #include "rtc.h"
-#include <UEZTimeDate.h>
+#include <uEZTimeDate.h>
 
 
 BOOL rtc_gettime (RTC *rtc)

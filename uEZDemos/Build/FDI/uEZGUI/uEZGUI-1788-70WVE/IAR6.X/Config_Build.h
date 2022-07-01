@@ -7,6 +7,7 @@
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_SEIKO_70WVW2T
 // Run Seiko at 40MHz (but spec is 29.6 MHz to 42.48 MHz)
 #define SEIKO_70WVW2T_DOTCLOCK_HZ           30000000
+#define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J11 header
 
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY  			1
@@ -31,8 +32,9 @@
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
 
-// Expansion Options
-#define UEZGUI_EXP_BOARD                    UEZGUI_EXP_NONE
+// Expansion Options, set to 1 to enable an expansion board
+#define UEZGUI_EXPANSION_DEVKIT             0
+#define UEZGUI_EXP_BRK_OUT                  0
 #define ENABLE_UEZ_BUTTON                   0
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
@@ -48,6 +50,7 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
+#define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               0
 
 #define INCLUDE_EMWIN                       1

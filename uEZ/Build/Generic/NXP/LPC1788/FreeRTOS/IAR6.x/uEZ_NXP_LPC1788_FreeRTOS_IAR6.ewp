@@ -1973,7 +1973,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.4.53294</state>
+          <state>6.50.2.4581</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -2057,6 +2057,7 @@
           <state>LWIP_PROVIDE_ERRNO</state>
           <state>UEZ_LIBRARY</state>
           <state>FREERTOS_PLUS_TRACE</state>
+          <state>SELECTED_PORT=PORT_ARM_CortexM</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -3199,7 +3200,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPacked.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPlatformAPI.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZPlatformAPI.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZProcessor.h</name>
@@ -3244,7 +3245,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWatchdog.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZWAVFile.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZWAVFile.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\unistd.h</name>
@@ -3399,6 +3400,18 @@
         </group>
       </group>
       <group>
+        <name>CAN</name>
+        <group>
+          <name>Generic</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\CAN\Generic\Generic_CAN.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\CAN\Generic\uEZCANGeneric.c</name>
+          </file>
+        </group>
+      </group>
+      <group>
         <name>CRC</name>
         <group>
           <name>Generic</name>
@@ -3505,6 +3518,15 @@
             </file>
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8574T\GPIO_PCF8574T.h</name>
+            </file>
+          </group>
+          <group>
+            <name>PCF8575</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8575\GPIO_PCF8575.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\GPIO\I2C\PCF8575\GPIO_PCF8575.h</name>
             </file>
           </group>
         </group>
@@ -3738,6 +3760,15 @@
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Sharp\LQ043T3DG02\Sharp_LQ043T3DG02.h</name>
             </file>
           </group>
+          <group>
+            <name>LQ070Y3LW01</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Sharp\LQ070Y3LW01\Sharp_LQ070Y3LW01.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\Sharp\LQ070Y3LW01\Sharp_LQ070Y3LW01.h</name>
+            </file>
+          </group>
         </group>
         <group>
           <name>Tianma</name>
@@ -3840,69 +3871,6 @@
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\lwIP\Network_lwIP.c</name>
           </file>
-        </group>
-        <group>
-          <name>Redpine</name>
-          <group>
-            <name>RS9110_N_11_22</name>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\includes.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\internals.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22_driver.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_firmware.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_bus.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_pine.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_ssp_hcd.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_api.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_compiler.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_nic.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.h</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.c</name>
-            </file>
-            <file>
-              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.h</name>
-            </file>
-          </group>
         </group>
       </group>
       <group>
@@ -4091,6 +4059,18 @@
           </group>
         </group>
         <group>
+          <name>Semisense</name>
+          <group>
+            <name>SN2780MQ</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.h</name>
+            </file>
+          </group>
+        </group>
+        <group>
           <name>Sitronix</name>
           <group>
             <name>ST1232</name>
@@ -4144,7 +4124,7 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\UEZDACWavFile.h</name>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\Audio\DAC\uEZDACWAVFile.h</name>
           </file>
         </group>
       </group>
@@ -4191,6 +4171,12 @@
         <name>FileSystem</name>
         <group>
           <name>FATFS</name>
+          <group>
+            <name>option</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</name>
+            </file>
+          </group>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\diskio.c</name>
           </file>
@@ -5317,6 +5303,12 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_BatteryRAM.h</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CRC.c</name>
           </file>
           <file>
@@ -5612,6 +5604,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZButton.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZCAN.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\uEZSystem\uEZCharDisplay.c</name>

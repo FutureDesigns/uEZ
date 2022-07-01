@@ -54,13 +54,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC0="$(TC_INSTALL_DIR)\include\stdio.h" 
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Network.h" \
@@ -86,13 +88,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\..\..\..\uEZ\Include
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" \
@@ -127,13 +131,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="$(TC_INSTALL_DIR)\include\stdlib.h"
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
@@ -159,13 +165,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC3="$(TC_INSTALL_DIR)\include\math.h" "
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -210,13 +218,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\..\..\..\uEZ\Include
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" \
@@ -252,13 +262,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC5="$(TC_INSTALL_DIR)\include\stdio.h" 
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_DrawBitmap.h" \
@@ -298,13 +310,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC6="..\..\..\..\..\..\..\..\uEZ\Include
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\EEPROM.h" \
@@ -320,13 +334,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC7="$(TC_INSTALL_DIR)\include\string.h"
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\EMAC.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" \
@@ -372,13 +388,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC8="..\..\..\..\..\..\..\Source\App\uEZ
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
@@ -405,13 +423,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC9="..\..\..\..\..\..\..\..\uEZ\Include
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" \
@@ -446,13 +466,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC10="$(TC_INSTALL_DIR)\include\stdio.h"
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -469,7 +491,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC10="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC11="..\DK-TS-RX62N\Debug\BrightnessControlMode.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
@@ -479,16 +501,18 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string.h
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
@@ -516,7 +540,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Screensaver\BouncingLogoSS.h" "..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Source\Library\ScreenSaver\BouncingLogoSS.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC12="..\DK-TS-RX62N\Debug\Calibration.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\Config.h" \
 	"..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -525,13 +549,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\..\..\..\..\uEZ\Includ
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -557,13 +583,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\..\uEZ\Includ
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -573,7 +601,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h" "$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\..\uEZ\Include\sys\types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\sys\socket.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\opt.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\UEZPlatform.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\debug.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\uEZPlatform.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\debug.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\arch.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\arch\cc.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZPacked.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\init.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\stats.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\mem.h" \
@@ -599,7 +627,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC14="..\DK-TS-RX62N\Debug\DrawModeRX.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\Config.h" \
 	"..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -608,13 +636,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Includ
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -650,13 +680,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.h"
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -684,7 +716,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZINI.h" "..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZINI.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC16="..\DK-TS-RX62N\Debug\SingleSlideshowMode.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\string.h" \
@@ -694,13 +726,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.h"
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -729,7 +763,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZWAVFile.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\SingleSlideshowMode.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC17="..\DK-TS-RX62N\Debug\TempMode.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
@@ -739,17 +773,19 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string.h
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
@@ -778,7 +814,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_droidsansr76.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC18="..\DK-TS-RX62N\Debug\TimeDateMode.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
@@ -788,17 +824,19 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string.h
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
@@ -824,7 +862,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_droidsansr76.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\droidsansr32.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC19="..\DK-TS-RX62N\Debug\UDCImagesMinimal.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\Config.h" \
 	"..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -833,13 +871,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Includ
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" \
@@ -947,13 +987,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" \
@@ -999,7 +1041,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" "..\..\..\..\..\..\..\..\uEZ\Source\Devices\Accelerometer\Freescale\MMA7455\Freescale_MMA7455.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\Accelerometer.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Devices\Audio Codec\Wolfson\WM8731\AudioCodec_WM8731.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\Device\AudioCodec.h" "..\..\..\..\..\..\..\..\uEZ\Include\UEZI2C.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\AudioCodec.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZI2C.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Devices\Button\NXP\PCA9551\Button_PCA9551.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ButtonBank.h" "..\..\..\..\..\..\..\..\uEZ\Source\Devices\LED\NXP\PCA9551\LED_NXP_PCA9551.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LEDBank.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RX62N_ADCBank_S12AD.h" \
@@ -1034,7 +1076,7 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Includ
 	"$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\lowsrc.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\LCD.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUI_ConfDefaults.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config\GUIConf.h" "..\..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc\SEGGER.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Global.h"
+	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Global.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC21="..\DK-TS-RX62N\Debug\DirectLCD_RX.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Include\Config.h" "..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LCD\Config_LCD.h" "..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD_Types.h" \
@@ -1051,13 +1093,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD_CNF(CARRIER_RX62N).h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\OSLayer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\task.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\list.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\queue.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\semphr.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
@@ -1082,13 +1126,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\OsLayer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
 	"$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" "$(TC_INSTALL_DIR)\include\stdarg.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\task.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\list.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\queue.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\semphr.h" "..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\ExMemory.h"
@@ -1102,13 +1148,15 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \
@@ -2040,13 +2088,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC0="$(TC_INSTALL_DIR)\include\stdio.h
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZNetwork.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Network.h" \
@@ -2072,13 +2122,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" \
@@ -2113,13 +2165,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="$(TC_INSTALL_DIR)\include\stdlib.
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
@@ -2145,13 +2199,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC3="$(TC_INSTALL_DIR)\include\math.h"
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2196,13 +2252,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" \
@@ -2238,13 +2296,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC5="$(TC_INSTALL_DIR)\include\stdio.h
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_DrawBitmap.h" \
@@ -2284,13 +2344,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC6="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\EEPROM.h" \
@@ -2306,13 +2368,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC7="$(TC_INSTALL_DIR)\include\string.
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\EMAC.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\HAL.h" \
@@ -2358,13 +2422,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC8="..\..\..\..\..\..\..\Source\App\u
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
@@ -2391,13 +2457,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC9="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" \
@@ -2432,13 +2500,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC10="$(TC_INSTALL_DIR)\include\stdio.
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2455,7 +2525,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC10="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC11="..\DK-TS-RX62N\Release\BrightnessControlMode.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
@@ -2465,16 +2535,18 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\uEZProcessor_LPC1768.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\GPIO.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1768\LPC1768_UtilityFuncs.h" \
@@ -2502,7 +2574,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZFile.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\File.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Screensaver\BouncingLogoSS.h" "..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Source\Library\ScreenSaver\BouncingLogoSS.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC12="..\DK-TS-RX62N\Release\Calibration.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\Config.h" \
 	"..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -2511,13 +2583,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\..\..\..\..\uEZ\Incl
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2543,13 +2617,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\..\uEZ\Incl
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2559,7 +2635,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h" "$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\..\uEZ\Include\sys\types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\sys\socket.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\opt.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\UEZPlatform.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\debug.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\uEZPlatform.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\debug.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\arch.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\arch\cc.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZPacked.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\init.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\stats.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\lwip\mem.h" \
@@ -2585,7 +2661,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC14="..\DK-TS-RX62N\Release\DrawModeRX.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\Config.h" \
 	"..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -2594,13 +2670,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Incl
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2636,13 +2714,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2670,7 +2750,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZINI.h" "..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZINI.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC16="..\DK-TS-RX62N\Release\SingleSlideshowMode.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\string.h" \
@@ -2680,13 +2760,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
@@ -2715,7 +2797,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZWAVFile.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\SingleSlideshowMode.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC17="..\DK-TS-RX62N\Release\TempMode.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
@@ -2725,17 +2807,19 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
@@ -2764,7 +2848,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Slideshow.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppMenu.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\Calibration.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_droidsansr76.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC18="..\DK-TS-RX62N\Release\TimeDateMode.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
@@ -2774,17 +2858,19 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\DEVICE\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ADCBank.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\RTC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZDeviceTable.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
@@ -2810,7 +2896,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Choices.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_droidsansr76.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\droidsansr32.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\UEZKeypad.h"
+	"..\..\..\..\..\..\..\..\uEZ\Include\uEZKeypad.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC19="..\DK-TS-RX62N\Release\UDCImagesMinimal.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\Config.h" \
 	"..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -2819,13 +2905,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Incl
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" \
-	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\stddef.h" "..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" \
@@ -2933,13 +3021,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZErrors.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZADC.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\ADC.h" \
@@ -2985,7 +3075,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\Temperature.h" "..\..\..\..\..\..\..\..\uEZ\Source\Devices\Accelerometer\Freescale\MMA7455\Freescale_MMA7455.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\Accelerometer.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Devices\Audio Codec\Wolfson\WM8731\AudioCodec_WM8731.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Include\Device\AudioCodec.h" "..\..\..\..\..\..\..\..\uEZ\Include\UEZI2C.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Include\Device\AudioCodec.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZI2C.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Devices\Button\NXP\PCA9551\Button_PCA9551.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\ButtonBank.h" "..\..\..\..\..\..\..\..\uEZ\Source\Devices\LED\NXP\PCA9551\LED_NXP_PCA9551.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LEDBank.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RX62N_ADCBank_S12AD.h" \
@@ -3020,7 +3110,7 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Incl
 	"$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\lowsrc.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\LCD.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUI_ConfDefaults.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config\GUIConf.h" "..\..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc\SEGGER.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Global.h"
+	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Global.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC21="..\DK-TS-RX62N\Release\DirectLCD_RX.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Include\Config.h" "..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\LCD\Config_LCD.h" "..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD_Types.h" \
@@ -3037,13 +3127,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD_CNF(CARRIER_RX62N).h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\OSLayer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\task.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\list.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\queue.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\semphr.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZProcessor.h" \
@@ -3068,13 +3160,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\OsLayer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
 	"$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" "$(TC_INSTALL_DIR)\include\stdarg.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\task.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\list.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\queue.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\semphr.h" "..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\ExMemory.h"
@@ -3088,13 +3182,15 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZ.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZMemory.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTickCounter.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZRTOS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
-	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM7_LPC23xx\portmacro.h" \
-	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\Keil4\LPC2478\portmacro.h" \
+	"..\DK-TS-RX62N\errno.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\projdefs.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\portable.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\HEW\Renesas\RX62N\portmacro.h" \
-	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h" \
+	"$(TC_INSTALL_DIR)\include\machine.h" "$(TC_INSTALL_DIR)\include\builtin.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM4F\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3\portmacro.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM4F\portmacro.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\mpu_wrappers.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZTS.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\InputEvent.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZCharDisplay.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZGPIO.h" "..\..\..\..\..\..\..\..\uEZ\Include\HAL\GPIO.h" \

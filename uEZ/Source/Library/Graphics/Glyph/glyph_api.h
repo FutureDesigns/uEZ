@@ -58,6 +58,7 @@
 Includes “Glyph config Include”
 ******************************************************************************/
 #include "glyph_cfg.h"
+#include <stdint.h>
 
 /******************************************************************************
 Imported global variables and functions (from other files)

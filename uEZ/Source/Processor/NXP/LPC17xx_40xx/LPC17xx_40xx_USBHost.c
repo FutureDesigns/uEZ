@@ -11,13 +11,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -53,11 +53,30 @@
  * Macros and Constants:
  *---------------------------------------------------------------------------*/
 
+// NOTE: Rh = Root Hub, Rc = Root Controller
+// More details about OHCI can be found at:
+//   ftp://ftp.compaq.com/pub/supportinformation/papers/hcir1_0a.pdf
+
 /* ------------------ HcControl Register ---------------------  */
-#define  OR_CONTROL_CLE                 0x00000010
-#define  OR_CONTROL_BLE                 0x00000020
-#define  OR_CONTROL_HCFS                0x000000C0
-#define  OR_CONTROL_HC_OPER             0x00000080
+// ControlbulkSeriveRatio: Ratio between control and bulk EDs
+#define  OR_CONTROL_CBSR_MASK           0x00000003
+#define  OR_CONTROL_CBSR_1_TO_1         0x00000000 // default
+#define  OR_CONTROL_CBSR_2_TO_1         0x00000001
+#define  OR_CONTROL_CBSR_3_TO_1         0x00000002
+#define  OR_CONTROL_CBSR_4_TO_1         0x00000003
+#define  OR_CONTROL_PLE                 0x00000004  // PeriodListEnable
+#define  OR_CONTROL_ILE                 0x00000008  // IsochronousEnable
+#define  OR_CONTROL_CLE                 0x00000010  // ControlListEanble
+#define  OR_CONTROL_BLE                 0x00000020  // BulkListEnable
+#define  OR_CONTROL_HCFS                0x000000C0  // HostControllerFunctionalState
+    #define  OR_CONTROL_HCFS_USB_RESET      0x00000000
+    #define  OR_CONTROL_HCFS_USB_RESUME     0x00000040
+    #define  OR_CONTROL_HCFS_USB_OPERATION  0x00000080
+    #define  OR_CONTROL_HCFS_USB_SUSPEND    0x000000C0
+    #define  OR_CONTROL_HC_OPER             0x00000080
+#define  OR_CONTROL_IR                  0x00000100 // InterruptRouting
+#define  OR_CONTROL_RWC                 0x00000200 // RemoteWakeupConnected
+#define  OR_CONTROL_RWE                 0x00000400 // RemoteWakeupEnable
 /* ----------------- HcCommandStatus Register ----------------- */
 #define  OR_CMD_STATUS_HCR              0x00000001
 #define  OR_CMD_STATUS_CLF              0x00000002
@@ -72,13 +91,22 @@
 /* ---------------- HcRhDescriptorA Register ------------------ */
 #define  OR_RH_STATUS_LPSC              0x00010000
 /* -------------- HcRhPortStatus[1:NDP] Register -------------- */
-#define  OR_RH_PORT_CCS                 0x00000001
-#define  OR_RH_PORT_PRS                 0x00000010
-#define  OR_RH_PORT_CSC                 0x00010000
-#define  OR_RH_PORT_PRSC                0x00100000
+#define  OR_RH_PORT_CCS                 0x00000001  // Current connect status
+#define  OR_RH_PORT_POWER_ENABLE_STATUS 0x00000002  // Port eanble status (write bit to set port enable)
+#define  OR_RH_PORT_PORT_SUSPEND_STATUS 0x00000004  // Port suspend status (write bit to set port suspend)
+#define  OR_RH_PORT_OVER_CURRENT_STATUS 0x00000008  // Over current status (write bit to clear port suspend)
+#define  OR_RH_PORT_PRS                 0x00000010  // Port reset status (write bit to set port reset)
+#define  OR_RH_PORT_POWER_STATUS        0x00000100  // Power port device status (write bit to set port power)
+#define  OR_RH_PORT_LOW_SPEED_ATTACHED  0x00000200  // Low speed device attached (write bit to clear port power)
+#define  OR_RH_PORT_CSC                 0x00010000  // Connect status change
+#define  OR_RH_PORT_ENABLE_CHANGE       0x00020000  // Port enable status change
+#define  OR_RH_PORT_SUSPEND_CHG         0x00040000  // Port suspend status change
+#define  OR_RH_PORT_OVER_CURRENT_CHG    0x00080000  // Over Current indicator change
+#define  OR_RH_PORT_PRSC                0x00100000  // Port reset status change
 
-#define  FI                     0x2EDF           /* 12000 bits per frame (-1)                               */
+#define  FI                     0x2EDF           /* Frame Interval: 12000 bits per frame (-1)                               */
 #define  DEFAULT_FMINTERVAL     ((((6 * (FI - 210)) / 7) << 16) | FI)
+#define  PERIODIC_START         0x00002A27UL        /* About 10% of the frame interval */
 
 // Transfer Descriptor control fields
 #define  TD_ROUNDING        (TUInt32) (0x00040000)        /* Buffer Rounding                             */
@@ -89,6 +117,19 @@
 #define  TD_TOGGLE_0        (TUInt32)(0x02000000)         /* Toggle 0                                    */
 #define  TD_TOGGLE_1        (TUInt32)(0x03000000)         /* Toggle 1                                    */
 #define  TD_CC              (TUInt32)(0xF0000000)         /* Completion Code                             */
+
+// Endpoint descriptor Control field macros
+#define ED_ADDRESS(x)           (TUInt32)(((x)0x7F)<<0)     //!< Address of target device (0-127)
+#define ED_ENDPOINT_NUMBER(en)  (TUInt32)((en & 0x0F)<<7)   //!< Endpoint number (0-15)
+#define ED_DIR_FROM_TD          (TUInt32)(0<<11)            //!< Direction of end point comes from transfer descriptor (default)
+#define ED_DIR_OUT              (TUInt32)(1<<11)            //!< Direction of end point is always OUT
+#define ED_DIR_IN               (TUInt32)(2<<11)            //!< Direction of end point is always IN
+#define ED_SPEED_FULL           (TUInt32)(0<<13)            //!< Full speed endpoint connection
+#define ED_SPEED_LOW            (TUInt32)(1<<13)            //!< Low speed endpoint connection
+#define ED_SKIP                 (TUInt32)(1<<14)            //!< Skip this endpoint
+#define ED_FORMAT_GENERAL       (TUInt32)(0<<15)            //!< Control, Bulk, or Interrupt endpoint
+#define ED_FORMAT_ISOCHRONOUS   (TUInt32)(1<<15)            //!< Isochronouse endpoint
+#define ED_MAX_PACKET_SIZE(m)   (TUInt32)(((m)&0x7FF)<<16)  //!< Maximum packet size
 
 /*---------------------------------------------------------------------------*
  * Macros:
@@ -117,6 +158,7 @@ typedef struct {
     volatile TUInt32 *iPortStatus;
     T_usbHostPortIndex iPortIndex;
     volatile  T_usbHostDeviceState iState;
+    T_usbHostSpeed iSpeed;
 
     // Callbacks
     const T_USBHostCallbacks *iCallbackAPI;
@@ -144,6 +186,8 @@ extern void UEZBSPDelayMS(unsigned int aMilliseconds);
 static volatile  HCED      *EDCtrl;                    /* Control endpoint descriptor structure                  */
 static volatile  HCED      *EDBulkIn;                  /* BulkIn endpoint descriptor  structure                  */
 static volatile  HCED      *EDBulkOut;                 /* BulkOut endpoint descriptor structure                  */
+static volatile  HCED      *EDInterruptIn;             /* InterruptIn endpoint descriptor  structure                  */
+static volatile  HCED      *EDInterruptOut;            /* InterruptOut endpoint descriptor structure                  */
 static volatile  HCTD      *TDHead;                    /* Head transfer descriptor structure                     */
 static volatile  HCTD      *TDTail;                    /* Tail transfer descriptor structure                     */
 static volatile  HCCA      *Hcca;                      /* Host Controller Communications Area structure          */
@@ -348,10 +392,13 @@ static void IHost_TDInit(volatile  HCTD *td)
 */
 static void IHost_EDInit (volatile  HCED *aEndDesc)
 {
+    static TUInt32 iFirst = 0;
+
     aEndDesc->Control = 0;
     aEndDesc->TailTd  = 0;
     aEndDesc->HeadTd  = 0;
-    aEndDesc->Next    = 0;
+    aEndDesc->Next    = iFirst;
+    iFirst = (TUInt32)aEndDesc;
 }
 
 /*
@@ -371,8 +418,8 @@ static void IHost_HCCAInit (volatile  HCCA  *hcca)
     TUInt32  i;
 
     for (i = 0; i < 32; i++) {
-        hcca->IntTable[i] = 0;
-        hcca->FrameNumber = 0;
+        hcca->IntTable[i] = (TUInt32)EDInterruptIn;
+        hcca->FrameNumber = i;
         hcca->DoneHead    = 0;
     }
 }
@@ -445,6 +492,7 @@ static T_uezError LPC17xx_40xx_USBHost_InitializeWorkspace_PortA(void *aWorkspac
     p->iAllocRemaining = 0; // Not ready yet
     p->iCallbackAPI = 0;
     p->iCallbackWorkspace = 0;
+    p->iSpeed = USB_HOST_SPEED_FULL;
 
     return UEZ_ERROR_NONE;
 }
@@ -467,6 +515,7 @@ static T_uezError LPC17xx_40xx_USBHost_InitializeWorkspace_PortB(void *aWorkspac
     p->iAllocRemaining = 0; // Not ready yet
     p->iCallbackAPI = 0;
     p->iCallbackWorkspace = 0;
+    p->iSpeed = USB_HOST_SPEED_FULL;
 
     return UEZ_ERROR_NONE;
 }
@@ -515,12 +564,16 @@ static T_uezError Host_Init(void *aWorkspace)
     EDCtrl     = IAllocBuffer(p, sizeof(HCED));
     EDBulkIn   = IAllocBuffer(p, sizeof(HCED));
     EDBulkOut  = IAllocBuffer(p, sizeof(HCED));
+    EDInterruptIn   = IAllocBuffer(p, sizeof(HCED));
+    EDInterruptOut  = IAllocBuffer(p, sizeof(HCED));
     TDBuffer   = IAllocBuffer(p, 128);
 
     // And then initialize those buffers
-    IHost_EDInit(EDCtrl);
     IHost_EDInit(EDBulkIn);
     IHost_EDInit(EDBulkOut);
+    IHost_EDInit(EDInterruptIn);
+    IHost_EDInit(EDInterruptOut);
+    IHost_EDInit(EDCtrl);
     IHost_TDInit(TDHead);
     IHost_TDInit(TDTail);
     IHost_HCCAInit(Hcca);
@@ -534,6 +587,7 @@ static T_uezError Host_Init(void *aWorkspace)
     // Now do the software reset and go back to the largest packet size
     LPC_USB->HcCommandStatus = OR_CMD_STATUS_HCR;
     LPC_USB->HcFmInterval    = DEFAULT_FMINTERVAL;
+    LPC_USB->HcPeriodicStart   = PERIODIC_START;
 
     // Put HC in operational state and set global power
     LPC_USB->HcControl  = (LPC_USB->HcControl & (~OR_CONTROL_HCFS)) | OR_CONTROL_HC_OPER;
@@ -641,7 +695,7 @@ static T_uezError Host_ProcessTD(
     // Setup the endpoint descriptor
     aEndDesc->HeadTd  = (TUInt32)TDHead | ((aEndDesc->HeadTd) & 0x00000002);
     aEndDesc->TailTd  = (TUInt32)TDTail;
-    aEndDesc->Next    = 0;
+    //aEndDesc->Next    = 0;
 
     // Are we a control endpoint or a bulk endpoint?
     if (aEndDesc == EDCtrl) {
@@ -649,6 +703,11 @@ static T_uezError Host_ProcessTD(
         LPC_USB->HcControlHeadED = (TUInt32)aEndDesc;
         LPC_USB->HcCommandStatus = LPC_USB->HcCommandStatus | OR_CMD_STATUS_CLF;
         LPC_USB->HcControl       = LPC_USB->HcControl       | OR_CONTROL_CLE;
+    } else if ((aEndDesc == EDInterruptIn) || (aEndDesc == EDInterruptOut)) {
+        // Setup for interrupt transfer
+        LPC_USB->HcBulkHeadED    = (TUInt32)aEndDesc;
+        LPC_USB->HcCommandStatus = LPC_USB->HcCommandStatus | OR_CMD_STATUS_BLF;
+        LPC_USB->HcControl       = LPC_USB->HcControl       | OR_CONTROL_PLE;
     } else {
         // Otherwise, setup for bulk transfer
         LPC_USB->HcBulkHeadED    = (TUInt32)aEndDesc;
@@ -836,7 +895,7 @@ static void Host_ResetPort(void *aWorkspace)
     UEZTaskDelay(100);
 
     // Default max packet size to 8 to ensure compatibility
-    EDCtrl->Control = (8 << 16);
+    EDCtrl->Control = (EDCtrl->Control & ~(0x7FF<<16)) | (8 << 16);
 }
 
 T_uezError Host_Control(
@@ -851,6 +910,29 @@ T_uezError Host_Control(
             TUInt32 aTimeout)
 {
     return Host_CtrlRecv(
+            aWorkspace,
+            aBuffer,
+            aDeviceAddress,
+            aBMRequestType,
+            aRequest,
+            aValue,
+            aIndex,
+            aLength,
+            aTimeout);
+}
+
+T_uezError Host_ControlOut(
+            void *aWorkspace,
+            TUInt8 aDeviceAddress,
+            TUInt8 aBMRequestType,
+            TUInt8 aRequest,
+            TUInt16 aValue,
+            TUInt16 aIndex,
+            TUInt16 aLength,
+            void *aBuffer,
+            TUInt32 aTimeout)
+{
+    return Host_CtrlSend(
             aWorkspace,
             aBuffer,
             aDeviceAddress,
@@ -913,7 +995,7 @@ T_uezError Host_BulkOut(
 {
     T_uezError error;
     volatile HCED *hced = EDBulkOut;
-//    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
+    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
 
     // Configure the bulk end point
     // with the proper end point and address
@@ -921,6 +1003,8 @@ T_uezError Host_BulkOut(
         (hced->Control & ~((0x7F<<0)|(0x7F<<7))) |
         (aDeviceAddress << 0) |
         ((aEndpoint & 0x7F) << 7);
+    if (p->iSpeed == USB_HOST_SPEED_LOW)
+        hced->Control |= ED_SPEED_LOW;
 
     // Now process that end point
     error = Host_ProcessTD(aWorkspace, hced, TD_OUT, aBuffer, aSize, aTimeout);
@@ -938,7 +1022,7 @@ T_uezError Host_BulkIn(
 {
     T_uezError error;
     volatile HCED *hced = EDBulkIn;
-//    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
+    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
 
     // Configure the bulk end point
     // with the proper end point and address
@@ -946,6 +1030,8 @@ T_uezError Host_BulkIn(
         (hced->Control & ~((0x7F<<0)|(0x7F<<7))) |
         (aDeviceAddress << 0) |
         ((aEndpoint & 0x7F) << 7);
+    if (p->iSpeed == USB_HOST_SPEED_LOW)
+        hced->Control |= ED_SPEED_LOW;
 
     // Now process that end point
     error = Host_ProcessTD(aWorkspace, hced, TD_IN, aBuffer, aSize, aTimeout);
@@ -961,8 +1047,23 @@ T_uezError Host_InterruptOut(
             TUInt32 aSize,
             TUInt32 aTimeout)
 {
-    // TBD:
-    return UEZ_ERROR_NOT_SUPPORTED;
+    T_uezError error;
+    volatile HCED *hced = EDInterruptOut;
+    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
+
+    // Configure the interrupt end point
+    // with the proper end point and address
+    hced->Control =
+        (hced->Control & ~((0x7F<<0)|(0x7F<<7))) |
+        (aDeviceAddress << 0) |
+        ((aEndpoint & 0x7F) << 7);
+    if (p->iSpeed == USB_HOST_SPEED_LOW)
+        hced->Control |= ED_SPEED_LOW;
+
+    // Now process that end point
+    error = Host_ProcessTD(aWorkspace, hced, TD_OUT, (TUInt8 *)aBuffer, aSize, aTimeout);
+
+    return error;
 }
 
 T_uezError Host_InterruptIn(
@@ -973,8 +1074,23 @@ T_uezError Host_InterruptIn(
             TUInt32 aSize,
             TUInt32 aTimeout)
 {
-    // TBD:
-    return UEZ_ERROR_NOT_SUPPORTED;
+    T_uezError error;
+    volatile HCED *hced = EDInterruptIn;
+    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
+
+    // Configure the interrupt end point
+    // with the proper end point and address
+    hced->Control =
+        (hced->Control & ~((0x7F<<0)|(0x7F<<7))) |
+        (aDeviceAddress << 0) |
+        ((aEndpoint & 0x7F) << 7);
+    if (p->iSpeed == USB_HOST_SPEED_LOW)
+        hced->Control |= ED_SPEED_LOW;
+
+    // Now process that end point
+    error = Host_ProcessTD(aWorkspace, hced, TD_IN, aBuffer, aSize, aTimeout);
+
+    return error;
 }
 
 T_uezError Host_SetConfiguration(
@@ -1004,7 +1120,7 @@ T_uezError Host_SetControlPacketSize(
     if (aPacketSize > 256)
         return UEZ_ERROR_ILLEGAL_PARAMETER;
 
-    EDCtrl->Control = (aPacketSize << 16);
+    EDCtrl->Control = (EDCtrl->Control & ~(0x7FF<<16)) | (aPacketSize << 16);
 
     return UEZ_ERROR_NONE;
 }
@@ -1024,8 +1140,18 @@ T_uezError Host_ConfigureEndpoint(
             ((aEndpointAndInOut & 0x7F) << 7) | // Endpoint address
             (2 << 11) | // direction
             (aMaxPacketSize << 16);
+        EDInterruptIn->Control =
+            aDeviceAddress | // USB Address
+            ((aEndpointAndInOut & 0x7F) << 7) | // Endpoint address
+            (2 << 11) | // direction
+            (aMaxPacketSize << 16);
     } else {
         EDBulkOut->Control =
+            aDeviceAddress | // USB Address
+            ((aEndpointAndInOut & 0x7F) << 7) | // Endpoint address
+            (1 << 11) | // direction
+            (aMaxPacketSize << 16);
+        EDInterruptOut->Control =
             aDeviceAddress | // USB Address
             ((aEndpointAndInOut & 0x7F) << 7) | // Endpoint address
             (1 << 11) | // direction
@@ -1035,6 +1161,39 @@ T_uezError Host_ConfigureEndpoint(
     return UEZ_ERROR_NONE;
 }
 
+T_usbHostSpeed Host_GetRootPortDetectedSpeed(void *aWorkspace)
+{
+    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
+
+    // Just look at the status flag
+    if ((*p->iPortStatus) & OR_RH_PORT_LOW_SPEED_ATTACHED)
+        return USB_HOST_SPEED_LOW;
+
+    return USB_HOST_SPEED_FULL;
+}
+
+T_uezError Host_SetRootPortSpeed(void *aWorkspace, T_usbHostSpeed aNewSpeed)
+{
+    T_LPC17xx_40xx_USBHost_Workspace *p = (T_LPC17xx_40xx_USBHost_Workspace *)aWorkspace;
+
+    if (aNewSpeed == USB_HOST_SPEED_LOW) {
+        // Change all the endpoint descriptors to use the low speed
+        EDCtrl->Control |= ED_SPEED_LOW;
+        EDBulkIn->Control |= ED_SPEED_LOW;
+        EDBulkOut->Control |= ED_SPEED_LOW;
+        EDInterruptIn->Control |= ED_SPEED_LOW;
+        EDInterruptOut->Control |= ED_SPEED_LOW;
+    } else {
+        // Change all the endpoint descriptors to use the full speed
+        EDCtrl->Control &= ~ED_SPEED_LOW;
+        EDBulkIn->Control &= ~ED_SPEED_LOW;
+        EDBulkOut->Control &= ~ED_SPEED_LOW;
+        EDInterruptIn->Control &= ~ED_SPEED_LOW;
+        EDInterruptOut->Control &= ~ED_SPEED_LOW;
+    }
+    p->iSpeed = aNewSpeed;
+    return UEZ_ERROR_NONE;
+}
 
 const HAL_USBHost G_LPC17xx_40xx_USBHost_Interface_PortA = {
     // T_halInterface iInterface
@@ -1065,6 +1224,11 @@ const HAL_USBHost G_LPC17xx_40xx_USBHost_Interface_PortA = {
     Host_BulkIn,
     Host_InterruptOut,
     Host_InterruptIn,
+
+    Host_GetRootPortDetectedSpeed,
+    Host_SetRootPortSpeed,
+
+    Host_ControlOut,
 };
 
 
@@ -1097,6 +1261,11 @@ const HAL_USBHost G_LPC17xx_40xx_USBHost_Interface_PortB = {
     Host_BulkIn,
     Host_InterruptOut,
     Host_InterruptIn,
+
+    Host_GetRootPortDetectedSpeed,
+    Host_SetRootPortSpeed,
+
+    Host_ControlOut,
 };
 
 /*---------------------------------------------------------------------------*

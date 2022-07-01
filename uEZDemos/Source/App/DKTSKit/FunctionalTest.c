@@ -8,19 +8,18 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -45,7 +44,7 @@
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
 #include <HAL/GPIO.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <Device/Accelerometer.h>
 #include <Device/ButtonBank.h>
 #include <Device/EEPROM.h>
@@ -54,8 +53,8 @@
 #include <Device/RTC.h>
 #include <Types/TimeDate.h>
 #include <uEZProcessor.h>
-#include <UEZPlatform.h>
-#include <UEZLCD.h>
+#include <uEZPlatform.h>
+#include <uEZLCD.h>
 #include <NVSettings.h>
 #include <Types/InputEvent.h>
 

@@ -1195,7 +1195,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\debugger\NXP\LPC1788.ddf</state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\NXP\iolpc1788.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -1239,7 +1239,7 @@
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
-          <state>6.50.2.4581</state>
+          <state>6.30.4.53294</state>
         </option>
         <option>
           <name>OCDownloadAttachToProgram</name>
@@ -2254,7 +2254,7 @@
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\OpenRTOS\OpenRTOSPlugin.ewplugin</file>
-        <loadFlag>1</loadFlag>
+        <loadFlag>0</loadFlag>
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\PowerPac\PowerPacRTOS.ewplugin</file>

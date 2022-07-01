@@ -1,25 +1,50 @@
 /*-------------------------------------------------------------------------*
- * File:  uEZPlatform.h
- *-------------------------------------------------------------------------*
- * Description:
- *     Contains definitions for the CARRIER_RX62N platform.
- *-------------------------------------------------------------------------*/
+* File:  uEZPlatform.h
+*--------------------------------------------------------------------------*
+* Description:
+*	      @brief 	uEZ Platform File Definitions
+*         The uEZ platform file definitions for the CARRIER_RX62N platform.
+*-------------------------------------------------------------------------*/
 #ifndef UEZPLATFORM_H_
 #define UEZPLATFORM_H_
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
- *--------------------------------------------------------------------------
- * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
- *
- *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
- *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
- *    *===============================================================*
- *
- *-------------------------------------------------------------------------*/
+* uEZ(r) - Copyright (C) 2007-2015 Future Designs, Inc.
+*--------------------------------------------------------------------------
+* This file is part of the uEZ(r) distribution.
+*
+* uEZ(r) is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* uEZ(r) is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with uEZ(r); if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*
+* A special exception to the GPL can be applied should you wish to
+* distribute a combined work that includes uEZ(r), without being obliged
+* to provide the source code for any proprietary components.  See the
+* licensing section of http://www.teamfdi.com/uez for full details of how
+* and when the exception can be applied.
+*
+*    *===============================================================*
+*    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+*    |             We can get you up and running fast!               |
+*    |      See http://www.teamfdi.com/uez for more details.         |
+*    *===============================================================*
+*
+*-------------------------------------------------------------------------*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /*-------------------------------------------------------------------------*
  * Platform Settings:
@@ -71,7 +96,7 @@
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
 #define UEZBSP_NOR_FLASH_BASE_ADDRESS       0x80000000
 
-//#include "lwipopts.h"
+//#include <lwipopts.h>
 
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
@@ -89,9 +114,6 @@
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-TBool UEZGUIIsExpansionBoardConnected(void);
-TBool UEZGUIIsLoopbackBoardConnected(void);
-
 void UEZPlatform_LCD_Require(void);
 void UEZPlatform_Console_Require(
         TUInt32 aWriteBufferSize,
@@ -103,6 +125,7 @@ void UEZPlatform_AudioAmp_Require(void);
 void UEZPlatform_AudioCodec_Require(void);
 void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_WiredNetwork0_Require(void);
+void UEZPlatform_WiFiProgramMode(TBool runMode);
 
 void UEZPlatform_Accel0_Require(void);
 void UEZPlatform_Temp0_Require(void);
@@ -112,6 +135,10 @@ void UEZPlatform_Require(void);
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);
 void UEZPlatform_Minimal_Require(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // UEZPLATFORM_SETTINGS_H_
 /*-------------------------------------------------------------------------*

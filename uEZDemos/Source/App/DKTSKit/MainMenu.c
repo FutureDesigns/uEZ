@@ -6,19 +6,18 @@
 *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
-* uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
-*--------------------------------------------------------------------------
-* This file is part of the uEZ(R) distribution.  See the included
-* uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
-*
-*    *===============================================================*
-*    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
-*    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
-*    *===============================================================*
-*
-*-------------------------------------------------------------------------*/
-
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
 #include <uEZ.h>
@@ -27,13 +26,13 @@
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_DrawBitmap.h>
-#include <Source/Library/Screensaver/BouncingLogoSS.h>
+#include <Source/Library/ScreenSaver/BouncingLogoSS.h>
 #include "AppDemo.h"
 #include <uEZDemoCommon.h>
 #include <Calibration.h>
 #include <uEZDeviceTable.h>
 #include "../GUICommon/FDI_emWin_Demo.h"
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 
 /*---------------------------------------------------------------------------*
 * Constants:
@@ -62,8 +61,8 @@
 * Globals:
 *---------------------------------------------------------------------------*/
 static SWIM_WINDOW_T G_mmWin;
-static TUInt32 G_romChecksum;
-static TBool G_romChecksumCalculated;
+TUInt32 G_romChecksum;
+TBool G_romChecksumCalculated;
 
 TUInt32 ROMChecksumCalculate()
 {
@@ -113,6 +112,7 @@ static const T_appMenuEntry settings_menu_entries[] = {
 #endif
 { 0 },
 };
+
 static const T_appMenu settings_submenu = {
     PROJECT_NAME " " VERSION_AS_TEXT " - Settings",
     settings_menu_entries,
@@ -133,7 +133,9 @@ static const T_appMenu comm_submenu = {
 #endif
 
 static const T_appMenuEntry mainmenu_entries[] = {
+#if APP_DEMO_SLIDESHOW
     { "Slideshow", MultiSlideshowMode, G_slideshowIcon, 0 },
+#endif
 #if APP_DEMO_APPS
 { "Apps", AppSubmenu, G_appFolderIcon, (void *)&apps_submenu },
 #endif
@@ -183,7 +185,7 @@ void TitleScreen(void)
 
     if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
         UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-
+        
         SUIHidePage0();
 
         swim_window_open(
@@ -215,7 +217,7 @@ void TitleScreen(void)
             DISPLAY_HEIGHT-15);*/
 
         SUIShowPage0();
-
+       
 #if FAST_STARTUP
         UEZLCDBacklight(lcd, 255);
 #else
@@ -261,7 +263,7 @@ void MainMenu(void)
         // Open the LCD and get the pixel buffer
         if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
             UEZLCDGetFrame(lcd, 0, (void **)&pixels);
-
+            
 #if (!FAST_STARTUP)
             // Clear the screen
             TitleScreen();

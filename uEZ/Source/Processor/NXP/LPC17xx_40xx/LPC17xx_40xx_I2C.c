@@ -9,13 +9,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -237,6 +237,10 @@ void ILPC17xx_40xx_I2CSetSpeed(LPC_I2C_TypeDef *aRegs, TUInt16 aSpeed)
     // Set 44.6%/55.3% duty cycle to satisfy 1.3us low pulse width requirement for fast mode
     aRegs->SCLL = ((v / 2) + 8);
     aRegs->SCLH = ((v / 2) - 8);
+    } else if (aSpeed == 1000){
+    // Set 45%/55% duty cycle to satisfy 0.5us low pulse width requirement for fast mode plus, currently untested
+    aRegs->SCLL = ((v / 2) + 3);
+    aRegs->SCLH = ((v / 2) - 3);
     } else {
     // Set 50% duty cycle
     aRegs->SCLL = (v / 2);

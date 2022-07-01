@@ -12,7 +12,7 @@
   </MemorySegment>
   <MemorySegment name="SDRAM">
     <!-- 9 frames of graphics reserved -->
-    <ProgramSection alignment="4" size="640*480*2*7" load="No" name=".frames"/>
+    <ProgramSection alignment="4" size="640*480*2*9" load="No" name=".frames"/>
     <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
     <!-- Reserved 1 Meg for loading work space at end-->
     <ProgramSection alignment="4" size="1*1024*1024" load="No" name=".loadspace"/>

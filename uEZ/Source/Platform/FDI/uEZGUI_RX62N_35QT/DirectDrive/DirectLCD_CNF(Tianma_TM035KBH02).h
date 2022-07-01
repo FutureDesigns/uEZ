@@ -20,11 +20,11 @@ DD.MM.YYYY OSO-UID Description
 // USER DEFINES to Control Panel
 // Controls the presentation of data Left to Right on panel. Define this to invert
 // Define this if need High to Low memory Pixels (default is Low to High)
-//#define H_DOT_INVERT
+// #define H_DOT_INVERT
 
 // DOT CLOCK Inversion Control (only works with TPU generated DOTCLK modes (ExDMA generated must invert in hardware if necessary)
 // Define this symbol if dot inversion necessary
-//#define DOT_INVERT
+// #define DOT_INVERT
 
 // Vertical pulse width (inactive pulse width)
 #define V_LINES_PULSE 1//3

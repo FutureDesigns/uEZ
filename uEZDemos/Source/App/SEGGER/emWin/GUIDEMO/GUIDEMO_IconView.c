@@ -22,7 +22,7 @@ Purpose     : Washing machine demo
 
 #include <stddef.h>
 
-#include "GUIDemo.h"
+#include "GUIDEMO.h"
 
 #define GUI_BYTESPERPIXEL 4
 

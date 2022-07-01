@@ -31,8 +31,8 @@
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
 
-// Expansion Options
-#define UEZGUI_EXP_BOARD                    UEZGUI_EXP_NONE
+// Expansion Options, set to 1 to enable an expansion board
+#define UEZGUI_EXPANSION_DEVKIT             0
 #define ENABLE_UEZ_BUTTON                   0
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
@@ -48,14 +48,15 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
+#define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               1
+#define TS_TEST_DEMO                        0
 
-#define INCLUDE_EMWIN                       1
-#define APP_DEMO_EMWIN                      0 // must be disabled for KEIL for now
+#define INCLUDE_EMWIN                       0
+#define APP_DEMO_EMWIN                      INCLUDE_EMWIN // must be disabled for KEIL for now
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
-#define APP_DEMO_YOUR_APP                   0
 #define SHOW_GUIDEMO_AUTOMOTIVE             1
 #define SHOW_GUIDEMO_GRAPH                  1
 #define SHOW_GUIDEMO_LISTVIE                1

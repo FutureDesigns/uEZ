@@ -303,27 +303,6 @@
           <folder Name="lwIP">
             <file file_name="../../../../../../Source/Devices/Network/lwIP/Network_lwIP.c"/>
           </folder>
-          <folder Name="RS9110_N_11_22">
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/includes.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/internals.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/network_config.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/network_config.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/process_data.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/process_data.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/Redpine_RS9110_N_11_22.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/Redpine_RS9110_N_11_22_driver.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_firmware.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_spi_bus.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_spi_pine.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rs22_ssp_hcd.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_api.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_compiler.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_nic.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_spi.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_spi.h"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_util.c"/>
-            <file file_name="../../../../../../Source/Devices/Network/Redpine/RS9110_N_11_22/rsi_util.h"/>
-          </folder>
           <folder Name="GainSpan">
             <file file_name="../../../../../../Source/Devices/Network/GainSpan/Network_GainSpan.c"/>
             <file file_name="../../../../../../Source/Devices/Network/GainSpan/Network_GainSpan.h"/>
@@ -396,10 +375,28 @@
             <file file_name="../../../../../../Source/Devices/CRC/Generic/CRC_Generic.h"/>
           </folder>
         </folder>
+        <folder Name="CAN">
+          <folder Name="Generic" file_name="">
+            <file file_name="../../../../../../Source/Devices/CAN/Generic/Generic_CAN.h"/>
+            <file file_name="../../../../../../Source/Devices/CAN/Generic/uEZCANGeneric.c"/>
+          </folder>
+        </folder>
+        <folder Name="GPIO">
+          <folder Name="I2C" file_name="">
+            <folder Name="PCF8574T" file_name="">
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.c"/>
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h"/>
+            </folder>
+            <folder Name="PCF8575" file_name="">
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8575/GPIO_PCF8575.c"/>
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8575/GPIO_PCF8575.h"/>
+            </folder>
+          </folder>
+        </folder>
       </folder>
       <folder Name="Library">
         <folder Name="FileSystem">
-          <folder Name="FATFS">
+          <folder Name="FATFS" file_name="">
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.h"/>
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.h"/>
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/integer.h"/>
@@ -408,6 +405,9 @@
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.c"/>
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.c"/>
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.c"/>
+            <folder Name="option" file_name="">
+              <file file_name="../../../../../../Source/Library/FileSystem/FATFS/option/unicode.c"/>
+            </folder>
           </folder>
         </folder>
         <folder Name="Graphics">
@@ -829,7 +829,7 @@
       </folder>
       <folder Name="Processor">
         <folder Name="NXP">
-          <folder Name="LPC17xx_40xx">
+          <folder Name="LPC17xx_40xx" file_name="">
             <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Watchdog.c"/>
             <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/uEZProcessor_LPC17xx_40xx.h"/>
             <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_ADCBank.c"/>
@@ -870,6 +870,8 @@
             <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBHost.c"/>
             <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CRC.c"/>
             <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_MCI.c"/>
+            <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CAN.c"/>
+            <file file_name="../../../../../../Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CAN.h"/>
           </folder>
         </folder>
       </folder>
@@ -968,6 +970,7 @@
         <file file_name="../../../../../../Source/uEZSystem/uEZEEPROM.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZCRC.c"/>
         <file file_name="../../../../../../Source/uEZSystem/uEZAudioMixer.c"/>
+        <file file_name="../../../../../../Source/uEZSystem/uEZCAN.c"/>
       </folder>
       <folder Name="Platform">
         <folder Name="emWin">
@@ -1111,7 +1114,7 @@
       <file file_name="../../../../../../Include/uEZGPIO.h"/>
       <file file_name="../../../../../../Include/uEZPlatformAPI.h"/>
     </folder>
-    <configuration Name="Release" build_debug_information="Yes" build_output_file_name="$(OutDir)/$(ProjectName)_Release$(LIB)" gcc_optimization_level="Level 3"/>
+    <configuration Name="Release" build_debug_information="Yes" build_output_file_name="$(OutDir)/$(ProjectName)_Release$(LIB)" gcc_optimization_level="None"/>
     <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes"/>
     <configuration Name="Debug" build_output_file_name="$(OutDir)/$(ProjectName)_Debug$(LIB)"/>
     <configuration Name="ReleaseOptForSize" gcc_optimization_level="Optimize For Size"/>

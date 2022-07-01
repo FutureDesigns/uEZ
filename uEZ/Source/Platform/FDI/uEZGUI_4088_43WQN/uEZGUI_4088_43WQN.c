@@ -4,21 +4,29 @@
  * Description:
  *      Bring up the uEZGUI-4088-43WQR
  *-------------------------------------------------------------------------*/
-
+ 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2013 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
+/**
+ *    @addtogroup uEZGUI-4088-43WQN
+ *  @{
+ *  @brief     uEZGUI-4088-43WQN platform
+ *  @see http://www.teamfdi.com/uez/
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *
+ *    The uEZGUI-4088-43WQN platform interface.
+*/
 #include <Config.h>
 #include <stdio.h>
 #include <string.h>
@@ -53,11 +61,13 @@
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/MassStorage/USB_MS/USB_MS.h>
+#include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
 #include <Source/Devices/Network/lwIP/Network_lwIP.h>
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
+#include <Source/Devices/Serial/RS485/Generic/Generic_RS485.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
 #include <Source/Devices/Timer/Generic/Timer_Generic.h>
@@ -106,7 +116,7 @@
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 
 #include <Source/Devices/Flash/NXP/LPC_SPIFI_M4/Flash_NXP_LPC_SPIFI_M4.h>
@@ -117,6 +127,7 @@ extern int MainTask(void);
  * Constants:
  *---------------------------------------------------------------------------*/
 #define NOR_FLASH_BASE_ADDR             0x80000000
+#define PLATFORM_USES_NOR_FLASH         (0)//off for standard product
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
 #define USING_43WQN_BA_REV1             1 // set to 1 for 1.X revisions for I2C power fix
 
@@ -238,9 +249,8 @@ void UEZBSP_RAMInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_ROMInit(void)
 {
+#if PLATFORM_USES_NOR_FLASH
 #if 1
-    //No NOR flash on standard 43WQN
-#elif 0
     const T_LPC17xx_40xx_EMC_Static_Configuration norFlash_M29W128G = {
             UEZBSP_NOR_FLASH_BASE_ADDRESS,
             16*1024*1024,  // stock is 8 Megs, but setup for 16 Megs
@@ -252,6 +262,7 @@ void UEZBSP_ROMInit(void)
             EMC_STATIC_CYCLES(25),
             EMC_STATIC_CYCLES(0),
             EMC_STATIC_CYCLES(90 + 4.9),
+
             1, };
     LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
@@ -269,6 +280,7 @@ void UEZBSP_ROMInit(void)
     };
     LPC17xx_40xx_EMC_Static_Init(&norSlowFlash_M29W128G);
 #endif
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -279,11 +291,51 @@ void UEZBSP_ROMInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_PLLConfigure(void)
 {
+#if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    const T_LPC17xx_40xx_PLL_Frequencies freq_CPU72MHz_Peripheral60Mhz_USB48MHz = {
+            12000000,
+
+            // Run PLL0 at 120 MHz
+            PROCESSOR_OSCILLATOR_FREQUENCY,
+
+            // Run PLL1 at 48 MHz
+            48000000,
+
+            // Use the main oscillator of 12 MHz as a source
+            LPC17xx_40xx_CLKSRC_SELECT_MAIN_OSCILLATOR,
+
+            // Use PLL0 for the CCLK, PCLK, and EMC Clk source (before dividers)
+            LPC17xx_40xx_CPU_CLOCK_SELECT_PLL_CLK,
+
+            // Use PPL1 (alt) for the USB
+            LPC17xx_40xx_USB_CLOCK_SELECT_ALT_PLL_CLK,
+
+            // CPU Clock is PLL0 / 1 or 120 MHz / 1 = 120 MHz
+            1,
+
+            // PCLK is PLL0 / 2, or 60 MHz
+            1,
+
+            // EMC runs at PLL0 / 2, or 60 MHz
+            1,
+
+            // USB Clock = PLL1 / 1 (48 MHz / 1)
+            1,
+
+            // CLKOUT is on the EMC CLK and at 60 MHz (60 MHz / 1)
+            LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
+            1,
+            ETrue, };
+
+    LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU72MHz_Peripheral60Mhz_USB48MHz);
+
+#else // 120000000 MHz
+
     const T_LPC17xx_40xx_PLL_Frequencies freq_CPU120MHz_Peripheral60Mhz_USB48MHz = {
             12000000,
 
             // Run PLL0 at 120 MHz
-            120000000,
+            PROCESSOR_OSCILLATOR_FREQUENCY,
 
             // Run PLL1 at 48 MHz
             48000000,
@@ -313,7 +365,10 @@ void UEZBSP_PLLConfigure(void)
             LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
             1,
             ETrue, };
+
     LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU120MHz_Peripheral60Mhz_USB48MHz);
+
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -428,11 +483,10 @@ void UEZPlatform_I2C2_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    // Ensure the I2C0 exists in the HAL level
-    LPC17xx_40xx_GPIO0_Require();
-    //LPC17xx_40xx_I2C2_Require(GPIO_P0_10, GPIO_P0_11);
-    //I2C_Generic_Create("I2C2", "I2C2", 0);
-
+    // Ensure the I2C2 exists in the HAL level
+    LPC17xx_40xx_GPIO4_Require();
+    LPC17xx_40xx_I2C2_Require(GPIO_P4_20, GPIO_P4_21);
+    I2C_Generic_Create("I2C2", "I2C2", 0);
 }
 
 /*---------------------------------------------------------------------------*
@@ -535,6 +589,125 @@ void UEZPlatform_GPDMA7_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART0.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.2/P0.3
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART0_Require(GPIO_P0_2, GPIO_P0_3);
+    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_UART1_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the raw UART1 driver.  No stream is attached.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_UART1_Require(void)
+{
+    // UART1 on P0.15/P0.16
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART1_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART1.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART1_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART1 on P0.15/P0.16
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
+    Serial_Generic_FullDuplex_Stream_Create("UART1", "UART1",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART2_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the full duplex UART using UART2.
+ *
+ *  @param [in]     aWriteBufferSize    Size in bytes of outgoing buffer
+ *  @param [in]     aReadBufferSize     Size in bytes of incoming buffer
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART2_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.10/P0.11
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART0_Require(GPIO_P0_10, GPIO_P0_11);
+    Serial_Generic_FullDuplex_Stream_Create("UART2", "UART2",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART3_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console using a full duplex UART using UART0.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART3_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART0 on P0.2/P0.3
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_UART3_Require(GPIO_P0_0, GPIO_P0_1);
+    Serial_Generic_FullDuplex_Stream_Create("UART3", "UART3",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_FullDuplex_UART4_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the full duplex UART using UART4.
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_FullDuplex_UART4_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // UART1 on P5.3(RXD)/P5.4(TXD)
+    LPC17xx_40xx_GPIO5_Require();
+    LPC17xx_40xx_UART4_Require(GPIO_P5_4, GPIO_P5_3);
+    Serial_Generic_FullDuplex_Stream_Create("UART4", "UART4",
+            aWriteBufferSize, aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_FullDuplex_UART_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -617,104 +790,6 @@ void UEZPlatform_Console_FullDuplex_UART0_Require(
     UEZPlatform_Console_FullDuplex_UART_Require("UART0", aWriteBufferSize,
             aReadBufferSize);
 }
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART0_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART0.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART0_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART0 on P0.2/P0.3
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART0_Require(GPIO_P0_2, GPIO_P0_3);
-    Serial_Generic_FullDuplex_Stream_Create("UART0", "UART0",
-            aWriteBufferSize, aReadBufferSize);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_UART1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the raw UART1 driver.  No stream is attached.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_UART1_Require(void)
-{
-    // UART1 on P0.15/P0.16
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
-            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART3_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART0.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART3_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART0 on P0.2/P0.3
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART3_Require(GPIO_P0_0, GPIO_P0_1);
-    Serial_Generic_FullDuplex_Stream_Create("UART3", "UART3",
-            aWriteBufferSize, aReadBufferSize);
-}
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART1_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the console using a full duplex UART using UART1.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART1_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART1 on P0.15/P0.16
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
-            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
-    Serial_Generic_FullDuplex_Stream_Create("UART1", "UART1",
-            aWriteBufferSize, aReadBufferSize);
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_FullDuplex_UART4_Require
- *---------------------------------------------------------------------------*
- * Description:
- *      Setup the full duplex UART using UART4.
- * Inputs:
- *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
- *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
- *---------------------------------------------------------------------------*/
-void UEZPlatform_FullDuplex_UART4_Require(
-        TUInt32 aWriteBufferSize,
-        TUInt32 aReadBufferSize)
-{
-    // UART1 on P5.3(RXD)/P5.4(TXD)
-    LPC17xx_40xx_GPIO5_Require();
-    LPC17xx_40xx_UART4_Require(GPIO_P5_4, GPIO_P5_3);
-    Serial_Generic_FullDuplex_Stream_Create("UART4", "UART4",
-            aWriteBufferSize, aReadBufferSize);
-}
-
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Console_FullDuplex_UART1_Require
  *---------------------------------------------------------------------------*
@@ -777,7 +852,58 @@ void UEZPlatform_Console_FullDuplex_UART3_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_Console_FullDuplex_ISPHeader_Require
+ * Routine:  UEZPlatform_Console_HalfDuplex_RS485_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the half-duplex RS485 driver for UART1 as the uEZGUI Console.
+ * Inputs:
+ *      char *aHALSerialName, -- Serial Port Name (
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *      T_uezGPIOPortPin aDriveEnablePortPin -- drive enable GPIO pin
+ *      TBool aDriveEnablePolarity -- Drive enable polarity (ETrue = HIGH true)
+ *      TUInt32 aDriveEnableReleaseTime -- Drive enable release time (in ms)
+ *      T_uezGPIOPortPin aReceiveEnablePortPin -- Receive enable GPIO pin
+ *      TBool aReceiveEnablePolarity -- Receive enable polarity (EFalse = LOW true)
+ *      TUInt32 aReceiveEnableReleaseTime -- Receive enable release time (in ms)
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Console_HalfDuplex_RS485_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize,
+        T_uezGPIOPortPin aDriveEnablePortPin,
+        TBool aDriveEnablePolarity,
+        TUInt32 aDriveEnableReleaseTime,
+        T_uezGPIOPortPin aReceiveEnablePortPin,
+        TBool aReceiveEnablePolarity,
+        TUInt32 aReceiveEnableReleaseTime)
+{
+    T_RS485_GenericHalfDuplex_Settings aSettings;
+    DEVICE_CREATE_ONCE();
+    LPC17xx_40xx_GPIO0_Require(); // UART1 on P0.15/P0.16
+    LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
+            GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
+  
+    aSettings.iSerialName = aHALSerialName; 
+    aSettings.iQueueSendSize = aWriteBufferSize;
+    aSettings.iQueueReceiveSize = aReadBufferSize;
+    aSettings.iDriveEnable = aDriveEnablePortPin;
+    aSettings.iDriveEnablePolarity = aDriveEnablePolarity;
+    aSettings.iDriveEnableReleaseTime = aDriveEnableReleaseTime;
+    aSettings.iReceiveEnable = aReceiveEnablePortPin;
+    aSettings.iReceiveEnablePolarity = aReceiveEnablePolarity;
+    aSettings.aReceiveEnableReleaseTime = aReceiveEnableReleaseTime;
+
+    RS485_GenericHalfDuplex_Create("Console", &aSettings);
+    // Set standard output to console
+    UEZStreamOpen("Console", &G_stdout);
+    G_stdin = G_stdout;
+    StdinRedirect(G_stdin);
+    StdoutRedirect(G_stdout);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Console_ISPHeader_Require
  *---------------------------------------------------------------------------*
  * Description:
  *      Setup the console to be a full duplex UART on the ISP header
@@ -795,7 +921,7 @@ void UEZPlatform_Console_ISPHeader_Require(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_Console_Expansion_ISPHeader_Require
+ * Routine:  UEZPlatform_Console_Expansion_Require
  *---------------------------------------------------------------------------*
  * Description:
  *      Setup the console to be a full duplex UART on the expansion header
@@ -810,6 +936,24 @@ void UEZPlatform_Console_Expansion_Require(
 {
     // Standard Expansion board serial console is on UART0
     UEZPlatform_Console_FullDuplex_UART0_Require(aWriteBufferSize,
+            aReadBufferSize);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Console_ALT_PWR_COM_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the console to be a full duplex UART on the ALT PWR COM header
+ * Inputs:
+ *      TUInt32 aWriteBufferSize -- Size in bytes of outgoing buffer
+ *      TUInt32 aReadBufferSize -- Size in bytes of incoming buffer
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Console_ALT_PWR_COM_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize)
+{
+    // Standard Expansion board serial console is on UART3
+    UEZPlatform_Console_FullDuplex_UART3_Require(aWriteBufferSize,
             aReadBufferSize);
 }
 
@@ -989,7 +1133,11 @@ void UEZPlatform_DAC0_Require(void)
 void UEZPlatform_Flash0_Require(void)
 {
     DEVICE_CREATE_ONCE();
+#if PLATFORM_USES_NOR_FLASH
+    Flash_S29GL064N90_16Bit_Create("Flash0", NOR_FLASH_BASE_ADDR);
+#else
     Flash_NXP_LPC_SPIFI_M4_Create("Flash0");
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -1049,6 +1197,7 @@ void UEZPlatform_LCD_Require(void)
             GPIO_NONE,  // LCD_LE
             GPIO_P2_5,  // LCD_LP
 
+            {
             GPIO_NONE,  // LCD_VD0
             GPIO_NONE,  // LCD_VD1
             GPIO_P4_28, // LCD_VD2
@@ -1075,6 +1224,7 @@ void UEZPlatform_LCD_Require(void)
             GPIO_P1_27, // LCD_VD21
             GPIO_P1_28, // LCD_VD22
             GPIO_P1_29, // LCD_VD23
+            },
 
             GPIO_NONE,  // LCD_CLKIN
 
@@ -1670,7 +1820,7 @@ void UEZPlatform_TouchscreenRT_Require(void)
 
     Touchscreen_FourWireTouchResist_Create("Touchscreen", &tsConfig);
     UEZDeviceTableFind("Touchscreen", &ts);
-    UEZTSSetTouchDetectSensitivity(ts, 0x2000, 0x6000);
+    UEZTSSetTouchDetectSensitivity(ts, 0x4000, 0x6000);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1851,6 +2001,105 @@ void UEZPlatform_WiredNetwork0_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_WirelessNetwork0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the networking for Wireless connections.
+ *---------------------------------------------------------------------------*/
+#include <Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.h>
+void UEZPlatform_WirelessNetwork0_Require(void)
+{
+    // These SPI pins work for both the Application Header and the PMOD Header
+    // for GainSpan Modules with SPI configured.
+    const T_GainSpan_Network_SPISettings spi_settings = {
+    // SPI Settings
+        "SSP0",// SSP Name
+        1000000, // 1 MHz
+        // Pins.
+        GPIO_P2_23, // iSPIChipSelect = WIFI_CSN = P2.23
+        GPIO_P2_11, // iDataReadyIO = WIFI_INTR 
+        GPIO_NONE,  // iProgramMode = P1.6_MCIDAT0_PWM0.4
+        GPIO_NONE,  // iSPIMode = WIFI_MODE 
+        GPIO_NONE,  // iSRSTn = WIFI_SRSTn AND'd with RESET_OUTn
+        GPIO_NONE,  // iWIFIFactoryRestore = WIFI_FAC_RST
+        };
+
+    DEVICE_CREATE_ONCE();
+
+    //LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
+    //LPC17xx_40xx_GPIO5_Require();
+    UEZPlatform_SSP0_Require();
+    Network_GainSpan_Create("WirelessNetwork0", &spi_settings);
+}
+
+// Need UART connection to Wifi module for this to work
+// Modify UART pins for expansion board before use
+void UEZPlatform_WiFiProgramMode(TBool runMode)
+{    
+#define GPIO_WIFI_FAC_RST       GPIO_P5_1
+#define GPIO_WIFI_SRSTn         GPIO_P1_5
+#define GPIO_WIFI_IRQ           GPIO_P2_11
+#define GPIO_WIFI_MODE          GPIO_P1_6
+
+    if(runMode == ETrue) {
+        printf("GainSpan Run Mode ...\n");        
+    } else {
+        printf("GainSpan Programming Mode ...\n");
+    }
+    RTOS_ENTER_CRITICAL()    ;
+    
+    UEZGPIOSet(GPIO_WIFI_FAC_RST);          // WIFI_FAC_RST
+    UEZGPIOSetMux(GPIO_WIFI_FAC_RST, 0);
+    UEZGPIOOutput(GPIO_WIFI_FAC_RST);
+    
+    UEZGPIOClear(GPIO_WIFI_SRSTn);        // WIFI_SRSTn
+    UEZGPIOSetMux(GPIO_WIFI_SRSTn, 0);
+    UEZGPIOOutput(GPIO_WIFI_SRSTn);       // WIFI_SRSTn
+    
+    UEZGPIOInput(GPIO_WIFI_IRQ);       // WIFI IRQ
+
+    if(runMode == ETrue) {
+        UEZGPIOClear(GPIO_WIFI_MODE);        // WIFI RUN MODE
+    } else {
+        UEZGPIOSet(GPIO_WIFI_MODE);          // WIFI PROGRAM ON
+    }
+    UEZGPIOOutput(GPIO_WIFI_MODE);       
+                
+    UEZGPIOUnlock(GPIO_P0_2);       // 1788 TX
+    UEZGPIOSetMux(GPIO_P0_2, 0);
+    UEZGPIOOutput(GPIO_P0_2);
+
+    UEZGPIOUnlock(GPIO_P0_3);       // 1788 RX
+    UEZGPIOSetMux(GPIO_P0_3, 0);
+    UEZGPIOInput(GPIO_P0_3);
+
+    UEZGPIOUnlock(GPIO_P0_15);      // WIFI TX
+    UEZGPIOSetMux(GPIO_P0_15, 0);
+    UEZGPIOOutput(GPIO_P0_15);
+
+    UEZGPIOUnlock(GPIO_P0_16);      // WIFI RX
+    UEZGPIOSetMux(GPIO_P0_16, 0);
+    UEZGPIOInput(GPIO_P0_16);
+
+    //UEZTaskDelay(1000); // for debug
+    UEZGPIOSet(GPIO_WIFI_SRSTn);          // WIFI_SRSTn
+
+    CPUDisableInterrupts();
+    while (1) {
+        if (LPC_GPIO0->PIN & (1 << 3)) // 1788 RX = GPIO_P0_3
+            LPC_GPIO0->SET = (1 << 15); // WIFI TX = GPIO_P0_15
+        else
+            LPC_GPIO0->CLR = (1 << 15);
+
+        if (LPC_GPIO0->PIN & (1 << 16)) // WIFI RX = GPIO_P0_16
+            LPC_GPIO0->SET = (1 << 2);  // 1788 TX = GPIO_P0_2
+        else
+            LPC_GPIO0->CLR = (1 << 2);  // 1788 TX = GPIO_P0_2
+    }
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_I2S_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -1913,23 +2162,34 @@ void uEZPlatformInit(void)
 
 void UEZPlatform_Standard_Require(void)
 {
-#if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
+    #if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
     LPC17xx_40xx_GPIO2_Require();
     UEZGPIOSetMux(GPIO_P2_0, 0);
     UEZGPIOOutput(GPIO_P2_0);
     UEZGPIOClear(GPIO_P2_0);
     UEZGPIOLock(GPIO_P2_0); 
 #endif
-#if !UEZGUI_EXP_DK_FCT_TEST
+    
+    // Setup console immediately
+#if UEZ_ENABLE_CONSOLE_ALT_PWR_COM
+    UEZPlatform_Console_ALT_PWR_COM_Require(
+        UEZ_CONSOLE_WRITE_BUFFER_SIZE,
+        UEZ_CONSOLE_READ_BUFFER_SIZE);
+#else
     UEZPlatform_Console_Expansion_Require(
         UEZ_CONSOLE_WRITE_BUFFER_SIZE,
         UEZ_CONSOLE_READ_BUFFER_SIZE);
 #endif
+        
+// Example for console on UART 1 RS485 half duplex
+// UEZPlatform_Console_HalfDuplex_RS485_Require("UART1",
+// 1024, 256, GPIO_P0_22, ETrue, 2, GPIO_P0_17, EFalse, 2);
 
     UEZPlatform_LCD_Require();
 
     UEZPlatform_I2C0_Require();
     UEZPlatform_I2C1_Require();
+    UEZPlatform_I2C2_Require();
     UEZPlatform_Temp0_Require();
     UEZPlatform_GPDMA0_Require();
     UEZPlatform_GPDMA1_Require();
@@ -1941,7 +2201,11 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_EEPROM0_Require();
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
-    UEZPlatform_Touchscreen_Require();
+#if USE_RESISTIVE_TOUCH
+    UEZPlatform_TouchscreenRT_Require();
+#else
+    UEZPlatform_Touchscreen_Require();    
+#endif
     UEZPlatform_AudioAmp_Require();
     UEZPlatform_AudioMixer_Require();
     UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
@@ -1972,41 +2236,6 @@ TBool UEZPlatform_Host_Port_B_Detect()
         UEZGPIOClear(GPIO_P0_12);// enable MIC2025
     }
     return IsDevice;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  UEZGUIIsLoopbackBoardConnected
- *---------------------------------------------------------------------------*
- * Description:
- *      Determines if a loopback board for testing is connected
- * Outputs:
- *      TBool -- ETrue if connected, else EFalse
- *---------------------------------------------------------------------------*/
-TBool UEZGUIIsLoopbackBoardConnected(void)
-{
-    TUInt32 readSet;
-    TUInt32 readClear;
-
-    LPC17xx_40xx_GPIO0_Require();
-
-    // Check to see that P0.26 goes high when P0.6 is high
-    UEZGPIOSetMux(GPIO_P0_6, 0); // GPIO mode
-    UEZGPIOOutput(GPIO_P0_6);
-    UEZGPIOSetMux(GPIO_P0_26, 0); // GPIO mode
-    UEZGPIOInput(GPIO_P0_26);
-    UEZGPIOSet(GPIO_P0_6);
-    readSet = UEZGPIORead(GPIO_P0_26);
-    UEZGPIOClear(GPIO_P0_6);
-    readClear = UEZGPIORead(GPIO_P0_26);
-    UEZGPIOInput(GPIO_P0_6);
-    UEZGPIOInput(GPIO_P0_26);
-
-    // If the pin wiggled, then the loop back is  in place
-    if (readSet && !readClear)
-        return ETrue;
-
-    // Otherwise it is not set.
-    return EFalse;
 }
 
 TUInt16 UEZPlatform_LCDGetHeight(void)
@@ -2040,17 +2269,37 @@ TUInt32 UEZPlatform_ProcessorGetFrequency(void)
 }
 TUInt32 UEZPlatform_GetPCLKFrequency(void)
 {
+#if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    return 72000000;
+#else
     return 60000000;
+#endif
 }
 TUInt32 UEZPlatform_GetBaseAddress(void)
 {
     return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
-#include "LCD.h"
+#include <Source/Library/GUI/SEGGER/emWin/LCD.h>
+#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
 const void* UEZPlatform_GUIColorConversion(void)
 {
     return GUICC_M1555I;//GUICC_M565;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return &GUIDRV_Lin_16_API;
+}
+#else
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return 0;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return 0;
 }
 #endif
 
@@ -2120,7 +2369,6 @@ unsigned long ulStacked_pc = 0UL;
     for( ;; );
 }
 #endif
-
 /*---------------------------------------------------------------------------*
  * Routine:  main
  *---------------------------------------------------------------------------*
@@ -2136,7 +2384,7 @@ int main(void)
     while (1) {
     } // never should get here
 }
-
+/** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZPlatform.c
  *-------------------------------------------------------------------------*/

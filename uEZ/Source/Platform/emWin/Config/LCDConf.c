@@ -58,7 +58,7 @@ Purpose     : Display controller configuration (single layer)
 //
 #if USE_MULTIBUF
   #define VXSIZE_PHYS (XSIZE_PHYS)
-  #define VYSIZE_PHYS (YSIZE_PHYS * GUI_NUM_VIRTUAL_DISPLAYS)
+  #define VYSIZE_PHYS (YSIZE_PHYS * 1)//GUI_NUM_VIRTUAL_DISPLAYS)
 #endif
 
 //
@@ -82,7 +82,8 @@ Purpose     : Display controller configuration (single layer)
 //
 // Display driver
 //
-#define DISPLAY_DRIVER  &GUIDRV_Lin_16_API
+#define DISPLAY_DRIVER  GUI_DISPLAY_DRIVER
+
 
 //
 // Video RAM address
@@ -226,7 +227,7 @@ void LCD_X_Config(void) {
   //
   // Set display driver and color conversion for 1st layer
   //
-  GUI_DEVICE_CreateAndLink(DISPLAY_DRIVER, (void *)COLOR_CONVERSION, 0, 0);
+  GUI_DEVICE_CreateAndLink((void*)DISPLAY_DRIVER, (void *)COLOR_CONVERSION, 0, 0);
   #if USE_MULTIBUF
     //
     // Set custom callback function for copy operation

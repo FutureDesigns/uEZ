@@ -1,0 +1,130 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "ResourceSim.h"
+#include "windows.h"
+#include "Branding.rh"     // Branding specific info such as Copyright etc
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Branding
+//
+// The followin resources are in their respective branding directories.
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "Simulation.ico"
+IDB_LOGO                BITMAP  DISCARDABLE     "Logo.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmaps for generating the default frame
+//
+IDB_FRAME_N             BITMAP  DISCARDABLE     "n.bmp"
+IDB_FRAME_S             BITMAP  DISCARDABLE     "s.bmp"
+IDB_FRAME_O             BITMAP  DISCARDABLE     "o.bmp"
+IDB_FRAME_W             BITMAP  DISCARDABLE     "w.bmp"
+IDB_FRAME_NW            BITMAP  DISCARDABLE     "nw.bmp"
+IDB_FRAME_SW            BITMAP  DISCARDABLE     "sw.bmp"
+IDB_FRAME_SO            BITMAP  DISCARDABLE     "so.bmp"
+IDB_FRAME_NO            BITMAP  DISCARDABLE     "no.bmp"
+IDB_FRAME_OFF           BITMAP  DISCARDABLE     "off.bmp"
+IDB_FRAME_OFF1          BITMAP  DISCARDABLE     "off1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Customizable bitmaps
+//
+IDB_DEVICE              BITMAP  DISCARDABLE     "Device.bmp"
+IDB_DEVICE1             BITMAP  DISCARDABLE     "Device1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu(s)
+//
+IDC_SIMULATION MENU DISCARDABLE 
+  BEGIN
+    POPUP "&File"
+    BEGIN
+      MENUITEM "Pause Application\tF4",       ID_FILE_STOPAPPLICATION
+      MENUITEM "Resume Application\tF5",      ID_FILE_CONTINUEAPPLICATION
+      MENUITEM SEPARATOR
+      MENUITEM "&View system info",           ID_VIEW_SYSINFO
+      MENUITEM "E&xit\tALT-F4",               IDM_EXIT
+      MENUITEM "Copy to clipboard",           ID_EDIT_COPY
+    END
+    POPUP "&View"
+    BEGIN
+      POPUP "&Layer"
+      BEGIN
+        MENUITEM "Layer &0",                  ID_VIEW_LCD_0
+        MENUITEM "Layer &1",                  ID_VIEW_LCD_1
+        MENUITEM "Layer &2",                  ID_VIEW_LCD_2
+        MENUITEM "Layer &3",                  ID_VIEW_LCD_3
+        MENUITEM "Layer &4",                  ID_VIEW_LCD_4
+        MENUITEM "Layer &5",                  ID_VIEW_LCD_5
+      END
+      POPUP "&Colors"
+      BEGIN
+        MENUITEM "Layer &0",                  ID_VIEW_LCDINFO_0
+        MENUITEM "Layer &1",                  ID_VIEW_LCDINFO_1
+        MENUITEM "Layer &2",                  ID_VIEW_LCDINFO_2
+        MENUITEM "Layer &3",                  ID_VIEW_LCDINFO_3
+        MENUITEM "Layer &4",                  ID_VIEW_LCDINFO_4
+        MENUITEM "Layer &5",                  ID_VIEW_LCDINFO_5
+      END
+      MENUITEM "Log",                         ID_VIEW_LOG
+    END
+    POPUP "&Help"
+    BEGIN
+      MENUITEM "&About ...",                  IDM_ABOUT
+    END
+  END
+
+IDC_SIMULATION_POPUP MENU DISCARDABLE 
+  BEGIN
+    POPUP "&File"
+    BEGIN
+      MENUITEM "Pause Application\tF4",       ID_FILE_STOPAPPLICATION
+      MENUITEM "Resume Application\tF5",      ID_FILE_CONTINUEAPPLICATION
+      MENUITEM SEPARATOR
+      MENUITEM "&View system info",           ID_VIEW_SYSINFO
+      MENUITEM "Copy to clipboard",           ID_EDIT_COPY
+      MENUITEM "&About ...",                  IDM_ABOUT
+      MENUITEM SEPARATOR
+      MENUITEM "E&xit\tALT-F4",               IDM_EXIT
+    END
+  END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator(s)
+//
+IDC_SIMULATION ACCELERATORS MOVEABLE PURE 
+  BEGIN
+    VK_F3,          ID_FILE_STARTAPPLICATION, VIRTKEY, NOINVERT
+    VK_F4,          ID_FILE_STOPAPPLICATION, VIRTKEY, NOINVERT
+    VK_F5,          ID_FILE_CONTINUEAPPLICATION, VIRTKEY, NOINVERT
+  END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog(s)
+//
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 217, 98
+  STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+  CAPTION "About"
+  FONT 8, "MS Sans Serif"
+  BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    LTEXT           "Application",IDC_APPNAME,40,9,119,8,SS_NOPREFIX
+    LTEXT           "Version",IDC_VERSION,40,19,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,32,14,WS_GROUP
+    GROUPBOX        "",IDC_STATIC,7,33,203,58
+    CTEXT           "Copyright",IDC_COPYRIGHT,14,44,190,41
+  END
+
+
+
+
+
+

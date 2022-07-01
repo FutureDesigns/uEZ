@@ -8,19 +8,18 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -108,7 +107,6 @@ extern void IHidePage0(void);
 extern void IShowPage0(void);
 extern void PlayAudio(TUInt32 aHz, TUInt32 aMS);
 extern void FunctionalTestScreen(T_testData *aData);
-extern TBool UEZGUIIsLoopbackBoardConnected();
 
 //extern T_uezError USBHost_SwitchPort(void *aWorkspace, TUInt32 aPort);
 
@@ -1536,7 +1534,6 @@ void FunctionalTest(const T_choice *aChoice)
     const T_testState *lastTestState = 0;
     TBool isCancelled = EFalse;
     TBool isPausing = EFalse;
-    TBool haveLoopback = UEZGUIIsLoopbackBoardConnected();
 
     // Start with the first test
     testState = G_testStates;
@@ -1560,12 +1557,6 @@ void FunctionalTest(const T_choice *aChoice)
                 FunctionalTestScreen(&G_td);
 
                 for (;(testState->iTitle) && !isCancelled;) {
-
-                    if ((testState->iIgnoreIfNoLoopbackBoard) && (!haveLoopback)) {
-                        G_results[testState-G_testStates] = TEST_RESULT_IGNORE;
-                        testState++;
-                        continue;
-                    }
 
                     // New test state?
                     if (testState != lastTestState) {

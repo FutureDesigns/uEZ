@@ -45,6 +45,7 @@ Includes “Glyph Includes”
 ******************************************************************************/
 #include "glyph_cfg.h"
 #include "glyph_api.h"
+#include <stdint.h>
 
 /******************************************************************************
 Private Prototypes for the Glyph LCD API

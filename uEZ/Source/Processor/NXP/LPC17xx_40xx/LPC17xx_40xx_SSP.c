@@ -8,13 +8,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -810,7 +810,6 @@ const HAL_SPI SSP_LPC17xx_40xx_Port0_Interface = {
         LPC17xx_40xx_SSP_IsBusy,
 };
 
-// TODO: Add to other SSP's too!
 const HAL_SPI SSP_LPC17xx_40xx_Port1_Interface = {
         {
         "NXP:LPC17xx_40xx:SSP1",

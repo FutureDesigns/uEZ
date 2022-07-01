@@ -4,10 +4,14 @@
 @   set IARBUILD="C:\Program Files\IAR Systems\Embedded Workbench 6.30.4\common\bin\iarbuild"
 
 :cross_set
-@ if defined CROSSBUILD goto keil_set
+@ if defined CROSSBUILD goto cross3_set
 @   rem set CROSSBUILD="C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 2.2\bin\crossbuild.exe"
 @   set CROSSBUILD="C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 2.2\bin\crossbuild.exe"
 @   rem set CROSSBUILD="C:\Apps\Rowley Associates Limited\CrossWorks for ARM 2.0\bin\crossbuild.exe"
+
+:cross3_set
+@ if defined CROSSBUILD3 goto keil_set
+@   set CROSSBUILD="C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 3.2\bin\crossbuild.exe"
 
 :keil_set
 @ if defined KEILUV4 goto hew_set

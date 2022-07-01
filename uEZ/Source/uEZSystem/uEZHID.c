@@ -6,32 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(tm) - Copyright (C) 2007-2011 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
- * This file is part of the uEZ(tm) distribution.
- *
- * uEZ(tm) is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * uEZ(tm) is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with uEZ(tm); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * A special exception to the GPL can be applied should you wish to
- * distribute a combined work that includes uEZ(tm), without being obliged
- * to provide the source code for any proprietary components.  See the
- * licensing section of http://www.teamfdi.com/uez for full details of how
- * and when the exception can be applied.
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -46,7 +27,7 @@
  *  @{
  *  @brief     uEZ HID Interface
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *    The uEZ HID (Human Interface Device) interface.
  *
@@ -342,6 +323,87 @@ T_uezError UEZHIDGetReportDescriptor(
 
     return (*p)->GetReportDescriptor((void *)p, aData, aMaxLength);
 }
+
+T_uezError UEZHIDGetFeatureReport(
+    T_uezDevice aDevice,
+    TUInt8 aFeature,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_uezError error;
+    DEVICE_HID **p;
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->GetFeatureReport((void *)p, aFeature, aData, aMaxLength, aTimeout);
+}
+
+T_uezError UEZHIDSetFeatureReport(
+    T_uezDevice aDevice,
+    TUInt8 aFeature,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_uezError error;
+    DEVICE_HID **p;
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->SetFeatureReport((void *)p, aFeature, aData, aMaxLength, aTimeout);
+}
+
+T_uezError UEZHIDGetInputReport(
+    T_uezDevice aDevice,
+    TUInt8 aFeature,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_uezError error;
+    DEVICE_HID **p;
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->GetInputReport((void *)p, aFeature, aData, aMaxLength, aTimeout);
+}
+
+T_uezError UEZHIDSetOutputReport(
+    T_uezDevice aDevice,
+    TUInt8 aFeature,
+    TUInt8 *aData,
+    TUInt32 aMaxLength,
+    TUInt32 aTimeout)
+{
+    T_uezError error;
+    DEVICE_HID **p;
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->SetOutputReport((void *)p, aFeature, aData, aMaxLength, aTimeout);
+}
+
+T_uezError UEZHIDGetString(
+        T_uezDevice aDevice,
+        TUInt32 aIndex,
+        TUInt8 *aBuffer,
+        TUInt32 aSize,
+        TUInt32 aTimeout)
+{
+    T_uezError error;
+    DEVICE_HID **p;
+    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->GetString((void *)p, aIndex, aBuffer, aSize, aTimeout);
+}
+
 /** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZHID.c

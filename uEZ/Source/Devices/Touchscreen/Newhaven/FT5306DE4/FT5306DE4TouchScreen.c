@@ -7,13 +7,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -26,6 +26,7 @@
 #include <HAL/HAL.h>
 #include "uEZI2C.h"
 #include <Device/I2CBus.h>
+#include <uEZPlatform.h>
 #include "FT5306DE4TouchScreen.h"
 #include <uEZGPIO.h>
 #include <uEZProcessor.h>
@@ -184,18 +185,21 @@ T_uezError TS_FT5306DE4_Configure(T_uezDeviceWorkspace *aW)
 {
     T_FT5306DE4Workspace *p = (T_FT5306DE4Workspace *)aW;
 
+    UEZBSPDelayMS(300); // Time between power on and reset must be at least 300ms
+
     UEZSemaphoreGrab(p->iSemWaitForTouch, 0);
     UEZGPIOSetMux(p->iResetPin, 0);//Set to GPIO
     UEZGPIOOutput(p->iResetPin);
     UEZGPIOClear(p->iResetPin);
+    UEZBSPDelayMS(10); // Reset Pulse width of 10ms to satisfy 5 ms requirement
+    UEZGPIOSet(p->iResetPin);
+    UEZBSPDelayMS(300); // Time between reset and init must be at least 300ms
 
     UEZGPIOConfigureInterruptCallback(
         UEZ_GPIO_PORT_FROM_PORT_PIN(p->iInteruptPin),
         TS_FT5306DE4_InterruptISR,
         p);
     UEZGPIOEnableIRQ(p->iInteruptPin, GPIO_INTERRUPT_RISING_EDGE);
-
-    UEZGPIOSet(p->iResetPin);
 
     return UEZ_ERROR_NONE;
 }

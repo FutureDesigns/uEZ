@@ -1,25 +1,23 @@
-/* File:  FunctionalTest.c
+/*-------------------------------------------------------------------------*
+ * File:  FunctionalTest.c
  *-------------------------------------------------------------------------*
  * Description:
  *      Functional test procedure for ARM Carrier board with ARM7DIMM
- *
- * Implementation:
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -52,10 +50,10 @@
 #include <Source/Devices/Light Sensor/ROHM/BH1721FVC/Light_Sensor_BH1721FVC.h>
 #include <Device/LightSensor.h>
 #endif
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 #include <uEZKeypad.h>
 #include <HAL/GPIO.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <Device/Accelerometer.h>
 #include <Device/ButtonBank.h>
 #include <Device/EEPROM.h>
@@ -63,7 +61,7 @@
 #include <Device/Temperature.h>
 #include <Device/RTC.h>
 #include <Types/TimeDate.h>
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
 
 #include <uEZProcessor.h>
 #include <uEZPlatform.h>
@@ -165,7 +163,6 @@ extern void IHidePage0(void);
 extern void IShowPage0(void);
 extern void PlayAudio(TUInt32 aHz, TUInt32 aMS);
 extern void FunctionalTestScreen(T_testData *aData);
-extern TBool UEZGUIIsLoopbackBoardConnected();
 
 extern T_uezError USBHost_SwitchPort(void *aWorkspace, TUInt32 aPort);
 
@@ -1111,18 +1108,28 @@ void FuncTestFlash0(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
         char iLine[80];
     } T_sdramTest;
     T_sdramTest *p = (T_sdramTest *)aData->iData;
-    TUInt32 errorCode;
+    TUInt32 errorCode = 0;
     T_uezDevice dev;
     T_FlashChipInfo info;
+    TUInt8 buffer[6];
 
+    memset((void*)buffer, 0, sizeof(buffer));
     if (aButton == OPT_INIT) {
         // Just do it quickly and size it
         aAPI->iTextLine(aData, 0, "Checking NOR Flash Memory ...");
         if (UEZFlashOpen("Flash0", &dev)) {
             errorCode = 1000;
         } else {
+#if 1
             UEZFlashGetChipInfo(dev, &info);
             errorCode = NORFlashMemoryTest(aAPI, aData, dev, info.iNumBytesLow);
+#else
+            UEZFlashBlockErase(dev,0, 5);
+            UEZFlashWrite(dev, 0, "hello", 5);
+            UEZFlashRead(dev, 0, buffer, 5);
+            if(strcmp(buffer, "hello") != 0)
+                errorCode = 1000;
+#endif
             UEZFlashClose(dev);
         }
 
@@ -1544,7 +1551,7 @@ typedef struct {
     TUInt32 iMapPin;
     const char *iText;
 } T_gpioMapping;
-#if 1
+#if (UEZ_DEFAULT_LCD_CONFIG != LCD_CONFIG_NEWHAVEN_NHD43480272MF)
 static const T_gpioMapping G_gpioMapping[] = {
     #define FCTPIN_P1_0            (1<<0)
     { 1,    0, "P1[0]" },
@@ -2557,7 +2564,6 @@ void FunctionalTest(const T_choice *aChoice)
     const T_testState *lastTestState = 0;
     TBool isCancelled = EFalse;
     TBool isPausing = EFalse;
-    TBool haveLoopback = UEZGUIIsLoopbackBoardConnected();
 #if ENABLE_UEZ_BUTTON
     T_uezDevice keypadDevice;
 #endif
@@ -2588,12 +2594,6 @@ void FunctionalTest(const T_choice *aChoice)
 
                 for (;(testState->iTitle) && !isCancelled;) {
                     if ((testState->iIgnoreIfExpansionBoard)) {
-                        G_results[testState-G_testStates] = TEST_RESULT_IGNORE;
-                        testState++;
-                        continue;
-                    }
-
-                    if ((testState->iIgnoreIfNoLoopbackBoard) && (!haveLoopback)) {
                         G_results[testState-G_testStates] = TEST_RESULT_IGNORE;
                         testState++;
                         continue;

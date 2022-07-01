@@ -13,6 +13,7 @@
 #define LCD_FRAME_BUFFER            UEZPlatform_LCDGetFrameBuffer()
 #define FRAME_SIZE                  UEZPlatform_LCDGetFrameSize()
 #define GUI_COLOR_CONVERSION        UEZPlatform_GUIColorConversion()
+#define GUI_DISPLAY_DRIVER          UEZPlatform_GUIDisplayDriver()
 #define LCD_DISPLAY_BASE_ADDRESS    UEZPlatform_GetBaseAddress()
 
 #define SERIAL_PORTS_DEFAULT_BAUD   UEZPlatform_SerialGetDefaultBaud()
@@ -40,6 +41,7 @@
 
 #define configTICK_VECTOR	 _CMT0_CMI0
 
-#define configTOTAL_HEAP_SIZE		( ( size_t ) (( 33 * 1024 ) - 64))
+// increase from 33 for new 2.07 LWIP, also RX62N build has 48 set
+#define configTOTAL_HEAP_SIZE		( ( size_t ) (( 48 * 1024 ) - 64)) 
 
 #endif

@@ -30,7 +30,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile></SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -98,7 +97,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -128,20 +126,17 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>1</RunToMain>
+            <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -170,14 +165,9 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -356,13 +346,11 @@
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc</IncludePath>
+              <IncludePath>.;..\..\..\..\..\..;..\..\..\..\..\..\Include;..\..\..\..\..\..\Source\Library\lwIP;..\..\..\..\..\..\Source\Library\lwIP\Include;..\..\..\..\..\..\Source\Library\lwIP\src\include;..\..\..\..\..\..\Source\Library\lwIP\src;..\..\..\..\..\..\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\Source\RTOS\FreeRTOS;..\..\..\..\..\..\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\Source\Platform\emWin\Config;..\..\..\..\..\..\Source\Platform\emWin\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -374,7 +362,6 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -391,7 +378,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile>.\uEZ_NXP_LPC1788_FreeRTOS_KEIL.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -450,6 +436,16 @@
               <FileName>Freescale_MMA7455_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\Freescale\MMA7455\Freescale_MMA7455_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices\Accelerometer\ST\LIS3DH</GroupName>
+          <Files>
+            <File>
+              <FileName>ST_LIS3DH_I2C_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -904,51 +900,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Devices/Network/Redpine/RS9110_N_11_22</GroupName>
-          <Files>
-            <File>
-              <FileName>network_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>process_data.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>Redpine_RS9110_N_11_22_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_spi_bus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_bus.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_spi_pine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_pine.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_ssp_hcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_ssp_hcd.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsi_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsi_util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Devices/PWM/Generic</GroupName>
           <Files>
             <File>
@@ -1263,6 +1214,11 @@
               <FileName>uEZFileSystem_FATFS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c</FilePath>
+            </File>
+            <File>
+              <FileName>unicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2389,6 +2345,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</FilePath>
             </File>
+            <File>
+              <FileName>LPC17xx_40xx_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.c</FilePath>
+            </File>
+            <File>
+              <FileName>LPC17xx_40xx_CAN.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2425,19 +2391,9 @@
               <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\mpu_wrappers.h</FilePath>
             </File>
             <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\port.c</FilePath>
-            </File>
-            <File>
               <FileName>portable.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\portable.h</FilePath>
-            </File>
-            <File>
-              <FileName>portmacro.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h</FilePath>
             </File>
             <File>
               <FileName>projdefs.h</FileName>
@@ -2489,6 +2445,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\RTOS\uEZRTOS.c</FilePath>
             </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\port.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2513,7 +2474,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -2530,8 +2490,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2561,7 +2519,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -2578,8 +2535,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2609,7 +2564,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -2626,8 +2580,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2657,7 +2609,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -2674,8 +2625,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2705,7 +2654,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -2722,8 +2670,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2929,6 +2875,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</FilePath>
             </File>
+            <File>
+              <FileName>uEZCAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZCAN.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3052,17 +3003,47 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Device/Accelerometer/ST/LIS3DH</GroupName>
+          <GroupName>Devices/CAN/Generic</GroupName>
           <Files>
             <File>
-              <FileName>ST_LIS3DH_I2C.h</FileName>
+              <FileName>Generic_CAN.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C.h</FilePath>
+              <FilePath>..\..\..\..\..\..\Source\Devices\CAN\Generic\Generic_CAN.h</FilePath>
             </File>
             <File>
-              <FileName>ST_LIS3DH_I2C_driver.c</FileName>
+              <FileName>uEZCANGeneric.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
+              <FilePath>..\..\..\..\..\..\Source\Devices\CAN\Generic\uEZCANGeneric.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices/Touchscreen/Newhaven/FT5306DE4</GroupName>
+          <Files>
+            <File>
+              <FileName>FT5306DE4TouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>FT5306DE4TouchScreen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices/Touchscreen/Semisense/SN2780MQ</GroupName>
+          <Files>
+            <File>
+              <FileName>SN2780MQTouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>SN2780MQTouchScreen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -3092,7 +3073,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile></SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -3160,7 +3140,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -3190,7 +3169,6 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -3202,8 +3180,6 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -3232,14 +3208,9 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -3418,8 +3389,6 @@
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG</Define>
@@ -3436,7 +3405,6 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -3453,7 +3421,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile>.\uEZ_NXP_LPC1788_FreeRTOS_KEIL.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -3512,6 +3479,16 @@
               <FileName>Freescale_MMA7455_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\Freescale\MMA7455\Freescale_MMA7455_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices\Accelerometer\ST\LIS3DH</GroupName>
+          <Files>
+            <File>
+              <FileName>ST_LIS3DH_I2C_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3966,51 +3943,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Devices/Network/Redpine/RS9110_N_11_22</GroupName>
-          <Files>
-            <File>
-              <FileName>network_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>process_data.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>Redpine_RS9110_N_11_22_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_spi_bus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_bus.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_spi_pine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_pine.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_ssp_hcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_ssp_hcd.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsi_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsi_util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Devices/PWM/Generic</GroupName>
           <Files>
             <File>
@@ -4325,6 +4257,11 @@
               <FileName>uEZFileSystem_FATFS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c</FilePath>
+            </File>
+            <File>
+              <FileName>unicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5451,6 +5388,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</FilePath>
             </File>
+            <File>
+              <FileName>LPC17xx_40xx_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.c</FilePath>
+            </File>
+            <File>
+              <FileName>LPC17xx_40xx_CAN.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5487,19 +5434,9 @@
               <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\mpu_wrappers.h</FilePath>
             </File>
             <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\port.c</FilePath>
-            </File>
-            <File>
               <FileName>portable.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\portable.h</FilePath>
-            </File>
-            <File>
-              <FileName>portmacro.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h</FilePath>
             </File>
             <File>
               <FileName>projdefs.h</FileName>
@@ -5551,6 +5488,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\RTOS\uEZRTOS.c</FilePath>
             </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\port.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5575,7 +5517,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -5592,8 +5533,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -5623,7 +5562,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -5640,8 +5578,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -5671,7 +5607,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -5688,8 +5623,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -5719,7 +5652,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -5736,8 +5668,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -5767,7 +5697,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds>
                   <Cads>
@@ -5784,8 +5713,6 @@
                     <wLevel>0</wLevel>
                     <uThumb>2</uThumb>
                     <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -5991,6 +5918,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</FilePath>
             </File>
+            <File>
+              <FileName>uEZCAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZCAN.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6114,17 +6046,47 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Device/Accelerometer/ST/LIS3DH</GroupName>
+          <GroupName>Devices/CAN/Generic</GroupName>
           <Files>
             <File>
-              <FileName>ST_LIS3DH_I2C.h</FileName>
+              <FileName>Generic_CAN.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C.h</FilePath>
+              <FilePath>..\..\..\..\..\..\Source\Devices\CAN\Generic\Generic_CAN.h</FilePath>
             </File>
             <File>
-              <FileName>ST_LIS3DH_I2C_driver.c</FileName>
+              <FileName>uEZCANGeneric.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
+              <FilePath>..\..\..\..\..\..\Source\Devices\CAN\Generic\uEZCANGeneric.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices/Touchscreen/Newhaven/FT5306DE4</GroupName>
+          <Files>
+            <File>
+              <FileName>FT5306DE4TouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>FT5306DE4TouchScreen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices/Touchscreen/Semisense/SN2780MQ</GroupName>
+          <Files>
+            <File>
+              <FileName>SN2780MQTouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>SN2780MQTouchScreen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -6154,7 +6116,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile></SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -6222,7 +6183,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -6252,7 +6212,6 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -6264,8 +6223,6 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -6294,14 +6251,9 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -6480,8 +6432,6 @@
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG, FREERTOS_PLUS_TRACE</Define>
@@ -6498,7 +6448,6 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -6515,7 +6464,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile>.\uEZ_NXP_LPC1788_FreeRTOS_KEIL.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -6574,6 +6522,16 @@
               <FileName>Freescale_MMA7455_driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\Freescale\MMA7455\Freescale_MMA7455_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices\Accelerometer\ST\LIS3DH</GroupName>
+          <Files>
+            <File>
+              <FileName>ST_LIS3DH_I2C_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7028,51 +6986,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Devices/Network/Redpine/RS9110_N_11_22</GroupName>
-          <Files>
-            <File>
-              <FileName>network_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\network_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>process_data.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\process_data.c</FilePath>
-            </File>
-            <File>
-              <FileName>Redpine_RS9110_N_11_22_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\Redpine_RS9110_N_11_22_driver.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_spi_bus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_bus.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_spi_pine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_spi_pine.c</FilePath>
-            </File>
-            <File>
-              <FileName>rs22_ssp_hcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rs22_ssp_hcd.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsi_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsi_util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Network\Redpine\RS9110_N_11_22\rsi_util.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Devices/PWM/Generic</GroupName>
           <Files>
             <File>
@@ -7387,6 +7300,11 @@
               <FileName>uEZFileSystem_FATFS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c</FilePath>
+            </File>
+            <File>
+              <FileName>unicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -8513,6 +8431,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_USBHost.c</FilePath>
             </File>
+            <File>
+              <FileName>LPC17xx_40xx_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.c</FilePath>
+            </File>
+            <File>
+              <FileName>LPC17xx_40xx_CAN.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Processor\NXP\LPC17xx_40xx\LPC17xx_40xx_CAN.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8549,19 +8477,9 @@
               <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\mpu_wrappers.h</FilePath>
             </File>
             <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\port.c</FilePath>
-            </File>
-            <File>
               <FileName>portable.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\portable.h</FilePath>
-            </File>
-            <File>
-              <FileName>portmacro.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\GCC\ARM_CM3\Keil4\portmacro.h</FilePath>
             </File>
             <File>
               <FileName>projdefs.h</FileName>
@@ -8612,6 +8530,11 @@
               <FileName>uEZRTOS.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\RTOS\uEZRTOS.c</FilePath>
+            </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\RVDS\ARM_CM3\port.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -8838,6 +8761,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZAudioMixer.c</FilePath>
             </File>
+            <File>
+              <FileName>uEZCAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\uEZSystem\uEZCAN.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8961,17 +8889,47 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Device/Accelerometer/ST/LIS3DH</GroupName>
+          <GroupName>Devices/CAN/Generic</GroupName>
           <Files>
             <File>
-              <FileName>ST_LIS3DH_I2C.h</FileName>
+              <FileName>Generic_CAN.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C.h</FilePath>
+              <FilePath>..\..\..\..\..\..\Source\Devices\CAN\Generic\Generic_CAN.h</FilePath>
             </File>
             <File>
-              <FileName>ST_LIS3DH_I2C_driver.c</FileName>
+              <FileName>uEZCANGeneric.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</FilePath>
+              <FilePath>..\..\..\..\..\..\Source\Devices\CAN\Generic\uEZCANGeneric.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices/Touchscreen/Newhaven/FT5306DE4</GroupName>
+          <Files>
+            <File>
+              <FileName>FT5306DE4TouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>FT5306DE4TouchScreen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Newhaven\FT5306DE4\FT5306DE4TouchScreen.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Devices/Touchscreen/Semisense/SN2780MQ</GroupName>
+          <Files>
+            <File>
+              <FileName>SN2780MQTouchScreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>SN2780MQTouchScreen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\..\..\..\..\Source\Devices\Touchscreen\Semisense\SN2780MQ\SN2780MQTouchScreen.h</FilePath>
             </File>
           </Files>
         </Group>

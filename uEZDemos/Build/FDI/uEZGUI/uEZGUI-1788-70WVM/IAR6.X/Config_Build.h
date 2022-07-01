@@ -31,14 +31,14 @@
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
 
-// Expansion Options
-#define UEZGUI_EXP_BOARD                    UEZGUI_EXP_NONE
+// Expansion Options, set to 1 to enable an expansion board
+#define UEZGUI_EXPANSION_DEVKIT             0
 #define ENABLE_UEZ_BUTTON                   0
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
-//#define UEZ_ICONS_SET                     ICONS_SET_PROFESSIONAL_ICONS
-#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS_LARGE
-#define SIMPLEUI_DOUBLE_SIZED_ICONS         0 // 1 to 1 icons
+#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS
+//#define UEZ_ICONS_SET                     ICONS_SET_PROFESSIONAL_ICONS_LARGE
+#define SIMPLEUI_DOUBLE_SIZED_ICONS         1 // 1 to 1 icons
 
 // Modify the default accelerometer demo settings
 #define ACCEL_DEMO_SWAP_XY                  1
@@ -48,7 +48,9 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
+#define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               1
+#define TS_TEST_DEMO                        0
 
 #define INCLUDE_EMWIN                       1
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN

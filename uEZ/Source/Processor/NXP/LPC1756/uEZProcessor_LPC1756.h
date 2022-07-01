@@ -1,19 +1,9 @@
 /*-------------------------------------------------------------------------*
- * File:  uEZProcessor_LPC1756.h
- *-------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
- *--------------------------------------------------------------------------
- * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
- *
- *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
- *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
- *    *===============================================================*
- *
- *-------------------------------------------------------------------------*/
+* File:  uEZProcessor_LPC1756.h
+*--------------------------------------------------------------------------*
+* Description:
+*         <DESCRIPTION>
+*-------------------------------------------------------------------------*/
 /**
  *  @file   uEZProcessor_LPC1756.h
  *  @brief  uEZ Processor_LPC1756
@@ -23,11 +13,47 @@
 #ifndef _UEZPROCESSOR_LPC1756_H_
 #define _UEZPROCESSOR_LPC1756_H_
 
+/*--------------------------------------------------------------------------
+* uEZ(r) - Copyright (C) 2007-2015 Future Designs, Inc.
+*--------------------------------------------------------------------------
+* This file is part of the uEZ(r) distribution.
+*
+* uEZ(r) is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* uEZ(r) is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with uEZ(r); if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*
+* A special exception to the GPL can be applied should you wish to
+* distribute a combined work that includes uEZ(r), without being obliged
+* to provide the source code for any proprietary components.  See the
+* licensing section of http://www.teamfdi.com/uez for full details of how
+* and when the exception can be applied.
+*
+*    *===============================================================*
+*    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+*    |             We can get you up and running fast!               |
+*    |      See http://www.teamfdi.com/uez for more details.         |
+*    *===============================================================*
+*
+*-------------------------------------------------------------------------*/
 #include <Config.h>
 #include <CMSIS/LPC17xx.h>
 #include "LPC1756.h"
 #include <Types/GPIO.h>
 #include "LPC1756_UtilityFuncs.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define AHBSRAM0_BASE       0x2007C000  // Generally for USB
 #define AHBSRAM1_BASE       0x20080000  // Generally for Ethernet
@@ -243,6 +269,10 @@
 #define IOCON_U_DEFAULT(funcNum)  (IOCON_FUNC(funcNum) | IOCON_PUSH_PULL | IOCON_PULL_UP)
 #define IOCON_I_DEFAULT(funcNum)  (IOCON_FUNC(funcNum) | IOCON_OPEN_DRAIN | IOCON_PULL_UP)
 #define IOCON_W_DEFAULT(funcNum)  (IOCON_FUNC(funcNum) | IOCON_PUSH_PULL | IOCON_PULL_UP)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _UEZPROCESSOR_LPC1756_H_
 /*-------------------------------------------------------------------------*

@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -1176,6 +1176,72 @@ void UEZPlatform_Require(void)
     UEZPlatform_Full_Require();
 }
 
+// Modify pins for Application Header before use, modify get, set, clear routine for RX
+void UEZPlatform_WiFiProgramMode(TBool runMode)
+{    
+#define GPIO_WIFI_FAC_RST       GPIO_NONE
+#define GPIO_WIFI_SRSTn         GPIO_NONE
+#define GPIO_WIFI_IRQ           GPIO_NONE
+#define GPIO_WIFI_MODE          GPIO_NONE
+
+    if(runMode == ETrue) {
+        printf("GainSpan Run Mode ...\n");        
+    } else {
+        printf("GainSpan Programming Mode ...\n");
+    }
+    RTOS_ENTER_CRITICAL();
+    
+    UEZGPIOSet(GPIO_WIFI_FAC_RST);        // WIFI_FAC_RST
+    UEZGPIOSetMux(GPIO_WIFI_FAC_RST, 0);
+    UEZGPIOOutput(GPIO_WIFI_FAC_RST);
+    
+    UEZGPIOClear(GPIO_WIFI_SRSTn);        // WIFI_SRSTn
+    UEZGPIOSetMux(GPIO_WIFI_SRSTn, 0);
+    UEZGPIOOutput(GPIO_WIFI_SRSTn);       // WIFI_SRSTn
+    
+    UEZGPIOInput(GPIO_WIFI_IRQ);       // WIFI IRQ
+
+    if(runMode == ETrue) {
+        UEZGPIOClear(GPIO_WIFI_MODE);  // WIFI RUN MODE
+    } else {
+        UEZGPIOSet(GPIO_WIFI_MODE);    // WIFI PROGRAM ON
+    }
+    UEZGPIOOutput(GPIO_WIFI_MODE);       
+                
+    UEZGPIOUnlock(GPIO_P00);       // RX6XN TX
+    UEZGPIOSetMux(GPIO_P00, 0);
+    UEZGPIOOutput(GPIO_P00);
+
+    UEZGPIOUnlock(GPIO_P01);       // RX6XN RX
+    UEZGPIOSetMux(GPIO_P01, 0);
+    UEZGPIOInput(GPIO_P01);
+
+    UEZGPIOUnlock(GPIO_NONE);      // WIFI TX
+    UEZGPIOSetMux(GPIO_NONE, 0);
+    UEZGPIOOutput(GPIO_NONE);
+
+    UEZGPIOUnlock(GPIO_NONE);      // WIFI RX
+    UEZGPIOSetMux(GPIO_NONE, 0);
+    UEZGPIOInput(GPIO_NONE);
+
+    //UEZTaskDelay(1000); // for debug
+    UEZGPIOSet(GPIO_WIFI_SRSTn);          // WIFI_SRSTn
+
+    //CPUDisableInterrupts(); // need to change to RX version
+    while (1) {
+        /*if (LPC_GPIO0->PIN & (1 << 3))  // RX6XN RX = GPIO_P01
+            LPC_GPIO0->SET = (1 << 15); // WIFI TX = ?
+        else
+            LPC_GPIO0->CLR = (1 << 15);
+
+        if (LPC_GPIO0->PIN & (1 << 16)) // WIFI RX = ?
+            LPC_GPIO0->SET = (1 << 2);  // RX6XN TX = GPIO_P00
+        else
+            LPC_GPIO0->CLR = (1 << 2);  // RX6XN TX = GPIO_P00
+            */
+    }
+}
+
 TUInt16 UEZPlatform_LCDGetHeight(void)
 {
     return UEZ_LCD_DISPLAY_HEIGHT;
@@ -1214,10 +1280,26 @@ TUInt32 UEZPlatform_GetBaseAddress(void)
     return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
-#include "LCD.h"
+#include <Source/Library/GUI/SEGGER/emWin/LCD.h>
+#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
 const void* UEZPlatform_GUIColorConversion(void)
 {
-    return GUICC_M565;
+    return GUICC_M555;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return &GUIDRV_Lin_16_API;
+}
+#else
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return 0;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return 0;
 }
 #endif
 

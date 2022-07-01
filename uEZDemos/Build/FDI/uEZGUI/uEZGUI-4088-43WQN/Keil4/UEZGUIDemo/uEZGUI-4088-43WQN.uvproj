@@ -30,7 +30,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>SFD\NXP\LPC407x_8x_177x_8x\LPC408x_7x.SFR</SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -98,7 +97,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -128,7 +126,6 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -140,8 +137,6 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>0</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>7</TargetSelection>
@@ -170,14 +165,9 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3></Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -217,7 +207,7 @@
             <hadIRAM>1</hadIRAM>
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
-            <RvdsVP>1</RvdsVP>
+            <RvdsVP>2</RvdsVP>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -356,11 +346,9 @@
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG</Define>
+              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM4F, DEBUG</Define>
               <Undefine></Undefine>
               <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_4088_43WQN;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
             </VariousControls>
@@ -374,7 +362,6 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -391,7 +378,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile>.\uEZGUI-4088-43WQN.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -784,7 +770,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds/>
               </FileOption>
@@ -808,7 +793,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds/>
               </FileOption>
@@ -839,9 +823,9 @@
           <GroupName>Library/Segger/emWin</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M4.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M4.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -886,7 +870,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>SFD\NXP\LPC407x_8x_177x_8x\LPC408x_7x.SFR</SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -954,7 +937,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -984,7 +966,6 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -996,11 +977,9 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -1014,7 +993,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>Segger\JL2CM3.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -1024,16 +1003,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4096</DriverSelection>
+            <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
-          <Flash2>BIN\UL2CM3.DLL</Flash2>
+          <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -1212,11 +1186,9 @@
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3, DEBUG, FREERTOS_PLUS_TRACE</Define>
+              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM4F, DEBUG, FREERTOS_PLUS_TRACE</Define>
               <Undefine></Undefine>
               <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQR;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS-Plus\FreeRTOS-Plus-Trace\include</IncludePath>
             </VariousControls>
@@ -1230,7 +1202,6 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -1247,7 +1218,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile>.\uEZGUI-4088-43WQN-Trace.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -1635,7 +1605,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds/>
               </FileOption>
@@ -1664,7 +1633,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds/>
               </FileOption>
@@ -1695,9 +1663,9 @@
           <GroupName>Library/Segger/emWin</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M4.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M4.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1742,7 +1710,6 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>SFD\NXP\LPC407x_8x_177x_8x\LPC408x_7x.SFR</SFDFile>
-          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -1810,7 +1777,6 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -1840,7 +1806,6 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
-            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -1852,11 +1817,9 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
-            <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -1870,7 +1833,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>Segger\JL2CM3.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -1882,14 +1845,9 @@
             <Capability>1</Capability>
             <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3></Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -2068,11 +2026,9 @@
             <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM3</Define>
+              <Define>COMPILER_TYPE=Keil4, GCC_ARMCM4F</Define>
               <Undefine></Undefine>
               <IncludePath>.;..\..\..\..\..\..\Source\App\uEZGUI;..\..\..\..\..\..\Source\App\uEZDemoCommon;..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO;..\..\..\..\..\..\..\uEZ;..\..\..\..\..\..\..\uEZ\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\Include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src;..\..\..\..\..\..\..\uEZ\Source\Library\lwIP\src\include\ipv4;..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include;..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\UEZGUI_1788_43WQR;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx;..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC17xx_40xx\Keil4\include;..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Inc;..\..\..\..\..\..\..\uEZ\Source\Platform\emWin\Config</IncludePath>
             </VariousControls>
@@ -2086,7 +2042,6 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -2103,7 +2058,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile>.\uEZGUI-4088-43WQN.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -2491,7 +2445,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds/>
               </FileOption>
@@ -2515,7 +2468,6 @@
                   <StopOnExitCode>11</StopOnExitCode>
                   <CustomArgument></CustomArgument>
                   <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
                 </CommonProperty>
                 <FileArmAds/>
               </FileOption>
@@ -2551,9 +2503,9 @@
           <GroupName>Library/Segger/emWin</GroupName>
           <Files>
             <File>
-              <FileName>emWin_522_Keil460_M3_LE.lib</FileName>
+              <FileName>emWin_522_Keil_M4.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil460_M3_LE.lib</FilePath>
+              <FilePath>..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\Keil\emWin_522_Keil_M4.lib</FilePath>
             </File>
           </Files>
         </Group>

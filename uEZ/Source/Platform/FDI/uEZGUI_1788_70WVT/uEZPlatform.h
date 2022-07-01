@@ -1,33 +1,62 @@
 /*-------------------------------------------------------------------------*
- * File:  uEZPlatform_Settings.h
- *-------------------------------------------------------------------------*
- * Description:
- *     
- *-------------------------------------------------------------------------*/
+* File:  uEZPlatform.h
+*--------------------------------------------------------------------------*
+* Description:
+*         The uEZ platform file definitions.
+*-------------------------------------------------------------------------*/
+/**
+ *	@file 	Platform\FDI\uEZGUI_1788_70WVT\uEZPlatform.h
+ *  @brief 	uEZ Platform File Definitions
+ *
+ * The uEZ platform file definitions.
+ */ 
 #ifndef UEZPLATFORM_SETTINGS_H_
 #define UEZPLATFORM_SETTINGS_H_
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
- *--------------------------------------------------------------------------
- * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
- *
- *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
- *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
- *    *===============================================================*
- *
- *-------------------------------------------------------------------------*/
+* uEZ(r) - Copyright (C) 2007-2015 Future Designs, Inc.
+*--------------------------------------------------------------------------
+* This file is part of the uEZ(r) distribution.
+*
+* uEZ(r) is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* uEZ(r) is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with uEZ(r); if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*
+* A special exception to the GPL can be applied should you wish to
+* distribute a combined work that includes uEZ(r), without being obliged
+* to provide the source code for any proprietary components.  See the
+* licensing section of http://www.teamfdi.com/uez for full details of how
+* and when the exception can be applied.
+*
+*    *===============================================================*
+*    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+*    |             We can get you up and running fast!               |
+*    |      See http://www.teamfdi.com/uez for more details.         |
+*    *===============================================================*
+*
+*-------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <Config.h>
-#include <UEZNetwork.h>
+#include <uEZNetwork.h>
 #include <Types/GPIO.h>
-#include <UEZPlatformAPI.h>
+#include <uEZPlatformAPI.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*-------------------------------------------------------------------------*
  * Platform Settings:
@@ -92,7 +121,7 @@
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
 #define UEZBSP_NOR_FLASH_BASE_ADDRESS       0x80000000
 
-#include "lwipopts.h"
+#include <lwipopts.h>
 
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
@@ -218,11 +247,6 @@
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-TBool UEZGUIIsExpansionBoardConnected(void);
-TBool UEZGUIIsExpansionBoard70Connected(void);
-TBool UEZGUIIsLoopbackBoardConnected(void);
-TBool UEZGUIIsPoeExpansionBoardConnected(void);
-
 void UEZPlatform_SSP0_Require(void);
 void UEZPlatform_SSP1_Require(void);
 void UEZPlatform_Accel0_Require(void);
@@ -241,6 +265,9 @@ void UEZPlatform_Backlight_Require(void);
 void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
+void UEZPlatform_Console_ALT_PWR_COM_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize); 
 void UEZPlatform_FullDuplex_UART0_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
@@ -319,6 +346,16 @@ void UEZPlatform_UART2_FullDuplex_Require(
 void UEZPlatform_UART3_FullDuplex_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
+void UEZPlatform_Console_HalfDuplex_RS485_Require(
+        const char *aHALSerialName,
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize,
+        T_uezGPIOPortPin aDriveEnablePortPin,
+        TBool aDriveEnablePolarity,
+        TUInt32 aDriveEnableReleaseTime,
+        T_uezGPIOPortPin aReceiveEnablePortPin,
+        TBool aReceiveEnablePolarity,
+        TUInt32 aReceiveEnableReleaseTime);
 void UEZPlatform_USBDevice_Require(void);
 void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_USBHost_Require(void);
@@ -331,7 +368,7 @@ TBool UEZPlatform_Host_Port_B_Detect();
 
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
-void UEZPlatform_WiFiProgramMode(void);
+void UEZPlatform_WiFiProgramMode(TBool runMode);
 
 // Utility function to connect to the Wired Network
 T_uezError UEZPlatform_WiredNetwork0_Connect(
@@ -341,6 +378,10 @@ T_uezError UEZPlatform_WiredNetwork0_Connect(
 // Information available about the connected wired network
 extern T_uezDevice G_network;
 extern T_uezNetworkStatus G_networkStatus;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // UEZPLATFORM_SETTINGS_H_
 /*-------------------------------------------------------------------------*

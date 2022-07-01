@@ -6,19 +6,36 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
+ /**
+ *    @addtogroup Platform_CARRIER_LPC1788
+ *  @{
+ *  @brief     uEZ Platform file for the CARRIER LPC1788
+ *  @see http://www.teamfdi.com/uez/
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *
+ *    uEZ Platform file for the CARRIER LPC1788
+ *
+ * @par Example code:
+ * // example description
+ * @par
+ * @code
+ *
+ * @endcode
+*/
+ 
+ 
 #include <Config.h>
 #include <stdio.h>
 #include <string.h>
@@ -60,6 +77,8 @@
     #include <Source/Devices/LCD/OKAYA/RH320240T/Okaya_RH320240T.h>
 #elif (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_KOE_TX13D06VM2BAA)
     #include <Source/Devices/LCD/KOE/TX13D06VM2BAA_WVGA5Inch/KOE_TX13D06VM2BAA.h>
+#elif (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ070Y3LW01)
+    #include <Source/Devices/LCD/Sharp/LQ070Y3LW01/Sharp_LQ070Y3LW01.h>
 #endif
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
@@ -76,6 +95,8 @@
 #include <Source/Devices/ToneGenerator/Generic/Timer/ToneGenerator_Generic_Timer.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
+#include <Source/Devices/Touchscreen/Semisense/SN2780MQ/SN2780MQTouchScreen.h>
+#include <Source/Devices/Touchscreen/Newhaven/FT5306DE4/FT5306DE4TouchScreen.h>
 #include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
 #include <Source/Devices/USBHost/Generic/Generic_USBHost.h>
 #include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
@@ -119,7 +140,7 @@
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 
 extern int MainTask(void);
@@ -160,13 +181,6 @@ void UEZBSPDelay1US(void)
 {
     //Based on Flash Accelerator being on and Flash Access Time set to 6 CPU Cycles
 #if ( PROCESSOR_OSCILLATOR_FREQUENCY == 120000000)
-    nops50();
-    nops50();
-    nop();
-    nop();
-    nop();
-    nop();
-#elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
     nops50();
     nops50();
     nop();
@@ -253,11 +267,51 @@ void UEZBSP_ROMInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_PLLConfigure(void)
 {
+#if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    const T_LPC17xx_40xx_PLL_Frequencies freq_CPU72MHz_Peripheral60Mhz_USB48MHz = {
+            12000000,
+
+            // Run PLL0 at 120 MHz
+            PROCESSOR_OSCILLATOR_FREQUENCY,
+
+            // Run PLL1 at 48 MHz
+            48000000,
+
+            // Use the main oscillator of 12 MHz as a source
+            LPC17xx_40xx_CLKSRC_SELECT_MAIN_OSCILLATOR,
+
+            // Use PLL0 for the CCLK, PCLK, and EMC Clk source (before dividers)
+            LPC17xx_40xx_CPU_CLOCK_SELECT_PLL_CLK,
+
+            // Use PPL1 (alt) for the USB
+            LPC17xx_40xx_USB_CLOCK_SELECT_ALT_PLL_CLK,
+
+            // CPU Clock is PLL0 / 1 or 120 MHz / 1 = 120 MHz
+            1,
+
+            // PCLK is PLL0 / 2, or 60 MHz
+            1,
+
+            // EMC runs at PLL0 / 2, or 60 MHz
+            1,
+
+            // USB Clock = PLL1 / 1 (48 MHz / 1)
+            1,
+
+            // CLKOUT is on the EMC CLK and at 60 MHz (60 MHz / 1)
+            LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
+            1,
+            ETrue, };
+
+    LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU72MHz_Peripheral60Mhz_USB48MHz);
+
+#else // 120000000 MHz
+
     const T_LPC17xx_40xx_PLL_Frequencies freq_CPU120MHz_Peripheral60Mhz_USB48MHz = {
             12000000,
 
             // Run PLL0 at 120 MHz
-            120000000,
+            PROCESSOR_OSCILLATOR_FREQUENCY,
 
             // Run PLL1 at 48 MHz
             48000000,
@@ -287,7 +341,10 @@ void UEZBSP_PLLConfigure(void)
             LPC17xx_40xx_CLOCK_OUT_SELECT_CPU,
             1,
             ETrue, };
+
     LPC17xx_40xx_PLL_SetFrequencies(&freq_CPU120MHz_Peripheral60Mhz_USB48MHz);
+
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -959,6 +1016,9 @@ void UEZPlatform_LCD_Require(void)
 #elif (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_KOE_TX13D06VM2BAA)
     // aDataEnablePin, aUpDownPin, aLeftRightPin, aLCDPowerEnablePin, aLCDPWMPin, aBackLightEnablePin
     LCD_TX13D06VM2BAA_Create("LCD", GPIO_P2_4, GPIO_P2_0, GPIO_P2_11, GPIO_P0_22, GPIO_NONE, GPIO_NONE);
+#elif (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_SHARP_LQ070Y3LW01)
+    // aLVDSShutPin, aLCDPowerEnablePin, aLCDPWMPin,aBackLightEnablePin
+    LCD_LQ070Y3LW01_Create("LCD", GPIO_P0_24, GPIO_P2_0, GPIO_P1_18, GPIO_P0_23);
 #endif
     ((DEVICE_LCD *)(p_lcd->iInterface))->Configure(
             p_lcd,
@@ -1566,6 +1626,21 @@ void UEZPlatform_Touchscreen_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_TouchscreenPCAP_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the PCAP touchscreen 
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_TouchscreenPCAP_Require(void)
+{
+    //T_uezDevice ts;
+    DEVICE_CREATE_ONCE();
+
+    Touchscreen_FT5306DE4_Create("Touchscreen", "I2C0", GPIO_P0_22, GPIO_P0_25);
+    //Touchscreen_SN2780MQ_Create("Touchscreen", "I2C0", GPIO_P0_22, GPIO_P0_25);
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_USBDevice_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -1660,6 +1735,62 @@ void UEZPlatform_WirelessNetwork0_Require(void)
 
     UEZPlatform_SSP0_Require();
     Network_GainSpan_Create("WirelessNetwork0", &spi_settings);
+}
+
+// Modify pins for Application Header before use
+void UEZPlatform_WiFiProgramMode(TBool runMode)
+{    
+    if(runMode == ETrue) {
+        printf("GainSpan Run Mode ...\n");        
+    } else {
+        printf("GainSpan Programming Mode ...\n");
+    }
+    RTOS_ENTER_CRITICAL()    ;
+    
+    UEZGPIOClear(GPIO_P1_5);        // WIFI_SRSTn
+    UEZGPIOSetMux(GPIO_P1_5, 0);
+    UEZGPIOOutput(GPIO_P1_5);       // WIFI_SRSTn
+    
+    UEZGPIOInput(GPIO_P2_11);       // WIFI IRQ
+
+    if(runMode == ETrue) {
+        UEZGPIOClear(GPIO_P1_6);        // WIFI RUN MODE
+    } else {
+        UEZGPIOSet(GPIO_P1_6);          // WIFI PROGRAM ON
+    }
+    UEZGPIOOutput(GPIO_P1_6);       
+                
+    UEZGPIOUnlock(GPIO_P0_2);       // 1788 TX
+    UEZGPIOSetMux(GPIO_P0_2, 0);
+    UEZGPIOOutput(GPIO_P0_2);
+
+    UEZGPIOUnlock(GPIO_P0_3);       // 1788 RX
+    UEZGPIOSetMux(GPIO_P0_3, 0);
+    UEZGPIOInput(GPIO_P0_3);
+
+    UEZGPIOUnlock(GPIO_P0_15);      // WIFI TX
+    UEZGPIOSetMux(GPIO_P0_15, 0);
+    UEZGPIOOutput(GPIO_P0_15);
+
+    UEZGPIOUnlock(GPIO_P0_16);      // WIFI RX
+    UEZGPIOSetMux(GPIO_P0_16, 0);
+    UEZGPIOInput(GPIO_P0_16);
+
+    //UEZTaskDelay(1000); // for debug
+    UEZGPIOSet(GPIO_P1_5);          // WIFI_SRSTn
+
+    CPUDisableInterrupts();
+    while (1) {
+        if (LPC_GPIO0->PIN & (1 << 3)) // 1788 RX = GPIO_P0_3
+            LPC_GPIO0->SET = (1 << 15); // WIFI TX = GPIO_P0_15
+        else
+            LPC_GPIO0->CLR = (1 << 15);
+
+        if (LPC_GPIO0->PIN & (1 << 16)) // WIFI RX = GPIO_P0_16
+            LPC_GPIO0->SET = (1 << 2);  // 1788 TX = GPIO_P0_2
+        else
+            LPC_GPIO0->CLR = (1 << 2);  // 1788 TX = GPIO_P0_2
+    }
 }
 
 /*---------------------------------------------------------------------------*
@@ -1781,6 +1912,7 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
     UEZPlatform_Touchscreen_Require();
+    //UEZPlatform_TouchscreenPCAP_Require();
     UEZPlatform_Button_Require();
     UEZPlatform_LED_Require();
 }
@@ -1841,6 +1973,7 @@ void UEZPlatform_Full_Require(void)
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
     UEZPlatform_Touchscreen_Require();
+    //UEZPlatform_TouchscreenPCAP_Require();
     UEZPlatform_Button_Require();
     UEZPlatform_LED_Require();
 }
@@ -1884,7 +2017,11 @@ TUInt32 UEZPlatform_ProcessorGetFrequency(void)
 }
 TUInt32 UEZPlatform_GetPCLKFrequency(void)
 {
+#if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    return 72000000;
+#else
     return 60000000;
+#endif
 }
 
 T_pixelColor SUICallbackRGBConvert(int r, int g, int b)
@@ -1896,10 +2033,26 @@ TUInt32 UEZPlatform_GetBaseAddress(void)
     return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
-#include "LCD.h"
+#include <Source/Library/GUI/SEGGER/emWin/LCD.h>
+#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
 const void* UEZPlatform_GUIColorConversion(void)
 {
     return GUICC_M555;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return &GUIDRV_Lin_16_API;
+}
+#else
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return 0;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return 0;
 }
 #endif
 
@@ -1920,11 +2073,18 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
     }
 }
 
+/*---------------------------------------------------------------------------*
+ * Routine:  vMainMPUFaultHandler
+ *---------------------------------------------------------------------------*/
+/**
+ *  Determine which stack was in use when the MPU fault occurred and extract
+    the stacked PC. 
+ *
+ *  @return         int
+ */
+/*---------------------------------------------------------------------------*/
 #if (COMPILER_TYPE==Keil4)
-__asm void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
-{
-    /* Determine which stack was in use when the MPU fault occurred and extract
-    the stacked PC. */
+__asm void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
     tst lr, #4
     ite eq
     mrseq r0, msp /* The code that generated the exception was using the main stack. */
@@ -1937,14 +2097,9 @@ loopforever
     bl loopforever
 }
 #else
-void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
-{
+void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
 unsigned long ulStacked_pc = 0UL;
-
     ( void ) ulStacked_pc;
-
-    /* Determine which stack was in use when the MPU fault occurred and extract
-    the stacked PC. */
     __asm
     (
         "   tst lr, #4          \n"
@@ -1955,20 +2110,20 @@ unsigned long ulStacked_pc = 0UL;
         "   str r0, [sp]        \n" /* Store the value of the stacked PC into ulStacked_pc. */
     );
 
-    /* Inspect ulStacked_pc to locate the offending instruction. */
-    for( ;; );
+    for( ;; );     /* Inspect ulStacked_pc to locate the offending instruction. */
 }
 #endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  main
- *---------------------------------------------------------------------------*
- * Description:
- *      The main() routine in UEZ is only a stub that is used to start
- *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
- * Outputs:
- *      int -- not used, 0
  *---------------------------------------------------------------------------*/
+/**
+ *  The main() routine in UEZ is only a stub that is used to start
+ *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
+ *
+ *  @return         int
+ */
+/*---------------------------------------------------------------------------*/
 int main(void)
 {
     UEZBSP_Startup();
@@ -1976,6 +2131,7 @@ int main(void)
     } // never should get here
 }
 
+/** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZPlatform.c
  *-------------------------------------------------------------------------*/

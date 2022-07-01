@@ -59,6 +59,7 @@
 #include <Config.h>
 #include "FreeRTOS.h"
 #include "task.h"
+#include <UEZPlatform.h>
 
 #ifndef configKERNEL_INTERRUPT_PRIORITY
 	#define configKERNEL_INTERRUPT_PRIORITY 255

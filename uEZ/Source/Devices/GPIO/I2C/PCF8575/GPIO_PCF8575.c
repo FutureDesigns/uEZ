@@ -6,13 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -190,9 +190,8 @@ T_uezError GPIO_PCF8575_SetOutputMode(void *aWorkspace, TUInt32 aPortPins)
 
     // Output mode is set by putting 0's in the iIsInput register
     p->iIsInput &= ~(aPortPins);
-    IGPIO_PCF8575_Write(p);
 
-    return UEZ_ERROR_NONE;
+    return IGPIO_PCF8575_Write(p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -209,12 +208,11 @@ T_uezError GPIO_PCF8575_SetOutputMode(void *aWorkspace, TUInt32 aPortPins)
 T_uezError GPIO_PCF8575_SetInputMode(void *aWorkspace, TUInt32 aPortPins)
 {
     T_GPIO_PCF8575_Workspace *p = (T_GPIO_PCF8575_Workspace *)aWorkspace;
-
+    
     // Output mode is set by putting 1's in the iIsInput register
     p->iIsInput |= (aPortPins);
-    IGPIO_PCF8575_Write(p);
 
-    return UEZ_ERROR_NONE;
+    return IGPIO_PCF8575_Write(p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -234,9 +232,8 @@ T_uezError GPIO_PCF8575_Set(void *aWorkspace, TUInt32 aPortPins)
 
     // Output is set by putting 1's in the iOutput register
     p->iOutputs |= (aPortPins);
-    IGPIO_PCF8575_Write(p);
 
-    return UEZ_ERROR_NONE;
+    return IGPIO_PCF8575_Write(p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -256,9 +253,8 @@ T_uezError GPIO_PCF8575_Clear(void *aWorkspace, TUInt32 aPortPins)
 
     // Output is set by putting 0's in the iOutput register
     p->iOutputs &= ~(aPortPins);
-    IGPIO_PCF8575_Write(p);
 
-    return UEZ_ERROR_NONE;
+    return IGPIO_PCF8575_Write(p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -280,13 +276,13 @@ T_uezError GPIO_PCF8575_Read(
 {
     TUInt16 v;
     T_GPIO_PCF8575_Workspace *p = (T_GPIO_PCF8575_Workspace *)aWorkspace;
-
+    T_uezError error;
 
     // Get the bits
-    IGPIO_PCF8575_Read(p, &v);
+    error = IGPIO_PCF8575_Read(p, &v);
     *aPinsRead = (v & aPortPins);
 
-    return UEZ_ERROR_NONE;
+    return error;
 }
 
 /*---------------------------------------------------------------------------*

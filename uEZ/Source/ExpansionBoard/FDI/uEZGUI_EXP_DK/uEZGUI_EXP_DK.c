@@ -2,26 +2,31 @@
  * File:  uEZGUI_EXP_DK.c
  *-------------------------------------------------------------------------*
  * Description:
- *     
+ *     Bring up the EXP-DK
  *-------------------------------------------------------------------------*/
-
+ 
 /*--------------------------------------------------------------------------
- * uEZ(R) - Copyright (C) 2007-2012 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
-/*-------------------------------------------------------------------------*
- * Includes:
- *-------------------------------------------------------------------------*/
+/**
+ *    @addtogroup uEZGUI-EXP-DK
+ *  @{
+ *  @brief     uEZGUI-EXP-DK platform
+ *  @see http://www.teamfdi.com/uez/
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *
+ *    The uEZGUI-EXP-DK platform interface.
+*/
 #include <Config.h>
 #include <stdio.h>
 #include <string.h>
@@ -482,20 +487,6 @@ void UEZGUI_EXP_DK_I2S_Require(void)
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_I2S_Require(&settings);
 #endif
-#if (UEZ_PROCESSOR==NXP_LPC2478)
-#include <Source/Processor/NXP/LPC2478/LPC2478_I2S.h>
-    static const T_LPC2478_I2S_Settings settings = {
-            GPIO_NONE,  // I2S_RX_SDA   = not used, conflicts
-            GPIO_NONE,  // I2S_RX_SCK   = not used, conflicts
-            GPIO_NONE,  // I2S_RX_WS    = not used, conflicts
-			
-            GPIO_P0_9,  // I2S_TX_SDA   = P0.9_I2STX_SDA_MOSI1_MAT2.3
-            GPIO_P0_7,  // I2S_TX_SCK   = P0.7_I2STX_CLK_SCK1_MAT2.1
-            GPIO_P0_8,  // I2S_TX_WS    = P0.8_I2STX_WS_MISO1_MAT2.2
-    };
-    DEVICE_CREATE_ONCE();
-    LPC2478_I2S_Require(&settings);
-#endif
     Generic_I2S_Create("I2S", "I2S");
 }
 
@@ -579,7 +570,7 @@ TBool UEZGUI_EXP_DK_Detect(void)
 
     return (error == UEZ_ERROR_NONE)?ETrue:EFalse;
 }
-
+/** @} */
 /*-------------------------------------------------------------------------*
  * End of File:  uEZGUI_EXP_DK.c
  *-------------------------------------------------------------------------*/

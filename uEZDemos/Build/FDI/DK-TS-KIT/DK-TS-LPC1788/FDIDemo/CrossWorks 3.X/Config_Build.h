@@ -6,7 +6,7 @@
 #define UEZ_ENABLE_WATCHDOG       			0 // Turn on watchdog for testing
 #define CARRIER_R2      					0 
 #define CARRIER_R4      					1 
-#define configTOTAL_HEAP_SIZE        		( ( size_t ) (( 48 * 1024 ) - 64)) // Use up 48K of the heap
+
 #define FDI_PLATFORM        				CARRIER_R4 // set for CARRIER board R4 or R5
 //#define FDI_PLATFORM        				CARRIER_R2 // set for CARRIER board R2
 // select which LCD is used here
@@ -74,6 +74,7 @@
 
 #define APP_DEMO_DRAW               		1
 #define APP_DEMO_APPS               		1
+#define APP_DEMO_SLIDESHOW             		1
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
@@ -87,6 +88,6 @@
 #define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME        			"DK-LPC1788"
-#define SLIDESHOW_PREFETCH_AHEAD            4
+#define SLIDESHOW_PREFETCH_AHEAD            5
 #define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         4
+#define SLIDESHOW_NUM_CACHED_SLIDES         5

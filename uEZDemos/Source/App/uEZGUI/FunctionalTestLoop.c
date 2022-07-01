@@ -8,19 +8,18 @@
 *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
-* uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
-*--------------------------------------------------------------------------
-* This file is part of the uEZ(R) distribution.  See the included
-* uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
-*
-*    *===============================================================*
-*    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
-*    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
-*    *===============================================================*
-*
-*-------------------------------------------------------------------------*/
-
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #if UEZ_ENABLE_LCD
 #include <string.h>
@@ -35,7 +34,7 @@
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <uEZDeviceTable.h>
 #include "AppDemo.h"
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 #include <Types/InputEvent.h>
 
 /*---------------------------------------------------------------------------*
@@ -313,3 +312,6 @@ void FunctionalTest_EXP_DK_Loopback(const T_choice *aChoice)
 }
 
 #endif // UEZ_ENABLE_LCD
+/*-------------------------------------------------------------------------*
+ * End of File:  FunctionalTest.c
+ *-------------------------------------------------------------------------*/

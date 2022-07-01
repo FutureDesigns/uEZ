@@ -6,32 +6,13 @@
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
- * uEZ(tm) - Copyright (C) 2007-2011 Future Designs, Inc.
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
- * This file is part of the uEZ(tm) distribution.
- *
- * uEZ(tm) is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * uEZ(tm) is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with uEZ(tm); if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * A special exception to the GPL can be applied should you wish to
- * distribute a combined work that includes uEZ(tm), without being obliged
- * to provide the source code for any proprietary components.  See the
- * licensing section of http://www.teamfdi.com/uez for full details of how
- * and when the exception can be applied.
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
- *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
  *    |      See http://www.teamfdi.com/uez for more details.         |
  *    *===============================================================*
@@ -46,7 +27,7 @@
  *  @{
  *  @brief     uEZ INI Interface
  *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZLicense.txt
+ *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
  *
  *    The uEZ INI interface.
  *
@@ -610,20 +591,21 @@ T_uezError UEZINISave(T_uezINISession aSession, const char *aFilename)
     T_INIKeyPair *p_keypair;
     T_INIKeyPair *p_keypair_next;
     T_uezFile file;
+    TUInt32 BytesWritten;
     char string[MAX_INI_STRING + 10];
 
     error = UEZFileOpen(aFilename, FILE_FLAG_WRITE, &file);
     if (!error) {
         for (p_section = p->iSectionList; p_section; p_section = p_section_next) {
             sprintf(string, "[%s]\r\n", p_section->iSectionName);
-            UEZFileWrite(file, string, strlen(string), 0);
+            UEZFileWrite(file, string, strlen(string), &BytesWritten);
             for (p_keypair = p_section->iKeyPairList; p_keypair; p_keypair
                 = p_keypair_next) {
                 p_keypair_next = p_keypair->iNext;
                 sprintf(string, "%s=", p_keypair->iKey);
-                UEZFileWrite(file, string, strlen(string), 0);
+                UEZFileWrite(file, string, strlen(string), &BytesWritten);
                 sprintf(string, "%s\r\n", p_keypair->iData);
-                UEZFileWrite(file, string, strlen(string), 0);
+                UEZFileWrite(file, string, strlen(string), &BytesWritten);
             }
             p_section_next = p_section->iNext;
         }

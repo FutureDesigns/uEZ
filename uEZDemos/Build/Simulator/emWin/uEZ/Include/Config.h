@@ -5,7 +5,7 @@
  * uEZ(R) - Copyright (C) 2007-2010 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
@@ -24,9 +24,9 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           06
-#define UEZ_VERSION_STRING          "2.06c"
-#define UEZ_VERSION_DATE            "05/07/2015" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           03
+#define UEZ_VERSION_STRING          "2.03"
+#define UEZ_VERSION_DATE            "11/13/2012" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler

@@ -144,6 +144,7 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\SingleSlideshowMode.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\SingleSlideshowMode.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\Slideshow.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\TimeDateMode.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.h" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImagesMinimal.c" "User" "Source|App|Demos|FDI|uEZDemoCommon" 2 
@@ -209,7 +210,7 @@
 [GENERAL_DATA_SESSION_JLink]
 [GENERAL_DATA_SESSION_nodebug]
 [OPTIONS_Debug_Renesas OptLinker]
-"Single Shot" "0fe819a7c20fec10" 5 
+"Single Shot" "0d1768e8ded90d10" 5 
 [OPTIONS_Debug_Renesas RX Assembler]
 "Assembly source file" "04137e7b9206dc10" 4 
 "Linkage symbol file" "04137e7b9206dc10" 4 
@@ -234,6 +235,7 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\MultiSlideshowMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\NetworkStartup.c" "08c1dde90a17ec10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\SingleSlideshowMode.c" "0e38d24f1306dc10" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\TimeDateMode.c" "0f6c9f29ced90d10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.c" "066e58f74306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImagesMinimal.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTest.c" "0e38d24f1306dc10" 2 
@@ -252,7 +254,7 @@
 [OPTIONS_Debug_Renesas RX C/C++ Library Generator]
 "Single Shot" "0c96c1e69b68dc10" 1 
 [OPTIONS_Debug_Renesas RX Configurator]
-"Single Shot" "000138a7c20fec10" 6 
+"Single Shot" "0f6c9f29ced90d10" 6 
 [OPTIONS_Debug]
 "" 0 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 6 
@@ -268,8 +270,17 @@
 " 5 
 [EXCLUDED_FILES_Debug]
 "R:\FDI\uEZ\Build\Generic\Renesas\RX62N\FreeRTOS\HEW4.x\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\uEZ_Renesas_RX62N_FreeRTOS_HEW4_release.lib" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\emWin.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Graph.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Intro.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Listview.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Resource.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Speed.c" 
+"R:\FDI\uEZDemos\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_TransparentDialog.c" 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\AudioPlayerMode.c" 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.c" 
+"R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTestLoop.c" 
 [LINKAGE_ORDER_Debug]
 "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT\debug\acceldemomode.obj" 
 "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT\debug\api_lib.obj" 
@@ -418,7 +429,7 @@
 "R:\FDI\uEZDemos\Build\FDI\uEZGUI\uEZGUI-RX62N-35QT\HEW\uEZGUI-RX62N-35QT\debug\yourappmode.obj" 
 [GENERAL_DATA_CONFIGURATION_Debug]
 [OPTIONS_Release_Renesas OptLinker]
-"Single Shot" "0fe819a7c20fec10" 6 
+"Single Shot" "0a650039ced90d10" 6 
 [OPTIONS_Release_Renesas RX Assembler]
 "Assembly source file" "04137e7b9206dc10" 5 
 "Linkage symbol file" "04137e7b9206dc10" 5 
@@ -443,6 +454,7 @@
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\MultiSlideshowMode.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\NetworkStartup.c" "08c1dde90a17ec10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\SingleSlideshowMode.c" "0e38d24f1306dc10" 2 
+"R:\FDI\uEZDemos\Source\App\uEZDemoCommon\TimeDateMode.c" "0f6c9f29ced90d10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImages.c" "066e58f74306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZDemoCommon\UDCImagesMinimal.c" "0e38d24f1306dc10" 2 
 "R:\FDI\uEZDemos\Source\App\uEZGUI-RX62N-35QT\FunctionalTest.c" "0e38d24f1306dc10" 2 
@@ -461,7 +473,7 @@
 [OPTIONS_Release_Renesas RX C/C++ Library Generator]
 "Single Shot" "0fcf3e7b9206dc10" 1 
 [OPTIONS_Release_Renesas RX Configurator]
-"Single Shot" "000138a7c20fec10" 7 
+"Single Shot" "0f6c9f29ced90d10" 7 
 [OPTIONS_Release]
 "" 0 
 "[V|VERSION|1] [B|COMMAND|1] [S|SPEC|UITRON4] [S|OUTPUTPATH|^"$(CONFIGDIR)^"] [S|CPU|RX600] [S|ENDIAN|LITTLE] [S|FINT_REGISTER|0]" 7 
