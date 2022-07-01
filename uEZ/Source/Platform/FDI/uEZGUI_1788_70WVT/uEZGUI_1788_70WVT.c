@@ -46,6 +46,7 @@
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
 #include <Source/Devices/I2S/Generic/Generic_I2S.h>
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
+#include <Source/Devices/LCD/Tianma/TM070RBHG04/Tianma_TM070RBHG04.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/MassStorage/USB_MS/USB_MS.h>
@@ -57,6 +58,7 @@
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
+#include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
 #include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
@@ -176,7 +178,7 @@ void UEZBSPDelay1MS(void)
     TUInt32 i;
 
     // Approximate delays here
-    for (i = 0; i < 1000; i++)
+    for (i = 0; i < 650; i++)
         UEZBSPDelay1US();
 }
 
@@ -238,10 +240,10 @@ void UEZBSP_ROMInit(void)
             EFalse,
 
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 18),
             EMC_STATIC_CYCLES(25),
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 4.9),
             1, };
     LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
@@ -1070,7 +1072,6 @@ void UEZPlatform_LCD_Require(void)
             
             GPIO_P2_0, // P2.0 is power pin, GPIO controlled
             EFalse, // Active LOW
-            250, // 250 ms control
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1082,6 +1083,7 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+    UEZPlatform_Timer0_Require();
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -1100,6 +1102,8 @@ void UEZPlatform_LCD_Require(void)
             (HAL_LCDController **)p_lcdc,
             LCD_DISPLAY_BASE_ADDRESS,
             (DEVICE_Backlight **)p_backlight);
+            
+    LCD_Tianma_TM070RBHG04_Create("LCD", GPIO_NONE, GPIO_NONE);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1791,6 +1795,7 @@ void UEZPlatform_Timer0_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer0_Require(&settings);
+    Timer_Generic_Create("Timer0", "Timer0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1812,6 +1817,7 @@ void UEZPlatform_Timer1_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer1_Require(&settings);
+    Timer_Generic_Create("Timer1", "Timer1");
 }
 
 /*---------------------------------------------------------------------------*

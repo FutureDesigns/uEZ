@@ -19,11 +19,15 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-
 #include <uEZ.h>
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
 #include "Microtips_UMSH_8596MD_20T.h"
+#include <uEZDeviceTable.h>
+#include <string.h>
+#include <uEZGPIO.h>
+#include <uEZTimer.h>
+#include <uEZPlatformAPI.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -46,7 +50,11 @@ typedef struct {
     DEVICE_Backlight **iBacklight;
     const T_uezLCDConfiguration *iConfiguration;
     HAL_GPIOPort **iPowerGPIOPort;
-	T_uezSemaphore iVSyncSem;
+    T_uezSemaphore iVSyncSem;
+    int aTimerEvent;
+    T_uezDevice itimer;
+    T_uezTimerCallback icallback;
+    TBool itimerDone;
 } T_UMSH_8596MD_20TWorkspace;
 
 /*---------------------------------------------------------------------------*
@@ -92,20 +100,20 @@ static T_LCDControllerSettings LCD_UMSH_8596MD_20T_paramsI15bit = {
     LCD_ADVANCED_TFT,
     LCD_COLOR_RES_16_I555,
 
-    25, // 28,         /* Horizontal back porch */
-    25, // 200,          /* Horizontal front porch */
-    150, // 128,         /* HSYNC pulse width */
+    25,         /* Horizontal back porch */
+    25,         /* Horizontal front porch */
+    150,        /* HSYNC pulse width */
     800,        /* Pixels per line */
 
-    2, // 5,          /* Vertical back porch */
-    2, // 5,          /* Vertical front porch */
-    6, // 35,         /* VSYNC pulse width */
+    2,          /* Vertical back porch */
+    2,          /* Vertical front porch */
+    6,          /* VSYNC pulse width */
     480,        /* Lines per panel */
 
     0,          // Line end delay disabled
 
     EFalse,     /* Do not invert output enable */
-    ETrue,     /* Invert panel clock */
+    ETrue,      /* Invert panel clock */
     EFalse,     /* Invert HSYNC */
     EFalse,     /* Invert VSYNC */
 
@@ -214,11 +222,7 @@ T_uezError LCD_UMSH_8596MD_20T_InitializeWorkspace_16Bit(void *aW)
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_UMSH_8596MD_20T_configuration_16Bit;
-#if UEZ_LCD_POWER_GPIO_PIN
-    HALInterfaceFind(UEZ_LCD_POWER_GPIO_PORT, (T_halWorkspace **)&p->iPowerGPIOPort);
-#else
     p->iPowerGPIOPort = 0;
-#endif
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
 }
@@ -240,11 +244,7 @@ T_uezError LCD_UMSH_8596MD_20T_InitializeWorkspace_I15Bit(void *aW)
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_UMSH_8596MD_20T_configuration_I15Bit;
-#if UEZ_LCD_POWER_GPIO_PIN
-    HALInterfaceFind(UEZ_LCD_POWER_GPIO_PORT, (T_halWorkspace **)&p->iPowerGPIOPort);
-#else
     p->iPowerGPIOPort = 0;
-#endif
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
 }
@@ -266,13 +266,147 @@ T_uezError LCD_UMSH_8596MD_20T_InitializeWorkspace_8Bit(void *aW)
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_UMSH_8596MD_20T_configuration_8Bit;
-#if UEZ_LCD_POWER_GPIO_PIN
-    HALInterfaceFind(UEZ_LCD_POWER_GPIO_PORT, (T_halWorkspace **)&p->iPowerGPIOPort);
-#else
     p->iPowerGPIOPort = 0;
-#endif
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_UMSH_8596MD_20T_SetBacklightLevel
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on or off the backlight.  A value of 0 is off and values of 1
+ *      or higher is higher levels of brightness (dependent on the LCD
+ *      display).  If a display is on/off only, this value will be 1 or 0
+ *      respectively.
+ * Inputs:
+ *      void *aW                -- Workspace
+ *      TUInt32 aLevel          -- Level of backlight
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *                                  If the backlight intensity level is
+ *                                  invalid, returns UEZ_ERROR_OUT_OF_RANGE.
+ *                                  Returns UEZ_ERROR_NOT_SUPPORTED if
+ *                                  no backlight for LCD.
+ *---------------------------------------------------------------------------*/
+T_uezError LCD_UMSH_8596MD_20T_SetBacklightLevel(void *aW, TUInt32 aLevel)
+{
+    T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
+    TUInt16 level;
+
+    if (!p->iBacklight)
+        return UEZ_ERROR_NOT_SUPPORTED;
+
+    // Limit the backlight level
+    if (aLevel > p->iConfiguration->iNumBacklightLevels)
+        aLevel = p->iConfiguration->iNumBacklightLevels;
+
+    // Remember this level and use it
+    p->iBacklightLevel = aLevel;
+
+    // Scale backlight to be 0 - 0xFFFF
+    level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
+
+    return (*p->iBacklight)->SetRatio(p->iBacklight, level);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_UMSH_8596MD_20T_MSTimerStart
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup MS timer in one function to avoid cluttering up the open function
+ * Inputs:
+*      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+*---------------------------------------------------------------------------*/
+static T_uezError LCD_UMSH_8596MD_20T_MSTimerStart(void *aW, float milliseconds){
+  T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
+  T_uezError error = UEZ_ERROR_NONE;
+  p->itimerDone = EFalse; // set to true when timer finishes
+  error = UEZTimerSetupOneShot(p->itimer,
+                               1,
+                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+                               &p->icallback);
+  if(error == UEZ_ERROR_NONE) {
+    error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);
+    error = UEZTimerReset(p->itimer);
+    UEZTimerEnable(p->itimer);
+  }  
+  return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_UMSH_8596MD_20T_TimerCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Timer callback to set pins immediately when the target time is reached.
+ * Needed for LCDs with sub-ms and ms range accuracy for bring up sequencing.
+ * Inputs:
+ *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+ *---------------------------------------------------------------------------*/
+static void LCD_UMSH_8596MD_20T_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
+  T_UMSH_8596MD_20TWorkspace *p = aCallbackWorkspace->iData;
+  UEZTimerClose(p->itimer);   
+  p->itimerDone = ETrue;
+  if(p->aTimerEvent == 1) {
+    (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+    LCD_UMSH_8596MD_20T_SetBacklightLevel(p, p->iBacklightLevel);// set initial level 
+  } else {
+    // should not get here 
+  }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_UMSH_8596MD_20T_On
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+T_uezError LCD_UMSH_8596MD_20T_On(void *aW)
+{
+    // Turn back on to the remembered level
+    T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_UMSH_8596MD_20T_TimerCallback;
+    p->icallback.iData = p;
+  
+    (*p->iLCDController)->On(p->iLCDController);
+    if (p->iBacklight){
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+         p->aTimerEvent = 1;// start first time critical stage 
+         LCD_UMSH_8596MD_20T_MSTimerStart(p, 167.0); // minimum 167ms timer to clear 10 frames of data so old data isn't shown on screen
+         while (p->itimerDone == EFalse){;} // wait for timer before continuing
+      }
+    }
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_UMSH_8596MD_20T_Off
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns off the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+T_uezError LCD_UMSH_8596MD_20T_Off(void *aW)
+{
+    // Turn off, but don't remember the level
+    T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
+    
+    // Turn off
+    if (p->iBacklight){ // no cooldown time requirement for this LCD, so do not impose a waiting period
+      (*p->iBacklight)->Off(p->iBacklight);   
+    }    
+    (*p->iLCDController)->Off(p->iLCDController);
+    return UEZ_ERROR_NONE;
 }
 
 /*---------------------------------------------------------------------------*
@@ -291,6 +425,8 @@ T_uezError LCD_UMSH_8596MD_20T_Open(void *aW)
 {
     T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
     HAL_LCDController **plcdc;
+    T_uezError error = UEZ_ERROR_NONE;
+		int i;
     p->aNumOpen++;
     if (p->aNumOpen == 1) {
         plcdc = p->iLCDController;
@@ -308,11 +444,17 @@ T_uezError LCD_UMSH_8596MD_20T_Open(void *aW)
                 break;
         }
         LCD_UMSH_8596MD_20T_settings.iBaseAddress = p->iBaseAddress;
-
-        return (*plcdc)->Configure(plcdc, &LCD_UMSH_8596MD_20T_settings);
+        error = (*plcdc)->Configure(plcdc, &LCD_UMSH_8596MD_20T_settings);
+        
+        for (i=0; i<800*480*2; i+=2) {// black screen to clear any leftovers in memory
+        *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; 
+        }
+        
+        if (!error) {
+                error = LCD_UMSH_8596MD_20T_On(p);
+        }
     }
-
-    return UEZ_ERROR_NONE;
+    return error;    
 }
 
 /*---------------------------------------------------------------------------*
@@ -355,7 +497,6 @@ T_uezError LCD_UMSH_8596MD_20T_Configure(
     T_uezError error = UEZ_ERROR_NONE;
     p->iLCDController = aLCDController;
     p->iBaseAddress = aBaseAddress;
-
     p->iBacklight = aBacklight;
 
     return error;
@@ -425,117 +566,6 @@ T_uezError LCD_UMSH_8596MD_20T_ShowFrame(void *aW, TUInt32 aFrame)
             EFalse);
 
     return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_UMSH_8596MD_20T_On
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-T_uezError LCD_UMSH_8596MD_20T_On(void *aW)
-{
-    // Turn back on to the remembered level
-    T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
-#if UEZ_LCD_POWER_GPIO_PIN
-    HAL_GPIOPort **p_gpio = p->iPowerGPIOPort;
-#endif
-    
-#if UEZ_LCD_POWER_GPIO_PIN
-    if (p_gpio) {
-        (*p_gpio)->SetOutputMode(p_gpio, 1UL<<UEZ_LCD_POWER_GPIO_PIN);
-        (*p_gpio)->SetMux(p_gpio, UEZ_LCD_POWER_GPIO_PIN, 0); // set to GPIO
-        (*p_gpio)->Clear(p_gpio, 1UL<<UEZ_LCD_POWER_GPIO_PIN);
-    }
-#endif
-
-    (*p->iLCDController)->On(p->iLCDController);
-
-    UEZTaskDelay(200);//added delay to match timing in datasheet
-
-    if (p->iBacklight)
-        (*p->iBacklight)->On(p->iBacklight);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_UMSH_8596MD_20T_Off
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns off the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-T_uezError LCD_UMSH_8596MD_20T_Off(void *aW)
-{
-    // Turn off, but don't remember the level
-    T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
-#if UEZ_LCD_POWER_GPIO_PIN
-    HAL_GPIOPort **p_gpio = p->iPowerGPIOPort;
-#endif
-    
-    //changed order and added delay to match timing diagram in datasheet.
-    if (p->iBacklight)
-        (*p->iBacklight)->Off(p->iBacklight);
-    
-    UEZTaskDelay(200);
-
-#if UEZ_LCD_POWER_GPIO_PIN
-    if (p_gpio) {
-        (*p_gpio)->SetOutputMode(p_gpio, 1UL<<UEZ_LCD_POWER_GPIO_PIN);
-        (*p_gpio)->SetMux(p_gpio, UEZ_LCD_POWER_GPIO_PIN, 0); // set to GPIO
-        (*p_gpio)->Set(p_gpio, 1UL<<UEZ_LCD_POWER_GPIO_PIN);
-    }
-#endif
-    (*p->iLCDController)->Off(p->iLCDController);    
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_UMSH_8596MD_20T_SetBacklightLevel
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on or off the backlight.  A value of 0 is off and values of 1
- *      or higher is higher levels of brightness (dependent on the LCD
- *      display).  If a display is on/off only, this value will be 1 or 0
- *      respectively.
- * Inputs:
- *      void *aW                -- Workspace
- *      TUInt32 aLevel          -- Level of backlight
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *                                  If the backlight intensity level is
- *                                  invalid, returns UEZ_ERROR_OUT_OF_RANGE.
- *                                  Returns UEZ_ERROR_NOT_SUPPORTED if
- *                                  no backlight for LCD.
- *---------------------------------------------------------------------------*/
-T_uezError LCD_UMSH_8596MD_20T_SetBacklightLevel(void *aW, TUInt32 aLevel)
-{
-    T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
-    TUInt16 level;
-
-    if (!p->iBacklight)
-        return UEZ_ERROR_NOT_SUPPORTED;
-
-    // Limit the backlight level
-    if (aLevel > p->iConfiguration->iNumBacklightLevels)
-        aLevel = p->iConfiguration->iNumBacklightLevels;
-
-    // Remember this level and use it
-    p->iBacklightLevel = aLevel;
-
-    // Scale backlight to be 0 - 0xFFFF
-    level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
-
-    return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
 /*---------------------------------------------------------------------------*

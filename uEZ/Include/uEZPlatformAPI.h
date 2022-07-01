@@ -61,7 +61,7 @@ TUInt32 UEZPlatform_GetBaseAddress(void);
 const void* UEZPlatform_GUIColorConversion(void);
 
 TBool UEZPlatform_ExpansionBoardIsConnected(void);
-
+void UEZBSPDelayMS(unsigned int aMilliseconds);
 
 #endif // UEZPLATFORMAPI_H_
 /*-------------------------------------------------------------------------*

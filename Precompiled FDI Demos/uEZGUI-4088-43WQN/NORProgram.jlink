@@ -1,8 +1,9 @@
+usb 228201194
 exec device = LPC4088
 speed 4000
 rx 200
 h
-loadbin "ProgramNORFlash1788.prog", 0
+loadbin "ProgramNORFlash4088.prog", 0
 rx 200
 g
 sleep 2000

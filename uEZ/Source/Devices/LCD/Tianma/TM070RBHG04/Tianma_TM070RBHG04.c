@@ -19,10 +19,13 @@
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
-#include <Device/LCD.h>
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
-#include <UEZSPI.h>
+#include <uEZDeviceTable.h>
+#include "Tianma_TM070RBHG04.h"
+#include <uEZGPIO.h>
+#include <uEZTimer.h>
+#include <uEZPlatformAPI.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -53,20 +56,18 @@ typedef struct {
     HAL_LCDController **iLCDController;
     DEVICE_Backlight **iBacklight;
     const T_uezLCDConfiguration *iConfiguration;
-    T_uezDevice iSPI;
-    HAL_GPIOPort **iCSGPIOPort;
-    TUInt32 iCSGPIOBit;
-    HAL_GPIOPort **iResetGPIOPort;
-    TUInt32 iResetGPIOBit;
+    //T_uezGPIOPortPin iDataEnablePin;
+    T_uezGPIOPortPin iUpDownPin;
+    T_uezGPIOPortPin iLeftRightPin;
+    //T_uezGPIOPortPin iLCDPowerEnablePin;
+    //T_uezGPIOPortPin iLCDPWMPin;
+    //T_uezGPIOPortPin iBackLightEnablePin;
     T_uezSemaphore iVSyncSem;
+    int aTimerEvent;
+    T_uezDevice itimer;
+    T_uezTimerCallback icallback;
+    TBool itimerDone;
 } T_TM070RBHG04Workspace;
-
-typedef struct {
-    TUInt8 iReg;
-        #define REG_END         0xFF
-    TUInt16 iData;
-} T_lcdSPICmd;
-
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -207,64 +208,7 @@ static T_uezLCDConfiguration LCD_TM070RBHG04_configuration_8Bit = {
     RESOLUTION_X*1,
     256
 };
-#if 0
-static const T_lcdSPICmd G_lcdStartup[] = {
-#if LCD_Tianma_TM070RBHG04_FLIP_SCREEN_X
-    #if LCD_Tianma_TM070RBHG04_FLIP_SCREEN_Y
-        { 0x01, 0x610F },
-    #else
-        { 0x01, 0x630F },
-    #endif
-#else
-    #if LCD_Tianma_TM070RBHG04_FLIP_SCREEN_Y
-        { 0x01, 0x210F },
-    #else
-        { 0x01, 0x230F },
-    #endif
-#endif
-    { 0x02, 0x0C02 },
-    { 0x03, 0x040E },
-    { 0x0B, 0xD000 },
-    { 0x0C, 0x0005 },
-    { 0x0D, 0x000F },
-    { 0x0E, 0x2B00 },
-    { 0x16, 0xEF8E },
-    { 0x17, 0x0003 },
-    { 0x1E, 0x0000 },
-    { 0x30, 0x0000 },
-    { 0x31, 0x0107 },
-    { 0x32, 0x0000 },
-    { 0x33, 0x0201 },
-    { 0x34, 0x0607 },
-    { 0x35, 0x0005 },
-    { 0x36, 0x0707 },
-    { 0x37, 0x0203 },
-    { 0x3A, 0x0F0F },
-    { 0x3B, 0x0F02 },
-    { 0x10, 0x02CC },
-    { 0x26, 0x2800 },
-    { 0x15, 0x0090 },
-    { 0x2C, 0x3BBD },
-    { REG_END, 0 }
-};
-#endif
-#if 0
-static const T_lcdSPICmd G_lcdExitSleep[] = {
-    { 0x28, 0x0006 },
-    { 0x2D, 0x3F44 },
-    { 0x29, 0xFFFE },
-    { REG_END, 0 }
-};
-#endif
-#if 0
-static const T_lcdSPICmd G_lcdEnterSleep[] = {
-    { 0x28, 0x0006 },
-    { 0x29, 0x8000 },
-    { 0x2E, 0xB544 },
-    { 0x2D, 0x3F46 },
-    { REG_END, 0 }
-};
-#endif
+
 /*---------------------------------------------------------------------------*
  * Prototypes:
  *---------------------------------------------------------------------------*/
@@ -332,6 +276,152 @@ T_uezError LCD_TM070RBHG04_InitializeWorkspace_8Bit(void *aW)
 
     return UEZSemaphoreCreateBinary(&p->iVSyncSem);
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_TM070RBHG04_SetBacklightLevel
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on or off the backlight.  A value of 0 is off and values of 1
+ *      or higher is higher levels of brightness (dependent on the LCD
+ *      display).  If a display is on/off only, this value will be 1 or 0
+ *      respectively.
+ * Inputs:
+ *      void *aW                -- Workspace
+ *      TUInt32 aLevel          -- Level of backlight
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *                                  If the backlight intensity level is
+ *                                  invalid, returns UEZ_ERROR_OUT_OF_RANGE.
+ *                                  Returns UEZ_ERROR_NOT_SUPPORTED if
+ *                                  no backlight for LCD.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_TM070RBHG04_SetBacklightLevel(void *aW, TUInt32 aLevel)
+{
+    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
+    TUInt16 level;
+
+    if (!p->iBacklight)
+        return UEZ_ERROR_NOT_SUPPORTED;
+
+    // Limit the backlight level
+    if (aLevel > p->iConfiguration->iNumBacklightLevels)
+        aLevel = p->iConfiguration->iNumBacklightLevels;
+
+    // Remember this level and use it
+    p->iBacklightLevel = aLevel;
+
+    // Scale backlight to be 0 - 0xFFFF
+    level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
+
+    return (*p->iBacklight)->SetRatio(p->iBacklight, level);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_TM070RBHG04_MSTimerStart
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup MS timer in one function to avoid cluttering up the open function
+ * Inputs:
+*      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+*---------------------------------------------------------------------------*/
+static T_uezError LCD_TM070RBHG04_MSTimerStart(void *aW, float milliseconds){
+  T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
+  T_uezError error = UEZ_ERROR_NONE;
+  p->itimerDone = EFalse; // set to true when timer finishes
+  error = UEZTimerSetupOneShot(p->itimer,
+                               1,
+                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+                               &p->icallback);
+  if(error == UEZ_ERROR_NONE) {
+    error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);
+    error = UEZTimerReset(p->itimer);
+    UEZTimerEnable(p->itimer);
+  }  
+  return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_TM070RBHG04_TimerCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Timer callback to set pins immediately when the target time is reached.
+ * Needed for LCDs with sub-ms and ms range accuracy for bring up sequencing.
+ * Inputs:
+ *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
+ *---------------------------------------------------------------------------*/
+static void LCD_TM070RBHG04_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
+  T_TM070RBHG04Workspace *p = aCallbackWorkspace->iData;
+  UEZTimerClose(p->itimer);    
+  p->itimerDone = ETrue;
+  if(p->aTimerEvent == 1) {
+    (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+    LCD_TM070RBHG04_SetBacklightLevel(p, p->iBacklightLevel);
+  } else if(p->aTimerEvent == 2){// backlight cooldown is now finished
+  } else { // should not get here
+  }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_TM070RBHG04_On
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns on the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_TM070RBHG04_On(void *aW) {  
+    // Turn back on to the remembered level
+    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_TM070RBHG04_TimerCallback;
+    p->icallback.iData = p;
+  
+    (*p->iLCDController)->On(p->iLCDController);
+    if (p->iBacklight){
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+         p->aTimerEvent = 1;// start first time critical stage 
+         LCD_TM070RBHG04_MSTimerStart(p, 200.0); // minimum 200ms timer           
+         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+      }
+    }
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LCD_TM070RBHG04_Off
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Turns off the LCD display.
+ * Inputs:
+ *      void *aW                -- Workspace
+ * Outputs:
+ *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
+ *---------------------------------------------------------------------------*/
+static T_uezError LCD_TM070RBHG04_Off(void *aW) {
+    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;    
+    p->icallback.iTimer = p->itimer; // Setup callback information for timer
+    p->icallback.iMatchRegister = 1;
+    p->icallback.iTriggerSem = 0;
+    p->icallback.iCallback = LCD_TM070RBHG04_TimerCallback;
+    p->icallback.iData = p;
+    
+    // Turn off
+    if (p->iBacklight){
+      (*p->iBacklight)->Off(p->iBacklight);
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
+        p->aTimerEvent = 2; // start second time critical stage 
+        LCD_TM070RBHG04_MSTimerStart(p, 200.0); // minimum 200ms timer
+        while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
+      }   
+    }    
+    (*p->iLCDController)->Off(p->iLCDController);
+    return UEZ_ERROR_NONE;
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_TM070RBHG04_Open
  *---------------------------------------------------------------------------*
@@ -346,41 +436,60 @@ T_uezError LCD_TM070RBHG04_InitializeWorkspace_8Bit(void *aW)
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_TM070RBHG04_Open(void *aW)
 {
-    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
-    HAL_LCDController **plcdc;
-    T_uezError error = UEZ_ERROR_NONE;
+  T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
+  HAL_LCDController **plcdc;
+  T_uezError error = UEZ_ERROR_NONE;
+	int i;
 
-    p->aNumOpen++;
-
-    if (p->aNumOpen == 1) {
-        plcdc = p->iLCDController;
-        if (!error) {
-            switch (p->iConfiguration->iColorDepth) {
-                case UEZLCD_COLOR_DEPTH_8_BIT:
-                    LCD_TM070RBHG04_settings = LCD_TM070RBHG04_params8bit;
-                    break;
-                default:
-                case UEZLCD_COLOR_DEPTH_16_BIT:
-                    LCD_TM070RBHG04_settings = LCD_TM070RBHG04_params16bit;
-                    break;
-                case UEZLCD_COLOR_DEPTH_I15_BIT:
-                    LCD_TM070RBHG04_settings = LCD_TM070RBHG04_paramsI15bit;
-                    break;
-            }
-            LCD_TM070RBHG04_settings.iBaseAddress = p->iBaseAddress;
-            error = (*plcdc)->Configure(plcdc, &LCD_TM070RBHG04_settings);
-
-            if (!error) {
-//                for (i=0; i<480*272*2; i+=2) {
-//                    *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; // black
-//                }
-                (*p->iLCDController)->On(p->iLCDController);
-
-            }
-        }
+  p->aNumOpen++;
+  if (p->aNumOpen == 1) {    
+    if((p->iUpDownPin != GPIO_NONE) & (p->iLeftRightPin != GPIO_NONE)){
+      // Up Down Selection
+      UEZGPIOSetMux(p->iUpDownPin, 0);
+      UEZGPIOOutput(p->iUpDownPin);
+      // Left/Right Selection
+      UEZGPIOSetMux(p->iLeftRightPin , 0);
+      UEZGPIOOutput(p->iLeftRightPin);
+#if LCD_Tianma_TM070RBHG04_FLIP_SCREEN_X
+      UEZGPIOClear(p->iLeftRightPin);
+#else
+      UEZGPIOSet(p->iLeftRightPin);
+#endif        
+#if LCD_Tianma_TM070RBHG04_FLIP_SCREEN_Y
+      UEZGPIOSet(p->iUpDownPin);
+#else
+      UEZGPIOClear(p->iUpDownPin); 
+#endif
+      UEZGPIOLock(p->iLeftRightPin);
+      UEZGPIOLock(p->iUpDownPin);
     }
-
-    return error;
+    
+    plcdc = p->iLCDController;
+    switch (p->iConfiguration->iColorDepth) {
+      case UEZLCD_COLOR_DEPTH_8_BIT:
+        LCD_TM070RBHG04_settings = LCD_TM070RBHG04_params8bit;
+        break;
+      default:
+      case UEZLCD_COLOR_DEPTH_16_BIT:
+        LCD_TM070RBHG04_settings = LCD_TM070RBHG04_params16bit;
+        break;
+      case UEZLCD_COLOR_DEPTH_I15_BIT:
+        LCD_TM070RBHG04_settings = LCD_TM070RBHG04_paramsI15bit;
+        break;
+    }
+    LCD_TM070RBHG04_settings.iBaseAddress = p->iBaseAddress;
+    //pre-configure LCD controller first so that there is no delay for turn on  
+    error = (*plcdc)->Configure(plcdc, &LCD_TM070RBHG04_settings);
+    
+    for (i=0; i<800*480*2; i+=2) {// black screen to clear any leftovers in memory
+        *((TUInt16 *)(p->iBaseAddress+i)) = 0x0000; 
+    }
+    
+    if (!error) {        
+      LCD_TM070RBHG04_On(p); // start DOTCLK/HSYNC/VSYNC immediately
+    }  
+  }
+  return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -496,90 +605,6 @@ static T_uezError LCD_TM070RBHG04_ShowFrame(void *aW, TUInt32 aFrame)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  LCD_TM070RBHG04_On
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_TM070RBHG04_On(void *aW)
-{
-    // Turn back on to the remembered level
-    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
-    (*p->iLCDController)->On(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->On(p->iBacklight);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_TM070RBHG04_Off
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns off the LCD display.
- * Inputs:
- *      void *aW                -- Workspace
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_TM070RBHG04_Off(void *aW)
-{
-    // Turn off, but don't remember the level
-    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
-    (*p->iLCDController)->Off(p->iLCDController);
-
-    if (p->iBacklight)
-        (*p->iBacklight)->Off(p->iBacklight);
-
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LCD_TM070RBHG04_SetBacklightLevel
- *---------------------------------------------------------------------------*
- * Description:
- *      Turns on or off the backlight.  A value of 0 is off and values of 1
- *      or higher is higher levels of brightness (dependent on the LCD
- *      display).  If a display is on/off only, this value will be 1 or 0
- *      respectively.
- * Inputs:
- *      void *aW                -- Workspace
- *      TUInt32 aLevel          -- Level of backlight
- * Outputs:
- *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
- *                                  If the backlight intensity level is
- *                                  invalid, returns UEZ_ERROR_OUT_OF_RANGE.
- *                                  Returns UEZ_ERROR_NOT_SUPPORTED if
- *                                  no backlight for LCD.
- *---------------------------------------------------------------------------*/
-static T_uezError LCD_TM070RBHG04_SetBacklightLevel(void *aW, TUInt32 aLevel)
-{
-    T_TM070RBHG04Workspace *p = (T_TM070RBHG04Workspace *)aW;
-    TUInt16 level;
-
-    if (!p->iBacklight)
-        return UEZ_ERROR_NOT_SUPPORTED;
-
-    // Limit the backlight level
-    if (aLevel > p->iConfiguration->iNumBacklightLevels)
-        aLevel = p->iConfiguration->iNumBacklightLevels;
-
-    // Remember this level and use it
-    p->iBacklightLevel = aLevel;
-
-    // Scale backlight to be 0 - 0xFFFF
-    level = (aLevel * 0xFFFF) / p->iConfiguration->iNumBacklightLevels;
-
-    return (*p->iBacklight)->SetRatio(p->iBacklight, level);
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  LCD_TM070RBHG04_GetBacklightLevel
  *---------------------------------------------------------------------------*
  * Description:
@@ -691,6 +716,21 @@ static T_uezError LCD_TM070RBHG04_WaitForVerticalSync(
     UEZSemaphoreGrab(p->iVSyncSem, 0);
     (*p_hal)->EnableVerticalSync(p_hal, LCD_TM070RBHG04_VerticalSyncCallback, p);
     return UEZSemaphoreGrab(p->iVSyncSem, aTimeout);
+}
+
+void LCD_Tianma_TM070RBHG04_Create(char* aName,
+                              T_uezGPIOPortPin aUpDownPin,
+                              T_uezGPIOPortPin aLeftRightPin)
+{
+    T_TM070RBHG04Workspace *p;
+    T_uezDevice lcd;
+    T_uezDeviceWorkspace *p_lcd;
+    UEZDeviceTableFind(aName, &lcd);
+    UEZDeviceTableGetWorkspace(lcd, &p_lcd);
+    p = (T_TM070RBHG04Workspace*)p_lcd;
+
+    p->iUpDownPin = aUpDownPin;
+    p->iLeftRightPin = aLeftRightPin;    
 }
 
 /*---------------------------------------------------------------------------*

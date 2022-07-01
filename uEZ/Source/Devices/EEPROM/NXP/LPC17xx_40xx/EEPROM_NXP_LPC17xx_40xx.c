@@ -139,12 +139,19 @@ static void IInitialize(T_EEPROM_NXP_LPC17xx_40xx_Workspace *p)
     
     /* Enable the KFLASH Interrupt */
     InterruptRegister(
+#if (UEZ_PROCESSOR == NXP_LPC4088)
+        EEPROM_IRQn,              
+#else
         KFLASH_IRQn,
+#endif
         IFlashIRQHandler,
         INTERRUPT_PRIORITY_NORMAL,
         "KFlash");
+#if (UEZ_PROCESSOR == NXP_LPC4088)
+    InterruptEnable(EEPROM_IRQn);
+#else
     InterruptEnable(KFLASH_IRQn);
-    
+#endif
     UEZSemaphoreCreateBinary(&p->iIRQReadySem);
     
     p->iInitialized = ETrue;

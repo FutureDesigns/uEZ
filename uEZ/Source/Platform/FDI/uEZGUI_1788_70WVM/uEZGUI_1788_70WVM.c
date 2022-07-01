@@ -30,6 +30,7 @@
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDeviceController.c>
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
+#include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
 #include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
@@ -112,6 +113,7 @@
  *---------------------------------------------------------------------------*/
 #define NOR_FLASH_BASE_ADDR             0x80000000
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
+#define USING_70WVM_BA_REV1_2           1 // set to 1 for 1.X and 2.X revision for I2C power fix
 
 #ifndef UEZGUI_7_REV2_BOARD_SWAP_TP_LINES
   #define UEZGUI_7_REV2_BOARD_SWAP_TP_LINES           1
@@ -175,7 +177,7 @@ void UEZBSPDelay1MS(void)
     TUInt32 i;
 
     // Approximate delays here
-    for (i = 0; i < 1000; i++)
+    for (i = 0; i < 650; i++)
         UEZBSPDelay1US();
 }
 
@@ -237,10 +239,10 @@ void UEZBSP_ROMInit(void)
             EFalse,
 
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 18),
             EMC_STATIC_CYCLES(25),
             EMC_STATIC_CYCLES(0),
-            EMC_STATIC_CYCLES(90),
+            EMC_STATIC_CYCLES(90 + 4.9),
             1, };
     LPC17xx_40xx_EMC_Static_Init(&norFlash_M29W128G);
 #else
@@ -508,11 +510,36 @@ void UEZPlatform_Temp0_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_Accel0_Require(void)
 {
+    T_uezDevice I2C;
+    T_uezError error;
+    I2C_Request r;
+    TUInt8 dataIn;
+    TUInt8 dataOut = 0x0F;
+
     DEVICE_CREATE_ONCE();
 
     UEZPlatform_I2C1_Require();
-    Accelerometer_Freescale_MMA7455_I2C_Create("Accel0", "I2C1",
+
+    // Detect which accelerometer is loaded
+
+    UEZI2COpen("I2C1", &I2C);
+    r.iAddr = 0x18;
+    r.iSpeed = 400; //kHz
+    r.iWriteData = &dataOut;
+    r.iWriteLength = 1; // send 1 byte
+    r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+    r.iReadData = &dataIn;
+    r.iReadLength = 1; // read 20 bytes
+    r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
+
+    error = UEZI2CTransaction(I2C, &r);
+
+    if(!error && (dataIn == 0x33)) {
+        ST_Accelo_LIS3DH_I2C_Create("Accel0", "I2C1");
+    } else {
+        Accelerometer_Freescale_MMA7455_I2C_Create("Accel0", "I2C1",
             MMA7455_I2C_ADDR);
+    }
 }
 
 /*---------------------------------------------------------------------------*
@@ -1086,9 +1113,12 @@ void UEZPlatform_LCD_Require(void)
 
             GPIO_NONE,  // LCD_CLKIN
             
+#if USING_70WVM_BA_REV1_2 // Make sure that power to I2C devices cannot be turned off on these revisions
+            GPIO_NONE,
+#else       
             GPIO_P2_0, // P2.0 is power pin, GPIO controlled
+#endif
             EFalse, // Active LOW
-            250, // 250 ms control
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1100,6 +1130,7 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+    UEZPlatform_Timer0_Require();
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -2014,7 +2045,14 @@ void uEZPlatformInit(void)
 }
 
 void UEZPlatform_Standard_Require(void)
-{
+{   
+#if USING_70WVM_BA_REV1_2 // Make sure that power to I2C devices cannot be turned off on these revisions
+    LPC17xx_40xx_GPIO2_Require();
+    UEZGPIOSetMux(GPIO_P2_0, 0);
+    UEZGPIOOutput(GPIO_P2_0);
+    UEZGPIOClear(GPIO_P2_0);
+    UEZGPIOLock(GPIO_P2_0); 
+#endif
     // Setup console immediately
     UEZPlatform_Console_Expansion_Require(UEZ_CONSOLE_WRITE_BUFFER_SIZE,
             UEZ_CONSOLE_READ_BUFFER_SIZE);

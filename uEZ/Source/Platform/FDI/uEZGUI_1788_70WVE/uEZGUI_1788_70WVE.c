@@ -55,6 +55,7 @@
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
+#include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
 #include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
@@ -1013,7 +1014,6 @@ void UEZPlatform_LCD_Require(void)
 
             GPIO_NONE,  // No separate power pin
             EFalse,     // Active LOW
-            250,        // 250 ms control
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1025,6 +1025,7 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+    UEZPlatform_Timer0_Require();
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -1679,6 +1680,7 @@ void UEZPlatform_Timer0_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer0_Require(&settings);
+    Timer_Generic_Create("Timer0", "Timer0");
 }
 
 /*---------------------------------------------------------------------------*
@@ -1700,6 +1702,7 @@ void UEZPlatform_Timer1_Require(void)
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer1_Require(&settings);
+    Timer_Generic_Create("Timer1", "Timer1");
 }
 
 /*---------------------------------------------------------------------------*

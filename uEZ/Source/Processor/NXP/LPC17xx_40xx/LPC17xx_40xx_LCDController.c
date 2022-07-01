@@ -57,7 +57,6 @@ typedef struct {
     HAL_GPIOPort **iPowerPort;
     TUInt32 iPowerPin;
     TBool iPowerPinIsActiveHigh;
-    TUInt32 iPowerOnDelay;
 
     LCDControllerVerticalSync iVerticalSyncCallbackFunc;
     void *iVerticalSyncCallbackWorkspace;
@@ -136,7 +135,6 @@ T_uezError LPC17xx_40xx_LCDController_InitializeWorkspace(void *aWorkspace)
     p->iPowerPort = 0;
     p->iPowerPin = 0;
     p->iPowerPinIsActiveHigh = EFalse;
-    p->iPowerOnDelay = 10; // ms
     p->iVerticalSyncCallbackFunc = 0;
     p->iVerticalSyncCallbackWorkspace = 0;
 
@@ -360,10 +358,6 @@ T_uezError LPC17xx_40xx_LCDController_On(void *aWorkspace)
         }
     }
 
-    // TBD: Should this delay be done different?
-    //    UEZTaskDelay(500);
-    UEZBSPDelayMS(10);
-
     return UEZ_ERROR_NONE;
 }
 
@@ -510,7 +504,6 @@ T_uezError LPC17xx_40xx_LCDController_SetPaletteColor(
  *      HAL_GPIOPort **aPowerPort    -- Pointer to HAL GPIO port
  *      TUInt32 aPowerPinIndex       -- Index of port pin
  *      TBool aPowerPinIsActiveHigh  -- ETrue if active high, EFalse otherwise
- *      TUInt32 aPowerOnDelay        -- Delay (in milliseconds?)
  * Outputs:
  *      T_uezError                   -- If successful, returns UEZ_ERROR_NONE.
  *---------------------------------------------------------------------------*/
@@ -518,15 +511,13 @@ T_uezError LCDController_LPC17xx_40xx_ConfigurePowerPin(
             void *aWorkspace,
             HAL_GPIOPort **aPowerPort,
             TUInt32 aPowerPinIndex,
-            TBool aPowerPinIsActiveHigh,
-            TUInt32 aPowerOnDelay)
+            TBool aPowerPinIsActiveHigh)
 {
     T_workspace *p = (T_workspace *)aWorkspace;
 
     p->iPowerPort = aPowerPort;
     p->iPowerPin = 1<<aPowerPinIndex;
     p->iPowerPinIsActiveHigh = aPowerPinIsActiveHigh;
-    p->iPowerOnDelay = aPowerOnDelay;
 
     // Ensure it is a GPIO and output mode and off
     if (p->iPowerPinIsActiveHigh)
@@ -830,8 +821,7 @@ void LPC17xx_40xx_LCDController_Require(const T_LPC17xx_40xx_LCDController_Pins 
         UEZGPIOOutput(aPins->iPowerPin);
         LCDController_LPC17xx_40xx_ConfigurePowerPin(p_lcd,
                 GPIO_TO_HAL_PORT(aPins->iPowerPin),
-                GPIO_TO_PIN_INDEX(aPins->iPowerPin), aPins->iPowerPinIsActiveHigh,
-                aPins->iPowerOnDelay);
+                GPIO_TO_PIN_INDEX(aPins->iPowerPin), aPins->iPowerPinIsActiveHigh);
     }
 }
 /*-------------------------------------------------------------------------*

@@ -3199,7 +3199,7 @@
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPacked.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\UEZPlatformAPI.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZPlatformAPI.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZProcessor.h</name>
@@ -3294,6 +3294,15 @@
         </group>
         <group>
           <name>ST</name>
+          <group>
+            <name>LIS3DH</name>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C.h</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\Accelerometer\ST\LIS3DH\ST_LIS3DH_I2C_driver.c</name>
+            </file>
+          </group>
           <group>
             <name>LIS3LV02DQ</name>
             <file>
