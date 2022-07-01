@@ -42,8 +42,8 @@ extern void UEZBSP_FatalError(int aNumBlinks);
 
 void FatalError(const char *aLine)
 {
-    BSODStart("UEZ Failure!\n");
-    BSODPrint(aLine);
+    //BSODStart("UEZ Failure!\n");
+    //BSODPrint(aLine);
     while (1)
         UEZBSP_FatalError(10);
 }

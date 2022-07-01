@@ -140,6 +140,17 @@
             <folder Name="LPC43xx">
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.c" />
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.h" />
+              <configuration Name="Debug" build_exclude_from_build="Yes" />
+              <configuration
+                Name="Debug-Trace"
+                build_exclude_from_build="Yes" />
+              <configuration
+                Name="Debug-Trace CLANG"
+                build_exclude_from_build="Yes" />
+              <configuration Name="Release" build_exclude_from_build="Yes" />
+              <configuration
+                Name="ReleaseOptForSize"
+                build_exclude_from_build="Yes" />
             </folder>
             <folder Name="LPC_SPIFI_M4F">
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4_driver.c" />
@@ -1277,7 +1288,10 @@
       <file file_name="../../../../../../Include/uEZGPIO.h" />
       <file file_name="../../../../../../Include/uEZPlatformAPI.h" />
     </folder>
-    <configuration Name="Debug-Trace CLANG" arm_compiler_variant="clang" />
+    <configuration
+      Name="Debug-Trace CLANG"
+      arm_compiler_variant="clang"
+      batch_build_configurations="Debug;Debug-Trace;Debug-Trace CLANG;Release;ReleaseOptForSize" />
   </project>
   <configuration
     Name="THUMB"
@@ -1314,5 +1328,6 @@
   <configuration Name="Release" inherited_configurations="Flash;THUMB" />
   <configuration
     Name="Debug-Trace CLANG"
+    batch_build_configurations="Debug;Debug-Trace;Debug-Trace CLANG;Release;ReleaseOptForSize"
     inherited_configurations="Flash;THUMB" />
 </solution>

@@ -34,7 +34,7 @@
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_USBHost.h>
 
 #warning "Remove"
-#include "IAR/include/CMSIS/LPC43xx.h"
+#include "CMSIS/LPC43xx.h"
 
 /*---------------------------------------------------------------------------*
  * Regions:

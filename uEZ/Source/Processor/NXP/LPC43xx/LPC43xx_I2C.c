@@ -190,7 +190,7 @@ void ILPC43xx_I2CSetSpeed(LPC_I2Cn_Type *aRegs, TUInt16 aSpeed)
     if (aSpeed == 400){
     	// Set 46%/54% duty cycle to satisfy 1.3us low pulse width requirement for fast mode
     	aRegs->SCLL = ((v / 2) + 51);
-    	aRegs->SCLH = ((v / 2) - 59);
+    	aRegs->SCLH = ((v / 2) - 56);
     } else if (aSpeed == 1000){
     	// Set 46%/54% duty cycle to satisfy 0.5us low pulse width requirement for fast mode plus, currently untested
     	aRegs->SCLL = ((v / 2) + 8);

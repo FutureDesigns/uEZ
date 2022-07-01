@@ -250,18 +250,19 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
     G_PeripheralFrequency = G_ProcessorFrequency;
 
     if(aFreq->iPLL1Frequency > 102000000){
-        LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (1<<2);
+        LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (1<<2); //Divide by 2
     } else {
         LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (0<<2);
     }
 
     //Divder A is set to use USB PLL
-    LPC_CGU->IDIVA_CTRL = (7<<24) | (1<<11) | (0<<2);
-    //Divider B is set to produce a 40MHz clock to be used by the SD Card interface
-    LPC_CGU->IDIVB_CTRL = (0x0C<<24) | (1<<11) | (0xB<<2);
+    LPC_CGU->IDIVA_CTRL = (7<<24) | (1<<11) | (3<<2); //Produce a 120MHz clock on DIVA
+
+    //LPC_CGU->IDIVB_CTRL = (0x0C<<24) | (1<<11) | (2<<2);//Produce a 40MHZ clock on DIVB
+    LPC_CGU->IDIVB_CTRL = 1;//Power down
 
     LPC_CGU->IDIVD_CTRL = (1<<24); //DIV D setup for USB 1 60MHz if needed.
-    LPC_CGU->IDIVE_CTRL = (9<<24) | (1<<11) | (4<<2);
+    LPC_CGU->IDIVE_CTRL = 1;//Power down
 
     //SPIFI clock to use Divider C
     LPC_CGU->BASE_SPIFI_CLK = (0xE<<24) | (1<<11);

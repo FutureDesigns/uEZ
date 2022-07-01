@@ -222,7 +222,7 @@ void YourAppMode(const T_choice *aChoice)
 {
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif	
 	G_crash = 1;
@@ -264,7 +264,7 @@ void YourAppMode(const T_choice *aChoice)
 #endif
 
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
 	G_crash = 4;
@@ -296,7 +296,7 @@ void YourAppMode(const T_choice *aChoice)
 			UEZTSClose(ts, queue);
 		}
 		G_crash = 9;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	

@@ -1,0 +1,124 @@
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__          = 0x00000000;
+define symbol __ICFEDIT_intvec_end__            = 0x000003FF;
+
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__      = 0x00000400;
+define symbol __ICFEDIT_region_ROM_end__        = 0x0007FFFF;
+define symbol __ICFEDIT_region_RAM_start__      = 0xA0700000;
+define symbol __ICFEDIT_region_RAM_end__        = 0xA07FFFFF;
+//Testing pre-SDRAM setup
+//define symbol __ICFEDIT_region_RAM_start__      = 0x20000000;
+//define symbol __ICFEDIT_region_RAM_end__        = 0x2001FFFF;//SRAM0 and SRAM1 64Kb + 64KB
+
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__           = 0x400;
+define symbol __ICFEDIT_size_svcstack__         = 0x10;
+define symbol __ICFEDIT_size_irqstack__         = 0x100;
+define symbol __ICFEDIT_size_fiqstack__         = 0x100;
+define symbol __ICFEDIT_size_undstack__         = 0x10;
+define symbol __ICFEDIT_size_abtstack__         = 0x10;
+define symbol __ICFEDIT_size_heap__             = 0x10000; //64kB
+/**** End of ICF editor section. ###ICF###*/
+
+
+/*-- uEZ Defines: -----------------------------------------------------------*/
+/* USe the SRAM for the system stack and the kernel data. */
+define symbol IRAM_start            = 0x20020000;//32kB
+define symbol IRAM_end              = 0x20027FFF;
+//define symbol IRAM_start            = 0x20000000;//Full IRam Range, 160kB
+//define symbol IRAM_end              = 0x20027FFF;
+define symbol ExternalFlash_start   = 0x80000000;
+define symbol ExternalFlash_end     = 0x807FFFFF;
+define symbol SRAMX_start           = 0x40000000;//32KB
+define symbol SRAMX_end             = 0x4000FFFF;
+define symbol USB_start             = 0x40100000; //8kB
+define symbol USB_end               = 0x40101FFF;
+
+/*-- Sizes: -----------------------------------------------------------------*/
+
+/* This must match the number of implemented vectors * 4 and be padded to an 8
+byte boundary (check the mapfile to ensure that the kernel function region is 
+correctly occupying the first 8K region of flash). There does not seem to be any 
+way of dynamically determining the size of the vector table section at link time, 
+hence this direct definition. */
+define symbol __size_vectors__              = 0x130;
+
+/*-- Memory and Regions: ----------------------------------------------------*/
+define memory mem with size         = 4G;
+define region ROM_region            = mem:[from __ICFEDIT_intvec_start__ to __ICFEDIT_intvec_end__]
+                                         |[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region RAM_region            = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
+define region IRAM_region           = mem:[from IRAM_start to IRAM_end];
+define region ExternalFlash_region  = mem:[from ExternalFlash_start   to ExternalFlash_end];
+define region SRAMX_region          = mem:[from SRAMX_start to SRAMX_end];
+define region USB_region            = mem:[from USB_start to USB_end];
+
+/*-- Blocks: ----------------------------------------------------------------*/
+define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+define block SVC_STACK with alignment = 8, size = __ICFEDIT_size_svcstack__ { };
+define block IRQ_STACK with alignment = 8, size = __ICFEDIT_size_irqstack__ { };
+define block FIQ_STACK with alignment = 8, size = __ICFEDIT_size_fiqstack__ { };
+define block UND_STACK with alignment = 8, size = __ICFEDIT_size_undstack__ { };
+define block ABT_STACK with alignment = 8, size = __ICFEDIT_size_abtstack__ { };
+define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
+
+/*-- Placment Commands (General): -------------------------------------------*/
+initialize by copy { readwrite };
+do not initialize  { section .noinit };
+
+/* Define a block for the kernel's functions.  - __size_vectors__ because the 
+first part of the 8K is taken by the interrupt vectors. */
+//define block __kernel_functions_block__ with alignment = 8, 
+//    size = 0x2000 - __size_vectors__ { section __kernel_functions__ };
+
+/* Define a block for the kernel's data. */
+define block __kernel_data_block__ with alignment = 0x400, size = 0x400 { section __kernel_data__ };
+
+/* Place the interrupt vectors at the required address, followed by the kernel's
+functions. */
+place at address mem:__ICFEDIT_intvec_start__ { 
+    readonly section .intvec, 
+    //block __kernel_functions_block__ 
+};
+
+place in ROM_region   { readonly };
+
+place in RAM_region { 
+    readwrite,
+    block SVC_STACK, 
+    block IRQ_STACK, 
+    block FIQ_STACK,
+    block UND_STACK, 
+    block ABT_STACK, 
+    block HEAP
+};
+
+/* Place the main stack at the start of IRAM, followed by the kernel's data. */
+place at address mem:IRAM_start  { 
+    block CSTACK, 
+    block __kernel_data_block__, 
+    rw object LPC546xx_PLL.o,
+    rw object LPC546xx_HALInit.o
+};
+
+//place in ExternalFlash_region   { readonly object UDCImages.o};
+
+place in SRAMX_region {
+    readwrite section .emacmem,
+    readwrite section .mcimem,
+};
+
+place in USB_region {
+    readwrite section .usbhostmem,
+};
+
+/*-- Exports: ---------------------------------------------------------------*/
+/* Export symbols required by c code. */
+export symbol __ICFEDIT_intvec_start__;
+export symbol __ICFEDIT_size_cstack__;
+export symbol __ICFEDIT_region_ROM_start__;
+export symbol __ICFEDIT_region_ROM_end__;
+
+
+

@@ -65,7 +65,7 @@ typedef struct {
     T_uezSemaphore iVSyncSem;
     T_uezDevice itimer;
     T_uezTimerCallback icallback;
-    TBool itimerDone;
+    volatile TBool itimerDone;
 } T_LQ043T1DG28Workspace;
 
 typedef struct {
@@ -567,10 +567,10 @@ static T_uezError LCD_LQ043T1DG28_Open(void *aW)
   TUInt32 i;
   
   p->icallback.iTimer = p->itimer; // Setup callback information for itimer
+	p->icallback.iData = p;
   p->icallback.iMatchRegister = 1;
   p->icallback.iTriggerSem = 0;
   p->icallback.iCallback = LCD_LQ043T1DG28_TimerCallback;
-  p->icallback.iData = p;
   
   p->aNumOpen++;
   if (p->aNumOpen == 1) {

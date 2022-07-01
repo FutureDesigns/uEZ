@@ -295,7 +295,7 @@ void TempMode(const T_choice *aChoice)
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
     static T_timeDateWorkspace *G_ws = NULL;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
@@ -332,7 +332,7 @@ void TempMode(const T_choice *aChoice)
         UEZQueueSetName(queue, "TempMode", "\0");
 #endif
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
             UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
             // Open up the touchscreen and pass in the queue to receive events
@@ -352,7 +352,7 @@ void TempMode(const T_choice *aChoice)
                 }
                 UEZTSClose(ts, queue);
             }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
             UEZKeypadClose(keypadDevice, &queue);
 #endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	

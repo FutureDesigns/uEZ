@@ -57,6 +57,9 @@
 *---------------------------------------------------------------------------*/
 extern T_uezTask G_mainTask;
 
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+static TBool G_OnBoardUSBIsHost = EFalse;
+#endif
 /*---------------------------------------------------------------------------*
 * Task:  main
 *---------------------------------------------------------------------------*
@@ -89,7 +92,9 @@ int MainTask(void)
     if (UEZDeviceTableIsRegistered("USBDevice"))
         USBMSDriveInitialize(&usbMSDiskCallbacks, 0, "MS1");
 #else
-    USBMSDriveInitialize(&usbMSDiskCallbacks, 0, "MS1", 0, 1);
+    if(!G_OnBoardUSBIsHost){
+        USBMSDriveInitialize(&usbMSDiskCallbacks, 0, "MS1", 0, 1);
+    }
 #endif
 #endif
 
@@ -192,6 +197,9 @@ void uEZPlatformStartup_EXP_BRKOUT()
     } else {
         #if UEZ_ENABLE_USB_HOST_STACK
             UEZPlatform_USBHost_PortB_Require();
+        #if(UEZ_PROCESSOR == NXP_LPC4357)
+            G_OnBoardUSBIsHost = ETrue;
+        #endif
             UEZPlatform_USBFlash_Drive_Require(0);
         #endif
     }
@@ -229,8 +237,6 @@ void uEZPlatformStartup_NO_EXP()
 
     UEZPlatform_Timer2_Require();
     UEZPlatform_DAC0_Require();
-    UEZPlatform_SDCard_Drive_Require(1);
-
 
 #if USB_PORT_B_HOST_DETECT_ENABLED
     usbIsDevice = UEZPlatform_Host_Port_B_Detect();
@@ -252,6 +258,9 @@ void uEZPlatformStartup_NO_EXP()
     } else {
         #if UEZ_ENABLE_USB_HOST_STACK
             UEZPlatform_USBHost_PortB_Require();
+        #if(UEZ_PROCESSOR == NXP_LPC4357)
+            G_OnBoardUSBIsHost = ETrue;
+        #endif
             UEZPlatform_USBFlash_Drive_Require(0);
         #endif
     }
@@ -267,6 +276,8 @@ void uEZPlatformStartup_NO_EXP()
     #if UEZ_ENABLE_WIRELESS_NETWORK
         UEZPlatform_WirelessNetwork0_Require();
     #endif
+
+    UEZPlatform_SDCard_Drive_Require(1);
 }
 
 /*---------------------------------------------------------------------------*
@@ -294,6 +305,10 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     #else
         uEZPlatformStartup_NO_EXP();
     #endif
+
+    #if UEZ_ENABLE_BUTTON_BOARD
+        UEZPlatform_ButtonBoard_Require();
+	#endif
 
     SUIInitialize(SIMPLEUI_DOUBLE_SIZED_ICONS, EFalse, EFalse); // SWIM not flipped
 

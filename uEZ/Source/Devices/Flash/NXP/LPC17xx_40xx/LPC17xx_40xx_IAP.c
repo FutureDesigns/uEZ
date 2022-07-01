@@ -736,7 +736,7 @@ T_uezError Flash_NXP_LPC17xx_40xx_ChipErase(void *aWorkspace)
 {
     T_Flash_NXP_LPC17xx_40xx_Workspace *p =
         (T_Flash_NXP_LPC17xx_40xx_Workspace *)aWorkspace;
-    T_uezError error;
+    T_uezError error = UEZ_ERROR_NONE;
     TUInt32 sector;
 
     // Prepare the sector for erase

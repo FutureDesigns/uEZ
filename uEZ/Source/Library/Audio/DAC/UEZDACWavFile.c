@@ -33,7 +33,7 @@
 #include <uEZProcessor.h>
 #include <uEZAudioAmp.h>
 #include <uEZFile.h>
-#include <UEZRTOS.h>
+#include <uEZRTOS.h>
 #include "UEZDACWAVFile.h"
 #include <uEZPlatform.h>
 #include <UEZAudioMixer.h>

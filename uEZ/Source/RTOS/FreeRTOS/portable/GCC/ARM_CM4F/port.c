@@ -438,9 +438,13 @@ __attribute__(( naked )) uint32_t ulPortSetInterruptMask( void )
 		:: "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY ) : "r0", "r1"	\
 	);
 
+#if (COMPILER_TYPE==RowleyARM)
+	
+#else
 	/* This return will not be reached but is necessary to prevent compiler
 	warnings. */
 	return 0;
+#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -453,8 +457,12 @@ __attribute__(( naked )) void vPortClearInterruptMask( uint32_t ulNewMaskValue )
 		:::"r0"														\
 	);
 
+#if (COMPILER_TYPE==RowleyARM)
+	
+#else
 	/* Just to avoid compiler warnings. */
 	( void ) ulNewMaskValue;
+#endif
 }
 /*-----------------------------------------------------------*/
 

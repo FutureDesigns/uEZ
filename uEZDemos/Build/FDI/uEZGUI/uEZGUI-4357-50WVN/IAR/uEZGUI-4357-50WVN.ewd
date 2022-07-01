@@ -57,11 +57,11 @@
         </option>
         <option>
           <name>CExtraOptionsCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CExtraOptions</name>
-          <state>--jlink_script_file=$PROJ_DIR$\Reset.JLinkScript</state>
+          <state></state>
         </option>
         <option>
           <name>CFpuProcessor</name>
@@ -93,7 +93,7 @@
         </option>
         <option>
           <name>UseFlashLoader</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CLowLevel</name>
@@ -141,7 +141,7 @@
         </option>
         <option>
           <name>OverrideDefFlashBoard</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCImagesOffset1</name>
@@ -3225,7 +3225,7 @@
         </option>
         <option>
           <name>CExtraOptions</name>
-          <state>--jlink_script_file=$PROJ_DIR$\Reset.JLinkScript</state>
+          <state></state>
         </option>
         <option>
           <name>CFpuProcessor</name>

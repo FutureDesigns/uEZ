@@ -886,7 +886,7 @@ tcp_seg_copy(struct tcp_seg *seg)
 static err_t
 tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
 {
-  arg = arg;
+  arg = (void*) arg;
   if (p != NULL) {
     pbuf_free(p);
   } else if (err == ERR_OK) {

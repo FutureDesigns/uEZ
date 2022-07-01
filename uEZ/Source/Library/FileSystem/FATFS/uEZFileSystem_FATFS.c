@@ -323,7 +323,7 @@ T_uezError FS_FATFS_Open(
         *aFileHandle = fileno;
         if (aFlags == FILE_FLAG_APPEND) {
             // Seek the end of the file
-            f_lseek(&p_file->iFile, p_file->iFile.fsize);
+            f_lseek(&p_file->iFile, f_size(&p_file->iFile));
         }
     } else {
         // Not good, release the handle immediately
@@ -396,7 +396,7 @@ T_uezError FS_FATFS_OpenReadOnly(
         *aFileHandle = fileno;
         if (aFlags == FILE_FLAG_APPEND) {
             // Seek the end of the file
-            f_lseek(&p_file->iFile, p_file->iFile.fsize);
+            f_lseek(&p_file->iFile, f_size(&p_file->iFile));
         }
     } else {
         // Not good, release the handle immediately
@@ -923,7 +923,7 @@ T_uezError FS_FATFS_GetLength(
         return UEZ_ERROR_HANDLE_INVALID;
 
     IGrab(p);
-    *aLength = p_file->iFile.fsize;
+    *aLength = f_size(&p_file->iFile);
     IRelease(p);
 
     return IFATFS_ConvertResultCodeToErrorCode(res);
@@ -1281,7 +1281,7 @@ T_uezError FileSystem_FATFS_GetVolumeInfo(
     res = f_getfree(aPath, (DWORD *)&aInfo->iNumClustersFree, &p_fs);
     if (res == FR_OK) {
         // Get the number of clusters total
-        aInfo->iNumClustersTotal = (p_fs->max_clust - 1);
+        aInfo->iNumClustersTotal = (p_fs->n_fatent - 2);
 
         // Report the sectors per cluster, and the bytes per sector
         aInfo->iSectorsPerCluster = p_fs->csize;

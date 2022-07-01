@@ -68,8 +68,10 @@
 #include <Source/Devices/EEPROM/NXP/LPC17xx_40xx/EEPROM_NXP_LPC17xx_40xx.h>
 #include <Source/Devices/Flash/Spansion/S29GL/Flash_S29GL064N90_16bit.h>
 #include <Source/Devices/GPDMA/Generic/Generic_GPDMA.h>
+#include <Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
+#include <Source/Devices/Keypad/GPIO/Keypad_Generic_GPIO.h>
 #if UEZ_ENABLE_I2S_AUDIO
 #include <Source/Devices/I2S/Generic/Generic_I2S.h>
 #endif
@@ -1835,6 +1837,34 @@ void UEZPlatform_I2S_Require(void)
     Generic_I2S_Create("I2S", "I2S");
 }
 #endif
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_ButtonBoard_Require
+ *---------------------------------------------------------------------------*/
+/**
+ *  Setup the I2C GPIO drivers for talking to the button board
+ */
+/*---------------------------------------------------------------------------*/
+void UEZPlatform_ButtonBoard_Require(void)
+{
+    static const T_GPIOKeypadAssignment keyAssignment[] = {
+        { 0, KEY_ENTER },
+        { 1, KEY_ARROW_LEFT },
+        { 2, KEY_ARROW_RIGHT },
+        { 3, KEY_ARROW_DOWN },
+        { 4, KEY_ARROW_UP },
+        { 0, 0 },
+    };
+
+    DEVICE_CREATE_ONCE();
+    UEZPlatform_I2C0_Require();
+    GPIO_PCF8574T_Create("GPIO:PCF8574T", UEZ_GPIO_PORT_EXT1, "I2C0", 0x48>>1);
+    Keypad_Generic_GPIO_Create("BBKeypad", UEZ_GPIO_PORT_EXT1, keyAssignment, 5,
+        KEYPAD_LOW_TRUE_SIGNALS, 
+        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 7), 
+        UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6));
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformInit
  *---------------------------------------------------------------------------*

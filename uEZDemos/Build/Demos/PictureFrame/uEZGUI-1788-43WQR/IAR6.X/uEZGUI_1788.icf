@@ -73,7 +73,7 @@ place at address mem:__ICFEDIT_intvec_start__ { readonly section .intvec, block 
 define block __kernel_data_block__ with alignment = 0x400, size = 0x400 { section __kernel_data__ };
 
 /* Place the main stack at the start of IRAM, followed by the kernel's data. */
-place at address mem:__ICFEDIT_region_IRAM_start__  { block CSTACK, block __kernel_data_block__, rw object LPC1788_PLL.o };
+place at address mem:__ICFEDIT_region_IRAM_start__  { block CSTACK, block __kernel_data_block__, rw object LPC17xx_40xx_PLL.o };
 
 place in ROM_region   { readonly };
 place in NORFlash_region   { readonly object UDCImages.o};

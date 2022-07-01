@@ -129,14 +129,14 @@ static int IUpdate(int aUnitAddress)
         activity = 0;
     } else {
         if ((USB_HostState[core] == HOST_STATE_Configured) && (p->iIsConnected == EFalse)) {
-            printf("MS%d Connected\r\n", core);
+            //printf("MS%d Connected\r\n", core);
             p->iIsConnected = ETrue;
             if (p->iCallbacks.iDriveConnected)
                 p->iCallbacks.iDriveConnected(p->iCallbackWorkspace);
 
             activity = 1;
         } else if ((USB_HostState[core] == HOST_STATE_Unattached) && (p->iIsConnected == ETrue)) {
-            printf("MS%d Disconnected\r\n", core);
+            //printf("MS%d Disconnected\r\n", core);
             p->iIsConnected = EFalse;
             // Reset the structure
             memcpy(p->hDisk, &FlashDisk_MS_Interface, sizeof(*p->hDisk));
@@ -236,7 +236,7 @@ static T_uezError MassStorage_LPCUSBLib_Init(void *aWorkspace, TUInt32 aAddress)
         return UEZ_ERROR_NOT_AVAILABLE;
 
     // Get the disk capacity
-    printf("MS%d Waiting for ready...", p->iUnitAddress);
+    //printf("MS%d Waiting for ready...", p->iUnitAddress);
     for (;; ) {
         uint8_t ErrorCode = MS_Host_TestUnitReady(hDisk, 0);
 
@@ -246,20 +246,20 @@ static T_uezError MassStorage_LPCUSBLib_Init(void *aWorkspace, TUInt32 aAddress)
 
         /* Check if an error other than a logical command error (device busy) received */
         if (ErrorCode != MS_ERROR_LOGICAL_CMD_FAILED) {
-            printf("Failed\r\n");
+            //printf("Failed\r\n");
             USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 0);
             return UEZ_ERROR_NOT_AVAILABLE;
         }
     }
-    printf("Done.\r\n");
+    //printf("Done.\r\n");
 
     if (MS_Host_ReadDeviceCapacity(hDisk, 0, &p->iDiskCapacity)) {
-        printf("Error retrieving device capacity.\r\n");
+        //printf("Error retrieving device capacity.\r\n");
         USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 0);
         return UEZ_ERROR_NOT_AVAILABLE;
     }
 
-    printf(("%lu blocks of %lu bytes.\r\n"), p->iDiskCapacity.Blocks, p->iDiskCapacity.BlockSize);
+    //printf(("%lu blocks of %lu bytes.\r\n"), p->iDiskCapacity.Blocks, p->iDiskCapacity.BlockSize);
 
     p->iInitPerformed = ETrue;
 
@@ -335,7 +335,7 @@ static T_uezError MassStorage_LPCUSBLib_Read(
     errorCode = MS_Host_ReadDeviceBlocks(hDisk, 0, aStart, aNumBlocks, p->iDiskCapacity.BlockSize, aBuffer);
 
     if (errorCode) {
-        printf("Error reading device block.\r\n");
+        //printf("Error reading device block.\r\n");
         USB_Host_SetDeviceConfiguration(FlashDisk_MS_Interface.Config.PortNumber, 0);
         IRelease();
         return HostErrorToUEZ(errorCode);
@@ -374,7 +374,7 @@ static T_uezError MassStorage_LPCUSBLib_Write(
     errorCode = MS_Host_WriteDeviceBlocks(hDisk, 0, aStart, aNumBlocks, p->iDiskCapacity.BlockSize, aBuffer);
 
     if (errorCode) {
-        printf("Error writing device block.\r\n");
+        //printf("Error writing device block.\r\n");
         IRelease();
         return HostErrorToUEZ(errorCode);
     }
@@ -572,33 +572,33 @@ static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 
     if (USB_Host_GetDeviceConfigDescriptor(corenum, 1, &ConfigDescriptorSize, ConfigDescriptorData,
                                            sizeof(ConfigDescriptorData)) != HOST_GETCONFIG_Successful) {
-        printf("Error Retrieving Configuration Descriptor.\r\n");
+        //printf("Error Retrieving Configuration Descriptor.\r\n");
         return;
     }
 
     hDisk->Config.PortNumber = corenum;
     if (MS_Host_ConfigurePipes(hDisk,
                                ConfigDescriptorSize, ConfigDescriptorData) != MS_ENUMERROR_NoError) {
-        printf("Attached Device Not a Valid Mass Storage Device.\r\n");
+        //printf("Attached Device Not a Valid Mass Storage Device.\r\n");
         return;
     }
 
     if (USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 1) != HOST_SENDCONTROL_Successful) {
-        printf("Error Setting Device Configuration.\r\n");
+        //printf("Error Setting Device Configuration.\r\n");
         return;
     }
 
     uint8_t MaxLUNIndex;
     if (MS_Host_GetMaxLUN(hDisk, &MaxLUNIndex)) {
-        printf("Error retrieving max LUN index.\r\n");
+        //printf("Error retrieving max LUN index.\r\n");
         USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 0);
         return;
     }
 
-    printf(("Total LUNs: %d - Using first LUN in device.\r\n"), (MaxLUNIndex + 1));
+    //printf(("Total LUNs: %d - Using first LUN in device.\r\n"), (MaxLUNIndex + 1));
 
     if (MS_Host_ResetMSInterface(hDisk)) {
-        printf("Error resetting Mass Storage interface.\r\n");
+        //printf("Error resetting Mass Storage interface.\r\n");
         USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 0);
         return;
     }
@@ -618,14 +618,14 @@ static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 
     SCSI_Inquiry_Response_t InquiryData;
     if (MS_Host_GetInquiryData(hDisk, 0, &InquiryData)) {
-        printf("Error retrieving device Inquiry data.\r\n");
+        //printf("Error retrieving device Inquiry data.\r\n");
         USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 0);
         return;
     }
 
     /* printf("Vendor \"%.8s\", Product \"%.16s\"\r\n", InquiryData.VendorID, InquiryData.ProductID); */
 
-    printf("Mass Storage Device Enumerated.\r\n");
+    //printf("Mass Storage Device Enumerated.\r\n");
 }
 
 

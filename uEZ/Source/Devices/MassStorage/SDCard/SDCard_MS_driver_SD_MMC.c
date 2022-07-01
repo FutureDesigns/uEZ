@@ -411,7 +411,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
         return UEZ_ERROR_DEVICE_NOT_FOUND;
 
     /* set high speed for the card as 20MHz */
-    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_CLOCK);
+    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);
     status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_IDLE, 0, MCI_INT_CMD_DONE, response);
 
     while (state < 100) {
@@ -445,7 +445,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
                 ++state;
 
                 /* for MMC cards high speed is 20MHz */
-                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_CLOCK);
+                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);
                 break;
 
             case 1:
@@ -681,6 +681,8 @@ static T_uezError SDCard_MS_SD_MMC_Read(
 
     IGrab();
 
+    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);
+
     while (1) {
         /* Check parameter, count must be 1-127 */
         /* TODO: We should make this routine do sets of 127 blocks when larger */
@@ -777,6 +779,8 @@ static T_uezError SDCard_MS_SD_MMC_Write(
     TUInt32 response[4];
 
     IGrab();
+
+    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_WRITE_CLOCK);
     while (1) {
         /* Check parameter */
         if (aNumBlocks < 1 || aNumBlocks > 127) {

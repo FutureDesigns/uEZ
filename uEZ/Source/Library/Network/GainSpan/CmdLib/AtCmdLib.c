@@ -1571,7 +1571,7 @@ static void AtLibGs_ParseWPSResult(AtLibGs_WPSResult *result)
     char * tokens[2];
 
     // Clear the result
-    memset(result, 0, sizeof(result));
+    memset((uint8_t *) result, 0, sizeof(result));
 
     // Parse the items and stuff them into the structure
     if (AtLibGs_ParseIntoLines(MRBuffer, lines, 3) >= 3) {

@@ -1062,10 +1062,19 @@ T_uezError UEZQueueGetCount(T_uezQueue aQueue, TUInt32 *aCount)
     return error;
 }
 
-
+#include <UEZProcessor.h>
 TUInt32 UEZTickCounterGet(void)
 {
+#if (UEZ_PROCESSOR_CORE_TYPE == CORE_TYPE_CORTEX_M4 || UEZ_PROCESSOR_CORE_TYPE == CORE_TYPE_CORTEX_M3)
+    //Check to see if being called from interrupt and call the appropriate function
+    if((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) == 0){
+        return xTaskGetTickCount();
+    } else {
+        return xTaskGetTickCountFromISR();
+    }
+#else
     return xTaskGetTickCount();
+#endif
 }
 
 TUInt32 UEZTickCounterGetDelta(TUInt32 aStart)

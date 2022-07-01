@@ -34,13 +34,15 @@
  *  #include <uEZ.h>
  *  #include <uEZPWM.h>
  *
- *  TUInt32 PWMSet(T_uezTask aMyTask, void *aParams)
+ *  TUInt32 PWMSet()
  *  {
  *      T_uezDevice PWM;
- *      if (UEZPWMOpen("PWM0", &PWM) == UEZ_ERROR_NONE) {
- *	 
- *          UEZPWMEnableSingleEdgeOutput(PWM, 1);
+ *      TUInt32 masterTickCount = (PROCESSOR_OSCILLATOR_FREQUENCY / 50000);//50KHz
  *
+ *      if (UEZPWMOpen("PWM0", &PWM) == UEZ_ERROR_NONE) {
+ *          UEZPWMSetMaster(PWM, 0, masterTickCount);
+ *          UEZPWMSetMatchReg(PWM, 2, masterTickCount / 2);//Half Duty Cycle
+ *          UEZPWMEnableSingleEdgeOutput(PWM, 2);
  *      } else {
  *          // an error occurred opening the PWM
  *      }
@@ -163,9 +165,11 @@ T_uezError UEZPWMClose(T_uezDevice aDevice)
  *  #include <uEZPWM.h>
  *
  *  T_uezDevice PWM;
+ *  TUInt32 masterTickCount = (PROCESSOR_OSCILLATOR_FREQUENCY / 50000);//50KHz
+ *
  *  if (UEZPWMOpen("PWM0", &PWM) == UEZ_ERROR_NONE) {
  *	 
- *      UEZPWMSetMaster(PWM, 1, 1000);
+ *      UEZPWMSetMaster(PWM, 0, masterTickCount);
  *
  *  } else {
  *      // an error occurred opening the PWM
@@ -210,9 +214,11 @@ T_uezError UEZPWMSetMaster(
  *  #include <uEZPWM.h>
  *
  *  T_uezDevice PWM;
+ *  TUInt32 masterTickCount = (PROCESSOR_OSCILLATOR_FREQUENCY / 50000);//50KHz
+ *
  *  if (UEZPWMOpen("PWM0", &PWM) == UEZ_ERROR_NONE) {
  *	 
- *      UEZPWMSetMatchReg(PWM, 1, 1000);
+ *      UEZPWMSetMatchReg(PWM, 1, masterTickCount / 2);//50% Duty Cycle
  *
  *  } else {
  *      // an error occurred opening the PWM

@@ -54,7 +54,7 @@ T_uezError BMPSaveScreen(const char *aFilename, T_pixelColor *aPixels)
     T_pixelColor *p_pixels;
     void *SUICallbackGetLCDBase(void);
 
-    const TUInt32 pixelRasterWidth = (3 * DISPLAY_WIDTH + 3) & (~3);
+    const TUInt32 pixelRasterWidth = (3 * UEZ_LCD_DISPLAY_WIDTH + 3) & (~3);
 
     p_pixels = aPixels;
 
@@ -65,7 +65,7 @@ T_uezError BMPSaveScreen(const char *aFilename, T_pixelColor *aPixels)
     header.iMagicNumber[0] = 'B';
     header.iMagicNumber[1] = 'M';
     header.iOffsetToPixels = sizeof(header) + sizeof(dib);
-    header.iSize = header.iOffsetToPixels + (pixelRasterWidth * DISPLAY_HEIGHT
+    header.iSize = header.iOffsetToPixels + (pixelRasterWidth * UEZ_LCD_DISPLAY_HEIGHT
             * 3);
     header.iUnused1 = 0;
     header.iUnused2 = 0;
@@ -76,12 +76,12 @@ T_uezError BMPSaveScreen(const char *aFilename, T_pixelColor *aPixels)
     }
 
     dib.iDIBHeaderSize = sizeof(dib);
-    dib.iBMPWidth = DISPLAY_WIDTH;
-    dib.iBMPHeight = DISPLAY_HEIGHT;
+    dib.iBMPWidth = UEZ_LCD_DISPLAY_WIDTH;
+    dib.iBMPHeight = UEZ_LCD_DISPLAY_HEIGHT;
     dib.iNumberColorPlanes = 1;
     dib.iBitsPerPlane = 24;
     dib.iPixelArrayCompression = 0; // no compression
-    dib.iSizePixelArray = (pixelRasterWidth * DISPLAY_HEIGHT * 3);
+    dib.iSizePixelArray = (pixelRasterWidth * UEZ_LCD_DISPLAY_HEIGHT * 3);
     dib.aHorizontalResolution = 2835;
     dib.aVerticalResolution = 2835;
     dib.iPaletteNumColors = 0; // no palette
@@ -92,17 +92,17 @@ T_uezError BMPSaveScreen(const char *aFilename, T_pixelColor *aPixels)
         return error;
     }
 
-    for (y = DISPLAY_HEIGHT - 1; y >= 0; y--) {
+    for (y = UEZ_LCD_DISPLAY_HEIGHT - 1; y >= 0; y--) {
         // Determine which line we are at
-        p = &p_pixels[y * DISPLAY_WIDTH];
+        p = &p_pixels[y * UEZ_LCD_DISPLAY_WIDTH];
         padCount = 0;
 
         // Output the RGB
-        for (x = 0; x < DISPLAY_WIDTH; x++) {
-            pixel = p[x];
-            rgb[2] = ((pixel >> 11) & 0x1F) << 3;
-            rgb[1] = ((pixel >> 5) & 0x3F) << 2;
-            rgb[0] = ((pixel >> 0) & 0x1F) << 3;
+        for (x = 0; x < UEZ_LCD_DISPLAY_WIDTH; x++) {
+            pixel = p[x];            
+            rgb[2] = ((pixel & 0x7C00) >> 10) << 3;	//rgb[2] = ((pixel >> 11) & 0x1F) << 3;
+            rgb[1] = ((pixel & 0x3E0) >> 5) << 3;	//rgb[1] = ((pixel >> 5) & 0x3F) << 2;
+            rgb[0] = ((pixel & 0x1F)) << 3;			//rgb[0] = ((pixel >> 0) & 0x1F) << 3;
             error = UEZFileWrite(file, rgb, 3, &numWritten);
             if (error) {
                 UEZFileClose(file);

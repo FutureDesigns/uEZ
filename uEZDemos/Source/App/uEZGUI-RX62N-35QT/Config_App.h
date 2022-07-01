@@ -146,12 +146,13 @@
 
 #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define LCD_FRAME_BUFFER    	0x08000000
-#define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define FRAMES_MEMORY           (FRAME_SIZE*5)
 #define MAX_NUM_FRAMES          (FRAMES_MEMORY / FRAME_SIZE)
 #define DEMO_RESERVE_FRAME      ((unsigned char *)(LCD_FRAME_BUFFER+FRAME_SIZE*5))
 #define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
 
+#define LCD_FRAMES_START        ((unsigned char *)LCD_FRAME_BUFFER)
+#define LCD_FRAMES_END          ((unsigned char *)((LCD_FRAME_BUFFER+FRAME_SIZE*6)-1))
 #define LOAD_SPACE              ((unsigned char *)(LCD_FRAME_BUFFER+FRAME_SIZE*6))
 
 #define SLIDESHOW_PREFETCH_AHEAD 10

@@ -17,6 +17,7 @@
     <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
+    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
   </MemorySegment>
   <MemorySegment name="$(RAM2_NAME:RAM2);$(RAM_NAME:RAM)" >
     <ProgramSection alignment="4" load="No" name=".data2_run" />

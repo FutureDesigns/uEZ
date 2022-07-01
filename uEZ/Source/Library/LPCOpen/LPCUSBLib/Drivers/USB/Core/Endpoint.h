@@ -405,7 +405,7 @@
 				uint8_t tem;
 				tem = Endpoint_Read_8(corenum);
 				tem = Endpoint_Read_8(corenum);
-				tem  = tem;
+				tem  = (uint8_t) tem;
 			}
 			
 			/**
@@ -517,7 +517,7 @@
 				tem = Endpoint_Read_8(corenum);
 				tem = Endpoint_Read_8(corenum);
 				tem = Endpoint_Read_8(corenum);
-				tem = tem;
+				tem = (uint8_t) tem;
 			}
 			
 			void Endpoint_GetSetupPackage(uint8_t corenum, uint8_t *pData);

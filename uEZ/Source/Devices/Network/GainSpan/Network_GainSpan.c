@@ -1289,7 +1289,7 @@ T_uezError Network_GainSpan_InfrastructureBringUp(void *aWorkspace)
 T_uezError Network_GainSpan_InfrastructureTakeDown(void *aWorkspace)
 {
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
-    T_uezError error;
+    T_uezError error = UEZ_ERROR_NONE;
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
     if (p->iNumUp == 1) {

@@ -53,7 +53,7 @@ extern "C" {
  * Constants:
  *-------------------------------------------------------------------------*/
 #ifndef FDICMD_MAX_LINE_LENGTH
-    #define FDICMD_MAX_LINE_LENGTH 78
+    #define FDICMD_MAX_LINE_LENGTH 256//78
 #endif
 #ifndef FDICMD_PRINTF_BUFFER_SIZE
     #define FDICMD_PRINTF_BUFFER_SIZE 512 // bytes in stack

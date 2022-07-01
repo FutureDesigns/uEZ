@@ -375,8 +375,8 @@
 #define SCU_EHS_FAST                (1 << 5) //EHS Slew Rate Slow or Fast
 #define SCU_EZI_DISABLE             (0 << 6) //EZI Enable/Disable Input Buffer
 #define SCU_EZI_ENABLE              (1 << 6) //EZI Enable/Disable Input Buffer
-#define SCU_ZIF_DISABLE             (0 << 7) //ZID Enable/Disable Glitch Filter
-#define SCU_ZIF_ENABLE              (1 << 7) //ZID Enable/Disable Glitch Filter
+#define SCU_ZIF_DISABLE             (1 << 7) //ZID Enable/Disable Glitch Filter
+#define SCU_ZIF_ENABLE              (0 << 7) //ZID Enable/Disable Glitch Filter
 #define SCU_EHD_NORMAL              (0 << 8) //EHD Normal/Medium/High/UltraHigh drive strength
 #define SCU_EHD_MEDIUM              (1 << 8) //EHD Normal/Medium/High/UltraHigh drive strength
 #define SCU_EHD_HIGH                (2 << 8) //EHD Normal/Medium/High/UltraHigh drive strength

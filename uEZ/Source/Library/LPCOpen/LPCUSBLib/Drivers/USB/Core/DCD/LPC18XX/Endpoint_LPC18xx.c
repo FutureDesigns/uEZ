@@ -233,7 +233,7 @@ void Endpoint_Streaming(uint8_t corenum, uint8_t *buffer, uint16_t packetsize,
 	STREAM_VAR_t * current_stream = &Stream_Variable[corenum];
 	DeviceTransferDescriptor *dStreamTD = dStreamTD_Tbl[corenum];
 	uint16_t cnt = 0;
-	dummypackets = dummypackets;
+	dummypackets = (uint16_t) dummypackets;
 	while ( USB_REG(corenum)->ENDPTSTAT & _BIT(EP_Physical2BitPosition(PhyEP) ) ) {	/* Endpoint is already primed */
 	}
 

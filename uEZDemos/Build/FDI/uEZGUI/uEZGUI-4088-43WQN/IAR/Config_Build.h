@@ -34,7 +34,7 @@
 
 // Expansion Options, set to 1 to enable an expansion board
 #define UEZGUI_EXPANSION_DEVKIT             0
-#define ENABLE_UEZ_BUTTON                   0
+#define UEZ_ENABLE_BUTTON_BOARD             0
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
 #define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS

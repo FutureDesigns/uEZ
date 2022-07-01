@@ -143,37 +143,32 @@
 #define DISPLAY_HEIGHT      UEZ_LCD_DISPLAY_HEIGHT
 
 #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
+
+#define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
+#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + 0x5DCFFF)
+#define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
+
 #if (COMPILER_TYPE==RowleyARM)
-    #if __ASSEMBLER__
-    #else
-        extern unsigned char __loadspace_start__;
-        extern unsigned char __loadspace_end__;
-        extern unsigned char __frames_start__;
-        extern unsigned char __frames_end__;
-        extern unsigned char __demoframe_start__;
-        extern unsigned char __demoframe_end__;
-    #endif
+#if __ASSEMBLER__
+#else
+extern unsigned char __loadspace_start__;
+extern unsigned char __loadspace_end__;
+extern unsigned char __frames_start__;
+extern unsigned char __frames_end__;
+extern unsigned char __demoframe_start__;
+extern unsigned char __demoframe_end__;
+#endif
 
-    #define LCD_FRAME_BUFFER        ((unsigned char *)&__frames_start__)
-    #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
-    #define FRAMES_MEMORY           ((&__frames_end__)-(&__frames_start__))
-    #define MAX_NUM_FRAMES          (FRAMES_MEMORY / FRAME_SIZE)
-    #define DEMO_RESERVE_FRAME      ((unsigned char *)&__demoframe_start__)
-    #define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
-
-    #define LOAD_SPACE              ((unsigned char *)&__loadspace_start__)
+#define LCD_FRAME_BUFFER        ((unsigned char *)&__frames_start__)
+#define FRAMES_MEMORY           ((&__frames_end__)-(&__frames_start__))
+#define MAX_NUM_FRAMES          (FRAMES_MEMORY / FRAME_SIZE)
+#define DEMO_RESERVE_FRAME      ((unsigned char *)&__demoframe_start__)
 
 #else
-    #define LCD_FRAMES_START    ((TUInt8 *)0xA0000000)
-    #define LCD_FRAMES_END      ((TUInt8 *)0xA05DCFFF)
-    #define LCD_FRAMES_SIZE     (LCD_FRAMES_END-LCD_FRAME_BUFFER)
-    // Use hard code location if we don't know what compiler is used
-    #define LOAD_SPACE ((unsigned char *)0xA05dd000)
-
-    #define LCD_FRAME_BUFFER        LCD_FRAMES_START
-    #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
-    #define FRAMES_MEMORY           LCD_FRAMES_SIZE
-    #define FRAME(n)                ((char *)(LCD_FRAME_BUFFER+FRAME_SIZE*(n)))
+	
+#define LCD_FRAME_BUFFER        LCD_FRAMES_START
+#define FRAMES_MEMORY           LCD_FRAMES_SIZE
+#define LCD_FRAMES_SIZE         (LCD_FRAMES_END-LCD_FRAME_BUFFER)
 #endif
 
 #define APP_ENABLE_HEARTBEAT_LED_ON       1

@@ -140,7 +140,11 @@
 #if defined (__CC_ARM)
 				#define ATTR_ERROR(Message)			   //__attribute__ (( error(Message) ))
 #else
-				#define ATTR_ERROR(Message)			   __attribute__ (( error(Message) ))
+#if (COMPILER_TYPE==RowleyARM)
+                                #define ATTR_ERROR(Message)			   //__attribute__ (( error(Message) )) // CLANG doesn't like this
+#else
+                                #define ATTR_ERROR(Message)			   __attribute__ (( error(Message) ))
+#endif
 #endif
 				#define ATTR_WARNING(Message)			   __attribute__ (( warning(Message) ))
 				#define ATTR_IAR_PACKED

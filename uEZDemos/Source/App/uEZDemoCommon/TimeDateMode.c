@@ -630,7 +630,7 @@ void TimeDateMode(const T_choice *aChoice)
     static T_timeDateWorkspace *G_ws = NULL;
     TUInt32 timeLastTouch = UEZTickCounterGet();
     TBool lastShowButtons;
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
 #ifdef NO_DYNAMIC_MEMORY_ALLOC	
@@ -668,7 +668,7 @@ void TimeDateMode(const T_choice *aChoice)
 #endif
 
 #endif
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadOpen("BBKeypad", &keypadDevice, &queue);
 #endif
         // Open up the touchscreen and pass in the queue to receive events
@@ -704,7 +704,7 @@ void TimeDateMode(const T_choice *aChoice)
             }
             UEZTSClose(ts, queue);
         }
-#if ENABLE_UEZ_BUTTON
+#if UEZ_ENABLE_BUTTON_BOARD
         UEZKeypadClose(keypadDevice, &queue);
 #endif
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	

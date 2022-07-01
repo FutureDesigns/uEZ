@@ -101,9 +101,8 @@ void Chip_USB1_Init(void)
 	Chip_Clock_SetDivider(CLK_IDIV_A, CLKIN_USBPLL, 4);
 	Chip_Clock_SetDivider(CLK_IDIV_D, CLKIN_IDIVA, 2);
 #else
-	//DIV A is setup in LPC43xx_PLL.c for use with SDCard Clock
-	Chip_Clock_SetDivider(CLK_IDIV_D, CLKIN_IDIVA, 4); //60MHZ
-	//Chip_Clock_SetDivider(CLK_IDIV_D, CLKIN_IDIVA, 8); //30MHZ
+	//DIV A is setup in LPC43xx_PLL.c for use with SDCard Clock (120MHz)
+	Chip_Clock_SetDivider(CLK_IDIV_D, CLKIN_IDIVA, 2); //60MHZ
 #endif
 	Chip_Clock_SetBaseClock(CLK_BASE_USB1, CLKIN_IDIVD, true, true);
 

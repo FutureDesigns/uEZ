@@ -307,7 +307,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
         error = UEZNetworkJoin(wired_network, "lwIP", 0, 5000);
 
     // Let the last messages through (debug only)
-    UEZTaskDelay(1000);
+    //UEZTaskDelay(1000);
 
     // Report the result
     if (error) {
@@ -346,7 +346,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
             error = UEZNetworkJoin(wireless_network, "uEZ", "fdifdifdiFDI", 5000);
 
         // Let the last messages through (debug only)
-        UEZTaskDelay(1000);
+        //UEZTaskDelay(1000);
     }
 
     // Report the result
