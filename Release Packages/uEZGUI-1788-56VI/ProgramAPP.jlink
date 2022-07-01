@@ -1,0 +1,8 @@
+exec device = LPC1788
+speed 4000
+rx 200
+h
+loadbin "uEZGUI-1788-56VI_IAR_APP.bin", 0
+rx 200
+g
+q

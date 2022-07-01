@@ -1,0 +1,8 @@
+h
+exec device = rx63n
+rx 500
+speed 2000
+loadbin "DK-TS-RX63N_HEW.bin", 0xfff80000
+r
+g
+q

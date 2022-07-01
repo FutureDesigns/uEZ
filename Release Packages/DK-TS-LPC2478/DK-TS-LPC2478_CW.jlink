@@ -1,0 +1,10 @@
+exec device = LPC2478
+speed 4000
+
+w4 0xE01FC040 1
+
+loadbin "DK-TS-LPC2478_CW.bin", 0
+
+rx 200
+g
+q

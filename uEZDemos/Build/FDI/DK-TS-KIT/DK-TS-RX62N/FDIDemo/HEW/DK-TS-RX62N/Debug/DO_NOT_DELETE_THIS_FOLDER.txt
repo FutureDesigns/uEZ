@@ -1,1 +1,0 @@
-HEW needs this folder to be present to compile!
