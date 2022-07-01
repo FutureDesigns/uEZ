@@ -43,7 +43,7 @@
 
 
 /* Initialize MD5 */
-int CRYPT_MD5_Initialize(CRYPT_MD5_CTX* md5)
+int32_t CRYPT_MD5_Initialize(CRYPT_MD5_CTX* md5)
 {
     typedef char md5_test[sizeof(CRYPT_MD5_CTX) >= sizeof(Md5) ? 1 : -1];
     (void)sizeof(md5_test);
@@ -58,8 +58,8 @@ int CRYPT_MD5_Initialize(CRYPT_MD5_CTX* md5)
 
 
 /* Add data to MD5 */
-int CRYPT_MD5_DataAdd(CRYPT_MD5_CTX* md5, const unsigned char* input,
-                      unsigned int sz)
+int32_t CRYPT_MD5_DataAdd(CRYPT_MD5_CTX* md5, const unsigned char* input,
+                      uint32_t sz)
 {
     if (md5 == NULL || input == NULL)
         return BAD_FUNC_ARG;
@@ -71,7 +71,7 @@ int CRYPT_MD5_DataAdd(CRYPT_MD5_CTX* md5, const unsigned char* input,
 
 
 /* Get MD5 Final into digest */
-int CRYPT_MD5_Finalize(CRYPT_MD5_CTX* md5, unsigned char* digest)
+int32_t CRYPT_MD5_Finalize(CRYPT_MD5_CTX* md5, unsigned char* digest)
 {
     if (md5 == NULL || digest == NULL)
         return BAD_FUNC_ARG;
@@ -83,7 +83,7 @@ int CRYPT_MD5_Finalize(CRYPT_MD5_CTX* md5, unsigned char* digest)
 
 
 /* Initialize SHA */
-int CRYPT_SHA_Initialize(CRYPT_SHA_CTX* sha)
+int32_t CRYPT_SHA_Initialize(CRYPT_SHA_CTX* sha)
 {
     typedef char sha_test[sizeof(CRYPT_SHA_CTX) >= sizeof(Sha) ? 1 : -1];
     (void)sizeof(sha_test);
@@ -96,8 +96,8 @@ int CRYPT_SHA_Initialize(CRYPT_SHA_CTX* sha)
 
 
 /* Add data to SHA */
-int CRYPT_SHA_DataAdd(CRYPT_SHA_CTX* sha, const unsigned char* input,
-                       unsigned int sz)
+int32_t CRYPT_SHA_DataAdd(CRYPT_SHA_CTX* sha, const unsigned char* input,
+                       uint32_t sz)
 {
     if (sha == NULL || input == NULL)
         return BAD_FUNC_ARG;
@@ -107,7 +107,7 @@ int CRYPT_SHA_DataAdd(CRYPT_SHA_CTX* sha, const unsigned char* input,
 
 
 /* Get SHA Final into digest */
-int CRYPT_SHA_Finalize(CRYPT_SHA_CTX* sha, unsigned char* digest)
+int32_t CRYPT_SHA_Finalize(CRYPT_SHA_CTX* sha, unsigned char* digest)
 {
     if (sha == NULL || digest == NULL)
         return BAD_FUNC_ARG;
@@ -117,7 +117,7 @@ int CRYPT_SHA_Finalize(CRYPT_SHA_CTX* sha, unsigned char* digest)
 
 
 /* Initialize SHA-256 */
-int CRYPT_SHA256_Initialize(CRYPT_SHA256_CTX* sha256)
+int32_t CRYPT_SHA256_Initialize(CRYPT_SHA256_CTX* sha256)
 {
     typedef char sha_test[sizeof(CRYPT_SHA256_CTX) >= sizeof(Sha256) ? 1 : -1];
     (void)sizeof(sha_test);
@@ -130,8 +130,8 @@ int CRYPT_SHA256_Initialize(CRYPT_SHA256_CTX* sha256)
 
 
 /* Add data to SHA-256 */
-int CRYPT_SHA256_DataAdd(CRYPT_SHA256_CTX* sha256, const unsigned char* input,
-                         unsigned int sz)
+int32_t CRYPT_SHA256_DataAdd(CRYPT_SHA256_CTX* sha256, const unsigned char* input,
+                         uint32_t sz)
 {
     if (sha256 == NULL || input == NULL)
         return BAD_FUNC_ARG;
@@ -141,7 +141,7 @@ int CRYPT_SHA256_DataAdd(CRYPT_SHA256_CTX* sha256, const unsigned char* input,
 
 
 /* Get SHA-256 Final into digest */
-int CRYPT_SHA256_Finalize(CRYPT_SHA256_CTX* sha256, unsigned char* digest)
+int32_t CRYPT_SHA256_Finalize(CRYPT_SHA256_CTX* sha256, unsigned char* digest)
 {
     if (sha256 == NULL || digest == NULL)
         return BAD_FUNC_ARG;
@@ -151,7 +151,7 @@ int CRYPT_SHA256_Finalize(CRYPT_SHA256_CTX* sha256, unsigned char* digest)
 
 
 /* Initialize SHA-384 */
-int CRYPT_SHA384_Initialize(CRYPT_SHA384_CTX* sha384)
+int32_t CRYPT_SHA384_Initialize(CRYPT_SHA384_CTX* sha384)
 {
     typedef char sha_test[sizeof(CRYPT_SHA384_CTX) >= sizeof(Sha384) ? 1 : -1];
     (void)sizeof(sha_test);
@@ -164,8 +164,8 @@ int CRYPT_SHA384_Initialize(CRYPT_SHA384_CTX* sha384)
 
 
 /* Add data to SHA-384 */
-int CRYPT_SHA384_DataAdd(CRYPT_SHA384_CTX* sha384, const unsigned char* input,
-                         unsigned int sz)
+int32_t CRYPT_SHA384_DataAdd(CRYPT_SHA384_CTX* sha384, const unsigned char* input,
+                         uint32_t sz)
 {
     if (sha384 == NULL || input == NULL)
         return BAD_FUNC_ARG;
@@ -175,7 +175,7 @@ int CRYPT_SHA384_DataAdd(CRYPT_SHA384_CTX* sha384, const unsigned char* input,
 
 
 /* Get SHA-384 Final into digest */
-int CRYPT_SHA384_Finalize(CRYPT_SHA384_CTX* sha384, unsigned char* digest)
+int32_t CRYPT_SHA384_Finalize(CRYPT_SHA384_CTX* sha384, unsigned char* digest)
 {
     if (sha384 == NULL || digest == NULL)
         return BAD_FUNC_ARG;
@@ -185,7 +185,7 @@ int CRYPT_SHA384_Finalize(CRYPT_SHA384_CTX* sha384, unsigned char* digest)
 
 
 /* Initialize SHA-512 */
-int CRYPT_SHA512_Initialize(CRYPT_SHA512_CTX* sha512)
+int32_t CRYPT_SHA512_Initialize(CRYPT_SHA512_CTX* sha512)
 {
     typedef char sha_test[sizeof(CRYPT_SHA512_CTX) >= sizeof(Sha512) ? 1 : -1];
     (void)sizeof(sha_test);
@@ -198,8 +198,8 @@ int CRYPT_SHA512_Initialize(CRYPT_SHA512_CTX* sha512)
 
 
 /* Add data to SHA-512 */
-int CRYPT_SHA512_DataAdd(CRYPT_SHA512_CTX* sha512, const unsigned char* input,
-                         unsigned int sz)
+int32_t CRYPT_SHA512_DataAdd(CRYPT_SHA512_CTX* sha512, const unsigned char* input,
+                         uint32_t sz)
 {
     if (sha512 == NULL || input == NULL)
         return BAD_FUNC_ARG;
@@ -209,7 +209,7 @@ int CRYPT_SHA512_DataAdd(CRYPT_SHA512_CTX* sha512, const unsigned char* input,
 
 
 /* Get SHA-512 Final into digest */
-int CRYPT_SHA512_Finalize(CRYPT_SHA512_CTX* sha512, unsigned char* digest)
+int32_t CRYPT_SHA512_Finalize(CRYPT_SHA512_CTX* sha512, unsigned char* digest)
 {
     if (sha512 == NULL || digest == NULL)
         return BAD_FUNC_ARG;
@@ -219,8 +219,8 @@ int CRYPT_SHA512_Finalize(CRYPT_SHA512_CTX* sha512, unsigned char* digest)
 
 
 /* Set HMAC key with type */
-int CRYPT_HMAC_SetKey(CRYPT_HMAC_CTX* hmac, int type, const unsigned char* key,
-                      unsigned int sz)
+int32_t CRYPT_HMAC_SetKey(CRYPT_HMAC_CTX* hmac, int32_t type, const unsigned char* key,
+                      uint32_t sz)
 {
     typedef char hmac_test[sizeof(CRYPT_HMAC_CTX) >= sizeof(Hmac) ? 1 : -1];
     (void)sizeof(hmac_test);
@@ -237,8 +237,8 @@ int CRYPT_HMAC_SetKey(CRYPT_HMAC_CTX* hmac, int type, const unsigned char* key,
 }
 
 
-int CRYPT_HMAC_DataAdd(CRYPT_HMAC_CTX* hmac, const unsigned char* input,
-                       unsigned int sz)
+int32_t CRYPT_HMAC_DataAdd(CRYPT_HMAC_CTX* hmac, const unsigned char* input,
+                       uint32_t sz)
 {
     if (hmac == NULL || input == NULL)
         return BAD_FUNC_ARG;
@@ -248,7 +248,7 @@ int CRYPT_HMAC_DataAdd(CRYPT_HMAC_CTX* hmac, const unsigned char* input,
 
 
 /* Get HMAC Final into digest */
-int CRYPT_HMAC_Finalize(CRYPT_HMAC_CTX* hmac, unsigned char* digest)
+int32_t CRYPT_HMAC_Finalize(CRYPT_HMAC_CTX* hmac, unsigned char* digest)
 {
     if (hmac == NULL || digest == NULL)
         return BAD_FUNC_ARG;
@@ -259,9 +259,9 @@ int CRYPT_HMAC_Finalize(CRYPT_HMAC_CTX* hmac, unsigned char* digest)
 
 /* Huffman Compression, set flag to do static, otherwise dynamic */
 /* return compressed size, otherwise < 0 for error */
-int CRYPT_HUFFMAN_Compress(unsigned char* out, unsigned int outSz,
-                           const unsigned char* in, unsigned int inSz,
-                           unsigned int flags)
+int32_t CRYPT_HUFFMAN_Compress(unsigned char* out, uint32_t outSz,
+                           const unsigned char* in, uint32_t inSz,
+                           uint32_t flags)
 {
     if (out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -272,8 +272,8 @@ int CRYPT_HUFFMAN_Compress(unsigned char* out, unsigned int outSz,
 
 /* Huffman DeCompression, self determines type */
 /* return decompressed size, otherwise < 0 for error */
-int CRYPT_HUFFMAN_DeCompress(unsigned char* out, unsigned int outSz,
-                             const unsigned char* in, unsigned int inSz)
+int32_t CRYPT_HUFFMAN_DeCompress(unsigned char* out, uint32_t outSz,
+                             const unsigned char* in, uint32_t inSz)
 {
     if (out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -283,7 +283,7 @@ int CRYPT_HUFFMAN_DeCompress(unsigned char* out, unsigned int outSz,
 
 
 /* RNG Initialize, < 0 on error */
-int CRYPT_RNG_Initialize(CRYPT_RNG_CTX* rng)
+int32_t CRYPT_RNG_Initialize(CRYPT_RNG_CTX* rng)
 {
     typedef char rng_test[sizeof(CRYPT_RNG_CTX) >= sizeof(RNG) ? 1 : -1];
     (void)sizeof(rng_test);
@@ -296,7 +296,7 @@ int CRYPT_RNG_Initialize(CRYPT_RNG_CTX* rng)
 
 
 /* RNG Get single bytes, < 0 on error */
-int CRYPT_RNG_Get(CRYPT_RNG_CTX* rng, unsigned char* b)
+int32_t CRYPT_RNG_Get(CRYPT_RNG_CTX* rng, unsigned char* b)
 {
     if (rng == NULL || b == NULL)
         return BAD_FUNC_ARG;
@@ -306,8 +306,8 @@ int CRYPT_RNG_Get(CRYPT_RNG_CTX* rng, unsigned char* b)
 
 
 /* RNG Block Generation of sz bytes, < 0 on error */
-int CRYPT_RNG_BlockGenerate(CRYPT_RNG_CTX* rng, unsigned char* b,
-                            unsigned int sz)
+int32_t CRYPT_RNG_BlockGenerate(CRYPT_RNG_CTX* rng, unsigned char* b,
+                            uint32_t sz)
 {
     if (rng == NULL || b == NULL)
         return BAD_FUNC_ARG;
@@ -317,8 +317,8 @@ int CRYPT_RNG_BlockGenerate(CRYPT_RNG_CTX* rng, unsigned char* b,
 
 
 /* Triple DES Key Set, may have iv, will have direction */
-int CRYPT_TDES_KeySet(CRYPT_TDES_CTX* tdes, const unsigned char* key,
-                      const unsigned char* iv, int dir)
+int32_t CRYPT_TDES_KeySet(CRYPT_TDES_CTX* tdes, const unsigned char* key,
+                      const unsigned char* iv, int32_t dir)
 {
     typedef char tdes_test[sizeof(CRYPT_TDES_CTX) >= sizeof(Des3) ? 1 : -1];
     (void)sizeof(tdes_test);
@@ -331,7 +331,7 @@ int CRYPT_TDES_KeySet(CRYPT_TDES_CTX* tdes, const unsigned char* key,
 
 
 /* Triple DES Iv Set, sometimes added later */
-int CRYPT_TDES_IvSet(CRYPT_TDES_CTX* tdes, const unsigned char* iv)
+int32_t CRYPT_TDES_IvSet(CRYPT_TDES_CTX* tdes, const unsigned char* iv)
 {
     if (tdes == NULL || iv == NULL)
         return BAD_FUNC_ARG;
@@ -341,8 +341,8 @@ int CRYPT_TDES_IvSet(CRYPT_TDES_CTX* tdes, const unsigned char* iv)
 
 
 /* Triple DES CBC Encrypt */
-int CRYPT_TDES_CBC_Encrypt(CRYPT_TDES_CTX* tdes, unsigned char* out,
-                           const unsigned char* in, unsigned int inSz)
+int32_t CRYPT_TDES_CBC_Encrypt(CRYPT_TDES_CTX* tdes, unsigned char* out,
+                           const unsigned char* in, uint32_t inSz)
 {
     if (tdes == NULL || out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -352,8 +352,8 @@ int CRYPT_TDES_CBC_Encrypt(CRYPT_TDES_CTX* tdes, unsigned char* out,
 
 
 /* Triple DES CBC Decrypt */
-int CRYPT_TDES_CBC_Decrypt(CRYPT_TDES_CTX* tdes, unsigned char* out,
-                           const unsigned char* in, unsigned int inSz)
+int32_t CRYPT_TDES_CBC_Decrypt(CRYPT_TDES_CTX* tdes, unsigned char* out,
+                           const unsigned char* in, uint32_t inSz)
 {
     if (tdes == NULL || out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -363,8 +363,8 @@ int CRYPT_TDES_CBC_Decrypt(CRYPT_TDES_CTX* tdes, unsigned char* out,
 
 
 /* AES Key Set, may have iv, will have direction */
-int CRYPT_AES_KeySet(CRYPT_AES_CTX* aes, const unsigned char* key,
-                     unsigned int keyLen, const unsigned char* iv, int dir)
+int32_t CRYPT_AES_KeySet(CRYPT_AES_CTX* aes, const unsigned char* key,
+                     uint32_t keyLen, const unsigned char* iv, int32_t dir)
 {
     typedef char aes_test[sizeof(CRYPT_AES_CTX) >= sizeof(Aes) ? 1 : -1];
     (void)sizeof(aes_test);
@@ -377,7 +377,7 @@ int CRYPT_AES_KeySet(CRYPT_AES_CTX* aes, const unsigned char* key,
 
 
 /* AES Iv Set, sometimes added later */
-int CRYPT_AES_IvSet(CRYPT_AES_CTX* aes, const unsigned char* iv)
+int32_t CRYPT_AES_IvSet(CRYPT_AES_CTX* aes, const unsigned char* iv)
 {
     if (aes == NULL || iv == NULL)
         return BAD_FUNC_ARG;
@@ -387,8 +387,8 @@ int CRYPT_AES_IvSet(CRYPT_AES_CTX* aes, const unsigned char* iv)
 
 
 /* AES CBC Encrypt */
-int CRYPT_AES_CBC_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
-                          const unsigned char* in, unsigned int inSz)
+int32_t CRYPT_AES_CBC_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
+                          const unsigned char* in, uint32_t inSz)
 {
     if (aes == NULL || out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -398,8 +398,8 @@ int CRYPT_AES_CBC_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
 
 
 /* AES CBC Decrypt */
-int CRYPT_AES_CBC_Decrypt(CRYPT_AES_CTX* aes, unsigned char* out,
-                          const unsigned char* in, unsigned int inSz)
+int32_t CRYPT_AES_CBC_Decrypt(CRYPT_AES_CTX* aes, unsigned char* out,
+                          const unsigned char* in, uint32_t inSz)
 {
     if (aes == NULL || out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -409,8 +409,8 @@ int CRYPT_AES_CBC_Decrypt(CRYPT_AES_CTX* aes, unsigned char* out,
 
 
 /* AES CTR Encrypt (used for decrypt too, with ENCRYPT key setup) */
-int CRYPT_AES_CTR_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
-                          const unsigned char* in, unsigned int inSz)
+int32_t CRYPT_AES_CTR_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
+                          const unsigned char* in, uint32_t inSz)
 {
     if (aes == NULL || out == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -422,7 +422,7 @@ int CRYPT_AES_CTR_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
 
 
 /* AES Direct mode encrypt, one block at a time */
-int CRYPT_AES_DIRECT_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
+int32_t CRYPT_AES_DIRECT_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
                              const unsigned char* in)
 {
     if (aes == NULL || out == NULL || in == NULL)
@@ -435,7 +435,7 @@ int CRYPT_AES_DIRECT_Encrypt(CRYPT_AES_CTX* aes, unsigned char* out,
 
 
 /* AES Direct mode decrypt, one block at a time */
-int CRYPT_AES_DIRECT_Decrypt(CRYPT_AES_CTX* aes, unsigned char* out,
+int32_t CRYPT_AES_DIRECT_Decrypt(CRYPT_AES_CTX* aes, unsigned char* out,
                              const unsigned char* in)
 {
     if (aes == NULL || out == NULL || in == NULL)
@@ -448,7 +448,7 @@ int CRYPT_AES_DIRECT_Decrypt(CRYPT_AES_CTX* aes, unsigned char* out,
 
 
 /* RSA Initialize */
-int CRYPT_RSA_Initialize(CRYPT_RSA_CTX* rsa)
+int32_t CRYPT_RSA_Initialize(CRYPT_RSA_CTX* rsa)
 {
     if (rsa == NULL)
         return BAD_FUNC_ARG;
@@ -462,7 +462,7 @@ int CRYPT_RSA_Initialize(CRYPT_RSA_CTX* rsa)
 
 
 /* RSA Free resources */
-int CRYPT_RSA_Free(CRYPT_RSA_CTX* rsa)
+int32_t CRYPT_RSA_Free(CRYPT_RSA_CTX* rsa)
 {
     if (rsa == NULL)
         return BAD_FUNC_ARG;
@@ -476,10 +476,10 @@ int CRYPT_RSA_Free(CRYPT_RSA_CTX* rsa)
 
 
 /* RSA Public key decode ASN.1 */
-int CRYPT_RSA_PublicKeyDecode(CRYPT_RSA_CTX* rsa, const unsigned char* in,
-                              unsigned int inSz)
+int32_t CRYPT_RSA_PublicKeyDecode(CRYPT_RSA_CTX* rsa, const unsigned char* in,
+                              uint32_t inSz)
 {
-    unsigned int idx = 0;
+    uint32_t idx = 0;
     (void)idx;
 
     if (rsa == NULL || in == NULL)
@@ -490,10 +490,10 @@ int CRYPT_RSA_PublicKeyDecode(CRYPT_RSA_CTX* rsa, const unsigned char* in,
 
 
 /* RSA Private key decode ASN.1 */
-int CRYPT_RSA_PrivateKeyDecode(CRYPT_RSA_CTX* rsa, const unsigned char* in,
-                               unsigned int inSz)
+int32_t CRYPT_RSA_PrivateKeyDecode(CRYPT_RSA_CTX* rsa, const unsigned char* in,
+                               uint32_t inSz)
 {
-    unsigned int idx = 0;
+    uint32_t idx = 0;
     (void)idx;
 
     if (rsa == NULL || in == NULL)
@@ -504,9 +504,9 @@ int CRYPT_RSA_PrivateKeyDecode(CRYPT_RSA_CTX* rsa, const unsigned char* in,
 
 
 /* RSA Public Encrypt */
-int CRYPT_RSA_PublicEncrypt(CRYPT_RSA_CTX* rsa, unsigned char* out,
-                            unsigned int outSz, const unsigned char* in,
-                            unsigned int inSz, CRYPT_RNG_CTX* rng)
+int32_t CRYPT_RSA_PublicEncrypt(CRYPT_RSA_CTX* rsa, unsigned char* out,
+                            uint32_t outSz, const unsigned char* in,
+                            uint32_t inSz, CRYPT_RNG_CTX* rng)
 {
     if (rsa == NULL || in == NULL || out == NULL || rng == NULL)
         return BAD_FUNC_ARG;
@@ -517,9 +517,9 @@ int CRYPT_RSA_PublicEncrypt(CRYPT_RSA_CTX* rsa, unsigned char* out,
 
 
 /* RSA Private Decrypt */
-int CRYPT_RSA_PrivateDecrypt(CRYPT_RSA_CTX* rsa, unsigned char* out,
-                             unsigned int outSz, const unsigned char* in,
-                             unsigned int inSz)
+int32_t CRYPT_RSA_PrivateDecrypt(CRYPT_RSA_CTX* rsa, unsigned char* out,
+                             uint32_t outSz, const unsigned char* in,
+                             uint32_t inSz)
 {
     if (rsa == NULL || in == NULL || out == NULL)
         return BAD_FUNC_ARG;
@@ -529,7 +529,7 @@ int CRYPT_RSA_PrivateDecrypt(CRYPT_RSA_CTX* rsa, unsigned char* out,
 
 
 /* RSA Get Encrypt size helper */
-int CRYPT_RSA_EncryptSizeGet(CRYPT_RSA_CTX* rsa) 
+int32_t CRYPT_RSA_EncryptSizeGet(CRYPT_RSA_CTX* rsa) 
 {
     if (rsa == NULL)
         return BAD_FUNC_ARG;
@@ -539,7 +539,7 @@ int CRYPT_RSA_EncryptSizeGet(CRYPT_RSA_CTX* rsa)
 
 
 /* ECC init */
-int CRYPT_ECC_Initialize(CRYPT_ECC_CTX* ecc)
+int32_t CRYPT_ECC_Initialize(CRYPT_ECC_CTX* ecc)
 {
     if (ecc == NULL)
         return BAD_FUNC_ARG;
@@ -555,7 +555,7 @@ int CRYPT_ECC_Initialize(CRYPT_ECC_CTX* ecc)
 
 
 /* ECC free resources */
-int CRYPT_ECC_Free(CRYPT_ECC_CTX* ecc)
+int32_t CRYPT_ECC_Free(CRYPT_ECC_CTX* ecc)
 {
     if (ecc == NULL)
         return BAD_FUNC_ARG;
@@ -569,11 +569,11 @@ int CRYPT_ECC_Free(CRYPT_ECC_CTX* ecc)
 
 
 /* ECC Public x963 Export */
-int CRYPT_ECC_PublicExport(CRYPT_ECC_CTX* ecc, unsigned char* out,
-                           unsigned int outSz, unsigned int* usedSz)
+int32_t CRYPT_ECC_PublicExport(CRYPT_ECC_CTX* ecc, unsigned char* out,
+                           uint32_t outSz, uint32_t* usedSz)
 {
-    int          ret;
-    unsigned int inOut = outSz;
+    int32_t          ret;
+    uint32_t inOut = outSz;
 
     if (ecc == NULL || out == NULL)
         return BAD_FUNC_ARG;
@@ -586,8 +586,8 @@ int CRYPT_ECC_PublicExport(CRYPT_ECC_CTX* ecc, unsigned char* out,
 
 
 /* ECC Public x963 Import */
-int CRYPT_ECC_PublicImport(CRYPT_ECC_CTX* ecc, const unsigned char* in,
-                           unsigned int inSz)
+int32_t CRYPT_ECC_PublicImport(CRYPT_ECC_CTX* ecc, const unsigned char* in,
+                           uint32_t inSz)
 {
     if (ecc == NULL || in == NULL)
         return BAD_FUNC_ARG;
@@ -597,8 +597,8 @@ int CRYPT_ECC_PublicImport(CRYPT_ECC_CTX* ecc, const unsigned char* in,
 
 
 /* ECC Private x963 Import */
-int CRYPT_ECC_PrivateImport(CRYPT_ECC_CTX* ecc, const unsigned char* priv,
-         unsigned int privSz, const unsigned char* pub, unsigned int pubSz)
+int32_t CRYPT_ECC_PrivateImport(CRYPT_ECC_CTX* ecc, const unsigned char* priv,
+         uint32_t privSz, const unsigned char* pub, uint32_t pubSz)
 {
     if (ecc == NULL || priv == NULL || pub == NULL)
         return BAD_FUNC_ARG;
@@ -609,7 +609,7 @@ int CRYPT_ECC_PrivateImport(CRYPT_ECC_CTX* ecc, const unsigned char* priv,
 
 
 /* ECC DHE Make key */
-int CRYPT_ECC_DHE_KeyMake(CRYPT_ECC_CTX* ecc, CRYPT_RNG_CTX* rng, int keySz)
+int32_t CRYPT_ECC_DHE_KeyMake(CRYPT_ECC_CTX* ecc, CRYPT_RNG_CTX* rng, int32_t keySz)
 {
     if (ecc == NULL || rng == NULL)
         return BAD_FUNC_ARG;
@@ -619,11 +619,11 @@ int CRYPT_ECC_DHE_KeyMake(CRYPT_ECC_CTX* ecc, CRYPT_RNG_CTX* rng, int keySz)
 
 
 /* ECC DHE Make shared secret with our private and peer public */
-int CRYPT_ECC_DHE_SharedSecretMake(CRYPT_ECC_CTX* priv, CRYPT_ECC_CTX* pub,
-                  unsigned char* out, unsigned int outSz, unsigned int* usedSz)
+int32_t CRYPT_ECC_DHE_SharedSecretMake(CRYPT_ECC_CTX* priv, CRYPT_ECC_CTX* pub,
+                  unsigned char* out, uint32_t outSz, uint32_t* usedSz)
 {
-    int ret;
-    unsigned int inOut = outSz;
+    int32_t ret;
+    uint32_t inOut = outSz;
 
     if (priv == NULL || pub == NULL || out == NULL || usedSz == NULL)
         return BAD_FUNC_ARG;
@@ -637,13 +637,13 @@ int CRYPT_ECC_DHE_SharedSecretMake(CRYPT_ECC_CTX* priv, CRYPT_ECC_CTX* pub,
 
 
 /* ECC DSA Hash Sign */
-int CRYPT_ECC_DSA_HashSign(CRYPT_ECC_CTX* ecc, CRYPT_RNG_CTX* rng,
-                           unsigned char* sig, unsigned int sigSz,
-                           unsigned int* usedSz, const unsigned char* in,
-                           unsigned int inSz)
+int32_t CRYPT_ECC_DSA_HashSign(CRYPT_ECC_CTX* ecc, CRYPT_RNG_CTX* rng,
+                           unsigned char* sig, uint32_t sigSz,
+                           uint32_t* usedSz, const unsigned char* in,
+                           uint32_t inSz)
 {
-    int ret;
-    unsigned int inOut = sigSz;
+    int32_t ret;
+    uint32_t inOut = sigSz;
 
     if (ecc == NULL || rng == NULL || sig == NULL || usedSz == NULL ||
                                                                 in == NULL)
@@ -658,9 +658,9 @@ int CRYPT_ECC_DSA_HashSign(CRYPT_ECC_CTX* ecc, CRYPT_RNG_CTX* rng,
 
 
 /* ECC DSA Hash Verify */
-int CRYPT_ECC_DSA_HashVerify(CRYPT_ECC_CTX* ecc, const unsigned char* sig,
-                             unsigned int sigSz, unsigned char* hash,
-                             unsigned int hashSz, int* status)
+int32_t CRYPT_ECC_DSA_HashVerify(CRYPT_ECC_CTX* ecc, const unsigned char* sig,
+                             uint32_t sigSz, unsigned char* hash,
+                             uint32_t hashSz, int32_t* status)
 {
     if (ecc == NULL || sig == NULL || hash == NULL || status == NULL)
         return BAD_FUNC_ARG;
@@ -671,7 +671,7 @@ int CRYPT_ECC_DSA_HashVerify(CRYPT_ECC_CTX* ecc, const unsigned char* sig,
 
 
 /* ECC get key size helper */
-int CRYPT_ECC_KeySizeGet(CRYPT_ECC_CTX* ecc)
+int32_t CRYPT_ECC_KeySizeGet(CRYPT_ECC_CTX* ecc)
 {
     if (ecc == NULL)
         return BAD_FUNC_ARG;
@@ -681,7 +681,7 @@ int CRYPT_ECC_KeySizeGet(CRYPT_ECC_CTX* ecc)
 
 
 /* ECC get signature size helper */
-int CRYPT_ECC_SignatureSizeGet(CRYPT_ECC_CTX* ecc)
+int32_t CRYPT_ECC_SignatureSizeGet(CRYPT_ECC_CTX* ecc)
 {
     if (ecc == NULL)
         return BAD_FUNC_ARG;
@@ -691,7 +691,7 @@ int CRYPT_ECC_SignatureSizeGet(CRYPT_ECC_CTX* ecc)
 
 
 /* Save error string from err to str which needs to be >= 80 chars */
-int CRYPT_ERROR_StringGet(int err, char* str)
+int32_t CRYPT_ERROR_StringGet(int32_t err, char* str)
 {
     if (str == NULL)
         return BAD_FUNC_ARG;

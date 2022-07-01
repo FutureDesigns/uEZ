@@ -609,7 +609,7 @@ void ST7579_SetVO_Range(T_glyphHandle aHandle, int32_t nValue0to254)
 void ST7579_Config(T_glyphHandle aHandle)
 {
     T_glyphWorkspace *p_gw = (T_glyphWorkspace *)aHandle;
-    int i = 0 ;
+    int32_t i = 0 ;
 
     /* Inialize Display */
     ST7579_SetSystemBiasBooster(aHandle, p_gw->iLCDAPI->iContrastBoost) ;

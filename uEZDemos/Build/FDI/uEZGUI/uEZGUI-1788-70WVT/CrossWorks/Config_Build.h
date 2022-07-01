@@ -14,7 +14,7 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_RTT                   0
 #define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
@@ -52,7 +52,7 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
-#define APP_DEMO_SLIDESHOW             		1
+#define APP_DEMO_SLIDESHOW             	    1
 #define APP_DEMO_VIDEO_PLAYER               0
 
 #define INCLUDE_EMWIN                       0
@@ -71,3 +71,8 @@
 #define SLIDESHOW_PREFETCH_AHEAD            5
 #define SLIDESHOW_PREFETCH_BEHIND           1
 #define SLIDESHOW_NUM_CACHED_SLIDES         5
+
+/* ----- Constants for Functional Test ----- */
+#define UEZ_SPEAKER_TEST                    0 // set to 1 for FCT build
+#define UEZ_SPEAKER_TEST_HZ                 500
+/* ----------------------------------------- */

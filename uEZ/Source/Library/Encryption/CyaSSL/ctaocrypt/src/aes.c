@@ -83,11 +83,11 @@
     /* still leave SW crypto available */
     #define NEED_AES_TABLES
 
-    static int  AesCaviumSetKey(Aes* aes, const byte* key, word32 length,
+    static int32_t  AesCaviumSetKey(Aes* aes, const byte* key, word32 length,
                                 const byte* iv);
-    static int  AesCaviumCbcEncrypt(Aes* aes, byte* out, const byte* in,
+    static int32_t  AesCaviumCbcEncrypt(Aes* aes, byte* out, const byte* in,
                                     word32 length);
-    static int  AesCaviumCbcDecrypt(Aes* aes, byte* out, const byte* in,
+    static int32_t  AesCaviumCbcDecrypt(Aes* aes, byte* out, const byte* in,
                                     word32 length);
 #else
     /* using CTaoCrypt software AES implementation */
@@ -790,16 +790,16 @@ static const word32 Td[5][256] = {
 #else
 
     #include <intrin.h>
-    #define cpuid(a,b) __cpuid((int*)a,b)
+    #define cpuid(a,b) __cpuid((int32_t*)a,b)
 
     #define XASM_LINK(f)
 
 #endif /* _MSC_VER */
 
 
-static int Check_CPU_support_AES(void)
+static int32_t Check_CPU_support_AES(void)
 {
-    unsigned int reg[4];  /* put a,b,c,d into 0,1,2,3 */
+    uint32_t reg[4];  /* put a,b,c,d into 0,1,2,3 */
     cpuid(reg, 1);        /* query info 1 */
 
     if (reg[2] & 0x2000000)
@@ -808,30 +808,30 @@ static int Check_CPU_support_AES(void)
     return 0;
 }
 
-static int checkAESNI = 0;
-static int haveAESNI  = 0;
+static int32_t checkAESNI = 0;
+static int32_t haveAESNI  = 0;
 
 
 /* tell C compiler these are asm functions in case any mix up of ABI underscore
    prefix between clang/gcc/llvm etc */
 void AES_CBC_encrypt(const unsigned char* in, unsigned char* out,
                      unsigned char* ivec, unsigned long length,
-                     const unsigned char* KS, int nr)
+                     const unsigned char* KS, int32_t nr)
                      XASM_LINK("AES_CBC_encrypt");
 
 
 void AES_CBC_decrypt(const unsigned char* in, unsigned char* out,
                      unsigned char* ivec, unsigned long length,
-                     const unsigned char* KS, int nr)
+                     const unsigned char* KS, int32_t nr)
                      XASM_LINK("AES_CBC_decrypt");
 
 void AES_ECB_encrypt(const unsigned char* in, unsigned char* out,
-                     unsigned long length, const unsigned char* KS, int nr)
+                     unsigned long length, const unsigned char* KS, int32_t nr)
                      XASM_LINK("AES_ECB_encrypt");
 
 
 void AES_ECB_decrypt(const unsigned char* in, unsigned char* out,
-                     unsigned long length, const unsigned char* KS, int nr)
+                     unsigned long length, const unsigned char* KS, int32_t nr)
                      XASM_LINK("AES_ECB_decrypt");
 
 void AES_128_Key_Expansion(const unsigned char* userkey,
@@ -847,7 +847,7 @@ void AES_256_Key_Expansion(const unsigned char* userkey,
                            XASM_LINK("AES_256_Key_Expansion");
 
 
-static int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
+static int32_t AES_set_encrypt_key(const unsigned char *userKey, const int32_t bits,
                                Aes* aes)
 {
     if (!userKey || !aes)
@@ -869,10 +869,10 @@ static int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
 }
 
 
-static int AES_set_decrypt_key(const unsigned char* userKey, const int bits,
+static int32_t AES_set_decrypt_key(const unsigned char* userKey, const int32_t bits,
                                Aes* aes)
 {
-    int nr;
+    int32_t nr;
     Aes temp_key;
     __m128i *Key_Schedule = (__m128i*)aes->key;
     __m128i *Temp_Key_Schedule = (__m128i*)temp_key.key;
@@ -1260,8 +1260,8 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
 
 /* AesSetKey */
 #ifdef STM32F2_CRYPTO
-    int AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
-                  int dir)
+    int32_t AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
+                  int32_t dir)
     {
         word32 *rk = aes->key;
 
@@ -1275,8 +1275,8 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
         return AesSetIV(aes, iv);
     }
 
-    int AesSetKeyDirect(Aes* aes, const byte* userKey, word32 keylen,
-                        const byte* iv, int dir)
+    int32_t AesSetKeyDirect(Aes* aes, const byte* userKey, word32 keylen,
+                        const byte* iv, int32_t dir)
     {
         return AesSetKey(aes, userKey, keylen, iv, dir);
     }
@@ -1301,12 +1301,12 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
 
     extern volatile unsigned char __MBAR[];
 
-    int AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
-                  int dir)
+    int32_t AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
+                  int32_t dir)
     {
         if (AESBuffIn == NULL) {
             #if defined (HAVE_THREADX)
-			    int s1, s2, s3, s4, s5 ;
+			    int32_t s1, s2, s3, s4, s5 ;
                 s5 = tx_byte_allocate(&mp_ncached,(void *)&secDesc,
                                       sizeof(SECdescriptorType), TX_NO_WAIT);
                 s1 = tx_byte_allocate(&mp_ncached, (void *)&AESBuffIn,
@@ -1342,8 +1342,8 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
         return 0;
     }
 #elif defined(FREESCALE_MMCAU)
-    int AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
-                  int dir)
+    int32_t AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
+                  int32_t dir)
     {
         byte *rk = (byte*)aes->key;
 
@@ -1359,17 +1359,17 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
         return AesSetIV(aes, iv);
     }
 
-    int AesSetKeyDirect(Aes* aes, const byte* userKey, word32 keylen,
-                        const byte* iv, int dir)
+    int32_t AesSetKeyDirect(Aes* aes, const byte* userKey, word32 keylen,
+                        const byte* iv, int32_t dir)
     {
         return AesSetKey(aes, userKey, keylen, iv, dir);
     }
 #else
-    static int AesSetKeyLocal(Aes* aes, const byte* userKey, word32 keylen,
-                const byte* iv, int dir)
+    static int32_t AesSetKeyLocal(Aes* aes, const byte* userKey, word32 keylen,
+                const byte* iv, int32_t dir)
     {
         word32 temp, *rk = aes->key;
-        unsigned int i = 0;
+        uint32_t i = 0;
 
         #ifdef CYASSL_AESNI
             aes->use_aesni = 0;
@@ -1476,7 +1476,7 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
 
         if (dir == AES_DECRYPTION)
         {
-            unsigned int j;
+            uint32_t j;
             rk = aes->key;
 
             /* invert the order of the round keys: */
@@ -1516,8 +1516,8 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
         return AesSetIV(aes, iv);
     }
 
-    int AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
-                  int dir)
+    int32_t AesSetKey(Aes* aes, const byte* userKey, word32 keylen, const byte* iv,
+                  int32_t dir)
     {
 
         if (!((keylen == 16) || (keylen == 24) || (keylen == 32)))
@@ -1550,8 +1550,8 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
     #if defined(CYASSL_AES_DIRECT) || defined(CYASSL_AES_COUNTER)
 
     /* AES-CTR and AES-DIRECT need to use this for key setup, no aesni yet */
-    int AesSetKeyDirect(Aes* aes, const byte* userKey, word32 keylen,
-                        const byte* iv, int dir)
+    int32_t AesSetKeyDirect(Aes* aes, const byte* userKey, word32 keylen,
+                        const byte* iv, int32_t dir)
     {
         return AesSetKeyLocal(aes, userKey, keylen, iv, dir);
     }
@@ -1561,7 +1561,7 @@ static void AesDecrypt(Aes* aes, const byte* inBlock, byte* outBlock)
 
 
 /* AesSetIV is shared between software and hardware */
-int AesSetIV(Aes* aes, const byte* iv)
+int32_t AesSetIV(Aes* aes, const byte* iv)
 {
     if (aes == NULL)
         return BAD_FUNC_ARG;
@@ -1575,10 +1575,10 @@ int AesSetIV(Aes* aes, const byte* iv)
 }
 
 
-int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
+int32_t AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
                                   const byte* key, word32 keySz, const byte* iv)
 {
-    int  ret = 0;
+    int32_t  ret = 0;
 #ifdef CYASSL_SMALL_STACK
     Aes* aes = NULL;
 #else
@@ -1653,7 +1653,7 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
 
 /* AES-CBC */
 #ifdef STM32F2_CRYPTO
-    int AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
         word32 *enc_key, *iv;
         CRYP_InitTypeDef AES_CRYP_InitStructure;
@@ -1758,7 +1758,7 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         return 0;
     }
 
-    int AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
         word32 *dec_key, *iv;
         CRYP_InitTypeDef AES_CRYP_InitStructure;
@@ -1880,15 +1880,15 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
     }
 
 #elif defined(HAVE_COLDFIRE_SEC)
-    static int AesCbcCrypt(Aes* aes, byte* po, const byte* pi, word32 sz,
+    static int32_t AesCbcCrypt(Aes* aes, byte* po, const byte* pi, word32 sz,
                            word32 descHeader)
     {
         #ifdef DEBUG_CYASSL
-            int i; int stat1, stat2; int ret;
+            int32_t i; int32_t stat1, stat2; int32_t ret;
 	    #endif
 
-        int size;
-        volatile int v;
+        int32_t size;
+        volatile int32_t v;
 
         if ((pi == NULL) || (po == NULL))
             return BAD_FUNC_ARG;    /*wrong pointer*/
@@ -1973,22 +1973,22 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         return 0;
     }
 
-    int AesCbcEncrypt(Aes* aes, byte* po, const byte* pi, word32 sz)
+    int32_t AesCbcEncrypt(Aes* aes, byte* po, const byte* pi, word32 sz)
     {
         return (AesCbcCrypt(aes, po, pi, sz, SEC_DESC_AES_CBC_ENCRYPT));
     }
 
-    int AesCbcDecrypt(Aes* aes, byte* po, const byte* pi, word32 sz)
+    int32_t AesCbcDecrypt(Aes* aes, byte* po, const byte* pi, word32 sz)
     {
         return (AesCbcCrypt(aes, po, pi, sz, SEC_DESC_AES_CBC_DECRYPT));
     }
 
 #elif defined(FREESCALE_MMCAU)
-    int AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
-        int i;
-        int offset = 0;
-        int len = sz;
+        int32_t i;
+        int32_t offset = 0;
+        int32_t len = sz;
 
         byte *iv, *enc_key;
         byte temp_block[AES_BLOCK_SIZE];
@@ -2021,11 +2021,11 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         return 0;
     }
 
-    int AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
-        int i;
-        int offset = 0;
-        int len = sz;
+        int32_t i;
+        int32_t offset = 0;
+        int32_t len = sz;
 
         byte* iv, *dec_key;
         byte temp_block[AES_BLOCK_SIZE];
@@ -2061,14 +2061,14 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
 #elif defined(CYASSL_PIC32MZ_CRYPT)
     /* core hardware crypt engine driver */
     static void AesCrypt(Aes *aes, byte* out, const byte* in, word32 sz,
-                                            int dir, int algo, int cryptoalgo)
+                                            int32_t dir, int32_t algo, int32_t cryptoalgo)
     {
         securityAssociation *sa_p ;
         bufferDescriptor *bd_p ;
 
         volatile securityAssociation sa __attribute__((aligned (8)));
         volatile bufferDescriptor bd __attribute__((aligned (8)));
-        volatile int k ;
+        volatile int32_t k ;
 
         /* get uncached address */
         sa_p = KVA0_TO_KVA1(&sa) ;
@@ -2121,16 +2121,16 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         bd_p->BD_CTRL.LAST_BD = 1;
         bd_p->BD_CTRL.DESC_EN = 1;
 
-        bd_p->SA_ADDR = (unsigned int)KVA_TO_PA(&sa) ;
-        bd_p->SRCADDR = (unsigned int)KVA_TO_PA(in) ;
-        bd_p->DSTADDR = (unsigned int)KVA_TO_PA(out);
+        bd_p->SA_ADDR = (uint32_t)KVA_TO_PA(&sa) ;
+        bd_p->SRCADDR = (uint32_t)KVA_TO_PA(in) ;
+        bd_p->DSTADDR = (uint32_t)KVA_TO_PA(out);
         bd_p->MSGLEN = sz ;
 
         CECON = 1 << 6;
         while (CECON);
 
         /* Run the engine */
-        CEBDPADDR = (unsigned int)KVA_TO_PA(&bd) ;
+        CEBDPADDR = (uint32_t)KVA_TO_PA(&bd) ;
         CEINTEN = 0x07;
         CECON = 0x27;
 
@@ -2154,14 +2154,14 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         ByteReverseWords((word32*)out, (word32 *)out, sz);
     }
 
-    int AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
         AesCrypt(aes, out, in, sz, PIC32_ENCRYPTION, PIC32_ALGO_AES,
                                                       PIC32_CRYPTOALGO_RCBC );
         return 0 ;
     }
 
-    int AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
         AesCrypt(aes, out, in, sz, PIC32_DECRYPTION, PIC32_ALGO_AES,
                                                       PIC32_CRYPTOALGO_RCBC);
@@ -2169,7 +2169,7 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
     }
 
 #else
-    int AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
         word32 blocks = sz / AES_BLOCK_SIZE;
 
@@ -2232,7 +2232,7 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         return 0;
     }
 
-    int AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
+    int32_t AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz)
     {
         word32 blocks = sz / AES_BLOCK_SIZE;
 
@@ -2388,10 +2388,10 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
     #elif defined(CYASSL_PIC32MZ_CRYPT)
         void AesCtrEncrypt(Aes* aes, byte* out, const byte* in, word32 sz)
         {
-            int i ;
+            int32_t i ;
             char out_block[AES_BLOCK_SIZE] ;
-            int odd ;
-            int even ;
+            int32_t odd ;
+            int32_t even ;
             char *tmp ; /* (char *)aes->tmp, for short */
 
             tmp = (char *)aes->tmp ;
@@ -2431,7 +2431,7 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
                             break ;
                     }
                     even -= AES_BLOCK_SIZE ;
-                } while((int)even > 0) ;
+                } while((int32_t)even > 0) ;
             }
             if(odd) {
                 XMEMSET(tmp+aes->left, 0x0, AES_BLOCK_SIZE - aes->left) ;
@@ -2453,7 +2453,7 @@ int AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
         /* Increment AES counter */
         static INLINE void IncrementAesCounter(byte* inOutCtr)
         {
-            int i;
+            int32_t i;
 
             /* in network byte order so start at end and work back */
             for (i = AES_BLOCK_SIZE - 1; i >= 0; i--) {
@@ -2542,7 +2542,7 @@ static INLINE void InitGcmCounter(byte* inOutCtr)
 
 static INLINE void IncrementGcmCounter(byte* inOutCtr)
 {
-    int i;
+    int32_t i;
 
     /* in network byte order so start at end and work back */
     for (i = AES_BLOCK_SIZE - 1; i >= AES_BLOCK_SIZE - CTR_SZ; i--) {
@@ -2574,10 +2574,10 @@ static INLINE void FlattenSzInBits(byte* buf, word32 sz)
 
 static INLINE void RIGHTSHIFTX(byte* x)
 {
-    int i;
-    int carryOut = 0;
-    int carryIn = 0;
-    int borrow = x[15] & 0x01;
+    int32_t i;
+    int32_t carryOut = 0;
+    int32_t carryIn = 0;
+    int32_t borrow = x[15] & 0x01;
 
     for (i = 0; i < AES_BLOCK_SIZE; i++) {
         carryOut = x[i] & 0x01;
@@ -2594,7 +2594,7 @@ static INLINE void RIGHTSHIFTX(byte* x)
 
 static void GenerateM0(Aes* aes)
 {
-    int i, j;
+    int32_t i, j;
     byte (*m)[AES_BLOCK_SIZE] = aes->M0;
 
     XMEMCPY(m[128], aes->H, AES_BLOCK_SIZE);
@@ -2617,9 +2617,9 @@ static void GenerateM0(Aes* aes)
 #endif /* GCM_TABLE */
 
 
-int AesGcmSetKey(Aes* aes, const byte* key, word32 len)
+int32_t AesGcmSetKey(Aes* aes, const byte* key, word32 len)
 {
-    int  ret;
+    int32_t  ret;
     byte iv[AES_BLOCK_SIZE];
 
     #ifdef FREESCALE_MMCAU
@@ -2653,7 +2653,7 @@ static void GMULT(byte* X, byte* Y)
 {
     byte Z[AES_BLOCK_SIZE];
     byte V[AES_BLOCK_SIZE];
-    int i, j;
+    int32_t i, j;
 
     XMEMSET(Z, 0, AES_BLOCK_SIZE);
     XMEMCPY(V, X, AES_BLOCK_SIZE);
@@ -2800,7 +2800,7 @@ static const byte R[256][2] = {
 
 static void GMULT(byte *x, byte m[256][AES_BLOCK_SIZE])
 {
-    int i, j;
+    int32_t i, j;
     byte Z[AES_BLOCK_SIZE];
     byte a;
 
@@ -2883,7 +2883,7 @@ static void GMULT(word64* X, word64* Y)
 {
     word64 Z[2] = {0,0};
     word64 V[2] ; 
-    int i, j;
+    int32_t i, j;
     V[0] = X[0] ;  V[1] = X[1] ;
 
     for (i = 0; i < 2; i++)
@@ -3007,7 +3007,7 @@ static void GMULT(word32* X, word32* Y)
 {
     word32 Z[4] = {0,0,0,0};
     word32 V[4] ;
-    int i, j;
+    int32_t i, j;
 
     V[0] = X[0];  V[1] = X[1]; V[2] =  X[2]; V[3] =  X[3];
 
@@ -3150,7 +3150,7 @@ static void GHASH(Aes* aes, const byte* a, word32 aSz,
 #endif /* end GCM_WORD32 */
 
 
-int AesGcmEncrypt(Aes* aes, byte* out, const byte* in, word32 sz,
+int32_t AesGcmEncrypt(Aes* aes, byte* out, const byte* in, word32 sz,
                    const byte* iv, word32 ivSz,
                    byte* authTag, word32 authTagSz,
                    const byte* authIn, word32 authInSz)
@@ -3224,7 +3224,7 @@ int AesGcmEncrypt(Aes* aes, byte* out, const byte* in, word32 sz,
 }
 
 
-int  AesGcmDecrypt(Aes* aes, byte* out, const byte* in, word32 sz,
+int32_t  AesGcmDecrypt(Aes* aes, byte* out, const byte* in, word32 sz,
                    const byte* iv, word32 ivSz,
                    const byte* authTag, word32 authTagSz,
                    const byte* authIn, word32 authInSz)
@@ -3307,13 +3307,13 @@ int  AesGcmDecrypt(Aes* aes, byte* out, const byte* in, word32 sz,
 
 
 
-CYASSL_API int GmacSetKey(Gmac* gmac, const byte* key, word32 len)
+CYASSL_API int32_t GmacSetKey(Gmac* gmac, const byte* key, word32 len)
 {
     return AesGcmSetKey(&gmac->aes, key, len);
 }
 
 
-CYASSL_API int GmacUpdate(Gmac* gmac, const byte* iv, word32 ivSz,
+CYASSL_API int32_t GmacUpdate(Gmac* gmac, const byte* iv, word32 ivSz,
                               const byte* authIn, word32 authInSz,
                               byte* authTag, word32 authTagSz)
 {
@@ -3516,7 +3516,7 @@ void AesCcmEncrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
 }
 
 
-int  AesCcmDecrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
+int32_t  AesCcmDecrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
                    const byte* nonce, word32 nonceSz,
                    const byte* authTag, word32 authTagSz,
                    const byte* authIn, word32 authInSz)
@@ -3526,7 +3526,7 @@ int  AesCcmDecrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
     byte* o;
     byte lenSz;
     word32 i, oSz;
-    int result = 0;
+    int32_t result = 0;
 
     #ifdef FREESCALE_MMCAU
         byte* key = (byte*)aes->key;
@@ -3627,7 +3627,7 @@ int  AesCcmDecrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
 #include "cavium_common.h"
 
 /* Initiliaze Aes for use with Nitrox device */
-int AesInitCavium(Aes* aes, int devId)
+int32_t AesInitCavium(Aes* aes, int32_t devId)
 {
     if (aes == NULL)
         return -1;
@@ -3656,7 +3656,7 @@ void AesFreeCavium(Aes* aes)
 }
 
 
-static int AesCaviumSetKey(Aes* aes, const byte* key, word32 length,
+static int32_t AesCaviumSetKey(Aes* aes, const byte* key, word32 length,
                            const byte* iv)
 {
     if (aes == NULL)
@@ -3674,7 +3674,7 @@ static int AesCaviumSetKey(Aes* aes, const byte* key, word32 length,
 }
 
 
-static int AesCaviumCbcEncrypt(Aes* aes, byte* out, const byte* in,
+static int32_t AesCaviumCbcEncrypt(Aes* aes, byte* out, const byte* in,
                                word32 length)
 {
     cyassl_word offset = 0;
@@ -3707,7 +3707,7 @@ static int AesCaviumCbcEncrypt(Aes* aes, byte* out, const byte* in,
     return 0;
 }
 
-static int AesCaviumCbcDecrypt(Aes* aes, byte* out, const byte* in,
+static int32_t AesCaviumCbcDecrypt(Aes* aes, byte* out, const byte* in,
                                word32 length)
 {
     word32 requestId;

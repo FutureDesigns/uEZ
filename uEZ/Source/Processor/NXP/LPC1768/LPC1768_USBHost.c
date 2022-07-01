@@ -126,7 +126,7 @@ static void *IAllocBuffer(
 static void  Host_DelayUS (TUInt32  delay);
 void  WriteLE16U (volatile  TUInt8  *pmem,
                             TUInt16   val);
-extern void UEZBSPDelayMS(unsigned int aMilliseconds);
+extern void UEZBSPDelayMS(uint32_t aMilliseconds);
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -142,7 +142,7 @@ static volatile  HCCA      *Hcca;                      /* Host Controller Commun
 static volatile  TUInt8  *TDBuffer;                  /* Current Buffer Pointer of transfer descriptor          */
 //static volatile  TUInt8  *UsbXferBuffer;             /* Buffer used by application                             */
 
-//static int G_usbHostInit = 0;
+//static int32_t G_usbHostInit = 0;
 static T_LPC1768_USBHost_Workspace *G_usbHostWorkspacePortA = 0;
 static T_LPC1768_USBHost_Workspace *G_usbHostWorkspacePortB = 0;
 

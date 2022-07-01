@@ -55,7 +55,7 @@ traceObjectClass TraceObjectClassTable[5] = {
 	TRACE_CLASS_MUTEX
 };
 
-int uiInEventGroupSetBitsFromISR = 0;
+int32_t uiInEventGroupSetBitsFromISR = 0;
 
 extern unsigned char uxQueueGetQueueType(void*);
 

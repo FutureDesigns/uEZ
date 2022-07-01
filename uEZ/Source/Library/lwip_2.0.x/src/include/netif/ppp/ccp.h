@@ -124,16 +124,16 @@
 
 typedef struct ccp_options {
 #if DEFLATE_SUPPORT
-    unsigned int deflate          :1; /* do Deflate? */
-    unsigned int deflate_correct  :1; /* use correct code for deflate? */
-    unsigned int deflate_draft    :1; /* use draft RFC code for deflate? */
+    uint32_t deflate          :1; /* do Deflate? */
+    uint32_t deflate_correct  :1; /* use correct code for deflate? */
+    uint32_t deflate_draft    :1; /* use draft RFC code for deflate? */
 #endif /* DEFLATE_SUPPORT */
 #if BSDCOMPRESS_SUPPORT
-    unsigned int bsd_compress     :1; /* do BSD Compress? */
+    uint32_t bsd_compress     :1; /* do BSD Compress? */
 #endif /* BSDCOMPRESS_SUPPORT */
 #if PREDICTOR_SUPPORT
-    unsigned int predictor_1      :1; /* do Predictor-1? */
-    unsigned int predictor_2      :1; /* do Predictor-2? */
+    uint32_t predictor_1      :1; /* do Predictor-1? */
+    uint32_t predictor_2      :1; /* do Predictor-2? */
 #endif /* PREDICTOR_SUPPORT */
 
 #if MPPE_SUPPORT

@@ -25,8 +25,8 @@
 } while(0)
 
 #define AssertInt(x, y, op, er) do {                                           \
-    int _x = x;                                                                \
-    int _y = y;                                                                \
+    int32_t _x = x;                                                                \
+    int32_t _y = y;                                                                \
                                                                                \
     Assert(_x op _y, ("%s " #op " %s", #x, #y), ("%d " #er " %d", _x, _y));    \
 } while(0)
@@ -41,7 +41,7 @@
 #define AssertStr(x, y, op, er) do {                                           \
     const char* _x = x;                                                        \
     const char* _y = y;                                                        \
-    int   _z = strcmp(_x, _y);                                                 \
+    int32_t   _z = strcmp(_x, _y);                                                 \
                                                                                \
     Assert(_z op 0, ("%s " #op " %s", #x, #y),                                 \
                                             ("\"%s\" " #er " \"%s\"", _x, _y));\
@@ -56,8 +56,8 @@
 
 
 void ApiTest(void);
-int SuiteTest(void);
-int HashTest(void);
+int32_t SuiteTest(void);
+int32_t HashTest(void);
 
 
 #endif /* CyaSSL_UNIT_H */

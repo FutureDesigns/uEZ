@@ -116,9 +116,9 @@ struct tm *Cyassl_MDK_gmtime(const time_t *c)
 }
 
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
 #include <stdio.h>
@@ -126,7 +126,7 @@ typedef struct func_args {
 void time_main(void *args) 
 {
     char * datetime ;
-	  int year ;
+	  int32_t year ;
   	RTC_TIME_Type RTCFullTime;
 
     if( args == NULL || ((func_args *)args)->argc == 1) {  
@@ -140,7 +140,7 @@ void time_main(void *args)
 
 								datetime = ((func_args *)args)->argv[2];
         sscanf(datetime, "%d/%d/%d", 
-             (int *)&RTCFullTime.MONTH, (int *)&RTCFullTime.DOM, &year) ;
+             (int32_t *)&RTCFullTime.MONTH, (int32_t *)&RTCFullTime.DOM, &year) ;
         RTCFullTime.YEAR = year - 2000 ;   
 				RTC_SetTime (LPC_RTC, RTC_TIMETYPE_MONTH, RTCFullTime.MONTH);
         RTC_SetTime (LPC_RTC, RTC_TIMETYPE_YEAR, RTCFullTime.YEAR);
@@ -151,9 +151,9 @@ void time_main(void *args)
 		    RTC_GetFullTime (LPC_RTC, &RTCFullTime);
 								datetime = ((func_args *)args)->argv[2];
         sscanf(datetime, "%d:%d:%d",            
-            (int *)&RTCFullTime.HOUR, 
-            (int *)&RTCFullTime.MIN, 
-            (int *)&RTCFullTime.SEC
+            (int32_t *)&RTCFullTime.HOUR, 
+            (int32_t *)&RTCFullTime.MIN, 
+            (int32_t *)&RTCFullTime.SEC
         ) ;
         RTC_SetTime (LPC_RTC, RTC_TIMETYPE_SECOND, RTCFullTime.SEC);
         RTC_SetTime (LPC_RTC, RTC_TIMETYPE_MINUTE, RTCFullTime.MIN);

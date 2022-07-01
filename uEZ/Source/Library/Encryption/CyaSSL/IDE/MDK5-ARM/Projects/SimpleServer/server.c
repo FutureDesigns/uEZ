@@ -51,25 +51,25 @@
 
 
 #ifdef CYASSL_CALLBACKS
-    int srvHandShakeCB(HandShakeInfo*);
-    int srvTimeoutCB(TimeoutInfo*);
+    int32_t srvHandShakeCB(HandShakeInfo*);
+    int32_t srvTimeoutCB(TimeoutInfo*);
     Timeval srvTo;
 #endif
 
 static void NonBlockingSSL_Accept(SSL* ssl)
 {
 #ifndef CYASSL_CALLBACKS
-    int ret = SSL_accept(ssl);
+    int32_t ret = SSL_accept(ssl);
 #else
-    int ret = CyaSSL_accept_ex(ssl, srvHandShakeCB, srvTimeoutCB, srvTo);
+    int32_t ret = CyaSSL_accept_ex(ssl, srvHandShakeCB, srvTimeoutCB, srvTo);
 #endif
-    int error = SSL_get_error(ssl, 0);
+    int32_t error = SSL_get_error(ssl, 0);
     SOCKET_T sockfd = (SOCKET_T)CyaSSL_get_fd(ssl);
-    int select_ret;
+    int32_t select_ret;
 
     while (ret != SSL_SUCCESS && (error == SSL_ERROR_WANT_READ ||
                                   error == SSL_ERROR_WANT_WRITE)) {
-        int currTimeout = 1;
+        int32_t currTimeout = 1;
 
         if (error == SSL_ERROR_WANT_READ)
             printf("... server would read block\n");
@@ -150,24 +150,24 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
 
     char   msg[] = "I hear you fa shizzle!";
     char   input[80];
-    int    idx;
-    int    ch;
-    int    version = SERVER_DEFAULT_VERSION;
-    int    doCliCertCheck = 1;
-    int    useAnyAddr = 0;
+    int32_t    idx;
+    int32_t    ch;
+    int32_t    version = SERVER_DEFAULT_VERSION;
+    int32_t    doCliCertCheck = 1;
+    int32_t    useAnyAddr = 0;
     word16 port = yasslPort;
-    int    usePsk = 0;
-    int    doDTLS = 0;
-    int    useNtruKey   = 0;
-    int    nonBlocking  = 0;
-    int    trackMemory  = 0;
-    int    fewerPackets = 0;
-    int    pkCallbacks  = 0;
+    int32_t    usePsk = 0;
+    int32_t    doDTLS = 0;
+    int32_t    useNtruKey   = 0;
+    int32_t    nonBlocking  = 0;
+    int32_t    trackMemory  = 0;
+    int32_t    fewerPackets = 0;
+    int32_t    pkCallbacks  = 0;
     char*  cipherList = NULL;
     const char* verifyCert = cliCert;
     const char* ourCert    = svrCert;
     const char* ourKey     = svrKey;
-    int    argc = ((func_args*)args)->argc;
+    int32_t    argc = ((func_args*)args)->argc;
     char** argv = ((func_args*)args)->argv;
 
 #ifdef HAVE_SNI
@@ -175,7 +175,7 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
 #endif
 
 #ifdef HAVE_OCSP
-    int    useOcsp  = 0;
+    int32_t    useOcsp  = 0;
     char*  ocspUrl  = NULL;
 #endif
 
@@ -495,7 +495,7 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
         tcp_set_nonblocking(&clientfd);
         NonBlockingSSL_Accept(ssl);
     } else if (SSL_accept(ssl) != SSL_SUCCESS) {
-        int err = SSL_get_error(ssl, 0);
+        int32_t err = SSL_get_error(ssl, 0);
         char buffer[CYASSL_MAX_ERROR_SZ];
         printf("error = %d, %s\n", err, ERR_error_string(err, buffer));
         err_sys("SSL_accept failed");
@@ -512,7 +512,7 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
 
     }
     else if (idx < 0) {
-        int readErr = SSL_get_error(ssl, 0);
+        int32_t readErr = SSL_get_error(ssl, 0);
         if (readErr != SSL_ERROR_WANT_READ)
             err_sys("SSL_read failed");
     }
@@ -543,12 +543,12 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
 /* so overall tests can pull in test function */
 #ifndef NO_MAIN_DRIVER
 
-    int main(int argc, char** argv)
+    int32_t main(int32_t argc, char** argv)
     {
         func_args args;
 
 #ifdef HAVE_CAVIUM
-        int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+        int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
         if (ret != 0)
             err_sys("Cavium OpenNitroxDevice failed");
 #endif /* HAVE_CAVIUM */
@@ -580,7 +580,7 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
         return args.return_code;
     }
 
-    int myoptind = 0;
+    int32_t myoptind = 0;
     char* myoptarg = NULL;
 
 #endif /* NO_MAIN_DRIVER */
@@ -588,14 +588,14 @@ THREAD_RETURN CYASSL_THREAD server_test(void* args)
 
 #ifdef CYASSL_CALLBACKS
 
-    int srvHandShakeCB(HandShakeInfo* info)
+    int32_t srvHandShakeCB(HandShakeInfo* info)
     {
         (void)info;
         return 0;
     }
 
 
-    int srvTimeoutCB(TimeoutInfo* info)
+    int32_t srvTimeoutCB(TimeoutInfo* info)
     {
         (void)info;
         return 0;

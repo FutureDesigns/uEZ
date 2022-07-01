@@ -83,7 +83,7 @@ void HandleFail(void)
 #if UEZ_HANDLES_FAIL_CALLBACK
     UEZHandleFailCallback();
 #else
-    volatile int i=1;
+    volatile int32_t i=1;
     RTOS_ENTER_CRITICAL();
     while (i) {
         UEZBSP_FatalError(3);

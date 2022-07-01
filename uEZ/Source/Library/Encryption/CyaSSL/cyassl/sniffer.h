@@ -42,22 +42,22 @@
 
 
 CYASSL_API 
-SSL_SNIFFER_API int ssl_SetPrivateKey(const char* address, int port,
-                                      const char* keyFile, int keyType,
+SSL_SNIFFER_API int32_t ssl_SetPrivateKey(const char* address, int32_t port,
+                                      const char* keyFile, int32_t keyType,
                                       const char* password, char* error);
 
 CYASSL_API
-SSL_SNIFFER_API int ssl_SetNamedPrivateKey(const char* name,
-                                           const char* address, int port,
-                                           const char* keyFile, int keyType,
+SSL_SNIFFER_API int32_t ssl_SetNamedPrivateKey(const char* name,
+                                           const char* address, int32_t port,
+                                           const char* keyFile, int32_t keyType,
                                            const char* password, char* error);
 
 CYASSL_API 
-SSL_SNIFFER_API int ssl_DecodePacket(const unsigned char* packet, int length,
+SSL_SNIFFER_API int32_t ssl_DecodePacket(const unsigned char* packet, int32_t length,
                                      unsigned char* data, char* error);
 
 CYASSL_API 
-SSL_SNIFFER_API int ssl_Trace(const char* traceFile, char* error);
+SSL_SNIFFER_API int32_t ssl_Trace(const char* traceFile, char* error);
         
         
 CYASSL_API void ssl_InitSniffer(void);

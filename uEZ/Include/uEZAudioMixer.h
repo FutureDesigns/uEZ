@@ -53,7 +53,7 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#define MAX_AUDIO_MIXER_OUTPUTS     (10)
+#define MAX_AUDIO_MIXER_OUTPUTS     (5) // 5 default. Add more if needed here.
 
 /*-------------------------------------------------------------------------*
  * Types:
@@ -63,7 +63,8 @@ typedef enum {
     UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER,
     UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER,
     UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES,
-    UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_HEADPHONES,
+    UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_HEADPHONES, // 4
+    // Add additional outputs here as needed
 } T_uezAudioMixerOutput;
 
 typedef T_uezError (*T_AudioMixer_Callback)(T_uezAudioMixerOutput aChangedOutput, TBool aMute, TUInt8 aLevel);
@@ -77,7 +78,6 @@ T_uezError UEZAudioMixerMute(T_uezAudioMixerOutput aOutput);
 T_uezError UEZAudioMixerUnmute(T_uezAudioMixerOutput aOutput);
 T_uezError UEZAudioMixerGetMute(T_uezAudioMixerOutput aOutput, TBool *aMute);
 T_uezError UEZAudioMixerRegister(T_uezAudioMixerOutput aOutput, T_AudioMixer_Callback aCallback);
-
 
 #ifdef __cplusplus
 }

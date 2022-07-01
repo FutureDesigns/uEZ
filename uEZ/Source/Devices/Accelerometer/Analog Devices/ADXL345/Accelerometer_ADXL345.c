@@ -23,6 +23,8 @@
 #include <uEZDeviceTable.h>
 #include "Accelerometer_ADXL345.h"
 
+// Note this driver has not been kept up to date or tested in recent memory.
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -181,7 +183,7 @@ static void IInitAccel(T_Accelerometer_ADXL345_Workspace *p)
     TUInt8 cmdFormat[2] = { ADXL345_DATA_FORMAT_REG, 0 }; // +/- 2g
     TUInt8 cmdFIFO[2] = { ADXL345_FIFO_CTL_REG, 0 };
     TUInt8 cmdPower[2] = { ADXL345_POWER_CTL_REG, 8 };
-    int i;
+    int32_t i;
 
     IWriteData(p, cmdFormat, 2);
     IWriteData(p, cmdFIFO, 2);
@@ -290,31 +292,7 @@ T_uezError ST_Accelerometer_ADXL345_ReadXYZ(
     return UEZ_ERROR_NONE;
 }
 
-T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Single(
-    void *aWorkspace,
-    AccelerometerReading *aReading,
-    TUInt32 aTimeout)
-{
-    aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
-		
-    return UEZ_ERROR_NOT_SUPPORTED;
-}
-
 T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Float(
-    void *aWorkspace,
-    AccelerometerReadingFloat *aReading,
-    TUInt32 aTimeout)
-{
-    aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
-		
-    return UEZ_ERROR_NOT_SUPPORTED;
-}
-
-T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Float_Single(
     void *aWorkspace,
     AccelerometerReadingFloat *aReading,
     TUInt32 aTimeout)
@@ -394,10 +372,8 @@ const DEVICE_Accelerometer Accelerometer_ADXL345_Interface = {
     // Functions
     ST_Accelerometer_ADXL345_GetInfo,
     ST_Accelerometer_ADXL345_ReadXYZ,
-	ST_Accelerometer_ADXL345_ReadXYZ_Single,
-	ST_Accelerometer_ADXL345_ReadXYZ_Float,
-    ST_Accelerometer_ADXL345_ReadXYZ_Float_Single,
-	};
+    ST_Accelerometer_ADXL345_ReadXYZ_Float,
+};
 
 /*-------------------------------------------------------------------------*
  * End of File:  Accelerometer_ADXL345.c

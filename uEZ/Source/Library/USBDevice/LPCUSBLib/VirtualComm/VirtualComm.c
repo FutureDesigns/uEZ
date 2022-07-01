@@ -132,7 +132,7 @@ static T_uezQueue G_vcommFifoOut;   // out from this device
 static T_uezQueue G_vcommFifoIn;    // in to this device
 
 static T_vcommCallbacks G_callbacks;
-//static int G_USBCDC_UnitAddress;
+//static int32_t G_USBCDC_UnitAddress;
 
 
 static USB_ClassInfo_CDC_Device_t UEZ_CDC_Device = {
@@ -446,11 +446,11 @@ void VirtualCommControlRequest(void)
     CDC_Device_ProcessControlRequest(&UEZ_CDC_Device);
 }
 
-int VirtualCommUpdate(int aUnitAddress)
+int32_t VirtualCommUpdate(int32_t aUnitAddress)
 {
     uint16_t num;
     uint16_t i;
-    int activity = 0;
+    int32_t activity = 0;
     TUInt8 buffer[VCOMM_MAX_PACKET_SIZE];
 
     CDC_Device_USBTask(&UEZ_CDC_Device);
@@ -509,7 +509,7 @@ static T_LPCUSBLib_Device_Callbacks G_USBDeviceCallbacks = {
  * Description:
  *      Initialize the Virtual Comm variables.
  *-------------------------------------------------------------------------*/
-T_uezError VirtualCommInitialize(T_vcommCallbacks *aCallbacks, int aUnitAddress, TUInt8 aForceFullSpeed)
+T_uezError VirtualCommInitialize(T_vcommCallbacks *aCallbacks, int32_t aUnitAddress, TUInt8 aForceFullSpeed)
 {
     T_uezError error;
 

@@ -105,9 +105,9 @@ static const unsigned portSHORT  heapSTRUCT_SIZE	= ( sizeof( xBlockLink ) + ( si
 /* Create a couple of list links to mark the start and end of the list. */
 static xBlockLink xStart, xEnd;
 
-static unsigned int G_bytesAllocated=0;
-static unsigned int G_numAllocated=0;
-static unsigned int G_biggestAllocation=0;
+static uint32_t G_bytesAllocated=0;
+static uint32_t G_numAllocated=0;
+static uint32_t G_biggestAllocation=0;
 
 /* STATIC FUNCTIONS ARE DEFINED AS MACROS TO MINIMIZE THE FUNCTION CALL DEPTH. */
 

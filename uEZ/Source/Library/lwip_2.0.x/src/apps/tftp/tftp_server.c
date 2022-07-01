@@ -83,8 +83,8 @@ struct tftp_state {
   struct udp_pcb *upcb;
   ip_addr_t addr;
   u16_t port;
-  int timer;
-  int last_pkt;
+  int32_t timer;
+  int32_t last_pkt;
   u16_t blknum;
   u8_t retries;
   u8_t mode_write;
@@ -117,7 +117,7 @@ close_handle(void)
 static void
 send_error(const ip_addr_t *addr, u16_t port, enum tftp_error code, const char *str)
 {
-  int str_length = strlen(str);
+  int32_t str_length = strlen(str);
   struct pbuf* p;
   u16_t* payload;
   
@@ -174,7 +174,7 @@ static void
 send_data(void)
 {
   u16_t *payload;
-  int ret;
+  int32_t ret;
 
   if(tftp_state.last_data != NULL) {
     pbuf_free(tftp_state.last_data);
@@ -204,7 +204,7 @@ static void
 recv(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
 {
   u16_t *sbuf = (u16_t *) p->payload;
-  int opcode;
+  int32_t opcode;
 
   LWIP_UNUSED_ARG(arg);
   LWIP_UNUSED_ARG(upcb);
@@ -282,7 +282,7 @@ recv(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16
     
     case PP_HTONS(TFTP_DATA):
     {
-      int ret;
+      int32_t ret;
       u16_t blknum;
       
       if (tftp_state.handle == NULL) {
@@ -315,7 +315,7 @@ recv(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16
     case PP_HTONS(TFTP_ACK):
     {
       u16_t blknum;
-      int lastpkt;
+      int32_t lastpkt;
 
       if (tftp_state.handle == NULL) {
         send_error(addr, port, TFTP_ERROR_ACCESS_VIOLATION, "No connection");

@@ -42,6 +42,7 @@
 
 #define VOLUME_1_MASK       (0x60)
 #define VOLUME_2_MASK       (0x80)
+#define I2C_TIMEOUT         (2000) //UEZ_TIMEOUT_INFINITE);
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -89,7 +90,7 @@ T_uezError AudioAmp_LM48110_SetLevel(void *aWorkSpace, TUInt8 aLevel)
 
     if(!p->iIsMuted){
         if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
-            UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
+            UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, I2C_TIMEOUT);
             UEZI2CClose(i2c);
         }
     }
@@ -139,7 +140,7 @@ T_uezError AudioAmp_LM48110_Mute(void *aWorkSpace)
     p->iIsMuted = ETrue;
 
     if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
-        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
+        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, I2C_TIMEOUT);
         UEZI2CClose(i2c);
     }
     UEZSemaphoreRelease(p->iSem);
@@ -174,7 +175,7 @@ T_uezError AudioAmp_LM48110_UnMute(void *aWorkSpace)
     p->iIsMuted = EFalse;
 
     if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
-        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
+        UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, I2C_TIMEOUT);
         UEZI2CClose(i2c);
     }
     UEZSemaphoreRelease(p->iSem);
@@ -210,7 +211,7 @@ T_uezError AudioAmp_LM48110_Open(void *aWorkSpace)
         p->iIsOn = ETrue;
         if(UEZI2COpen(p->iI2CBus, &i2c) == UEZ_ERROR_NONE){
             p->iNumOpen++;
-            error = UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, 100);//UEZ_TIMEOUT_INFINITE);
+            error = UEZI2CWrite(i2c, LM48100_ADDR, LM48100_SPEED, data, 5, I2C_TIMEOUT);
             UEZI2CClose(i2c);
         }
         p->iLevel = 0;

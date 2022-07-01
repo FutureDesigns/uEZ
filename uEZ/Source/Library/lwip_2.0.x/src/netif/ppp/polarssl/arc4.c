@@ -45,9 +45,9 @@
 /*
  * ARC4 key schedule
  */
-void arc4_setup( arc4_context *ctx, unsigned char *key, int keylen )
+void arc4_setup( arc4_context *ctx, unsigned char *key, int32_t keylen )
 {
-    int i, j, k, a;
+    int32_t i, j, k, a;
     unsigned char *m;
 
     ctx->x = 0;
@@ -73,9 +73,9 @@ void arc4_setup( arc4_context *ctx, unsigned char *key, int keylen )
 /*
  * ARC4 cipher function
  */
-void arc4_crypt( arc4_context *ctx, unsigned char *buf, int buflen )
+void arc4_crypt( arc4_context *ctx, unsigned char *buf, int32_t buflen )
 {
-    int i, x, y, a, b;
+    int32_t i, x, y, a, b;
     unsigned char *m;
 
     x = ctx->x;

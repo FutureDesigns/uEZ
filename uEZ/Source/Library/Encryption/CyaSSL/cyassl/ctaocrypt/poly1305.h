@@ -69,9 +69,9 @@ typedef struct Poly1305 {
 
 /* does init */
 
-CYASSL_API int Poly1305SetKey(Poly1305* poly1305, const byte* key, word32 kySz);
-CYASSL_API int Poly1305Update(Poly1305* poly1305, const byte*, word32);
-CYASSL_API int Poly1305Final(Poly1305* poly1305, byte* tag);
+CYASSL_API int32_t Poly1305SetKey(Poly1305* poly1305, const byte* key, word32 kySz);
+CYASSL_API int32_t Poly1305Update(Poly1305* poly1305, const byte*, word32);
+CYASSL_API int32_t Poly1305Final(Poly1305* poly1305, byte* tag);
 
 #ifdef __cplusplus
     } /* extern "C" */

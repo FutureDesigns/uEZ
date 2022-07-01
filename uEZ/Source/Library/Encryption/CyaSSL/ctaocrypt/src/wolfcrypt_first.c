@@ -31,13 +31,13 @@
 #ifdef HAVE_FIPS
 
 /* read only start address */
-const unsigned int wolfCrypt_FIPS_ro_start[] =
+const uint32_t wolfCrypt_FIPS_ro_start[] =
 { 0x1a2b3c4d, 0x00000001 };
 
 
 /* first function of text/code segment */
-int wolfCrypt_FIPS_first(void);
-int wolfCrypt_FIPS_first(void)
+int32_t wolfCrypt_FIPS_first(void);
+int32_t wolfCrypt_FIPS_first(void)
 {
     return 0;
 }

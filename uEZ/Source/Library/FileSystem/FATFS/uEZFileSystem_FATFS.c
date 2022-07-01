@@ -49,7 +49,7 @@
 typedef unsigned short	WORD;
 typedef unsigned long	DWORD;
 typedef unsigned char	BYTE;
-typedef unsigned int	UINT;
+typedef uint32_t	UINT;
 typedef unsigned short  WCHAR;
 #include "ff.h"
 

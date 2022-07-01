@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : WIDGET.h
 Purpose     : Widget interface
@@ -60,14 +61,14 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 */
 typedef struct {
   WM_HWIN    hWin;
-  int        Cmd;         /* WIDGET_ITEM_GET_XSIZE, WIDGET_ITEM_GET_YSIZE, WIDGET_ITEM_DRAW, */
-  int        ItemIndex;
-  int        Col;
-  int        x0, y0, x1, y1;
+  int32_t        Cmd;         /* WIDGET_ITEM_GET_XSIZE, WIDGET_ITEM_GET_YSIZE, WIDGET_ITEM_DRAW, */
+  int32_t        ItemIndex;
+  int32_t        Col;
+  int32_t        x0, y0, x1, y1;
   void     * p;
 } WIDGET_ITEM_DRAW_INFO;
 
-typedef int  WIDGET_DRAW_ITEM_FUNC(const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+typedef int32_t  WIDGET_DRAW_ITEM_FUNC(const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
 typedef void WIDGET_PAINT         (WM_HWIN hObj);
 typedef void WIDGET_CREATE        (WM_HWIN hObj);
 
@@ -115,6 +116,7 @@ typedef struct {
 #define RADIO_ID     0x52414449UL /* RADI */
 #define SCROLLBAR_ID 0x5343524fUL /* SCRO */
 #define SLIDER_ID    0x534c4944UL /* SLID */
+#define SWIPELIST_ID 0x53574950UL /* SWIP */
 #define TEXT_ID      0x54455854UL /* TEXT */
 #define TREEVIEW_ID  0x54524545UL /* TREE */
 #define ICONVIEW_ID  0x49434f4eUL /* ICON */
@@ -161,11 +163,13 @@ typedef struct {
 
 #define WIDGET_STATE_FOCUS              (1 << 0)
 #define WIDGET_STATE_VERTICAL           (1 << 3)
-#define WIDGET_STATE_FOCUSSABLE         (1 << 4)
+#define WIDGET_STATE_FOCUSABLE          (1 << 4)
 
 #define WIDGET_STATE_USER0              (1 << 8)    /* Freely available for derived widget */
 #define WIDGET_STATE_USER1              (1 << 9)    /* Freely available for derived widget */
 #define WIDGET_STATE_USER2              (1 << 10)   /* Freely available for derived widget */
+
+#define WIDGET_STATE_FOCUSSABLE         WIDGET_STATE_FOCUSABLE
 
 /*********************************************************************
 *
@@ -202,9 +206,9 @@ typedef struct {
 #define WIDGET_ITEM_GET_RADIUS         28
 #define WIDGET_ITEM_APPLY_PROPS        29  // Not to be documented. Use this message identifier to update the
                                            // properties of attached widgets from <WIDGET>_DrawSkinFlex().
+#define WIDGET_DRAW_BACKGROUND         30
 
-#define WIDGET_DRAW_OVERLAY    WIDGET_ITEM_DRAW_OVERLAY   
-#define WIDGET_DRAW_BACKGROUND WIDGET_ITEM_DRAW_BACKGROUND
+#define WIDGET_DRAW_OVERLAY    WIDGET_ITEM_DRAW_OVERLAY
 
 /*********************************************************************
 *
@@ -227,7 +231,7 @@ typedef struct {
 * The widget object is the base class for most widgets
 */
 typedef struct {
-  int EffectSize;
+  int32_t EffectSize;
   void (* pfDrawUp)      (void);
   void (* pfDrawUpRect)  (const GUI_RECT * pRect);
   void (* pfDrawDown)    (void);
@@ -262,9 +266,9 @@ typedef WM_HMEM GUI_DRAW_HANDLE;
 
 /* Declare Object constants (member functions etc)  */
 typedef struct {
-  void (* pfDraw)    (GUI_DRAW_HANDLE hDrawObj, WM_HWIN hObj, int x, int y);
-  int  (* pfGetXSize)(GUI_DRAW_HANDLE hDrawObj);
-  int  (* pfGetYSize)(GUI_DRAW_HANDLE hDrawObj);
+  void (* pfDraw)    (GUI_DRAW_HANDLE hDrawObj, WM_HWIN hObj, int32_t x, int32_t y);
+  int32_t  (* pfGetXSize)(GUI_DRAW_HANDLE hDrawObj);
+  int32_t  (* pfGetYSize)(GUI_DRAW_HANDLE hDrawObj);
 } GUI_DRAW_CONSTS;
 
 /* Declare Object */
@@ -278,15 +282,17 @@ struct GUI_DRAW {
 };
 
 /* GUI_DRAW_ API */
-void GUI_DRAW__Draw    (GUI_DRAW_HANDLE hDrawObj, WM_HWIN hObj, int x, int y);
-int  GUI_DRAW__GetXSize(GUI_DRAW_HANDLE hDrawObj);
-int  GUI_DRAW__GetYSize(GUI_DRAW_HANDLE hDrawObj);
+void GUI_DRAW__Draw    (GUI_DRAW_HANDLE hDrawObj, WM_HWIN hObj, int32_t x, int32_t y);
+int32_t  GUI_DRAW__GetXSize(GUI_DRAW_HANDLE hDrawObj);
+int32_t  GUI_DRAW__GetYSize(GUI_DRAW_HANDLE hDrawObj);
+
+void GUI_DrawStreamedEnableAuto(void);
 
 /* GUI_DRAW_ Constructurs for different objects */
-WM_HMEM GUI_DRAW_BITMAP_Create  (const GUI_BITMAP* pBitmap, int x, int y);
-WM_HMEM GUI_DRAW_BMP_Create     (const void* pBMP, int x, int y);
-WM_HMEM GUI_DRAW_STREAMED_Create(const GUI_BITMAP_STREAM * pBitmap, int x, int y);
-WM_HMEM GUI_DRAW_SELF_Create(GUI_DRAW_SELF_CB* pfDraw, int x, int y);
+WM_HMEM GUI_DRAW_BITMAP_Create  (const GUI_BITMAP* pBitmap, int32_t x, int32_t y);
+WM_HMEM GUI_DRAW_BMP_Create     (const void* pBMP, int32_t x, int32_t y);
+WM_HMEM GUI_DRAW_STREAMED_Create(const GUI_BITMAP_STREAM * pBitmap, int32_t x, int32_t y);
+WM_HMEM GUI_DRAW_SELF_Create(GUI_DRAW_SELF_CB* pfDraw, int32_t x, int32_t y);
 
 /*********************************************************************
 *
@@ -308,24 +314,30 @@ extern const WIDGET_EFFECT WIDGET_Effect_Simple;
 **********************************************************************
 */
 
-void      WIDGET__DrawFocusRect      (WIDGET * pWidget, const GUI_RECT * pRect, int Dist);
-void      WIDGET__DrawHLine          (WIDGET * pWidget, int y, int x0, int x1);
-void      WIDGET__DrawTriangle       (WIDGET * pWidget, int x, int y, int Size, int Inc);
-void      WIDGET__DrawVLine          (WIDGET * pWidget, int x, int y0, int y1);
+void      WIDGET__DrawFocusRect      (WIDGET * pWidget, const GUI_RECT * pRect, int32_t Dist);
+void      WIDGET__DrawHLine          (WIDGET * pWidget, int32_t y, int32_t x0, int32_t x1);
+void      WIDGET__DrawTriangle       (WIDGET * pWidget, int32_t x, int32_t y, int32_t Size, int32_t Inc);
+void      WIDGET__DrawVLine          (WIDGET * pWidget, int32_t x, int32_t y0, int32_t y1);
 void      WIDGET__EFFECT_DrawDownRect(WIDGET * pWidget, GUI_RECT * pRect);
 void      WIDGET__EFFECT_DrawDown    (WIDGET * pWidget);
 void      WIDGET__EFFECT_DrawUpRect  (WIDGET * pWidget, GUI_RECT * pRect);
 void      WIDGET__FillRectEx         (WIDGET * pWidget, const GUI_RECT * pRect);
-int       WIDGET__GetWindowSizeX     (WM_HWIN hWin);
+int32_t       WIDGET__GetWindowSizeX     (WM_HWIN hWin);
 GUI_COLOR WIDGET__GetBkColor         (WM_HWIN hObj);
-int       WIDGET__GetXSize           (const WIDGET * pWidget);
-int       WIDGET__GetYSize           (const WIDGET * pWidget);
+int32_t       WIDGET__GetXSize           (const WIDGET * pWidget);
+int32_t       WIDGET__GetYSize           (const WIDGET * pWidget);
 void      WIDGET__GetClientRect      (WIDGET * pWidget, GUI_RECT * pRect);
 void      WIDGET__GetInsideRect      (WIDGET * pWidget, GUI_RECT * pRect);
-void      WIDGET__Init               (WIDGET * pWidget, int Id, U16 State);
+void      WIDGET__Init               (WIDGET * pWidget, int32_t Id, U16 State);
 void      WIDGET__RotateRect90       (WIDGET * pWidget, GUI_RECT * pDest, const GUI_RECT * pRect);
 void      WIDGET__SetScrollState     (WM_HWIN hWin, const WM_SCROLL_STATE * pVState, const WM_SCROLL_STATE * pState);
 void      WIDGET__FillStringInRect   (const char * pText, const GUI_RECT * pFillRect, const GUI_RECT * pTextRectMax, const GUI_RECT * pTextRectAct);
+
+//
+// Function pointers for drawing streamed bitmaps
+//
+extern void (* GUI__pfDrawStreamedBitmap)  (const void * p, int32_t x, int32_t y);
+extern int32_t  (* GUI__pfDrawStreamedBitmapEx)(GUI_GET_DATA_FUNC * pfGetData, const void * p, int32_t x, int32_t y);
 
 /*********************************************************************
 *
@@ -333,12 +345,13 @@ void      WIDGET__FillStringInRect   (const char * pText, const GUI_RECT * pFill
 *
 **********************************************************************
 */
-void  WIDGET_SetState     (WM_HWIN hObj, int State);
-void  WIDGET_AndState     (WM_HWIN hObj, int State);
-void  WIDGET_OrState      (WM_HWIN hObj, int State);
-int   WIDGET_HandleActive (WM_HWIN hObj, WM_MESSAGE* pMsg);
-int   WIDGET_GetState     (WM_HWIN hObj);
-int   WIDGET_SetWidth     (WM_HWIN hObj, int Width);
+void  WIDGET_SetState     (WM_HWIN hObj, int32_t State);
+void  WIDGET_AndState     (WM_HWIN hObj, int32_t State);
+void  WIDGET_OrState      (WM_HWIN hObj, int32_t State);
+int32_t   WIDGET_HandleActive (WM_HWIN hObj, WM_MESSAGE* pMsg);
+int32_t   WIDGET_GetState     (WM_HWIN hObj);
+int32_t   WIDGET_SetWidth     (WM_HWIN hObj, int32_t Width);
+void  WIDGET_SetFocusable (WM_HWIN hObj, int32_t State);
 
 void  WIDGET_EFFECT_3D_DrawUp(void);
 
@@ -358,10 +371,10 @@ GUI_COLOR WIDGET_EFFECT_3D1L_GetColor  (unsigned Index);
 GUI_COLOR WIDGET_EFFECT_3D2L_GetColor  (unsigned Index);
 GUI_COLOR WIDGET_EFFECT_Simple_GetColor(unsigned Index);
 
-int WIDGET_EFFECT_3D_GetNumColors(void);
-int WIDGET_EFFECT_3D1L_GetNumColors(void);
-int WIDGET_EFFECT_3D2L_GetNumColors(void);
-int WIDGET_EFFECT_Simple_GetNumColors(void);
+int32_t WIDGET_EFFECT_3D_GetNumColors(void);
+int32_t WIDGET_EFFECT_3D1L_GetNumColors(void);
+int32_t WIDGET_EFFECT_3D2L_GetNumColors(void);
+int32_t WIDGET_EFFECT_Simple_GetNumColors(void);
 
 /*********************************************************************
 *
@@ -369,6 +382,8 @@ int WIDGET_EFFECT_Simple_GetNumColors(void);
 *
 **********************************************************************
 */
+#define WIDGET_EnableStreamAuto() GUI_DrawStreamedEnableAuto()
+
 #define WIDGET_SetDefaultEffect_3D()     WIDGET_SetDefaultEffect(&WIDGET_Effect_3D)
 #define WIDGET_SetDefaultEffect_3D1L()   WIDGET_SetDefaultEffect(&WIDGET_Effect_3D1L)
 #define WIDGET_SetDefaultEffect_3D2L()   WIDGET_SetDefaultEffect(&WIDGET_Effect_3D2L)
@@ -383,6 +398,4 @@ int WIDGET_EFFECT_Simple_GetNumColors(void);
 
 #endif   /* SLIDER_H */
 
-
-
-
+/*************************** End of file ****************************/

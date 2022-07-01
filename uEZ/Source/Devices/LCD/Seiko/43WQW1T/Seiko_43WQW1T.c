@@ -48,7 +48,7 @@ typedef struct {
 typedef struct {
     const DEVICE_LCD *iHAL;
     TUInt32 iBaseAddress;
-    int aNumOpen;
+    int32_t aNumOpen;
     TUInt32 iBacklightLevel;
     HAL_LCDController **iLCDController;
     DEVICE_SPI_BUS **iSPI;

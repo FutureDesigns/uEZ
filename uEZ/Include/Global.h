@@ -68,13 +68,18 @@ extern "C" {
 #endif
 
 #define U8    unsigned char
-#define U16   unsigned short
-#define U32   unsigned long
 #define I8    signed char
+#define U16   unsigned short
 #define I16   signed short
+#ifdef __x86_64__
+#define U32   unsigned
+#define I32   int32_t
+#else
+#define U32   unsigned long
 #define I32   signed long
+#endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__clang__) && !defined(__MINGW32__)
   //
   // Microsoft VC6 compiler related
   //
@@ -87,13 +92,21 @@ extern "C" {
   #else
     #define U64_C(x) x##ULL
   #endif
-#else 
+#else
   //
   // C99 compliant compiler
   //
   #define U64   unsigned long long
   #define I64   signed long long
   #define U64_C(x) x##ULL
+#endif
+
+#ifndef PTR_ADDR
+  #if (defined(_WIN64) || defined(__LP64__))  // 64-bit symbols used by Visual Studio and GCC, maybe others as well.
+    #define PTR_ADDR  U64
+  #else
+    #define PTR_ADDR  U32
+  #endif
 #endif
 
 #ifdef __cplusplus

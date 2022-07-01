@@ -114,7 +114,7 @@ static uint32_t Chip_Clock_GetDivRate(CHIP_CGU_CLKIN_T clock, CHIP_CGU_IDIV_T di
 static CHIP_CGU_BASE_CLK_T Chip_Clock_FindBaseClock(CHIP_CCU_CLK_T clk)
 {
 	CHIP_CGU_BASE_CLK_T baseclk = CLK_BASE_NONE;
-	int i = 0;
+	int32_t i = 0;
 
 	while ((baseclk == CLK_BASE_NONE) && (periph_to_base[i].clkbase != baseclk)) {
 		if ((clk >= periph_to_base[i].clkstart) && (clk <= periph_to_base[i].clkend)) {
@@ -511,7 +511,7 @@ CHIP_CGU_CLKIN_T Chip_Clock_GetBaseClock(CHIP_CGU_BASE_CLK_T BaseClock)
 }
 
 /* Enables a peripheral clock and sets clock states */
-void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int div)
+void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int32_t div)
 {
 	uint32_t reg = 1;
 

@@ -54,13 +54,13 @@ static char svrPort[] = "0";
 
 #ifdef NO_OLD_TLS
 /* if the protocol version is less than tls 1.2 return 1, else 0 */
-static int IsOldTlsVersion(const char* line)
+static int32_t IsOldTlsVersion(const char* line)
 {
     const char* find = "-v ";
     char* begin = strstr(line, find);
 
     if (begin) {
-        int version = -1;
+        int32_t version = -1;
 
         begin += 3;
 
@@ -76,10 +76,10 @@ static int IsOldTlsVersion(const char* line)
 
 
 /* if the cipher suite on line is valid store in suite and return 1, else 0 */
-static int IsValidCipherSuite(const char* line, char* suite)
+static int32_t IsValidCipherSuite(const char* line, char* suite)
 {
-    int  found = 0;
-    int  valid = 0;
+    int32_t  found = 0;
+    int32_t  valid = 0;
 
     const char* find = "-l ";
     const char* begin = strstr(line, find);
@@ -117,9 +117,9 @@ static int IsValidCipherSuite(const char* line, char* suite)
 }
 
 
-static int execute_test_case(int svr_argc, char** svr_argv,
-                              int cli_argc, char** cli_argv,
-                              int addNoVerify, int addNonBlocking)
+static int32_t execute_test_case(int32_t svr_argc, char** svr_argv,
+                              int32_t cli_argc, char** cli_argv,
+                              int32_t addNoVerify, int32_t addNonBlocking)
 {
 #ifdef CYASSL_TIRTOS
     func_args cliArgs = {0};
@@ -137,9 +137,9 @@ static int execute_test_case(int svr_argc, char** svr_argv,
     THREAD_TYPE serverThread;
     char        commandLine[MAX_COMMAND_SZ];
     char        cipherSuite[MAX_SUITE_SZ+1];
-    int         i;
+    int32_t         i;
     size_t      added = 0;
-    static      int tests = 1;
+    static      int32_t tests = 1;
 
     commandLine[0] = '\0';
     for (i = 0; i < svr_argc; i++) {
@@ -281,13 +281,13 @@ static void test_harness(void* vargs)
     func_args* args = (func_args*)vargs;
     char* script;
     long  sz, len;
-    int   cliMode = 0;   /* server or client command flag, server first */
-    int   ret;
+    int32_t   cliMode = 0;   /* server or client command flag, server first */
+    int32_t   ret;
     FILE* file;
     char* svrArgs[MAX_ARGS];
-    int   svrArgsSz;
+    int32_t   svrArgsSz;
     char* cliArgs[MAX_ARGS];
-    int   cliArgsSz;
+    int32_t   cliArgsSz;
     char* cursor;
     char* comment;
     const char* fname = "tests/test.conf";
@@ -347,7 +347,7 @@ static void test_harness(void* vargs)
     cliArgs[0] = args->argv[0];
 
     while (*cursor != 0) {
-        int do_it = 0;
+        int32_t do_it = 0;
 
         switch (*cursor) {
             case '\n':
@@ -412,7 +412,7 @@ static void test_harness(void* vargs)
 }
 
 
-int SuiteTest(void)
+int32_t SuiteTest(void)
 {
     func_args args;
     char argv0[2][80];

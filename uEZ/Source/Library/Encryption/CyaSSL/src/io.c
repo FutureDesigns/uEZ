@@ -68,7 +68,7 @@
         #undef RNG
         #define RNG CyaSSL_RNG 
         /* for avoiding name conflict in "stm32f2xx.h" */
-        static int errno;
+        static int32_t errno;
     #elif defined(CYASSL_TIRTOS)
         #include <sys/socket.h>
     #elif defined(CYASSL_IAR_ARM)
@@ -175,8 +175,8 @@
 
 #ifdef DEVKITPRO
     /* from network.h */
-    int net_send(int, const void*, int, unsigned int);
-    int net_recv(int, void*, int, unsigned int);
+    int32_t net_send(int32_t, const void*, int32_t, uint32_t);
+    int32_t net_recv(int32_t, void*, int32_t, uint32_t);
     #define SEND_FUNCTION net_send
     #define RECV_FUNCTION net_recv
 #elif defined(CYASSL_LWIP)
@@ -186,8 +186,8 @@
     #define SEND_FUNCTION pico_send
     #define RECV_FUNCTION pico_recv
 #elif UEZ
-    int UEZCyaSSL_Send(int, const void*, int, unsigned int);
-    int UEZCyaSSL_Receive(int, void*, int, unsigned int);
+    int32_t UEZCyaSSL_Send(int32_t, const void*, int32_t, uint32_t);
+    int32_t UEZCyaSSL_Receive(int32_t, void*, int32_t, uint32_t);
     #define SEND_FUNCTION UEZCyaSSL_Send
     #define RECV_FUNCTION UEZCyaSSL_Receive
 #else
@@ -199,7 +199,7 @@
 /* Translates return codes returned from 
  * send() and recv() if need be. 
  */
-static INLINE int TranslateReturnCode(int old, int sd)
+static INLINE int32_t TranslateReturnCode(int32_t old, int32_t sd)
 {
     (void)sd;
 
@@ -219,7 +219,7 @@ static INLINE int TranslateReturnCode(int old, int sd)
     return old;
 }
 
-static INLINE int LastError(void)
+static INLINE int32_t LastError(void)
 {
 #ifdef USE_WINDOWS_API 
     return WSAGetLastError();
@@ -233,15 +233,15 @@ static INLINE int LastError(void)
 /* The receive embedded callback
  *  return : nb bytes read, or error
  */
-int EmbedReceive(CYASSL *ssl, char *buf, int sz, void *ctx)
+int32_t EmbedReceive(CYASSL *ssl, char *buf, int32_t sz, void *ctx)
 {
-    int recvd;
-    int err;
-    int sd = *(int*)ctx;
+    int32_t recvd;
+    int32_t err;
+    int32_t sd = *(int32_t*)ctx;
 
 #ifdef CYASSL_DTLS
     {
-        int dtls_timeout = CyaSSL_dtls_get_current_timeout(ssl);
+        int32_t dtls_timeout = CyaSSL_dtls_get_current_timeout(ssl);
         if (CyaSSL_dtls(ssl)
                      && !CyaSSL_get_using_nonblock(ssl)
                      && dtls_timeout != 0) {
@@ -260,7 +260,7 @@ int EmbedReceive(CYASSL *ssl, char *buf, int sz, void *ctx)
     }
 #endif
 
-    recvd = (int)RECV_FUNCTION(sd, buf, sz, ssl->rflags);
+    recvd = (int32_t)RECV_FUNCTION(sd, buf, sz, ssl->rflags);
 
     recvd = TranslateReturnCode(recvd, sd);
 
@@ -310,14 +310,14 @@ int EmbedReceive(CYASSL *ssl, char *buf, int sz, void *ctx)
 /* The send embedded callback
  *  return : nb bytes sent, or error
  */
-int EmbedSend(CYASSL* ssl, char *buf, int sz, void *ctx)
+int32_t EmbedSend(CYASSL* ssl, char *buf, int32_t sz, void *ctx)
 {
-    int sd = *(int*)ctx;
-    int sent;
-    int len = sz;
-    int err;
+    int32_t sd = *(int32_t*)ctx;
+    int32_t sent;
+    int32_t len = sz;
+    int32_t err;
 
-    sent = (int)SEND_FUNCTION(sd, &buf[sz - len], len, ssl->wflags);
+    sent = (int32_t)SEND_FUNCTION(sd, &buf[sz - len], len, ssl->wflags);
 
     if (sent < 0) {
         err = LastError();
@@ -354,7 +354,7 @@ int EmbedSend(CYASSL* ssl, char *buf, int sz, void *ctx)
 #include <cyassl/ctaocrypt/sha.h>
 
 #ifdef USE_WINDOWS_API
-   #define XSOCKLENT int
+   #define XSOCKLENT int32_t
 #else
    #define XSOCKLENT socklen_t
 #endif
@@ -366,13 +366,13 @@ int EmbedSend(CYASSL* ssl, char *buf, int sz, void *ctx)
 /* The receive embedded callback
  *  return : nb bytes read, or error
  */
-int EmbedReceiveFrom(CYASSL *ssl, char *buf, int sz, void *ctx)
+int32_t EmbedReceiveFrom(CYASSL *ssl, char *buf, int32_t sz, void *ctx)
 {
     CYASSL_DTLS_CTX* dtlsCtx = (CYASSL_DTLS_CTX*)ctx;
-    int recvd;
-    int err;
-    int sd = dtlsCtx->fd;
-    int dtls_timeout = CyaSSL_dtls_get_current_timeout(ssl);
+    int32_t recvd;
+    int32_t err;
+    int32_t sd = dtlsCtx->fd;
+    int32_t dtls_timeout = CyaSSL_dtls_get_current_timeout(ssl);
     struct sockaddr_storage peer;
     XSOCKLENT peerSz = sizeof(peer);
 
@@ -392,7 +392,7 @@ int EmbedReceiveFrom(CYASSL *ssl, char *buf, int sz, void *ctx)
         }
     }
 
-    recvd = (int)RECVFROM_FUNCTION(sd, buf, sz, ssl->rflags,
+    recvd = (int32_t)RECVFROM_FUNCTION(sd, buf, sz, ssl->rflags,
                                   (struct sockaddr*)&peer, &peerSz);
 
     recvd = TranslateReturnCode(recvd, sd);
@@ -444,17 +444,17 @@ int EmbedReceiveFrom(CYASSL *ssl, char *buf, int sz, void *ctx)
 /* The send embedded callback
  *  return : nb bytes sent, or error
  */
-int EmbedSendTo(CYASSL* ssl, char *buf, int sz, void *ctx)
+int32_t EmbedSendTo(CYASSL* ssl, char *buf, int32_t sz, void *ctx)
 {
     CYASSL_DTLS_CTX* dtlsCtx = (CYASSL_DTLS_CTX*)ctx;
-    int sd = dtlsCtx->fd;
-    int sent;
-    int len = sz;
-    int err;
+    int32_t sd = dtlsCtx->fd;
+    int32_t sent;
+    int32_t len = sz;
+    int32_t err;
 
     CYASSL_ENTER("EmbedSendTo()");
 
-    sent = (int)SENDTO_FUNCTION(sd, &buf[sz - len], len, ssl->wflags,
+    sent = (int32_t)SENDTO_FUNCTION(sd, &buf[sz - len], len, ssl->wflags,
                                 (const struct sockaddr*)dtlsCtx->peer.sa,
                                 dtlsCtx->peer.sz);
     if (sent < 0) {
@@ -490,13 +490,13 @@ int EmbedSendTo(CYASSL* ssl, char *buf, int sz, void *ctx)
 /* The DTLS Generate Cookie callback
  *  return : number of bytes copied into buf, or error
  */
-int EmbedGenerateCookie(CYASSL* ssl, byte *buf, int sz, void *ctx)
+int32_t EmbedGenerateCookie(CYASSL* ssl, byte *buf, int32_t sz, void *ctx)
 {
-    int sd = ssl->wfd;
+    int32_t sd = ssl->wfd;
     struct sockaddr_storage peer;
     XSOCKLENT peerSz = sizeof(peer);
     byte digest[SHA_DIGEST_SIZE];
-    int  ret = 0;
+    int32_t  ret = 0;
 
     (void)ctx;
 
@@ -522,9 +522,9 @@ int EmbedGenerateCookie(CYASSL* ssl, byte *buf, int sz, void *ctx)
 #ifdef HAVE_OCSP
 
 
-static int Word16ToString(char* d, word16 number)
+static int32_t Word16ToString(char* d, word16 number)
 {
-    int i = 0;
+    int32_t i = 0;
 
     if (d != NULL) {
         word16 order = 10000;
@@ -554,10 +554,10 @@ static int Word16ToString(char* d, word16 number)
 }
 
 
-static int tcp_connect(SOCKET_T* sockfd, const char* ip, word16 port)
+static int32_t tcp_connect(SOCKET_T* sockfd, const char* ip, word16 port)
 {
     struct sockaddr_storage addr;
-    int sockaddr_len = sizeof(struct sockaddr_in);
+    int32_t sockaddr_len = sizeof(struct sockaddr_in);
     XMEMSET(&addr, 0, sizeof(addr));
 
     #ifdef HAVE_GETADDRINFO
@@ -627,8 +627,8 @@ static int tcp_connect(SOCKET_T* sockfd, const char* ip, word16 port)
 }
 
 
-static int build_http_request(const char* domainName, const char* path,
-                                    int ocspReqSz, byte* buf, int bufSize)
+static int32_t build_http_request(const char* domainName, const char* path,
+                                    int32_t ocspReqSz, byte* buf, int32_t bufSize)
 {
     word32 domainNameLen, pathLen, ocspReqSzStrLen, completeLen;
     char ocspReqSzStr[6];
@@ -660,10 +660,10 @@ static int build_http_request(const char* domainName, const char* path,
 }
 
 
-static int decode_url(const char* url, int urlSz,
+static int32_t decode_url(const char* url, int32_t urlSz,
     char* outName, char* outPath, word16* outPort)
 {
-    int result = -1;
+    int32_t result = -1;
 
     if (outName != NULL && outPath != NULL && outPort != NULL)
     {
@@ -675,7 +675,7 @@ static int decode_url(const char* url, int urlSz,
         }
         else
         {
-            int i, cur;
+            int32_t i, cur;
     
             /* need to break the url down into scheme, address, and port */
             /*     "http://example.com:8080/" */
@@ -704,7 +704,7 @@ static int decode_url(const char* url, int urlSz,
     
             if (cur < urlSz && url[cur] == ':') {
                 char port[6];
-                int j;
+                int32_t j;
                 word32 bigPort = 0;
                 i = 0;
                 cur++;
@@ -743,14 +743,14 @@ static int decode_url(const char* url, int urlSz,
 
 /* return: >0 OCSP Response Size
  *         -1 error */
-static int process_http_response(int sfd, byte** respBuf,
-                                                  byte* httpBuf, int httpBufSz)
+static int32_t process_http_response(int32_t sfd, byte** respBuf,
+                                                  byte* httpBuf, int32_t httpBufSz)
 {
-    int result;
-    int len = 0;
+    int32_t result;
+    int32_t len = 0;
     char *start, *end;
     byte *recvBuf = NULL;
-    int recvBufSz = 0;
+    int32_t recvBufSz = 0;
     enum phr_state { phr_init, phr_http_start, phr_have_length,
                      phr_have_type, phr_wait_end, phr_http_end
     } state = phr_init;
@@ -758,7 +758,7 @@ static int process_http_response(int sfd, byte** respBuf,
     start = end = NULL;
     do {
         if (end == NULL) {
-            result = (int)recv(sfd, (char*)httpBuf+len, httpBufSz-len-1, 0);
+            result = (int32_t)recv(sfd, (char*)httpBuf+len, httpBufSz-len-1, 0);
             if (result > 0) {
                 len += result;
                 start = (char*)httpBuf;
@@ -789,7 +789,7 @@ static int process_http_response(int sfd, byte** respBuf,
         }
         else {
             *end = 0;
-            len -= (int)(end - start) + 2;
+            len -= (int32_t)(end - start) + 2;
                 /* adjust len to remove the first line including the /r/n */
 
             if (XSTRNCASECMP(start, "HTTP/1", 6) == 0) {
@@ -845,7 +845,7 @@ static int process_http_response(int sfd, byte** respBuf,
 
     /* receive the OCSP response data */
     do {
-        result = (int)recv(sfd, (char*)recvBuf+len, recvBufSz-len, 0);
+        result = (int32_t)recv(sfd, (char*)recvBuf+len, recvBufSz-len, 0);
         if (result > 0)
             len += result;
         else {
@@ -861,12 +861,12 @@ static int process_http_response(int sfd, byte** respBuf,
 
 #define SCRATCH_BUFFER_SIZE 512
 
-int EmbedOcspLookup(void* ctx, const char* url, int urlSz,
-                        byte* ocspReqBuf, int ocspReqSz, byte** ocspRespBuf)
+int32_t EmbedOcspLookup(void* ctx, const char* url, int32_t urlSz,
+                        byte* ocspReqBuf, int32_t ocspReqSz, byte** ocspRespBuf)
 {
     SOCKET_T sfd = 0;
     word16   port;
-    int      ret = -1;
+    int32_t      ret = -1;
 #ifdef CYASSL_SMALL_STACK
     char*    path;
     char*    domainName;
@@ -901,7 +901,7 @@ int EmbedOcspLookup(void* ctx, const char* url, int urlSz,
     else {
         /* Note, the library uses the EmbedOcspRespFree() callback to
          * free this buffer. */
-        int   httpBufSz = SCRATCH_BUFFER_SIZE;
+        int32_t   httpBufSz = SCRATCH_BUFFER_SIZE;
         byte* httpBuf   = (byte*)XMALLOC(httpBufSz, NULL, 
                                                         DYNAMIC_TYPE_IN_BUFFER);
 
@@ -915,11 +915,11 @@ int EmbedOcspLookup(void* ctx, const char* url, int urlSz,
             if ((tcp_connect(&sfd, domainName, port) != 0) || (sfd <= 0)) {
                 CYASSL_MSG("OCSP Responder connection failed");
             }
-            else if ((int)send(sfd, (char*)httpBuf, httpBufSz, 0) !=
+            else if ((int32_t)send(sfd, (char*)httpBuf, httpBufSz, 0) !=
                                                                     httpBufSz) {
                 CYASSL_MSG("OCSP http request failed");
             }
-            else if ((int)send(sfd, (char*)ocspReqBuf, ocspReqSz, 0) !=
+            else if ((int32_t)send(sfd, (char*)ocspReqBuf, ocspReqSz, 0) !=
                                                                     ocspReqSz) {
                 CYASSL_MSG("OCSP ocsp request failed");
             }
@@ -997,13 +997,13 @@ CYASSL_API void* CyaSSL_GetIOWriteCtx(CYASSL* ssl)
 }
 
 
-CYASSL_API void CyaSSL_SetIOReadFlags(CYASSL* ssl, int flags)
+CYASSL_API void CyaSSL_SetIOReadFlags(CYASSL* ssl, int32_t flags)
 {
     ssl->rflags = flags; 
 }
 
 
-CYASSL_API void CyaSSL_SetIOWriteFlags(CYASSL* ssl, int flags)
+CYASSL_API void CyaSSL_SetIOWriteFlags(CYASSL* ssl, int32_t flags)
 {
     ssl->wflags = flags;
 }
@@ -1039,7 +1039,7 @@ CYASSL_API void* CyaSSL_GetCookieCtx(CYASSL* ssl)
 /* The NetX receive callback
  *  return :  bytes read, or error
  */
-int NetX_Receive(CYASSL *ssl, char *buf, int sz, void *ctx)
+int32_t NetX_Receive(CYASSL *ssl, char *buf, int32_t sz, void *ctx)
 {
     NetX_Ctx* nxCtx = (NetX_Ctx*)ctx;
     ULONG left;
@@ -1093,7 +1093,7 @@ int NetX_Receive(CYASSL *ssl, char *buf, int sz, void *ctx)
 /* The NetX send callback
  *  return : bytes sent, or error
  */
-int NetX_Send(CYASSL* ssl, char *buf, int sz, void *ctx)
+int32_t NetX_Send(CYASSL* ssl, char *buf, int32_t sz, void *ctx)
 {
     NetX_Ctx*       nxCtx = (NetX_Ctx*)ctx;
     NX_PACKET*      packet;

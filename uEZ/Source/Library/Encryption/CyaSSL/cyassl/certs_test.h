@@ -70,7 +70,7 @@ const unsigned char client_key_der_1024[] =
 	0xA2, 0xFE, 0xBF, 0x08, 0x6B, 0x1A, 0x5D, 0x3F, 0x90, 0x12, 
 	0xB1, 0x05, 0x86, 0x31, 0x29, 0xDB, 0xD9, 0xE2
 };
-const int sizeof_client_key_der_1024 = sizeof(client_key_der_1024);
+const int32_t sizeof_client_key_der_1024 = sizeof(client_key_der_1024);
 
 /* ./certs/1024/client-cert.der, 1024-bit */
 const unsigned char client_cert_der_1024[] =
@@ -152,7 +152,7 @@ const unsigned char client_cert_der_1024[] =
 	0x1B, 0x4E, 0x5D, 0xBC, 0x4E, 0x9A, 0x7C, 0x1F, 0xAB, 0x56, 
 	0x47, 0x4A
 };
-const int sizeof_client_cert_der_1024 = sizeof(client_cert_der_1024);
+const int32_t sizeof_client_cert_der_1024 = sizeof(client_cert_der_1024);
 
 /* ./certs/1024/dh1024.der, 1024-bit */
 const unsigned char dh_key_der_1024[] =
@@ -172,7 +172,7 @@ const unsigned char dh_key_der_1024[] =
 	0x8C, 0x63, 0x0A, 0xAD, 0xC7, 0x10, 0xEA, 0xC7, 0xA1, 0xB9, 
 	0x9D, 0xF2, 0xA8, 0x37, 0x73, 0x02, 0x01, 0x02
 };
-const int sizeof_dh_key_der_1024 = sizeof(dh_key_der_1024);
+const int32_t sizeof_dh_key_der_1024 = sizeof(dh_key_der_1024);
 
 /* ./certs/1024/dsa1024.der, 1024-bit */
 const unsigned char dsa_key_der_1024[] =
@@ -223,7 +223,7 @@ const unsigned char dsa_key_der_1024[] =
 	0x3B, 0xA1, 0x19, 0x75, 0xDF, 0x9B, 0xF5, 0x72, 0x53, 0x4F, 
 	0x39, 0xE1, 0x1C, 0xEC, 0x13, 0x84, 0x82, 0x18
 };
-const int sizeof_dsa_key_der_1024 = sizeof(dsa_key_der_1024);
+const int32_t sizeof_dsa_key_der_1024 = sizeof(dsa_key_der_1024);
 
 /* ./certs/1024/rsa1024.der, 1024-bit */
 const unsigned char rsa_key_der_1024[] =
@@ -290,7 +290,7 @@ const unsigned char rsa_key_der_1024[] =
 	0xB9, 0x9E, 0xD5, 0x5B, 0x2E, 0x87, 0x1C, 0x58, 0xD0, 0x37, 
 	0x89, 0x96, 0xEC, 0x48, 0x54, 0xF5, 0x9F, 0x0F, 0xB3
 };
-const int sizeof_rsa_key_der_1024 = sizeof(rsa_key_der_1024);
+const int32_t sizeof_rsa_key_der_1024 = sizeof(rsa_key_der_1024);
 
 #elif defined(USE_CERT_BUFFERS_2048)
 
@@ -418,7 +418,7 @@ const unsigned char client_key_der_2048[] =
 	0x45, 0x5D, 0x13, 0x39, 0x65, 0x42, 0x46, 0xA1, 0x9F, 0xCD, 
 	0xF5, 0xBF
 };
-const int sizeof_client_key_der_2048 = sizeof(client_key_der_2048);
+const int32_t sizeof_client_key_der_2048 = sizeof(client_key_der_2048);
 
 /* ./certs/client-cert.der, 2048-bit */
 const unsigned char client_cert_der_2048[] =
@@ -544,7 +544,7 @@ const unsigned char client_cert_der_2048[] =
 	0xAF, 0x8D, 0xE2, 0x32, 0xCB, 0x45, 0x20, 0xD6, 0x19, 0x4D, 
 	0x5B, 0x77, 0x31, 0xCC, 0x0F, 0x2D, 0xC0, 0x7E
 };
-const int sizeof_client_cert_der_2048 = sizeof(client_cert_der_2048);
+const int32_t sizeof_client_cert_der_2048 = sizeof(client_cert_der_2048);
 
 /* ./certs/dh2048.der, 2048-bit */
 const unsigned char dh_key_der_2048[] =
@@ -577,7 +577,7 @@ const unsigned char dh_key_der_2048[] =
 	0xC3, 0xA9, 0x41, 0x83, 0xFB, 0xC7, 0xFA, 0xC8, 0xE2, 0x1E, 
 	0x7E, 0xAF, 0x00, 0x3F, 0x93, 0x02, 0x01, 0x02
 };
-const int sizeof_dh_key_der_2048 = sizeof(dh_key_der_2048);
+const int32_t sizeof_dh_key_der_2048 = sizeof(dh_key_der_2048);
 
 /* ./certs/dsa2048.der, 2048-bit */
 const unsigned char dsa_key_der_2048[] =
@@ -667,7 +667,7 @@ const unsigned char dsa_key_der_2048[] =
 	0x3E, 0x75, 0x13, 0x13, 0x06, 0x8F, 0x94, 0xD3, 0xE6, 0xE9, 
 	0x00, 0xCB, 0x62, 0x6D, 0x9A
 };
-const int sizeof_dsa_key_der_2048 = sizeof(dsa_key_der_2048);
+const int32_t sizeof_dsa_key_der_2048 = sizeof(dsa_key_der_2048);
 
 /* ./certs/rsa2048.der, 2048-bit */
 const unsigned char rsa_key_der_2048[] =
@@ -793,7 +793,7 @@ const unsigned char rsa_key_der_2048[] =
 	0x83, 0x0B, 0xD4, 0x74, 0x80, 0xB6, 0x7D, 0x62, 0x45, 0xBF, 
 	0x56
 };
-const int sizeof_rsa_key_der_2048 = sizeof(rsa_key_der_2048);
+const int32_t sizeof_rsa_key_der_2048 = sizeof(rsa_key_der_2048);
 
 /* ./certs/ca-cert.der, 2048-bit */
 const unsigned char ca_cert_der_2048[] =
@@ -919,7 +919,7 @@ const unsigned char ca_cert_der_2048[] =
 	0x51, 0x91, 0xA4, 0xA2, 0x85, 0x15, 0x83, 0xAF, 0xF0, 0x5B, 
 	0x9B, 0x28, 0x49, 0x5F, 0xB2, 0xB3, 0x03, 0xD8
 };
-const int sizeof_ca_cert_der_2048 = sizeof(ca_cert_der_2048);
+const int32_t sizeof_ca_cert_der_2048 = sizeof(ca_cert_der_2048);
 
 /* ./certs/server-key.der, 2048-bit */
 const unsigned char server_key_der_2048[] =
@@ -1045,7 +1045,7 @@ const unsigned char server_key_der_2048[] =
 	0x7C, 0x9A, 0x1F, 0x0C, 0x7C, 0xA9, 0xB0, 0x0E, 0x21, 0x37, 
 	0x3B, 0xF1, 0xB0
 };
-const int sizeof_server_key_der_2048 = sizeof(server_key_der_2048);
+const int32_t sizeof_server_key_der_2048 = sizeof(server_key_der_2048);
 
 /* ./certs/server-cert.der, 2048-bit */
 const unsigned char server_cert_der_2048[] =
@@ -1170,7 +1170,7 @@ const unsigned char server_cert_der_2048[] =
 	0x12, 0x6D, 0xA0, 0xD6, 0x25, 0x09, 0x85, 0xC6, 0x2A, 0x0C, 
 	0xAF, 0xA7, 0x58, 0xE6, 0x52, 0x8B
 };
-const int sizeof_server_cert_der_2048 = sizeof(server_cert_der_2048);
+const int32_t sizeof_server_cert_der_2048 = sizeof(server_cert_der_2048);
 
 #endif /* USE_CERT_BUFFERS_1024 */
 

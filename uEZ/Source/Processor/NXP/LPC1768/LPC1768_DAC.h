@@ -44,7 +44,7 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <HAL/DAC.h>
-#include <Include\Types\GPIO.h>
+#include <Include/Types/GPIO.h>
 
 #ifdef __cplusplus
 extern "C" {

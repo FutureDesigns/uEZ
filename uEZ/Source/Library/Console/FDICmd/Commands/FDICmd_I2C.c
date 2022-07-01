@@ -58,7 +58,7 @@
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdI2CProbe(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdI2CProbe(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezDevice i2c;
     T_uezError error;
@@ -124,7 +124,7 @@ int UEZCmdI2CProbe(void *aWorkspace, int argc, char *argv[])
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdI2CWrite(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdI2CWrite(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezDevice i2c;
     T_uezError error;
@@ -132,7 +132,7 @@ int UEZCmdI2CWrite(void *aWorkspace, int argc, char *argv[])
     TUInt32 v;
     TUInt8 data[128];
     char busName[] = "I2C0";
-    int i;
+    int32_t i;
 
     if (argc >= 4) {
         busName[3] = argv[1][0];
@@ -214,7 +214,7 @@ int UEZCmdI2CWrite(void *aWorkspace, int argc, char *argv[])
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdI2CRead(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdI2CRead(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezDevice i2c;
     T_uezError error;
@@ -222,7 +222,7 @@ int UEZCmdI2CRead(void *aWorkspace, int argc, char *argv[])
     TUInt32 num;
     TUInt8 data[128];
     char busName[] = "I2C0";
-    int i;
+    int32_t i;
 
     if (argc == 4) {
         busName[3] = argv[1][0];

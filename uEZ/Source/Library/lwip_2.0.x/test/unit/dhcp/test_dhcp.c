@@ -115,7 +115,7 @@ static const u8_t arpreply[] = {
     0x00, 0x00, 0x00, 0x00, /* target ip */
 };
 
-static int txpacket;
+static int32_t txpacket;
 static enum tcase {
   TEST_LWIP_DHCP,
   TEST_LWIP_DHCP_NAK,
@@ -124,10 +124,10 @@ static enum tcase {
   TEST_LWIP_DHCP_INVALID_OVERLOAD
 } tcase;
 
-static int debug = 0;
-static void setdebug(int a) {debug = a;}
+static int32_t debug = 0;
+static void setdebug(int32_t a) {debug = a;}
 
-static int tick = 0;
+static int32_t tick = 0;
 static void tick_lwip(void)
 {
   tick++;
@@ -212,7 +212,7 @@ static void check_pkt(struct pbuf *p, u32_t pos, const u8_t *mem, u32_t len)
 
 static void check_pkt_fuzzy(struct pbuf *p, u32_t startpos, const u8_t *mem, u32_t len)
 {
-  int found;
+  int32_t found;
   u32_t i;
   u8_t *data;
 
@@ -245,7 +245,7 @@ static err_t lwip_tx_func(struct netif *netif, struct pbuf *p)
     /* Dump data */
     printf("TX data (pkt %d, len %d, tick %d)", txpacket, p->tot_len, tick);
     do {
-      int i;
+      int32_t i;
       for (i = 0; i < pp->len; i++) {
         printf(" %02X", ((u8_t *) pp->payload)[i]);
       }
@@ -433,7 +433,7 @@ START_TEST(test_dhcp)
   ip4_addr_t addr;
   ip4_addr_t netmask;
   ip4_addr_t gw;
-  int i;
+  int32_t i;
   u32_t xid;
   LWIP_UNUSED_ARG(_i);
 
@@ -720,7 +720,7 @@ START_TEST(test_dhcp_relayed)
   ip4_addr_t addr;
   ip4_addr_t netmask;
   ip4_addr_t gw;
-  int i;
+  int32_t i;
   u32_t xid;
   LWIP_UNUSED_ARG(_i);
 

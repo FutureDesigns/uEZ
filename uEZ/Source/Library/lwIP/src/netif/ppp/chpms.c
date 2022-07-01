@@ -107,7 +107,7 @@ typedef struct {
 
 /* XXX Don't know what to do with these. */
 extern void setkey(const char *);
-extern void encrypt(char *, int);
+extern void encrypt(char *, int32_t);
 
 static void DesEncrypt (u_char *, u_char *, u_char *);
 static void MakeKey (u_char *, u_char *);
@@ -124,14 +124,14 @@ static void ChallengeResponse(
 );
 static void ChapMS_NT(
   char *rchallenge,
-  int rchallenge_len,
+  int32_t rchallenge_len,
   char *secret,
-  int secret_len,
+  int32_t secret_len,
   MS_ChapResponse *response
 );
 static u_char Get7Bits(
   u_char *input,
-  int startBit
+  int32_t startBit
 );
 
 
@@ -139,11 +139,11 @@ static u_char Get7Bits(
 /*** PUBLIC FUNCTION DEFINITIONS ***/
 /***********************************/
 void
-ChapMS( chap_state *cstate, char *rchallenge, int rchallenge_len, char *secret, int secret_len)
+ChapMS( chap_state *cstate, char *rchallenge, int32_t rchallenge_len, char *secret, int32_t secret_len)
 {
   MS_ChapResponse response;
 #ifdef MSLANMAN
-  extern int ms_lanman;
+  extern int32_t ms_lanman;
 #endif
 
 #if 0
@@ -256,9 +256,9 @@ DesEncrypt( u_char *clear, /* IN  8 octets */
 
 
 static u_char
-Get7Bits( u_char *input, int startBit)
+Get7Bits( u_char *input, int32_t startBit)
 {
-  register unsigned int  word;
+  register uint32_t  word;
 
   word  = (unsigned)input[startBit / 8] << 8;
   word |= (unsigned)input[startBit / 8 + 1];
@@ -277,8 +277,8 @@ Get7Bits( u_char *input, int startBit)
 static void
 Expand(u_char *in, u_char *out)
 {
-  int j, c;
-  int i;
+  int32_t j, c;
+  int32_t i;
 
   for(i = 0; i < 64; in++){
     c = *in;
@@ -294,9 +294,9 @@ Expand(u_char *in, u_char *out)
 static void
 Collapse(u_char *in, u_char *out)
 {
-  int j;
-  int i;
-  unsigned int c;
+  int32_t j;
+  int32_t i;
+  uint32_t c;
 
   for (i = 0; i < 64; i += 8, out++) {
     c = 0;
@@ -335,15 +335,15 @@ MakeKey( u_char *key,    /* IN  56 bit DES key missing parity bits */
 
 static void
 ChapMS_NT( char *rchallenge,
-           int rchallenge_len,
+           int32_t rchallenge_len,
            char *secret,
-           int secret_len,
+           int32_t secret_len,
            MS_ChapResponse *response)
 {
-  int      i;
+  int32_t      i;
   MDstruct  md4Context;
   u_char    unicodePassword[MAX_NT_PASSWORD * 2];
-  static int  low_byte_first = -1;
+  static int32_t  low_byte_first = -1;
 
   /* Initialize the Unicode version of the secret (== password). */
   /* This implicitly supports 8-bit ISO8859/1 characters. */
@@ -355,7 +355,7 @@ ChapMS_NT( char *rchallenge,
   MDupdate(&md4Context, unicodePassword, secret_len * 2 * 8);  /* Unicode is 2 bytes/char, *8 for bit count */
 
   if (low_byte_first == -1) {
-    low_byte_first = (htons((unsigned short int)1) != 1);
+    low_byte_first = (htons((unsigned short int32_t)1) != 1);
   }
   if (low_byte_first == 0) {
     MDreverse((u_long *)&md4Context);  /*  sfb 961105 */
@@ -371,12 +371,12 @@ static u_char *StdText = (u_char *)"KGS!@#$%"; /* key from rasapi32.dll */
 
 static void
 ChapMS_LANMan( char *rchallenge,
-               int rchallenge_len,
+               int32_t rchallenge_len,
                char *secret,
-               int secret_len,
+               int32_t secret_len,
                MS_ChapResponse  *response)
 {
-  int      i;
+  int32_t      i;
   u_char    UcasePassword[MAX_NT_PASSWORD]; /* max is actually 14 */
   u_char    PasswordHash[16];
   

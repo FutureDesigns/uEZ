@@ -30,13 +30,13 @@ struct CYASSL_DSA {
 CYASSL_API CYASSL_DSA* CyaSSL_DSA_new(void);
 CYASSL_API void        CyaSSL_DSA_free(CYASSL_DSA*);
 
-CYASSL_API int CyaSSL_DSA_generate_key(CYASSL_DSA*);
-CYASSL_API int CyaSSL_DSA_generate_parameters_ex(CYASSL_DSA*, int bits,
-                   unsigned char* seed, int seedLen, int* counterRet,
+CYASSL_API int32_t CyaSSL_DSA_generate_key(CYASSL_DSA*);
+CYASSL_API int32_t CyaSSL_DSA_generate_parameters_ex(CYASSL_DSA*, int32_t bits,
+                   unsigned char* seed, int32_t seedLen, int32_t* counterRet,
                    unsigned long* hRet, void* cb);
 
-CYASSL_API int CyaSSL_DSA_LoadDer(CYASSL_DSA*, const unsigned char*, int sz);
-CYASSL_API int CyaSSL_DSA_do_sign(const unsigned char* d, unsigned char* sigRet,
+CYASSL_API int32_t CyaSSL_DSA_LoadDer(CYASSL_DSA*, const unsigned char*, int32_t sz);
+CYASSL_API int32_t CyaSSL_DSA_do_sign(const unsigned char* d, unsigned char* sigRet,
                                   CYASSL_DSA* dsa);
 
 #define DSA_new CyaSSL_DSA_new

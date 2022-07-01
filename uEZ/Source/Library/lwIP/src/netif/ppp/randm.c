@@ -156,7 +156,7 @@ avRandom()
 /*****************************/
 /*** LOCAL DATA STRUCTURES ***/
 /*****************************/
-static int  avRandomized = 0;       /* Set when truely randomized. */
+static int32_t  avRandomized = 0;       /* Set when truely randomized. */
 static u32_t avRandomSeed = 0;      /* Seed used for random number generation. */
 
 

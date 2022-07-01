@@ -81,7 +81,7 @@ portLONG lEMACSend( portCHAR *pcFrom, unsigned portLONG ulLength, portLONG lEndO
     return 1;
 }
 
-unsigned int CheckFrameReceived(void)
+uint32_t CheckFrameReceived(void)
 {             // Packet received ?
     return G_emac->CheckFrameReceived(G_emacWS);
 }
@@ -154,7 +154,7 @@ portLONG lEMACSend( portCHAR *pcFrom, unsigned portLONG ulLength, portLONG lEndO
 {
     return 0;
 }
-unsigned int CheckFrameReceived(void)
+uint32_t CheckFrameReceived(void)
 {
     return 0;
 }

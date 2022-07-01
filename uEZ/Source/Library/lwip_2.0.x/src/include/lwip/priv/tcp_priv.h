@@ -77,7 +77,7 @@ void             tcp_txnow   (void);
 void             tcp_input   (struct pbuf *p, struct netif *inp);
 /* Used within the TCP code only: */
 struct tcp_pcb * tcp_alloc   (u8_t prio);
-void             tcp_abandon (struct tcp_pcb *pcb, int reset);
+void             tcp_abandon (struct tcp_pcb *pcb, int32_t reset);
 err_t            tcp_send_empty_ack(struct tcp_pcb *pcb);
 void             tcp_rexmit  (struct tcp_pcb *pcb);
 void             tcp_rexmit_rto  (struct tcp_pcb *pcb);

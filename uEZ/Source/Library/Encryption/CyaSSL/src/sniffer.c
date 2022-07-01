@@ -96,7 +96,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
                      )
 {
-	static int didInit = 0;
+	static int32_t didInit = 0;
 
     switch (ul_reason_for_call)
     {
@@ -124,7 +124,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #endif /* _WIN32 */
 
 
-static int TraceOn = 0;         /* Trace is off by default */
+static int32_t TraceOn = 0;         /* Trace is off by default */
 static FILE* TraceFile = 0;
 
 
@@ -238,7 +238,7 @@ static const char* const msgTable[] =
 
 
 /* *nix version uses table above */
-static void GetError(int idx, char* str)
+static void GetError(int32_t idx, char* str)
 {
     XSTRNCPY(str, msgTable[idx - 1], MAX_ERROR_LEN);
 }
@@ -248,7 +248,7 @@ static void GetError(int idx, char* str)
 
 
 /* Windows version uses .rc table */
-static void GetError(int idx, char* buffer)
+static void GetError(int32_t idx, char* buffer)
 {
     if (!LoadStringA(dllModule, idx, buffer, MAX_ERROR_LEN))
         buffer[0] = 0;
@@ -286,7 +286,7 @@ typedef struct SnifferServer {
     SSL_CTX*       ctx;                          /* SSL context */
     char           address[MAX_SERVER_ADDRESS];  /* passed in server address */
     word32         server;                       /* netowrk order address */
-    int            port;                         /* server port */
+    int32_t            port;                         /* server port */
 #ifdef HAVE_SNI
     NamedKey*      namedKeys;                    /* mapping of names and keys */
     CyaSSL_Mutex   namedKeysMutex;               /* mutex for namedKey list */
@@ -348,7 +348,7 @@ static CyaSSL_Mutex ServerListMutex;
 /* Session Hash Table, mutex, and count */
 static SnifferSession* SessionTable[HASH_SIZE];
 static CyaSSL_Mutex SessionMutex;
-static int SessionCount = 0;
+static int32_t SessionCount = 0;
 
 
 /* Initialize overall Sniffer */
@@ -454,7 +454,7 @@ void ssl_FreeSniffer(void)
     SnifferServer*  removeServer;
     SnifferSession* session;
     SnifferSession* removeSession;
-    int i;
+    int32_t i;
 
     LockMutex(&ServerListMutex);
     LockMutex(&SessionMutex);
@@ -557,8 +557,8 @@ static void InitSession(SnifferSession* session)
 
 /* IP Info from IP Header */
 typedef struct IpInfo {
-    int    length;        /* length of this header */
-    int    total;         /* total length of fragment */
+    int32_t    length;        /* length of this header */
+    int32_t    total;         /* total length of fragment */
     word32 src;           /* network order source address */
     word32 dst;           /* network order destination address */
 } IpInfo;
@@ -566,9 +566,9 @@ typedef struct IpInfo {
 
 /* TCP Info from TCP Header */
 typedef struct TcpInfo {
-    int    srcPort;       /* source port */
-    int    dstPort;       /* source port */
-    int    length;        /* length of this header */
+    int32_t    srcPort;       /* source port */
+    int32_t    dstPort;       /* source port */
+    int32_t    length;        /* length of this header */
     word32 sequence;      /* sequence number */
     word32 ackNumber;     /* ack number */
     byte   fin;           /* FIN set */
@@ -590,11 +590,11 @@ typedef struct TcpPseudoHdr {
 
 
 /* Password Setting Callback */
-static int SetPassword(char* passwd, int sz, int rw, void* userdata)
+static int32_t SetPassword(char* passwd, int32_t sz, int32_t rw, void* userdata)
 {
     (void)rw;
     XSTRNCPY(passwd, (const char*)userdata, sz);
-    return (int)XSTRLEN((const char*)userdata);
+    return (int32_t)XSTRLEN((const char*)userdata);
 }
 
 
@@ -648,7 +648,7 @@ typedef struct TcpHdr {
 
 
 /* Use platform specific GetError to write to tracfile if tracing */ 
-static void Trace(int idx) 
+static void Trace(int32_t idx) 
 {
     if (TraceOn) {
         char myBuffer[MAX_ERROR_LEN];
@@ -672,7 +672,7 @@ static void TraceHeader(void)
 
 
 /* Show Set Server info for Trace */
-static void TraceSetServer(const char* srv, int port, const char* keyFile)
+static void TraceSetServer(const char* srv, int32_t port, const char* keyFile)
 {
     if (TraceOn) {
         fprintf(TraceFile, "\tTrying to install a new Sniffer Server with\n");
@@ -686,7 +686,7 @@ static void TraceSetServer(const char* srv, int port, const char* keyFile)
 
 /* Show Set Named Server info for Trace */
 static void TraceSetNamedServer(const char* name,
-                                 const char* srv, int port, const char* keyFile)
+                                 const char* srv, int32_t port, const char* keyFile)
 {
     if (TraceOn) {
         fprintf(TraceFile, "\tTrying to install a new Sniffer Server with\n");
@@ -743,7 +743,7 @@ static void TraceTcp(TcpHdr* tcphdr)
 
 
 /* Show sequence and payload length for Trace */
-static void TraceSequence(word32 seq, int len)
+static void TraceSequence(word32 seq, int32_t len)
 {
     if (TraceOn) {
         fprintf(TraceFile, "\tSequence:%u, payload length:%d\n", seq, len);
@@ -809,7 +809,7 @@ static void TraceServerFin(word32 finSeq, word32 relSeq)
 
 
 /* Show number of SSL data bytes decoded, could be 0 (ok) */
-static void TraceGotData(int bytes)
+static void TraceGotData(int32_t bytes)
 {
     if (TraceOn) {
         fprintf(TraceFile, "\t%d bytes of SSL App data processed\n", bytes);
@@ -818,7 +818,7 @@ static void TraceGotData(int bytes)
 
 
 /* Show bytes added to old SSL App data */
-static void TraceAddedData(int newBytes, int existingBytes)
+static void TraceAddedData(int32_t newBytes, int32_t existingBytes)
 {
     if (TraceOn) {
         fprintf(TraceFile,
@@ -856,7 +856,7 @@ static void TraceRemovedSession(void)
 
 
 /* Set user error string */
-static void SetError(int idx, char* error, SnifferSession* session, int fatal)
+static void SetError(int32_t idx, char* error, SnifferSession* session, int32_t fatal)
 {
     GetError(idx, error);
     Trace(idx);
@@ -867,9 +867,9 @@ static void SetError(int idx, char* error, SnifferSession* session, int fatal)
 
 /* See if this IPV4 network order address has been registered */
 /* return 1 is true, 0 is false */
-static int IsServerRegistered(word32 addr)
+static int32_t IsServerRegistered(word32 addr)
 {
-    int ret = 0;     /* false */
+    int32_t ret = 0;     /* false */
     SnifferServer* sniffer;
 
     LockMutex(&ServerListMutex);
@@ -891,16 +891,16 @@ static int IsServerRegistered(word32 addr)
 
 /* See if this port has been registered to watch */
 /* return 1 is true, 0 is false */
-static int IsPortRegistered(word32 port)
+static int32_t IsPortRegistered(word32 port)
 {
-    int ret = 0;    /* false */
+    int32_t ret = 0;    /* false */
     SnifferServer* sniffer;
     
     LockMutex(&ServerListMutex);
     
     sniffer = ServerList;
     while (sniffer) {
-        if (sniffer->port == (int)port) {
+        if (sniffer->port == (int32_t)port) {
             ret = 1; 
             break;
         }
@@ -990,16 +990,16 @@ static SnifferSession* GetSnifferSession(IpInfo* ipInfo, TcpInfo* tcpInfo)
 
 #ifdef HAVE_SNI
 
-static int LoadKeyFile(byte** keyBuf, word32* keyBufSz,
-                const char* keyFile, int typeKey,
+static int32_t LoadKeyFile(byte** keyBuf, word32* keyBufSz,
+                const char* keyFile, int32_t typeKey,
                 const char* password)
 {
     byte* loadBuf;
     byte* saveBuf;
     long fileSz = 0;
-    int saveBufSz;
+    int32_t saveBufSz;
     XFILE file;
-    int ret;
+    int32_t ret;
 
     if (keyBuf == NULL || keyBufSz == NULL || keyFile == NULL) {
         return -1;
@@ -1017,14 +1017,14 @@ static int LoadKeyFile(byte** keyBuf, word32* keyBufSz,
         return -1;
     }
 
-    ret = (int)XFREAD(loadBuf, fileSz, 1, file);
+    ret = (int32_t)XFREAD(loadBuf, fileSz, 1, file);
     XFCLOSE(file);
 
     if (typeKey == SSL_FILETYPE_PEM) {
         saveBuf = (byte*)malloc(fileSz);
 
-        saveBufSz = CyaSSL_KeyPemToDer(loadBuf, (int)fileSz,
-                                                saveBuf, (int)fileSz, password);
+        saveBufSz = CyaSSL_KeyPemToDer(loadBuf, (int32_t)fileSz,
+                                                saveBuf, (int32_t)fileSz, password);
         free(loadBuf);
 
         *keyBuf = saveBuf;
@@ -1046,14 +1046,14 @@ static int LoadKeyFile(byte** keyBuf, word32* keyBufSz,
 #endif
 
 
-static int SetNamedPrivateKey(const char* name, const char* address, int port,
-            const char* keyFile, int typeKey, const char* password, char* error)
+static int32_t SetNamedPrivateKey(const char* name, const char* address, int32_t port,
+            const char* keyFile, int32_t typeKey, const char* password, char* error)
 {
     SnifferServer* sniffer;
-    int            ret;
-    int            type = (typeKey == FILETYPE_PEM) ? SSL_FILETYPE_PEM :
+    int32_t            ret;
+    int32_t            type = (typeKey == FILETYPE_PEM) ? SSL_FILETYPE_PEM :
                                                       SSL_FILETYPE_ASN1;
-    int            isNew = 0;
+    int32_t            isNew = 0;
     word32         serverIp;
 
 #ifdef HAVE_SNI
@@ -1154,12 +1154,12 @@ static int SetNamedPrivateKey(const char* name, const char* address, int port,
 
 /* Sets the private key for a specific name, server and port  */
 /* returns 0 on success, -1 on error */
-int ssl_SetNamedPrivateKey(const char* name,
-                           const char* address, int port,
-                           const char* keyFile, int typeKey,
+int32_t ssl_SetNamedPrivateKey(const char* name,
+                           const char* address, int32_t port,
+                           const char* keyFile, int32_t typeKey,
                            const char* password, char* error)
 {
-    int ret;
+    int32_t ret;
 
     TraceHeader();
     TraceSetNamedServer(name, address, port, keyFile);
@@ -1180,10 +1180,10 @@ int ssl_SetNamedPrivateKey(const char* name,
 
 /* Sets the private key for a specific server and port  */
 /* returns 0 on success, -1 on error */
-int ssl_SetPrivateKey(const char* address, int port, const char* keyFile,
-                      int typeKey, const char* password, char* error)
+int32_t ssl_SetPrivateKey(const char* address, int32_t port, const char* keyFile,
+                      int32_t typeKey, const char* password, char* error)
 {
-    int ret;
+    int32_t ret;
 
     TraceHeader();
     TraceSetServer(address, port, keyFile);
@@ -1202,9 +1202,9 @@ int ssl_SetPrivateKey(const char* address, int port, const char* keyFile,
 
 /* Check IP Header for IPV4, TCP, and a registered server address */
 /* returns 0 on success, -1 on error */
-static int CheckIpHdr(IpHdr* iphdr, IpInfo* info, int length, char* error)
+static int32_t CheckIpHdr(IpHdr* iphdr, IpInfo* info, int32_t length, char* error)
 {
-    int    version = IP_V(iphdr);
+    int32_t    version = IP_V(iphdr);
 
     TraceIP(iphdr);
     Trace(IP_CHECK_STR);
@@ -1238,7 +1238,7 @@ static int CheckIpHdr(IpHdr* iphdr, IpInfo* info, int length, char* error)
 
 /* Check TCP Header for a registered port */
 /* returns 0 on success, -1 on error */
-static int CheckTcpHdr(TcpHdr* tcphdr, TcpInfo* info, char* error)
+static int32_t CheckTcpHdr(TcpHdr* tcphdr, TcpInfo* info, char* error)
 {
     TraceTcp(tcphdr);
     Trace(TCP_CHECK_STR);
@@ -1263,7 +1263,7 @@ static int CheckTcpHdr(TcpHdr* tcphdr, TcpInfo* info, char* error)
 
 
 /* Decode Record Layer Header */
-static int GetRecordHeader(const byte* input, RecordLayerHeader* rh, int* size)
+static int32_t GetRecordHeader(const byte* input, RecordLayerHeader* rh, int32_t* size)
 {
     XMEMCPY(rh, input, RECORD_HEADER_SZ);
     *size = (rh->length[0] << 8) | rh->length[1];
@@ -1276,19 +1276,19 @@ static int GetRecordHeader(const byte* input, RecordLayerHeader* rh, int* size)
 
 
 /* Process Client Key Exchange, RSA only */
-static int ProcessClientKeyExchange(const byte* input, int* sslBytes,
+static int32_t ProcessClientKeyExchange(const byte* input, int32_t* sslBytes,
                                     SnifferSession* session, char* error)
 {
     word32 idx = 0;
     RsaKey key;
-    int    ret;
+    int32_t    ret;
 
     ret = InitRsaKey(&key, 0);
     if (ret == 0) 
         ret = RsaPrivateKeyDecode(session->sslServer->buffers.key.buffer,
                           &idx, &key, session->sslServer->buffers.key.length);
     if (ret == 0) {
-        int length = RsaEncryptSize(&key);
+        int32_t length = RsaEncryptSize(&key);
         
         if (IsTLS(session->sslServer)) 
             input += 2;     /* tls pre length */
@@ -1316,7 +1316,7 @@ static int ProcessClientKeyExchange(const byte* input, int* sslBytes,
         
         #ifdef SHOW_SECRETS
         {
-            int i;
+            int32_t i;
             printf("pre master secret: ");
             for (i = 0; i < SECRET_LEN; i++)
                 printf("%02x", session->sslServer->arrays->preMasterSecret[i]);
@@ -1354,7 +1354,7 @@ static int ProcessClientKeyExchange(const byte* input, int* sslBytes,
 
 #ifdef SHOW_SECRETS
     {
-        int i;
+        int32_t i;
         printf("server master secret: ");
         for (i = 0; i < SECRET_LEN; i++)
             printf("%02x", session->sslServer->arrays->masterSecret[i]);
@@ -1376,7 +1376,7 @@ static int ProcessClientKeyExchange(const byte* input, int* sslBytes,
 
 
 /* Process Session Ticket */
-static int ProcessSessionTicket(const byte* input, int* sslBytes,
+static int32_t ProcessSessionTicket(const byte* input, int32_t* sslBytes,
                                 SnifferSession* session, char* error)
 {
     word16 len;
@@ -1409,13 +1409,13 @@ static int ProcessSessionTicket(const byte* input, int* sslBytes,
 
 
 /* Process Server Hello */
-static int ProcessServerHello(const byte* input, int* sslBytes,
+static int32_t ProcessServerHello(const byte* input, int32_t* sslBytes,
                               SnifferSession* session, char* error)
 {
     ProtocolVersion pv;
     byte            b;
-    int             toRead = VERSION_SZ + RAN_LEN + ENUM_LEN;
-    int             doResume     = 0;
+    int32_t             toRead = VERSION_SZ + RAN_LEN + ENUM_LEN;
+    int32_t             doResume     = 0;
     
     /* make sure we didn't miss ClientHello */
     if (session->flags.clientHello == 0) {
@@ -1491,7 +1491,7 @@ static int ProcessServerHello(const byte* input, int* sslBytes,
     }
 
     if (doResume ) {
-        int ret = 0;
+        int32_t ret = 0;
         SSL_SESSION* resume = GetSession(session->sslServer,
                                       session->sslServer->arrays->masterSecret);
         if (resume == NULL) {
@@ -1532,7 +1532,7 @@ static int ProcessServerHello(const byte* input, int* sslBytes,
     }
 #ifdef SHOW_SECRETS
     {
-        int i;
+        int32_t i;
         printf("cipher suite = 0x%02x\n",
                session->sslServer->options.cipherSuite);
         printf("server random: ");
@@ -1546,18 +1546,18 @@ static int ProcessServerHello(const byte* input, int* sslBytes,
 
 
 /* Process normal Client Hello */
-static int ProcessClientHello(const byte* input, int* sslBytes, 
+static int32_t ProcessClientHello(const byte* input, int32_t* sslBytes, 
                               SnifferSession* session, char* error)
 {
     byte   bLen;
     word16 len;
-    int    toRead = VERSION_SZ + RAN_LEN + ENUM_LEN;
+    int32_t    toRead = VERSION_SZ + RAN_LEN + ENUM_LEN;
     
 #ifdef HAVE_SNI
     {
         byte name[MAX_SERVER_NAME];
         word32 nameSz = sizeof(name);
-        int ret;
+        int32_t ret;
 
         ret = CyaSSL_SNI_GetFromBuffer(
                              input - HANDSHAKE_HEADER_SZ - RECORD_HEADER_SZ,
@@ -1623,7 +1623,7 @@ static int ProcessClientHello(const byte* input, int* sslBytes,
     }
 #ifdef SHOW_SECRETS
     {
-        int i;
+        int32_t i;
         printf("client random: ");
         for (i = 0; i < RAN_LEN; i++)
             printf("%02x", session->sslServer->arrays->clientRandom[i]);
@@ -1733,12 +1733,12 @@ static int ProcessClientHello(const byte* input, int* sslBytes,
 
 
 /* Process Finished */
-static int ProcessFinished(const byte* input, int size, int* sslBytes,
+static int32_t ProcessFinished(const byte* input, int32_t size, int32_t* sslBytes,
                            SnifferSession* session, char* error)
 {
     SSL*   ssl;
     word32 inOutIdx = 0;
-    int    ret;
+    int32_t    ret;
                 
     if (session->flags.side == CYASSL_SERVER_END)
         ssl = session->sslServer;
@@ -1747,7 +1747,7 @@ static int ProcessFinished(const byte* input, int size, int* sslBytes,
 
     ret = DoFinished(ssl, input, &inOutIdx, (word32) size, (word32) *sslBytes,
                                                                          SNIFF);
-    *sslBytes -= (int)inOutIdx;
+    *sslBytes -= (int32_t)inOutIdx;
 
     if (ret < 0) {
         SetError(BAD_FINISHED_MSG, error, session, FATAL_ERROR_STATE);
@@ -1770,13 +1770,13 @@ static int ProcessFinished(const byte* input, int size, int* sslBytes,
 
 
 /* Process HandShake input */
-static int DoHandShake(const byte* input, int* sslBytes,
+static int32_t DoHandShake(const byte* input, int32_t* sslBytes,
                        SnifferSession* session, char* error)
 {
     byte type;
-    int  size;
-    int  ret = 0;
-    int  startBytes;
+    int32_t  size;
+    int32_t  ret = 0;
+    int32_t  startBytes;
 
     if (*sslBytes < HANDSHAKE_HEADER_SZ) {
         SetError(HANDSHAKE_INPUT_STR, error, session, FATAL_ERROR_STATE);
@@ -1851,9 +1851,9 @@ static int DoHandShake(const byte* input, int* sslBytes,
 
 
 /* Decrypt input into plain output, 0 on success */
-static int Decrypt(SSL* ssl, byte* output, const byte* input, word32 sz)
+static int32_t Decrypt(SSL* ssl, byte* output, const byte* input, word32 sz)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     switch (ssl->specs.bulk_cipher_algorithm) {
         #ifdef BUILD_ARC4
@@ -1904,11 +1904,11 @@ static int Decrypt(SSL* ssl, byte* output, const byte* input, word32 sz)
 
 /* Decrypt input message into output, adjust output steam if needed */
 static const byte* DecryptMessage(SSL* ssl, const byte* input, word32 sz,
-                                  byte* output, int* error, int* advance)
+                                  byte* output, int32_t* error, int32_t* advance)
 {
-    int ivExtra = 0;
+    int32_t ivExtra = 0;
 
-    int ret = Decrypt(ssl, output, input, sz);
+    int32_t ret = Decrypt(ssl, output, input, sz);
     if (ret != 0) {
         *error = ret;
         return NULL;
@@ -1936,7 +1936,7 @@ static void RemoveSession(SnifferSession* session, IpInfo* ipInfo,
     SnifferSession* previous = 0;
     SnifferSession* current;
     word32          row = rowHint;
-    int             haveLock = 0;
+    int32_t             haveLock = 0;
    
     if (ipInfo && tcpInfo)
         row = SessionHash(ipInfo, tcpInfo);
@@ -1995,7 +1995,7 @@ static SnifferSession* CreateSession(IpInfo* ipInfo, TcpInfo* tcpInfo,
                                      char* error)
 {
     SnifferSession* session = 0;
-    int row;
+    int32_t row;
         
     Trace(NEW_SESSION_STR);
     /* create a new one */
@@ -2069,13 +2069,13 @@ static SnifferSession* CreateSession(IpInfo* ipInfo, TcpInfo* tcpInfo,
 #ifdef OLD_HELLO_ALLOWED
 
 /* Process Old Client Hello Input */
-static int DoOldHello(SnifferSession* session, const byte* sslFrame,
-                      int* rhSize, int* sslBytes, char* error)
+static int32_t DoOldHello(SnifferSession* session, const byte* sslFrame,
+                      int32_t* rhSize, int32_t* sslBytes, char* error)
 {
     const byte* input = sslFrame;
     byte        b0, b1;
     word32      idx = 0;
-    int         ret;
+    int32_t         ret;
 
     Trace(GOT_OLD_CLIENT_HELLO_STR);
     session->flags.clientHello = 1;    /* don't process again */
@@ -2114,11 +2114,11 @@ static int DoOldHello(SnifferSession* session, const byte* sslFrame,
    TcpChecksum(&ipInfo, &tcpInfo, sslBytes, packet + ipInfo.length);
    could also add a 64bit version if type available and using this
 */
-int TcpChecksum(IpInfo* ipInfo, TcpInfo* tcpInfo, int dataLen,
+int32_t TcpChecksum(IpInfo* ipInfo, TcpInfo* tcpInfo, int32_t dataLen,
                 const byte* packet)
 {
     TcpPseudoHdr  pseudo;
-    int           count = PSEUDO_HDR_SZ;
+    int32_t           count = PSEUDO_HDR_SZ;
     const word16* data = (word16*)&pseudo;
     word32        sum = 0;
     word16        checksum;
@@ -2166,8 +2166,8 @@ int TcpChecksum(IpInfo* ipInfo, TcpInfo* tcpInfo, int dataLen,
 
 /* Check IP and TCP headers, set payload */
 /* returns 0 on success, -1 on error */
-static int CheckHeaders(IpInfo* ipInfo, TcpInfo* tcpInfo, const byte* packet,
-                  int length, const byte** sslFrame, int* sslBytes, char* error)
+static int32_t CheckHeaders(IpInfo* ipInfo, TcpInfo* tcpInfo, const byte* packet,
+                  int32_t length, const byte** sslFrame, int32_t* sslBytes, char* error)
 {
     TraceHeader();
     TracePacket();
@@ -2194,7 +2194,7 @@ static int CheckHeaders(IpInfo* ipInfo, TcpInfo* tcpInfo, const byte* packet,
         SetError(PACKET_HDR_SHORT_STR, error, NULL, 0);
         return -1;
     }
-    *sslBytes = (int)(packet + length - *sslFrame);
+    *sslBytes = (int32_t)(packet + length - *sslFrame);
     
     return 0;
 }
@@ -2202,7 +2202,7 @@ static int CheckHeaders(IpInfo* ipInfo, TcpInfo* tcpInfo, const byte* packet,
 
 /* Create or Find existing session */
 /* returns 0 on success (continue), -1 on error, 1 on success (end) */
-static int CheckSession(IpInfo* ipInfo, TcpInfo* tcpInfo, int sslBytes,
+static int32_t CheckSession(IpInfo* ipInfo, TcpInfo* tcpInfo, int32_t sslBytes,
                         SnifferSession** session, char* error)
 {
     /* create a new SnifferSession on client SYN */
@@ -2241,11 +2241,11 @@ static int CheckSession(IpInfo* ipInfo, TcpInfo* tcpInfo, int sslBytes,
 
 /* Create a Packet Buffer from *begin - end, adjust new *begin and bytesLeft */
 static PacketBuffer* CreateBuffer(word32* begin, word32 end, const byte* data,
-                                  int* bytesLeft)
+                                  int32_t* bytesLeft)
 {
     PacketBuffer* pb;
     
-    int added = end - *begin + 1;
+    int32_t added = end - *begin + 1;
     assert(*begin <= end);
     
     pb = (PacketBuffer*)malloc(sizeof(PacketBuffer));
@@ -2271,8 +2271,8 @@ static PacketBuffer* CreateBuffer(word32* begin, word32 end, const byte* data,
 
 /* Add sslFrame to Reassembly List */
 /* returns 1 (end) on success, -1, on error */
-static int AddToReassembly(byte from, word32 seq, const byte* sslFrame,
-                           int sslBytes, SnifferSession* session, char* error)
+static int32_t AddToReassembly(byte from, word32 seq, const byte* sslFrame,
+                           int32_t sslBytes, SnifferSession* session, char* error)
 {
     PacketBuffer*  add;
     PacketBuffer** front = (from == CYASSL_SERVER_END) ?
@@ -2282,7 +2282,7 @@ static int AddToReassembly(byte from, word32 seq, const byte* sslFrame,
     
     word32  startSeq = seq;
     word32  added;
-    int     bytesLeft = sslBytes;  /* could be overlapping fragment */
+    int32_t     bytesLeft = sslBytes;  /* could be overlapping fragment */
 
     /* if list is empty add full frame to front */
     if (!curr) {
@@ -2353,7 +2353,7 @@ static int AddToReassembly(byte from, word32 seq, const byte* sslFrame,
 
 /* Add out of order FIN capture */
 /* returns 1 for success (end) */
-static int AddFinCapture(SnifferSession* session, word32 sequence)
+static int32_t AddFinCapture(SnifferSession* session, word32 sequence)
 {
     if (session->flags.side == CYASSL_SERVER_END) {
         if (session->finCaputre.cliCounted == 0)
@@ -2369,8 +2369,8 @@ static int AddFinCapture(SnifferSession* session, word32 sequence)
 
 /* Adjust incoming sequence based on side */
 /* returns 0 on success (continue), -1 on error, 1 on success (end) */
-static int AdjustSequence(TcpInfo* tcpInfo, SnifferSession* session,
-                          int* sslBytes, const byte** sslFrame, char* error)
+static int32_t AdjustSequence(TcpInfo* tcpInfo, SnifferSession* session,
+                          int32_t* sslBytes, const byte** sslFrame, char* error)
 {
     word32  seqStart = (session->flags.side == CYASSL_SERVER_END) ? 
                                      session->cliSeqStart :session->srvSeqStart;
@@ -2389,7 +2389,7 @@ static int AdjustSequence(TcpInfo* tcpInfo, SnifferSession* session,
     if (real < *expected) {
         Trace(DUPLICATE_STR);
         if (real + *sslBytes > *expected) {
-            int overlap = *expected - real;
+            int32_t overlap = *expected - real;
             Trace(OVERLAP_DUPLICATE_STR);
                 
             /* adjust to expected, remove duplicate */
@@ -2438,7 +2438,7 @@ static int AdjustSequence(TcpInfo* tcpInfo, SnifferSession* session,
 
 /* Check latest ack number for missing packets
    return 0 ok, <0 on error */
-static int CheckAck(TcpInfo* tcpInfo, SnifferSession* session)
+static int32_t CheckAck(TcpInfo* tcpInfo, SnifferSession* session)
 {
     if (tcpInfo->ack) {
         word32  seqStart = (session->flags.side == CYASSL_SERVER_END) ? 
@@ -2462,11 +2462,11 @@ static int CheckAck(TcpInfo* tcpInfo, SnifferSession* session)
 
 /* Check TCP Sequence status */
 /* returns 0 on success (continue), -1 on error, 1 on success (end) */
-static int CheckSequence(IpInfo* ipInfo, TcpInfo* tcpInfo,
-                         SnifferSession* session, int* sslBytes,
+static int32_t CheckSequence(IpInfo* ipInfo, TcpInfo* tcpInfo,
+                         SnifferSession* session, int32_t* sslBytes,
                          const byte** sslFrame, char* error)
 {
-    int actualLen;
+    int32_t actualLen;
     
     /* init SEQ from server to client */
     if (tcpInfo->syn && tcpInfo->ack) {
@@ -2494,9 +2494,9 @@ static int CheckSequence(IpInfo* ipInfo, TcpInfo* tcpInfo,
 
 /* Check Status before record processing */
 /* returns 0 on success (continue), -1 on error, 1 on success (end) */
-static int CheckPreRecord(IpInfo* ipInfo, TcpInfo* tcpInfo,
+static int32_t CheckPreRecord(IpInfo* ipInfo, TcpInfo* tcpInfo,
                           const byte** sslFrame, SnifferSession** session,
-                          int* sslBytes, const byte** end, char* error)
+                          int32_t* sslBytes, const byte** end, char* error)
 {
     word32 length;
     SSL*  ssl = ((*session)->flags.side == CYASSL_SERVER_END) ?
@@ -2545,12 +2545,12 @@ static int CheckPreRecord(IpInfo* ipInfo, TcpInfo* tcpInfo,
 
     if ((*session)->flags.clientHello == 0 && **sslFrame != handshake) {
         /* Sanity check the packet for an old style client hello. */
-        int rhSize = (((*sslFrame)[0] & 0x7f) << 8) | ((*sslFrame)[1]);
+        int32_t rhSize = (((*sslFrame)[0] & 0x7f) << 8) | ((*sslFrame)[1]);
 
         if ((rhSize <= (*sslBytes - 2)) &&
             (*sslFrame)[2] == OLD_HELLO_ID && (*sslFrame)[3] == SSLv3_MAJOR) {
 #ifdef OLD_HELLO_ALLOWED
-        int ret = DoOldHello(*session, *sslFrame, &rhSize, sslBytes, error);
+        int32_t ret = DoOldHello(*session, *sslFrame, &rhSize, sslBytes, error);
         if (ret < 0)
             return -1;  /* error already set */
         if (*sslBytes <= 0)
@@ -2570,11 +2570,11 @@ static int CheckPreRecord(IpInfo* ipInfo, TcpInfo* tcpInfo,
 
 /* See if input on the reassembly list is ready for consuming */
 /* returns 1 for TRUE, 0 for FALSE */
-static int HaveMoreInput(SnifferSession* session, const byte** sslFrame,
-                         int* sslBytes, const byte** end, char* error)
+static int32_t HaveMoreInput(SnifferSession* session, const byte** sslFrame,
+                         int32_t* sslBytes, const byte** end, char* error)
 {
     /* sequence and reassembly based on from, not to */
-    int            moreInput = 0;
+    int32_t            moreInput = 0;
     PacketBuffer** front = (session->flags.side == CYASSL_SERVER_END) ?
                       &session->cliReassemblyList : &session->srvReassemblyList;
     word32*        expected = (session->flags.side == CYASSL_SERVER_END) ?
@@ -2631,19 +2631,19 @@ static int HaveMoreInput(SnifferSession* session, const byte** sslFrame,
 
 /* Process Message(s) from sslFrame */
 /* return Number of bytes on success, 0 for no data yet, and -1 on error */
-static int ProcessMessage(const byte* sslFrame, SnifferSession* session,
-                          int sslBytes, byte* data, const byte* end,char* error)
+static int32_t ProcessMessage(const byte* sslFrame, SnifferSession* session,
+                          int32_t sslBytes, byte* data, const byte* end,char* error)
 {
     const byte*       sslBegin = sslFrame;
     const byte*       recordEnd;   /* end of record indicator */
     const byte*       inRecordEnd; /* indictor from input stream not decrypt */
     RecordLayerHeader rh;
-    int               rhSize = 0;
-    int               ret;
-    int               errCode = 0;
-    int               decoded = 0;      /* bytes stored for user in data */
-    int               notEnough;        /* notEnough bytes yet flag */
-    int               decrypted = 0;    /* was current msg decrypted */
+    int32_t               rhSize = 0;
+    int32_t               ret;
+    int32_t               errCode = 0;
+    int32_t               decoded = 0;      /* bytes stored for user in data */
+    int32_t               notEnough;        /* notEnough bytes yet flag */
+    int32_t               decrypted = 0;    /* was current msg decrypted */
     SSL*              ssl = (session->flags.side == CYASSL_SERVER_END) ?
                                         session->sslServer : session->sslClient;
 doMessage:
@@ -2667,7 +2667,7 @@ doMessage:
         
         /* store partial if not there already or we advanced */
         if (ssl->buffers.inputBuffer.length == 0 || sslBegin != sslFrame) {
-            if (sslBytes > (int)ssl->buffers.inputBuffer.bufferSize) {
+            if (sslBytes > (int32_t)ssl->buffers.inputBuffer.bufferSize) {
                 if (GrowInputBuffer(ssl, sslBytes, 0) < 0) { 
                     SetError(MEMORY_STR, error, session, FATAL_ERROR_STATE);
                     return -1;
@@ -2690,7 +2690,7 @@ doMessage:
                                                session->flags.serverCipherOn)
      || (session->flags.side == CYASSL_CLIENT_END &&
                                                session->flags.clientCipherOn)) {
-        int ivAdvance = 0;  /* TLSv1.1 advance amount */
+        int32_t ivAdvance = 0;  /* TLSv1.1 advance amount */
         if (ssl->decrypt.setup != 1) {
             SetError(DECRYPT_KEYS_NOT_SETUP, error, session, FATAL_ERROR_STATE);
             return -1;
@@ -2716,8 +2716,8 @@ doPart:
     switch ((enum ContentType)rh.type) {
         case handshake:
             {
-                int startIdx = sslBytes;
-                int used;
+                int32_t startIdx = sslBytes;
+                int32_t used;
 
                 Trace(GOT_HANDSHAKE_STR);
                 ret = DoHandShake(sslFrame, &sslBytes, session, error);
@@ -2800,7 +2800,7 @@ doPart:
     if (recordEnd < end) {
         Trace(ANOTHER_MSG_STR);
         sslFrame = recordEnd;
-        sslBytes = (int)(end - recordEnd);
+        sslBytes = (int32_t)(end - recordEnd);
         goto doMessage;
     }
     
@@ -2847,7 +2847,7 @@ static void CheckFinCapture(IpInfo* ipInfo, TcpInfo* tcpInfo,
 
 /* If session is in fatal error state free resources now 
    return true if removed, 0 otherwise */
-static int RemoveFatalSession(IpInfo* ipInfo, TcpInfo* tcpInfo,
+static int32_t RemoveFatalSession(IpInfo* ipInfo, TcpInfo* tcpInfo,
                               SnifferSession* session, char* error)
 {
     if (session && session->flags.fatalError == FATAL_ERROR_STATE) {
@@ -2861,14 +2861,14 @@ static int RemoveFatalSession(IpInfo* ipInfo, TcpInfo* tcpInfo,
 
 /* Passes in an IP/TCP packet for decoding (ethernet/localhost frame) removed */
 /* returns Number of bytes on success, 0 for no data yet, and -1 on error */
-int ssl_DecodePacket(const byte* packet, int length, byte* data, char* error)
+int32_t ssl_DecodePacket(const byte* packet, int32_t length, byte* data, char* error)
 {
     TcpInfo           tcpInfo;
     IpInfo            ipInfo;
     const byte*       sslFrame;
     const byte*       end = packet + length;
-    int               sslBytes;                /* ssl bytes unconsumed */
-    int               ret;
+    int32_t               sslBytes;                /* ssl bytes unconsumed */
+    int32_t               ret;
     SnifferSession*   session = 0;
 
     if (CheckHeaders(&ipInfo, &tcpInfo, packet, length, &sslFrame, &sslBytes,
@@ -2900,7 +2900,7 @@ int ssl_DecodePacket(const byte* packet, int length, byte* data, char* error)
 
 /* Enables (if traceFile)/ Disables debug tracing */
 /* returns 0 on success, -1 on error */
-int ssl_Trace(const char* traceFile, char* error)
+int32_t ssl_Trace(const char* traceFile, char* error)
 {
     if (traceFile) {
         TraceFile = fopen(traceFile, "a");

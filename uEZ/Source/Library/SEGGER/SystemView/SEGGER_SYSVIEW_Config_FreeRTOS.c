@@ -1,9 +1,9 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*       (c) 2015 - 2017  SEGGER Microcontroller GmbH & Co. KG        *
+*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -17,24 +17,14 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -52,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.52a                                    *
+*       SystemView version: 3.10                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -74,10 +64,20 @@ extern const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI;
 **********************************************************************
 */
 // The application name to be displayed in SystemViewer
-#define SYSVIEW_APP_NAME        "FreeRTOS Demo Application"
+#define SYSVIEW_APP_NAME        "uEZ FreeRTOS Application"
 
 // The target device name
+#if (UEZ_PROCESSOR == NXP_LPC1788)
+#define SYSVIEW_DEVICE_NAME     "LPC17XX"
+#elif (UEZ_PROCESSOR == NXP_LPC4088)
+#define SYSVIEW_DEVICE_NAME     "LPC40XX"
+#elif (UEZ_PROCESSOR == NXP_LPC4357)
+#define SYSVIEW_DEVICE_NAME     "LPC43XXX"
+#elif (UEZ_PROCESSOR == NXP_LPC546xx)
+#define SYSVIEW_DEVICE_NAME     "LPC546XX"
+#else
 #define SYSVIEW_DEVICE_NAME     "Cortex-M4"
+#endif
 
 // Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_Conf.h
 #define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ)

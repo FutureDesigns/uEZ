@@ -54,7 +54,7 @@
  *---------------------------------------------------------------------------*/
 typedef struct {
     const DEVICE_TOUCHSCREEN *iDevice;
-    int aNumOpen;
+    int32_t aNumOpen;
 
     // Hardware linkage
     RX62N_uEZGUI_TS_Configuration iConfig;
@@ -241,9 +241,9 @@ static void ad_dtc_acquire(void)
     DTCE(S12AD,ADI) = 1;
 }
 
-static TUInt16 ad_dtc_value(int channel)
+static TUInt16 ad_dtc_value(int32_t channel)
 {
-    int index;
+    int32_t index;
     TUInt32 value;
 
     if (channel >= size_ra(AD_Buffer[1]))

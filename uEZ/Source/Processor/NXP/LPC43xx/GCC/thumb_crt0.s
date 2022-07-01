@@ -160,10 +160,12 @@ _start:
   ldr r1, =__bss_end__
   movs r2, #0
   bl memory_set
+#ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__tbss_start__
   ldr r1, =__tbss_end__
   movs r2, #0
   bl memory_set
+#endif /* #ifdef INITIALIZE_SECONDARY_SECTIONS */
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__bss2_start__
   ldr r1, =__bss2_end__
@@ -340,12 +342,14 @@ HELPER __cxa_guard_release
   bx lr
 HELPER __cxa_guard_abort
   bx lr
+  /*
 HELPER __getchar
   ldr r0, =-1 // EOF
   bx lr
 HELPER __putchar
   ldr r0, =-1 // EOF
   bx lr
+  */
   // char __user_locale_name_buffer[];
   .section .bss.__user_locale_name_buffer, "aw", %nobits
   .global __user_locale_name_buffer

@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2018 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -21,20 +21,10 @@
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -51,15 +41,11 @@
 * DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
-*                                                                    *
-*       RTT version: 6.30g                                           *
-*                                                                    *
-**********************************************************************
 ---------------------------END-OF-HEADER------------------------------
 File    : RTT_Syscalls_KEIL.c
 Purpose : Retargeting module for KEIL MDK-CM3.
           Low-level functions for using printf() via RTT
-Revision: $Rev: 9599 $
+Revision: $Rev: 17697 $
 ----------------------------------------------------------------------
 */
 #ifdef __CC_ARM
@@ -102,9 +88,11 @@ Revision: $Rev: 9599 $
 *
 **********************************************************************
 */
+#if __ARMCC_VERSION < 5000000
 //const char __stdin_name[]  = "STDIN";
 const char __stdout_name[] = "STDOUT";
 const char __stderr_name[] = "STDERR";
+#endif
 
 /*********************************************************************
 *
@@ -124,7 +112,7 @@ const char __stderr_name[] = "STDERR";
 *    c    - character to output
 *  
 */
-void _ttywrch(int c) {
+void _ttywrch(int32_t c) {
   fputc(c, stdout); // stdout
   fflush(stdout);
 }
@@ -145,7 +133,7 @@ void _ttywrch(int c) {
 *    == 0     -"device" is not handled by this module
 *
 */
-FILEHANDLE _sys_open(const char * sName, int OpenMode) {
+FILEHANDLE _sys_open(const char * sName, int32_t OpenMode) {
   (void)OpenMode;
   // Register standard Input Output devices.
   if (strcmp(sName, __stdout_name) == 0) {
@@ -170,7 +158,7 @@ FILEHANDLE _sys_open(const char * sName, int OpenMode) {
 *    0     - device/file closed
 *
 */
-int _sys_close(FILEHANDLE hFile) {
+int32_t _sys_close(FILEHANDLE hFile) {
   (void)hFile;
   return 0;  // Not implemented
 }
@@ -193,12 +181,13 @@ int _sys_close(FILEHANDLE hFile) {
 *    Number of bytes *not* written to the file/device
 *
 */
-int _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumBytes, int Mode) {
-  int r = 0;
+int32_t _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumBytes, int32_t Mode) {
+  int32_t r = 0;
 
   (void)Mode;
   if (hFile == STDOUT) {
-    return NumBytes - SEGGER_RTT_Write(0, (const char*)pBuffer, NumBytes);
+    SEGGER_RTT_Write(0, (const char*)pBuffer, NumBytes);
+		return 0;
   }
   return r;
 }
@@ -221,7 +210,7 @@ int _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumByte
 *    Number of bytes read from the file/device
 *
 */
-int _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, int Mode) {
+int32_t _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, int32_t Mode) {
   (void)hFile;
   (void)pBuffer;
   (void)NumBytes;
@@ -245,7 +234,7 @@ int _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, int 
 *    0       - Device is not a console
 *
 */
-int _sys_istty(FILEHANDLE hFile) {
+int32_t _sys_istty(FILEHANDLE hFile) {
   if (hFile > 0x8000) {
     return (1);
   }
@@ -264,10 +253,10 @@ int _sys_istty(FILEHANDLE hFile) {
 *    Pos    - 
 *  
 *  Return value:
-*    int       - 
+*    int32_t       - 
 *
 */
-int _sys_seek(FILEHANDLE hFile, long Pos) {
+int32_t _sys_seek(FILEHANDLE hFile, long Pos) {
   (void)hFile;
   (void)Pos;
   return (0);  // Not implemented
@@ -284,10 +273,10 @@ int _sys_seek(FILEHANDLE hFile, long Pos) {
 *    hFile    - Handle to a file opened via _sys_open
 *  
 *  Return value:
-*    int       - 
+*    int32_t       - 
 *
 */
-int _sys_ensure(FILEHANDLE hFile) {
+int32_t _sys_ensure(FILEHANDLE hFile) {
   (void)hFile;
   return (-1);  // Not implemented
 }
@@ -329,7 +318,7 @@ long _sys_flen(FILEHANDLE hFile) {
 *     0 - Success  
 *
 */
-int _sys_tmpnam(char * pBuffer, int FileNum, unsigned MaxLen) {
+int32_t _sys_tmpnam(char * pBuffer, int32_t FileNum, unsigned MaxLen) {
   (void)pBuffer;
   (void)FileNum;
   (void)MaxLen;
@@ -352,7 +341,7 @@ int _sys_tmpnam(char * pBuffer, int FileNum, unsigned MaxLen) {
 *    == sCmd - Command was passed successfully
 *
 */
-char * _sys_command_string(char * cmd, int len) {
+char * _sys_command_string(char * cmd, int32_t len) {
   (void)len;
   return cmd;  // Not implemented
 }
@@ -369,10 +358,29 @@ char * _sys_command_string(char * cmd, int len) {
 *  
 *
 */
-void _sys_exit(int ReturnCode) {
+void _sys_exit(int32_t ReturnCode) {
   (void)ReturnCode;
   while (1);  // Not implemented
 }
+
+#if __ARMCC_VERSION >= 5000000
+/*********************************************************************
+*
+*       stdout_putchar
+*
+*  Function description:
+*    Put a character to the stdout
+*
+*  Parameters:
+*    ch    - Character to output
+*  
+*
+*/
+int stdout_putchar(int ch) {
+  (void)ch;
+  return ch;  // Not implemented
+}
+#endif
 
 #endif
 /*************************** End of file ****************************/

@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,18 +26,19 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_FontIntern.h
-Purpose     : Internal decalrations used in font files
+Purpose     : Internal declarations used in font files
 ---------------------------END-OF-HEADER------------------------------
 
 Attention : Do not modify this file ! If you do, you will not
@@ -75,6 +76,10 @@ extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_Font32_ASCII_Prop1;
 extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_Font32B_ASCII_Prop1;
 extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_FontComic18B_ASCII_Prop1;
 extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_FontComic24B_ASCII_Prop1;
+
+extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_Font6x8ASCII_Prop0;
+extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_Font8x16ASCII_Prop0;
+extern GUI_CONST_STORAGE GUI_FONT_PROP GUI_Font8x8ASCII_Prop0;
 
 extern GUI_CONST_STORAGE GUI_CHARINFO GUI_Font16_HK_CharInfo[169];
 

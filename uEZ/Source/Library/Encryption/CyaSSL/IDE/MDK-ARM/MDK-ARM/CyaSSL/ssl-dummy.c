@@ -34,12 +34,12 @@ Signer* GetCA(void* vp, byte* hash)
     return  s ;
 }
 
-int CyaSSL_dtls(CYASSL* ssl)
+int32_t CyaSSL_dtls(CYASSL* ssl)
 {
     return ssl->options.dtls;
 }
 
-int CyaSSL_get_using_nonblock(CYASSL* ssl)
+int32_t CyaSSL_get_using_nonblock(CYASSL* ssl)
 {
     CYASSL_ENTER("CyaSSL_get_using_nonblock");
     CYASSL_LEAVE("CyaSSL_get_using_nonblock", ssl->options.usingNonblock);

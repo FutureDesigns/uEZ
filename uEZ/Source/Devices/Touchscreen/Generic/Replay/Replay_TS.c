@@ -44,7 +44,7 @@ typedef struct {
 
 typedef struct {
     const DEVICE_TOUCHSCREEN *iDevice;
-    int aNumOpen;
+    int32_t aNumOpen;
 
     // Hardware linkage
     T_uezSemaphore iSem;

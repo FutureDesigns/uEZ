@@ -107,7 +107,7 @@ void Arc4Process(Arc4* arc4, byte* out, const byte* in, word32 length)
 #include "cavium_common.h"
 
 /* Initiliaze Arc4 for use with Nitrox device */
-int Arc4InitCavium(Arc4* arc4, int devId)
+int32_t Arc4InitCavium(Arc4* arc4, int32_t devId)
 {
     if (arc4 == NULL)
         return -1;

@@ -61,7 +61,7 @@ extern void ctaocrypt_test(void * arg) ;
  *       mian entry 
  *----------------------------------------------------------------------------*/
 
-int main() 
+int32_t main() 
 {
     void * arg = NULL ;
 

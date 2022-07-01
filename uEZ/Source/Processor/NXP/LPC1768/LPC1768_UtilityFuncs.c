@@ -175,14 +175,14 @@ void WriteBE16U(volatile TUInt8 *pmem, TUInt16 val)
 
 void LPC1768PowerOn(TUInt32 bits)
 {
-    extern unsigned int G_LPC1768_PowerSetting;
+    extern uint32_t G_LPC1768_PowerSetting;
     G_LPC1768_PowerSetting |= (bits);
     LPC_SC->PCONP = G_LPC1768_PowerSetting;
 }
 
 void LPC1768PowerOff(TUInt32 bits)
 {
-    extern unsigned int G_LPC1768_PowerSetting;
+    extern uint32_t G_LPC1768_PowerSetting;
     G_LPC1768_PowerSetting &= ~(bits);
     LPC_SC->PCONP = G_LPC1768_PowerSetting;
 }
@@ -245,7 +245,7 @@ void CPUEnableInterrupts(void)
     __set_BASEPRI(0UL);
 }
 
-extern void UEZBSP_FatalError(int aNumBlinks);
+extern void UEZBSP_FatalError(int32_t aNumBlinks);
 void UEZFailureMsg(const char *aLine)
 {
     while (1)

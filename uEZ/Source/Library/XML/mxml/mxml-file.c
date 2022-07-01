@@ -46,12 +46,12 @@
  * Types and structures...
  */
 
-typedef int (*_mxml_getc_cb_t)(void *, int *);
-typedef int (*_mxml_putc_cb_t)(int, void *);
+typedef int32_t (*_mxml_getc_cb_t)(void *, int32_t *);
+typedef int32_t (*_mxml_putc_cb_t)(int32_t, void *);
 
 typedef struct _mxml_fdbuf_s                /**** File descriptor buffer ****/
 {
-  int              fd;                      /* File descriptor */
+  int32_t              fd;                      /* File descriptor */
   unsigned char      *current,              /* Current position in buffer */
                 *end,                        /* End of buffer */
                 buffer[8192];                /* Character buffer */
@@ -62,18 +62,18 @@ typedef struct _mxml_fdbuf_s                /**** File descriptor buffer ****/
  * Local functions...
  */
 
-static int                mxml_add_char(int ch, char **ptr, char **buffer,
-                                      int *bufsize);
-static int                mxml_fd_getc(void *p, int *encoding);
-static int                mxml_fd_putc(int ch, void *p);
-static int                mxml_fd_read(_mxml_fdbuf_t *buf);
-static int                mxml_fd_write(_mxml_fdbuf_t *buf);
-static int                mxml_file_getc(void *p, int *encoding);
-static int                mxml_file_putc(int ch, void *p);
-static int                mxml_get_entity(mxml_node_t *parent, void *p,
-                                        int *encoding,
+static int32_t                mxml_add_char(int32_t ch, char **ptr, char **buffer,
+                                      int32_t *bufsize);
+static int32_t                mxml_fd_getc(void *p, int32_t *encoding);
+static int32_t                mxml_fd_putc(int32_t ch, void *p);
+static int32_t                mxml_fd_read(_mxml_fdbuf_t *buf);
+static int32_t                mxml_fd_write(_mxml_fdbuf_t *buf);
+static int32_t                mxml_file_getc(void *p, int32_t *encoding);
+static int32_t                mxml_file_putc(int32_t ch, void *p);
+static int32_t                mxml_get_entity(mxml_node_t *parent, void *p,
+                                        int32_t *encoding,
                                         _mxml_getc_cb_t getc_cb);
-static inline int        mxml_isspace(int ch)
+static inline int32_t        mxml_isspace(int32_t ch)
                         {
                           return (ch == ' ' || ch == '\t' || ch == '\r' ||
                                   ch == '\n');
@@ -82,22 +82,22 @@ static mxml_node_t        *mxml_load_data(mxml_node_t *top, void *p,
                                         mxml_load_cb_t cb,
                                         _mxml_getc_cb_t getc_cb,
                                         mxml_sax_cb_t sax_cb, void *sax_data);
-static int                mxml_parse_element(mxml_node_t *node, void *p,
-                                           int *encoding,
+static int32_t                mxml_parse_element(mxml_node_t *node, void *p,
+                                           int32_t *encoding,
                                            _mxml_getc_cb_t getc_cb);
-static int                mxml_string_getc(void *p, int *encoding);
-static int                mxml_string_putc(int ch, void *p);
-static int                mxml_write_name(const char *s, void *p,
+static int32_t                mxml_string_getc(void *p, int32_t *encoding);
+static int32_t                mxml_string_putc(int32_t ch, void *p);
+static int32_t                mxml_write_name(const char *s, void *p,
                                         _mxml_putc_cb_t putc_cb);
-static int                mxml_write_node(mxml_node_t *node, void *p,
-                                        mxml_save_cb_t cb, int col,
+static int32_t                mxml_write_node(mxml_node_t *node, void *p,
+                                        mxml_save_cb_t cb, int32_t col,
                                         _mxml_putc_cb_t putc_cb,
                                         _mxml_global_t *global);
-static int                mxml_write_string(const char *s, void *p,
+static int32_t                mxml_write_string(const char *s, void *p,
                                           _mxml_putc_cb_t putc_cb);
-static int                mxml_write_ws(mxml_node_t *node, void *p,
-                                      mxml_save_cb_t cb, int ws,
-                                      int col, _mxml_putc_cb_t putc_cb);
+static int32_t                mxml_write_ws(mxml_node_t *node, void *p,
+                                      mxml_save_cb_t cb, int32_t ws,
+                                      int32_t col, _mxml_putc_cb_t putc_cb);
 
 
 /*
@@ -117,7 +117,7 @@ static int                mxml_write_ws(mxml_node_t *node, void *p,
 
 mxml_node_t *                                /* O - First node or NULL if the file could not be read. */
 mxmlLoadFd(mxml_node_t    *top,                /* I - Top node */
-           int            fd,             /* I - File descriptor to read from */
+           int32_t            fd,             /* I - File descriptor to read from */
            mxml_load_cb_t cb)             /* I - Callback function or MXML_NO_CALLBACK */
 {
   _mxml_fdbuf_t      buf;                      /* File descriptor buffer */
@@ -217,7 +217,7 @@ mxmlSaveAllocString(
     mxml_node_t    *node,            /* I - Node to write */
     mxml_save_cb_t cb)                    /* I - Whitespace callback or MXML_NO_CALLBACK */
 {
-  int      bytes;                              /* Required bytes */
+  int32_t      bytes;                              /* Required bytes */
   char      buffer[8192];                      /* Temporary buffer */
   char      *s;                              /* Allocated string */
 
@@ -231,7 +231,7 @@ mxmlSaveAllocString(
   if (bytes <= 0)
     return (NULL);
 
-  if (bytes < (int)(sizeof(buffer) - 1))
+  if (bytes < (int32_t)(sizeof(buffer) - 1))
   {
    /*
     * Node fit inside the buffer, so just duplicate that string and
@@ -269,12 +269,12 @@ mxmlSaveAllocString(
  * element tags.
  */
 
-int                                        /* O - 0 on success, -1 on error. */
+int32_t                                        /* O - 0 on success, -1 on error. */
 mxmlSaveFd(mxml_node_t    *node,        /* I - Node to write */
-           int            fd,             /* I - File descriptor to write to */
+           int32_t            fd,             /* I - File descriptor to write to */
            mxml_save_cb_t cb)             /* I - Whitespace callback or MXML_NO_CALLBACK */
 {
-  int              col;                      /* Final column */
+  int32_t              col;                      /* Final column */
   _mxml_fdbuf_t      buf;                      /* File descriptor buffer */
   _mxml_global_t *global = _mxml_global();
                                         /* Global data */
@@ -317,12 +317,12 @@ mxmlSaveFd(mxml_node_t    *node,        /* I - Node to write */
  * element tags.
  */
 
-int                                        /* O - 0 on success, -1 on error. */
+int32_t                                        /* O - 0 on success, -1 on error. */
 mxmlSaveFile(mxml_node_t    *node,        /* I - Node to write */
              FILE           *fp,   /* I - File to write to */
              mxml_save_cb_t cb)           /* I - Whitespace callback or MXML_NO_CALLBACK */
 {
-  int      col;                              /* Final column */
+  int32_t      col;                              /* Final column */
   _mxml_global_t *global = _mxml_global();
                                         /* Global data */
 
@@ -360,13 +360,13 @@ mxmlSaveFile(mxml_node_t    *node,        /* I - Node to write */
  * element tags.
  */
 
-int                                        /* O - Size of string */
+int32_t                                        /* O - Size of string */
 mxmlSaveString(mxml_node_t    *node,        /* I - Node to write */
                char           *buffer, /* I - String buffer */
-               int            bufsize, /* I - Size of string buffer */
+               int32_t            bufsize, /* I - Size of string buffer */
                mxml_save_cb_t cb) /* I - Whitespace callback or MXML_NO_CALLBACK */
 {
-  int      col;                              /* Final column */
+  int32_t      col;                              /* Final column */
   char      *ptr[2];                      /* Pointers for putc_cb */
   _mxml_global_t *global = _mxml_global();
                                         /* Global data */
@@ -426,7 +426,7 @@ mxmlSaveString(mxml_node_t    *node,        /* I - Node to write */
 
 mxml_node_t *                                /* O - First node or NULL if the file could not be read. */
 mxmlSAXLoadFd(mxml_node_t    *top,        /* I - Top node */
-              int            fd,  /* I - File descriptor to read from */
+              int32_t            fd,  /* I - File descriptor to read from */
               mxml_load_cb_t cb,  /* I - Callback function or MXML_NO_CALLBACK */
               mxml_sax_cb_t  sax_cb,  /* I - SAX callback or MXML_NO_CALLBACK */
               void           *sax_data)  /* I - SAX user data */
@@ -575,7 +575,7 @@ mxmlSetErrorCallback(mxml_error_cb_t cb)/* I - Error callback function */
  */
 
 void
-mxmlSetWrapMargin(int column)                /* I - Column for wrapping, 0 to disable wrapping */
+mxmlSetWrapMargin(int32_t column)                /* I - Column for wrapping, 0 to disable wrapping */
 {
   _mxml_global_t *global = _mxml_global();
                                         /* Global data */
@@ -589,11 +589,11 @@ mxmlSetWrapMargin(int column)                /* I - Column for wrapping, 0 to di
  * 'mxml_add_char()' - Add a character to a buffer, expanding as needed.
  */
 
-static int                                /* O  - 0 on success, -1 on error */
-mxml_add_char(int  ch,                        /* I  - Character to add */
+static int32_t                                /* O  - 0 on success, -1 on error */
+mxml_add_char(int32_t  ch,                        /* I  - Character to add */
               char **bufptr,          /* IO - Current position in buffer */
               char **buffer,          /* IO - Current buffer */
-              int  *bufsize)          /* IO - Current buffer size */
+              int32_t  *bufsize)          /* IO - Current buffer size */
 {
   char      *newbuffer;                      /* New buffer value */
 
@@ -669,12 +669,12 @@ mxml_add_char(int  ch,                        /* I  - Character to add */
  * 'mxml_fd_getc()' - Read a character from a file descriptor.
  */
 
-static int                                /* O  - Character or EOF */
+static int32_t                                /* O  - Character or EOF */
 mxml_fd_getc(void *p,                        /* I  - File descriptor buffer */
-             int  *encoding)           /* IO - Encoding */
+             int32_t  *encoding)           /* IO - Encoding */
 {
   _mxml_fdbuf_t      *buf;                      /* File descriptor buffer */
-  int              ch,                      /* Current character */
+  int32_t              ch,                      /* Current character */
                 temp;                        /* Temporary character */
 
 
@@ -888,7 +888,7 @@ mxml_fd_getc(void *p,                        /* I  - File descriptor buffer */
           * Multi-word UTF-16 char...
           */
 
-          int lch;
+          int32_t lch;
 
           if (buf->current >= buf->end)
             if (mxml_fd_read(buf) < 0)
@@ -936,7 +936,7 @@ mxml_fd_getc(void *p,                        /* I  - File descriptor buffer */
           * Multi-word UTF-16 char...
           */
 
-          int lch;
+          int32_t lch;
 
           if (buf->current >= buf->end)
             if (mxml_fd_read(buf) < 0)
@@ -972,8 +972,8 @@ mxml_fd_getc(void *p,                        /* I  - File descriptor buffer */
  * 'mxml_fd_putc()' - Write a character to a file descriptor.
  */
 
-static int                                /* O - 0 on success, -1 on error */
-mxml_fd_putc(int  ch,                        /* I - Character */
+static int32_t                                /* O - 0 on success, -1 on error */
+mxml_fd_putc(int32_t  ch,                        /* I - Character */
              void *p)                   /* I - File descriptor buffer */
 {
   _mxml_fdbuf_t      *buf;                      /* File descriptor buffer */
@@ -1003,10 +1003,10 @@ mxml_fd_putc(int  ch,                        /* I - Character */
  * 'mxml_fd_read()' - Read a buffer of data from a file descriptor.
  */
 
-static int                                /* O - 0 on success, -1 on error */
+static int32_t                                /* O - 0 on success, -1 on error */
 mxml_fd_read(_mxml_fdbuf_t *buf)                /* I - File descriptor buffer */
 {
-  int      bytes;                              /* Bytes read... */
+  int32_t      bytes;                              /* Bytes read... */
 
 
  /*
@@ -1046,10 +1046,10 @@ mxml_fd_read(_mxml_fdbuf_t *buf)                /* I - File descriptor buffer */
  * 'mxml_fd_write()' - Write a buffer of data to a file descriptor.
  */
 
-static int                                /* O - 0 on success, -1 on error */
+static int32_t                                /* O - 0 on success, -1 on error */
 mxml_fd_write(_mxml_fdbuf_t *buf)        /* I - File descriptor buffer */
 {
-  int              bytes;                      /* Bytes written */
+  int32_t              bytes;                      /* Bytes written */
   unsigned char      *ptr;                      /* Pointer into buffer */
 
 
@@ -1089,11 +1089,11 @@ mxml_fd_write(_mxml_fdbuf_t *buf)        /* I - File descriptor buffer */
  * 'mxml_file_getc()' - Get a character from a file.
  */
 
-static int                                /* O  - Character or EOF */
+static int32_t                                /* O  - Character or EOF */
 mxml_file_getc(void *p,                        /* I  - Pointer to file */
-               int  *encoding)         /* IO - Encoding */
+               int32_t  *encoding)         /* IO - Encoding */
 {
-  int      ch,                              /* Character from file */
+  int32_t      ch,                              /* Character from file */
         temp;                                /* Temporary character */
   FILE      *fp;                              /* Pointer to file */
 
@@ -1254,7 +1254,7 @@ mxml_file_getc(void *p,                        /* I  - Pointer to file */
           * Multi-word UTF-16 char...
           */
 
-          int lch = getc(fp);
+          int32_t lch = getc(fp);
           lch = (lch << 8) | getc(fp);
 
           if (lch < 0xdc00 || lch >= 0xdfff)
@@ -1283,7 +1283,7 @@ mxml_file_getc(void *p,                        /* I  - Pointer to file */
           * Multi-word UTF-16 char...
           */
 
-          int lch = getc(fp);
+          int32_t lch = getc(fp);
           lch |= (getc(fp) << 8);
 
           if (lch < 0xdc00 || lch >= 0xdfff)
@@ -1306,8 +1306,8 @@ mxml_file_getc(void *p,                        /* I  - Pointer to file */
  * 'mxml_file_putc()' - Write a character to a file.
  */
 
-static int                                /* O - 0 on success, -1 on failure */
-mxml_file_putc(int  ch,                        /* I - Character to write */
+static int32_t                                /* O - 0 on success, -1 on failure */
+mxml_file_putc(int32_t  ch,                        /* I - Character to write */
                void *p)                 /* I - Pointer to file */
 {
   return (putc(ch, (FILE *)p) == EOF ? -1 : 0);
@@ -1318,14 +1318,14 @@ mxml_file_putc(int  ch,                        /* I - Character to write */
  * 'mxml_get_entity()' - Get the character corresponding to an entity...
  */
 
-static int                                /* O  - Character value or EOF on error */
+static int32_t                                /* O  - Character value or EOF on error */
 mxml_get_entity(mxml_node_t *parent,        /* I  - Parent node */
                 void        *p,                /* I  - Pointer to source */
-                int         *encoding,        /* IO - Character encoding */
-                int         (*getc_cb)(void *, int *))
+                int32_t         *encoding,        /* IO - Character encoding */
+                int32_t         (*getc_cb)(void *, int32_t *))
                                         /* I  - Get character function */
 {
-  int      ch;                              /* Current character */
+  int32_t      ch;                              /* Current character */
   char      entity[64],                      /* Entity string */
         *entptr;                        /* Pointer into entity */
 
@@ -1391,13 +1391,13 @@ mxml_load_data(
   mxml_node_t      *node,                      /* Current node */
                 *first,                        /* First node added */
                 *parent;                /* Current parent node */
-  int              ch,                      /* Character from file */
+  int32_t              ch,                      /* Character from file */
                 whitespace;                /* Non-zero if whitespace seen */
   char              *buffer,              /* String buffer */
                 *bufptr;                /* Pointer into buffer */
-  int              bufsize;              /* Size of buffer */
+  int32_t              bufsize;              /* Size of buffer */
   mxml_type_t      type;                      /* Current node type */
-  int              encoding;              /* Character encoding */
+  int32_t              encoding;              /* Character encoding */
   _mxml_global_t *global = _mxml_global();
                                         /* Global data */
   static const char * const types[] =      /* Type strings... */
@@ -2083,19 +2083,19 @@ error:
  * 'mxml_parse_element()' - Parse an element for any attributes...
  */
 
-static int                                /* O  - Terminating character */
+static int32_t                                /* O  - Terminating character */
 mxml_parse_element(
     mxml_node_t     *node,            /* I  - Element node */
     void            *p,                    /* I  - Data to read from */
-    int             *encoding,            /* IO - Encoding */
+    int32_t             *encoding,            /* IO - Encoding */
     _mxml_getc_cb_t getc_cb)            /* I  - Data callback */
 {
-  int      ch,                              /* Current character in file */
+  int32_t      ch,                              /* Current character in file */
         quote;                                /* Quoting character */
   char      *name,                              /* Attribute name */
         *value,                                /* Attribute value */
         *ptr;                                /* Pointer into name/value */
-  int      namesize,                      /* Size of name string */
+  int32_t      namesize,                      /* Size of name string */
         valsize;                        /* Size of value string */
 
 
@@ -2351,11 +2351,11 @@ error:
  * 'mxml_string_getc()' - Get a character from a string.
  */
 
-static int                                /* O  - Character or EOF */
+static int32_t                                /* O  - Character or EOF */
 mxml_string_getc(void *p,                /* I  - Pointer to file */
-                 int  *encoding)       /* IO - Encoding */
+                 int32_t  *encoding)       /* IO - Encoding */
 {
-  int              ch;                      /* Character */
+  int32_t              ch;                      /* Character */
   const char      **s;                      /* Pointer to string pointer */
 
 
@@ -2524,7 +2524,7 @@ mxml_string_getc(void *p,                /* I  - Pointer to file */
             * Multi-word UTF-16 char...
             */
 
-            int lch;                    /* Lower word */
+            int32_t lch;                    /* Lower word */
 
 
             if (!(*s)[0])
@@ -2572,7 +2572,7 @@ mxml_string_getc(void *p,                /* I  - Pointer to file */
             * Multi-word UTF-16 char...
             */
 
-            int lch;                    /* Lower word */
+            int32_t lch;                    /* Lower word */
 
 
             if (!(*s)[1])
@@ -2603,8 +2603,8 @@ mxml_string_getc(void *p,                /* I  - Pointer to file */
  * 'mxml_string_putc()' - Write a character to a string.
  */
 
-static int                                /* O - 0 on success, -1 on failure */
-mxml_string_putc(int  ch,                /* I - Character to write */
+static int32_t                                /* O - 0 on success, -1 on failure */
+mxml_string_putc(int32_t  ch,                /* I - Character to write */
                  void *p)               /* I - Pointer to string pointers */
 {
   char      **pp;                              /* Pointer to string pointers */
@@ -2625,10 +2625,10 @@ mxml_string_putc(int  ch,                /* I - Character to write */
  * 'mxml_write_name()' - Write a name string.
  */
 
-static int                                /* O - 0 on success, -1 on failure */
+static int32_t                                /* O - 0 on success, -1 on failure */
 mxml_write_name(const char *s,                /* I - Name to write */
                 void       *p,                /* I - Write pointer */
-                int        (*putc_cb)(int, void *))
+                int32_t        (*putc_cb)(int32_t, void *))
                                         /* I - Write callback */
 {
   char              quote;                      /* Quote character */
@@ -2700,15 +2700,15 @@ mxml_write_name(const char *s,                /* I - Name to write */
  * 'mxml_write_node()' - Save an XML node to a file.
  */
 
-static int                                /* O - Column or -1 on error */
+static int32_t                                /* O - Column or -1 on error */
 mxml_write_node(mxml_node_t     *node,        /* I - Node to write */
                 void            *p,        /* I - File to write to */
                 mxml_save_cb_t  cb,        /* I - Whitespace callback */
-                int             col,        /* I - Current column */
+                int32_t             col,        /* I - Current column */
                 _mxml_putc_cb_t putc_cb,/* I - Output callback */
                 _mxml_global_t  *global)/* I - Global data */
 {
-  int              i,                      /* Looping var */
+  int32_t              i,                      /* Looping var */
                 width;                        /* Width of attr + value */
   mxml_attr_t      *attr;                      /* Current attribute */
   char              s[255];                      /* Temporary string */
@@ -2971,7 +2971,7 @@ mxml_write_node(mxml_node_t     *node,        /* I - Node to write */
  * 'mxml_write_string()' - Write a string, escaping & and < as needed.
  */
 
-static int                                /* O - 0 on success, -1 on failure */
+static int32_t                                /* O - 0 on success, -1 on failure */
 mxml_write_string(
     const char      *s,                    /* I - String to write */
     void            *p,                    /* I - Write pointer */
@@ -3011,12 +3011,12 @@ mxml_write_string(
  * 'mxml_write_ws()' - Do whitespace callback...
  */
 
-static int                                /* O - New column */
+static int32_t                                /* O - New column */
 mxml_write_ws(mxml_node_t     *node,        /* I - Current node */
               void            *p,  /* I - Write pointer */
               mxml_save_cb_t  cb,  /* I - Callback function */
-              int             ws,  /* I - Where value */
-              int             col,  /* I - Current column */
+              int32_t             ws,  /* I - Where value */
+              int32_t             col,  /* I - Current column */
               _mxml_putc_cb_t putc_cb)  /* I - Write callback */
 {
   const char      *s;                      /* Whitespace string */

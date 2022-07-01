@@ -75,7 +75,7 @@
   * Set up iv(nonce). Earlier versions used 64 bits instead of 96, this version
   * uses the typical AEAD 96 bit nonce and can do record sizes of 256 GB.
   */
-int Chacha_SetIV(ChaCha* ctx, const byte* inIv, word32 counter)
+int32_t Chacha_SetIV(ChaCha* ctx, const byte* inIv, word32 counter)
 {
     word32 temp[3];       /* used for alignment of memory */
     XMEMSET(temp, 0, 12);
@@ -110,7 +110,7 @@ static const word32 tau[4] = {0x61707865, 0x3120646e, 0x79622d36, 0x6b206574};
 /**
   * Key setup. 8 word iv (nonce)
   */
-int Chacha_SetKey(ChaCha* ctx, const byte* key, word32 keySz)
+int32_t Chacha_SetKey(ChaCha* ctx, const byte* key, word32 keySz)
 {
     const word32* constants;
     const byte*   k;
@@ -236,7 +236,7 @@ static void Chacha_encrypt_bytes(ChaCha* ctx, const byte* m, byte* c,
 /**
   * API to encrypt/decrypt a message of any size.
   */
-int Chacha_Process(ChaCha* ctx, byte* output, const byte* input, word32 msglen)
+int32_t Chacha_Process(ChaCha* ctx, byte* output, const byte* input, word32 msglen)
 {
     if (ctx == NULL)
         return BAD_FUNC_ARG;

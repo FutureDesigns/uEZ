@@ -221,7 +221,7 @@
 			 *
 			 *  @note This function is available in USB Host mode only.
 			 *
-			 *  @param	BytesRem			: Pointer to an int storing the remaining bytes in the configuration descriptor.
+			 *  @param	BytesRem			: Pointer to an int32_t storing the remaining bytes in the configuration descriptor.
 			 *  @param	CurrConfigLoc		: Pointer to the current position in the configuration descriptor.
 			 *  @param	ComparatorRoutine  	: Name of the comparator search function to use on the configuration descriptor.
 			 *

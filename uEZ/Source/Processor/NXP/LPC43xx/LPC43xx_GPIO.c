@@ -56,8 +56,8 @@ typedef struct {
 }T_GPIO_Interrupt;
 
 typedef struct {
-    TVInt32 *iPINTSEL0; //interrupt select register for int. 0 - 3
-    TVInt32 *iPINTSEL1; //interrupt select register for int. 4 - 7
+    TVInt32 *iPINTSEL0; //interrupt select register for int32_t. 0 - 3
+    TVInt32 *iPINTSEL1; //interrupt select register for int32_t. 4 - 7
     TVInt32 *iISEL;     /*!< Pin Interrupt Mode register */
     TVInt32 *iIENR;     /*!< Pin Interrupt Enable (Rising) register */
     TVInt32 *iSIENR;    /*!< Set Pin Interrupt Enable (Rising) register */

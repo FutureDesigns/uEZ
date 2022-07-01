@@ -58,7 +58,7 @@
 # ifndef LWIP_CHKSUM_ALGORITHM
 #  define LWIP_CHKSUM_ALGORITHM 2
 # endif
-u16_t lwip_standard_chksum(const void *dataptr, int len);
+u16_t lwip_standard_chksum(const void *dataptr, int32_t len);
 #endif
 /* If none set: */
 #ifndef LWIP_CHKSUM_ALGORITHM
@@ -77,7 +77,7 @@ u16_t lwip_standard_chksum(const void *dataptr, int len);
  * @note host endianess is irrelevant (p3 RFC1071)
  */
 u16_t
-lwip_standard_chksum(const void *dataptr, int len)
+lwip_standard_chksum(const void *dataptr, int32_t len)
 {
   u32_t acc;
   u16_t src;
@@ -130,13 +130,13 @@ lwip_standard_chksum(const void *dataptr, int len)
  * @return host order (!) lwip checksum (non-inverted Internet sum)
  */
 u16_t
-lwip_standard_chksum(const void *dataptr, int len)
+lwip_standard_chksum(const void *dataptr, int32_t len)
 {
   const u8_t *pb = (const u8_t *)dataptr;
   const u16_t *ps;
   u16_t t = 0;
   u32_t sum = 0;
-  int odd = ((mem_ptr_t)pb & 1);
+  int32_t odd = ((mem_ptr_t)pb & 1);
 
   /* Get aligned to u16_t */
   if (odd && len > 0) {
@@ -186,7 +186,7 @@ lwip_standard_chksum(const void *dataptr, int len)
  * by Curt McDowell, Broadcom Corp. December 8th, 2005
  */
 u16_t
-lwip_standard_chksum(const void *dataptr, int len)
+lwip_standard_chksum(const void *dataptr, int32_t len)
 {
   const u8_t *pb = (const u8_t *)dataptr;
   const u16_t *ps;
@@ -194,7 +194,7 @@ lwip_standard_chksum(const void *dataptr, int len)
   const u32_t *pl;
   u32_t sum = 0, tmp;
   /* starts at odd byte address? */
-  int odd = ((mem_ptr_t)pb & 1);
+  int32_t odd = ((mem_ptr_t)pb & 1);
   
   //TODO: Hack
 //  if((u32_t)pb < (u32_t)0x7FFFF || (u32_t)pb >0xB0000000){
@@ -560,7 +560,7 @@ ip_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
 u16_t
 inet_chksum(const void *dataptr, u16_t len)
 {
-  return (u16_t)~(unsigned int)LWIP_CHKSUM(dataptr, len);
+  return (u16_t)~(uint32_t)LWIP_CHKSUM(dataptr, len);
 }
 
 /**

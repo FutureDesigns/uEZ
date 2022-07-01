@@ -14,7 +14,7 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_RTT                   0
 #define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
@@ -25,7 +25,7 @@
 
 #define UEZ_ENABLE_AUDIO_AMP                1
 #define UEZ_ENABLE_USB_HOST_STACK           1
-#define UEZ_ENABLE_USB_DEVICE_STACK         0
+#define UEZ_ENABLE_USB_DEVICE_STACK         1
 #define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
@@ -72,3 +72,7 @@
 #define SLIDESHOW_PREFETCH_BEHIND           1
 #define SLIDESHOW_NUM_CACHED_SLIDES         5
 
+/* ----- Constants for Functional Test ----- */
+#define UEZ_SPEAKER_TEST                    0 // set to 1 for FCT build
+#define UEZ_SPEAKER_TEST_HZ                 500
+/* ----------------------------------------- */

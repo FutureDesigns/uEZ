@@ -42,7 +42,7 @@
 
 
 /* alloc user allocs to work with zlib */
-static void* myAlloc(void* opaque, unsigned int item, unsigned int size)
+static void* myAlloc(void* opaque, uint32_t item, uint32_t size)
 {
     (void)opaque;
     return XMALLOC(item * size, opaque, DYNAMIC_TYPE_LIBZ);
@@ -65,7 +65,7 @@ static void myFree(void* opaque, void* memory)
 #endif
 
 
-int Compress(byte* out, word32 outSz, const byte* in, word32 inSz, word32 flags)
+int32_t Compress(byte* out, word32 outSz, const byte* in, word32 inSz, word32 flags)
 /*
  * out - pointer to destination buffer
  * outSz - size of destination buffer
@@ -84,7 +84,7 @@ int Compress(byte* out, word32 outSz, const byte* in, word32 inSz, word32 flags)
  */
 {
     z_stream stream;
-    int result = 0;
+    int32_t result = 0;
 
     stream.next_in = (Bytef*)in;
     stream.avail_in = (uInt)inSz;
@@ -110,7 +110,7 @@ int Compress(byte* out, word32 outSz, const byte* in, word32 inSz, word32 flags)
         return COMPRESS_E;
     }
 
-    result = (int)stream.total_out;
+    result = (int32_t)stream.total_out;
 
     if (deflateEnd(&stream) != Z_OK)
         result = COMPRESS_E;
@@ -119,7 +119,7 @@ int Compress(byte* out, word32 outSz, const byte* in, word32 inSz, word32 flags)
 }
 
 
-int DeCompress(byte* out, word32 outSz, const byte* in, word32 inSz)
+int32_t DeCompress(byte* out, word32 outSz, const byte* in, word32 inSz)
 /*
  * out - pointer to destination buffer
  * outSz - size of destination buffer
@@ -133,7 +133,7 @@ int DeCompress(byte* out, word32 outSz, const byte* in, word32 inSz)
  */ 
 {
     z_stream stream;
-    int result = 0;
+    int32_t result = 0;
 
     stream.next_in = (Bytef*)in;
     stream.avail_in = (uInt)inSz;
@@ -156,7 +156,7 @@ int DeCompress(byte* out, word32 outSz, const byte* in, word32 inSz)
         return DECOMPRESS_E;
     }
     
-    result = (int)stream.total_out;
+    result = (int32_t)stream.total_out;
 
     if (inflateEnd(&stream) != Z_OK)
         result = DECOMPRESS_E;

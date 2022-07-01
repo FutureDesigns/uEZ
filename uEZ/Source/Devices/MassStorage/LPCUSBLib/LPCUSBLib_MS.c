@@ -77,7 +77,7 @@ static T_LPCUSBLib_MS_Workspace *MS_Workspaces[2];
  * Prototypes:
  *---------------------------------------------------------------------------*/
 static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum);
-static int IUpdate(int aUnitAddress);
+static int32_t IUpdate(int32_t aUnitAddress);
 
 /*---------------------------------------------------------------------------*
  * Internal Routine:  HostErrorToUEZ
@@ -118,9 +118,9 @@ static T_uezError HostErrorToUEZ(uint8_t errorCode)
  * Outputs:
  *      TUInt32                      -- return code (never returns)
  *---------------------------------------------------------------------------*/
-static int IUpdate(int aUnitAddress)
+static int32_t IUpdate(int32_t aUnitAddress)
 {
-    int activity = 0;
+    int32_t activity = 0;
     T_LPCUSBLib_MS_Workspace *p = (T_LPCUSBLib_MS_Workspace *)MS_Workspaces[aUnitAddress];
     TUInt32 core = p->iUnitAddress;
 

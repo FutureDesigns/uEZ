@@ -92,7 +92,7 @@ struct memp {
   struct memp *next;
 #if MEMP_OVERFLOW_CHECK
   const char *file;
-  int line;
+  int32_t line;
 #endif /* MEMP_OVERFLOW_CHECK */
 };
 #endif /* !MEMP_MEM_MALLOC || MEMP_OVERFLOW_CHECK */
@@ -169,7 +169,7 @@ struct memp_desc {
 void memp_init_pool(const struct memp_desc *desc);
 
 #if MEMP_OVERFLOW_CHECK
-void *memp_malloc_pool_fn(const struct memp_desc* desc, const char* file, const int line);
+void *memp_malloc_pool_fn(const struct memp_desc* desc, const char* file, const int32_t line);
 #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 #else
 void *memp_malloc_pool(const struct memp_desc *desc);

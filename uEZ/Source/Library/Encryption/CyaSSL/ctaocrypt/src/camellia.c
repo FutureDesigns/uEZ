@@ -71,7 +71,7 @@
 
 
 /* u32 must be 32bit word */
-typedef unsigned int u32;
+typedef uint32_t u32;
 typedef unsigned char u8;
 
 /* key constants */
@@ -486,7 +486,7 @@ static const u32 camellia_sp4404[256] = {
 #define subl(x) subL[(x)]
 #define subr(x) subR[(x)]
 
-static int camellia_setup128(const unsigned char *key, u32 *subkey)
+static int32_t camellia_setup128(const unsigned char *key, u32 *subkey)
 {
     u32 kll, klr, krl, krr;
     u32 il, ir, t0, t1, w0, w1;
@@ -718,7 +718,7 @@ static int camellia_setup128(const unsigned char *key, u32 *subkey)
     return 0;
 }
 
-static int camellia_setup256(const unsigned char *key, u32 *subkey)
+static int32_t camellia_setup256(const unsigned char *key, u32 *subkey)
 {
     u32 kll,klr,krl,krr;           /* left half of key */
     u32 krll,krlr,krrl,krrr;       /* right half of key */
@@ -1025,7 +1025,7 @@ static int camellia_setup256(const unsigned char *key, u32 *subkey)
     return 0;
 }
 
-static int camellia_setup192(const unsigned char *key, u32 *subkey)
+static int32_t camellia_setup192(const unsigned char *key, u32 *subkey)
 {
     unsigned char kk[32];
     u32 krll, krlr, krrl,krrr;
@@ -1463,7 +1463,7 @@ static void camellia_decrypt256(const u32 *subkey, u32 *io)
  * API for compatibility
  */
 
-static void Camellia_EncryptBlock(const int keyBitLength, 
+static void Camellia_EncryptBlock(const int32_t keyBitLength, 
 			   const unsigned char *plaintext, 
 			   const KEY_TABLE_TYPE keyTable, 
 			   unsigned char *ciphertext)
@@ -1494,7 +1494,7 @@ static void Camellia_EncryptBlock(const int keyBitLength,
     PUTU32(ciphertext + 12, tmp[3]);
 }
 
-static void Camellia_DecryptBlock(const int keyBitLength, 
+static void Camellia_DecryptBlock(const int32_t keyBitLength, 
 			   const unsigned char *ciphertext, 
 			   const KEY_TABLE_TYPE keyTable, 
 			   unsigned char *plaintext)
@@ -1528,9 +1528,9 @@ static void Camellia_DecryptBlock(const int keyBitLength,
 
 /* CTaoCrypt wrappers to the Camellia code */
 
-int CamelliaSetKey(Camellia* cam, const byte* key, word32 len, const byte* iv)
+int32_t CamelliaSetKey(Camellia* cam, const byte* key, word32 len, const byte* iv)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     if (cam == NULL) return BAD_FUNC_ARG;
 
@@ -1559,7 +1559,7 @@ int CamelliaSetKey(Camellia* cam, const byte* key, word32 len, const byte* iv)
 }
 
 
-int CamelliaSetIV(Camellia* cam, const byte* iv)
+int32_t CamelliaSetIV(Camellia* cam, const byte* iv)
 {
     if (cam == NULL)
         return BAD_FUNC_ARG;

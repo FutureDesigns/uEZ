@@ -550,7 +550,7 @@ snmp_oid_prefix(struct snmp_obj_id* target, const u32_t *oid, u8_t oid_len)
 
   if (oid_len > 0) {
     /* move existing OID to make room at the beginning for OID to insert */
-    int i;
+    int32_t i;
     for (i = target->len-1; i>=0; i--) {
       target->id[i + oid_len] = target->id[i];
     }

@@ -16,7 +16,7 @@
 
 
 typedef struct CYASSL_MD5_CTX {
-    int holder[24];   /* big enough to hold ctaocrypt md5, but check on init */
+    int32_t holder[24];   /* big enough to hold ctaocrypt md5, but check on init */
 } CYASSL_MD5_CTX;
 
 CYASSL_API void CyaSSL_MD5_Init(CYASSL_MD5_CTX*);

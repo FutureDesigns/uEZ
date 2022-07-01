@@ -57,7 +57,7 @@ LOG_DEBUG    = 7
 /*
  * ppp_trace - a form of printf to send tracing information to stderr
  */
-void ppp_trace(int level, const char *format,...);
+void ppp_trace(int32_t level, const char *format,...);
 
 #define TRACELCP PPP_DEBUG
 

@@ -143,10 +143,10 @@ struct pppoe_softc;
 
 void pppoe_init(void);
 
-err_t pppoe_create(struct netif *ethif, int pd, void (*linkStatusCB)(int pd, int up), struct pppoe_softc **scptr);
+err_t pppoe_create(struct netif *ethif, int32_t pd, void (*linkStatusCB)(int32_t pd, int32_t up), struct pppoe_softc **scptr);
 err_t pppoe_destroy(struct netif *ifp);
 
-int pppoe_connect(struct pppoe_softc *sc);
+int32_t pppoe_connect(struct pppoe_softc *sc);
 void pppoe_disconnect(struct pppoe_softc *sc);
 
 void pppoe_disc_input(struct netif *netif, struct pbuf *p);
@@ -154,7 +154,7 @@ void pppoe_data_input(struct netif *netif, struct pbuf *p);
 
 err_t pppoe_xmit(struct pppoe_softc *sc, struct pbuf *pb);
 
-extern int pppoe_hdrlen;
+extern int32_t pppoe_hdrlen;
 
 #endif /* PPPOE_SUPPORT */
 

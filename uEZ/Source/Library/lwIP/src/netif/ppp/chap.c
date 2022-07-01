@@ -99,23 +99,23 @@
 /*
  * Protocol entry points.
  */
-static void ChapInit (int);
-static void ChapLowerUp (int);
-static void ChapLowerDown (int);
-static void ChapInput (int, u_char *, int);
-static void ChapProtocolReject (int);
+static void ChapInit (int32_t);
+static void ChapLowerUp (int32_t);
+static void ChapLowerDown (int32_t);
+static void ChapInput (int32_t, u_char *, int32_t);
+static void ChapProtocolReject (int32_t);
 #if 0
-static int  ChapPrintPkt (u_char *, int, void (*) (void *, char *, ...), void *);
+static int32_t  ChapPrintPkt (u_char *, int32_t, void (*) (void *, char *, ...), void *);
 #endif
 
 static void ChapChallengeTimeout (void *);
 static void ChapResponseTimeout (void *);
-static void ChapReceiveChallenge (chap_state *, u_char *, int, int);
+static void ChapReceiveChallenge (chap_state *, u_char *, int32_t, int32_t);
 static void ChapRechallenge (void *);
-static void ChapReceiveResponse (chap_state *, u_char *, int, int);
-static void ChapReceiveSuccess(chap_state *cstate, u_char *inp, u_char id, int len);
-static void ChapReceiveFailure(chap_state *cstate, u_char *inp, u_char id, int len);
-static void ChapSendStatus (chap_state *, int);
+static void ChapReceiveResponse (chap_state *, u_char *, int32_t, int32_t);
+static void ChapReceiveSuccess(chap_state *cstate, u_char *inp, u_char id, int32_t len);
+static void ChapReceiveFailure(chap_state *cstate, u_char *inp, u_char id, int32_t len);
+static void ChapSendStatus (chap_state *, int32_t);
 static void ChapSendChallenge (chap_state *);
 static void ChapSendResponse (chap_state *);
 static void ChapGenChallenge (chap_state *);
@@ -157,7 +157,7 @@ struct protent chap_protent = {
  *
  */
 void
-ChapAuthWithPeer(int unit, char *our_name, int digest)
+ChapAuthWithPeer(int32_t unit, char *our_name, int32_t digest)
 {
   chap_state *cstate = &chap[unit];
 
@@ -184,7 +184,7 @@ ChapAuthWithPeer(int unit, char *our_name, int digest)
  * ChapAuthPeer - Authenticate our peer (start server).
  */
 void
-ChapAuthPeer(int unit, char *our_name, int digest)
+ChapAuthPeer(int32_t unit, char *our_name, int32_t digest)
 {
   chap_state *cstate = &chap[unit];
 
@@ -211,7 +211,7 @@ ChapAuthPeer(int unit, char *our_name, int digest)
  * ChapInit - Initialize a CHAP unit.
  */
 static void
-ChapInit(int unit)
+ChapInit(int32_t unit)
 {
   chap_state *cstate = &chap[unit];
 
@@ -294,7 +294,7 @@ ChapRechallenge(void *arg)
  * Start up if we have pending requests.
  */
 static void
-ChapLowerUp(int unit)
+ChapLowerUp(int32_t unit)
 {
   chap_state *cstate = &chap[unit];
 
@@ -320,7 +320,7 @@ ChapLowerUp(int unit)
  * Cancel all timeouts.
  */
 static void
-ChapLowerDown(int unit)
+ChapLowerDown(int32_t unit)
 {
   chap_state *cstate = &chap[unit];
 
@@ -344,7 +344,7 @@ ChapLowerDown(int unit)
  * ChapProtocolReject - Peer doesn't grok CHAP.
  */
 static void
-ChapProtocolReject(int unit)
+ChapProtocolReject(int32_t unit)
 {
   chap_state *cstate = &chap[unit];
   
@@ -364,12 +364,12 @@ ChapProtocolReject(int unit)
  * ChapInput - Input CHAP packet.
  */
 static void
-ChapInput(int unit, u_char *inpacket, int packet_len)
+ChapInput(int32_t unit, u_char *inpacket, int32_t packet_len)
 {
   chap_state *cstate = &chap[unit];
   u_char *inp;
   u_char code, id;
-  int len;
+  int32_t len;
   
   /*
    * Parse header (code, id and length).
@@ -424,11 +424,11 @@ ChapInput(int unit, u_char *inpacket, int packet_len)
  * ChapReceiveChallenge - Receive Challenge and send Response.
  */
 static void
-ChapReceiveChallenge(chap_state *cstate, u_char *inp, int id, int len)
+ChapReceiveChallenge(chap_state *cstate, u_char *inp, int32_t id, int32_t len)
 {
-  int rchallenge_len;
+  int32_t rchallenge_len;
   u_char *rchallenge;
-  int secret_len;
+  int32_t secret_len;
   char secret[MAXSECRETLEN];
   char rhostname[256];
   MD5_CTX mdContext;
@@ -518,11 +518,11 @@ ChapReceiveChallenge(chap_state *cstate, u_char *inp, int id, int len)
  * ChapReceiveResponse - Receive and process response.
  */
 static void
-ChapReceiveResponse(chap_state *cstate, u_char *inp, int id, int len)
+ChapReceiveResponse(chap_state *cstate, u_char *inp, int32_t id, int32_t len)
 {
   u_char *remmd, remmd_len;
-  int secret_len, old_state;
-  int code;
+  int32_t secret_len, old_state;
+  int32_t code;
   char rhostname[256];
   MD5_CTX mdContext;
   char secret[MAXSECRETLEN];
@@ -636,7 +636,7 @@ ChapReceiveResponse(chap_state *cstate, u_char *inp, int id, int len)
  * ChapReceiveSuccess - Receive Success
  */
 static void
-ChapReceiveSuccess(chap_state *cstate, u_char *inp, u_char id, int len)
+ChapReceiveSuccess(chap_state *cstate, u_char *inp, u_char id, int32_t len)
 {
   LWIP_UNUSED_ARG(id);
   LWIP_UNUSED_ARG(inp);
@@ -673,7 +673,7 @@ ChapReceiveSuccess(chap_state *cstate, u_char *inp, u_char id, int len)
  * ChapReceiveFailure - Receive failure.
  */
 static void
-ChapReceiveFailure(chap_state *cstate, u_char *inp, u_char id, int len)
+ChapReceiveFailure(chap_state *cstate, u_char *inp, u_char id, int32_t len)
 {
   LWIP_UNUSED_ARG(id);
   LWIP_UNUSED_ARG(inp);
@@ -707,8 +707,8 @@ static void
 ChapSendChallenge(chap_state *cstate)
 {
   u_char *outp;
-  int chal_len, name_len;
-  int outlen;
+  int32_t chal_len, name_len;
+  int32_t outlen;
   
   chal_len = cstate->chal_len;
   name_len = strlen(cstate->chal_name);
@@ -740,10 +740,10 @@ ChapSendChallenge(chap_state *cstate)
  * ChapSendStatus - Send a status response (ack or nak).
  */
 static void
-ChapSendStatus(chap_state *cstate, int code)
+ChapSendStatus(chap_state *cstate, int32_t code)
 {
   u_char *outp;
-  int outlen, msglen;
+  int32_t outlen, msglen;
   char msg[256];
   
   if (code == CHAP_SUCCESS) {
@@ -777,9 +777,9 @@ ChapSendStatus(chap_state *cstate, int code)
 static void
 ChapGenChallenge(chap_state *cstate)
 {
-  int chal_len;
+  int32_t chal_len;
   u_char *ptr = cstate->challenge;
-  int i;
+  int32_t i;
   
   /* pick a random challenge length between MIN_CHALLENGE_LENGTH and 
      MAX_CHALLENGE_LENGTH */  
@@ -806,7 +806,7 @@ static void
 ChapSendResponse(chap_state *cstate)
 {
   u_char *outp;
-  int outlen, md_len, name_len;
+  int32_t outlen, md_len, name_len;
   
   md_len = cstate->resp_length;
   name_len = strlen(cstate->resp_name);
@@ -840,11 +840,11 @@ static char *ChapCodenames[] = {
 /*
  * ChapPrintPkt - print the contents of a CHAP packet.
  */
-static int
-ChapPrintPkt( u_char *p, int plen, void (*printer) (void *, char *, ...), void *arg)
+static int32_t
+ChapPrintPkt( u_char *p, int32_t plen, void (*printer) (void *, char *, ...), void *arg)
 {
-  int code, id, len;
-  int clen, nlen;
+  int32_t code, id, len;
+  int32_t clen, nlen;
   u_char x;
   
   if (plen < CHAP_HEADERLEN) {

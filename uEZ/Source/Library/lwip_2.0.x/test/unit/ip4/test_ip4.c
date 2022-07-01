@@ -12,7 +12,7 @@
 
 /* Helper functions */
 static void
-create_ip4_input_fragment(u16_t ip_id, u16_t start, u16_t len, int last)
+create_ip4_input_fragment(u16_t ip_id, u16_t start, u16_t len, int32_t last)
 {
   struct pbuf *p;
   struct netif *input_netif = netif_list; /* just use any netif */

@@ -12,7 +12,7 @@
 
 
 typedef struct CYASSL_RIPEMD_CTX {
-    int holder[32];   /* big enough to hold ctaocrypt, but check on init */
+    int32_t holder[32];   /* big enough to hold ctaocrypt, but check on init */
 } CYASSL_RIPEMD_CTX;
 
 CYASSL_API void CyaSSL_RIPEMD_Init(CYASSL_RIPEMD_CTX*);

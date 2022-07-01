@@ -11,7 +11,7 @@
 #endif
 
 
-CYASSL_API const char*   CyaSSLeay_version(int type);
+CYASSL_API const char*   CyaSSLeay_version(int32_t type);
 CYASSL_API unsigned long CyaSSLeay(void);
 
 #define SSLeay_version CyaSSLeay_version

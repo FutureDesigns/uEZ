@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_Type.h
 Purpose     : Include file define the types used for GUI
@@ -50,6 +51,7 @@ Attention : Do not modify this file ! If you do, you will not
 
 #include "LCD.h"
 #include "GUIConf.h"
+#include "Global.h"
 
 /*********************************************************************
 *
@@ -63,23 +65,23 @@ typedef LCD_DRAWMODE    GUI_DRAWMODE;
 typedef LCD_RECT        GUI_RECT;
 
 typedef struct {
-  void      (* pfDraw)  (int x0,
-                         int y0,
-                         int xsize, 
-                         int ysize, 
+  void      (* pfDraw)  (int32_t x0,
+                         int32_t y0,
+                         int32_t xsize, 
+                         int32_t ysize, 
                          const U8 * pPixel, 
                          const LCD_LOGPALETTE * pLogPal, 
-                         int xMag, 
-                         int yMag);
-  GUI_COLOR (* pfIndex2Color)(unsigned Index);
-  void      (* pfDrawHW)(int x0,
-                         int y0,
-                         int xsize, 
-                         int ysize, 
+                         int32_t xMag, 
+                         int32_t yMag);
+  GUI_COLOR (* pfIndex2Color)(LCD_PIXELINDEX Index);
+  void      (* pfDrawHW)(int32_t x0,
+                         int32_t y0,
+                         int32_t xsize, 
+                         int32_t ysize, 
                          const U8 * pPixel, 
                          const LCD_LOGPALETTE * pLogPal, 
-                         int xMag, 
-                         int yMag);
+                         int32_t xMag, 
+                         int32_t yMag);
   const LCD_API_COLOR_CONV * pColorConvAPI;
 } GUI_BITMAP_METHODS;
 
@@ -110,51 +112,54 @@ typedef struct {
 } GUI_BITMAP_STREAM;
 
 typedef struct {
-  int    Cmd;
+  int32_t    Cmd;
   U32    v;
   void * p;
 } GUI_BITMAPSTREAM_PARAM;
 
 typedef struct {
-  int XSize;
-  int YSize;
-  int BitsPerPixel;
-  int NumColors;
-  int HasTrans;
+  int32_t XSize;
+  int32_t YSize;
+  int32_t BitsPerPixel;
+  int32_t NumColors;
+  int32_t HasTrans;
 } GUI_BITMAPSTREAM_INFO;
 
 typedef void * (* GUI_BITMAPSTREAM_CALLBACK)(GUI_BITMAPSTREAM_PARAM * pParam);
 
 typedef struct {
-  int x,y;
+  int32_t x,y;
   U8  Pressed;
   U8  Layer;
 } GUI_PID_STATE;
 
 typedef struct {
-  int Key;
-  int Pressed;
+  int32_t Key;
+  int32_t Pressed;
 } GUI_KEY_STATE;
 
 typedef struct {
-  int xPos;
-  int yPos;
-  int xSize;
-  int ySize;
-  int Delay;
+  int32_t xPos;
+  int32_t yPos;
+  int32_t xSize;
+  int32_t ySize;
+  int32_t Delay;
 } GUI_GIF_IMAGE_INFO;
 
 typedef struct {
-  int xSize;
-  int ySize;
-  int NumImages;
+  int32_t xSize;
+  int32_t ySize;
+  int32_t NumImages;
 } GUI_GIF_INFO;
 
-typedef struct GUI_REGISTER_EXIT GUI_REGISTER_EXIT;
+#define GUI_REGISTER_INIT GUI_REGISTER_HOOK
+#define GUI_REGISTER_EXIT GUI_REGISTER_HOOK
 
-struct GUI_REGISTER_EXIT {
+typedef struct GUI_REGISTER_HOOK GUI_REGISTER_HOOK;
+
+struct GUI_REGISTER_HOOK {
   void (* pfVoid)(void);
-  GUI_REGISTER_EXIT * pNext;
+  GUI_REGISTER_HOOK * pNext;
 };
 
 typedef struct {
@@ -163,8 +168,8 @@ typedef struct {
 } GUI_MULTIBUF_API;
 
 typedef struct {
-  void (* cbBeginEx)(int LayerIndex);
-  void (* cbEndEx)  (int LayerIndex);
+  void (* cbBeginEx)(int32_t LayerIndex);
+  void (* cbEndEx)  (int32_t LayerIndex);
 } GUI_MULTIBUF_API_EX;
 
 /*********************************************************************
@@ -253,9 +258,9 @@ typedef struct {
 *       UNICODE Encoding
 */
 typedef U16  tGUI_GetCharCode   (const char * s);
-typedef int  tGUI_GetCharSize   (const char * s);
-typedef int  tGUI_CalcSizeOfChar(U16 Char);
-typedef int  tGUI_Encode        (char * s, U16 Char);
+typedef int32_t  tGUI_GetCharSize   (const char * s);
+typedef int32_t  tGUI_CalcSizeOfChar(U16 Char);
+typedef int32_t  tGUI_Encode        (char * s, U16 Char);
 
 typedef struct {
   tGUI_GetCharCode    * pfGetCharCode;
@@ -268,9 +273,9 @@ typedef struct {
 *
 *       FONT Encoding
 */
-typedef int  tGUI_GetLineDistX(const char * s, int Len);
-typedef int  tGUI_GetLineLen  (const char * s, int MaxLen);
-typedef void tGL_DispLine     (const char * s, int Len);
+typedef int32_t  tGUI_GetLineDistX(const char * s, int32_t Len);
+typedef int32_t  tGUI_GetLineLen  (const char * s, int32_t MaxLen);
+typedef void tGL_DispLine     (const char * s, int32_t Len);
 
 typedef struct {
   tGUI_GetLineDistX * pfGetLineDistX;
@@ -288,17 +293,17 @@ extern const tGUI_ENC_APIList GUI_ENC_APIList_EXT;
 typedef struct GUI_FONT GUI_FONT;
 
 typedef void GUI_DISPCHAR    (U16 c);
-typedef int  GUI_GETCHARDISTX(U16P c, int * pSizeX);
+typedef int32_t  GUI_GETCHARDISTX(U16P c, int32_t * pSizeX);
 typedef void GUI_GETFONTINFO (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
 typedef char GUI_ISINFONT    (const GUI_FONT * pFont, U16 c);
-typedef int  GUI_GETCHARINFO (U16P c, GUI_CHARINFO_EXT * pInfo);
+typedef int32_t  GUI_GETCHARINFO (U16P c, GUI_CHARINFO_EXT * pInfo);
 
 #define DECLARE_FONT(Type)                                     \
 void GUI##Type##_DispChar    (U16P c);                         \
-int  GUI##Type##_GetCharDistX(U16P c, int * pSizeX);                         \
+int32_t  GUI##Type##_GetCharDistX(U16P c, int32_t * pSizeX);                         \
 void GUI##Type##_GetFontInfo (const GUI_FONT * pFont, GUI_FONTINFO * pfi); \
 char GUI##Type##_IsInFont    (const GUI_FONT * pFont, U16 c); \
-int  GUI##Type##_GetCharInfo (U16P c, GUI_CHARINFO_EXT * pInfo)
+int32_t  GUI##Type##_GetCharInfo (U16P c, GUI_CHARINFO_EXT * pInfo)
 
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */
@@ -393,7 +398,7 @@ DECLARE_FONT(PROP_AA4_EXT);
   GUIPROP_AA2_GetFontInfo,          \
   GUIPROP_AA2_IsInFont,             \
   (GUI_GETCHARINFO *)0,             \
-  GUI_ENCODE_SJIS
+  &GUI_ENC_APIList_SJIS
 
 /* PROP_AA4: Proportional, antialiased fonts, 4bpp */
 #define GUI_FONTTYPE_PROP_AA4       \
@@ -420,7 +425,7 @@ DECLARE_FONT(PROP_AA4_EXT);
   GUIPROP_AA4_GetFontInfo,          \
   GUIPROP_AA4_IsInFont,             \
   (GUI_GETCHARINFO *)0,             \
-  GUI_ENCODE_SJIS
+  &GUI_ENC_APIList_SJIS
 
 #if defined(__cplusplus)
   }
@@ -513,7 +518,7 @@ typedef struct tGUI_SIF_APIList_struct {
 *
 *       External binary font structures (XBF)
 */
-typedef int GUI_XBF_GET_DATA_FUNC(U32 Off, U16 NumBytes, void * pVoid, void * pBuffer);
+typedef int32_t GUI_XBF_GET_DATA_FUNC(U32 Off, U16 NumBytes, void * pVoid, void * pBuffer);
 
 typedef struct {
   U16 First;                         /* First character of font */
@@ -550,11 +555,11 @@ typedef struct {
 typedef struct {
   GUI_TTF_DATA * pTTF;     /* Pointer to GUI_TTF_DATA structure which contains location and size of font file */
   U32 aImageTypeBuffer[4]; /* Buffer for image type structure */
-  int PixelHeight;         /* Pixel height of new font. It means the height of the surrounding rectangle
+  int32_t PixelHeight;         /* Pixel height of new font. It means the height of the surrounding rectangle
                             * between the glyphs 'g' anf 'f'. Please notice that it is not the distance
                             * between two lines of text. With other words the value returned byGUI_GetFontSizeY()
                             * is not identically with this value. */
-  int FaceIndex;           /* Some font files can contain more than one font face. In case of more than one face
+  int32_t FaceIndex;           /* Some font files can contain more than one font face. In case of more than one face
                             * this index specifies the zero based face index to be used to create the font. 
                             * Usually 0. */
 } GUI_TTF_CS;
@@ -565,7 +570,7 @@ typedef struct {
 */
 typedef void (* GUI_SIGNAL_EVENT_FUNC)    (void);
 typedef void (* GUI_WAIT_EVENT_FUNC)      (void);
-typedef void (* GUI_WAIT_EVENT_TIMED_FUNC)(int Period);
+typedef void (* GUI_WAIT_EVENT_TIMED_FUNC)(int32_t Period);
 
 /*********************************************************************
 *
@@ -594,10 +599,10 @@ typedef struct {
 } GUI_MTOUCH_INPUT;
 
 typedef struct {
-  int            LayerIndex;
+  int32_t            LayerIndex;
   unsigned       NumPoints;
   GUI_TIMER_TIME TimeStamp;
-  GUI_HMEM       hInput;
+  PTR_ADDR       hInput;
 } GUI_MTOUCH_EVENT;
 
 //
@@ -624,34 +629,34 @@ typedef struct {
   //
   void (* pfWrite8_A0)  (U8 Data);
   void (* pfWrite8_A1)  (U8 Data);
-  void (* pfWriteM8_A0) (U8 * pData, int NumItems);
-  void (* pfWriteM8_A1) (U8 * pData, int NumItems);
+  void (* pfWriteM8_A0) (U8 * pData, int32_t NumItems);
+  void (* pfWriteM8_A1) (U8 * pData, int32_t NumItems);
   U8   (* pfRead8_A0)   (void);
   U8   (* pfRead8_A1)   (void);
-  void (* pfReadM8_A0)  (U8 * pData, int NumItems);
-  void (* pfReadM8_A1)  (U8 * pData, int NumItems);
+  void (* pfReadM8_A0)  (U8 * pData, int32_t NumItems);
+  void (* pfReadM8_A1)  (U8 * pData, int32_t NumItems);
   //
   // 16 Bit access
   //
   void (* pfWrite16_A0) (U16 Data);
   void (* pfWrite16_A1) (U16 Data);
-  void (* pfWriteM16_A0)(U16 * pData, int NumItems);
-  void (* pfWriteM16_A1)(U16 * pData, int NumItems);
+  void (* pfWriteM16_A0)(U16 * pData, int32_t NumItems);
+  void (* pfWriteM16_A1)(U16 * pData, int32_t NumItems);
   U16  (* pfRead16_A0)  (void);
   U16  (* pfRead16_A1)  (void);
-  void (* pfReadM16_A0) (U16 * pData, int NumItems);
-  void (* pfReadM16_A1) (U16 * pData, int NumItems);
+  void (* pfReadM16_A0) (U16 * pData, int32_t NumItems);
+  void (* pfReadM16_A1) (U16 * pData, int32_t NumItems);
   //
   // 32 Bit access
   //
   void (* pfWrite32_A0) (U32 Data);
   void (* pfWrite32_A1) (U32 Data);
-  void (* pfWriteM32_A0)(U32 * pData, int NumItems);
-  void (* pfWriteM32_A1)(U32 * pData, int NumItems);
+  void (* pfWriteM32_A0)(U32 * pData, int32_t NumItems);
+  void (* pfWriteM32_A1)(U32 * pData, int32_t NumItems);
   U32  (* pfRead32_A0)  (void);
   U32  (* pfRead32_A1)  (void);
-  void (* pfReadM32_A0) (U32 * pData, int NumItems);
-  void (* pfReadM32_A1) (U32 * pData, int NumItems);
+  void (* pfReadM32_A0) (U32 * pData, int32_t NumItems);
+  void (* pfReadM32_A1) (U32 * pData, int32_t NumItems);
   //
   // SPI access
   //
@@ -666,14 +671,14 @@ typedef struct {
 *
 *       Send/Receive function for VNC and/or emWinSPY
 */
-typedef int    (* GUI_tSend)  (const U8 * pData, int len, void * p);
-typedef int    (* GUI_tRecv)  (      U8 * pData, int len, void * p);
+typedef int32_t    (* GUI_tSend)  (const U8 * pData, int32_t len, void * p);
+typedef int32_t    (* GUI_tRecv)  (      U8 * pData, int32_t len, void * p);
 
 /*********************************************************************
 *
 *       Memory allocation replacement for emWinSPY
 */
-typedef void * (* GUI_tMalloc)(unsigned int);
+typedef void * (* GUI_tMalloc)(uint32_t);
 typedef void   (* GUI_tFree)  (void *);
 
 #endif  /* GUITYPE_H_INCLUDED */

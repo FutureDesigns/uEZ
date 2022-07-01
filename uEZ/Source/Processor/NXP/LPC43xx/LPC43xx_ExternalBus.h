@@ -90,8 +90,8 @@
  * @}
  */
 
-#define LPC_SCU_PIN(po, pi)   (*(volatile int         *) (LPC_SCU_BASE + ((po) * 0x80) + ((pi) * 0x4))    )
-#define LPC_SCU_CLK(c)        (*(volatile int         *) (LPC_SCU_BASE + 0xC00 + ((c) * 0x4))    )
+#define LPC_SCU_PIN(po, pi)   (*(volatile int32_t         *) (LPC_SCU_BASE + ((po) * 0x80) + ((pi) * 0x4))    )
+#define LPC_SCU_CLK(c)        (*(volatile int32_t         *) (LPC_SCU_BASE + 0xC00 + ((c) * 0x4))    )
 
 void scu_pinmux(TUInt8 port, TUInt8 pin, TUInt8 mode, TUInt8 func);
 

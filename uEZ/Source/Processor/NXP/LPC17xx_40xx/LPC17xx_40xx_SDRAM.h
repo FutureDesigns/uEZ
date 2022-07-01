@@ -54,7 +54,7 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 // Calculate number of SDRAM cycles (rounded up)
 #define SDRAM_CYCLES(x) \
-    (1+((unsigned int)(((double)x)*(1.0/1000000000.0)* \
+    (1+((uint32_t)(((double)x)*(1.0/1000000000.0)* \
             ((double)SDRAM_CLOCK_FREQUENCY))))
 #define SDRAM_CLOCKS(x) (x)
 

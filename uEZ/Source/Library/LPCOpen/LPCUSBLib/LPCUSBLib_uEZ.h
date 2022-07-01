@@ -20,7 +20,7 @@ typedef struct {
         void (*Suspend)(void);
         void (*WakeUp)(void);
         void (*Reset)(void);  // Timing critical!
-        int (*Update)(int aUnitAddress); // Called by monitoring task
+        int32_t (*Update)(int32_t aUnitAddress); // Called by monitoring task
         uint16_t (*GetDescriptor)(uint8_t corenum,
                                   const uint16_t wValue,
                                   const uint8_t wIndex,
@@ -36,11 +36,11 @@ typedef struct {
         void (*DeviceUnattached)(const uint8_t corenum);
         void (*DeviceAttached)(const uint8_t corenum);
 
-        int (*Update)(int aUnitAddress); // Called by monitoring task
+        int32_t (*Update)(int32_t aUnitAddress); // Called by monitoring task
 } T_LPCUSBLib_Host_Callbacks;
 
-T_uezError UEZ_LPCUSBLib_Device_Require(int aUnitAddress, T_LPCUSBLib_Device_Callbacks *aCallbacks, TUInt8 aForceFullSpeed);
+T_uezError UEZ_LPCUSBLib_Device_Require(int32_t aUnitAddress, T_LPCUSBLib_Device_Callbacks *aCallbacks, TUInt8 aForceFullSpeed);
 
-T_uezError UEZ_LPCUSBLib_Host_Require(int aUnitAddress, T_LPCUSBLib_Host_Callbacks *aCallbacks, TUInt8 aForceFullspeed);
+T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Callbacks *aCallbacks, TUInt8 aForceFullspeed);
 
 #endif /* LPCUSBLIB_UEZ_H_ */

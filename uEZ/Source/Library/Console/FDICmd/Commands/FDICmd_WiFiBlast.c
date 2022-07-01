@@ -148,7 +148,7 @@ T_uezError IWiFiBlastStart(void)
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdWiFiBlast(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdWiFiBlast(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezError error;
 

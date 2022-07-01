@@ -30,16 +30,16 @@ const char __stdin_name[]  = "STDIN";
 const char __stdout_name[] = "STDOUT";
 const char __stderr_name[] = "STDERR";
 
-struct __FILE { int handle; /* Add whatever you need here */ };
+struct __FILE { int32_t handle; /* Add whatever you need here */ };
 
 #ifdef STDIO
-extern int  SER_GetChar   (void);
-extern int  SER_PutChar   (int ch);
+extern int32_t  SER_GetChar   (void);
+extern int32_t  SER_PutChar   (int32_t ch);
 
 /*-----------------------------------------------------------------------------
   Write character to the Serial Port
  *----------------------------------------------------------------------------*/
-int sendchar (int c) 
+int32_t sendchar (int32_t c) 
 {
     if (c == '\n')  {
         SER_PutChar ('\r');
@@ -52,9 +52,9 @@ int sendchar (int c)
 /*-----------------------------------------------------------------------------
   Read character from the Serial Port
  *----------------------------------------------------------------------------*/
-int getkey (void) 
+int32_t getkey (void) 
 {
-    int ch = SER_GetChar();
+    int32_t ch = SER_GetChar();
 
     if (ch < 0) {
         return 0;
@@ -65,7 +65,7 @@ int getkey (void)
 
 /*--------------------------- _ttywrch ---------------------------------------*/
 
-void _ttywrch (int ch) 
+void _ttywrch (int32_t ch) 
 {
 #ifdef STDIO
     sendchar (ch);
@@ -74,9 +74,9 @@ void _ttywrch (int ch)
 
 /*--------------------------- _sys_open --------------------------------------*/
 #ifndef NO_FILESYSTEM
-static int KEIL_FS_open(const char *name, int openmode) 
+static int32_t KEIL_FS_open(const char *name, int32_t openmode) 
 {
-    int i ;  int ret ;
+    int32_t i ;  int32_t ret ;
     #define PATHSIZE 100
     char path[PATHSIZE] ; char *p ;
     
@@ -95,7 +95,7 @@ static int KEIL_FS_open(const char *name, int openmode)
 }
 #endif
 
-FILEHANDLE _sys_open (const char *name, int openmode) 
+FILEHANDLE _sys_open (const char *name, int32_t openmode) 
 {
     /* Register standard Input Output devices. */
     if (strcmp(name, "STDIN") == 0) {
@@ -116,7 +116,7 @@ FILEHANDLE _sys_open (const char *name, int openmode)
 
 /*--------------------------- _sys_close -------------------------------------*/
 
-int _sys_close (FILEHANDLE fh) 
+int32_t _sys_close (FILEHANDLE fh) 
 {
     if (fh > 0x8000) {
         return (0);
@@ -130,7 +130,7 @@ int _sys_close (FILEHANDLE fh)
 
 /*--------------------------- _sys_write -------------------------------------*/
 
-int _sys_write (FILEHANDLE fh, const U8 *buf, U32 len, int mode) 
+int32_t _sys_write (FILEHANDLE fh, const U8 *buf, U32 len, int32_t mode) 
 {
 #ifdef STDIO
     if (fh == STDOUT) {
@@ -153,12 +153,12 @@ int _sys_write (FILEHANDLE fh, const U8 *buf, U32 len, int mode)
 
 /*--------------------------- _sys_read --------------------------------------*/
 
-int _sys_read (FILEHANDLE fh, U8 *buf, U32 len, int mode) 
+int32_t _sys_read (FILEHANDLE fh, U8 *buf, U32 len, int32_t mode) 
 {
 #ifdef STDIO
     if (fh == STDIN) {
     /* Standard Input device. */
-        int sz ;
+        int32_t sz ;
         while((buf[0] = getkey()) == 0) ;
            ;
         for (sz = 0 ; sz <= len ; sz ++ ) {
@@ -181,7 +181,7 @@ int _sys_read (FILEHANDLE fh, U8 *buf, U32 len, int mode)
 
 /*--------------------------- _sys_istty -------------------------------------*/
 
-int _sys_istty (FILEHANDLE fh) 
+int32_t _sys_istty (FILEHANDLE fh) 
 {
     if (fh > 0x8000) {
         return (1);
@@ -191,7 +191,7 @@ int _sys_istty (FILEHANDLE fh)
 
 /*--------------------------- _sys_seek --------------------------------------*/
 
-int _sys_seek (FILEHANDLE fh, long pos) 
+int32_t _sys_seek (FILEHANDLE fh, long pos) 
 {
     if (fh > 0x8000) {
         return (-1);
@@ -205,7 +205,7 @@ int _sys_seek (FILEHANDLE fh, long pos)
 
 /*--------------------------- _sys_ensure ------------------------------------*/
 
-int _sys_ensure (FILEHANDLE fh) 
+int32_t _sys_ensure (FILEHANDLE fh) 
 {
     if (fh > 0x8000) {
         return (-1);
@@ -234,21 +234,21 @@ long _sys_flen (FILEHANDLE fh)
 
 /*--------------------------- _sys_tmpnam ------------------------------------*/
 
-int _sys_tmpnam (char *name, int sig, unsigned maxlen) 
+int32_t _sys_tmpnam (char *name, int32_t sig, unsigned maxlen) 
 {
     return (1);
 }
 
 /*--------------------------- _sys_command_string ----------------------------*/
 
-char *_sys_command_string (char *cmd, int len) 
+char *_sys_command_string (char *cmd, int32_t len) 
 {
     return (cmd);
 }
 
 /*--------------------------- _sys_exit --------------------------------------*/
 
-void _sys_exit (int return_code) 
+void _sys_exit (int32_t return_code) 
 {
 #ifdef CYASSL_MDK_SHELL
     return ;

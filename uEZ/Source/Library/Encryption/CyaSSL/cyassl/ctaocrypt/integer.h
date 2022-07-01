@@ -88,7 +88,7 @@ extern "C" {
    typedef unsigned short     mp_word;
 #elif defined(MP_16BIT) || defined(NO_64BIT)
    typedef unsigned short     mp_digit;
-   typedef unsigned int       mp_word;
+   typedef uint32_t       mp_word;
 #elif defined(MP_64BIT)
    /* for GCC only on supported platforms */
    typedef unsigned long long mp_digit;  /* 64 bit type, 128 uses mode(TI) */
@@ -104,7 +104,7 @@ extern "C" {
       typedef unsigned long long ulong64;
    #endif
 
-   typedef unsigned int       mp_digit;  /* long could be 64 now, changed TAO */
+   typedef uint32_t       mp_digit;  /* long could be 64 now, changed TAO */
    typedef ulong64            mp_word;
 
 #ifdef MP_31BIT   
@@ -121,7 +121,7 @@ extern "C" {
 /* otherwise the bits per digit is calculated automatically from the size of
    a mp_digit */
 #ifndef DIGIT_BIT
-   #define DIGIT_BIT ((int)((CHAR_BIT * sizeof(mp_digit) - 1)))
+   #define DIGIT_BIT ((int32_t)((CHAR_BIT * sizeof(mp_digit) - 1)))
       /* bits per digit */
 #endif
 
@@ -150,7 +150,7 @@ extern "C" {
 #define LTM_PRIME_SAFE     0x0002 /* Safe prime (p-1)/2 == prime */
 #define LTM_PRIME_2MSB_ON  0x0008 /* force 2nd MSB to 1 */
 
-typedef int           mp_err;
+typedef int32_t           mp_err;
 
 /* define this to use lower memory usage routines (exptmods mostly) */
 #define MP_LOW_MEM
@@ -170,13 +170,13 @@ typedef int           mp_err;
 
 /* the infamous mp_int structure */
 typedef struct  {
-    int used, alloc, sign;
+    int32_t used, alloc, sign;
     mp_digit *dp;
 } mp_int;
 
 /* callback for mp_prime_random, should fill dst with random bytes and return
    how many read [upto len] */
-typedef int ltm_prime_callback(unsigned char *dst, int len, void *dat);
+typedef int32_t ltm_prime_callback(unsigned char *dst, int32_t len, void *dat);
 
 
 #define USED(m)    ((m)->used)
@@ -219,99 +219,99 @@ typedef int ltm_prime_callback(unsigned char *dst, int len, void *dat);
 extern const char *mp_s_rmap;
 
 /* 6 functions needed by Rsa */
-int  mp_init (mp_int * a);
+int32_t  mp_init (mp_int * a);
 void mp_clear (mp_int * a);
-int  mp_unsigned_bin_size(mp_int * a);
-int  mp_read_unsigned_bin (mp_int * a, const unsigned char *b, int c);
-int  mp_to_unsigned_bin (mp_int * a, unsigned char *b);
-int  mp_exptmod (mp_int * G, mp_int * X, mp_int * P, mp_int * Y);
+int32_t  mp_unsigned_bin_size(mp_int * a);
+int32_t  mp_read_unsigned_bin (mp_int * a, const unsigned char *b, int32_t c);
+int32_t  mp_to_unsigned_bin (mp_int * a, unsigned char *b);
+int32_t  mp_exptmod (mp_int * G, mp_int * X, mp_int * P, mp_int * Y);
 /* end functions needed by Rsa */
 
 /* functions added to support above needed, removed TOOM and KARATSUBA */
-int  mp_count_bits (mp_int * a);
-int  mp_leading_bit (mp_int * a);
-int  mp_init_copy (mp_int * a, mp_int * b);
-int  mp_copy (mp_int * a, mp_int * b);
-int  mp_grow (mp_int * a, int size);
-int  mp_div_2d (mp_int * a, int b, mp_int * c, mp_int * d);
+int32_t  mp_count_bits (mp_int * a);
+int32_t  mp_leading_bit (mp_int * a);
+int32_t  mp_init_copy (mp_int * a, mp_int * b);
+int32_t  mp_copy (mp_int * a, mp_int * b);
+int32_t  mp_grow (mp_int * a, int32_t size);
+int32_t  mp_div_2d (mp_int * a, int32_t b, mp_int * c, mp_int * d);
 void mp_zero (mp_int * a);
 void mp_clamp (mp_int * a);
 void mp_exch (mp_int * a, mp_int * b);
-void mp_rshd (mp_int * a, int b);
-void mp_rshb (mp_int * a, int b);
-int  mp_mod_2d (mp_int * a, int b, mp_int * c);
-int  mp_mul_2d (mp_int * a, int b, mp_int * c);
-int  mp_lshd (mp_int * a, int b);
-int  mp_abs (mp_int * a, mp_int * b);
-int  mp_invmod (mp_int * a, mp_int * b, mp_int * c);
-int  fast_mp_invmod (mp_int * a, mp_int * b, mp_int * c);
-int  mp_invmod_slow (mp_int * a, mp_int * b, mp_int * c);
-int  mp_cmp_mag (mp_int * a, mp_int * b);
-int  mp_cmp (mp_int * a, mp_int * b);
-int  mp_cmp_d(mp_int * a, mp_digit b);
+void mp_rshd (mp_int * a, int32_t b);
+void mp_rshb (mp_int * a, int32_t b);
+int32_t  mp_mod_2d (mp_int * a, int32_t b, mp_int * c);
+int32_t  mp_mul_2d (mp_int * a, int32_t b, mp_int * c);
+int32_t  mp_lshd (mp_int * a, int32_t b);
+int32_t  mp_abs (mp_int * a, mp_int * b);
+int32_t  mp_invmod (mp_int * a, mp_int * b, mp_int * c);
+int32_t  fast_mp_invmod (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_invmod_slow (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_cmp_mag (mp_int * a, mp_int * b);
+int32_t  mp_cmp (mp_int * a, mp_int * b);
+int32_t  mp_cmp_d(mp_int * a, mp_digit b);
 void mp_set (mp_int * a, mp_digit b);
-int  mp_mod (mp_int * a, mp_int * b, mp_int * c);
-int  mp_div(mp_int * a, mp_int * b, mp_int * c, mp_int * d);
-int  mp_div_2(mp_int * a, mp_int * b);
-int  mp_add (mp_int * a, mp_int * b, mp_int * c);
-int  s_mp_add (mp_int * a, mp_int * b, mp_int * c);
-int  s_mp_sub (mp_int * a, mp_int * b, mp_int * c);
-int  mp_sub (mp_int * a, mp_int * b, mp_int * c);
-int  mp_reduce_is_2k_l(mp_int *a);
-int  mp_reduce_is_2k(mp_int *a);
-int  mp_dr_is_modulus(mp_int *a);
-int  mp_exptmod_fast (mp_int * G, mp_int * X, mp_int * P, mp_int * Y, int);
-int  mp_montgomery_setup (mp_int * n, mp_digit * rho);
-int  fast_mp_montgomery_reduce (mp_int * x, mp_int * n, mp_digit rho);
-int  mp_montgomery_reduce (mp_int * x, mp_int * n, mp_digit rho);
+int32_t  mp_mod (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_div(mp_int * a, mp_int * b, mp_int * c, mp_int * d);
+int32_t  mp_div_2(mp_int * a, mp_int * b);
+int32_t  mp_add (mp_int * a, mp_int * b, mp_int * c);
+int32_t  s_mp_add (mp_int * a, mp_int * b, mp_int * c);
+int32_t  s_mp_sub (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_sub (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_reduce_is_2k_l(mp_int *a);
+int32_t  mp_reduce_is_2k(mp_int *a);
+int32_t  mp_dr_is_modulus(mp_int *a);
+int32_t  mp_exptmod_fast (mp_int * G, mp_int * X, mp_int * P, mp_int * Y, int32_t);
+int32_t  mp_montgomery_setup (mp_int * n, mp_digit * rho);
+int32_t  fast_mp_montgomery_reduce (mp_int * x, mp_int * n, mp_digit rho);
+int32_t  mp_montgomery_reduce (mp_int * x, mp_int * n, mp_digit rho);
 void mp_dr_setup(mp_int *a, mp_digit *d);
-int  mp_dr_reduce (mp_int * x, mp_int * n, mp_digit k);
-int  mp_reduce_2k(mp_int *a, mp_int *n, mp_digit d);
-int  fast_s_mp_mul_high_digs (mp_int * a, mp_int * b, mp_int * c, int digs);
-int  s_mp_mul_high_digs (mp_int * a, mp_int * b, mp_int * c, int digs);
-int  mp_reduce_2k_setup_l(mp_int *a, mp_int *d);
-int  mp_reduce_2k_l(mp_int *a, mp_int *n, mp_int *d);
-int  mp_reduce (mp_int * x, mp_int * m, mp_int * mu);
-int  mp_reduce_setup (mp_int * a, mp_int * b);
-int  s_mp_exptmod (mp_int * G, mp_int * X, mp_int * P, mp_int * Y, int redmode);
-int  mp_montgomery_calc_normalization (mp_int * a, mp_int * b);
-int  s_mp_mul_digs (mp_int * a, mp_int * b, mp_int * c, int digs);
-int  s_mp_sqr (mp_int * a, mp_int * b);
-int  fast_s_mp_mul_digs (mp_int * a, mp_int * b, mp_int * c, int digs);
-int  fast_s_mp_sqr (mp_int * a, mp_int * b);
-int  mp_init_size (mp_int * a, int size);
-int  mp_div_3 (mp_int * a, mp_int *c, mp_digit * d);
-int  mp_mul_2(mp_int * a, mp_int * b);
-int  mp_mul (mp_int * a, mp_int * b, mp_int * c);
-int  mp_sqr (mp_int * a, mp_int * b);
-int  mp_mulmod (mp_int * a, mp_int * b, mp_int * c, mp_int * d);
-int  mp_mul_d (mp_int * a, mp_digit b, mp_int * c);
-int  mp_2expt (mp_int * a, int b);
-int  mp_reduce_2k_setup(mp_int *a, mp_digit *d);
-int  mp_add_d (mp_int* a, mp_digit b, mp_int* c);
-int mp_set_int (mp_int * a, unsigned long b);
-int mp_sub_d (mp_int * a, mp_digit b, mp_int * c);
+int32_t  mp_dr_reduce (mp_int * x, mp_int * n, mp_digit k);
+int32_t  mp_reduce_2k(mp_int *a, mp_int *n, mp_digit d);
+int32_t  fast_s_mp_mul_high_digs (mp_int * a, mp_int * b, mp_int * c, int32_t digs);
+int32_t  s_mp_mul_high_digs (mp_int * a, mp_int * b, mp_int * c, int32_t digs);
+int32_t  mp_reduce_2k_setup_l(mp_int *a, mp_int *d);
+int32_t  mp_reduce_2k_l(mp_int *a, mp_int *n, mp_int *d);
+int32_t  mp_reduce (mp_int * x, mp_int * m, mp_int * mu);
+int32_t  mp_reduce_setup (mp_int * a, mp_int * b);
+int32_t  s_mp_exptmod (mp_int * G, mp_int * X, mp_int * P, mp_int * Y, int32_t redmode);
+int32_t  mp_montgomery_calc_normalization (mp_int * a, mp_int * b);
+int32_t  s_mp_mul_digs (mp_int * a, mp_int * b, mp_int * c, int32_t digs);
+int32_t  s_mp_sqr (mp_int * a, mp_int * b);
+int32_t  fast_s_mp_mul_digs (mp_int * a, mp_int * b, mp_int * c, int32_t digs);
+int32_t  fast_s_mp_sqr (mp_int * a, mp_int * b);
+int32_t  mp_init_size (mp_int * a, int32_t size);
+int32_t  mp_div_3 (mp_int * a, mp_int *c, mp_digit * d);
+int32_t  mp_mul_2(mp_int * a, mp_int * b);
+int32_t  mp_mul (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_sqr (mp_int * a, mp_int * b);
+int32_t  mp_mulmod (mp_int * a, mp_int * b, mp_int * c, mp_int * d);
+int32_t  mp_mul_d (mp_int * a, mp_digit b, mp_int * c);
+int32_t  mp_2expt (mp_int * a, int32_t b);
+int32_t  mp_reduce_2k_setup(mp_int *a, mp_digit *d);
+int32_t  mp_add_d (mp_int* a, mp_digit b, mp_int* c);
+int32_t mp_set_int (mp_int * a, unsigned long b);
+int32_t mp_sub_d (mp_int * a, mp_digit b, mp_int * c);
 /* end support added functions */
 
 /* added */
-int mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e,
+int32_t mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e,
                   mp_int* f);
 
 #if defined(HAVE_ECC) || defined(CYASSL_KEY_GEN)
-    int mp_sqrmod(mp_int* a, mp_int* b, mp_int* c);
+    int32_t mp_sqrmod(mp_int* a, mp_int* b, mp_int* c);
 #endif
 #ifdef HAVE_ECC
-    int mp_read_radix(mp_int* a, const char* str, int radix);
+    int32_t mp_read_radix(mp_int* a, const char* str, int32_t radix);
 #endif
 
 #ifdef CYASSL_KEY_GEN
-    int mp_prime_is_prime (mp_int * a, int t, int *result);
-    int mp_gcd (mp_int * a, mp_int * b, mp_int * c);
-    int mp_lcm (mp_int * a, mp_int * b, mp_int * c);
+    int32_t mp_prime_is_prime (mp_int * a, int32_t t, int32_t *result);
+    int32_t mp_gcd (mp_int * a, mp_int * b, mp_int * c);
+    int32_t mp_lcm (mp_int * a, mp_int * b, mp_int * c);
 #endif
 
-int mp_cnt_lsb(mp_int *a);
-int mp_mod_d(mp_int* a, mp_digit b, mp_digit* c);
+int32_t mp_cnt_lsb(mp_int *a);
+int32_t mp_mod_d(mp_int* a, mp_digit b, mp_digit* c);
 
 #ifdef __cplusplus
    }

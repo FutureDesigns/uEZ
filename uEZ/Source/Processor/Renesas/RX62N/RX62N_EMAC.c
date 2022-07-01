@@ -1228,7 +1228,7 @@ static void IFrameError(T_RX62N_EMAC_Workspace *p)
 #if DEBUG_RX62N_EMAC_RX_DESC
 static void IOutputDescriptors(T_RX62N_EMAC_Workspace *p)
 {
-    int i;
+    int32_t i;
     ethfifo *p_entry;
 
     printf("\f======================\n");

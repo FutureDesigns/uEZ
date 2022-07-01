@@ -44,21 +44,21 @@ typedef struct testVector {
     size_t outLen;
 } testVector;
 
-int  md4_test(void);
-int  md5_test(void);
-int  sha_test(void);
-int  sha256_test(void);
-int  sha512_test(void);
-int  sha384_test(void);
-int  ripemd_test(void);
-int  hmac_md5_test(void);
-int  hmac_sha_test(void);
-int  hmac_sha256_test(void);
-int  hmac_sha384_test(void);
+int32_t  md4_test(void);
+int32_t  md5_test(void);
+int32_t  sha_test(void);
+int32_t  sha256_test(void);
+int32_t  sha512_test(void);
+int32_t  sha384_test(void);
+int32_t  ripemd_test(void);
+int32_t  hmac_md5_test(void);
+int32_t  hmac_sha_test(void);
+int32_t  hmac_sha256_test(void);
+int32_t  hmac_sha384_test(void);
 
-int HashTest(void)
+int32_t HashTest(void)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     printf(" Begin HASH Tests\n");
 
@@ -154,14 +154,14 @@ int HashTest(void)
 
 #ifndef NO_MD4
 
-int md4_test(void)
+int32_t md4_test(void)
 {
     Md4  md4;
     byte hash[MD4_DIGEST_SIZE];
 
     testVector a, b, c, d, e, f, g;
     testVector test_md4[7];
-    int times = sizeof(test_md4) / sizeof(testVector), i;
+    int32_t times = sizeof(test_md4) / sizeof(testVector), i;
 
     a.input  = "";
     a.output = "\x31\xd6\xcf\xe0\xd1\x6a\xe9\x31\xb7\x3c\x59\xd7\xe0\xc0\x89" 
@@ -232,14 +232,14 @@ int md4_test(void)
 
 #ifndef NO_MD5
 
-int md5_test(void)
+int32_t md5_test(void)
 {
     Md5  md5;
     byte hash[MD5_DIGEST_SIZE];
 
     testVector a, b, c, d, e;
     testVector test_md5[5];
-    int times = sizeof(test_md5) / sizeof(testVector), i;
+    int32_t times = sizeof(test_md5) / sizeof(testVector), i;
 
     a.input  = "abc";
     a.output = "\x90\x01\x50\x98\x3c\xd2\x4f\xb0\xd6\x96\x3f\x7d\x28\xe1\x7f"
@@ -295,15 +295,15 @@ int md5_test(void)
 #endif /* NO_MD5 */
 
 #ifndef NO_SHA
-int sha_test(void)
+int32_t sha_test(void)
 {
     Sha  sha;
     byte hash[SHA_DIGEST_SIZE];
 
     testVector a, b, c, d;
     testVector test_sha[4];
-    int ret   = 0;
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t ret   = 0;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\xA9\x99\x3E\x36\x47\x06\x81\x6A\xBA\x3E\x25\x71\x78\x50\xC2"
@@ -354,15 +354,15 @@ int sha_test(void)
 #endif /* NO_SHA */
 
 #ifndef NO_SHA256
-int sha256_test(void)
+int32_t sha256_test(void)
 {
     Sha256 sha;
     byte   hash[SHA256_DIGEST_SIZE];
 
     testVector a, b;
     testVector test_sha[2];
-    int ret;
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\xBA\x78\x16\xBF\x8F\x01\xCF\xEA\x41\x41\x40\xDE\x5D\xAE\x22"
@@ -403,15 +403,15 @@ int sha256_test(void)
 #endif
 
 #ifdef CYASSL_SHA512
-int sha512_test(void)
+int32_t sha512_test(void)
 {
     Sha512 sha;
     byte   hash[SHA512_DIGEST_SIZE];
 
     testVector a, b;
     testVector test_sha[2];
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
-    int ret;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t ret;
 
     a.input  = "abc";
     a.output = "\xdd\xaf\x35\xa1\x93\x61\x7a\xba\xcc\x41\x73\x49\xae\x20\x41"
@@ -457,15 +457,15 @@ int sha512_test(void)
 #endif
 
 #ifdef CYASSL_SHA384
-int sha384_test()
+int32_t sha384_test()
 {
     Sha384 sha;
     byte   hash[SHA384_DIGEST_SIZE];
 
     testVector a, b;
     testVector test_sha[2];
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
-    int ret;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t ret;
 
     a.input  = "abc";
     a.output = "\xcb\x00\x75\x3f\x45\xa3\x5e\x8b\xb5\xa0\x3d\x69\x9a\xc6\x50"
@@ -509,14 +509,14 @@ int sha384_test()
 #endif
 
 #ifdef CYASSL_RIPEMD
-int ripemd_test(void)
+int32_t ripemd_test(void)
 {
     RipeMd  ripemd;
     byte hash[RIPEMD_DIGEST_SIZE];
 
     testVector a, b, c, d;
     testVector test_ripemd[4];
-    int times = sizeof(test_ripemd) / sizeof(struct testVector), i;
+    int32_t times = sizeof(test_ripemd) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\x8e\xb2\x08\xf7\xe0\x5d\x98\x7a\x9b\x04\x4a\x8e\x98\xc6"
@@ -564,7 +564,7 @@ int ripemd_test(void)
 #endif /* CYASSL_RIPEMD */
 
 #if !defined(NO_HMAC) && !defined(NO_MD5)
-int hmac_md5_test(void)
+int32_t hmac_md5_test(void)
 {
     Hmac hmac;
     byte hash[MD5_DIGEST_SIZE];
@@ -579,8 +579,8 @@ int hmac_md5_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\x92\x94\x72\x7a\x36\x38\xbb\x1c\x13\xf4\x8e\xf8\x15\x8b\xfc"
@@ -632,7 +632,7 @@ int hmac_md5_test(void)
 #endif
 
 #ifndef NO_HMAC
-int hmac_sha_test(void)
+int32_t hmac_sha_test(void)
 {
     Hmac hmac;
     byte hash[SHA_DIGEST_SIZE];
@@ -649,8 +649,8 @@ int hmac_sha_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\xb6\x17\x31\x86\x55\x05\x72\x64\xe2\x8b\xc0\xb6\xfb\x37\x8c"
@@ -702,7 +702,7 @@ int hmac_sha_test(void)
 #endif
 
 #if !defined(NO_HMAC) && !defined(NO_SHA256)
-int hmac_sha256_test(void)
+int32_t hmac_sha256_test(void)
 {
     Hmac hmac;
     byte hash[SHA256_DIGEST_SIZE];
@@ -719,8 +719,8 @@ int hmac_sha256_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\xb0\x34\x4c\x61\xd8\xdb\x38\x53\x5c\xa8\xaf\xce\xaf\x0b\xf1"
@@ -776,7 +776,7 @@ int hmac_sha256_test(void)
 
 
 #if !defined(NO_HMAC) && defined(CYASSL_SHA384)
-int hmac_sha384_test(void)
+int32_t hmac_sha384_test(void)
 {
     Hmac hmac;
     byte hash[SHA384_DIGEST_SIZE];
@@ -793,8 +793,8 @@ int hmac_sha384_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\xaf\xd0\x39\x44\xd8\x48\x95\x62\x6b\x08\x25\xf4\xab\x46\x90"

@@ -1,0 +1,15 @@
+ExitOnError 1
+usb 0
+device LPC4088
+si SWD
+speed 1000
+
+rx 200
+h
+
+erase
+loadfile "LPC4088.hex"
+
+rx 200
+g
+qc

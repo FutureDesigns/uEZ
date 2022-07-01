@@ -58,14 +58,14 @@ void SUIDrawPixel(
     T_pixelColor color);
 void SUIFillRect(
     T_pixelColor *pixels,
-    int x1,
-    int y1,
-    int x2,
-    int y2,
+    int32_t x1,
+    int32_t y1,
+    int32_t x2,
+    int32_t y2,
     T_pixelColor color);
 void SUIDrawIcon(const TUInt8 *p, TUInt16 aXOffset, TUInt16 aYOffset);
 void SUIDrawImage(const TUInt8 *p, TUInt16 aXOffset, TUInt16 aYOffset);
-int SUILoadPicture(
+int32_t SUILoadPicture(
     char *aPicture,
     TUInt8 aPage,
     TBool *aAbortFlag,

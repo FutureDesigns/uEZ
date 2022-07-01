@@ -113,7 +113,7 @@
 #include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 
-extern int MainTask(void);
+extern int32_t MainTask(void);
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -165,7 +165,7 @@ void UEZBSPDelay1US(void)
     #error "1 microSecond delay not defined for CPU speed"
 #endif
 }
-void UEZBSPDelayUS(unsigned int aMicroseconds)
+void UEZBSPDelayUS(uint32_t aMicroseconds)
 {
     while (aMicroseconds--)
         UEZBSPDelay1US();
@@ -180,7 +180,7 @@ void UEZBSPDelay1MS(void)
         UEZBSPDelay1US();
 }
 
-void UEZBSPDelayMS(unsigned int aMilliseconds)
+void UEZBSPDelayMS(uint32_t aMilliseconds)
 {
     while (aMilliseconds--) {
         UEZBSPDelay1MS();
@@ -381,10 +381,10 @@ void UEZBSP_CPU_PinConfigInit(void)
  *      interrupts and put the platform in a halted state with a blinking
  *      LED.
  * Inputs:
- *      int aErrorCode -- Blink the LED a number of times equal to
+ *      int32_t aErrorCode -- Blink the LED a number of times equal to
  *          the error code.
  *---------------------------------------------------------------------------*/
-void UEZBSP_FatalError(int aErrorCode)
+void UEZBSP_FatalError(int32_t aErrorCode)
 {
     register TUInt32 i;
     register TUInt32 count;
@@ -1643,6 +1643,7 @@ void UEZPlatform_AudioCodec_Require(void)
 }
 
 static T_uezDevice G_Amp;
+static TUInt8 G_Amp_In_Use = AUDIO_AMP_NONE;
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_AudioAmp_Require
  *---------------------------------------------------------------------------*
@@ -1658,7 +1659,8 @@ void UEZPlatform_AudioAmp_Require(void)
     // P0.21 = AMP_MODE
     AudioAmp_8551T_Create("AMP0", GPIO_P0_18, GPIO_P0_21, GPIO_NONE, 64);
     UEZAudioAmpOpen("AMP0", &G_Amp);
-    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_AUDIO_LEVEL);
+    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551);
+    G_Amp_In_Use = AUDIO_AMP_TDA8551;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1681,9 +1683,29 @@ static T_uezError UEZGUI56VI_AudioMixerCallback(
                     error = UEZAudioAmpMute(G_Amp);
                 } else {
                     error = UEZAudioAmpUnMute(G_Amp);
+                } 
+                // This insures we scale the 0-255 input volume to the correct maximum volume for the onboard speaker.
+                if(G_Amp_In_Use == AUDIO_AMP_TDA8551) { // enforce maximum volume based on AMP
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 /255);
+                } else if(G_Amp_In_Use == AUDIO_AMP_WOLFSON) {
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL /255);
+                } else if(G_Amp_In_Use == AUDIO_AMP_LM48110) {
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 /255);
+                } else {
+                    aLevel = 0; // NEED TO DEFINE AMP AND MAX SAFE VOLUME LEVEL!
                 }
                 error = UEZAudioAmpSetLevel(G_Amp, aLevel);
             }
+        // Example Offboard speaker callback case
+        /*case  UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER:
+            if(G_Amp){
+                if(aMute){
+                    error = UEZAudioAmpMute(G_Amp);
+                } else {
+                    error = UEZAudioAmpUnMute(G_Amp);
+                }
+                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
+            }*/
             break;
         default:
             break;
@@ -1703,8 +1725,20 @@ void UEZPlatform_AudioMixer_Require(void)
 
     UEZPlatform_AudioAmp_Require();
     UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &UEZGUI56VI_AudioMixerCallback);
-    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 255);
-    UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER);
+    
+    // To seperately control offboard speaker jack uncomment this line.
+    //UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, &UEZGUI70WVT_AudioMixerCallback);
+
+    // Set all 5 volume levels from platform file
+    // First set master volume
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_MASTER, UEZ_DEFAULT_AUDIO_LEVEL); // master volume
+    // Next set onboard speaker based on AMP that is loaded. Callback will handle this automatically.
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, UEZ_DEFAULT_AUDIO_LEVEL);
+    
+    // Uncomment these lines to set the other 3 volumes if needed.
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL); // We call this AFTER onboard speaker, so it will set the current volume.
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL);
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_HEADPHONES, UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL);
 }
 
 /*---------------------------------------------------------------------------*
@@ -2188,13 +2222,15 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_Flash0_Require();
     UEZPlatform_EEPROM0_Require();
 	
-    UEZPlatform_AudioAmp_Require();
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
     UEZPlatform_Touchscreen_Require();
-    UEZPlatform_AudioMixer_Require();
-	UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    UEZPlatform_Speaker_Require();
+        
+    // Init audio outputs before amp so amp doesn't get noise/undefined signal.
+    UEZPlatform_Speaker_Require(); // PWM output for basic tones
+    
+    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
     //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 }
 
@@ -2236,7 +2272,7 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
 #endif
 }
 
-T_pixelColor SUICallbackRGBConvert(int r, int g, int b)
+T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b)
 {
     return RGB(r, g, b);
 }
@@ -2336,9 +2372,9 @@ unsigned long ulStacked_pc = 0UL;
  *      The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
  * Outputs:
- *      int -- not used, 0
+ *      int32_t -- not used, 0
  *---------------------------------------------------------------------------*/
-int main(void)
+int32_t main(void)
 {
     UEZBSP_Startup();
     while (1) {

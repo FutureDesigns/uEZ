@@ -300,7 +300,7 @@ sswt_handler(void *arg)
  * @param timeout timeout in ms (0: wait forever)
  * @return 0 on timeout, 1 otherwise
  */
-int
+int32_t
 sys_sem_wait_timeout(sys_sem_t sem, u32_t timeout)
 {
   struct sswt_cb sswt_cb;

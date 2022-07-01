@@ -28,7 +28,7 @@
 #include <Device/ButtonBank.h>
 #include <Types/TimeDate.h>
 #include <Device/EEPROM.h>
-#include <DEVICE/ADCBank.h>
+#include <Device/ADCBank.h>
 #include <HAL/GPIO.h>
 #include "AppTasks.h"
 #include "AppDemo.h"

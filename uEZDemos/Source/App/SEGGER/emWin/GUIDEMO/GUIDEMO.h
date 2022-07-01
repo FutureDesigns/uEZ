@@ -64,8 +64,8 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #define SHOW_PROGBAR_AT   100
 #define GUI_ID_HALT       (GUI_ID_USER + 0)
 #define GUI_ID_NEXT       (GUI_ID_USER + 1)
-#define BK_COLOR_0        GUI_MAKE_COLOR(0xFF5555)
-#define BK_COLOR_1        GUI_MAKE_COLOR(0x880000)
+#define BK_COLOR_0        GUI_MAKE_COLOR(0xFFFF5555)
+#define BK_COLOR_1        GUI_MAKE_COLOR(0xFF880000)
 #define NUMBYTES_NEEDED   0x200000UL
 #define CIRCLE_RADIUS     100
 #define LOGO_DIST_BORDER  5
@@ -90,58 +90,60 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 **********************************************************************
 */
 #ifndef   SHOW_GUIDEMO_AATEXT
-  #define SHOW_GUIDEMO_AATEXT            (1)
+  #define SHOW_GUIDEMO_AATEXT            (1) // 5.48 fixed
 #endif
 #ifndef   SHOW_GUIDEMO_BARGRAPH
-  #define SHOW_GUIDEMO_BARGRAPH          (1)
+  #define SHOW_GUIDEMO_BARGRAPH          (1) // 5.48 fixed
 #endif
 #ifndef   SHOW_GUIDEMO_COLORBAR
-  #define SHOW_GUIDEMO_COLORBAR          (1)
+  #define SHOW_GUIDEMO_COLORBAR          (1) // 5.48 fixed
 #endif
 #ifndef   SHOW_GUIDEMO_CURSOR
-  #define SHOW_GUIDEMO_CURSOR            (1)
+  #define SHOW_GUIDEMO_CURSOR            (1) // ok
 #endif
 #ifndef   SHOW_GUIDEMO_FADING
-  #define SHOW_GUIDEMO_FADING            (0)
+  #define SHOW_GUIDEMO_FADING            (0) // TODO pick better colors but we don't use this demo
 #endif
 #ifndef   SHOW_GUIDEMO_GRAPH
-  #define SHOW_GUIDEMO_GRAPH             (1)
+  #define SHOW_GUIDEMO_GRAPH             (1) // 5.48 fixed scale invalidation
 #endif
 #ifndef   SHOW_GUIDEMO_LISTVIEW
-  #define SHOW_GUIDEMO_LISTVIEW          (1)
+  #define SHOW_GUIDEMO_LISTVIEW          (1) // works ok
 #endif
 #ifndef   SHOW_GUIDEMO_TREEVIEW
-  #define SHOW_GUIDEMO_TREEVIEW          (0)
+  #define SHOW_GUIDEMO_TREEVIEW          (1) // works ok
 #endif
 #ifndef   SHOW_GUIDEMO_SPEED
-  #define SHOW_GUIDEMO_SPEED             (1)
+  #define SHOW_GUIDEMO_SPEED             (0) // works ok
 #endif    
 #ifndef   SHOW_GUIDEMO_AUTOMOTIVE
-  #define SHOW_GUIDEMO_AUTOMOTIVE        (0) // large demo, works on uEZGUI
+  #define SHOW_GUIDEMO_AUTOMOTIVE        (1) // large demo, works on uEZGUI // 5.48 fixed
 #endif
 #ifndef   SHOW_GUIDEMO_ICONVIEW
-  #define SHOW_GUIDEMO_ICONVIEW          (0) // large demo, works on uEZGUI
+  #define SHOW_GUIDEMO_ICONVIEW          (1) // large demo, works on uEZGUI // 5.48 fixed
 #endif
 #ifndef   SHOW_GUIDEMO_RADIALMENU
-  #define SHOW_GUIDEMO_RADIALMENU        (0) // large demo, works on uEZGUI
+  #define SHOW_GUIDEMO_RADIALMENU        (0) // large demo, works on uEZGUI // TODO improve the speed of demo and the look of seleciton box
 #endif    
 #ifndef   SHOW_GUIDEMO_TRANSPARENTDIALOG
-  #define SHOW_GUIDEMO_TRANSPARENTDIALOG (0) // large demo, works on uEZGUI
+  #define SHOW_GUIDEMO_TRANSPARENTDIALOG (1) // large demo, works on uEZGUI // Works ok on 5.48
 #endif
 #ifndef   SHOW_GUIDEMO_WASHINGMACHINE
-  #define SHOW_GUIDEMO_WASHINGMACHINE    (0) // large demo, works on uEZGUI
+  #define SHOW_GUIDEMO_WASHINGMACHINE    (0) // large demo, works on uEZGUI // Works ok on 5.48
 #endif    
 #ifndef   SHOW_GUIDEMO_BITMAP
-  #define SHOW_GUIDEMO_BITMAP            (0) // large demo, works on uEZGUI
+  #define SHOW_GUIDEMO_BITMAP            (0) // large demo, works on uEZGUI // Works ok on 5.48
 #endif    
 #ifndef   SHOW_GUIDEMO_ZOOMANDROTATE
   #define SHOW_GUIDEMO_ZOOMANDROTATE     (0) // large demo, only fits in SPIFI
 #endif
-#ifndef   SHOW_GUIDEMO_SPEEDOMETER
-  #define SHOW_GUIDEMO_SPEEDOMETER       (0) // not currently supported on uEZGUI 
+
+// These 4 demos have issues!
+#ifndef   SHOW_GUIDEMO_SPEEDOMETER       // When this demo enables the memory device it screws up the colors in other demos!
+  #define SHOW_GUIDEMO_SPEEDOMETER       (0) // Partially works on LPC54608 at least, but some colors are messed up with memdevice. SLOW startup
 #endif
 #ifndef   SHOW_GUIDEMO_SKINNING
-  #define SHOW_GUIDEMO_SKINNING          (0) // not currently supported on uEZGUI
+  #define SHOW_GUIDEMO_SKINNING          (0) // Works on 5.48 but there is graphical corruption.
 #endif
 #ifndef   SHOW_GUIDEMO_VSCREEN
   #define SHOW_GUIDEMO_VSCREEN           (0) // QVGA screens only

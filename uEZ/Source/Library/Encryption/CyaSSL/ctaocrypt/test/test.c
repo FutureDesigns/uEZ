@@ -126,7 +126,7 @@
 
 #ifdef THREADX
     /* since just testing, use THREADX log printf instead */
-    int dc_log_printf(char*, ...);
+    int32_t dc_log_printf(char*, ...);
         #undef printf
         #define printf dc_log_printf
 #endif
@@ -141,62 +141,62 @@ typedef struct testVector {
     size_t outLen;
 } testVector;
 
-int  md2_test(void);
-int  md5_test(void);
-int  md4_test(void);
-int  sha_test(void);
-int  sha256_test(void);
-int  sha512_test(void);
-int  sha384_test(void);
-int  hmac_md5_test(void);
-int  hmac_sha_test(void);
-int  hmac_sha256_test(void);
-int  hmac_sha384_test(void);
-int  hmac_sha512_test(void);
-int  hmac_blake2b_test(void);
-int  hkdf_test(void);
-int  arc4_test(void);
-int  hc128_test(void);
-int  rabbit_test(void);
-int  chacha_test(void);
-int  des_test(void);
-int  des3_test(void);
-int  aes_test(void);
-int  poly1305_test(void);
-int  aesgcm_test(void);
-int  gmac_test(void);
-int  aesccm_test(void);
-int  camellia_test(void);
-int  rsa_test(void);
-int  dh_test(void);
-int  dsa_test(void);
-int  random_test(void);
-int  pwdbased_test(void);
-int  ripemd_test(void);
-int  openssl_test(void);   /* test mini api */
-int pbkdf1_test(void);
-int pkcs12_test(void);
-int pbkdf2_test(void);
+int32_t  md2_test(void);
+int32_t  md5_test(void);
+int32_t  md4_test(void);
+int32_t  sha_test(void);
+int32_t  sha256_test(void);
+int32_t  sha512_test(void);
+int32_t  sha384_test(void);
+int32_t  hmac_md5_test(void);
+int32_t  hmac_sha_test(void);
+int32_t  hmac_sha256_test(void);
+int32_t  hmac_sha384_test(void);
+int32_t  hmac_sha512_test(void);
+int32_t  hmac_blake2b_test(void);
+int32_t  hkdf_test(void);
+int32_t  arc4_test(void);
+int32_t  hc128_test(void);
+int32_t  rabbit_test(void);
+int32_t  chacha_test(void);
+int32_t  des_test(void);
+int32_t  des3_test(void);
+int32_t  aes_test(void);
+int32_t  poly1305_test(void);
+int32_t  aesgcm_test(void);
+int32_t  gmac_test(void);
+int32_t  aesccm_test(void);
+int32_t  camellia_test(void);
+int32_t  rsa_test(void);
+int32_t  dh_test(void);
+int32_t  dsa_test(void);
+int32_t  random_test(void);
+int32_t  pwdbased_test(void);
+int32_t  ripemd_test(void);
+int32_t  openssl_test(void);   /* test mini api */
+int32_t pbkdf1_test(void);
+int32_t pkcs12_test(void);
+int32_t pbkdf2_test(void);
 #ifdef HAVE_ECC
-    int  ecc_test(void);
+    int32_t  ecc_test(void);
     #ifdef HAVE_ECC_ENCRYPT
-        int  ecc_encrypt_test(void);
+        int32_t  ecc_encrypt_test(void);
     #endif
 #endif
 #ifdef HAVE_BLAKE2
-    int  blake2b_test(void);
+    int32_t  blake2b_test(void);
 #endif
 #ifdef HAVE_LIBZ
-    int compress_test(void);
+    int32_t compress_test(void);
 #endif
 #ifdef HAVE_PKCS7
-    int pkcs7enveloped_test(void);
-    int pkcs7signed_test(void);
+    int32_t pkcs7enveloped_test(void);
+    int32_t pkcs7signed_test(void);
 #endif
 
 
 
-static int err_sys(const char* msg, int es)
+static int32_t err_sys(const char* msg, int32_t es)
 
 {
     printf("%s error = %d\n", msg, es);
@@ -205,15 +205,15 @@ static int err_sys(const char* msg, int es)
 
 /* func_args from test.h, so don't have to pull in other junk */
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
 
 #ifdef HAVE_FIPS
 
-static void myFipsCb(int ok, int err, const char* hash)
+static void myFipsCb(int32_t ok, int32_t err, const char* hash)
 {
     printf("in my Fips callback, ok = %d, err = %d\n", ok, err);
     printf("message = %s\n", CTaoCryptGetErrorString(err));
@@ -228,9 +228,9 @@ static void myFipsCb(int ok, int err, const char* hash)
 #endif /* HAVE_FIPS */
 
 
-int ctaocrypt_test(void* args)
+int32_t ctaocrypt_test(void* args)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     ((func_args*)args)->return_code = -1; /* error state */
 
@@ -531,7 +531,7 @@ int ctaocrypt_test(void* args)
 
 #ifdef HAVE_CAVIUM
 
-static int OpenNitroxDevice(int dma_mode,int dev_id)
+static int32_t OpenNitroxDevice(int32_t dma_mode,int32_t dev_id)
 {
    Csp1CoreAssignment core_assign;
    Uint32             device;
@@ -554,14 +554,14 @@ static int OpenNitroxDevice(int dma_mode,int dev_id)
 
     /* so overall tests can pull in test function */
 
-    int main(int argc, char** argv)
+    int32_t main(int32_t argc, char** argv)
     {
 
         func_args args;
 
 
 #ifdef HAVE_CAVIUM
-        int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+        int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
         if (ret != 0) {
             err_sys("Cavium OpenNitroxDevice failed", -1236);
             return -1236;
@@ -584,14 +584,14 @@ static int OpenNitroxDevice(int dma_mode,int dev_id)
 
 
 #ifdef CYASSL_MD2
-int md2_test()
+int32_t md2_test()
 {
     Md2  md2;
     byte hash[MD2_DIGEST_SIZE];
 
     testVector a, b, c, d, e, f, g;
     testVector test_md2[7];
-    int times = sizeof(test_md2) / sizeof(testVector), i;
+    int32_t times = sizeof(test_md2) / sizeof(testVector), i;
 
     a.input  = "";
     a.output = "\x83\x50\xe5\xa3\xe2\x4c\x15\x3d\xf2\x27\x5c\x9f\x80\x69"
@@ -660,14 +660,14 @@ int md2_test()
 #endif
 
 #ifndef NO_MD5
-int md5_test(void)
+int32_t md5_test(void)
 {
     Md5  md5;
     byte hash[MD5_DIGEST_SIZE];
 
     testVector a, b, c, d, e;
     testVector test_md5[5];
-    int times = sizeof(test_md5) / sizeof(testVector), i;
+    int32_t times = sizeof(test_md5) / sizeof(testVector), i;
 
     a.input  = "abc";
     a.output = "\x90\x01\x50\x98\x3c\xd2\x4f\xb0\xd6\x96\x3f\x7d\x28\xe1\x7f"
@@ -724,14 +724,14 @@ int md5_test(void)
 
 #ifndef NO_MD4
 
-int md4_test(void)
+int32_t md4_test(void)
 {
     Md4  md4;
     byte hash[MD4_DIGEST_SIZE];
 
     testVector a, b, c, d, e, f, g;
     testVector test_md4[7];
-    int times = sizeof(test_md4) / sizeof(testVector), i;
+    int32_t times = sizeof(test_md4) / sizeof(testVector), i;
 
     a.input  = "";
     a.output = "\x31\xd6\xcf\xe0\xd1\x6a\xe9\x31\xb7\x3c\x59\xd7\xe0\xc0\x89"
@@ -802,15 +802,15 @@ int md4_test(void)
 
 #ifndef NO_SHA
 
-int sha_test(void)
+int32_t sha_test(void)
 {
     Sha  sha;
     byte hash[SHA_DIGEST_SIZE];
 
     testVector a, b, c, d;
     testVector test_sha[4];
-    int ret;
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\xA9\x99\x3E\x36\x47\x06\x81\x6A\xBA\x3E\x25\x71\x78\x50\xC2"
@@ -862,14 +862,14 @@ int sha_test(void)
 #endif /* NO_SHA */
 
 #ifdef CYASSL_RIPEMD
-int ripemd_test(void)
+int32_t ripemd_test(void)
 {
     RipeMd  ripemd;
     byte hash[RIPEMD_DIGEST_SIZE];
 
     testVector a, b, c, d;
     testVector test_ripemd[4];
-    int times = sizeof(test_ripemd) / sizeof(struct testVector), i;
+    int32_t times = sizeof(test_ripemd) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\x8e\xb2\x08\xf7\xe0\x5d\x98\x7a\x9b\x04\x4a\x8e\x98\xc6"
@@ -958,14 +958,14 @@ static const byte blake2b_vec[BLAKE2_TESTS][BLAKE2B_OUTBYTES] =
 
 
 
-int blake2b_test(void)
+int32_t blake2b_test(void)
 {
     Blake2b b2b;
     byte    digest[64];
     byte    input[64];
-    int     i, ret;
+    int32_t     i, ret;
 
-    for (i = 0; i < (int)sizeof(input); i++)
+    for (i = 0; i < (int32_t)sizeof(input); i++)
         input[i] = (byte)i;
 
     for (i = 0; i < BLAKE2_TESTS; i++) {
@@ -992,15 +992,15 @@ int blake2b_test(void)
 
 
 #ifndef NO_SHA256
-int sha256_test(void)
+int32_t sha256_test(void)
 {
     Sha256 sha;
     byte   hash[SHA256_DIGEST_SIZE];
 
     testVector a, b;
     testVector test_sha[2];
-    int ret;
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\xBA\x78\x16\xBF\x8F\x01\xCF\xEA\x41\x41\x40\xDE\x5D\xAE\x22"
@@ -1041,15 +1041,15 @@ int sha256_test(void)
 
 
 #ifdef CYASSL_SHA512
-int sha512_test(void)
+int32_t sha512_test(void)
 {
     Sha512 sha;
     byte   hash[SHA512_DIGEST_SIZE];
-    int    ret;
+    int32_t    ret;
 
     testVector a, b;
     testVector test_sha[2];
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\xdd\xaf\x35\xa1\x93\x61\x7a\xba\xcc\x41\x73\x49\xae\x20\x41"
@@ -1096,15 +1096,15 @@ int sha512_test(void)
 
 
 #ifdef CYASSL_SHA384
-int sha384_test(void)
+int32_t sha384_test(void)
 {
     Sha384 sha;
     byte   hash[SHA384_DIGEST_SIZE];
-    int    ret;
+    int32_t    ret;
 
     testVector a, b;
     testVector test_sha[2];
-    int times = sizeof(test_sha) / sizeof(struct testVector), i;
+    int32_t times = sizeof(test_sha) / sizeof(struct testVector), i;
 
     a.input  = "abc";
     a.output = "\xcb\x00\x75\x3f\x45\xa3\x5e\x8b\xb5\xa0\x3d\x69\x9a\xc6\x50"
@@ -1149,7 +1149,7 @@ int sha384_test(void)
 
 
 #if !defined(NO_HMAC) && !defined(NO_MD5)
-int hmac_md5_test(void)
+int32_t hmac_md5_test(void)
 {
     Hmac hmac;
     byte hash[MD5_DIGEST_SIZE];
@@ -1164,8 +1164,8 @@ int hmac_md5_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\x92\x94\x72\x7a\x36\x38\xbb\x1c\x13\xf4\x8e\xf8\x15\x8b\xfc"
@@ -1224,7 +1224,7 @@ int hmac_md5_test(void)
 #endif /* NO_HMAC && NO_MD5 */
 
 #if !defined(NO_HMAC) && !defined(NO_SHA)
-int hmac_sha_test(void)
+int32_t hmac_sha_test(void)
 {
     Hmac hmac;
     byte hash[SHA_DIGEST_SIZE];
@@ -1241,8 +1241,8 @@ int hmac_sha_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\xb6\x17\x31\x86\x55\x05\x72\x64\xe2\x8b\xc0\xb6\xfb\x37\x8c"
@@ -1302,7 +1302,7 @@ int hmac_sha_test(void)
 
 
 #if !defined(NO_HMAC) && !defined(NO_SHA256)
-int hmac_sha256_test(void)
+int32_t hmac_sha256_test(void)
 {
     Hmac hmac;
     byte hash[SHA256_DIGEST_SIZE];
@@ -1319,8 +1319,8 @@ int hmac_sha256_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\xb0\x34\x4c\x61\xd8\xdb\x38\x53\x5c\xa8\xaf\xce\xaf\x0b\xf1"
@@ -1383,7 +1383,7 @@ int hmac_sha256_test(void)
 
 
 #if !defined(NO_HMAC) && defined(HAVE_BLAKE2)
-int hmac_blake2b_test(void)
+int32_t hmac_blake2b_test(void)
 {
     Hmac hmac;
     byte hash[BLAKE2B_256];
@@ -1400,8 +1400,8 @@ int hmac_blake2b_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\x72\x93\x0d\xdd\xf5\xf7\xe1\x78\x38\x07\x44\x18\x0b\x3f\x51"
@@ -1465,7 +1465,7 @@ int hmac_blake2b_test(void)
 
 
 #if !defined(NO_HMAC) && defined(CYASSL_SHA384)
-int hmac_sha384_test(void)
+int32_t hmac_sha384_test(void)
 {
     Hmac hmac;
     byte hash[SHA384_DIGEST_SIZE];
@@ -1482,8 +1482,8 @@ int hmac_sha384_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\xaf\xd0\x39\x44\xd8\x48\x95\x62\x6b\x08\x25\xf4\xab\x46\x90"
@@ -1542,7 +1542,7 @@ int hmac_sha384_test(void)
 
 
 #if !defined(NO_HMAC) && defined(CYASSL_SHA512)
-int hmac_sha512_test(void)
+int32_t hmac_sha512_test(void)
 {
     Hmac hmac;
     byte hash[SHA512_DIGEST_SIZE];
@@ -1559,8 +1559,8 @@ int hmac_sha512_test(void)
     testVector a, b, c;
     testVector test_hmac[3];
 
-    int ret;
-    int times = sizeof(test_hmac) / sizeof(testVector), i;
+    int32_t ret;
+    int32_t times = sizeof(test_hmac) / sizeof(testVector), i;
 
     a.input  = "Hi There";
     a.output = "\x87\xaa\x7c\xde\xa5\xef\x61\x9d\x4f\xf0\xb4\x24\x1a\x1d\x6c"
@@ -1622,7 +1622,7 @@ int hmac_sha512_test(void)
 
 
 #ifndef NO_RC4
-int arc4_test(void)
+int32_t arc4_test(void)
 {
     byte cipher[16];
     byte plain[16];
@@ -1638,7 +1638,7 @@ int arc4_test(void)
     testVector a, b, c, d;
     testVector test_arc4[4];
 
-    int times = sizeof(test_arc4) / sizeof(testVector), i;
+    int32_t times = sizeof(test_arc4) / sizeof(testVector), i;
 
     a.input  = "\x01\x23\x45\x67\x89\xab\xcd\xef";
     a.output = "\x75\xb7\x87\x80\x99\xe0\xc5\x96";
@@ -1668,7 +1668,7 @@ int arc4_test(void)
     for (i = 0; i < times; ++i) {
         Arc4 enc;
         Arc4 dec;
-        int  keylen = 8;  /* strlen with key 0x00 not good */
+        int32_t  keylen = 8;  /* strlen with key 0x00 not good */
         if (i == 3)
             keylen = 4;
 
@@ -1703,7 +1703,7 @@ int arc4_test(void)
 #endif
 
 
-int hc128_test(void)
+int32_t hc128_test(void)
 {
 #ifdef HAVE_HC128
     byte cipher[16];
@@ -1729,7 +1729,7 @@ int hc128_test(void)
     testVector a, b, c, d;
     testVector test_hc128[4];
 
-    int times = sizeof(test_hc128) / sizeof(testVector), i;
+    int32_t times = sizeof(test_hc128) / sizeof(testVector), i;
 
     a.input  = "\x00\x00\x00\x00\x00\x00\x00\x00";
     a.output = "\x37\x86\x02\xB9\x8F\x32\xA7\x48";
@@ -1785,7 +1785,7 @@ int hc128_test(void)
 
 
 #ifndef NO_RABBIT
-int rabbit_test(void)
+int32_t rabbit_test(void)
 {
     byte cipher[16];
     byte plain[16];
@@ -1807,7 +1807,7 @@ int rabbit_test(void)
     testVector a, b, c;
     testVector test_rabbit[3];
 
-    int times = sizeof(test_rabbit) / sizeof(testVector), i;
+    int32_t times = sizeof(test_rabbit) / sizeof(testVector), i;
 
     a.input  = "\x00\x00\x00\x00\x00\x00\x00\x00";
     a.output = "\xED\xB7\x05\x67\x37\x5D\xCD\x7C";
@@ -1861,7 +1861,7 @@ int rabbit_test(void)
 
 
 #ifdef HAVE_CHACHA
-int chacha_test(void)
+int32_t chacha_test(void)
 {
     ChaCha enc;
     ChaCha dec;
@@ -1869,8 +1869,8 @@ int chacha_test(void)
     byte   plain[32];
     byte   input[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     word32 keySz;
-    int    i;
-    int    times = 4;
+    int32_t    i;
+    int32_t    times = 4;
 
     static const byte key1[] =
     {
@@ -1962,7 +1962,7 @@ int chacha_test(void)
 
 
 #ifndef NO_DES3
-int des_test(void)
+int32_t des_test(void)
 {
     const byte vector[] = { /* "now is the time for all " w/o trailing 0 */
         0x6e,0x6f,0x77,0x20,0x69,0x73,0x20,0x74,
@@ -1993,7 +1993,7 @@ int des_test(void)
         0x15,0x85,0xb3,0x22,0x4b,0x86,0x2b,0x4b
     };
 
-    int ret;
+    int32_t ret;
 
     ret = Des_SetKey(&enc, key, iv, DES_ENCRYPTION);
     if (ret != 0)
@@ -2017,7 +2017,7 @@ int des_test(void)
 
 
 #ifndef NO_DES3
-int des3_test(void)
+int32_t des3_test(void)
 {
     const byte vector[] = { /* "Now is the time for all " w/o trailing 0 */
         0x4e,0x6f,0x77,0x20,0x69,0x73,0x20,0x74,
@@ -2052,7 +2052,7 @@ int des3_test(void)
         0x18,0x94,0x15,0x74,0x87,0x12,0x7d,0xb0
     };
 
-    int ret;
+    int32_t ret;
 
 
 #ifdef HAVE_CAVIUM
@@ -2090,7 +2090,7 @@ int des3_test(void)
 
 
 #ifndef NO_AES
-int aes_test(void)
+int32_t aes_test(void)
 {
     Aes enc;
     Aes dec;
@@ -2112,7 +2112,7 @@ int aes_test(void)
 
     byte cipher[AES_BLOCK_SIZE * 4];
     byte plain [AES_BLOCK_SIZE * 4];
-    int  ret;
+    int32_t  ret;
 
 #ifdef HAVE_CAVIUM
         if (AesInitCavium(&enc, CAVIUM_DEV_ID) != 0)
@@ -2272,10 +2272,10 @@ int aes_test(void)
 }
 
 #ifdef HAVE_POLY1305
-int poly1305_test(void)
+int32_t poly1305_test(void)
 {
-    int      ret = 0;
-    int      i;
+    int32_t      ret = 0;
+    int32_t      i;
     byte     tag[16];
     Poly1305 enc;
 
@@ -2362,7 +2362,7 @@ int poly1305_test(void)
 #endif /* HAVE_POLY1305 */
 
 #ifdef HAVE_AESGCM
-int aesgcm_test(void)
+int32_t aesgcm_test(void)
 {
     Aes enc;
 
@@ -2426,7 +2426,7 @@ int aesgcm_test(void)
     byte p2[sizeof(c)];
     byte c2[sizeof(p)];
 
-    int result;
+    int32_t result;
 
     memset(t2, 0, sizeof(t2));
     memset(c2, 0, sizeof(c2));
@@ -2451,7 +2451,7 @@ int aesgcm_test(void)
     return 0;
 }
 
-int gmac_test(void)
+int32_t gmac_test(void)
 {
     Gmac gmac;
 
@@ -2542,7 +2542,7 @@ int gmac_test(void)
 #endif /* HAVE_AESGCM */
 
 #ifdef HAVE_AESCCM
-int aesccm_test(void)
+int32_t aesccm_test(void)
 {
     Aes enc;
 
@@ -2589,7 +2589,7 @@ int aesccm_test(void)
     byte p2[sizeof(p)];
     byte c2[sizeof(c)];
 
-    int result;
+    int32_t result;
 
     memset(t2, 0, sizeof(t2));
     memset(c2, 0, sizeof(c2));
@@ -2639,16 +2639,16 @@ enum {
 };
 
 typedef struct {
-    int type;
+    int32_t type;
     const byte* plaintext;
     const byte* iv;
     const byte* ciphertext;
     const byte* key;
     word32 keySz;
-    int errorCode;
+    int32_t errorCode;
 } test_vector_t;
 
-int camellia_test(void)
+int32_t camellia_test(void)
 {
     /* Camellia ECB Test Plaintext */
     static const byte pte[] =
@@ -2754,7 +2754,7 @@ int camellia_test(void)
 
     byte out[CAMELLIA_BLOCK_SIZE];
     Camellia cam;
-    int i, testsSz;
+    int32_t i, testsSz;
     const test_vector_t testVectors[] =
     {
         {CAM_ECB_ENC, pte, ive, c1, k1, sizeof(k1), -114},
@@ -2834,7 +2834,7 @@ int camellia_test(void)
 
 #if defined(HAVE_HASHDRBG) || defined(NO_RC4)
 
-int random_test(void)
+int32_t random_test(void)
 {
     const byte test1Entropy[] =
     {
@@ -2886,7 +2886,7 @@ int random_test(void)
     };
 
     byte output[SHA256_DIGEST_SIZE * 4];
-    int ret;
+    int32_t ret;
 
     ret = RNG_HealthTest(0, test1Entropy, sizeof(test1Entropy), NULL, 0,
                             output, sizeof(output));
@@ -2910,11 +2910,11 @@ int random_test(void)
 
 #else /* HAVE_HASHDRBG || NO_RC4 */
 
-int random_test(void)
+int32_t random_test(void)
 {
     RNG  rng;
     byte block[32];
-    int ret;
+    int32_t ret;
 
 #ifdef HAVE_CAVIUM
     ret = InitRngCavium(&rng, CAVIUM_DEV_ID);
@@ -3008,14 +3008,14 @@ byte GetEntropy(ENTROPY_CMD cmd, byte* out)
 
 #define FOURK_BUF 4096
 
-int rsa_test(void)
+int32_t rsa_test(void)
 {
     byte*   tmp;
     size_t bytes;
     RsaKey key;
     RNG    rng;
     word32 idx = 0;
-    int    ret;
+    int32_t    ret;
     byte   in[] = "Everyone gets Friday off.";
     word32 inLen = (word32)strlen((char*)in);
     byte   out[256];
@@ -3118,8 +3118,8 @@ int rsa_test(void)
     {
         byte*  der;
         byte*  pem;
-        int    derSz = 0;
-        int    pemSz = 0;
+        int32_t    derSz = 0;
+        int32_t    pemSz = 0;
         RsaKey derIn;
         RsaKey genKey;
         FILE*  keyFile;
@@ -3158,7 +3158,7 @@ int rsa_test(void)
             FreeRsaKey(&genKey);
             return -303;
         }
-        ret = (int)fwrite(der, 1, derSz, keyFile);
+        ret = (int32_t)fwrite(der, 1, derSz, keyFile);
         fclose(keyFile);
         if (ret != derSz) {
             free(der);
@@ -3182,7 +3182,7 @@ int rsa_test(void)
             FreeRsaKey(&genKey);
             return -305;
         }
-        ret = (int)fwrite(pem, 1, pemSz, pemFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, pemFile);
         fclose(pemFile);
         if (ret != pemSz) {
             free(der);
@@ -3224,8 +3224,8 @@ int rsa_test(void)
         byte*       pem;
         FILE*       derFile;
         FILE*       pemFile;
-        int         certSz;
-        int         pemSz;
+        int32_t         certSz;
+        int32_t         pemSz;
 #ifdef CYASSL_TEST_CERT
         DecodedCert decode;
 #endif
@@ -3274,7 +3274,7 @@ int rsa_test(void)
             free(pem);
             return -403;
         }
-        ret = (int)fwrite(derCert, 1, certSz, derFile);
+        ret = (int32_t)fwrite(derCert, 1, certSz, derFile);
         fclose(derFile);
         if (ret != certSz) {
             free(derCert);
@@ -3295,7 +3295,7 @@ int rsa_test(void)
             free(pem);
             return -405;
         }
-        ret = (int)fwrite(pem, 1, pemSz, pemFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, pemFile);
         fclose(pemFile);
         if (ret != pemSz) {
             free(derCert);
@@ -3313,8 +3313,8 @@ int rsa_test(void)
         byte*       pem;
         FILE*       derFile;
         FILE*       pemFile;
-        int         certSz;
-        int         pemSz;
+        int32_t         certSz;
+        int32_t         pemSz;
         size_t      bytes3;
         word32      idx3 = 0;
         FILE*       file3 ;
@@ -3411,7 +3411,7 @@ int rsa_test(void)
             FreeRsaKey(&caKey);
             return -410;
         }
-        ret = (int)fwrite(derCert, 1, certSz, derFile);
+        ret = (int32_t)fwrite(derCert, 1, certSz, derFile);
         fclose(derFile);
         if (ret != certSz) {
             free(derCert);
@@ -3435,7 +3435,7 @@ int rsa_test(void)
             FreeRsaKey(&caKey);
             return -412;
         }
-        ret = (int)fwrite(pem, 1, pemSz, pemFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, pemFile);
         if (ret != pemSz) {
             free(derCert);
             free(pem);
@@ -3456,8 +3456,8 @@ int rsa_test(void)
         byte*       pem;
         FILE*       derFile;
         FILE*       pemFile;
-        int         certSz;
-        int         pemSz;
+        int32_t         certSz;
+        int32_t         pemSz;
         size_t      bytes3;
         word32      idx3 = 0;
         FILE*       file3;
@@ -3548,7 +3548,7 @@ int rsa_test(void)
             ecc_free(&caKey);
             return -5410;
         }
-        ret = (int)fwrite(derCert, 1, certSz, derFile);
+        ret = (int32_t)fwrite(derCert, 1, certSz, derFile);
         fclose(derFile);
         if (ret != certSz) {
             free(pem);
@@ -3572,7 +3572,7 @@ int rsa_test(void)
             ecc_free(&caKey);
             return -5412;
         }
-        ret = (int)fwrite(pem, 1, pemSz, pemFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, pemFile);
         if (ret != pemSz) {
             free(pem);
             free(derCert);
@@ -3595,8 +3595,8 @@ int rsa_test(void)
         FILE*       pemFile;
         FILE*       caFile;
         FILE*       ntruPrivFile;
-        int         certSz;
-        int         pemSz;
+        int32_t         certSz;
+        int32_t         pemSz;
         word32      idx3;
 #ifdef CYASSL_TEST_CERT
         DecodedCert decode;
@@ -3729,7 +3729,7 @@ int rsa_test(void)
             free(pem);
             return -459;
         }
-        ret = (int)fwrite(derCert, 1, certSz, derFile);
+        ret = (int32_t)fwrite(derCert, 1, certSz, derFile);
         fclose(derFile);
         if (ret != certSz) {
             free(derCert);
@@ -3750,7 +3750,7 @@ int rsa_test(void)
             free(pem);
             return -461;
         }
-        ret = (int)fwrite(pem, 1, pemSz, pemFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, pemFile);
         fclose(pemFile);
         if (ret != pemSz) {
             free(derCert);
@@ -3764,7 +3764,7 @@ int rsa_test(void)
             free(pem);
             return -462;
         }
-        ret = (int)fwrite(private_key, 1, private_key_len, ntruPrivFile);
+        ret = (int32_t)fwrite(private_key, 1, private_key_len, ntruPrivFile);
         fclose(ntruPrivFile);
         if (ret != private_key_len) {
             free(pem);
@@ -3780,8 +3780,8 @@ int rsa_test(void)
         Cert        req;
         byte*       der;
         byte*       pem;
-        int         derSz;
-        int         pemSz;
+        int32_t         derSz;
+        int32_t         pemSz;
         FILE*       reqFile;
 
         der = (byte*)malloc(FOURK_BUF);
@@ -3836,7 +3836,7 @@ int rsa_test(void)
             return -468;
         }
 
-        ret = (int)fwrite(der, 1, derSz, reqFile);
+        ret = (int32_t)fwrite(der, 1, derSz, reqFile);
         fclose(reqFile);
         if (ret != derSz) {
             free(pem);
@@ -3850,7 +3850,7 @@ int rsa_test(void)
             free(der);
             return -469;
         }
-        ret = (int)fwrite(pem, 1, pemSz, reqFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, reqFile);
         fclose(reqFile);
         if (ret != pemSz) {
             free(pem);
@@ -3890,9 +3890,9 @@ int rsa_test(void)
     #endif
 #endif
 
-int dh_test(void)
+int32_t dh_test(void)
 {
-    int    ret;
+    int32_t    ret;
     word32 bytes;
     word32 idx = 0, privSz, pubSz, privSz2, pubSz2, agreeSz, agreeSz2;
     byte   tmp[1024];
@@ -3974,9 +3974,9 @@ int dh_test(void)
     #endif
 #endif
 
-int dsa_test(void)
+int32_t dsa_test(void)
 {
-    int    ret, answer;
+    int32_t    ret, answer;
     word32 bytes;
     word32 idx = 0;
     byte   tmp[1024];
@@ -4033,7 +4033,7 @@ int dsa_test(void)
 
 #ifdef OPENSSL_EXTRA
 
-int openssl_test(void)
+int32_t openssl_test(void)
 {
     EVP_MD_CTX md_ctx;
     testVector a, b, c, d, e, f;
@@ -4148,7 +4148,7 @@ int openssl_test(void)
     c.inLen  = strlen(c.input);
     c.outLen = MD5_DIGEST_SIZE;
 
-    HMAC(EVP_md5(), "Jefe", 4, (byte*)c.input, (int)c.inLen, hash, 0);
+    HMAC(EVP_md5(), "Jefe", 4, (byte*)c.input, (int32_t)c.inLen, hash, 0);
 
     if (memcmp(hash, c.output, MD5_DIGEST_SIZE) != 0)
         return -74;
@@ -4255,7 +4255,7 @@ int openssl_test(void)
 
 #ifndef NO_PWDBASED
 
-int pkcs12_test(void)
+int32_t pkcs12_test(void)
 {
     const byte passwd[] = { 0x00, 0x73, 0x00, 0x6d, 0x00, 0x65, 0x00, 0x67,
                             0x00, 0x00 };
@@ -4278,10 +4278,10 @@ int pkcs12_test(void)
         0xFB, 0xDC, 0x2B, 0xCB, 0x2C, 0x02, 0x95, 0x7F
     };
 
-    int id         =  1;
-    int kLen       = 24;
-    int iterations =  1;
-    int ret = PKCS12_PBKDF(derived, passwd, sizeof(passwd), salt, 8, iterations,
+    int32_t id         =  1;
+    int32_t kLen       = 24;
+    int32_t iterations =  1;
+    int32_t ret = PKCS12_PBKDF(derived, passwd, sizeof(passwd), salt, 8, iterations,
                            kLen, SHA, id);
 
     if (ret < 0)
@@ -4303,12 +4303,12 @@ int pkcs12_test(void)
 }
 
 
-int pbkdf2_test(void)
+int32_t pbkdf2_test(void)
 {
     char passwd[] = "password";
     const byte salt[] = { 0x78, 0x57, 0x8E, 0x5a, 0x5d, 0x63, 0xcb, 0x06 };
-    int   iterations = 2048;
-    int   kLen = 24;
+    int32_t   iterations = 2048;
+    int32_t   kLen = 24;
     byte  derived[64];
 
     const byte verify[] = {
@@ -4317,7 +4317,7 @@ int pbkdf2_test(void)
 
     };
 
-    int ret = PBKDF2(derived, (byte*)passwd, (int)strlen(passwd), salt, 8,
+    int32_t ret = PBKDF2(derived, (byte*)passwd, (int32_t)strlen(passwd), salt, 8,
                                                          iterations, kLen, SHA);
     if (ret != 0)
         return ret;
@@ -4329,12 +4329,12 @@ int pbkdf2_test(void)
 }
 
 
-int pbkdf1_test(void)
+int32_t pbkdf1_test(void)
 {
     char passwd[] = "password";
     const byte salt[] = { 0x78, 0x57, 0x8E, 0x5a, 0x5d, 0x63, 0xcb, 0x06 };
-    int   iterations = 1000;
-    int   kLen = 16;
+    int32_t   iterations = 1000;
+    int32_t   kLen = 16;
     byte  derived[16];
 
     const byte verify[] = {
@@ -4342,7 +4342,7 @@ int pbkdf1_test(void)
         0x4A, 0x3D, 0x2A, 0x20
     };
 
-    PBKDF1(derived, (byte*)passwd, (int)strlen(passwd), salt, 8, iterations,
+    PBKDF1(derived, (byte*)passwd, (int32_t)strlen(passwd), salt, 8, iterations,
            kLen, SHA);
 
     if (memcmp(derived, verify, sizeof(verify)) != 0)
@@ -4352,9 +4352,9 @@ int pbkdf1_test(void)
 }
 
 
-int pwdbased_test(void)
+int32_t pwdbased_test(void)
 {
-   int ret =  pbkdf1_test();
+   int32_t ret =  pbkdf1_test();
    ret += pbkdf2_test();
 
    return ret + pkcs12_test();
@@ -4364,10 +4364,10 @@ int pwdbased_test(void)
 
 #if defined(HAVE_HKDF) && (!defined(NO_SHA) || !defined(NO_SHA256))
 
-int hkdf_test(void)
+int32_t hkdf_test(void)
 {
-    int ret;
-    int L = 42;
+    int32_t ret;
+    int32_t L = 42;
     byte okm1[42];
     byte ikm1[22] = { 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
                       0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
@@ -4465,7 +4465,7 @@ typedef struct rawEccVector {
     size_t msgLen;
 } rawEccVector;
 
-int ecc_test(void)
+int32_t ecc_test(void)
 {
     RNG     rng;
     byte    sharedA[1024];
@@ -4474,7 +4474,7 @@ int ecc_test(void)
     byte    digest[20];
     byte    exportBuf[1024];
     word32  x, y;
-    int     i, verify, ret;
+    int32_t     i, verify, ret;
     ecc_key userA, userB, pubKey;
 
     ret = InitRng(&rng);
@@ -4557,7 +4557,7 @@ int ecc_test(void)
         return -1013;
 
     /* test DSA sign hash */
-    for (i = 0; i < (int)sizeof(digest); i++)
+    for (i = 0; i < (int32_t)sizeof(digest); i++)
         digest[i] = (byte)i;
 
     x = sizeof(sig);
@@ -4586,7 +4586,7 @@ int ecc_test(void)
         byte hash[SHA_DIGEST_SIZE];
         rawEccVector a, b;
         rawEccVector test_ecc[2];
-        int times = sizeof(test_ecc) / sizeof(rawEccVector);
+        int32_t times = sizeof(test_ecc) / sizeof(rawEccVector);
 
         /* first [P-192,SHA-1] vector from FIPS 186-3 NIST vectors */
         a.msg = "\xeb\xf7\x48\xd7\x48\xeb\xbc\xa7\xd2\x9f\xb4\x73\x69\x8a"
@@ -4666,7 +4666,7 @@ int ecc_test(void)
 
 #ifdef CYASSL_KEY_GEN
     {
-        int   derSz, pemSz;
+        int32_t   derSz, pemSz;
         byte  der[FOURK_BUF];
         byte  pem[FOURK_BUF];
         FILE* keyFile;
@@ -4681,7 +4681,7 @@ int ecc_test(void)
         if (!keyFile) {
             return -1025;
         }
-        ret = (int)fwrite(der, 1, derSz, keyFile);
+        ret = (int32_t)fwrite(der, 1, derSz, keyFile);
         fclose(keyFile);
         if (ret != derSz) {
             return -1026;
@@ -4696,7 +4696,7 @@ int ecc_test(void)
         if (!pemFile) {
             return -1028;
         }
-        ret = (int)fwrite(pem, 1, pemSz, pemFile);
+        ret = (int32_t)fwrite(pem, 1, pemSz, pemFile);
         fclose(pemFile);
         if (ret != pemSz) {
             return -1029;
@@ -4717,17 +4717,17 @@ int ecc_test(void)
 
 #ifdef HAVE_ECC_ENCRYPT
 
-int ecc_encrypt_test(void)
+int32_t ecc_encrypt_test(void)
 {
     RNG     rng;
-    int     ret;
+    int32_t     ret;
     ecc_key userA, userB;
     byte    msg[48];
     byte    plain[48];
     byte    out[80];
     word32  outSz   = sizeof(out);
     word32  plainSz = sizeof(plain);
-    int     i;
+    int32_t     i;
 
     ret = InitRng(&rng);
     if (ret != 0)
@@ -4928,9 +4928,9 @@ const byte sample_text[] =
     "bag dolor terry richardson sapiente.\n";
 
 
-int compress_test(void)
+int32_t compress_test(void)
 {
-    int ret = 0;
+    int32_t ret = 0;
     word32 dSz = sizeof(sample_text);
     word32 cSz = (dSz + (word32)(dSz * 0.001) + 12);
     byte *c = NULL;
@@ -4950,7 +4950,7 @@ int compress_test(void)
         ret = 0;
     }
 
-    if (ret == 0 && DeCompress(d, dSz, c, cSz) != (int)dSz)
+    if (ret == 0 && DeCompress(d, dSz, c, cSz) != (int32_t)dSz)
         ret = -302;
 
     if (ret == 0 && memcmp(d, sample_text, dSz))
@@ -4966,12 +4966,12 @@ int compress_test(void)
 
 #ifdef HAVE_PKCS7
 
-int pkcs7enveloped_test(void)
+int32_t pkcs7enveloped_test(void)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
-    int cipher = DES3b;
-    int envelopedSz, decodedSz;
+    int32_t cipher = DES3b;
+    int32_t envelopedSz, decodedSz;
     PKCS7 pkcs7;
     byte* cert;
     byte* privKey;
@@ -5066,7 +5066,7 @@ int pkcs7enveloped_test(void)
         return -206;
     }
 
-    ret = (int)fwrite(enveloped, envelopedSz, 1, pkcs7File);
+    ret = (int32_t)fwrite(enveloped, envelopedSz, 1, pkcs7File);
     fclose(pkcs7File);
 
     free(cert);
@@ -5079,9 +5079,9 @@ int pkcs7enveloped_test(void)
     return ret;
 }
 
-int pkcs7signed_test(void)
+int32_t pkcs7signed_test(void)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     FILE* file;
     byte* certDer;
@@ -5190,7 +5190,7 @@ int pkcs7signed_test(void)
     {
         Sha sha;
         byte digest[SHA_DIGEST_SIZE];
-        int i,j;
+        int32_t i,j;
 
         transId[0] = 0x13;
         transId[1] = SHA_DIGEST_SIZE * 2;
@@ -5229,9 +5229,9 @@ int pkcs7signed_test(void)
         PKCS7_Free(&msg);
         return -213;
     }
-    ret = (int)fwrite(out, 1, outSz, file);
+    ret = (int32_t)fwrite(out, 1, outSz, file);
     fclose(file);
-    if (ret != (int)outSz) {
+    if (ret != (int32_t)outSz) {
         free(certDer);
         free(keyDer);
         free(out);
@@ -5267,7 +5267,7 @@ int pkcs7signed_test(void)
         PKCS7_Free(&msg);
         return -216;
     }
-    ret = (int)fwrite(msg.singleCert, 1, msg.singleCertSz, file);
+    ret = (int32_t)fwrite(msg.singleCert, 1, msg.singleCertSz, file);
     fclose(file);
 
     free(certDer);

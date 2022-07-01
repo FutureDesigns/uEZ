@@ -53,8 +53,8 @@ typedef struct {
     T_EEPROMConfig iConfig;
     TBool iInitialized;
     T_uezSemaphore iIRQReadySem;
-    volatile int end_of_prog;
-    volatile int end_of_rdwr;
+    volatile int32_t end_of_prog;
+    volatile int32_t end_of_rdwr;
 } T_EEPROM_NXP_LPC43xx_Workspace;
 
 /* EEPROM_CMD */
@@ -270,7 +270,7 @@ T_uezError EEPROM_NXP_LPC43xx_Write(
                 break;
             }
         }
-        LPC_EEPROM->INTSTATCLR = 1<<2;             // Clear Program int status bit
+        LPC_EEPROM->INTSTATCLR = 1<<2;             // Clear Program int32_t status bit
 
         // Wait the appropriate amount of time
         UEZTaskDelay(p->iConfig.iWriteTime);

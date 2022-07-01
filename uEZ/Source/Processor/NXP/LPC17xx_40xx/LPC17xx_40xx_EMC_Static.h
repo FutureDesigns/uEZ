@@ -94,7 +94,7 @@ typedef struct {
 // Convert a number of nano-seconds into a number of flash memory cycles
 // (rounded up)
 #define EMC_STATIC_CYCLES(x) \
-    (1+((unsigned int)(((double)x)*(1.0/1000000000.0)*((double)EMC_CLOCK_FREQUENCY))))
+    (1+((uint32_t)(((double)x)*(1.0/1000000000.0)*((double)EMC_CLOCK_FREQUENCY))))
 #define EMC_STATIC_CLOCKS(x) (x)
 
 /*-------------------------------------------------------------------------*

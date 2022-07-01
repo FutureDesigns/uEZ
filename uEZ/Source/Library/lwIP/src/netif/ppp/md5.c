@@ -129,11 +129,11 @@ MD5Init (MD5_CTX *mdContext)
    in the message whose digest is being computed.
  */
 void
-MD5Update(MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen)
+MD5Update(MD5_CTX *mdContext, unsigned char *inBuf, uint32_t inLen)
 {
   u32_t in[16];
-  int mdi;
-  unsigned int i, ii;
+  int32_t mdi;
+  uint32_t i, ii;
 
 #if 0
   ppp_trace(LOG_INFO, "MD5Update: %u:%.*H\n", inLen, MIN(inLen, 20) * 2, inBuf);
@@ -141,7 +141,7 @@ MD5Update(MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen)
 #endif
   
   /* compute number of bytes mod 64 */
-  mdi = (int)((mdContext->i[0] >> 3) & 0x3F);
+  mdi = (int32_t)((mdContext->i[0] >> 3) & 0x3F);
 
   /* update number of bits */
   if ((mdContext->i[0] + ((u32_t)inLen << 3)) < mdContext->i[0]) {
@@ -175,16 +175,16 @@ void
 MD5Final (unsigned char hash[], MD5_CTX *mdContext)
 {
   u32_t in[16];
-  int mdi;
-  unsigned int i, ii;
-  unsigned int padLen;
+  int32_t mdi;
+  uint32_t i, ii;
+  uint32_t padLen;
 
   /* save number of bits */
   in[14] = mdContext->i[0];
   in[15] = mdContext->i[1];
 
   /* compute number of bytes mod 64 */
-  mdi = (int)((mdContext->i[0] >> 3) & 0x3F);
+  mdi = (int32_t)((mdContext->i[0] >> 3) & 0x3F);
 
   /* pad out to 56 mod 64 */
   padLen = (mdi < 56) ? (56 - mdi) : (120 - mdi);

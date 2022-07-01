@@ -62,17 +62,17 @@ typedef struct Sha {
 } Sha;
 
 
-CYASSL_API int InitSha(Sha*);
-CYASSL_API int ShaUpdate(Sha*, const byte*, word32);
-CYASSL_API int ShaFinal(Sha*, byte*);
-CYASSL_API int ShaHash(const byte*, word32, byte*);
+CYASSL_API int32_t InitSha(Sha*);
+CYASSL_API int32_t ShaUpdate(Sha*, const byte*, word32);
+CYASSL_API int32_t ShaFinal(Sha*, byte*);
+CYASSL_API int32_t ShaHash(const byte*, word32, byte*);
 
 
 #ifdef HAVE_FIPS
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int InitSha_fips(Sha*);
-    CYASSL_API int ShaUpdate_fips(Sha*, const byte*, word32);
-    CYASSL_API int ShaFinal_fips(Sha*, byte*);
+    CYASSL_API int32_t InitSha_fips(Sha*);
+    CYASSL_API int32_t ShaUpdate_fips(Sha*, const byte*, word32);
+    CYASSL_API int32_t ShaFinal_fips(Sha*, byte*);
     #ifndef FIPS_NO_WRAPPERS
         /* if not impl or fips.c impl wrapper force fips calls if fips build */
         #define InitSha   InitSha_fips

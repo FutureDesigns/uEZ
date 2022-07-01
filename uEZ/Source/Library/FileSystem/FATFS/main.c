@@ -188,7 +188,7 @@ void IoInit (void)
 
 
 
-int main (void)
+int32_t main (void)
 {
 	char *ptr, *ptr2;
 	long p1, p2, p3;

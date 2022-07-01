@@ -167,7 +167,7 @@ free_etharp_q(struct etharp_q_entry *q)
 
 /** Clean up ARP table entries */
 static void
-etharp_free_entry(int i)
+etharp_free_entry(int32_t i)
 {
   /* remove from SNMP ARP index tree */
   mib2_remove_arp_entry(arp_table[i].netif, &arp_table[i].ipaddr);
@@ -931,7 +931,7 @@ etharp_query(struct netif *netif, const ip4_addr_t *ipaddr, struct pbuf *q)
 {
   struct eth_addr * srcaddr = (struct eth_addr *)netif->hwaddr;
   err_t result = ERR_MEM;
-  int is_new_entry = 0;
+  int32_t is_new_entry = 0;
   s8_t i; /* ARP entry index */
 
   /* non-unicast address? */
@@ -995,7 +995,7 @@ etharp_query(struct netif *netif, const ip4_addr_t *ipaddr, struct pbuf *q)
   } else if (arp_table[i].state == ETHARP_STATE_PENDING) {
     /* entry is still pending, queue the given packet 'q' */
     struct pbuf *p;
-    int copy_needed = 0;
+    int32_t copy_needed = 0;
     /* IF q includes a PBUF_REF, PBUF_POOL or PBUF_RAM, we have no choice but
      * to copy the whole queue into a new PBUF_RAM (see bug #11400)
      * PBUF_ROMs can be left as they are, since ROM must not get changed. */
@@ -1030,7 +1030,7 @@ etharp_query(struct netif *netif, const ip4_addr_t *ipaddr, struct pbuf *q)
       /* allocate a new arp queue entry */
       new_entry = (struct etharp_q_entry *)memp_malloc(MEMP_ARP_QUEUE);
       if (new_entry != NULL) {
-        unsigned int qlen = 0;
+        uint32_t qlen = 0;
         new_entry->next = 0;
         new_entry->p = p;
         if (arp_table[i].q != NULL) {

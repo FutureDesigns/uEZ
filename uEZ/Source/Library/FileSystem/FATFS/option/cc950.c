@@ -6782,7 +6782,7 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 {
 	const WCHAR *p;
 	WCHAR c;
-	int i, n, li, hi;
+	int32_t i, n, li, hi;
 
 
 	if (chr < 0x80) {	/* ASCII */

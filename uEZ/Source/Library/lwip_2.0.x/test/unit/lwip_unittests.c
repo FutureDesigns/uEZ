@@ -29,12 +29,12 @@ Suite* create_suite(const char* name, testfunc *tests, size_t num_tests, SFun se
 }
 
 #ifdef LWIP_UNITTESTS_LIB
-int lwip_unittests_run(void)
+int32_t lwip_unittests_run(void)
 #else
-int main(void)
+int32_t main(void)
 #endif
 {
-  int number_failed;
+  int32_t number_failed;
   SRunner *sr;
   size_t i;
   suite_getter_fn* suites[] = {

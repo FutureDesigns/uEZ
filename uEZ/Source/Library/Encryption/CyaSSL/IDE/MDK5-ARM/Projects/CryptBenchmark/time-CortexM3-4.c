@@ -34,7 +34,7 @@ typedef struct
 
 extern uint32_t SystemCoreClock ;
 
-double current_time(int reset) 
+double current_time(int32_t reset) 
 {
       if(reset) DWT->CYCCNT = 0 ;
       return ((double)DWT->CYCCNT/SystemCoreClock) ;

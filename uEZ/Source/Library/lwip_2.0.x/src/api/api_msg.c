@@ -109,9 +109,9 @@ recv_raw(void *arg, struct raw_pcb *pcb, struct pbuf *p,
 
   if ((conn != NULL) && sys_mbox_valid(&conn->recvmbox)) {
 #if LWIP_SO_RCVBUF
-    int recv_avail;
+    int32_t recv_avail;
     SYS_ARCH_GET(conn->recv_avail, recv_avail);
-    if ((recv_avail + (int)(p->tot_len)) > conn->recv_bufsize) {
+    if ((recv_avail + (int32_t)(p->tot_len)) > conn->recv_bufsize) {
       return 0;
     }
 #endif /* LWIP_SO_RCVBUF */
@@ -170,7 +170,7 @@ recv_udp(void *arg, struct udp_pcb *pcb, struct pbuf *p,
   struct netconn *conn;
   u16_t len;
 #if LWIP_SO_RCVBUF
-  int recv_avail;
+  int32_t recv_avail;
 #endif /* LWIP_SO_RCVBUF */
 
   LWIP_UNUSED_ARG(pcb); /* only used for asserts... */
@@ -188,7 +188,7 @@ recv_udp(void *arg, struct udp_pcb *pcb, struct pbuf *p,
 #if LWIP_SO_RCVBUF
   SYS_ARCH_GET(conn->recv_avail, recv_avail);
   if (!sys_mbox_valid(&conn->recvmbox) ||
-      ((recv_avail + (int)(p->tot_len)) > conn->recv_bufsize)) {
+      ((recv_avail + (int32_t)(p->tot_len)) > conn->recv_bufsize)) {
 #else  /* LWIP_SO_RCVBUF */
   if (!sys_mbox_valid(&conn->recvmbox)) {
 #endif /* LWIP_SO_RCVBUF */
@@ -426,7 +426,7 @@ err_tcp(void *arg, err_t err)
       (old_state == NETCONN_CONNECT)) {
     /* calling lwip_netconn_do_writemore/lwip_netconn_do_close_internal is not necessary
        since the pcb has already been deleted! */
-    int was_nonblocking_connect = IN_NONBLOCKING_CONNECT(conn);
+    int32_t was_nonblocking_connect = IN_NONBLOCKING_CONNECT(conn);
     SET_NONBLOCKING_CONNECT(conn, 0);
 
     if (!was_nonblocking_connect) {
@@ -650,7 +650,7 @@ struct netconn*
 netconn_alloc(enum netconn_type t, netconn_callback callback)
 {
   struct netconn *conn;
-  int size;
+  int32_t size;
 
   conn = (struct netconn *)memp_malloc(MEMP_NETCONN);
   if (conn == NULL) {
@@ -1164,7 +1164,7 @@ static err_t
 lwip_netconn_do_connected(void *arg, struct tcp_pcb *pcb, err_t err)
 {
   struct netconn *conn;
-  int was_blocking;
+  int32_t was_blocking;
   sys_sem_t* op_completed_sem = NULL;
 
   LWIP_UNUSED_ARG(pcb);

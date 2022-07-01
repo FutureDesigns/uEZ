@@ -33,7 +33,7 @@
  * Globals...
  */
 
-int		event_counts[6];
+int32_t		event_counts[6];
 
 
 /*
@@ -42,20 +42,20 @@ int		event_counts[6];
 
 void		sax_cb(mxml_node_t *node, mxml_sax_event_t event, void *data);
 mxml_type_t	type_cb(mxml_node_t *node);
-const char	*whitespace_cb(mxml_node_t *node, int where);
+const char	*whitespace_cb(mxml_node_t *node, int32_t where);
 
 
 /*
  * 'main()' - Main entry for test program.
  */
 
-int					/* O - Exit status */
-main(int  argc,				/* I - Number of command-line args */
+int32_t					/* O - Exit status */
+main(int32_t  argc,				/* I - Number of command-line args */
      char *argv[])			/* I - Command-line args */
 {
-  int			i;		/* Looping var */
+  int32_t			i;		/* Looping var */
   FILE			*fp;		/* File to read */
-  int			fd;		/* File descriptor */
+  int32_t			fd;		/* File descriptor */
   mxml_node_t		*tree,		/* XML tree */
 			*node;		/* Node which should be in test.xml */
   mxml_index_t		*ind;		/* XML index */
@@ -696,10 +696,10 @@ type_cb(mxml_node_t *node)		/* I - Element node */
 
 const char *				/* O - Whitespace string or NULL */
 whitespace_cb(mxml_node_t *node,	/* I - Element node */
-              int         where)	/* I - Open or close tag? */
+              int32_t         where)	/* I - Open or close tag? */
 {
   mxml_node_t	*parent;		/* Parent node */
-  int		level;			/* Indentation level */
+  int32_t		level;			/* Indentation level */
   const char	*name;			/* Name of element */
   static const char *tabs = "\t\t\t\t\t\t\t\t";
 					/* Tabs for indentation */

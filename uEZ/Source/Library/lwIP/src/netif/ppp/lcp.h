@@ -114,7 +114,7 @@ typedef struct lcp_options {
     u_char chap_mdtype;          /* which MD type (hashing algorithm) */
     u32_t asyncmap;              /* Value of async map */
     u32_t magicnumber;
-    int numloops;                /* Number of loops during magic number neg. */
+    int32_t numloops;                /* Number of loops during magic number neg. */
     u32_t lqr_period;            /* Reporting period for LQR 1/100ths second */
 #ifdef PPP_MULTILINK
     struct epdisc endpoint;      /* endpoint discriminator */
@@ -151,12 +151,12 @@ extern ext_accm xmit_accm[];
 *** PUBLIC FUNCTIONS ***
 ***********************/
 
-void lcp_init     (int);
-void lcp_open     (int);
-void lcp_close    (int, char *);
-void lcp_lowerup  (int);
-void lcp_lowerdown(int);
-void lcp_sprotrej (int, u_char *, int); /* send protocol reject */
+void lcp_init     (int32_t);
+void lcp_open     (int32_t);
+void lcp_close    (int32_t, char *);
+void lcp_lowerup  (int32_t);
+void lcp_lowerdown(int32_t);
+void lcp_sprotrej (int32_t, u_char *, int32_t); /* send protocol reject */
 
 extern struct protent lcp_protent;
 

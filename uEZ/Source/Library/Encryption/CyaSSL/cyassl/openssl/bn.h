@@ -11,7 +11,7 @@
 #endif
 
 typedef struct CYASSL_BIGNUM {
-    int   neg;              /* openssh deference */
+    int32_t   neg;              /* openssh deference */
     void* internal;         /* our big num */
 } CYASSL_BIGNUM;        
 
@@ -28,39 +28,39 @@ CYASSL_API void           CyaSSL_BN_free(CYASSL_BIGNUM*);
 CYASSL_API void           CyaSSL_BN_clear_free(CYASSL_BIGNUM*);
 
 
-CYASSL_API int CyaSSL_BN_sub(CYASSL_BIGNUM*, const CYASSL_BIGNUM*,
+CYASSL_API int32_t CyaSSL_BN_sub(CYASSL_BIGNUM*, const CYASSL_BIGNUM*,
 	                         const CYASSL_BIGNUM*);
-CYASSL_API int CyaSSL_BN_mod(CYASSL_BIGNUM*, const CYASSL_BIGNUM*,
+CYASSL_API int32_t CyaSSL_BN_mod(CYASSL_BIGNUM*, const CYASSL_BIGNUM*,
 	                         const CYASSL_BIGNUM*, const CYASSL_BN_CTX*);
 
 CYASSL_API const CYASSL_BIGNUM* CyaSSL_BN_value_one(void);
 
 
-CYASSL_API int CyaSSL_BN_num_bytes(const CYASSL_BIGNUM*);
-CYASSL_API int CyaSSL_BN_num_bits(const CYASSL_BIGNUM*);
+CYASSL_API int32_t CyaSSL_BN_num_bytes(const CYASSL_BIGNUM*);
+CYASSL_API int32_t CyaSSL_BN_num_bits(const CYASSL_BIGNUM*);
 
-CYASSL_API int CyaSSL_BN_is_zero(const CYASSL_BIGNUM*);
-CYASSL_API int CyaSSL_BN_is_one(const CYASSL_BIGNUM*);
-CYASSL_API int CyaSSL_BN_is_odd(const CYASSL_BIGNUM*);
+CYASSL_API int32_t CyaSSL_BN_is_zero(const CYASSL_BIGNUM*);
+CYASSL_API int32_t CyaSSL_BN_is_one(const CYASSL_BIGNUM*);
+CYASSL_API int32_t CyaSSL_BN_is_odd(const CYASSL_BIGNUM*);
 
-CYASSL_API int CyaSSL_BN_cmp(const CYASSL_BIGNUM*, const CYASSL_BIGNUM*);
+CYASSL_API int32_t CyaSSL_BN_cmp(const CYASSL_BIGNUM*, const CYASSL_BIGNUM*);
 
-CYASSL_API int CyaSSL_BN_bn2bin(const CYASSL_BIGNUM*, unsigned char*);
-CYASSL_API CYASSL_BIGNUM* CyaSSL_BN_bin2bn(const unsigned char*, int len,
+CYASSL_API int32_t CyaSSL_BN_bn2bin(const CYASSL_BIGNUM*, unsigned char*);
+CYASSL_API CYASSL_BIGNUM* CyaSSL_BN_bin2bn(const unsigned char*, int32_t len,
 	                            CYASSL_BIGNUM* ret);
 
-CYASSL_API int CyaSSL_mask_bits(CYASSL_BIGNUM*, int n);
+CYASSL_API int32_t CyaSSL_mask_bits(CYASSL_BIGNUM*, int32_t n);
 
-CYASSL_API int CyaSSL_BN_rand(CYASSL_BIGNUM*, int bits, int top, int bottom);
-CYASSL_API int CyaSSL_BN_is_bit_set(const CYASSL_BIGNUM*, int n);
-CYASSL_API int CyaSSL_BN_hex2bn(CYASSL_BIGNUM**, const char* str);
+CYASSL_API int32_t CyaSSL_BN_rand(CYASSL_BIGNUM*, int32_t bits, int32_t top, int32_t bottom);
+CYASSL_API int32_t CyaSSL_BN_is_bit_set(const CYASSL_BIGNUM*, int32_t n);
+CYASSL_API int32_t CyaSSL_BN_hex2bn(CYASSL_BIGNUM**, const char* str);
 
 CYASSL_API CYASSL_BIGNUM* CyaSSL_BN_dup(const CYASSL_BIGNUM*);
 CYASSL_API CYASSL_BIGNUM* CyaSSL_BN_copy(CYASSL_BIGNUM*, const CYASSL_BIGNUM*);
 
-CYASSL_API int CyaSSL_BN_set_word(CYASSL_BIGNUM*, unsigned long w);
+CYASSL_API int32_t CyaSSL_BN_set_word(CYASSL_BIGNUM*, unsigned long w);
 
-CYASSL_API int   CyaSSL_BN_dec2bn(CYASSL_BIGNUM**, const char* str);
+CYASSL_API int32_t   CyaSSL_BN_dec2bn(CYASSL_BIGNUM**, const char* str);
 CYASSL_API char* CyaSSL_BN_bn2dec(const CYASSL_BIGNUM*);
 
 

@@ -53,7 +53,7 @@
 #endif /* min */
 
 
-int InitSha512(Sha512* sha512)
+int32_t InitSha512(Sha512* sha512)
 {
     sha512->digest[0] = W64LIT(0x6a09e667f3bcc908);
     sha512->digest[1] = W64LIT(0xbb67ae8584caa73b);
@@ -145,7 +145,7 @@ static const word64 K512[80] = {
 	d(i)+=h(i);h(i)+=S0(a(i))+Maj(a(i),b(i),c(i))
 
 
-static int Transform(Sha512* sha512)
+static int32_t Transform(Sha512* sha512)
 {
     const word64* K = K512;
 
@@ -169,7 +169,7 @@ static int Transform(Sha512* sha512)
     /* over twice as small, but 50% slower */
     /* 80 operations, not unrolled */
     for (j = 0; j < 80; j += 16) {
-        int m; 
+        int32_t m; 
         for (m = 0; m < 16; m++) { /* braces needed here for macros {} */
             R(m);
         }
@@ -215,7 +215,7 @@ static INLINE void AddLength(Sha512* sha512, word32 len)
 }
 
 
-int Sha512Update(Sha512* sha512, const byte* data, word32 len)
+int32_t Sha512Update(Sha512* sha512, const byte* data, word32 len)
 {
     /* do block size increments */
     byte* local = (byte*)sha512->buffer;
@@ -229,7 +229,7 @@ int Sha512Update(Sha512* sha512, const byte* data, word32 len)
         len          -= add;
 
         if (sha512->buffLen == SHA512_BLOCK_SIZE) {
-            int ret;
+            int32_t ret;
 
             #ifdef LITTLE_ENDIAN_ORDER
                 ByteReverseWords64(sha512->buffer, sha512->buffer,
@@ -247,10 +247,10 @@ int Sha512Update(Sha512* sha512, const byte* data, word32 len)
 }
 
 
-int Sha512Final(Sha512* sha512, byte* hash)
+int32_t Sha512Final(Sha512* sha512, byte* hash)
 {
     byte* local = (byte*)sha512->buffer;
-    int ret;
+    int32_t ret;
 
     AddLength(sha512, sha512->buffLen);               /* before adding pads */
 
@@ -298,9 +298,9 @@ int Sha512Final(Sha512* sha512, byte* hash)
 }
 
 
-int Sha512Hash(const byte* data, word32 len, byte* hash)
+int32_t Sha512Hash(const byte* data, word32 len, byte* hash)
 {
-    int ret = 0;
+    int32_t ret = 0;
 #ifdef CYASSL_SMALL_STACK
     Sha512* sha512;
 #else
@@ -333,7 +333,7 @@ int Sha512Hash(const byte* data, word32 len, byte* hash)
 
 #ifdef CYASSL_SHA384
 
-int InitSha384(Sha384* sha384)
+int32_t InitSha384(Sha384* sha384)
 {
     sha384->digest[0] = W64LIT(0xcbbb9d5dc1059ed8);
     sha384->digest[1] = W64LIT(0x629a292a367cd507);
@@ -352,7 +352,7 @@ int InitSha384(Sha384* sha384)
 }
 
 
-static int Transform384(Sha384* sha384)
+static int32_t Transform384(Sha384* sha384)
 {
     const word64* K = K512;
 
@@ -376,7 +376,7 @@ static int Transform384(Sha384* sha384)
     /* over twice as small, but 50% slower */
     /* 80 operations, not unrolled */
     for (j = 0; j < 80; j += 16) {
-        int m;
+        int32_t m;
         for (m = 0; m < 16; m++) {  /* braces needed for macros {} */
             R2(m);
         }
@@ -422,7 +422,7 @@ static INLINE void AddLength384(Sha384* sha384, word32 len)
 }
 
 
-int Sha384Update(Sha384* sha384, const byte* data, word32 len)
+int32_t Sha384Update(Sha384* sha384, const byte* data, word32 len)
 {
     /* do block size increments */
     byte* local = (byte*)sha384->buffer;
@@ -436,7 +436,7 @@ int Sha384Update(Sha384* sha384, const byte* data, word32 len)
         len          -= add;
 
         if (sha384->buffLen == SHA384_BLOCK_SIZE) {
-            int ret;
+            int32_t ret;
 
             #ifdef LITTLE_ENDIAN_ORDER
                 ByteReverseWords64(sha384->buffer, sha384->buffer,
@@ -454,10 +454,10 @@ int Sha384Update(Sha384* sha384, const byte* data, word32 len)
 }
 
 
-int Sha384Final(Sha384* sha384, byte* hash)
+int32_t Sha384Final(Sha384* sha384, byte* hash)
 {
     byte* local = (byte*)sha384->buffer;
-    int ret;
+    int32_t ret;
 
     AddLength384(sha384, sha384->buffLen);              /* before adding pads */
 
@@ -505,9 +505,9 @@ int Sha384Final(Sha384* sha384, byte* hash)
 }
 
 
-int Sha384Hash(const byte* data, word32 len, byte* hash)
+int32_t Sha384Hash(const byte* data, word32 len, byte* hash)
 {
-    int ret = 0;
+    int32_t ret = 0;
 #ifdef CYASSL_SMALL_STACK
     Sha384* sha384;
 #else

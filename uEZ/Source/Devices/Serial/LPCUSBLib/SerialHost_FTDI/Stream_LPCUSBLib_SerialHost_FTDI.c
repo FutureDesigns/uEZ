@@ -146,7 +146,7 @@ typedef struct {
  * Globals:
  *---------------------------------------------------------------------------*/
 static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum);
-static int IUpdate(int aUnitAddress);
+static int32_t IUpdate(int32_t aUnitAddress);
 
 static T_LPCUSBLib_Host_Callbacks G_HostCallbacks = {
         0, // HostError
@@ -313,7 +313,7 @@ static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
     uint8_t err_code;
     T_Stream_LPCUSBLib_SerialHost_FTDI_Workspace *p = G_workspaces[corenum];
     USB_ClassInfo_FTDI_Serial_Host_t *p_serial = &p->iInterface;
-    int serialInfCount;
+    int32_t serialInfCount;
 
     /* Read Configuration descriptor */
     if (USB_Host_GetDeviceConfigDescriptor(corenum, 1, &ConfigDescriptorSize, ConfigDescriptorData, sizeof(ConfigDescriptorData))
@@ -652,13 +652,13 @@ static T_uezError IGetHandshakingStatus(
  * Outputs:
  *      TUInt32                      -- return code (never returns)
  *---------------------------------------------------------------------------*/
-static int IUpdate(int aUnitAddress)
+static int32_t IUpdate(int32_t aUnitAddress)
 {
     T_Stream_LPCUSBLib_SerialHost_FTDI_Workspace *p = G_workspaces[aUnitAddress];
     USB_ClassInfo_FTDI_Serial_Host_t *p_serial = &p->iInterface;
     TInt32 i;
     TUInt16 dataLen;
-    int activity = 0;
+    int32_t activity = 0;
 
     if (p == 0)
         return 0; // Not ready

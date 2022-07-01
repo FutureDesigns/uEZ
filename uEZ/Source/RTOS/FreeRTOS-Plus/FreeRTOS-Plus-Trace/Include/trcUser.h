@@ -150,7 +150,7 @@ void vTraceClear(void);
 * despite errors in the recorder, but there is no guarantee that the trace
 * recorder will work correctly in that case, depending on the type of error.
 ******************************************************************************/
-void vTraceClearError(int resetErrorMessage);
+void vTraceClearError(int32_t resetErrorMessage);
 
 #if (INCLUDE_ISR_TRACING == 1)
 
@@ -221,7 +221,7 @@ void vTraceStoreISRBegin(objectHandleType id);
  *	 }
  *
  ******************************************************************************/
-void vTraceStoreISREnd(int pendingISR);
+void vTraceStoreISREnd(int32_t pendingISR);
 
 #else
 	/* If not including the ISR recording */

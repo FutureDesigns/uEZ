@@ -79,13 +79,13 @@
 #define TX_BUF_BASE         (RX_BUF_BASE  + NUM_RX_FRAG*ETH_FRAG_SIZE)
 
 /* RX and TX descriptor and status definitions. */
-#define RX_DESC_PACKET(i)   (*(unsigned int *)(RX_DESC_BASE   + 8*i))
-#define RX_DESC_CTRL(i)     (*(unsigned int *)(RX_DESC_BASE+4 + 8*i))
-#define RX_STAT_INFO(i)     (*(unsigned int *)(RX_STAT_BASE   + 8*i))
-#define RX_STAT_HASHCRC(i)  (*(unsigned int *)(RX_STAT_BASE+4 + 8*i))
-#define TX_DESC_PACKET(i)   (*(unsigned int *)(TX_DESC_BASE   + 8*i))
-#define TX_DESC_CTRL(i)     (*(unsigned int *)(TX_DESC_BASE+4 + 8*i))
-#define TX_STAT_INFO(i)     (*(unsigned int *)(TX_STAT_BASE   + 4*i))
+#define RX_DESC_PACKET(i)   (*(uint32_t *)(RX_DESC_BASE   + 8*i))
+#define RX_DESC_CTRL(i)     (*(uint32_t *)(RX_DESC_BASE+4 + 8*i))
+#define RX_STAT_INFO(i)     (*(uint32_t *)(RX_STAT_BASE   + 8*i))
+#define RX_STAT_HASHCRC(i)  (*(uint32_t *)(RX_STAT_BASE+4 + 8*i))
+#define TX_DESC_PACKET(i)   (*(uint32_t *)(TX_DESC_BASE   + 8*i))
+#define TX_DESC_CTRL(i)     (*(uint32_t *)(TX_DESC_BASE+4 + 8*i))
+#define TX_STAT_INFO(i)     (*(uint32_t *)(TX_STAT_BASE   + 4*i))
 #define RX_BUF(i)           (RX_BUF_BASE + ETH_FRAG_SIZE*i)
 #define TX_BUF(i)           (TX_BUF_BASE + ETH_FRAG_SIZE*i)
 

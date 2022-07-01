@@ -368,7 +368,7 @@ igmp_input(struct pbuf *p, struct netif *inp, const ip4_addr_t *dest)
     /* IGMP_MEMB_QUERY to the "all systems" address ? */
     if ((ip4_addr_cmp(dest, &allsystems)) && ip4_addr_isany(&igmp->igmp_group_address)) {
       /* THIS IS THE GENERAL QUERY */
-      LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: General IGMP_MEMB_QUERY on \"ALL SYSTEMS\" address (224.0.0.1) [igmp_maxresp=%i]\n", (int)(igmp->igmp_maxresp)));
+      LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: General IGMP_MEMB_QUERY on \"ALL SYSTEMS\" address (224.0.0.1) [igmp_maxresp=%i]\n", (int32_t)(igmp->igmp_maxresp)));
 
       if (igmp->igmp_maxresp == 0) {
         IGMP_STATS_INC(igmp.rx_v1);
@@ -397,12 +397,12 @@ igmp_input(struct pbuf *p, struct netif *inp, const ip4_addr_t *dest)
         ip4_addr_debug_print(IGMP_DEBUG, &igmp->igmp_group_address);
         if (ip4_addr_cmp(dest, &allsystems)) {
           ip4_addr_t groupaddr;
-          LWIP_DEBUGF(IGMP_DEBUG, (" using \"ALL SYSTEMS\" address (224.0.0.1) [igmp_maxresp=%i]\n", (int)(igmp->igmp_maxresp)));
+          LWIP_DEBUGF(IGMP_DEBUG, (" using \"ALL SYSTEMS\" address (224.0.0.1) [igmp_maxresp=%i]\n", (int32_t)(igmp->igmp_maxresp)));
           /* we first need to re-look for the group since we used dest last time */
           ip4_addr_copy(groupaddr, igmp->igmp_group_address);
           group = igmp_lookfor_group(inp, &groupaddr);
         } else {
-          LWIP_DEBUGF(IGMP_DEBUG, (" with the group address as destination [igmp_maxresp=%i]\n", (int)(igmp->igmp_maxresp)));
+          LWIP_DEBUGF(IGMP_DEBUG, (" with the group address as destination [igmp_maxresp=%i]\n", (int32_t)(igmp->igmp_maxresp)));
         }
 
         if (group != NULL) {

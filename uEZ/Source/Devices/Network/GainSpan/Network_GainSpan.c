@@ -108,8 +108,8 @@ typedef struct {
     T_GainSpan_CmdLib_SPISettings iSPISettings;
 
     uint8_t iReceived[APP_MAX_RECEIVED_DATA + 1];
-    unsigned int padding;
-    unsigned int iReceivedCount;
+    uint32_t padding;
+    uint32_t iReceivedCount;
 
     // Infrastructure settings
     T_uezNetworkSettings iInfrastructureSettings;
@@ -1062,7 +1062,7 @@ T_uezError Network_GainSpan_SocketRead(
     T_GainSpanSocket *p_socket = p->iSockets + aSocket;
     TUInt16 numCopy;
     ATLIBGS_MSG_ID_E r;
-    static int lastCID = -1;
+    static int32_t lastCID = -1;
 
     // No bytes read yet
     *aNumBytesRead = 0;
@@ -1109,7 +1109,7 @@ T_uezError Network_GainSpan_SocketRead(
             // If count goes to zero, then we need to release this pbuf
             // and go to the next.
             if ((p_socket->iReceiveRemaining == 0) && (aNumBytes)) {
-            	int timeout = aTimeout;
+            	int32_t timeout = aTimeout;
             	if (aTimeout == UEZ_TIMEOUT_INFINITE)
             		timeout = 10; // 10 ms per poll
             	if (timeout > 10)
@@ -1368,7 +1368,7 @@ T_uezError Network_GainSpan_GetConnectionInfo(void *aWorkspace,
 
 static void INetwork_Gainspan_ParseReceived(T_Network_GainSpan_Workspace *p, uint8_t aCID)
 {
-    int s;
+    int32_t s;
     ATLIBGS_TCPMessage msg;
 
     // Parse the data in the receive buffer

@@ -22,6 +22,8 @@
 #include <uEZDeviceTable.h>
 #include "Bosch_BMA150_I2C.h"
 
+// Note this driver has not been kept up to date or tested in recent memory.
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -34,7 +36,6 @@ typedef struct {
     T_uezSemaphore iSem;
     DEVICE_I2C_BUS **iI2C;
 } T_Bosch_Accelo_BMA150_I2C_Workspace;
-
 
 /*---------------------------------------------------------------------------*
  * Routine:  IReadData
@@ -218,34 +219,11 @@ T_uezError Bosch_Accelo_BMA150_I2C_ReadXYZ(
     return error;
 }
 
-T_uezError Bosch_Accelo_BMA150_I2C_ReadXYZ_Single(
-        void *aWorkspace, 
-        AccelerometerReading *aReading,
-        TUInt32 aTimeout)
+T_uezError Bosch_Accelo_BMA150_I2C_ReadXYZ_Float(
+void *aWorkspace, 
+AccelerometerReadingFloat *aReading,
+TUInt32 aTimeout)
 {
-	aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
-		
-    return UEZ_ERROR_NOT_SUPPORTED;	
-}
-	T_uezError Bosch_Accelo_BMA150_I2C_ReadXYZ_Float(
-        void *aWorkspace, 
-        AccelerometerReadingFloat *aReading,
-        TUInt32 aTimeout)
-{
-    aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
-		
-    return UEZ_ERROR_NOT_SUPPORTED;
-}
-	
-	T_uezError Bosch_Accelo_BMA150_I2C_ReadXYZ_Float_Single(
-        void *aWorkspace, 
-        AccelerometerReadingFloat *aReading,
-        TUInt32 aTimeout)
-{	
     aReading->iX = 0;
     aReading->iY = 0;
     aReading->iZ = 0;
@@ -309,9 +287,7 @@ const DEVICE_Accelerometer Accelerometer_Bosch_BMA150_via_I2C_Interface = {
     // Functions
     Bosch_Accelo_BMA150_I2C_GetInfo,
     Bosch_Accelo_BMA150_I2C_ReadXYZ,
-	Bosch_Accelo_BMA150_I2C_ReadXYZ_Single,
-	Bosch_Accelo_BMA150_I2C_ReadXYZ_Float,
-    Bosch_Accelo_BMA150_I2C_ReadXYZ_Float_Single,
+    Bosch_Accelo_BMA150_I2C_ReadXYZ_Float,
 } ;
 
 /*-------------------------------------------------------------------------*

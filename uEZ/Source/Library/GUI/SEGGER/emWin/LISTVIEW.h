@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LISTVIEW.h
 Purpose     : LISTVIEW include
@@ -94,11 +95,11 @@ typedef WM_HMEM LISTVIEW_Handle;
 *
 **********************************************************************
 */
-LISTVIEW_Handle LISTVIEW_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags, int SpecialFlags);
-LISTVIEW_Handle LISTVIEW_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
-LISTVIEW_Handle LISTVIEW_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
-LISTVIEW_Handle LISTVIEW_CreateAttached(WM_HWIN hParent, int Id, int SpecialFlags);
-LISTVIEW_Handle LISTVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+LISTVIEW_Handle LISTVIEW_Create        (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t Id, int32_t Flags, int32_t SpecialFlags);
+LISTVIEW_Handle LISTVIEW_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id);
+LISTVIEW_Handle LISTVIEW_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t NumExtraBytes);
+LISTVIEW_Handle LISTVIEW_CreateAttached(WM_HWIN hParent, int32_t Id, int32_t SpecialFlags);
+LISTVIEW_Handle LISTVIEW_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -111,31 +112,19 @@ void LISTVIEW_Callback(WM_MESSAGE * pMsg);
 
 /*********************************************************************
 *
-*       Standard member functions
-*
-**********************************************************************
-*/
-#define LISTVIEW_Delete(hObj)        WM_DeleteWindow    (hObj)
-#define LISTVIEW_DisableMemdev(hObj) WM_DisableMemdev   (hObj)
-#define LISTVIEW_EnableMemdev(hObj)  WM_EnableMemdev    (hObj)
-#define LISTVIEW_Invalidate(hObj)    WM_InvalidateWindow(hObj)
-#define LISTVIEW_Paint(hObj)         WM_Paint           (hObj)
-
-/*********************************************************************
-*
 *       Member functions
 *
 **********************************************************************
 */
-int              LISTVIEW_AddColumn           (LISTVIEW_Handle hObj, int Width, const char * s, int Align);
-int              LISTVIEW_AddRow              (LISTVIEW_Handle hObj, const GUI_ConstString * ppText);
-int              LISTVIEW_CompareText         (const void * p0, const void * p1);
-int              LISTVIEW_CompareDec          (const void * p0, const void * p1);
+int32_t              LISTVIEW_AddColumn           (LISTVIEW_Handle hObj, int32_t Width, const char * s, int32_t Align);
+int32_t              LISTVIEW_AddRow              (LISTVIEW_Handle hObj, const GUI_ConstString * ppText);
+int32_t              LISTVIEW_CompareText         (const void * p0, const void * p1);
+int32_t              LISTVIEW_CompareDec          (const void * p0, const void * p1);
 void             LISTVIEW_DecSel              (LISTVIEW_Handle hObj);
 void             LISTVIEW_DeleteAllRows       (LISTVIEW_Handle hObj);
 void             LISTVIEW_DeleteColumn        (LISTVIEW_Handle hObj, unsigned Index);
 void             LISTVIEW_DeleteRow           (LISTVIEW_Handle hObj, unsigned Index);
-void             LISTVIEW_DeleteRowSorted     (LISTVIEW_Handle hObj, int Row);
+void             LISTVIEW_DeleteRowSorted     (LISTVIEW_Handle hObj, int32_t Row);
 void             LISTVIEW_DisableRow          (LISTVIEW_Handle hObj, unsigned Row);
 void             LISTVIEW_DisableSort         (LISTVIEW_Handle hObj);
 void             LISTVIEW_EnableCellSelect    (LISTVIEW_Handle hObj, unsigned OnOff);  // Enables/disables cell selection
@@ -152,48 +141,49 @@ unsigned         LISTVIEW_GetLBorder          (LISTVIEW_Handle hObj);
 unsigned         LISTVIEW_GetNumColumns       (LISTVIEW_Handle hObj);
 unsigned         LISTVIEW_GetNumRows          (LISTVIEW_Handle hObj);
 unsigned         LISTVIEW_GetRBorder          (LISTVIEW_Handle hObj);
-int              LISTVIEW_GetSel              (LISTVIEW_Handle hObj);
-int              LISTVIEW_GetSelCol           (LISTVIEW_Handle hObj);
-int              LISTVIEW_GetSelUnsorted      (LISTVIEW_Handle hObj);
-int              LISTVIEW_GetTextAlign        (LISTVIEW_Handle hObj, unsigned ColIndex);
+int32_t              LISTVIEW_GetSel              (LISTVIEW_Handle hObj);
+int32_t              LISTVIEW_GetSelCol           (LISTVIEW_Handle hObj);
+int32_t              LISTVIEW_GetSelUnsorted      (LISTVIEW_Handle hObj);
+int32_t              LISTVIEW_GetTextAlign        (LISTVIEW_Handle hObj, unsigned ColIndex);
 GUI_COLOR        LISTVIEW_GetTextColor        (LISTVIEW_Handle hObj, unsigned Index);
-int              LISTVIEW_GetUserData         (LISTVIEW_Handle hObj, void * pDest, int NumBytes);
+int32_t              LISTVIEW_GetUserData         (LISTVIEW_Handle hObj, void * pDest, int32_t NumBytes);
 U32              LISTVIEW_GetUserDataRow      (LISTVIEW_Handle hObj, unsigned Row);
 GUI_WRAPMODE     LISTVIEW_GetWrapMode         (LISTVIEW_Handle hObj);
 void             LISTVIEW_IncSel              (LISTVIEW_Handle hObj);
-int              LISTVIEW_InsertRow           (LISTVIEW_Handle hObj, unsigned Index, const GUI_ConstString * ppText);
-int              LISTVIEW_OwnerDraw           (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+int32_t              LISTVIEW_InsertRow           (LISTVIEW_Handle hObj, unsigned Index, const GUI_ConstString * ppText);
+int32_t              LISTVIEW_OwnerDraw           (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
 unsigned         LISTVIEW_RowIsDisabled       (LISTVIEW_Handle hObj, unsigned Row);
-void             LISTVIEW_SetAutoScrollH      (LISTVIEW_Handle hObj, int OnOff);
-void             LISTVIEW_SetAutoScrollV      (LISTVIEW_Handle hObj, int OnOff);
-void             LISTVIEW_SetItemBitmap       (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, int xOff, int yOff, const GUI_BITMAP * pBitmap);
-void             LISTVIEW_SetBkColor          (LISTVIEW_Handle hObj, unsigned int Index, GUI_COLOR Color);
-void             LISTVIEW_SetColumnWidth      (LISTVIEW_Handle hObj, unsigned int Index, int Width);
-void             LISTVIEW_SetCompareFunc      (LISTVIEW_Handle hObj, unsigned Column, int (* fpCompare)(const void * p0, const void * p1));
+void             LISTVIEW_SetAutoScrollH      (LISTVIEW_Handle hObj, int32_t OnOff);
+void             LISTVIEW_SetAutoScrollV      (LISTVIEW_Handle hObj, int32_t OnOff);
+void             LISTVIEW_SetItemBitmap       (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, int32_t xOff, int32_t yOff, const GUI_BITMAP * pBitmap);
+void             LISTVIEW_SetBkColor          (LISTVIEW_Handle hObj, uint32_t Index, GUI_COLOR Color);
+void             LISTVIEW_SetColumnWidth      (LISTVIEW_Handle hObj, uint32_t Index, int32_t Width);
+void             LISTVIEW_SetCompareFunc      (LISTVIEW_Handle hObj, unsigned Column, int32_t (* fpCompare)(const void * p0, const void * p1));
 unsigned         LISTVIEW_SetFixed            (LISTVIEW_Handle hObj, unsigned Fixed);
 void             LISTVIEW_SetFont             (LISTVIEW_Handle hObj, const GUI_FONT * pFont);
-int              LISTVIEW_SetGridVis          (LISTVIEW_Handle hObj, int Show);
+int32_t              LISTVIEW_SetGridVis          (LISTVIEW_Handle hObj, int32_t Show);
 void             LISTVIEW_SetHeaderHeight     (LISTVIEW_Handle hObj, unsigned HeaderHeight);
-void             LISTVIEW_SetItemBkColor      (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, unsigned int Index, GUI_COLOR Color);
+void             LISTVIEW_SetItemBkColor      (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, uint32_t Index, GUI_COLOR Color);
 void             LISTVIEW_SetItemText         (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, const char * s);
-void             LISTVIEW_SetItemTextColor    (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, unsigned int Index, GUI_COLOR Color);
+void             LISTVIEW_SetItemTextColor    (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, uint32_t Index, GUI_COLOR Color);
 void             LISTVIEW_SetItemTextSorted   (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, const char * pText);
 void             LISTVIEW_SetLBorder          (LISTVIEW_Handle hObj, unsigned BorderSize);
 void             LISTVIEW_SetOwnerDraw        (LISTVIEW_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawItem);
 void             LISTVIEW_SetRBorder          (LISTVIEW_Handle hObj, unsigned BorderSize);
 unsigned         LISTVIEW_SetRowHeight        (LISTVIEW_Handle hObj, unsigned RowHeight);
-void             LISTVIEW_SetSel              (LISTVIEW_Handle hObj, int Sel);
-void             LISTVIEW_SetSelUnsorted      (LISTVIEW_Handle hObj, int Sel);
+void             LISTVIEW_SetSel              (LISTVIEW_Handle hObj, int32_t Sel);
+void             LISTVIEW_SetSelCol           (LISTVIEW_Handle hObj, int32_t NewCol);
+void             LISTVIEW_SetSelUnsorted      (LISTVIEW_Handle hObj, int32_t Sel);
 unsigned         LISTVIEW_SetSort             (LISTVIEW_Handle hObj, unsigned Column, unsigned Reverse);
-void             LISTVIEW_SetTextAlign        (LISTVIEW_Handle hObj, unsigned int Index, int Align);
-void             LISTVIEW_SetTextColor        (LISTVIEW_Handle hObj, unsigned int Index, GUI_COLOR Color);
-int              LISTVIEW_SetUserData         (LISTVIEW_Handle hObj, const void * pSrc, int NumBytes);
+void             LISTVIEW_SetTextAlign        (LISTVIEW_Handle hObj, uint32_t Index, int32_t Align);
+void             LISTVIEW_SetTextColor        (LISTVIEW_Handle hObj, uint32_t Index, GUI_COLOR Color);
+int32_t              LISTVIEW_SetUserData         (LISTVIEW_Handle hObj, const void * pSrc, int32_t NumBytes);
 void             LISTVIEW_SetUserDataRow      (LISTVIEW_Handle hObj, unsigned Row, U32 UserData);
 void             LISTVIEW_SetWrapMode         (LISTVIEW_Handle hObj, GUI_WRAPMODE WrapMode);
 
 /*********************************************************************
 *
-*       Global functions
+*       Managing default values
 *
 **********************************************************************
 */

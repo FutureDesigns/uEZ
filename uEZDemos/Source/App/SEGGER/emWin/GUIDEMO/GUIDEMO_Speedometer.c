@@ -30,15 +30,15 @@ Purpose     : Shows how to use memory devices for rotation.
 *
 **********************************************************************
 */
-#define COLOR_RING0    GUI_MAKE_COLOR(0xCCCCCC)
-#define COLOR_RING1    GUI_MAKE_COLOR(0x333333)
-#define COLOR_SCALE0   GUI_MAKE_COLOR(0x111111)
-#define COLOR_SCALE1   GUI_MAKE_COLOR(0x111111)
-#define COLOR_DIGIT    GUI_MAKE_COLOR(0xCCCCCC)
-#define COLOR_CMARK    GUI_MAKE_COLOR(0xCCCCCC)
-#define COLOR_DISPLAY0 GUI_MAKE_COLOR(0x000000)
-#define COLOR_DISPLAY1 GUI_MAKE_COLOR(0xCCCCCC)
-#define COLOR_NEEDLE   GUI_MAKE_COLOR(0x2080FF)
+#define COLOR_RING0    GUI_MAKE_COLOR(0xFFCCCCCC)
+#define COLOR_RING1    GUI_MAKE_COLOR(0xFF333333)
+#define COLOR_SCALE0   GUI_MAKE_COLOR(0xFF111111)
+#define COLOR_SCALE1   GUI_MAKE_COLOR(0xFF111111)
+#define COLOR_DIGIT    GUI_MAKE_COLOR(0xFFCCCCCC)
+#define COLOR_CMARK    GUI_MAKE_COLOR(0xFFCCCCCC)
+#define COLOR_DISPLAY0 GUI_MAKE_COLOR(0xFF000000)
+#define COLOR_DISPLAY1 GUI_MAKE_COLOR(0xFFCCCCCC)
+#define COLOR_NEEDLE   GUI_MAKE_COLOR(0xFF2080FF)
 
 #define R_SCALE             101
 #define R_DIGIT              88
@@ -3792,7 +3792,7 @@ static void _SpeedometerDemo(void) {
   //
   Param.hMemBk = GUI_MEMDEV_CreateFixed(0, 0, Param.xSize, Param.ySize, GUI_MEMDEV_NOTRANS, GUI_MEMDEV_APILIST_32, GUI_COLOR_CONV);
   _FillBkDev(&Param);
-  GUI_MEMDEV_Write(Param.hMemBk);
+  GUI_MEMDEV_Write(Param.hMemBk); // turns it red
   //
   // Initialize auto device
   //

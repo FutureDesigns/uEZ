@@ -58,7 +58,7 @@
  * Perform the MPPE rekey algorithm, from RFC 3078, sec. 7.3.
  * Well, not what's written there, but rather what they meant.
  */
-static void mppe_rekey(ppp_mppe_state * state, int initial_key)
+static void mppe_rekey(ppp_mppe_state * state, int32_t initial_key)
 {
 	lwip_sha1_context sha1_ctx;
 	u8_t sha1_digest[SHA1_SIGNATURE_SIZE];
@@ -136,7 +136,7 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, u8_t options)
 
 #if PPP_DEBUG
 	{
-		int i;
+		int32_t i;
 		char mkey[sizeof(state->master_key) * 2 + 1];
 		char skey[sizeof(state->session_key) * 2 + 1];
 
@@ -144,9 +144,9 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, u8_t options)
 		       debugstr, pcb->netif->num, (state->keylen == 16) ? 128 : 40,
 		       (state->stateful) ? "stateful" : "stateless"));
 
-		for (i = 0; i < (int)sizeof(state->master_key); i++)
+		for (i = 0; i < (int32_t)sizeof(state->master_key); i++)
 			sprintf(mkey + i * 2, "%02x", state->master_key[i]);
-		for (i = 0; i < (int)sizeof(state->session_key); i++)
+		for (i = 0; i < (int32_t)sizeof(state->session_key); i++)
 			sprintf(skey + i * 2, "%02x", state->session_key[i]);
 		PPPDEBUG(LOG_DEBUG,
 		       ("%s[%d]: keys: master: %s initial session: %s\n",

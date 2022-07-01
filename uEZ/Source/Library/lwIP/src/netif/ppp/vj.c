@@ -431,7 +431,7 @@ vj_uncompress_err(struct vjcompress *comp)
  * "Uncompress" a packet of type TYPE_UNCOMPRESSED_TCP.
  * Return 0 on success, -1 on failure.
  */
-int
+int32_t
 vj_uncompress_uncomp(struct pbuf *nb, struct vjcompress *comp)
 {
   register u_int hlen;
@@ -468,7 +468,7 @@ vj_uncompress_uncomp(struct pbuf *nb, struct vjcompress *comp)
  * This procedure replaces the compressed header with the uncompressed
  * header and returns the length of the VJ header.
  */
-int
+int32_t
 vj_uncompress_tcp(struct pbuf **nb, struct vjcompress *comp)
 {
   u_char *cp;

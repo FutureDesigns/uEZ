@@ -26,9 +26,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include "..\StdInOut.h"
+#include "../StdInOut.h"
 
-//int getchar_a(void);
+//int32_t getchar_a(void);
 //#define getchar(void) _Generic(void: getchar_a)(void)
 
 #define PARAMETER_NOT_USED(p) (void) ((p))
@@ -40,12 +40,12 @@
  *      Puts a character out to the standard console.  In this case, we
  *      use the standard out stream device (declared elsewhere).
  * Inputs:
- *      int aChar               -- Character to output
+ *      int32_t aChar               -- Character to output
  * Outputs:
- *      int                     -- Character output or EOF if could not
+ *      int32_t                     -- Character output or EOF if could not
  *                                  output.
  *---------------------------------------------------------------------------*/
-int __putchar(int aChar, __printf_tag_ptr unused)
+int32_t __putchar(int32_t aChar, __printf_tag_ptr unused)
 {
     PARAMETER_NOT_USED(unused);
     char c = aChar;
@@ -68,11 +68,11 @@ int __putchar(int aChar, __printf_tag_ptr unused)
  *      Get a character from the standard input.  NOTE: blocks until
  *      a character is received.
  * Outputs:
- *      int                     -- Character received or EOF if could not
+ *      int32_t                     -- Character received or EOF if could not
  *                                  get a character (no stdin).
  *---------------------------------------------------------------------------*/
 // TODO: Replace getchar with appropriate function
-/*int getchar_a(void) {
+/*int32_t getchar_a(void) {
     return 0;
 }*/
 

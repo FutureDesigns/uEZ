@@ -37,28 +37,28 @@
 
 #ifdef SINGLE_THREADED
 
-int InitMutex(CyaSSL_Mutex* m)
+int32_t InitMutex(CyaSSL_Mutex* m)
 {
     (void)m;
     return 0;
 }
 
 
-int FreeMutex(CyaSSL_Mutex *m)
+int32_t FreeMutex(CyaSSL_Mutex *m)
 {
     (void)m;
     return 0;
 }
 
 
-int LockMutex(CyaSSL_Mutex *m)
+int32_t LockMutex(CyaSSL_Mutex *m)
 {
     (void)m;
     return 0;
 }
 
 
-int UnLockMutex(CyaSSL_Mutex *m)
+int32_t UnLockMutex(CyaSSL_Mutex *m)
 {
     (void)m;
     return 0;
@@ -67,9 +67,9 @@ int UnLockMutex(CyaSSL_Mutex *m)
 #else /* MULTI_THREAD */
     #if defined(UEZ)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
-            int iReturn;
+            int32_t iReturn;
 
             if( UEZSemaphoreCreateBinary(m) == UEZ_ERROR_NONE )
                 iReturn = 0;
@@ -79,20 +79,20 @@ int UnLockMutex(CyaSSL_Mutex *m)
             return iReturn;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             UEZSemaphoreDelete( *m );
             return 0;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             /* Assume an infinite block, or should there be zero block? */
             UEZSemaphoreGrab( *m, UEZ_TIMEOUT_INFINITE );
             return 0;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             UEZSemaphoreRelease( *m );
             return 0;
@@ -100,9 +100,9 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(FREERTOS)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
-            int iReturn;
+            int32_t iReturn;
 
             *m = ( CyaSSL_Mutex ) xSemaphoreCreateMutex();
             if( *m != NULL )
@@ -113,20 +113,20 @@ int UnLockMutex(CyaSSL_Mutex *m)
             return iReturn;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             vSemaphoreDelete( *m );
             return 0;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             /* Assume an infinite block, or should there be zero block? */
             xSemaphoreTake( *m, portMAX_DELAY );
             return 0;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             xSemaphoreGive( *m );
             return 0;
@@ -134,7 +134,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(CYASSL_SAFERTOS)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             vSemaphoreCreateBinary(m->mutexBuffer, m->mutex);
             if (m->mutex == NULL)
@@ -143,20 +143,20 @@ int UnLockMutex(CyaSSL_Mutex *m)
             return 0;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             (void)m;
             return 0;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             /* Assume an infinite block */
             xSemaphoreTake(m->mutex, portMAX_DELAY);
             return 0;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             xSemaphoreGive(m->mutex);
             return 0;
@@ -165,28 +165,28 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(USE_WINDOWS_API)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             InitializeCriticalSection(m);
             return 0;
         }
 
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             DeleteCriticalSection(m);
             return 0;
         }
 
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             EnterCriticalSection(m);
             return 0;
         }
 
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             LeaveCriticalSection(m);
             return 0;
@@ -194,7 +194,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(CYASSL_PTHREADS)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             if (pthread_mutex_init(m, 0) == 0)
                 return 0;
@@ -203,7 +203,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             if (pthread_mutex_destroy(m) == 0)
                 return 0;
@@ -212,7 +212,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             if (pthread_mutex_lock(m) == 0)
                 return 0;
@@ -221,7 +221,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             if (pthread_mutex_unlock(m) == 0)
                 return 0;
@@ -231,7 +231,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(THREADX)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             if (tx_mutex_create(m, "CyaSSL Mutex", TX_NO_INHERIT) == 0)
                 return 0;
@@ -240,7 +240,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             if (tx_mutex_delete(m) == 0)
                 return 0;
@@ -249,7 +249,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             if (tx_mutex_get(m, TX_WAIT_FOREVER) == 0)
                 return 0;
@@ -258,7 +258,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             if (tx_mutex_put(m) == 0)
                 return 0;
@@ -268,7 +268,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(MICRIUM)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             #if (NET_SECURE_MGR_CFG_EN == DEF_ENABLED)
                 if (NetSecure_OS_MutexCreate(m) == 0)
@@ -281,7 +281,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             #if (NET_SECURE_MGR_CFG_EN == DEF_ENABLED)
                 if (NetSecure_OS_FreeMutex(m) == 0)
@@ -294,7 +294,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             #if (NET_SECURE_MGR_CFG_EN == DEF_ENABLED)
                 if (NetSecure_OS_LockMutex(m) == 0)
@@ -307,7 +307,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
         }
 
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             #if (NET_SECURE_MGR_CFG_EN == DEF_ENABLED)
                 if (NetSecure_OS_UnLockMutex(m) == 0)
@@ -322,7 +322,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(EBSNET)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             if (rtp_sig_mutex_alloc(m, "CyaSSL Mutex") == -1)
                 return BAD_MUTEX_E;
@@ -330,13 +330,13 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return 0;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             rtp_sig_mutex_free(*m);
             return 0;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             if (rtp_sig_mutex_claim_timed(*m, RTIP_INF) == 0)
                 return 0;
@@ -344,7 +344,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return BAD_MUTEX_E;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             rtp_sig_mutex_release(*m);
             return 0;
@@ -352,7 +352,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined(FREESCALE_MQX)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             if (_mutex_init(m, NULL) == MQX_EOK)
                 return 0;
@@ -360,7 +360,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return BAD_MUTEX_E;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             if (_mutex_destroy(m) == MQX_EOK)
                 return 0;
@@ -368,7 +368,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return BAD_MUTEX_E;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             if (_mutex_lock(m) == MQX_EOK)
                 return 0;
@@ -376,7 +376,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return BAD_MUTEX_E;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             if (_mutex_unlock(m) == MQX_EOK)
                 return 0;
@@ -386,7 +386,7 @@ int UnLockMutex(CyaSSL_Mutex *m)
 
     #elif defined (CYASSL_TIRTOS)
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
            Semaphore_Params params;
 
@@ -398,21 +398,21 @@ int UnLockMutex(CyaSSL_Mutex *m)
            return 0;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             Semaphore_delete(m);
 
             return 0;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             Semaphore_pend(*m, BIOS_WAIT_FOREVER);
 
             return 0;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             Semaphore_post(*m);
 
@@ -436,9 +436,9 @@ int UnLockMutex(CyaSSL_Mutex *m)
             
             static osMutexId CMSIS_mutexID[CMSIS_NMUTEX] = {0} ;
 
-            int InitMutex(CyaSSL_Mutex* m)
+            int32_t InitMutex(CyaSSL_Mutex* m)
             {
-                int i ;
+                int32_t i ;
                 for (i=0; i<CMSIS_NMUTEX; i++) {
                     if(CMSIS_mutexID[i] == 0) {
                         CMSIS_mutexID[i] = osMutexCreate(CMSIS_mutex[i]) ;
@@ -449,9 +449,9 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return -1 ;
             }
 
-            int FreeMutex(CyaSSL_Mutex* m)
+            int32_t FreeMutex(CyaSSL_Mutex* m)
             {
-                int i ;
+                int32_t i ;
                 osMutexDelete   (*m) ;
                 for (i=0; i<CMSIS_NMUTEX; i++) {
                     if(CMSIS_mutexID[i] == (*m)) {
@@ -462,37 +462,37 @@ int UnLockMutex(CyaSSL_Mutex *m)
                 return(-1) ;
             }
             
-            int LockMutex(CyaSSL_Mutex* m)
+            int32_t LockMutex(CyaSSL_Mutex* m)
             {
                 osMutexWait(*m, osWaitForever) ;
                 return(0) ;
             }
 
-            int UnLockMutex(CyaSSL_Mutex* m)
+            int32_t UnLockMutex(CyaSSL_Mutex* m)
             {
                 osMutexRelease (*m);
                 return 0;
             }
         #else
 
-        int InitMutex(CyaSSL_Mutex* m)
+        int32_t InitMutex(CyaSSL_Mutex* m)
         {
             os_mut_init (m); 
             return 0;
         }
 
-        int FreeMutex(CyaSSL_Mutex* m)
+        int32_t FreeMutex(CyaSSL_Mutex* m)
         {
             return(0) ;
         }
 
-        int LockMutex(CyaSSL_Mutex* m)
+        int32_t LockMutex(CyaSSL_Mutex* m)
         {
             os_mut_wait (m, 0xffff);
             return(0) ;
         }
 
-        int UnLockMutex(CyaSSL_Mutex* m)
+        int32_t UnLockMutex(CyaSSL_Mutex* m)
         {
             os_mut_release (m);
             return 0;

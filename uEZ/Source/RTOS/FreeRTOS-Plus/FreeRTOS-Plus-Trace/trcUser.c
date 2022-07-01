@@ -230,7 +230,7 @@ char* xTraceGetLastError(void)
 * despite errors in the recorder, but there is no guarantee that the trace
 * recorder will work correctly in that case, depending on the type of error.
 ******************************************************************************/
-void vTraceClearError(int resetErrorMessage)
+void vTraceClearError(int32_t resetErrorMessage)
 {
 	( void ) resetErrorMessage;
 	traceErrorMessage = NULL;
@@ -630,7 +630,7 @@ void vTraceStoreISRBegin(objectHandleType handle)
  *	 }
  *
  ******************************************************************************/
-void vTraceStoreISREnd(int pendingISR)
+void vTraceStoreISREnd(int32_t pendingISR)
 {
 	TSEvent* ts;
 	uint16_t dts5;

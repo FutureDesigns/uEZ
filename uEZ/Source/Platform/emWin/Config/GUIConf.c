@@ -52,7 +52,7 @@ static void uEZ_emWin_WaitEvent(void)
 {
     UEZSemaphoreGrab(G_uez_emWin_sem, UEZ_TIMEOUT_INFINITE);
 }
-static void uEZ_emWin_WaitEventTimed(int Period)
+static void uEZ_emWin_WaitEventTimed(int32_t Period)
 {
     UEZSemaphoreGrab(G_uez_emWin_sem, (TUInt32)Period);
 }

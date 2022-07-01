@@ -44,6 +44,7 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <stdint.h> /* for int types */
 
  #ifdef __cplusplus
 extern "C" {
@@ -64,9 +65,9 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-char *itoa(int value, char *string, int radix);
-char *ltoa(long value, char *string, int radix);
-char *ultoa(unsigned long value, char *string, int radix);
+char *itoa(int32_t value, char *string, int32_t radix);
+char *ltoa(long value, char *string, int32_t radix);
+char *ultoa(unsigned long value, char *string, int32_t radix);
 
 #ifdef __cplusplus
 }

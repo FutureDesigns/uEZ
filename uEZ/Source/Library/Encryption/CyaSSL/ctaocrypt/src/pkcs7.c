@@ -41,7 +41,7 @@
 
 /* placed ASN.1 contentType OID into *output, return idx on success,
  * 0 upon failure */
-CYASSL_LOCAL int SetContentType(int pkcs7TypeOID, byte* output)
+CYASSL_LOCAL int32_t SetContentType(int32_t pkcs7TypeOID, byte* output)
 {
     /* PKCS#7 content types, RFC 2315, section 14 */
     static const byte pkcs7[]              = { 0x2A, 0x86, 0x48, 0x86, 0xF7,
@@ -59,8 +59,8 @@ CYASSL_LOCAL int SetContentType(int pkcs7TypeOID, byte* output)
     static const byte encryptedData[]      = { 0x2A, 0x86, 0x48, 0x86, 0xF7,
                                                0x0D, 0x01, 0x07, 0x06 };
 
-    int idSz;
-    int typeSz = 0, idx = 0;
+    int32_t idSz;
+    int32_t typeSz = 0, idx = 0;
     const byte* typeName = 0;
     byte ID_Length[MAX_LENGTH_SZ];
 
@@ -118,10 +118,10 @@ CYASSL_LOCAL int SetContentType(int pkcs7TypeOID, byte* output)
 
 
 /* get ASN.1 contentType OID sum, return 0 on success, <0 on failure */
-int GetContentType(const byte* input, word32* inOutIdx, word32* oid,
+int32_t GetContentType(const byte* input, word32* inOutIdx, word32* oid,
                    word32 maxIdx)
 {
-    int length;
+    int32_t length;
     word32 i = *inOutIdx;
     byte b;
     *oid = 0;
@@ -147,9 +147,9 @@ int GetContentType(const byte* input, word32* inOutIdx, word32* oid,
 
 
 /* init PKCS7 struct with recipient cert, decode into DecodedCert */
-int PKCS7_InitWithCert(PKCS7* pkcs7, byte* cert, word32 certSz)
+int32_t PKCS7_InitWithCert(PKCS7* pkcs7, byte* cert, word32 certSz)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     XMEMSET(pkcs7, 0, sizeof(PKCS7));
     if (cert != NULL && certSz > 0) {
@@ -204,7 +204,7 @@ void PKCS7_Free(PKCS7* pkcs7)
 
 
 /* build PKCS#7 data content type */
-int PKCS7_EncodeData(PKCS7* pkcs7, byte* output, word32 outputSz)
+int32_t PKCS7_EncodeData(PKCS7* pkcs7, byte* output, word32 outputSz)
 {
     static const byte oid[] =
         { ASN_OBJECT_ID, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01,
@@ -214,7 +214,7 @@ int PKCS7_EncodeData(PKCS7* pkcs7, byte* output, word32 outputSz)
     word32 seqSz;
     word32 octetStrSz;
     word32 oidSz = (word32)sizeof(oid);
-    int idx = 0;
+    int32_t idx = 0;
 
     octetStrSz = SetOctetString(pkcs7->contentSz, octetStr);
     seqSz = SetSequence(pkcs7->contentSz + octetStrSz + oidSz, seq);
@@ -285,16 +285,16 @@ typedef struct ESD {
 } ESD;
 
 
-static int EncodeAttributes(EncodedAttrib* ea, int eaSz,
-                                            PKCS7Attrib* attribs, int attribsSz)
+static int32_t EncodeAttributes(EncodedAttrib* ea, int32_t eaSz,
+                                            PKCS7Attrib* attribs, int32_t attribsSz)
 {
-    int i;
-    int maxSz = min(eaSz, attribsSz);
-    int allAttribsSz = 0;
+    int32_t i;
+    int32_t maxSz = min(eaSz, attribsSz);
+    int32_t allAttribsSz = 0;
 
     for (i = 0; i < maxSz; i++)
     {
-        int attribSz = 0;
+        int32_t attribSz = 0;
 
         ea[i].value = attribs[i].value;
         ea[i].valueSz = attribs[i].valueSz;
@@ -314,9 +314,9 @@ static int EncodeAttributes(EncodedAttrib* ea, int eaSz,
 }
 
 
-static int FlattenAttributes(byte* output, EncodedAttrib* ea, int eaSz)
+static int32_t FlattenAttributes(byte* output, EncodedAttrib* ea, int32_t eaSz)
 {
-    int i, idx;
+    int32_t i, idx;
 
     idx = 0;
     for (i = 0; i < eaSz; i++) {
@@ -334,7 +334,7 @@ static int FlattenAttributes(byte* output, EncodedAttrib* ea, int eaSz)
 
 
 /* build PKCS#7 signedData content type */
-int PKCS7_EncodeSignedData(PKCS7* pkcs7, byte* output, word32 outputSz)
+int32_t PKCS7_EncodeSignedData(PKCS7* pkcs7, byte* output, word32 outputSz)
 {
     static const byte outerOid[] =
         { ASN_OBJECT_ID, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01,
@@ -352,7 +352,7 @@ int PKCS7_EncodeSignedData(PKCS7* pkcs7, byte* output, word32 outputSz)
 
     word32 signerInfoSz = 0;
     word32 totalSz = 0;
-    int idx = 0, ret = 0;
+    int32_t idx = 0, ret = 0;
     byte* flatSignedAttribs = NULL;
     word32 flatSignedAttribsSz = 0;
     word32 innerOidSz = sizeof(innerOid);
@@ -454,7 +454,7 @@ int PKCS7_EncodeSignedData(PKCS7* pkcs7, byte* output, word32 outputSz)
     }
     /* Calculate the final hash and encrypt it. */
     {
-        int result;
+        int32_t result;
         word32 scratch = 0;
 
 #ifdef CYASSL_SMALL_STACK
@@ -469,7 +469,7 @@ int PKCS7_EncodeSignedData(PKCS7* pkcs7, byte* output, word32 outputSz)
         byte digestInfoSeq[MAX_SEQ_SZ];
         byte digestStr[MAX_OCTET_STR_SZ];
         word32 digestInfoSeqSz, digestStrSz;
-        int digIdx = 0;
+        int32_t digIdx = 0;
 
         if (pkcs7->signedAttribsSz != 0) {
             byte attribSet[MAX_SET_SZ];
@@ -680,14 +680,14 @@ int PKCS7_EncodeSignedData(PKCS7* pkcs7, byte* output, word32 outputSz)
 
 
 /* Finds the certificates in the message and saves it. */
-int PKCS7_VerifySignedData(PKCS7* pkcs7, byte* pkiMsg, word32 pkiMsgSz)
+int32_t PKCS7_VerifySignedData(PKCS7* pkcs7, byte* pkiMsg, word32 pkiMsgSz)
 {
     word32 idx, contentType;
-    int length, version, ret;
+    int32_t length, version, ret;
     byte* content = NULL;
     byte* sig = NULL;
     byte* cert = NULL;
-    int contentSz = 0, sigSz = 0, certSz = 0;
+    int32_t contentSz = 0, sigSz = 0, certSz = 0;
 
     if (pkcs7 == NULL || pkiMsg == NULL || pkiMsgSz == 0)
         return BAD_FUNC_ARG;
@@ -872,8 +872,8 @@ int PKCS7_VerifySignedData(PKCS7* pkcs7, byte* pkiMsg, word32 pkiMsgSz)
 
         {
             word32 scratch = 0;
-            int plainSz = 0;
-            int digestSz = MAX_SEQ_SZ + MAX_ALGO_SZ +
+            int32_t plainSz = 0;
+            int32_t digestSz = MAX_SEQ_SZ + MAX_ALGO_SZ +
                            MAX_OCTET_STR_SZ + SHA_DIGEST_SIZE;
 
 #ifdef CYASSL_SMALL_STACK
@@ -935,17 +935,17 @@ int PKCS7_VerifySignedData(PKCS7* pkcs7, byte* pkiMsg, word32 pkiMsgSz)
 
 
 /* create ASN.1 fomatted RecipientInfo structure, returns sequence size */
-CYASSL_LOCAL int CreateRecipientInfo(const byte* cert, word32 certSz,
-                                     int keyEncAlgo, int blockKeySz,
+CYASSL_LOCAL int32_t CreateRecipientInfo(const byte* cert, word32 certSz,
+                                     int32_t keyEncAlgo, int32_t blockKeySz,
                                      RNG* rng, byte* contentKeyPlain,
                                      byte* contentKeyEnc,
-                                     int* keyEncSz, byte* out, word32 outSz)
+                                     int32_t* keyEncSz, byte* out, word32 outSz)
 {
     word32 idx = 0;
-    int ret = 0, totalSz = 0;
-    int verSz, issuerSz, snSz, keyEncAlgSz;
-    int issuerSeqSz, recipSeqSz, issuerSerialSeqSz;
-    int encKeyOctetStrSz;
+    int32_t ret = 0, totalSz = 0;
+    int32_t verSz, issuerSz, snSz, keyEncAlgSz;
+    int32_t issuerSeqSz, recipSeqSz, issuerSerialSeqSz;
+    int32_t encKeyOctetStrSz;
 
     byte ver[MAX_VERSION_SZ];
     byte issuerSerialSeq[MAX_SEQ_SZ];
@@ -1113,7 +1113,7 @@ CYASSL_LOCAL int CreateRecipientInfo(const byte* cert, word32 certSz,
                              *keyEncSz, recipSeq);
 
     if (recipSeqSz + verSz + issuerSerialSeqSz + issuerSeqSz + snSz +
-        keyEncAlgSz + encKeyOctetStrSz + *keyEncSz > (int)outSz) {
+        keyEncAlgSz + encKeyOctetStrSz + *keyEncSz > (int32_t)outSz) {
         CYASSL_MSG("RecipientInfo output buffer too small");
         FreeDecodedCert(decoded);
 #ifdef CYASSL_SMALL_STACK
@@ -1156,23 +1156,23 @@ CYASSL_LOCAL int CreateRecipientInfo(const byte* cert, word32 certSz,
 
 
 /* build PKCS#7 envelopedData content type, return enveloped size */
-int PKCS7_EncodeEnvelopedData(PKCS7* pkcs7, byte* output, word32 outputSz)
+int32_t PKCS7_EncodeEnvelopedData(PKCS7* pkcs7, byte* output, word32 outputSz)
 {
-    int i, ret = 0, idx = 0;
-    int totalSz = 0, padSz = 0, desOutSz = 0;
+    int32_t i, ret = 0, idx = 0;
+    int32_t totalSz = 0, padSz = 0, desOutSz = 0;
 
-    int contentInfoSeqSz, outerContentTypeSz, outerContentSz;
+    int32_t contentInfoSeqSz, outerContentTypeSz, outerContentSz;
     byte contentInfoSeq[MAX_SEQ_SZ];
     byte outerContentType[MAX_ALGO_SZ];
     byte outerContent[MAX_SEQ_SZ];
 
-    int envDataSeqSz, verSz;
+    int32_t envDataSeqSz, verSz;
     byte envDataSeq[MAX_SEQ_SZ];
     byte ver[MAX_VERSION_SZ];
 
     RNG rng;
-    int contentKeyEncSz, blockKeySz;
-    int dynamicFlag = 0;
+    int32_t contentKeyEncSz, blockKeySz;
+    int32_t dynamicFlag = 0;
     byte contentKeyPlain[MAX_CONTENT_KEY_LEN];
 #ifdef CYASSL_SMALL_STACK
     byte* contentKeyEnc;
@@ -1182,7 +1182,7 @@ int PKCS7_EncodeEnvelopedData(PKCS7* pkcs7, byte* output, word32 outputSz)
     byte* plain;
     byte* encryptedContent;
 
-    int recipSz, recipSetSz;
+    int32_t recipSz, recipSetSz;
 #ifdef CYASSL_SMALL_STACK
     byte* recip;
 #else
@@ -1190,8 +1190,8 @@ int PKCS7_EncodeEnvelopedData(PKCS7* pkcs7, byte* output, word32 outputSz)
 #endif
     byte recipSet[MAX_SET_SZ];
 
-    int encContentOctetSz, encContentSeqSz, contentTypeSz;
-    int contentEncAlgoSz, ivOctetStringSz;
+    int32_t encContentOctetSz, encContentSeqSz, contentTypeSz;
+    int32_t contentEncAlgoSz, ivOctetStringSz;
     byte encContentSeq[MAX_SEQ_SZ];
     byte contentType[MAX_ALGO_SZ];
     byte contentEncAlgo[MAX_ALGO_SZ];
@@ -1402,7 +1402,7 @@ int PKCS7_EncodeEnvelopedData(PKCS7* pkcs7, byte* output, word32 outputSz)
     contentInfoSeqSz = SetSequence(totalSz, contentInfoSeq);
     totalSz += contentInfoSeqSz;
 
-    if (totalSz > (int)outputSz) {
+    if (totalSz > (int32_t)outputSz) {
         CYASSL_MSG("Pkcs7_encrypt output buffer too small");
         XFREE(encryptedContent, NULL, DYNAMIC_TYPE_TMP_BUFFER);
         if (dynamicFlag)
@@ -1460,17 +1460,17 @@ int PKCS7_EncodeEnvelopedData(PKCS7* pkcs7, byte* output, word32 outputSz)
 }
 
 /* unwrap and decrypt PKCS#7 envelopedData object, return decoded size */
-CYASSL_API int PKCS7_DecodeEnvelopedData(PKCS7* pkcs7, byte* pkiMsg,
+CYASSL_API int32_t PKCS7_DecodeEnvelopedData(PKCS7* pkcs7, byte* pkiMsg,
                                          word32 pkiMsgSz, byte* output,
                                          word32 outputSz)
 {
-    int recipFound = 0;
-    int ret, version, length;
+    int32_t recipFound = 0;
+    int32_t ret, version, length;
     word32 savedIdx = 0, idx = 0;
     word32 contentType, encOID;
     byte   issuerHash[SHA_DIGEST_SIZE];
 
-    int encryptedKeySz, keySz;
+    int32_t encryptedKeySz, keySz;
     byte tmpIv[DES_BLOCK_SIZE];
     byte* decryptedKey = NULL;
 
@@ -1486,7 +1486,7 @@ CYASSL_API int PKCS7_DecodeEnvelopedData(PKCS7* pkcs7, byte* pkiMsg,
     RsaKey stack_privKey;
     RsaKey* privKey = &stack_privKey;
 #endif
-    int encryptedContentSz;
+    int32_t encryptedContentSz;
     byte padLen;
     byte* encryptedContent = NULL;
 

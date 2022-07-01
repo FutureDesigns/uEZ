@@ -206,21 +206,30 @@ projects should not use them. */
     #endif
 #endif
 
+#ifdef GCC_ARMCM0
+    //#include "../../Source/portable/GCC/ARM_CM3/portmacro.h"
+    //#if (COMPILER_TYPE==Keil4)
+        //#include "../portable/RVDS/ARM_CM4F/portmacro.h"
+    //#else
+        #include "../portable/GCC/ARM_CM0/portmacro.h"
+    //#endif
+#endif
+
 #ifdef GCC_ARMCM4F
     //#include "../../Source/portable/GCC/ARM_CM3/portmacro.h"
-    #if (COMPILER_TYPE==Keil4)
-        #include "../portable/RVDS/ARM_CM4F/portmacro.h"
-    #else
+    //#if (COMPILER_TYPE==Keil4)
+        //#include "../portable/RVDS/ARM_CM4F/portmacro.h"
+    //#else
         #include "../portable/GCC/ARM_CM4F/portmacro.h"
-    #endif
+    //#endif
 #endif
 
 #ifdef IAR_ARM_CM3
-	#include "../portable/IAR/ARM_CM3/portmacro.h"
+	//#include "../portable/IAR/ARM_CM3/portmacro.h"
 #endif
 
 #ifdef IAR_ARMCM3_LM
-	#include "../../Source/portable/IAR/ARM_CM3/portmacro.h"
+	//#include "../../Source/portable/IAR/ARM_CM3/portmacro.h"
 #endif
 
 #ifdef HCS12_CODE_WARRIOR

@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_ConfDefaults.h
 Purpose     : Defaults for GUI config switches.
@@ -48,12 +49,15 @@ Attention : Do not modify this file ! If you do, you will not
 #ifndef  GUI_CONFDEFAULTS_H
 #define  GUI_CONFDEFAULTS_H
 
-#ifdef __cplusplus
-extern "C" {
+#include "GUIConf.h"
+
+#ifndef   GUI_USE_MIXCOLORS
+  #define GUI_USE_MIXCOLORS 1
 #endif
 
-
-#include "GUIConf.h"
+#ifndef   GUI_USE_BIDI2
+  #define GUI_USE_BIDI2 1
+#endif
 
 #ifndef   LCD_MAX_LOG_COLORS
   #define LCD_MAX_LOG_COLORS 256
@@ -83,11 +87,11 @@ extern "C" {
    ABGR to ARGB.
    
    It further swaps the meaning of a transparent pixel:
-   ABGR: 0x00 means opaque, 0xFF means transparent (default)
-   ARGB: 0x00 means transparent, 0xFF means opaque
+   ABGR: 0x00 means opaque, 0xFF means transparent
+   ARGB: 0x00 means transparent, 0xFF means opaque (default)
 */
 #ifndef GUI_USE_ARGB
-  #define GUI_USE_ARGB 0
+  #define GUI_USE_ARGB 1
 #endif
 
 /* Define "universal pointer". Normally, this is not needed (define will expand to nothing)
@@ -111,7 +115,11 @@ extern "C" {
 #endif
 
 #ifndef GUI_BIDI_MAX_CHARS_PER_LINE
-  #define GUI_BIDI_MAX_CHARS_PER_LINE 80
+  #if GUI_USE_BIDI2
+    #define GUI_BIDI_MAX_CHARS_PER_LINE 200
+  #else
+    #define GUI_BIDI_MAX_CHARS_PER_LINE  80
+  #endif
 #endif
 
 #ifndef GUI_SUPPORT_TOUCH
@@ -142,10 +150,6 @@ extern "C" {
   #define GUI_CURSOR_LAYER 0
 #endif
 
-#ifndef GUI_MEMCPY
-  #define GUI_MEMCPY(pDest, pSrc, NumBytes) memcpy(pDest, pSrc, NumBytes)
-#endif
-
 #ifndef GUI_SUPPORT_ROTATION
   #define GUI_SUPPORT_ROTATION 1
 #endif
@@ -161,7 +165,7 @@ extern "C" {
 
 /* Default for types */
 #ifndef GUI_TIMER_TIME
-  #define GUI_TIMER_TIME int  /* default is to use 16 bits for 16 bit CPUs,
+  #define GUI_TIMER_TIME int32_t  /* default is to use 16 bits for 16 bit CPUs,
 	                           32 bits on 32 bit CPUs for timing */
 #endif
 
@@ -174,7 +178,11 @@ extern "C" {
 #endif
 
 #ifndef   GUI_MEMSET
-  #define GUI_MEMSET GUI__memset
+  #define GUI_MEMSET memset
+#endif
+
+#ifndef GUI_MEMCPY
+  #define GUI_MEMCPY memcpy
 #endif
 
 /* Optional custom drawing of memory devices */
@@ -185,10 +193,6 @@ extern "C" {
 /* Clip static memory devices to parent borders */
 #ifndef   GUI_MEMDEV_CLIP_AT_PARENT
   #define GUI_MEMDEV_CLIP_AT_PARENT 0
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif   /* ifdef GUI_CONFDEFAULTS_H */

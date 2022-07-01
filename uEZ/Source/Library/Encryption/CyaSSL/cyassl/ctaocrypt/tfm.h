@@ -215,19 +215,19 @@
    #endif
 
    #ifndef NO_64BIT
-      typedef unsigned int       fp_digit;
+      typedef uint32_t       fp_digit;
       typedef ulong64            fp_word;
       #define FP_32BIT
    #else
       /* some procs like coldfire prefer not to place multiply into 64bit type
          even though it exists */
       typedef unsigned short     fp_digit;
-      typedef unsigned int       fp_word;
+      typedef uint32_t       fp_word;
    #endif
 #endif
 
 /* # of digits this is */
-#define DIGIT_BIT  (int)((CHAR_BIT) * sizeof(fp_digit))
+#define DIGIT_BIT  (int32_t)((CHAR_BIT) * sizeof(fp_digit))
 
 /* Max size of any number in bits.  Basically the largest size you will be
  * multiplying should be half [or smaller] of FP_MAX_SIZE-four_digit
@@ -271,7 +271,7 @@
 /* a FP type */
 typedef struct {
     fp_digit dp[FP_SIZE];
-    int      used, 
+    int32_t      used, 
              sign;
 } fp_int;
 
@@ -352,7 +352,7 @@ typedef struct {
 /* returns a TFM ident string useful for debugging... */
 /*const char *fp_ident(void);*/
 
-/* initialize [or zero] an fp int */
+/* initialize [or zero] an fp int32_t */
 #define fp_init(a)  (void)XMEMSET((a), 0, sizeof(fp_int))
 #define fp_zero(a)  fp_init(a)
 
@@ -376,30 +376,30 @@ void fp_set(fp_int *a, fp_digit b);
 #define fp_abs(a, b)  { fp_copy(a, b); (b)->sign  = 0; }
 
 /* right shift x digits */
-void fp_rshd(fp_int *a, int x);
+void fp_rshd(fp_int *a, int32_t x);
 
 /* right shift x bits */
-void fp_rshb(fp_int *a, int x);
+void fp_rshb(fp_int *a, int32_t x);
 
 /* left shift x digits */
-void fp_lshd(fp_int *a, int x);
+void fp_lshd(fp_int *a, int32_t x);
 
 /* signed comparison */
-int fp_cmp(fp_int *a, fp_int *b);
+int32_t fp_cmp(fp_int *a, fp_int *b);
 
 /* unsigned comparison */
-int fp_cmp_mag(fp_int *a, fp_int *b);
+int32_t fp_cmp_mag(fp_int *a, fp_int *b);
 
 /* power of 2 operations */
-void fp_div_2d(fp_int *a, int b, fp_int *c, fp_int *d);
-void fp_mod_2d(fp_int *a, int b, fp_int *c);
-void fp_mul_2d(fp_int *a, int b, fp_int *c);
-void fp_2expt (fp_int *a, int b);
+void fp_div_2d(fp_int *a, int32_t b, fp_int *c, fp_int *d);
+void fp_mod_2d(fp_int *a, int32_t b, fp_int *c);
+void fp_mul_2d(fp_int *a, int32_t b, fp_int *c);
+void fp_2expt (fp_int *a, int32_t b);
 void fp_mul_2(fp_int *a, fp_int *c);
 void fp_div_2(fp_int *a, fp_int *c);
 
 /* Counts the number of lsbs which are zero before the first zero bit */
-int fp_cnt_lsb(fp_int *a);
+int32_t fp_cnt_lsb(fp_int *a);
 
 /* c = a + b */
 void fp_add(fp_int *a, fp_int *b, fp_int *c);
@@ -414,13 +414,13 @@ void fp_mul(fp_int *a, fp_int *b, fp_int *c);
 void fp_sqr(fp_int *a, fp_int *b);
 
 /* a/b => cb + d == a */
-int fp_div(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
+int32_t fp_div(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
 
 /* c = a mod b, 0 <= c < b  */
-int fp_mod(fp_int *a, fp_int *b, fp_int *c);
+int32_t fp_mod(fp_int *a, fp_int *b, fp_int *c);
 
 /* compare against a single digit */
-int fp_cmp_d(fp_int *a, fp_digit b);
+int32_t fp_cmp_d(fp_int *a, fp_digit b);
 
 /* c = a + b */
 void fp_add_d(fp_int *a, fp_digit b, fp_int *c);
@@ -432,26 +432,26 @@ void fp_sub_d(fp_int *a, fp_digit b, fp_int *c);
 void fp_mul_d(fp_int *a, fp_digit b, fp_int *c);
 
 /* a/b => cb + d == a */
-/*int fp_div_d(fp_int *a, fp_digit b, fp_int *c, fp_digit *d);*/
+/*int32_t fp_div_d(fp_int *a, fp_digit b, fp_int *c, fp_digit *d);*/
 
 /* c = a mod b, 0 <= c < b  */
-/*int fp_mod_d(fp_int *a, fp_digit b, fp_digit *c);*/
+/*int32_t fp_mod_d(fp_int *a, fp_digit b, fp_digit *c);*/
 
 /* ---> number theory <--- */
 /* d = a + b (mod c) */
-/*int fp_addmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);*/
+/*int32_t fp_addmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);*/
 
 /* d = a - b (mod c) */
-/*int fp_submod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);*/
+/*int32_t fp_submod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);*/
 
 /* d = a * b (mod c) */
-int fp_mulmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
+int32_t fp_mulmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
 
 /* c = a * a (mod b) */
-int fp_sqrmod(fp_int *a, fp_int *b, fp_int *c);
+int32_t fp_sqrmod(fp_int *a, fp_int *b, fp_int *c);
 
 /* c = 1/a (mod b) */
-int fp_invmod(fp_int *a, fp_int *b, fp_int *c);
+int32_t fp_invmod(fp_int *a, fp_int *b, fp_int *c);
 
 /* c = (a, b) */
 /*void fp_gcd(fp_int *a, fp_int *b, fp_int *c);*/
@@ -460,7 +460,7 @@ int fp_invmod(fp_int *a, fp_int *b, fp_int *c);
 /*void fp_lcm(fp_int *a, fp_int *b, fp_int *c);*/
 
 /* setups the montgomery reduction */
-int fp_montgomery_setup(fp_int *a, fp_digit *mp);
+int32_t fp_montgomery_setup(fp_int *a, fp_digit *mp);
 
 /* computes a = B**n mod b without division or multiplication useful for
  * normalizing numbers in a Montgomery system.
@@ -471,15 +471,15 @@ void fp_montgomery_calc_normalization(fp_int *a, fp_int *b);
 void fp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp);
 
 /* d = a**b (mod c) */
-int fp_exptmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
+int32_t fp_exptmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
 
 /* primality stuff */
 
 /* perform a Miller-Rabin test of a to the base b and store result in "result" */
-/*void fp_prime_miller_rabin (fp_int * a, fp_int * b, int *result);*/
+/*void fp_prime_miller_rabin (fp_int * a, fp_int * b, int32_t *result);*/
 
 /* 256 trial divisions + 8 Miller-Rabins, returns FP_YES if probable prime  */
-/*int fp_isprime(fp_int *a);*/
+/*int32_t fp_isprime(fp_int *a);*/
 
 /* Primality generation flags */
 /*#define TFM_PRIME_BBS      0x0001 */ /* BBS style prime */
@@ -488,33 +488,33 @@ int fp_exptmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d);
 /*#define TFM_PRIME_2MSB_ON  0x0008 */ /* force 2nd MSB to 1 */
 
 /* callback for fp_prime_random, should fill dst with random bytes and return how many read [upto len] */
-/*typedef int tfm_prime_callback(unsigned char *dst, int len, void *dat);*/
+/*typedef int32_t tfm_prime_callback(unsigned char *dst, int32_t len, void *dat);*/
 
 /*#define fp_prime_random(a, t, size, bbs, cb, dat) fp_prime_random_ex(a, t, ((size) * 8) + 1, (bbs==1)?TFM_PRIME_BBS:0, cb, dat)*/
 
-/*int fp_prime_random_ex(fp_int *a, int t, int size, int flags, tfm_prime_callback cb, void *dat);*/
+/*int32_t fp_prime_random_ex(fp_int *a, int32_t t, int32_t size, int32_t flags, tfm_prime_callback cb, void *dat);*/
 
 /* radix conersions */
-int fp_count_bits(fp_int *a);
-int fp_leading_bit(fp_int *a);
+int32_t fp_count_bits(fp_int *a);
+int32_t fp_leading_bit(fp_int *a);
 
-int fp_unsigned_bin_size(fp_int *a);
-void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int c);
+int32_t fp_unsigned_bin_size(fp_int *a);
+void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int32_t c);
 void fp_to_unsigned_bin(fp_int *a, unsigned char *b);
 
-/*int fp_signed_bin_size(fp_int *a);*/
-/*void fp_read_signed_bin(fp_int *a, unsigned char *b, int c);*/
+/*int32_t fp_signed_bin_size(fp_int *a);*/
+/*void fp_read_signed_bin(fp_int *a, unsigned char *b, int32_t c);*/
 /*void fp_to_signed_bin(fp_int *a, unsigned char *b);*/
 
-/*int fp_read_radix(fp_int *a, char *str, int radix);*/
-/*int fp_toradix(fp_int *a, char *str, int radix);*/
-/*int fp_toradix_n(fp_int * a, char *str, int radix, int maxlen);*/
+/*int32_t fp_read_radix(fp_int *a, char *str, int32_t radix);*/
+/*int32_t fp_toradix(fp_int *a, char *str, int32_t radix);*/
+/*int32_t fp_toradix_n(fp_int * a, char *str, int32_t radix, int32_t maxlen);*/
 
 
 /* VARIOUS LOW LEVEL STUFFS */
 void s_fp_add(fp_int *a, fp_int *b, fp_int *c);
 void s_fp_sub(fp_int *a, fp_int *b, fp_int *c);
-void fp_reverse(unsigned char *s, int len);
+void fp_reverse(unsigned char *s, int32_t len);
 
 void fp_mul_comba(fp_int *a, fp_int *b, fp_int *c);
 
@@ -639,60 +639,60 @@ void fp_sqr_comba64(fp_int *a, fp_int *b);
 /* Prototypes */
 #define mp_zero(a)  fp_zero(a)
 #define mp_iseven(a)  fp_iseven(a)
-int  mp_init (mp_int * a);
+int32_t  mp_init (mp_int * a);
 void mp_clear (mp_int * a);
-int mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e, mp_int* f);
+int32_t mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e, mp_int* f);
 
-int  mp_add (mp_int * a, mp_int * b, mp_int * c);
-int  mp_sub (mp_int * a, mp_int * b, mp_int * c);
-int  mp_add_d (mp_int * a, mp_digit b, mp_int * c);
+int32_t  mp_add (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_sub (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_add_d (mp_int * a, mp_digit b, mp_int * c);
 
-int  mp_mul (mp_int * a, mp_int * b, mp_int * c);
-int  mp_mulmod (mp_int * a, mp_int * b, mp_int * c, mp_int * d);
-int  mp_mod(mp_int *a, mp_int *b, mp_int *c);
-int  mp_invmod(mp_int *a, mp_int *b, mp_int *c);
-int  mp_exptmod (mp_int * g, mp_int * x, mp_int * p, mp_int * y);
+int32_t  mp_mul (mp_int * a, mp_int * b, mp_int * c);
+int32_t  mp_mulmod (mp_int * a, mp_int * b, mp_int * c, mp_int * d);
+int32_t  mp_mod(mp_int *a, mp_int *b, mp_int *c);
+int32_t  mp_invmod(mp_int *a, mp_int *b, mp_int *c);
+int32_t  mp_exptmod (mp_int * g, mp_int * x, mp_int * p, mp_int * y);
 
-int  mp_cmp(mp_int *a, mp_int *b);
-int  mp_cmp_d(mp_int *a, mp_digit b);
+int32_t  mp_cmp(mp_int *a, mp_int *b);
+int32_t  mp_cmp_d(mp_int *a, mp_digit b);
 
-int  mp_unsigned_bin_size(mp_int * a);
-int  mp_read_unsigned_bin (mp_int * a, const unsigned char *b, int c);
-int  mp_to_unsigned_bin (mp_int * a, unsigned char *b);
+int32_t  mp_unsigned_bin_size(mp_int * a);
+int32_t  mp_read_unsigned_bin (mp_int * a, const unsigned char *b, int32_t c);
+int32_t  mp_to_unsigned_bin (mp_int * a, unsigned char *b);
 
-int  mp_sub_d(fp_int *a, fp_digit b, fp_int *c);
-int  mp_copy(fp_int* a, fp_int* b);
-int  mp_isodd(mp_int* a);
-int  mp_iszero(mp_int* a);
-int  mp_count_bits(mp_int *a);
-int  mp_leading_bit(mp_int *a);
-int  mp_set_int(fp_int *a, fp_digit b);
-void mp_rshb(mp_int *a, int x);
+int32_t  mp_sub_d(fp_int *a, fp_digit b, fp_int *c);
+int32_t  mp_copy(fp_int* a, fp_int* b);
+int32_t  mp_isodd(mp_int* a);
+int32_t  mp_iszero(mp_int* a);
+int32_t  mp_count_bits(mp_int *a);
+int32_t  mp_leading_bit(mp_int *a);
+int32_t  mp_set_int(fp_int *a, fp_digit b);
+void mp_rshb(mp_int *a, int32_t x);
 
 #ifdef HAVE_ECC
-    int mp_read_radix(mp_int* a, const char* str, int radix);
-    int mp_set(fp_int *a, fp_digit b);
-    int mp_sqr(fp_int *a, fp_int *b);
-    int mp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp);
-    int mp_montgomery_setup(fp_int *a, fp_digit *rho);
-    int mp_div_2(fp_int * a, fp_int * b);
-    int mp_init_copy(fp_int * a, fp_int * b); 
+    int32_t mp_read_radix(mp_int* a, const char* str, int32_t radix);
+    int32_t mp_set(fp_int *a, fp_digit b);
+    int32_t mp_sqr(fp_int *a, fp_int *b);
+    int32_t mp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp);
+    int32_t mp_montgomery_setup(fp_int *a, fp_digit *rho);
+    int32_t mp_div_2(fp_int * a, fp_int * b);
+    int32_t mp_init_copy(fp_int * a, fp_int * b); 
 #endif
 
 #if defined(HAVE_ECC) || defined(CYASSL_KEY_GEN)
-    int mp_sqrmod(mp_int* a, mp_int* b, mp_int* c);
-    int mp_montgomery_calc_normalization(mp_int *a, mp_int *b);
+    int32_t mp_sqrmod(mp_int* a, mp_int* b, mp_int* c);
+    int32_t mp_montgomery_calc_normalization(mp_int *a, mp_int *b);
 #endif
 
 #ifdef CYASSL_KEY_GEN
-int  mp_gcd(fp_int *a, fp_int *b, fp_int *c);
-int  mp_lcm(fp_int *a, fp_int *b, fp_int *c);
-int  mp_prime_is_prime(mp_int* a, int t, int* result);
+int32_t  mp_gcd(fp_int *a, fp_int *b, fp_int *c);
+int32_t  mp_lcm(fp_int *a, fp_int *b, fp_int *c);
+int32_t  mp_prime_is_prime(mp_int* a, int32_t t, int32_t* result);
 #endif /* CYASSL_KEY_GEN */
 
-int  mp_cnt_lsb(fp_int *a);
-int  mp_div_2d(fp_int *a, int b, fp_int *c, fp_int *d);
-int  mp_mod_d(fp_int* a, fp_digit b, fp_digit* c);
+int32_t  mp_cnt_lsb(fp_int *a);
+int32_t  mp_div_2d(fp_int *a, int32_t b, fp_int *c, fp_int *d);
+int32_t  mp_mod_d(fp_int* a, fp_digit b, fp_digit* c);
 
 CYASSL_API word32 CheckRunTimeFastMath(void);
 

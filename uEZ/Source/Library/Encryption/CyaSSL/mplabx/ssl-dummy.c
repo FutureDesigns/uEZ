@@ -31,12 +31,12 @@ Signer* GetCA(void* vp, byte* hash)
     return NULL  ;
 }
 
-int CyaSSL_dtls(CYASSL* ssl)
+int32_t CyaSSL_dtls(CYASSL* ssl)
 {
     return NULL ;
 }
 
-int CyaSSL_get_using_nonblock(CYASSL* ssl)
+int32_t CyaSSL_get_using_nonblock(CYASSL* ssl)
 {
     return NULL ;
 }
@@ -46,7 +46,7 @@ Signer* GetCAByName(void* vp, byte* hash)
     return NULL ;
 }
 
-int CyaSSL_PemCertToDer(const char* fileName, unsigned char* derBuf, int derSz) 
+int32_t CyaSSL_PemCertToDer(const char* fileName, unsigned char* derBuf, int32_t derSz) 
 {
         return NULL ;
 }

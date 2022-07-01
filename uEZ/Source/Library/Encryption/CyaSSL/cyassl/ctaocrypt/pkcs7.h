@@ -67,12 +67,12 @@ typedef struct PKCS7Attrib {
 typedef struct PKCS7 {
     byte* content;                /* inner content, not owner             */
     word32 contentSz;             /* content size                         */
-    int contentOID;               /* PKCS#7 content type OID sum          */
+    int32_t contentOID;               /* PKCS#7 content type OID sum          */
 
     RNG* rng;
 
-    int hashOID;
-    int encryptOID;               /* key encryption algorithm OID         */
+    int32_t hashOID;
+    int32_t encryptOID;               /* key encryption algorithm OID         */
 
     byte*  singleCert;            /* recipient cert, DER, not owner       */
     word32 singleCertSz;          /* size of recipient cert buffer, bytes */
@@ -91,25 +91,25 @@ typedef struct PKCS7 {
 } PKCS7;
 
 
-CYASSL_LOCAL int SetContentType(int pkcs7TypeOID, byte* output);
-CYASSL_LOCAL int GetContentType(const byte* input, word32* inOutIdx,
+CYASSL_LOCAL int32_t SetContentType(int32_t pkcs7TypeOID, byte* output);
+CYASSL_LOCAL int32_t GetContentType(const byte* input, word32* inOutIdx,
                                 word32* oid, word32 maxIdx);
-CYASSL_LOCAL int CreateRecipientInfo(const byte* cert, word32 certSz,
-                                     int keyEncAlgo, int blockKeySz,
+CYASSL_LOCAL int32_t CreateRecipientInfo(const byte* cert, word32 certSz,
+                                     int32_t keyEncAlgo, int32_t blockKeySz,
                                      RNG* rng, byte* contentKeyPlain,
                                      byte* contentKeyEnc,
-                                     int* keyEncSz, byte* out, word32 outSz);
+                                     int32_t* keyEncSz, byte* out, word32 outSz);
 
-CYASSL_API int  PKCS7_InitWithCert(PKCS7* pkcs7, byte* cert, word32 certSz);
+CYASSL_API int32_t  PKCS7_InitWithCert(PKCS7* pkcs7, byte* cert, word32 certSz);
 CYASSL_API void PKCS7_Free(PKCS7* pkcs7);
-CYASSL_API int  PKCS7_EncodeData(PKCS7* pkcs7, byte* output, word32 outputSz);
-CYASSL_API int  PKCS7_EncodeSignedData(PKCS7* pkcs7,
+CYASSL_API int32_t  PKCS7_EncodeData(PKCS7* pkcs7, byte* output, word32 outputSz);
+CYASSL_API int32_t  PKCS7_EncodeSignedData(PKCS7* pkcs7,
                                        byte* output, word32 outputSz);
-CYASSL_API int  PKCS7_VerifySignedData(PKCS7* pkcs7,
+CYASSL_API int32_t  PKCS7_VerifySignedData(PKCS7* pkcs7,
                                        byte* pkiMsg, word32 pkiMsgSz);
-CYASSL_API int  PKCS7_EncodeEnvelopedData(PKCS7* pkcs7,
+CYASSL_API int32_t  PKCS7_EncodeEnvelopedData(PKCS7* pkcs7,
                                           byte* output, word32 outputSz);
-CYASSL_API int  PKCS7_DecodeEnvelopedData(PKCS7* pkcs7, byte* pkiMsg,
+CYASSL_API int32_t  PKCS7_DecodeEnvelopedData(PKCS7* pkcs7, byte* pkiMsg,
                                           word32 pkiMsgSz, byte* output,
                                           word32 outputSz);
 

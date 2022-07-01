@@ -584,7 +584,7 @@ T_uezError Flash_SST39VF6401B_CFI_16Bit_QueryReg(
 {
     T_Flash_M29W128G_Workspace *p = (T_Flash_M29W128G_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
-//volatile int i=1;
+//volatile int32_t i=1;
 
     // Let's do it
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);

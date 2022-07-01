@@ -95,13 +95,13 @@ static const char *ppperr_strerr[] = {
 /*** LOCAL FUNCTION DECLARATIONS ***/
 /***********************************/
 static void fsm_timeout (void *);
-static void fsm_rconfreq (fsm *, u_char, u_char *, int);
-static void fsm_rconfack (fsm *, int, u_char *, int);
-static void fsm_rconfnakrej (fsm *, int, int, u_char *, int);
-static void fsm_rtermreq (fsm *, int, u_char *, int);
+static void fsm_rconfreq (fsm *, u_char, u_char *, int32_t);
+static void fsm_rconfack (fsm *, int32_t, u_char *, int32_t);
+static void fsm_rconfnakrej (fsm *, int32_t, int32_t, u_char *, int32_t);
+static void fsm_rtermreq (fsm *, int32_t, u_char *, int32_t);
 static void fsm_rtermack (fsm *);
-static void fsm_rcoderej (fsm *, u_char *, int);
-static void fsm_sconfreq (fsm *, int);
+static void fsm_rcoderej (fsm *, u_char *, int32_t);
+static void fsm_sconfreq (fsm *, int32_t);
 
 #define PROTO_NAME(f) ((f)->callbacks->proto_name)
 
@@ -114,7 +114,7 @@ static void fsm_sconfreq (fsm *, int);
 /*****************************/
 /*** LOCAL DATA STRUCTURES ***/
 /*****************************/
-int peer_mru[NUM_PPP];
+int32_t peer_mru[NUM_PPP];
 
 
 /***********************************/
@@ -146,7 +146,7 @@ fsm_init(fsm *f)
 void
 fsm_lowerup(fsm *f)
 {
-  int oldState = f->state;
+  int32_t oldState = f->state;
 
   LWIP_UNUSED_ARG(oldState);
 
@@ -183,7 +183,7 @@ fsm_lowerup(fsm *f)
 void
 fsm_lowerdown(fsm *f)
 {
-  int oldState = f->state;
+  int32_t oldState = f->state;
 
   LWIP_UNUSED_ARG(oldState);
 
@@ -235,7 +235,7 @@ fsm_lowerdown(fsm *f)
 void
 fsm_open(fsm *f)
 {
-  int oldState = f->state;
+  int32_t oldState = f->state;
 
   LWIP_UNUSED_ARG(oldState);
 
@@ -283,7 +283,7 @@ fsm_open(fsm *f)
 void
 fsm_close(fsm *f, char *reason)
 {
-  int oldState = f->state;
+  int32_t oldState = f->state;
 
   LWIP_UNUSED_ARG(oldState);
 
@@ -331,14 +331,14 @@ fsm_close(fsm *f, char *reason)
  * Used for all packets sent to our peer by this module.
  */
 void
-fsm_sdata( fsm *f, u_char code, u_char id, u_char *data, int datalen)
+fsm_sdata( fsm *f, u_char code, u_char id, u_char *data, int32_t datalen)
 {
   u_char *outp;
-  int outlen;
+  int32_t outlen;
 
   /* Adjust length to be smaller than MTU */
   outp = outpacket_buf[f->unit];
-  if (datalen > peer_mru[f->unit] - (int)HEADERLEN) {
+  if (datalen > peer_mru[f->unit] - (int32_t)HEADERLEN) {
     datalen = peer_mru[f->unit] - HEADERLEN;
   }
   if (datalen && data != outp + PPP_HDRLEN + HEADERLEN) {
@@ -359,11 +359,11 @@ fsm_sdata( fsm *f, u_char code, u_char id, u_char *data, int datalen)
  * fsm_input - Input packet.
  */
 void
-fsm_input(fsm *f, u_char *inpacket, int l)
+fsm_input(fsm *f, u_char *inpacket, int32_t l)
 {
   u_char *inp = inpacket;
   u_char code, id;
-  int len;
+  int32_t len;
 
   /*
   * Parse header (code, id and length).
@@ -561,9 +561,9 @@ fsm_timeout(void *arg)
  * fsm_rconfreq - Receive Configure-Request.
  */
 static void
-fsm_rconfreq(fsm *f, u_char id, u_char *inp, int len)
+fsm_rconfreq(fsm *f, u_char id, u_char *inp, int32_t len)
 {
-  int code, reject_if_disagree;
+  int32_t code, reject_if_disagree;
 
   FSMDEBUG((LOG_INFO, "fsm_rconfreq(%s): Rcvd id %d state=%d (%s)\n", 
         PROTO_NAME(f), id, f->state, ppperr_strerr[f->state]));
@@ -634,7 +634,7 @@ fsm_rconfreq(fsm *f, u_char id, u_char *inp, int len)
  * fsm_rconfack - Receive Configure-Ack.
  */
 static void
-fsm_rconfack(fsm *f, int id, u_char *inp, int len)
+fsm_rconfack(fsm *f, int32_t id, u_char *inp, int32_t len)
 {
   FSMDEBUG((LOG_INFO, "fsm_rconfack(%s): Rcvd id %d state=%d (%s)\n",
         PROTO_NAME(f), id, f->state, ppperr_strerr[f->state]));
@@ -693,10 +693,10 @@ fsm_rconfack(fsm *f, int id, u_char *inp, int len)
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
 static void
-fsm_rconfnakrej(fsm *f, int code, int id, u_char *inp, int len)
+fsm_rconfnakrej(fsm *f, int32_t code, int32_t id, u_char *inp, int32_t len)
 {
-  int (*proc) (fsm *, u_char *, int);
-  int ret;
+  int32_t (*proc) (fsm *, u_char *, int32_t);
+  int32_t ret;
 
   FSMDEBUG((LOG_INFO, "fsm_rconfnakrej(%s): Rcvd id %d state=%d (%s)\n",
         PROTO_NAME(f), id, f->state, ppperr_strerr[f->state]));
@@ -753,7 +753,7 @@ fsm_rconfnakrej(fsm *f, int code, int id, u_char *inp, int len)
  * fsm_rtermreq - Receive Terminate-Req.
  */
 static void
-fsm_rtermreq(fsm *f, int id, u_char *p, int len)
+fsm_rtermreq(fsm *f, int32_t id, u_char *p, int32_t len)
 {
   LWIP_UNUSED_ARG(p);
 
@@ -829,7 +829,7 @@ fsm_rtermack(fsm *f)
  * fsm_rcoderej - Receive an Code-Reject.
  */
 static void
-fsm_rcoderej(fsm *f, u_char *inp, int len)
+fsm_rcoderej(fsm *f, u_char *inp, int32_t len)
 {
   u_char code, id;
   
@@ -855,10 +855,10 @@ fsm_rcoderej(fsm *f, u_char *inp, int len)
  * fsm_sconfreq - Send a Configure-Request.
  */
 static void
-fsm_sconfreq(fsm *f, int retransmit)
+fsm_sconfreq(fsm *f, int32_t retransmit)
 {
   u_char *outp;
-  int cilen;
+  int32_t cilen;
   
   if( f->state != LS_REQSENT && f->state != LS_ACKRCVD && f->state != LS_ACKSENT ) {
     /* Not currently negotiating - reset options */
@@ -882,7 +882,7 @@ fsm_sconfreq(fsm *f, int retransmit)
   outp = outpacket_buf[f->unit] + PPP_HDRLEN + HEADERLEN;
   if( f->callbacks->cilen && f->callbacks->addci ) {
     cilen = (*f->callbacks->cilen)(f);
-    if( cilen > peer_mru[f->unit] - (int)HEADERLEN ) {
+    if( cilen > peer_mru[f->unit] - (int32_t)HEADERLEN ) {
       cilen = peer_mru[f->unit] - HEADERLEN;
     }
     if (f->callbacks->addci) {

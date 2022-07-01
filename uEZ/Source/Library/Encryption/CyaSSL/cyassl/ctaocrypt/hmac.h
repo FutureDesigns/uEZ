@@ -144,7 +144,7 @@ typedef struct Hmac {
     word16   keyLen;          /* hmac key length */
     word16   dataLen;
     HashType type;            /* hmac key type */
-    int      devId;           /* nitrox device id */
+    int32_t      devId;           /* nitrox device id */
     word32   magic;           /* using cavium magic */
     word64   contextHandle;   /* nitrox context memory handle */
     byte*    data;            /* buffered input data for one call */
@@ -153,21 +153,21 @@ typedef struct Hmac {
 
 
 /* does init */
-CYASSL_API int HmacSetKey(Hmac*, int type, const byte* key, word32 keySz);
-CYASSL_API int HmacUpdate(Hmac*, const byte*, word32);
-CYASSL_API int HmacFinal(Hmac*, byte*);
+CYASSL_API int32_t HmacSetKey(Hmac*, int32_t type, const byte* key, word32 keySz);
+CYASSL_API int32_t HmacUpdate(Hmac*, const byte*, word32);
+CYASSL_API int32_t HmacFinal(Hmac*, byte*);
 
 #ifdef HAVE_CAVIUM
-    CYASSL_API int  HmacInitCavium(Hmac*, int);
+    CYASSL_API int32_t  HmacInitCavium(Hmac*, int32_t);
     CYASSL_API void HmacFreeCavium(Hmac*);
 #endif
 
-CYASSL_API int CyaSSL_GetHmacMaxSize(void);
+CYASSL_API int32_t CyaSSL_GetHmacMaxSize(void);
 
 
 #ifdef HAVE_HKDF
 
-CYASSL_API int HKDF(int type, const byte* inKey, word32 inKeySz,
+CYASSL_API int32_t HKDF(int32_t type, const byte* inKey, word32 inKeySz,
                     const byte* salt, word32 saltSz,
                     const byte* info, word32 infoSz,
                     byte* out, word32 outSz);
@@ -177,10 +177,10 @@ CYASSL_API int HKDF(int type, const byte* inKey, word32 inKeySz,
 
 #ifdef HAVE_FIPS
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int HmacSetKey_fips(Hmac*, int type, const byte* key,
+    CYASSL_API int32_t HmacSetKey_fips(Hmac*, int32_t type, const byte* key,
                                    word32 keySz);
-    CYASSL_API int HmacUpdate_fips(Hmac*, const byte*, word32);
-    CYASSL_API int HmacFinal_fips(Hmac*, byte*);
+    CYASSL_API int32_t HmacUpdate_fips(Hmac*, const byte*, word32);
+    CYASSL_API int32_t HmacFinal_fips(Hmac*, byte*);
     #ifndef FIPS_NO_WRAPPERS
         /* if not impl or fips.c impl wrapper force fips calls if fips build */
         #define HmacSetKey HmacSetKey_fips

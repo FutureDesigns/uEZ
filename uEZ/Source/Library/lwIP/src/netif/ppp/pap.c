@@ -67,19 +67,19 @@
 /*
  * Protocol entry points.
  */
-static void upap_init      (int);
-static void upap_lowerup   (int);
-static void upap_lowerdown (int);
-static void upap_input     (int, u_char *, int);
-static void upap_protrej   (int);
+static void upap_init      (int32_t);
+static void upap_lowerup   (int32_t);
+static void upap_lowerdown (int32_t);
+static void upap_input     (int32_t, u_char *, int32_t);
+static void upap_protrej   (int32_t);
 
 static void upap_timeout   (void *);
 static void upap_reqtimeout(void *);
-static void upap_rauthreq  (upap_state *, u_char *, int, int);
-static void upap_rauthack  (upap_state *, u_char *, int, int);
-static void upap_rauthnak  (upap_state *, u_char *, int, int);
+static void upap_rauthreq  (upap_state *, u_char *, int32_t, int32_t);
+static void upap_rauthack  (upap_state *, u_char *, int32_t, int32_t);
+static void upap_rauthnak  (upap_state *, u_char *, int32_t, int32_t);
 static void upap_sauthreq  (upap_state *);
-static void upap_sresp     (upap_state *, u_char, u_char, char *, int);
+static void upap_sresp     (upap_state *, u_char, u_char, char *, int32_t);
 
 
 /******************************/
@@ -118,7 +118,7 @@ upap_state upap[NUM_PPP]; /* UPAP state; one for each unit */
  *  Set the default login name and password for the pap sessions
  */
 void
-upap_setloginpasswd(int unit, const char *luser, const char *lpassword)
+upap_setloginpasswd(int32_t unit, const char *luser, const char *lpassword)
 {
   upap_state *u = &upap[unit];
   
@@ -136,7 +136,7 @@ upap_setloginpasswd(int unit, const char *luser, const char *lpassword)
  * Set new state and send authenticate's.
  */
 void
-upap_authwithpeer(int unit, char *user, char *password)
+upap_authwithpeer(int32_t unit, char *user, char *password)
 {
   upap_state *u = &upap[unit];
 
@@ -164,7 +164,7 @@ upap_authwithpeer(int unit, char *user, char *password)
  * Set new state.
  */
 void
-upap_authpeer(int unit)
+upap_authpeer(int32_t unit)
 {
   upap_state *u = &upap[unit];
 
@@ -190,7 +190,7 @@ upap_authpeer(int unit)
  * upap_init - Initialize a UPAP unit.
  */
 static void
-upap_init(int unit)
+upap_init(int32_t unit)
 {
   upap_state *u = &upap[unit];
 
@@ -258,7 +258,7 @@ upap_reqtimeout(void *arg)
  * Start authenticating if pending.
  */
 static void
-upap_lowerup(int unit)
+upap_lowerup(int32_t unit)
 {
   upap_state *u = &upap[unit];
 
@@ -287,7 +287,7 @@ upap_lowerup(int unit)
  * Cancel all timeouts.
  */
 static void
-upap_lowerdown(int unit)
+upap_lowerdown(int32_t unit)
 {
   upap_state *u = &upap[unit];
 
@@ -311,7 +311,7 @@ upap_lowerdown(int unit)
  * This shouldn't happen.  In any case, pretend lower layer went down.
  */
 static void
-upap_protrej(int unit)
+upap_protrej(int32_t unit)
 {
   upap_state *u = &upap[unit];
 
@@ -331,12 +331,12 @@ upap_protrej(int unit)
  * upap_input - Input UPAP packet.
  */
 static void
-upap_input(int unit, u_char *inpacket, int l)
+upap_input(int32_t unit, u_char *inpacket, int32_t l)
 {
   upap_state *u = &upap[unit];
   u_char *inp;
   u_char code, id;
-  int len;
+  int32_t len;
 
   /*
    * Parse header (code, id and length).
@@ -386,13 +386,13 @@ upap_input(int unit, u_char *inpacket, int l)
  * upap_rauth - Receive Authenticate.
  */
 static void
-upap_rauthreq(upap_state *u, u_char *inp, int id, int len)
+upap_rauthreq(upap_state *u, u_char *inp, int32_t id, int32_t len)
 {
   u_char ruserlen, rpasswdlen;
   char *ruser, *rpasswd;
-  int retcode;
+  int32_t retcode;
   char *msg;
-  int msglen;
+  int32_t msglen;
 
   UPAPDEBUG((LOG_INFO, "pap_rauth: Rcvd id %d.\n", id));
 
@@ -461,7 +461,7 @@ upap_rauthreq(upap_state *u, u_char *inp, int id, int len)
  * upap_rauthack - Receive Authenticate-Ack.
  */
 static void
-upap_rauthack(upap_state *u, u_char *inp, int id, int len)
+upap_rauthack(upap_state *u, u_char *inp, int32_t id, int32_t len)
 {
   u_char msglen;
   char *msg;
@@ -500,7 +500,7 @@ upap_rauthack(upap_state *u, u_char *inp, int id, int len)
  * upap_rauthnak - Receive Authenticate-Nakk.
  */
 static void
-upap_rauthnak(upap_state *u, u_char *inp, int id, int len)
+upap_rauthnak(upap_state *u, u_char *inp, int32_t id, int32_t len)
 {
   u_char msglen;
   char *msg;
@@ -543,7 +543,7 @@ static void
 upap_sauthreq(upap_state *u)
 {
   u_char *outp;
-  int outlen;
+  int32_t outlen;
 
   outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) 
          + u->us_userlen + u->us_passwdlen;
@@ -574,10 +574,10 @@ upap_sauthreq(upap_state *u)
  * upap_sresp - Send a response (ack or nak).
  */
 static void
-upap_sresp(upap_state *u, u_char code, u_char id, char *msg, int msglen)
+upap_sresp(upap_state *u, u_char code, u_char id, char *msg, int32_t msglen)
 {
   u_char *outp;
-  int outlen;
+  int32_t outlen;
 
   outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
   outp = outpacket_buf[u->us_unit];
@@ -597,9 +597,9 @@ upap_sresp(upap_state *u, u_char code, u_char id, char *msg, int msglen)
 /*
  * upap_printpkt - print the contents of a PAP packet.
  */
-static int upap_printpkt(
+static int32_t upap_printpkt(
   u_char *p,
-  int plen,
+  int32_t plen,
   void (*printer) (void *, char *, ...),
   void *arg
 )

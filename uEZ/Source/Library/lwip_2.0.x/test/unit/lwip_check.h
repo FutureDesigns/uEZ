@@ -31,7 +31,7 @@ typedef Suite* (suite_getter_fn)(void);
 Suite* create_suite(const char* name, testfunc *tests, size_t num_tests, SFun setup, SFun teardown);
 
 #ifdef LWIP_UNITTESTS_LIB
-int lwip_unittests_run(void)
+int32_t lwip_unittests_run(void)
 #endif
 
 #endif /* LWIP_HDR_LWIP_CHECK_H */

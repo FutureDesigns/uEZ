@@ -213,10 +213,10 @@ u8_t ip4_addr_netmask_valid(u32_t netmask);
 #define ip_ntoa(ipaddr)  ipaddr_ntoa(ipaddr)
 
 u32_t ipaddr_addr(const char *cp);
-int ip4addr_aton(const char *cp, ip4_addr_t *addr);
+int32_t ip4addr_aton(const char *cp, ip4_addr_t *addr);
 /** returns ptr to static buffer; not reentrant! */
 char *ip4addr_ntoa(const ip4_addr_t *addr);
-char *ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int buflen);
+char *ip4addr_ntoa_r(const ip4_addr_t *addr, char *buf, int32_t buflen);
 
 #ifdef __cplusplus
 }

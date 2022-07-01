@@ -52,20 +52,20 @@ enum {
 
 CYASSL_API void CyaSSL_DES_set_key_unchecked(CYASSL_const_DES_cblock*,
                                              CYASSL_DES_key_schedule*);
-CYASSL_API int  CyaSSL_DES_key_sched(CYASSL_const_DES_cblock* key,
+CYASSL_API int32_t  CyaSSL_DES_key_sched(CYASSL_const_DES_cblock* key,
                                      CYASSL_DES_key_schedule* schedule);
 CYASSL_API void CyaSSL_DES_cbc_encrypt(const unsigned char* input,
                      unsigned char* output, long length,
                      CYASSL_DES_key_schedule* schedule, CYASSL_DES_cblock* ivec,
-                     int enc);
+                     int32_t enc);
 CYASSL_API void CyaSSL_DES_ncbc_encrypt(const unsigned char* input,
                       unsigned char* output, long length,
                       CYASSL_DES_key_schedule* schedule,
-                      CYASSL_DES_cblock* ivec, int enc);
+                      CYASSL_DES_cblock* ivec, int32_t enc);
 
 CYASSL_API void CyaSSL_DES_set_odd_parity(CYASSL_DES_cblock*);
 CYASSL_API void CyaSSL_DES_ecb_encrypt(CYASSL_DES_cblock*, CYASSL_DES_cblock*,
-                                       CYASSL_DES_key_schedule*, int);
+                                       CYASSL_DES_key_schedule*, int32_t);
 
 
 typedef CYASSL_DES_cblock DES_cblock;

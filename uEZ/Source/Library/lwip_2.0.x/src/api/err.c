@@ -45,7 +45,7 @@
 #if !NO_SYS
 /** Table to quickly map an lwIP error (err_t) to a socket error
   * by using -err as an index */
-static const int err_to_errno_table[] = {
+static const int32_t err_to_errno_table[] = {
   0,             /* ERR_OK          0      No error, everything OK. */
   ENOMEM,        /* ERR_MEM        -1      Out of memory error.     */
   ENOBUFS,       /* ERR_BUF        -2      Buffer error.            */
@@ -65,7 +65,7 @@ static const int err_to_errno_table[] = {
   EIO            /* ERR_ARG        -16     Illegal argument.        */
 };
 
-int
+int32_t
 err_to_errno(err_t err)
 {
   if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_to_errno_table))) {

@@ -116,13 +116,13 @@ typedef struct DRBG {
 
 /* Hash Derivation Function */
 /* Returns: DRBG_SUCCESS or DRBG_FAILURE */
-static int Hash_df(DRBG* drbg, byte* out, word32 outSz, byte type,
+static int32_t Hash_df(DRBG* drbg, byte* out, word32 outSz, byte type,
                                                   const byte* inA, word32 inASz,
                                                   const byte* inB, word32 inBSz)
 {
     byte ctr;
-    int i;
-    int len;
+    int32_t i;
+    int32_t len;
     word32 bits = (outSz * 8); /* reverse byte order */
 
     #ifdef LITTLE_ENDIAN_ORDER
@@ -173,7 +173,7 @@ static int Hash_df(DRBG* drbg, byte* out, word32 outSz, byte type,
 
 
 /* Returns: DRBG_SUCCESS or DRBG_FAILURE */
-static int Hash_DRBG_Reseed(DRBG* drbg, const byte* entropy, word32 entropySz)
+static int32_t Hash_DRBG_Reseed(DRBG* drbg, const byte* entropy, word32 entropySz)
 {
     byte seed[DRBG_SEED_LEN];
 
@@ -198,7 +198,7 @@ static int Hash_DRBG_Reseed(DRBG* drbg, const byte* entropy, word32 entropySz)
 
 static INLINE void array_add_one(byte* data, word32 dataSz)
 {
-    int i;
+    int32_t i;
 
     for (i = dataSz - 1; i >= 0; i--)
     {
@@ -209,11 +209,11 @@ static INLINE void array_add_one(byte* data, word32 dataSz)
 
 
 /* Returns: DRBG_SUCCESS or DRBG_FAILURE */
-static int Hash_gen(DRBG* drbg, byte* out, word32 outSz, const byte* V)
+static int32_t Hash_gen(DRBG* drbg, byte* out, word32 outSz, const byte* V)
 {
     byte data[DRBG_SEED_LEN];
-    int i;
-    int len;
+    int32_t i;
+    int32_t len;
     word32 checkBlock;
 
     /* Special case: outSz is 0 and out is NULL. Generate a block to save for
@@ -271,7 +271,7 @@ static INLINE void array_add(byte* d, word32 dLen, const byte* s, word32 sLen)
     word16 carry = 0;
 
     if (dLen > 0 && sLen > 0 && dLen >= sLen) {
-        int sIdx, dIdx;
+        int32_t sIdx, dIdx;
 
         for (sIdx = sLen - 1, dIdx = dLen - 1; sIdx >= 0; dIdx--, sIdx--)
         {
@@ -290,9 +290,9 @@ static INLINE void array_add(byte* d, word32 dLen, const byte* s, word32 sLen)
 
 
 /* Returns: DRBG_SUCCESS, DRBG_NEED_RESEED, or DRBG_FAILURE */
-static int Hash_DRBG_Generate(DRBG* drbg, byte* out, word32 outSz)
+static int32_t Hash_DRBG_Generate(DRBG* drbg, byte* out, word32 outSz)
 {
-    int ret = DRBG_NEED_RESEED;
+    int32_t ret = DRBG_NEED_RESEED;
 
     if (drbg->reseedCtr != RESEED_INTERVAL) {
         byte type = drbgGenerateH;
@@ -327,10 +327,10 @@ static int Hash_DRBG_Generate(DRBG* drbg, byte* out, word32 outSz)
 
 
 /* Returns: DRBG_SUCCESS or DRBG_FAILURE */
-static int Hash_DRBG_Instantiate(DRBG* drbg, const byte* seed, word32 seedSz,
+static int32_t Hash_DRBG_Instantiate(DRBG* drbg, const byte* seed, word32 seedSz,
                                              const byte* nonce, word32 nonceSz)
 {
-    int ret = DRBG_FAILURE;
+    int32_t ret = DRBG_FAILURE;
 
     XMEMSET(drbg, 0, sizeof(DRBG));
 
@@ -350,7 +350,7 @@ static int Hash_DRBG_Instantiate(DRBG* drbg, const byte* seed, word32 seedSz,
 
 
 /* Returns: DRBG_SUCCESS */
-static int Hash_DRBG_Uninstantiate(DRBG* drbg)
+static int32_t Hash_DRBG_Uninstantiate(DRBG* drbg)
 {
     XMEMSET(drbg, 0, sizeof(DRBG));
 
@@ -361,9 +361,9 @@ static int Hash_DRBG_Uninstantiate(DRBG* drbg)
 
 
 /* Get seed and key cipher */
-int InitRng(RNG* rng)
+int32_t InitRng(RNG* rng)
 {
-    int ret = BAD_FUNC_ARG;
+    int32_t ret = BAD_FUNC_ARG;
 
     if (rng != NULL) {
         byte entropy[ENTROPY_NONCE_SZ];
@@ -408,9 +408,9 @@ int InitRng(RNG* rng)
 
 
 /* place a generated block in output */
-int RNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
+int32_t RNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
 {
-    int ret;
+    int32_t ret;
 
     if (rng == NULL || output == NULL || sz > MAX_REQUEST_LEN)
         return BAD_FUNC_ARG;
@@ -452,15 +452,15 @@ int RNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
 }
 
 
-int RNG_GenerateByte(RNG* rng, byte* b)
+int32_t RNG_GenerateByte(RNG* rng, byte* b)
 {
     return RNG_GenerateBlock(rng, b, 1);
 }
 
 
-int FreeRng(RNG* rng)
+int32_t FreeRng(RNG* rng)
 {
-    int ret = BAD_FUNC_ARG;
+    int32_t ret = BAD_FUNC_ARG;
 
     if (rng != NULL) {
         if (Hash_DRBG_Uninstantiate(rng->drbg) == DRBG_SUCCESS)
@@ -477,7 +477,7 @@ int FreeRng(RNG* rng)
 }
 
 
-int RNG_HealthTest(int reseed, const byte* entropyA, word32 entropyASz,
+int32_t RNG_HealthTest(int32_t reseed, const byte* entropyA, word32 entropyASz,
                                const byte* entropyB, word32 entropyBSz,
                                byte* output, word32 outputSz)
 {
@@ -521,9 +521,9 @@ int RNG_HealthTest(int reseed, const byte* entropyA, word32 entropyASz,
 #else /* HAVE_HASHDRBG || NO_RC4 */
 
 /* Get seed and key cipher */
-int InitRng(RNG* rng)
+int32_t InitRng(RNG* rng)
 {
-    int  ret;
+    int32_t  ret;
 #ifdef CYASSL_SMALL_STACK
     byte* key;
     byte* junk;
@@ -570,7 +570,7 @@ int InitRng(RNG* rng)
 #endif
 
 /* place a generated block in output */
-int RNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
+int32_t RNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
 {
 #ifdef HAVE_CAVIUM
     if (rng->magic == CYASSL_RNG_CAVIUM_MAGIC)
@@ -583,7 +583,7 @@ int RNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
 }
 
 
-int RNG_GenerateByte(RNG* rng, byte* b)
+int32_t RNG_GenerateByte(RNG* rng, byte* b)
 {
     return RNG_GenerateBlock(rng, b, 1);
 }
@@ -595,7 +595,7 @@ int RNG_GenerateByte(RNG* rng, byte* b)
 #include "cavium_common.h"
 
 /* Initiliaze RNG for use with Nitrox device */
-int InitRngCavium(RNG* rng, int devId)
+int32_t InitRngCavium(RNG* rng, int32_t devId)
 {
     if (rng == NULL)
         return -1;
@@ -638,7 +638,7 @@ static void CaviumRNG_GenerateBlock(RNG* rng, byte* output, word32 sz)
 #if defined(USE_WINDOWS_API)
 
 
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
     if(!CryptAcquireContext(&os->handle, 0, 0, PROV_RSA_FULL,
                             CRYPT_VERIFYCONTEXT))
@@ -659,9 +659,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 #include "rtptime.h"   /* rtp_get_system_msec() */
 
 
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
-    int i;
+    int32_t i;
     rtp_srand(rtp_get_system_msec());
 
     for (i = 0; i < sz; i++ ) {
@@ -676,7 +676,7 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 
 #elif defined(MICRIUM)
 
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
     #if (NET_SECURE_MGR_CFG_EN == DEF_ENABLED)
         NetSecure_InitSeed(output, sz);
@@ -687,9 +687,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 #elif defined(MBED)
 
 /* write a real one !!!, just for testing board */
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
-    int i;
+    int32_t i;
     for (i = 0; i < sz; i++ )
         output[i] = i;
 
@@ -708,9 +708,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 #endif
     #ifdef CYASSL_MIC32MZ_RNG
         #include "xc.h"
-        int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+        int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         {
-            int i ;
+            int32_t i ;
             byte rnd[8] ;
             word32 *rnd32 = (word32 *)rnd ;
             word32 size = sz ;
@@ -727,7 +727,7 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
             RNGCONbits.PLEN = 0x40;
             RNGCONbits.PRNGEN = 1;
             for(i=0; i<5; i++) { /* wait for RNGNUMGEN ready */
-                volatile int x ;
+                volatile int32_t x ;
                 x = RNGNUMGEN1 ;
                 x = RNGNUMGEN2 ;
             }
@@ -745,9 +745,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         }
     #else  /* CYASSL_MIC32MZ_RNG */
         /* uses the core timer, in nanoseconds to seed srand */
-        int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+        int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         {
-            int i;
+            int32_t i;
             srand(PIC32_SEED_COUNT() * 25);
 
             for (i = 0; i < sz; i++ ) {
@@ -767,9 +767,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
          * on the Kinetis K70. Documentation located in Chapter 37 of
          * K70 Sub-Family Reference Manual (see Note 3 in the README for link).
          */
-        int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+        int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         {
-            int i;
+            int32_t i;
 
             /* turn on RNGA module */
             SIM_SCGC3 |= SIM_SCGC3_RNGA_MASK;
@@ -801,9 +801,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
          * on the Kinetis K53. Documentation located in Chapter 33 of
          * K53 Sub-Family Reference Manual (see note in the README for link).
          */
-        int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+        int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         {
-            int i;
+            int32_t i;
 
             /* turn on RNGB module */
             SIM_SCGC3 |= SIM_SCGC3_RNGB_MASK;
@@ -836,9 +836,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         #else
         #warning "write a real random seed!!!!, just for testing now"
 
-        int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+        int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
         {
-            int i;
+            int32_t i;
             for (i = 0; i < sz; i++ )
                 output[i] = i;
 
@@ -851,7 +851,7 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 
 #warning "write a real random seed!!!!, just for testing now"
 
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
     word32 i;
     for (i = 0; i < sz; i++ )
@@ -871,9 +871,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
      * on the STM32F2. Documentation located in STM32F2xx Standard Peripheral
      * Library document (See note in README).
      */
-    int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+    int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
     {
-        int i;
+        int32_t i;
 
         /* enable RNG clock source */
         RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
@@ -895,9 +895,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 
     #warning "write a real random seed!!!!, just for testing now"
 
-    int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+    int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
     {
-        int i;
+        int32_t i;
 
         for (i = 0; i < sz; i++ )
             output[i] = i;
@@ -909,9 +909,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 
     #include <xdc/runtime/Timestamp.h>
     #include <stdlib.h>
-    int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+    int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
     {
-        int i;
+        int32_t i;
         srand(xdc_runtime_Timestamp_get32());
 
         for (i = 0; i < sz; i++ ) {
@@ -930,9 +930,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
     * word32 rand_gen(void);
     * #define CUSTOM_RAND_GENERATE  rand_gen  */
 
-   int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+   int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
    {
-     int i;
+     int32_t i;
 
      for (i = 0; i < sz; i++ )
          output[i] = CUSTOM_RAND_GENERATE();
@@ -947,15 +947,15 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 #include <uEZRandom.h>
 //#include <uEZRTOS.h>
 extern TUInt32 UEZTickCounterGet(void);
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     if (UEZRandomStreamCreate(&os->iRandom, UEZTickCounterGet(), UEZ_RANDOM_PSUEDO) != UEZ_ERROR_NONE)
         return OPEN_RAN_E;
 
     while (sz) {
-        int v = UEZRandomSigned32Bit(&os->iRandom);
+        int32_t v = UEZRandomSigned32Bit(&os->iRandom);
         *(output++) = v;
         sz--;
     }
@@ -969,9 +969,9 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 
 
 /* may block */
-int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
+int32_t GenerateSeed(OS_Seed* os, byte* output, word32 sz)
 {
-    int ret = 0;
+    int32_t ret = 0;
 
     os->fd = open("/dev/urandom",O_RDONLY);
     if (os->fd == -1) {
@@ -982,7 +982,7 @@ int GenerateSeed(OS_Seed* os, byte* output, word32 sz)
     }
 
     while (sz) {
-        int len = (int)read(os->fd, output, sz);
+        int32_t len = (int32_t)read(os->fd, output, sz);
         if (len == -1) {
             ret = READ_RAN_E;
             break;

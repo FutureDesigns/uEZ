@@ -40,12 +40,12 @@
 
 #include "Include/trcHardwarePort.h"
 #include "Include/trcKernelPort.h"
-#include <UEZPlatformAPI.h>
+#include <uEZPlatformAPI.h>
 
 #if (USE_TRACEALYZER_RECORDER == 1)
 
 #include <stdint.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
 
 uint32_t trace_disable_timestamp = 0;
 uint32_t last_timestamp = 0;

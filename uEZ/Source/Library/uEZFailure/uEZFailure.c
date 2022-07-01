@@ -65,7 +65,7 @@ TBool G_bsodActive = EFalse;
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-extern void UEZBSP_FatalError(int aNumBlinks);
+extern void UEZBSP_FatalError(int32_t aNumBlinks);
 extern void FatalError(const char *aLine);
 
 void BSODPrint(const char *aLine)

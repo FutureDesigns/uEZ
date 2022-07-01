@@ -31,22 +31,22 @@
 
 
 /* decode needed by CyaSSL */
-CYASSL_LOCAL int Base64_Decode(const byte* in, word32 inLen, byte* out,
+CYASSL_LOCAL int32_t Base64_Decode(const byte* in, word32 inLen, byte* out,
                                word32* outLen);
 
 #if defined(OPENSSL_EXTRA) || defined(SESSION_CERTS) || defined(CYASSL_KEY_GEN)  || defined(CYASSL_CERT_GEN) || defined(HAVE_WEBSERVER)
     /* encode isn't */
     CYASSL_API
-    int Base64_Encode(const byte* in, word32 inLen, byte* out,
+    int32_t Base64_Encode(const byte* in, word32 inLen, byte* out,
                                   word32* outLen);
     CYASSL_API
-    int Base64_EncodeEsc(const byte* in, word32 inLen, byte* out,
+    int32_t Base64_EncodeEsc(const byte* in, word32 inLen, byte* out,
                                   word32* outLen);
 #endif
 
 #if defined(OPENSSL_EXTRA) || defined(HAVE_WEBSERVER) || defined(HAVE_FIPS)
     CYASSL_API
-    int Base16_Decode(const byte* in, word32 inLen, byte* out, word32* outLen);
+    int32_t Base16_Decode(const byte* in, word32 inLen, byte* out, word32* outLen);
 #endif
 
 

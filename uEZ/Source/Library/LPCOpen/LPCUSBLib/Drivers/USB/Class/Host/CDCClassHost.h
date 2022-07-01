@@ -345,10 +345,10 @@
 		/* Function Prototypes: */
 			#if defined(__INCLUDE_FROM_CDC_HOST_C)
 				#if defined(FDEV_SETUP_STREAM)
-				static int CDC_Host_putchar(char c,
+				static int32_t CDC_Host_putchar(char c,
 				                            FILE* Stream) ATTR_NON_NULL_PTR_ARG(2);
-				static int CDC_Host_getchar(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
-				static int CDC_Host_getchar_Blocking(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
+				static int32_t CDC_Host_getchar(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
+				static int32_t CDC_Host_getchar_Blocking(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
 				#endif
 
 				void CDC_Host_Event_Stub(void) ATTR_CONST;

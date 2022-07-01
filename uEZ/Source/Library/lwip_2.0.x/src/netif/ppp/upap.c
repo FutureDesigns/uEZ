@@ -83,10 +83,10 @@ static option_t pap_option_list[] = {
 static void upap_init(ppp_pcb *pcb);
 static void upap_lowerup(ppp_pcb *pcb);
 static void upap_lowerdown(ppp_pcb *pcb);
-static void upap_input(ppp_pcb *pcb, u_char *inpacket, int l);
+static void upap_input(ppp_pcb *pcb, u_char *inpacket, int32_t l);
 static void upap_protrej(ppp_pcb *pcb);
 #if PRINTPKT_SUPPORT
-static int upap_printpkt(const u_char *p, int plen, void (*printer) (void *, const char *, ...), void *arg);
+static int32_t upap_printpkt(const u_char *p, int32_t plen, void (*printer) (void *, const char *, ...), void *arg);
 #endif /* PRINTPKT_SUPPORT */
 
 const struct protent pap_protent = {
@@ -121,13 +121,13 @@ const struct protent pap_protent = {
 static void upap_timeout(void *arg);
 #if PPP_SERVER
 static void upap_reqtimeout(void *arg);
-static void upap_rauthreq(ppp_pcb *pcb, u_char *inp, int id, int len);
+static void upap_rauthreq(ppp_pcb *pcb, u_char *inp, int32_t id, int32_t len);
 #endif /* PPP_SERVER */
-static void upap_rauthack(ppp_pcb *pcb, u_char *inp, int id, int len);
-static void upap_rauthnak(ppp_pcb *pcb, u_char *inp, int id, int len);
+static void upap_rauthack(ppp_pcb *pcb, u_char *inp, int32_t id, int32_t len);
+static void upap_rauthnak(ppp_pcb *pcb, u_char *inp, int32_t id, int32_t len);
 static void upap_sauthreq(ppp_pcb *pcb);
 #if PPP_SERVER
-static void upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, int msglen);
+static void upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, int32_t msglen);
 #endif /* PPP_SERVER */
 
 
@@ -302,10 +302,10 @@ static void upap_protrej(ppp_pcb *pcb) {
 /*
  * upap_input - Input UPAP packet.
  */
-static void upap_input(ppp_pcb *pcb, u_char *inpacket, int l) {
+static void upap_input(ppp_pcb *pcb, u_char *inpacket, int32_t l) {
     u_char *inp;
     u_char code, id;
-    int len;
+    int32_t len;
 
     /*
      * Parse header (code, id and length).
@@ -356,14 +356,14 @@ static void upap_input(ppp_pcb *pcb, u_char *inpacket, int l) {
 /*
  * upap_rauth - Receive Authenticate.
  */
-static void upap_rauthreq(ppp_pcb *pcb, u_char *inp, int id, int len) {
+static void upap_rauthreq(ppp_pcb *pcb, u_char *inp, int32_t id, int32_t len) {
     u_char ruserlen, rpasswdlen;
     char *ruser;
     char *rpasswd;
     char rhostname[256];
-    int retcode;
+    int32_t retcode;
     const char *msg;
-    int msglen;
+    int32_t msglen;
 
     if (pcb->upap.us_serverstate < UPAPSS_LISTEN)
 	return;
@@ -455,7 +455,7 @@ static void upap_rauthreq(ppp_pcb *pcb, u_char *inp, int id, int len) {
 /*
  * upap_rauthack - Receive Authenticate-Ack.
  */
-static void upap_rauthack(ppp_pcb *pcb, u_char *inp, int id, int len) {
+static void upap_rauthack(ppp_pcb *pcb, u_char *inp, int32_t id, int32_t len) {
     u_char msglen;
     char *msg;
     LWIP_UNUSED_ARG(id);
@@ -490,7 +490,7 @@ static void upap_rauthack(ppp_pcb *pcb, u_char *inp, int id, int len) {
 /*
  * upap_rauthnak - Receive Authenticate-Nak.
  */
-static void upap_rauthnak(ppp_pcb *pcb, u_char *inp, int id, int len) {
+static void upap_rauthnak(ppp_pcb *pcb, u_char *inp, int32_t id, int32_t len) {
     u_char msglen;
     char *msg;
     LWIP_UNUSED_ARG(id);
@@ -529,7 +529,7 @@ static void upap_rauthnak(ppp_pcb *pcb, u_char *inp, int id, int len) {
 static void upap_sauthreq(ppp_pcb *pcb) {
     struct pbuf *p;
     u_char *outp;
-    int outlen;
+    int32_t outlen;
 
     outlen = UPAP_HEADERLEN + 2 * sizeof (u_char) +
 	pcb->upap.us_userlen + pcb->upap.us_passwdlen;
@@ -564,10 +564,10 @@ static void upap_sauthreq(ppp_pcb *pcb) {
 /*
  * upap_sresp - Send a response (ack or nak).
  */
-static void upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, int msglen) {
+static void upap_sresp(ppp_pcb *pcb, u_char code, u_char id, const char *msg, int32_t msglen) {
     struct pbuf *p;
     u_char *outp;
-    int outlen;
+    int32_t outlen;
 
     outlen = UPAP_HEADERLEN + sizeof (u_char) + msglen;
     p = pbuf_alloc(PBUF_RAW, (u16_t)(PPP_HDRLEN +outlen), PPP_CTRL_PBUF_TYPE);
@@ -599,9 +599,9 @@ static const char* const upap_codenames[] = {
     "AuthReq", "AuthAck", "AuthNak"
 };
 
-static int upap_printpkt(const u_char *p, int plen, void (*printer) (void *, const char *, ...), void *arg) {
-    int code, id, len;
-    int mlen, ulen, wlen;
+static int32_t upap_printpkt(const u_char *p, int32_t plen, void (*printer) (void *, const char *, ...), void *arg) {
+    int32_t code, id, len;
+    int32_t mlen, ulen, wlen;
     const u_char *user, *pwd, *msg;
     const u_char *pstart;
 
@@ -614,7 +614,7 @@ static int upap_printpkt(const u_char *p, int plen, void (*printer) (void *, con
     if (len < UPAP_HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(upap_codenames))
+    if (code >= 1 && code <= (int32_t)LWIP_ARRAYSIZE(upap_codenames))
 	printer(arg, " %s", upap_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);

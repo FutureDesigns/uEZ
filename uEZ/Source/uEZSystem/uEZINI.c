@@ -315,7 +315,7 @@ T_INIKeyPair *IFindOrCreateKeyPair(
 static T_uezError IParseFile(T_INISession *p, T_uezFile file)
 {
     char string[MAX_INI_STRING + 1];
-    int stringLen = 0;
+    int32_t stringLen = 0;
     char block[INI_BLOCK_READ_SIZE];
     char c;
     T_INIParseMode mode = PARSE_NEED_SECTION;
@@ -762,7 +762,7 @@ T_uezError UEZINISetInteger32(
     T_INIKeyPair *p_keypair;
     char vstr[20];
 #if (COMPILER_TYPE == IAR)
-    extern int itoa(int value, const char *string, int radix);
+    extern int32_t itoa(int32_t value, const char *string, int32_t radix);
 #endif
     if (p) {
         // Is section set?

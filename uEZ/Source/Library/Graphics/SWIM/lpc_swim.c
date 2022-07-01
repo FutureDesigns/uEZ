@@ -59,14 +59,14 @@ void swim_put_line_raw(
 {
 #define iabs(v) (((v)>=0)?(v):(-(v)))
 
-    int deltax, deltay;
-    int x, y;
-    int den;
-    int xinc1, xinc2, yinc1, yinc2;
-    int numpixels;
-    int curpixel;
-    int numadd;
-    int num;
+    int32_t deltax, deltay;
+    int32_t x, y;
+    int32_t den;
+    int32_t xinc1, xinc2, yinc1, yinc2;
+    int32_t numpixels;
+    int32_t curpixel;
+    int32_t numadd;
+    int32_t num;
 
     // The difference between the x's
     deltax = iabs(x2 - x1);
@@ -344,14 +344,14 @@ void swim_put_line(
 {
 #define iabs(v) (((v)>=0)?(v):(-(v)))
 
-    int deltax, deltay;
-    int x, y;
-    int den;
-    int xinc1, xinc2, yinc1, yinc2;
-    int numpixels;
-    int curpixel;
-    int numadd;
-    int num;
+    int32_t deltax, deltay;
+    int32_t x, y;
+    int32_t den;
+    int32_t xinc1, xinc2, yinc1, yinc2;
+    int32_t numpixels;
+    int32_t curpixel;
+    int32_t numadd;
+    int32_t num;
 
     x1 = x1 + win->xpvmin;
     x2 = x2 + win->xpvmin;

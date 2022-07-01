@@ -152,7 +152,7 @@ void sys_mutex_free(sys_mutex_t *mutex);
  * @ingroup sys_mutex
  * Check if a mutex is valid/allocated: return 1 for valid, 0 for invalid
  */
-int sys_mutex_valid(sys_mutex_t *mutex);
+int32_t sys_mutex_valid(sys_mutex_t *mutex);
 #endif
 #ifndef sys_mutex_set_invalid
 /**
@@ -201,7 +201,7 @@ void sys_sem_free(sys_sem_t *sem);
  * @ingroup sys_sem
  * Check if a semaphore is valid/allocated: return 1 for valid, 0 for invalid
  */
-int sys_sem_valid(sys_sem_t *sem);
+int32_t sys_sem_valid(sys_sem_t *sem);
 #endif
 #ifndef sys_sem_set_invalid
 /**
@@ -240,7 +240,7 @@ void sys_msleep(u32_t ms); /* only has a (close to) 1 ms resolution. */
  * @param size (minimum) number of messages in this mbox
  * @return ERR_OK if successful, another err_t otherwise
  */
-err_t sys_mbox_new(sys_mbox_t *mbox, int size);
+err_t sys_mbox_new(sys_mbox_t *mbox, int32_t size);
 /**
  * @ingroup sys_mbox
  * Post a message to an mbox - may not fail
@@ -295,7 +295,7 @@ void sys_mbox_free(sys_mbox_t *mbox);
  * @ingroup sys_mbox
  * Check if an mbox is valid/allocated: return 1 for valid, 0 for invalid
  */
-int sys_mbox_valid(sys_mbox_t *mbox);
+int32_t sys_mbox_valid(sys_mbox_t *mbox);
 #endif
 #ifndef sys_mbox_set_invalid
 /**
@@ -328,7 +328,7 @@ void sys_mbox_set_invalid(sys_mbox_t *mbox);
  * @param arg parameter passed to 'thread'
  * @param stacksize stack size in bytes for the new thread (may be ignored by ports)
  * @param prio priority of the new thread (may be ignored by ports) */
-sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int stacksize, int prio);
+sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int32_t stacksize, int32_t prio);
 
 #endif /* NO_SYS */
 

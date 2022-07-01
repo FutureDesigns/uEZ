@@ -33,12 +33,12 @@
  *      Puts a character out to the standard console.  In this case, we
  *      use the standard out stream device (declared elsewhere).
  * Inputs:
- *      int aChar               -- Character to output
+ *      int32_t aChar               -- Character to output
  * Outputs:
- *      int                     -- Character output or EOF if could not
+ *      int32_t                     -- Character output or EOF if could not
  *                                  output.
  *---------------------------------------------------------------------------*/
-int putchar(int aChar)
+int32_t putchar(int32_t aChar)
 {
     char c = aChar;
     T_uezDevice stdout = StdoutGet();
@@ -60,10 +60,10 @@ int putchar(int aChar)
  *      Get a character from the standard input.  NOTE: blocks until
  *      a character is received.
  * Outputs:
- *      int                     -- Character received or EOF if could not
+ *      int32_t                     -- Character received or EOF if could not
  *                                  get a character (no stdin).
  *---------------------------------------------------------------------------*/
-int getchar(void)
+int32_t getchar(void)
 {
     char c;
     T_uezDevice stdin = StdinGet();

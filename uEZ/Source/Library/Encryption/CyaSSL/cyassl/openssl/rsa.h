@@ -35,23 +35,23 @@ struct CYASSL_RSA {
 CYASSL_API CYASSL_RSA* CyaSSL_RSA_new(void);
 CYASSL_API void        CyaSSL_RSA_free(CYASSL_RSA*);
 
-CYASSL_API int CyaSSL_RSA_generate_key_ex(CYASSL_RSA*, int bits, CYASSL_BIGNUM*,
+CYASSL_API int32_t CyaSSL_RSA_generate_key_ex(CYASSL_RSA*, int32_t bits, CYASSL_BIGNUM*,
                                           void* cb);
 
-CYASSL_API int CyaSSL_RSA_blinding_on(CYASSL_RSA*, CYASSL_BN_CTX*);
-CYASSL_API int CyaSSL_RSA_public_encrypt(int len, unsigned char* fr,
-	                               unsigned char* to, CYASSL_RSA*, int padding);
-CYASSL_API int CyaSSL_RSA_private_decrypt(int len, unsigned char* fr,
-	                               unsigned char* to, CYASSL_RSA*, int padding);
+CYASSL_API int32_t CyaSSL_RSA_blinding_on(CYASSL_RSA*, CYASSL_BN_CTX*);
+CYASSL_API int32_t CyaSSL_RSA_public_encrypt(int32_t len, unsigned char* fr,
+	                               unsigned char* to, CYASSL_RSA*, int32_t padding);
+CYASSL_API int32_t CyaSSL_RSA_private_decrypt(int32_t len, unsigned char* fr,
+	                               unsigned char* to, CYASSL_RSA*, int32_t padding);
 
-CYASSL_API int CyaSSL_RSA_size(const CYASSL_RSA*);
-CYASSL_API int CyaSSL_RSA_sign(int type, const unsigned char* m,
-                               unsigned int mLen, unsigned char* sigRet,
-                               unsigned int* sigLen, CYASSL_RSA*);
-CYASSL_API int CyaSSL_RSA_public_decrypt(int flen, unsigned char* from,
-                                  unsigned char* to, CYASSL_RSA*, int padding);
-CYASSL_API int CyaSSL_RSA_GenAdd(CYASSL_RSA*);
-CYASSL_API int CyaSSL_RSA_LoadDer(CYASSL_RSA*, const unsigned char*, int sz);
+CYASSL_API int32_t CyaSSL_RSA_size(const CYASSL_RSA*);
+CYASSL_API int32_t CyaSSL_RSA_sign(int32_t type, const unsigned char* m,
+                               uint32_t mLen, unsigned char* sigRet,
+                               uint32_t* sigLen, CYASSL_RSA*);
+CYASSL_API int32_t CyaSSL_RSA_public_decrypt(int32_t flen, unsigned char* from,
+                                  unsigned char* to, CYASSL_RSA*, int32_t padding);
+CYASSL_API int32_t CyaSSL_RSA_GenAdd(CYASSL_RSA*);
+CYASSL_API int32_t CyaSSL_RSA_LoadDer(CYASSL_RSA*, const unsigned char*, int32_t sz);
 
 
 #define RSA_new  CyaSSL_RSA_new

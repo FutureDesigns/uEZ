@@ -83,7 +83,7 @@ struct sockaddr {
 #define  SO_OOBINLINE   0x0100 /* Unimplemented: leave received OOB data in line */
 #define  SO_REUSEPORT   0x0200 /* Unimplemented: allow local address & port reuse */
 
-#define SO_DONTLINGER   ((int)(~SO_LINGER))
+#define SO_DONTLINGER   ((int32_t)(~SO_LINGER))
 
 /*
  * Additional options, not kept in so_options.
@@ -104,8 +104,8 @@ struct sockaddr {
  * Structure used for manipulating linger option.
  */
 struct linger {
-       int l_onoff;                /* option on/off */
-       int l_linger;               /* linger time */
+       int32_t l_onoff;                /* option on/off */
+       int32_t l_linger;               /* linger time */
 };
 
 /*
@@ -278,28 +278,28 @@ struct timeval {
 
 void lwip_socket_init(void);
 
-int lwip_accept(int s, struct sockaddr *addr, socklen_t *addrlen);
-int lwip_bind(int s, struct sockaddr *name, socklen_t namelen);
-int lwip_shutdown(int s, int how);
-int lwip_getpeername (int s, struct sockaddr *name, socklen_t *namelen);
-int lwip_getsockname (int s, struct sockaddr *name, socklen_t *namelen);
-int lwip_getsockopt (int s, int level, int optname, void *optval, socklen_t *optlen);
-int lwip_setsockopt (int s, int level, int optname, const void *optval, socklen_t optlen);
-int lwip_close(int s);
-int lwip_connect(int s, const struct sockaddr *name, socklen_t namelen);
-int lwip_listen(int s, int backlog);
-int lwip_recv(int s, void *mem, int len, unsigned int flags);
-int lwip_read(int s, void *mem, int len);
-int lwip_recvfrom(int s, void *mem, int len, unsigned int flags,
+int32_t lwip_accept(int32_t s, struct sockaddr *addr, socklen_t *addrlen);
+int32_t lwip_bind(int32_t s, struct sockaddr *name, socklen_t namelen);
+int32_t lwip_shutdown(int32_t s, int32_t how);
+int32_t lwip_getpeername (int32_t s, struct sockaddr *name, socklen_t *namelen);
+int32_t lwip_getsockname (int32_t s, struct sockaddr *name, socklen_t *namelen);
+int32_t lwip_getsockopt (int32_t s, int32_t level, int32_t optname, void *optval, socklen_t *optlen);
+int32_t lwip_setsockopt (int32_t s, int32_t level, int32_t optname, const void *optval, socklen_t optlen);
+int32_t lwip_close(int32_t s);
+int32_t lwip_connect(int32_t s, const struct sockaddr *name, socklen_t namelen);
+int32_t lwip_listen(int32_t s, int32_t backlog);
+int32_t lwip_recv(int32_t s, void *mem, int32_t len, uint32_t flags);
+int32_t lwip_read(int32_t s, void *mem, int32_t len);
+int32_t lwip_recvfrom(int32_t s, void *mem, int32_t len, uint32_t flags,
       struct sockaddr *from, socklen_t *fromlen);
-int lwip_send(int s, const void *dataptr, int size, unsigned int flags);
-int lwip_sendto(int s, const void *dataptr, int size, unsigned int flags,
+int32_t lwip_send(int32_t s, const void *dataptr, int32_t size, uint32_t flags);
+int32_t lwip_sendto(int32_t s, const void *dataptr, int32_t size, uint32_t flags,
     struct sockaddr *to, socklen_t tolen);
-int lwip_socket(int domain, int type, int protocol);
-int lwip_write(int s, const void *dataptr, int size);
-int lwip_select(int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
+int32_t lwip_socket(int32_t domain, int32_t type, int32_t protocol);
+int32_t lwip_write(int32_t s, const void *dataptr, int32_t size);
+int32_t lwip_select(int32_t maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
                 struct timeval *timeout);
-int lwip_ioctl(int s, long cmd, void *argp);
+int32_t lwip_ioctl(int32_t s, long cmd, void *argp);
 
 #if LWIP_COMPAT_SOCKETS
 #define accept(a,b,c)         lwip_accept(a,b,c)

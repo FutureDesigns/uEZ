@@ -77,10 +77,10 @@ osThreadDef (tcp_poll, osPriorityHigh, 1, 0) ;
 /*-----------------------------------------------------------------------------
  *       mian entry 
  *----------------------------------------------------------------------------*/
-int myoptind = 0;
+int32_t myoptind = 0;
 char* myoptarg = NULL;
 
-int main() 
+int32_t main() 
 {
     void *arg = NULL ;
 	

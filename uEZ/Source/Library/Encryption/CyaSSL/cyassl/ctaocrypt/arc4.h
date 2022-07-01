@@ -45,7 +45,7 @@ typedef struct Arc4 {
     byte y;
     byte state[ARC4_STATE_SIZE];
 #ifdef HAVE_CAVIUM
-    int    devId;           /* nitrox device id */
+    int32_t    devId;           /* nitrox device id */
     word32 magic;           /* using cavium magic */
     word64 contextHandle;   /* nitrox context memory handle */
 #endif
@@ -55,7 +55,7 @@ CYASSL_API void Arc4Process(Arc4*, byte*, const byte*, word32);
 CYASSL_API void Arc4SetKey(Arc4*, const byte*, word32);
 
 #ifdef HAVE_CAVIUM
-    CYASSL_API int  Arc4InitCavium(Arc4*, int);
+    CYASSL_API int32_t  Arc4InitCavium(Arc4*, int32_t);
     CYASSL_API void Arc4FreeCavium(Arc4*);
 #endif
 

@@ -621,13 +621,13 @@ void CDC_Host_CreateBlockingStream(USB_ClassInfo_CDC_Host_t* const CDCInterfaceI
 	fdev_set_udata(Stream, CDCInterfaceInfo);
 }
 
-static int CDC_Host_putchar(char c,
+static int32_t CDC_Host_putchar(char c,
                             FILE* Stream)
 {
 	return CDC_Host_SendByte((USB_ClassInfo_CDC_Host_t*)fdev_get_udata(Stream), c) ? _FDEV_ERR : 0;
 }
 
-static int CDC_Host_getchar(FILE* Stream)
+static int32_t CDC_Host_getchar(FILE* Stream)
 {
 	int16_t ReceivedByte = CDC_Host_ReceiveByte((USB_ClassInfo_CDC_Host_t*)fdev_get_udata(Stream));
 
@@ -637,7 +637,7 @@ static int CDC_Host_getchar(FILE* Stream)
 	return ReceivedByte;
 }
 
-static int CDC_Host_getchar_Blocking(FILE* Stream)
+static int32_t CDC_Host_getchar_Blocking(FILE* Stream)
 {
 	int16_t ReceivedByte;
 

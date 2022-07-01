@@ -215,7 +215,7 @@ static bool MS_Device_ReadInCommandBlock(USB_ClassInfo_MS_Device_t* const MSInte
 
 static void MS_Device_ReturnCommandStatus(USB_ClassInfo_MS_Device_t* const MSInterfaceInfo)
 {
-    int timeout = 100;
+    int32_t timeout = 100;
 	Endpoint_SelectEndpoint(MSInterfaceInfo->Config.PortNumber, MSInterfaceInfo->Config.DataOUTEndpointNumber);
 
 	while (Endpoint_IsStalled(MSInterfaceInfo->Config.PortNumber))

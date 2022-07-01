@@ -60,7 +60,7 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-int UEZCmdFileTestWrite(void *aWorkspace, int argc, char *argv[]);
+int32_t UEZCmdFileTestWrite(void *aWorkspace, int32_t argc, char *argv[]);
 
 #ifdef __cplusplus
 }

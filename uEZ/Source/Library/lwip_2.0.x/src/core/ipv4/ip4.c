@@ -228,7 +228,7 @@ ip4_route(const ip4_addr_t *dest)
  * @param p the packet to forward
  * @return 1: can forward 0: discard
  */
-static int
+static int32_t
 ip4_canforward(struct pbuf *p)
 {
   u32_t addr = lwip_htonl(ip4_addr_get_u32(ip4_current_dest_addr()));
@@ -378,7 +378,7 @@ ip4_input(struct pbuf *p, struct netif *inp)
   u16_t iphdr_hlen;
   u16_t iphdr_len;
 #if IP_ACCEPT_LINK_LAYER_ADDRESSING || LWIP_IGMP
-  int check_ip_src = 1;
+  int32_t check_ip_src = 1;
 #endif /* IP_ACCEPT_LINK_LAYER_ADDRESSING || LWIP_IGMP */
 
   IP_STATS_INC(ip.recv);
@@ -490,7 +490,7 @@ ip4_input(struct pbuf *p, struct netif *inp)
     /* start trying with inp. if that's not acceptable, start walking the
        list of configured netifs.
        'first' is used as a boolean to mark whether we started walking the list */
-    int first = 1;
+    int32_t first = 1;
     netif = inp;
     do {
       LWIP_DEBUGF(IP_DEBUG, ("ip_input: iphdr->dest 0x%"X32_F" netif->ip_addr 0x%"X32_F" (0x%"X32_F", 0x%"X32_F", 0x%"X32_F")\n",
@@ -831,7 +831,7 @@ ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *d
     u16_t optlen_aligned = 0;
     if (optlen != 0) {
 #if CHECKSUM_GEN_IP_INLINE
-      int i;
+      int32_t i;
 #endif /* CHECKSUM_GEN_IP_INLINE */
       /* round up to a multiple of 4 */
       optlen_aligned = ((optlen + 3) & ~3);

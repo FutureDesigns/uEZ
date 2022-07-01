@@ -42,20 +42,20 @@ enum {
 /* DSA */
 typedef struct DsaKey {
     mp_int p, q, g, y, x;
-    int type;                               /* public or private */
+    int32_t type;                               /* public or private */
 } DsaKey;
 
 
 CYASSL_API void InitDsaKey(DsaKey* key);
 CYASSL_API void FreeDsaKey(DsaKey* key);
 
-CYASSL_API int DsaSign(const byte* digest, byte* out, DsaKey* key, RNG* rng);
-CYASSL_API int DsaVerify(const byte* digest, const byte* sig, DsaKey* key,
-                         int* answer);
+CYASSL_API int32_t DsaSign(const byte* digest, byte* out, DsaKey* key, RNG* rng);
+CYASSL_API int32_t DsaVerify(const byte* digest, const byte* sig, DsaKey* key,
+                         int32_t* answer);
 
-CYASSL_API int DsaPublicKeyDecode(const byte* input, word32* inOutIdx, DsaKey*,
+CYASSL_API int32_t DsaPublicKeyDecode(const byte* input, word32* inOutIdx, DsaKey*,
                                   word32);
-CYASSL_API int DsaPrivateKeyDecode(const byte* input, word32* inOutIdx, DsaKey*,
+CYASSL_API int32_t DsaPrivateKeyDecode(const byte* input, word32* inOutIdx, DsaKey*,
                                    word32);
 
 #ifdef __cplusplus

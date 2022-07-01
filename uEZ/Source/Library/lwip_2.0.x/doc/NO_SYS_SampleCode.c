@@ -25,7 +25,7 @@ netif_output(struct netif *netif, struct pbuf *p)
 
   /* Update SNMP stats (only if you use SNMP) */
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
-  int unicast = ((p->payload[0] & 0x01) == 0);
+  int32_t unicast = ((p->payload[0] & 0x01) == 0);
   if (unicast) {
     MIB2_STATS_NETIF_INC(netif, ifoutucastpkts);
   } else {
@@ -102,7 +102,7 @@ main(void)
  
       /* Update SNMP stats (only if you use SNMP) */
       MIB2_STATS_NETIF_ADD(netif, ifinoctets, p->tot_len);
-      int unicast = ((p->payload[0] & 0x01) == 0);
+      int32_t unicast = ((p->payload[0] & 0x01) == 0);
       if (unicast) {
         MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
       } else {

@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2018 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -21,20 +21,10 @@
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -52,13 +42,13 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       RTT version: 6.30g                                           *
+*       RTT version: 6.30g/6.70                                      *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
 File    : SEGGER_RTT_printf.c
 Purpose : Replacement for printf to write formatted data via RTT
-Revision: $Rev: 9599 $
+Revision: $Rev: 17697 $
 ----------------------------------------------------------------------
 */
 #include "SEGGER_RTT.h"
@@ -96,7 +86,7 @@ typedef struct {
   unsigned  BufferSize;
   unsigned  Cnt;
 
-  int   ReturnValue;
+  int32_t   ReturnValue;
 
   unsigned RTTBufferIndex;
 } SEGGER_RTT_PRINTF_DESC;
@@ -107,7 +97,6 @@ typedef struct {
 *
 **********************************************************************
 */
-int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
 
 /*********************************************************************
 *
@@ -234,9 +223,9 @@ static void _PrintUnsigned(SEGGER_RTT_PRINTF_DESC * pBufferDesc, unsigned v, uns
 *
 *       _PrintInt
 */
-static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
+static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int32_t v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
   unsigned Width;
-  int Number;
+  int32_t Number;
 
   Number = (v < 0) ? -v : v;
 
@@ -244,8 +233,8 @@ static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base
   // Get actual field width
   //
   Width = 1u;
-  while (Number >= (int)Base) {
-    Number = (Number / (int)Base);
+  while (Number >= (int32_t)Base) {
+    Number = (Number / (int32_t)Base);
     Width++;
   }
   if (NumDigits > Width) {
@@ -329,10 +318,10 @@ static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base
 *    >= 0:  Number of bytes which have been stored in the "Up"-buffer.
 *     < 0:  Error
 */
-int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList) {
+int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList) {
   char c;
   SEGGER_RTT_PRINTF_DESC BufferDesc;
-  int v;
+  int32_t v;
   unsigned NumDigits;
   unsigned FormatFlags;
   unsigned FieldWidth;
@@ -413,22 +402,22 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
       switch (c) {
       case 'c': {
         char c0;
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         c0 = (char)v;
         _StoreChar(&BufferDesc, c0);
         break;
       }
       case 'd':
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         _PrintInt(&BufferDesc, v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'u':
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'x':
       case 'X':
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 's':
@@ -445,7 +434,7 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
         }
         break;
       case 'p':
-        v = va_arg(*pParamList, int);
+        v = va_arg(*pParamList, int32_t);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, 8u, 8u, 0u);
         break;
       case '%':
@@ -467,7 +456,7 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
     if (BufferDesc.Cnt != 0u) {
       SEGGER_RTT_Write(BufferIndex, acBuffer, BufferDesc.Cnt);
     }
-    BufferDesc.ReturnValue += (int)BufferDesc.Cnt;
+    BufferDesc.ReturnValue += (int32_t)BufferDesc.Cnt;
   }
   return BufferDesc.ReturnValue;
 }
@@ -503,8 +492,8 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
 *          s: Print the string pointed to by the argument
 *          p: Print the argument as an 8-digit hexadecimal integer. (Argument shall be a pointer to void.)
 */
-int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
-  int r;
+int32_t SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
+  int32_t r;
   va_list ParamList;
 
   va_start(ParamList, sFormat);

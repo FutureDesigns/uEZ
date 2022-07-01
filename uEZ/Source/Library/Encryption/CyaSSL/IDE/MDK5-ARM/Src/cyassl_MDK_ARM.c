@@ -61,7 +61,7 @@ char *inet_ntoa(struct in_addr in)
 
 unsigned long inet_addr(const char *cp)
 {
-    unsigned int a[4] ; unsigned long ret ;
+    uint32_t a[4] ; unsigned long ret ;
     sscanf(cp, "%d.%d.%d.%d", &a[0], &a[1], &a[2], &a[3]) ;
     ret = ((a[3]<<24) + (a[2]<<16) + (a[1]<<8) + a[0]) ;
     return(ret) ;
@@ -69,9 +69,9 @@ unsigned long inet_addr(const char *cp)
 
 
 /*** tcp_connect is actually associated with following syassl_tcp_connect. ***/
-int Cyassl_connect(int sd, const  struct sockaddr* sa, int sz) 
+int32_t Cyassl_connect(int32_t sd, const  struct sockaddr* sa, int32_t sz) 
 {
-    int ret = 0 ;
+    int32_t ret = 0 ;
     #if defined(CYASSL_KEIL_TCP_NET)  
     
     SOCKADDR_IN addr ;
@@ -96,9 +96,9 @@ int Cyassl_connect(int sd, const  struct sockaddr* sa, int sz)
 }
 
 
-int Cyassl_accept(int sd, struct sockaddr *addr, int *addrlen) 
+int32_t Cyassl_accept(int32_t sd, struct sockaddr *addr, int32_t *addrlen) 
 {
-    int ret = 0 ;
+    int32_t ret = 0 ;
 
     #if defined(CYASSL_KEIL_TCP_NET)
     while(1) {
@@ -120,9 +120,9 @@ int Cyassl_accept(int sd, struct sockaddr *addr, int *addrlen)
 
 }
     
-int Cyassl_recv(int sd, void *buf, size_t len, int flags) 
+int32_t Cyassl_recv(int32_t sd, void *buf, size_t len, int32_t flags) 
 {
-    int ret  = 0;
+    int32_t ret  = 0;
     #if defined(CYASSL_KEIL_TCP_NET)  
     while(1) {
         #undef recv  /* Go to KEIL TCPnet recv */
@@ -142,9 +142,9 @@ int Cyassl_recv(int sd, void *buf, size_t len, int flags)
     return(ret ) ;
 }
 
-int Cyassl_send(int sd, const void *buf, size_t len, int flags) 
+int32_t Cyassl_send(int32_t sd, const void *buf, size_t len, int32_t flags) 
 {
-    int  ret = 0 ;
+    int32_t  ret = 0 ;
 
     #if defined(CYASSL_KEIL_TCP_NET)  
     while(1) {
@@ -169,14 +169,14 @@ int Cyassl_send(int sd, const void *buf, size_t len, int flags)
 #endif /* CYASSL_KEIL_TCP_NET */
 
 #if defined(CYASSL_KEIL_TCP_NET)  
-void Cyassl_sleep(int t) 
+void Cyassl_sleep(int32_t t) 
 {
     #if defined(HAVE_KEIL_RTX)
     os_dly_wait(t/1000+1) ;
     #endif
 }
 
-int Cyassl_tcp_select(int sd, int timeout) 
+int32_t Cyassl_tcp_select(int32_t sd, int32_t timeout) 
 {
     
     return 0 ;
@@ -184,11 +184,11 @@ int Cyassl_tcp_select(int sd, int timeout)
 }
 #endif
 
-extern int strlen(const char *s) ;
+extern int32_t strlen(const char *s) ;
 
 FILE * CyaSSL_fopen(const char *name, const char *openmode) 
 {
-    int i ;  FILE * ret ;
+    int32_t i ;  FILE * ret ;
     #define PATHSIZE 100
     char path[PATHSIZE] ; char *p ;
     
@@ -210,13 +210,13 @@ FILE * CyaSSL_fopen(const char *name, const char *openmode)
 #define getkey getchar
 #define sendchar putchar
 #else
-extern int getkey(void) ;
-extern int sendchar(int c) ;
+extern int32_t getkey(void) ;
+extern int32_t sendchar(int32_t c) ;
 #endif
 
-char * Cyassl_fgets ( char * str, int num, FILE * f ) 
+char * Cyassl_fgets ( char * str, int32_t num, FILE * f ) 
 {
-    int i ;
+    int32_t i ;
     
     for(i = 0 ; i< num ; i++) {
             while((str[i] = getkey()) == 0) {

@@ -84,12 +84,12 @@ extern char        *_mxml_strdupf(const char *, ...);
 extern char        *_mxml_vstrdupf(const char *, va_list);
 
 #  ifndef HAVE_SNPRINTF
-extern int        _mxml_snprintf(char *, size_t, const char *, ...);
+extern int32_t        _mxml_snprintf(char *, size_t, const char *, ...);
 #    define snprintf _mxml_snprintf
 #  endif /* !HAVE_SNPRINTF */
 
 #  ifndef HAVE_VSNPRINTF
-extern int        _mxml_vsnprintf(char *, size_t, const char *, va_list);
+extern int32_t        _mxml_vsnprintf(char *, size_t, const char *, va_list);
 #    define vsnprintf _mxml_vsnprintf
 #  endif /* !HAVE_VSNPRINTF */
 

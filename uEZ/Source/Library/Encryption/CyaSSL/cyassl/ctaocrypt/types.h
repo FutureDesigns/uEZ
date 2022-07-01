@@ -44,7 +44,7 @@
         typedef unsigned char  byte;
     #endif
     typedef unsigned short word16;
-    typedef unsigned int   word32;
+    typedef uint32_t   word32;
 #endif
 
 
@@ -165,9 +165,9 @@ enum {
 #if defined(XMALLOC_USER)
     /* prototypes for user heap override functions */
     #include <stddef.h>  /* for size_t */
-    extern void *XMALLOC(size_t n, void* heap, int type);
-    extern void *XREALLOC(void *p, size_t n, void* heap, int type);
-    extern void XFREE(void *p, void* heap, int type);
+    extern void *XMALLOC(size_t n, void* heap, int32_t type);
+    extern void *XREALLOC(void *p, size_t n, void* heap, int32_t type);
+    extern void XFREE(void *p, void* heap, int32_t type);
 #elif defined(NO_CYASSL_MEMORY)
     /* just use plain C stdlib stuff if desired */
     #include <stdlib.h>
@@ -186,7 +186,7 @@ enum {
 
 #ifndef STRING_USER
     #include <string.h>
-    char* mystrnstr(const char* s1, const char* s2, unsigned int n);
+    char* mystrnstr(const char* s1, const char* s2, uint32_t n);
 
     #define XMEMCPY(d,s,l)    memcpy((d),(s),(l))
     #define XMEMSET(b,c,l)    memset((b),(c),(l))

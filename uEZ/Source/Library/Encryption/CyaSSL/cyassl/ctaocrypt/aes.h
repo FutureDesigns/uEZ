@@ -90,7 +90,7 @@ typedef struct Aes {
 #endif /* CYASSL_AESNI */
 #ifdef HAVE_CAVIUM
     AesType type;            /* aes key type */
-    int     devId;           /* nitrox device id */
+    int32_t     devId;           /* nitrox device id */
     word32  magic;           /* using cavium magic */
     word64  contextHandle;   /* nitrox context memory handle */
 #endif
@@ -100,30 +100,30 @@ typedef struct Aes {
 #ifdef CYASSL_PIC32MZ_CRYPT
     word32 key_ce[AES_BLOCK_SIZE*2/sizeof(word32)] ;
     word32 iv_ce [AES_BLOCK_SIZE  /sizeof(word32)] ;
-    int    keylen ;
+    int32_t    keylen ;
 #endif
 } Aes;
 
 
-CYASSL_API int  AesSetKey(Aes* aes, const byte* key, word32 len, const byte* iv,
-                          int dir);
-CYASSL_API int  AesSetIV(Aes* aes, const byte* iv);
-CYASSL_API int  AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz);
-CYASSL_API int  AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz);
-CYASSL_API int  AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
+CYASSL_API int32_t  AesSetKey(Aes* aes, const byte* key, word32 len, const byte* iv,
+                          int32_t dir);
+CYASSL_API int32_t  AesSetIV(Aes* aes, const byte* iv);
+CYASSL_API int32_t  AesCbcEncrypt(Aes* aes, byte* out, const byte* in, word32 sz);
+CYASSL_API int32_t  AesCbcDecrypt(Aes* aes, byte* out, const byte* in, word32 sz);
+CYASSL_API int32_t  AesCbcDecryptWithKey(byte* out, const byte* in, word32 inSz,
                                  const byte* key, word32 keySz, const byte* iv);
 CYASSL_API void AesCtrEncrypt(Aes* aes, byte* out, const byte* in, word32 sz);
 CYASSL_API void AesEncryptDirect(Aes* aes, byte* out, const byte* in);
 CYASSL_API void AesDecryptDirect(Aes* aes, byte* out, const byte* in);
-CYASSL_API int  AesSetKeyDirect(Aes* aes, const byte* key, word32 len,
-                                const byte* iv, int dir);
+CYASSL_API int32_t  AesSetKeyDirect(Aes* aes, const byte* key, word32 len,
+                                const byte* iv, int32_t dir);
 #ifdef HAVE_AESGCM
-CYASSL_API int  AesGcmSetKey(Aes* aes, const byte* key, word32 len);
-CYASSL_API int  AesGcmEncrypt(Aes* aes, byte* out, const byte* in, word32 sz,
+CYASSL_API int32_t  AesGcmSetKey(Aes* aes, const byte* key, word32 len);
+CYASSL_API int32_t  AesGcmEncrypt(Aes* aes, byte* out, const byte* in, word32 sz,
                               const byte* iv, word32 ivSz,
                               byte* authTag, word32 authTagSz,
                               const byte* authIn, word32 authInSz);
-CYASSL_API int  AesGcmDecrypt(Aes* aes, byte* out, const byte* in, word32 sz,
+CYASSL_API int32_t  AesGcmDecrypt(Aes* aes, byte* out, const byte* in, word32 sz,
                               const byte* iv, word32 ivSz,
                               const byte* authTag, word32 authTagSz,
                               const byte* authIn, word32 authInSz);
@@ -131,8 +131,8 @@ CYASSL_API int  AesGcmDecrypt(Aes* aes, byte* out, const byte* in, word32 sz,
 typedef struct Gmac {
     Aes aes;
 } Gmac;
-CYASSL_API int GmacSetKey(Gmac* gmac, const byte* key, word32 len);
-CYASSL_API int GmacUpdate(Gmac* gmac, const byte* iv, word32 ivSz,
+CYASSL_API int32_t GmacSetKey(Gmac* gmac, const byte* key, word32 len);
+CYASSL_API int32_t GmacUpdate(Gmac* gmac, const byte* iv, word32 ivSz,
                               const byte* authIn, word32 authInSz,
                               byte* authTag, word32 authTagSz);
 #endif /* HAVE_AESGCM */
@@ -142,33 +142,33 @@ CYASSL_API void AesCcmEncrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
                               const byte* nonce, word32 nonceSz,
                               byte* authTag, word32 authTagSz,
                               const byte* authIn, word32 authInSz);
-CYASSL_API int  AesCcmDecrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
+CYASSL_API int32_t  AesCcmDecrypt(Aes* aes, byte* out, const byte* in, word32 inSz,
                               const byte* nonce, word32 nonceSz,
                               const byte* authTag, word32 authTagSz,
                               const byte* authIn, word32 authInSz);
 #endif /* HAVE_AESCCM */
 
 #ifdef HAVE_CAVIUM
-    CYASSL_API int  AesInitCavium(Aes*, int);
+    CYASSL_API int32_t  AesInitCavium(Aes*, int32_t);
     CYASSL_API void AesFreeCavium(Aes*);
 #endif
 
 
 #ifdef HAVE_FIPS
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int  AesSetKey_fips(Aes* aes, const byte* key, word32 len,
-                                   const byte* iv, int dir);
-    CYASSL_API int  AesSetIV_fips(Aes* aes, const byte* iv);
-    CYASSL_API int  AesCbcEncrypt_fips(Aes* aes, byte* out, const byte* in,
+    CYASSL_API int32_t  AesSetKey_fips(Aes* aes, const byte* key, word32 len,
+                                   const byte* iv, int32_t dir);
+    CYASSL_API int32_t  AesSetIV_fips(Aes* aes, const byte* iv);
+    CYASSL_API int32_t  AesCbcEncrypt_fips(Aes* aes, byte* out, const byte* in,
                                        word32 sz);
-    CYASSL_API int  AesCbcDecrypt_fips(Aes* aes, byte* out, const byte* in,
+    CYASSL_API int32_t  AesCbcDecrypt_fips(Aes* aes, byte* out, const byte* in,
                                        word32 sz);
-    CYASSL_API int  AesGcmSetKey_fips(Aes* aes, const byte* key, word32 len);
-    CYASSL_API int  AesGcmEncrypt_fips(Aes* aes, byte* out, const byte* in,
+    CYASSL_API int32_t  AesGcmSetKey_fips(Aes* aes, const byte* key, word32 len);
+    CYASSL_API int32_t  AesGcmEncrypt_fips(Aes* aes, byte* out, const byte* in,
                               word32 sz, const byte* iv, word32 ivSz,
                               byte* authTag, word32 authTagSz,
                               const byte* authIn, word32 authInSz);
-    CYASSL_API int  AesGcmDecrypt_fips(Aes* aes, byte* out, const byte* in,
+    CYASSL_API int32_t  AesGcmDecrypt_fips(Aes* aes, byte* out, const byte* in,
                               word32 sz, const byte* iv, word32 ivSz,
                               const byte* authTag, word32 authTagSz,
                               const byte* authIn, word32 authInSz);

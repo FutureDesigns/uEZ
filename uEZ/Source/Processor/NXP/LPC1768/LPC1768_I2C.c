@@ -141,9 +141,9 @@ void ILPC1768_ProcessState(T_LPC1768_I2C_Workspace *p);
 #if 0
 void I2CTest(T_LPC1768_I2C_Workspace *p)
 {
-    unsigned int addr;
-    unsigned int key;
-    volatile unsigned int I2STAT;
+    uint32_t addr;
+    uint32_t key;
+    volatile uint32_t I2STAT;
 
     // Set clock rate to 100 kHz (based on 208 MHz)
     p->I2SCLH = (520*((100*Fpclk)/208))/I2C_SPEED;

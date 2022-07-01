@@ -64,13 +64,13 @@ bool multilink_master;		/* we own the multilink bundle */
 extern TDB_CONTEXT *pppdb;
 extern char db_key[];
 
-static void make_bundle_links (int append);
+static void make_bundle_links (int32_t append);
 static void remove_bundle_link (void);
 static void iterate_bundle_links (void (*func) (char *));
 
-static int get_default_epdisc (struct epdisc *);
-static int parse_num (char *str, const char *key, int *valp);
-static int owns_unit (TDB_DATA pid, int unit);
+static int32_t get_default_epdisc (struct epdisc *);
+static int32_t parse_num (char *str, const char *key, int32_t *valp);
+static int32_t owns_unit (TDB_DATA pid, int32_t unit);
 
 #define set_ip_epdisc(ep, addr) do {	\
 	ep->length = 4;			\
@@ -115,14 +115,14 @@ mp_check_options()
  * Make a new bundle or join us to an existing bundle
  * if we are doing multilink.
  */
-int
+int32_t
 mp_join_bundle()
 {
 	lcp_options *go = &lcp_gotoptions[0];
 	lcp_options *ho = &lcp_hisoptions[0];
 	lcp_options *ao = &lcp_allowoptions[0];
-	int unit, pppd_pid;
-	int l, mtu;
+	int32_t unit, pppd_pid;
+	int32_t l, mtu;
 	char *p;
 	TDB_DATA key, pid, rec;
 
@@ -263,7 +263,7 @@ void mp_exit_bundle()
 
 static void sendhup(char *str)
 {
-	int pid;
+	int32_t pid;
 
 	if (parse_num(str, "PPPD_PID=", &pid) && pid != getpid()) {
 		if (debug)
@@ -301,12 +301,12 @@ void mp_bundle_terminated()
 	multilink_master = 0;
 }
 
-static void make_bundle_links(int append)
+static void make_bundle_links(int32_t append)
 {
 	TDB_DATA key, rec;
 	char *p;
 	char entry[32];
-	int l;
+	int32_t l;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -346,7 +346,7 @@ static void remove_bundle_link()
 	TDB_DATA key, rec;
 	char entry[32];
 	char *p, *q;
-	int l;
+	int32_t l;
 
 	key.dptr = blinks_id;
 	key.dsize = strlen(blinks_id);
@@ -403,14 +403,14 @@ static void iterate_bundle_links(void (*func)(char *))
 	free(rec.dptr);
 }
 
-static int
+static int32_t
 parse_num(str, key, valp)
      char *str;
      const char *key;
-     int *valp;
+     int32_t *valp;
 {
 	char *p, *endp;
-	int i;
+	int32_t i;
 
 	p = strstr(str, key);
 	if (p != 0) {
@@ -427,14 +427,14 @@ parse_num(str, key, valp)
 /*
  * Check whether the pppd identified by `key' still owns ppp unit `unit'.
  */
-static int
+static int32_t
 owns_unit(key, unit)
      TDB_DATA key;
-     int unit;
+     int32_t unit;
 {
 	char ifkey[32];
 	TDB_DATA kd, vd;
-	int ret = 0;
+	int32_t ret = 0;
 
 	slprintf(ifkey, sizeof(ifkey), "IFNAME=ppp%d", unit);
 	kd.dptr = ifkey;
@@ -448,7 +448,7 @@ owns_unit(key, unit)
 	return ret;
 }
 
-static int
+static int32_t
 get_default_epdisc(ep)
      struct epdisc *ep;
 {
@@ -495,7 +495,7 @@ epdisc_to_str(ep)
 {
 	static char str[MAX_ENDP_LEN*3+8];
 	u_char *p = ep->value;
-	int i, mask = 0;
+	int32_t i, mask = 0;
 	char *q, c, c2;
 
 	if (ep->class == EPD_NULL && ep->length == 0)
@@ -531,7 +531,7 @@ epdisc_to_str(ep)
 	return str;
 }
 
-static int hexc_val(int c)
+static int32_t hexc_val(int32_t c)
 {
 	if (c >= 'a')
 		return c - 'a' + 10;
@@ -540,16 +540,16 @@ static int hexc_val(int c)
 	return c - '0';
 }
 
-int
+int32_t
 str_to_epdisc(ep, str)
      struct epdisc *ep;
      char *str;
 {
-	int i, l;
+	int32_t i, l;
 	char *p, *endp;
 
 	for (i = EPD_NULL; i <= EPD_PHONENUM; ++i) {
-		int sl = strlen(endp_class_names[i]);
+		int32_t sl = strlen(endp_class_names[i]);
 		if (strncasecmp(str, endp_class_names[i], sl) == 0) {
 			str += sl;
 			break;

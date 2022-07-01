@@ -55,6 +55,7 @@
 #if UEZ_ENABLE_AUDIO_AMP
 #include <Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h>
 #include <Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.h>
+#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
 #endif
 #if UEZ_ENABLE_AUDIO_CODEC
 #include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
@@ -145,7 +146,7 @@
 #include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 
-extern int MainTask(void);
+extern int32_t MainTask(void);
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -193,7 +194,7 @@ void UEZBSPDelay1US(void)
     #error "1 microSecond delay not defined for CPU speed"
 #endif
 }
-void UEZBSPDelayUS(unsigned int aMicroseconds)
+void UEZBSPDelayUS(uint32_t aMicroseconds)
 {
     while (aMicroseconds--)
         UEZBSPDelay1US();
@@ -208,7 +209,7 @@ void UEZBSPDelay1MS(void)
         UEZBSPDelay1US();
 }
 
-void UEZBSPDelayMS(unsigned int aMilliseconds)
+void UEZBSPDelayMS(uint32_t aMilliseconds)
 {
     while (aMilliseconds--) {
         UEZBSPDelay1MS();
@@ -380,10 +381,10 @@ void UEZBSP_CPU_PinConfigInit(void)
  *      interrupts and put the platform in a halted state with a blinking
  *      LED.
  * Inputs:
- *      int aErrorCode -- Blink the LED a number of times equal to
+ *      int32_t aErrorCode -- Blink the LED a number of times equal to
  *          the error code.
  *---------------------------------------------------------------------------*/
-void UEZBSP_FatalError(int aErrorCode)
+void UEZBSP_FatalError(int32_t aErrorCode)
 {
     register TUInt32 i;
     register TUInt32 count;
@@ -1460,16 +1461,50 @@ void UEZPlatform_AudioCodec_Require(void)
  *---------------------------------------------------------------------------*/
 #if UEZ_ENABLE_AUDIO_AMP
 static T_uezDevice G_Amp;
+static TUInt8 G_Amp_In_Use = AUDIO_AMP_NONE;
 void UEZPlatform_AudioAmp_Require(void)
-{
+{    
+    T_uezDevice I2C;
+    T_uezError error;
+    I2C_Request r;
+    TUInt8 dataOut = 0x1C;
+
     DEVICE_CREATE_ONCE();
 
-    LPC17xx_40xx_GPIO2_Require();
-    // P2.14 = VOL_UD
-    // P2.15 = AMP_MODE
-    AudioAmp_8551T_Create("AMP0", GPIO_P2_14, GPIO_P2_15, GPIO_NONE, 64);
+    // Detect which AMP
+    UEZPlatform_I2C0_Require();
+    UEZI2COpen("I2C0", &I2C);
+    r.iAddr = 0x7C;
+    r.iSpeed = 400; //kHz
+    r.iWriteData = &dataOut;
+    r.iWriteLength = 1; // send 1 byte
+    r.iWriteTimeout = 100;
+    r.iReadData = 0;
+    r.iReadLength = 0; // read 0 bytes
+    r.iReadTimeout = 0;
+
+    error = UEZI2CTransaction(I2C, &r);
+
+    if(!error) {
+        AudioAmp_LM48110_Create("AMP0", "I2C0", 0x1F);
+    } else {
+      LPC17xx_40xx_GPIO2_Require();
+      // P2.14 = VOL_UD
+      // P2.15 = AMP_MODE
+      AudioAmp_8551T_Create("AMP0", GPIO_P2_14, GPIO_P2_15, GPIO_NONE, 64);
+    }
+
     UEZAudioAmpOpen("AMP0", &G_Amp);
-    UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_AUDIO_LEVEL);
+
+    if(!error) {   
+      // In case audio mixer not used set this to onboard speaker to prevent overdrive.
+      UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110);
+      G_Amp_In_Use = AUDIO_AMP_LM48110;
+    } else {    
+      // In case audio mixer not used set this to onboard speaker to prevent overdrive.
+      UEZAudioAmpSetLevel(G_Amp, UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551);
+      G_Amp_In_Use = AUDIO_AMP_TDA8551;
+    }
 }
 
 static T_uezDevice G_Amp1;
@@ -1481,6 +1516,7 @@ void UEZPlatform_AudioAmp_1_Require(void)
     AudioAmp_WM8731_Create("AMP1", "I2C0", 0x7F);
     UEZAudioAmpOpen("AMP1", &G_Amp1);
     UEZAudioAmpSetLevel(G_Amp1, UEZ_DEFAULT_AUDIO_LEVEL);
+    G_Amp_In_Use = AUDIO_AMP_WOLFSON;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1503,11 +1539,32 @@ static T_uezError CARRIER_1788_AudioMixerCallback(
                     error = UEZAudioAmpMute(G_Amp);
                 } else {
                     error = UEZAudioAmpUnMute(G_Amp);
+                } 
+                // This insures we scale the 0-255 input volume to the correct maximum volume for the onboard speaker.
+                if(G_Amp_In_Use == AUDIO_AMP_TDA8551) { // enforce maximum volume based on AMP
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 /255);
+                } else if(G_Amp_In_Use == AUDIO_AMP_WOLFSON) {
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL /255);
+                } else if(G_Amp_In_Use == AUDIO_AMP_LM48110) {
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 /255);
+                } else {
+                    aLevel = 0; // NEED TO DEFINE AMP AND MAX SAFE VOLUME LEVEL!
                 }
                 error = UEZAudioAmpSetLevel(G_Amp, aLevel);
             }
             break;
-        case UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES:
+        // Example Offboard speaker callback case
+        /*case  UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER:
+            if(G_Amp){
+                if(aMute){
+                    error = UEZAudioAmpMute(G_Amp);
+                } else {
+                    error = UEZAudioAmpUnMute(G_Amp);
+                }
+                error = UEZAudioAmpSetLevel(G_Amp, aLevel);
+            }
+            break;*/
+        case UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES:// TODO add and test volume scaling
             if (G_Amp1){
                 if(aMute){
                     error = UEZAudioAmpMute(G_Amp1);
@@ -1536,14 +1593,25 @@ void UEZPlatform_AudioMixer_Require(void)
 #if UEZ_ENABLE_AUDIO_AMP
     UEZPlatform_AudioAmp_Require();
     UEZPlatform_AudioAmp_1_Require();
-
+    
+    // Set all 5 volume levels from platform file
+    // First set master volume
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_MASTER, UEZ_DEFAULT_AUDIO_LEVEL); // master volume
+    
     UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, &CARRIER_1788_AudioMixerCallback);
-    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 250);
+    // Next set onboard speaker based on AMP that is loaded. Callback will handle this automatically.
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, UEZ_DEFAULT_AUDIO_LEVEL);
     UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER);
 
     UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, &CARRIER_1788_AudioMixerCallback);
-    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, 250);
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, UEZ_DEFAULT_AUDIO_LEVEL);
     UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES);
+        
+    // Uncomment these lines to set the other 3 volumes if needed.
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL); // We call this AFTER onboard speaker, so it will set the current volume.
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL);
+    //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_HEADPHONES, UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL);
+    
 #endif
 }
 #endif
@@ -2031,9 +2099,7 @@ void UEZPlatform_Full_Require(void)
     UEZPlatform_ADC0_0_Require();
     UEZPlatform_ADC0_1_Require();
     UEZPlatform_ADC0_2_Require();
-    UEZPlatform_DAC0_Require();
     UEZPlatform_Flash0_Require();
-    UEZPlatform_Speaker_Require();
     UEZPlatform_EEPROM0_Require();
     UEZPlatform_USBHost_Require();
     UEZPlatform_USBFlash_Drive_Require(0);
@@ -2041,7 +2107,11 @@ void UEZPlatform_Full_Require(void)
     UEZPlatform_SDCard_Drive_Require(1);
     UEZPlatform_USBDevice_Require();
     UEZPlatform_WiredNetwork0_Require();
-
+    
+    // Init audio outputs before amp so amp doesn't get noise/undefined signal.
+    UEZPlatform_Speaker_Require(); // PWM output for basic tones
+    UEZPlatform_DAC0_Require();    // DAC output
+    
 #if UEZ_ENABLE_AUDIO_AMP
     UEZPlatform_AudioAmp_Require();
 #endif
@@ -2049,6 +2119,10 @@ void UEZPlatform_Full_Require(void)
 #if UEZ_ENABLE_AUDIO_CODEC
     UEZPlatform_AudioCodec_Require();
 #endif
+    
+    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();
@@ -2104,7 +2178,7 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
 #endif
 }
 
-T_pixelColor SUICallbackRGBConvert(int r, int g, int b)
+T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b)
 {
     return RGB(r, g, b);
 }
@@ -2160,7 +2234,7 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
  *  Determine which stack was in use when the MPU fault occurred and extract
     the stacked PC. 
  *
- *  @return         int
+ *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
 #if (COMPILER_TYPE==Keil4)
@@ -2201,10 +2275,10 @@ unsigned long ulStacked_pc = 0UL;
  *  The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
  *
- *  @return         int
+ *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
-int main(void)
+int32_t main(void)
 {
     UEZBSP_Startup();
     while (1) {

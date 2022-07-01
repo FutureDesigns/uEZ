@@ -32,7 +32,7 @@
     #pragma warning(disable: 4996)
 #endif
 
-const char* CTaoCryptGetErrorString(int error)
+const char* CTaoCryptGetErrorString(int32_t error)
 {
 #ifdef NO_ERROR_STRINGS
 
@@ -137,7 +137,7 @@ const char* CTaoCryptGetErrorString(int error)
         return "ASN version error, invalid number";
 
     case ASN_GETINT_E :
-        return "ASN get big int error, invalid data";
+        return "ASN get big int32_t error, invalid data";
 
     case ASN_RSA_KEY_E :
         return "ASN key init error, invalid input";
@@ -319,7 +319,7 @@ const char* CTaoCryptGetErrorString(int error)
 
 }
 
-void CTaoCryptErrorString(int error, char* buffer)
+void CTaoCryptErrorString(int32_t error, char* buffer)
 {
     XSTRNCPY(buffer, CTaoCryptGetErrorString(error), CYASSL_MAX_ERROR_SZ);
 }

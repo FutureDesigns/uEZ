@@ -62,7 +62,7 @@
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdAudioDAC(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdAudioDAC(void *aWorkspace, int32_t argc, char *argv[])
 {
     T_uezError error;
     TUInt32 ms;

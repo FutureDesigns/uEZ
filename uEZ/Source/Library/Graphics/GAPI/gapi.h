@@ -55,7 +55,7 @@ typedef uI08 boolean;
 
 #include "gapi_font.h"
 
-typedef int gapiResp_type;
+typedef int32_t gapiResp_type;
 
 
 PACK_STRUCT_BEGIN

@@ -36,7 +36,7 @@
  *---------------------------------------------------------------------------*/
 #define RESOLUTION_X        320
 #define RESOLUTION_Y        240
-#define LCD_CLOCK_RATE      9000000
+#define LCD_CLOCK_RATE      7500000
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -107,14 +107,14 @@ static const T_LCDControllerSettings LCD_TM035KBH02_09_paramsI15bit = {
     LCD_ADVANCED_TFT,
     LCD_COLOR_RES_16_I555,
 
-    11,         /* Horizontal back porch */
-    0,          /* Horizontal front porch */
+    70,         /* Horizontal back porch */
+    1,          /* Horizontal front porch */ // TIMH-HFP must be 0
     96,         /* HSYNC pulse width */
     320,        /* Pixels per line */
 
-    8,          /* Vertical back porch */
+    0,          /* Vertical back porch */
     0,          /* Vertical front porch */
-    15,         /* VSYNC pulse width */
+    13,         /* VSYNC pulse width */
     240,        /* Lines per panel */
 
     0,          // Line end delay disabled
@@ -122,7 +122,7 @@ static const T_LCDControllerSettings LCD_TM035KBH02_09_paramsI15bit = {
     EFalse,     /* Do not invert output enable */
     EFalse,     /* Invert panel clock */
     EFalse,     /* Invert HSYNC */
-    EFalse,     /* Invert VSYNC */
+    ETrue,     /* Invert VSYNC */
 
     0,          /* AC bias frequency (not used) */
 
@@ -433,7 +433,7 @@ static T_uezError ISPIConfigure(T_TM035KBH02_09Workspace *p)
 //  p->itimerDone = EFalse; // set to true when itimer finishes
 //  error = UEZTimerSetupOneShot(p->itimer,
 //                               1,
-//                               ((int)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
+//                               ((int32_t)milliseconds*(PROCESSOR_OSCILLATOR_FREQUENCY/1000)),
 //                               &p->icallback);
 //  if(error == UEZ_ERROR_NONE) {
 //    error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);

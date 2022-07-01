@@ -74,7 +74,7 @@ recv_raw(void *arg, struct raw_pcb *pcb, struct pbuf *p,
   struct netbuf *buf;
   struct netconn *conn;
 #if LWIP_SO_RCVBUF
-  int recv_avail;
+  int32_t recv_avail;
 #endif /* LWIP_SO_RCVBUF */
 
   LWIP_UNUSED_ARG(addr);
@@ -83,7 +83,7 @@ recv_raw(void *arg, struct raw_pcb *pcb, struct pbuf *p,
 #if LWIP_SO_RCVBUF
   SYS_ARCH_GET(conn->recv_avail, recv_avail);
   if ((conn != NULL) && (conn->recvmbox != SYS_MBOX_NULL) &&
-      ((recv_avail + (int)(p->tot_len)) <= conn->recv_bufsize)) {
+      ((recv_avail + (int32_t)(p->tot_len)) <= conn->recv_bufsize)) {
 #else  /* LWIP_SO_RCVBUF */
   if ((conn != NULL) && (conn->recvmbox != SYS_MBOX_NULL)) {
 #endif /* LWIP_SO_RCVBUF */
@@ -135,7 +135,7 @@ recv_udp(void *arg, struct udp_pcb *pcb, struct pbuf *p,
   struct netbuf *buf;
   struct netconn *conn;
 #if LWIP_SO_RCVBUF
-  int recv_avail;
+  int32_t recv_avail;
 #endif /* LWIP_SO_RCVBUF */
 
   LWIP_UNUSED_ARG(pcb); /* only used for asserts... */
@@ -147,7 +147,7 @@ recv_udp(void *arg, struct udp_pcb *pcb, struct pbuf *p,
 #if LWIP_SO_RCVBUF
   SYS_ARCH_GET(conn->recv_avail, recv_avail);
   if ((conn == NULL) || (conn->recvmbox == SYS_MBOX_NULL) ||
-      ((recv_avail + (int)(p->tot_len)) > conn->recv_bufsize)) {
+      ((recv_avail + (int32_t)(p->tot_len)) > conn->recv_bufsize)) {
 #else  /* LWIP_SO_RCVBUF */
   if ((conn == NULL) || (conn->recvmbox == SYS_MBOX_NULL)) {
 #endif /* LWIP_SO_RCVBUF */
@@ -475,7 +475,7 @@ struct netconn*
 netconn_alloc(enum netconn_type t, netconn_callback callback)
 {
   struct netconn *conn;
-  int size;
+  int32_t size;
 
   conn = memp_malloc(MEMP_NETCONN);
   if (conn == NULL) {

@@ -145,7 +145,7 @@ static void MassStorageConnected(void);
 static void MassStorageDisconnected(void);
 static void MassStorageConfigChanged(void);
 static void MassStorageControlRequest(void);
-static int MassStorageUpdate(int aUnitAddress);
+static int32_t MassStorageUpdate(int32_t aUnitAddress);
 
 static void ISetCSW(USB_ClassInfo_MS_Device_t *const MSInterfaceInf);
 static void IMSRead(USB_ClassInfo_MS_Device_t *const MSInterfaceInf);
@@ -596,9 +596,9 @@ static void MassStorageControlRequest(void)
     MS_Device_ProcessControlRequest(&UEZ_MS_Device);
 }
 
-static int MassStorageUpdate(int aUnitAddress)
+static int32_t MassStorageUpdate(int32_t aUnitAddress)
 {
-    int activity = 0;
+    int32_t activity = 0;
 
     MS_Device_USBTask(&UEZ_MS_Device);
 
@@ -882,7 +882,7 @@ T_uezError USBMSDriveInitialize(
      T_USBMSDriveCallbacks *aCallbacks,
      void *aCallbackWorkspace,
      const char *aDeviceName,
-     int aUnitAddress,
+     int32_t aUnitAddress,
      TUInt8 aForceFullSpeed)
 {
     T_uezError error = UEZ_ERROR_NONE;

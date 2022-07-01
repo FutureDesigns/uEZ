@@ -149,7 +149,7 @@ struct vjcompress {
 extern void  vj_compress_init    (struct vjcompress *comp);
 extern u_int vj_compress_tcp     (struct vjcompress *comp, struct pbuf *pb);
 extern void  vj_uncompress_err   (struct vjcompress *comp);
-extern int   vj_uncompress_uncomp(struct pbuf *nb, struct vjcompress *comp);
-extern int   vj_uncompress_tcp   (struct pbuf **nb, struct vjcompress *comp);
+extern int32_t   vj_uncompress_uncomp(struct pbuf *nb, struct vjcompress *comp);
+extern int32_t   vj_uncompress_tcp   (struct pbuf **nb, struct vjcompress *comp);
 
 #endif /* VJ_H */

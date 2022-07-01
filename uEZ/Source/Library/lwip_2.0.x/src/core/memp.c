@@ -97,7 +97,7 @@ const struct memp_desc* const memp_pools[MEMP_MAX] = {
 /**
  * Check that memp-lists don't form a circle, using "Floyd's cycle-finding algorithm".
  */
-static int
+static int32_t
 memp_sanity(const struct memp_desc *desc)
 {
   struct memp *t, *h;
@@ -232,7 +232,7 @@ memp_init_pool(const struct memp_desc *desc)
 #if MEMP_MEM_MALLOC
   LWIP_UNUSED_ARG(desc);
 #else
-  int i;
+  int32_t i;
   struct memp *memp;
 
   *desc->tab = NULL;
@@ -291,7 +291,7 @@ static void*
 #if !MEMP_OVERFLOW_CHECK
 do_memp_malloc_pool(const struct memp_desc *desc)
 #else
-do_memp_malloc_pool_fn(const struct memp_desc *desc, const char* file, const int line)
+do_memp_malloc_pool_fn(const struct memp_desc *desc, const char* file, const int32_t line)
 #endif
 {
   struct memp *memp;
@@ -358,7 +358,7 @@ void *
 #if !MEMP_OVERFLOW_CHECK
 memp_malloc_pool(const struct memp_desc *desc)
 #else
-memp_malloc_pool_fn(const struct memp_desc *desc, const char* file, const int line)
+memp_malloc_pool_fn(const struct memp_desc *desc, const char* file, const int32_t line)
 #endif
 {
   LWIP_ASSERT("invalid pool desc", desc != NULL);
@@ -384,7 +384,7 @@ void *
 #if !MEMP_OVERFLOW_CHECK
 memp_malloc(memp_t type)
 #else
-memp_malloc_fn(memp_t type, const char* file, const int line)
+memp_malloc_fn(memp_t type, const char* file, const int32_t line)
 #endif
 {
   void *memp;

@@ -2162,7 +2162,7 @@ typedef struct {                                    /*!< (@ 0x400A4000) C_CANn S
   __IO uint32_t  STAT;                              /*!< (@ 0x400A4004) Status register                                        */
   __I  uint32_t  EC;                                /*!< (@ 0x400A4008) Error counter                                          */
   __IO uint32_t  BT;                                /*!< (@ 0x400A400C) Bit timing register                                    */
-  __I  uint32_t  INT;                               /*!< (@ 0x400A4010) Interrupt register                                     */
+  __I  uint32_t  int32_t;                               /*!< (@ 0x400A4010) Interrupt register                                     */
   __IO uint32_t  TEST;                              /*!< (@ 0x400A4014) Test register                                          */
   __IO uint32_t  BRPE;                              /*!< (@ 0x400A4018) Baud rate prescaler extension register                 */
   __I  uint32_t  RESERVED0;
@@ -2502,7 +2502,7 @@ typedef struct {                                    /*!< (@ 0x40100000) SPI Stru
   __IO uint32_t  TSR;                               /*!< (@ 0x40100014) SPI Test Status register. For functional testing
                                                          only.                                                                 */
   __I  uint32_t  RESERVED0;
-  __IO uint32_t  INT;                               /*!< (@ 0x4010001C) SPI Interrupt Flag. This register contains the
+  __IO uint32_t  int32_t;                               /*!< (@ 0x4010001C) SPI Interrupt Flag. This register contains the
                                                          interrupt flag for the SPI interface.                                 */
 } LPC_SPI_Type;
 
@@ -16903,8 +16903,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 
 
 /* ----------------------------  GPIO_GROUP_INTn_CTRL  ---------------------------- */
-#define GPIO_GROUP_INTn_CTRL_INT_Pos          0                                                       /*!< GPIO_GROUP_INTn CTRL: INT Position      */
-#define GPIO_GROUP_INTn_CTRL_INT_Msk          (0x01UL << GPIO_GROUP_INTn_CTRL_INT_Pos)                /*!< GPIO_GROUP_INTn CTRL: INT Mask          */
+#define GPIO_GROUP_INTn_CTRL_INT_Pos          0                                                       /*!< GPIO_GROUP_INTn CTRL: int32_t Position      */
+#define GPIO_GROUP_INTn_CTRL_INT_Msk          (0x01UL << GPIO_GROUP_INTn_CTRL_INT_Pos)                /*!< GPIO_GROUP_INTn CTRL: int32_t Mask          */
 #define GPIO_GROUP_INTn_CTRL_COMB_Pos         1                                                       /*!< GPIO_GROUP_INTn CTRL: COMB Position     */
 #define GPIO_GROUP_INTn_CTRL_COMB_Msk         (0x01UL << GPIO_GROUP_INTn_CTRL_COMB_Pos)               /*!< GPIO_GROUP_INTn CTRL: COMB Mask         */
 #define GPIO_GROUP_INTn_CTRL_TRIG_Pos         2                                                       /*!< GPIO_GROUP_INTn CTRL: TRIG Position     */
@@ -17973,8 +17973,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 
 
 /* ----------------------------  GPIO_GROUP_INT0_CTRL  ---------------------------- */
-#define GPIO_GROUP_INT0_CTRL_INT_Pos          0                                                       /*!< GPIO_GROUP_INT0 CTRL: INT Position      */
-#define GPIO_GROUP_INT0_CTRL_INT_Msk          (0x01UL << GPIO_GROUP_INT0_CTRL_INT_Pos)                /*!< GPIO_GROUP_INT0 CTRL: INT Mask          */
+#define GPIO_GROUP_INT0_CTRL_INT_Pos          0                                                       /*!< GPIO_GROUP_INT0 CTRL: int32_t Position      */
+#define GPIO_GROUP_INT0_CTRL_INT_Msk          (0x01UL << GPIO_GROUP_INT0_CTRL_INT_Pos)                /*!< GPIO_GROUP_INT0 CTRL: int32_t Mask          */
 #define GPIO_GROUP_INT0_CTRL_COMB_Pos         1                                                       /*!< GPIO_GROUP_INT0 CTRL: COMB Position     */
 #define GPIO_GROUP_INT0_CTRL_COMB_Msk         (0x01UL << GPIO_GROUP_INT0_CTRL_COMB_Pos)               /*!< GPIO_GROUP_INT0 CTRL: COMB Mask         */
 #define GPIO_GROUP_INT0_CTRL_TRIG_Pos         2                                                       /*!< GPIO_GROUP_INT0 CTRL: TRIG Position     */
@@ -19043,8 +19043,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 
 
 /* ----------------------------  GPIO_GROUP_INT1_CTRL  ---------------------------- */
-#define GPIO_GROUP_INT1_CTRL_INT_Pos          0                                                       /*!< GPIO_GROUP_INT1 CTRL: INT Position      */
-#define GPIO_GROUP_INT1_CTRL_INT_Msk          (0x01UL << GPIO_GROUP_INT1_CTRL_INT_Pos)                /*!< GPIO_GROUP_INT1 CTRL: INT Mask          */
+#define GPIO_GROUP_INT1_CTRL_INT_Pos          0                                                       /*!< GPIO_GROUP_INT1 CTRL: int32_t Position      */
+#define GPIO_GROUP_INT1_CTRL_INT_Msk          (0x01UL << GPIO_GROUP_INT1_CTRL_INT_Pos)                /*!< GPIO_GROUP_INT1 CTRL: int32_t Mask          */
 #define GPIO_GROUP_INT1_CTRL_COMB_Pos         1                                                       /*!< GPIO_GROUP_INT1 CTRL: COMB Position     */
 #define GPIO_GROUP_INT1_CTRL_COMB_Msk         (0x01UL << GPIO_GROUP_INT1_CTRL_COMB_Pos)               /*!< GPIO_GROUP_INT1 CTRL: COMB Mask         */
 #define GPIO_GROUP_INT1_CTRL_TRIG_Pos         2                                                       /*!< GPIO_GROUP_INT1 CTRL: TRIG Position     */
@@ -21409,8 +21409,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 #define C_CANn_BT_TSEG2_Msk                   (0x07UL << C_CANn_BT_TSEG2_Pos)                         /*!< C_CANn BT: TSEG2 Mask                   */
 
 /* ---------------------------------  C_CANn_INT  --------------------------------- */
-#define C_CANn_INT_INTID15_0_Pos              0                                                       /*!< C_CANn INT: INTID15_0 Position          */
-#define C_CANn_INT_INTID15_0_Msk              (0x0000ffffUL << C_CANn_INT_INTID15_0_Pos)              /*!< C_CANn INT: INTID15_0 Mask              */
+#define C_CANn_INT_INTID15_0_Pos              0                                                       /*!< C_CANn int32_t: INTID15_0 Position          */
+#define C_CANn_INT_INTID15_0_Msk              (0x0000ffffUL << C_CANn_INT_INTID15_0_Pos)              /*!< C_CANn int32_t: INTID15_0 Mask              */
 
 /* ---------------------------------  C_CANn_TEST  -------------------------------- */
 #define C_CANn_TEST_BASIC_Pos                 2                                                       /*!< C_CANn TEST: BASIC Position             */
@@ -21747,8 +21747,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 #define C_CAN1_BT_TSEG2_Msk                   (0x07UL << C_CAN1_BT_TSEG2_Pos)                         /*!< C_CAN1 BT: TSEG2 Mask                   */
 
 /* ---------------------------------  C_CAN1_INT  --------------------------------- */
-#define C_CAN1_INT_INTID15_0_Pos              0                                                       /*!< C_CAN1 INT: INTID15_0 Position          */
-#define C_CAN1_INT_INTID15_0_Msk              (0x0000ffffUL << C_CAN1_INT_INTID15_0_Pos)              /*!< C_CAN1 INT: INTID15_0 Mask              */
+#define C_CAN1_INT_INTID15_0_Pos              0                                                       /*!< C_CAN1 int32_t: INTID15_0 Position          */
+#define C_CAN1_INT_INTID15_0_Msk              (0x0000ffffUL << C_CAN1_INT_INTID15_0_Pos)              /*!< C_CAN1 int32_t: INTID15_0 Mask              */
 
 /* ---------------------------------  C_CAN1_TEST  -------------------------------- */
 #define C_CAN1_TEST_BASIC_Pos                 2                                                       /*!< C_CAN1 TEST: BASIC Position             */
@@ -22813,8 +22813,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 #define C_CAN0_BT_TSEG2_Msk                   (0x07UL << C_CAN0_BT_TSEG2_Pos)                         /*!< C_CAN0 BT: TSEG2 Mask                   */
 
 /* ---------------------------------  C_CAN0_INT  --------------------------------- */
-#define C_CAN0_INT_INTID15_0_Pos              0                                                       /*!< C_CAN0 INT: INTID15_0 Position          */
-#define C_CAN0_INT_INTID15_0_Msk              (0x0000ffffUL << C_CAN0_INT_INTID15_0_Pos)              /*!< C_CAN0 INT: INTID15_0 Mask              */
+#define C_CAN0_INT_INTID15_0_Pos              0                                                       /*!< C_CAN0 int32_t: INTID15_0 Position          */
+#define C_CAN0_INT_INTID15_0_Msk              (0x0000ffffUL << C_CAN0_INT_INTID15_0_Pos)              /*!< C_CAN0 int32_t: INTID15_0 Mask              */
 
 /* ---------------------------------  C_CAN0_TEST  -------------------------------- */
 #define C_CAN0_TEST_BASIC_Pos                 2                                                       /*!< C_CAN0 TEST: BASIC Position             */
@@ -24069,8 +24069,8 @@ typedef struct {                                    /*!< (@ 0x40101000) SGPIO St
 #define SPI_TSR_SPIF_Msk                      (0x01UL << SPI_TSR_SPIF_Pos)                            /*!< SPI TSR: SPIF Mask                      */
 
 /* -----------------------------------  SPI_INT  ---------------------------------- */
-#define SPI_INT_SPIF_Pos                      0                                                       /*!< SPI INT: SPIF Position                  */
-#define SPI_INT_SPIF_Msk                      (0x01UL << SPI_INT_SPIF_Pos)                            /*!< SPI INT: SPIF Mask                      */
+#define SPI_INT_SPIF_Pos                      0                                                       /*!< SPI int32_t: SPIF Position                  */
+#define SPI_INT_SPIF_Msk                      (0x01UL << SPI_INT_SPIF_Pos)                            /*!< SPI int32_t: SPIF Mask                      */
 
 
 /* ================================================================================ */

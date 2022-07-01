@@ -100,9 +100,38 @@ extern "C" {
     #define UEZBSP_SDRAM_BASE_ADDR              0xA0000000
 #endif
 
+/*-------------------------------------------------------------------------*
+ * Platform Volume Settings:
+ *-------------------------------------------------------------------------*/
+#define AUDIO_AMP_NONE                        0   // Unique number per AMP
+#define AUDIO_AMP_TDA8551                     1
+#define AUDIO_AMP_WOLFSON                     2
+#define AUDIO_AMP_LM48110                     3
+
+// Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  128
+    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level // will lower OB speaker level
 #endif
+
+#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  140 // Limit audio to 0.5W output
+#endif
+
+// Max output limit changes based on AMP
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output
+
+// Define these for your own speakers or headphones.
+#ifndef UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL  255
+#endif
+#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL  255
+#endif
+#ifndef UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL
+    #define UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL  255
+#endif
+/*-------------------------------------------------------------------------*/
 
 #ifndef UEZ_CONSOLE_READ_BUFFER_SIZE
     #define UEZ_CONSOLE_READ_BUFFER_SIZE        128 // bytes
@@ -136,10 +165,10 @@ extern "C" {
  * General Purpose Pin Mappings to CPU:
  *-------------------------------------------------------------------------*/
 // HW Reset pin in Rev X PCB
-#define PIN_HW_RESET  				GPIO_NONE 
+#define PIN_HW_RESET  				 GPIO_NONE 
 
 // LED pin(s)
-#define GPIO_HEARTBEAT_LED  		GPIO_P1_13
+#define GPIO_HEARTBEAT_LED                       GPIO_P1_13
 
 // TODO add GPIOs on ALT PWR COM, PMOD here 
  
@@ -269,6 +298,7 @@ void UEZPlatform_ADC0_7_Require(void);
 void UEZPlatform_AudioCodec_Require(void);
 void UEZPlatform_AudioAmp_Require(void);
 void UEZPlatform_AudioMixer_Require(void);
+void UEZPlatform_Audio_Require(void);
 void UEZPlatform_Backlight_Require(void);
 void UEZPlatform_Console_Expansion_Require(
         TUInt32 aWriteBufferSize,

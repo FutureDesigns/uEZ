@@ -1,4 +1,6 @@
-char *ultoa(unsigned long value, char *string, int radix)
+#include <stdint.h> /* for int types */
+
+char *ultoa(unsigned long value, char *string, int32_t radix)
 {
   char tmp[33];
   char *tp = tmp;

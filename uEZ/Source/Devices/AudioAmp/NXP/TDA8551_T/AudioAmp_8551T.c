@@ -69,7 +69,7 @@ T_uezError AudioAmp_8551T_SetLevel(void *aWorkSpace, TUInt8 aLevel)
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
 
-    oldLevel = ((((p->iLevel * 100) / (0xFF)) * (p->iMaxLevel - p->iMinLevel))/100) + p->iMinLevel;
+    oldLevel = ((p->iLevel * (p->iMaxLevel - p->iMinLevel))/0xFF) + p->iMinLevel;
     p->iLevel = aLevel;
     setLevel = ((p->iLevel * (p->iMaxLevel - p->iMinLevel))/0xFF) + p->iMinLevel;
 

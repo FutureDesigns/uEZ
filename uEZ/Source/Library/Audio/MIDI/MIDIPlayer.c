@@ -59,15 +59,15 @@ TUInt8 G_Parm1;
 TUInt8 G_Parm2;
 
 T_MIDIMetaEvent G_MetaEvent;
-int G_MetaLength;
-int G_MetaCounter;
+int32_t G_MetaLength;
+int32_t G_MetaCounter;
 
 T_MIDINextByteType G_NextByteType = MIDI_FIRST_EVENT_BYTE;
-int G_DeltaTime = 0;
-int G_Tempo = 500000;	// default = 120 bpm or 500000 microseconds per quarter-note
-int G_TicksPerBeat;
+int32_t G_DeltaTime = 0;
+int32_t G_Tempo = 500000;	// default = 120 bpm or 500000 microseconds per quarter-note
+int32_t G_TicksPerBeat;
 double G_TimeMultiplier = 1;
-int G_LastNote = 0;
+int32_t G_LastNote = 0;
 
 void MidiEventByteParser(TUInt8 aNextByte);
 void BigE_Int32(TUInt32 *aValue);

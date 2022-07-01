@@ -215,7 +215,7 @@ T_uezError UEZAccelerometerGetInfo(
  * Routine: UEZAccelerometerReadXYZ
  *---------------------------------------------------------------------------*/
 /**
- *  Read the XYZ values of the accelerometer.  The values are in
+ *  Read the XYZ values of the accelerometer once. The values are in
  *      fixed signed 15.16 integers.
  *
  *  @param [in]    *aDevice 	Device handle to be returned
@@ -277,41 +277,10 @@ T_uezError UEZAccelerometerReadXYZ(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine: UEZAccelerometerReadXYZSingle
- *---------------------------------------------------------------------------*/
-/**
- *  Read the XYZ values of the accelerometer once.  The values are in
- *      fixed signed 15.16 integers.
- *
- *  @param [in]    *aDevice 	Device handle to be returned
- *
- *  @param [in]    *aReading 	Returned reading
- *
- *  @param [in]    aTimeout 	Maximum time spent looking for reading before
- *                          	timeout.
- *  @return        T_uezError	Error code
- */
-/*---------------------------------------------------------------------------*/
-T_uezError UEZAccelerometerReadXYZSingle(
-        T_uezDevice aDevice,
-        AccelerometerReading *aReading,
-        TUInt32 aTimeout)
-{
-    T_uezError error;
-    DEVICE_Accelerometer **p;
-
-    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
-    if (error)
-        return error;
-
-    return (*p)->ReadXYZSingle(p, aReading, aTimeout);
-}
-
-/*---------------------------------------------------------------------------*
  * Routine: UEZAccelerometerReadXYZFloat
  *---------------------------------------------------------------------------*/
 /**
- *  Read the XYZ values of the accelerometer as float.
+ *  Read the XYZ values of the accelerometer once as float.
  *
  *  @param [in]    *aDevice 	Device handle to be returned
  *
@@ -358,37 +327,6 @@ T_uezError UEZAccelerometerReadXYZFloat(
 
     return (*p)->ReadXYZFloat(p, aReading, aTimeout);
 }
-
-/*---------------------------------------------------------------------------*
- * Routine: UEZAccelerometerReadXYZFloatSingle
- *---------------------------------------------------------------------------*/
-/**
- *  Read the XYZ values of the accelerometer once as float.
- *
- *  @param [in]    *aDevice 	Device handle to be returned
- *
- *  @param [in]    *aReading 	Returned reading
- *
- *  @param [in]    aTimeout 	Maximum time spent looking for reading before
- *                          	timeout.
- *  @return        T_uezError	Error code
- */
-/*---------------------------------------------------------------------------*/
-T_uezError UEZAccelerometerReadXYZFloatSingle(
-        T_uezDevice aDevice,
-        AccelerometerReadingFloat *aReading,
-        TUInt32 aTimeout)
-{
-    T_uezError error;
-    DEVICE_Accelerometer **p;
-
-    error = UEZDeviceTableGetWorkspace(aDevice, (T_uezDeviceWorkspace **)&p);
-    if (error)
-        return error;
-
-    return (*p)->ReadXYZFloatSingle(p, aReading, aTimeout);
-}
-
 
 /** @} */
 /*-------------------------------------------------------------------------*

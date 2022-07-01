@@ -165,28 +165,28 @@ const ecc_set_type ecc_sets[] = {
 
 ecc_point* ecc_new_point(void);
 void ecc_del_point(ecc_point* p);
-int  ecc_map(ecc_point*, mp_int*, mp_digit*);
-int  ecc_projective_add_point(ecc_point* P, ecc_point* Q, ecc_point* R,
+int32_t  ecc_map(ecc_point*, mp_int*, mp_digit*);
+int32_t  ecc_projective_add_point(ecc_point* P, ecc_point* Q, ecc_point* R,
                               mp_int* modulus, mp_digit* mp);
-int  ecc_projective_dbl_point(ecc_point* P, ecc_point* R, mp_int* modulus,
+int32_t  ecc_projective_dbl_point(ecc_point* P, ecc_point* R, mp_int* modulus,
                               mp_digit* mp);
-static int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
-                      int map);
+static int32_t ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
+                      int32_t map);
 #ifdef ECC_SHAMIR
-static int ecc_mul2add(ecc_point* A, mp_int* kA, ecc_point* B, mp_int* kB,
+static int32_t ecc_mul2add(ecc_point* A, mp_int* kA, ecc_point* B, mp_int* kB,
                        ecc_point* C, mp_int* modulus);
 #endif
 
-int mp_jacobi(mp_int* a, mp_int* p, int* c);
-int mp_sqrtmod_prime(mp_int* n, mp_int* prime, mp_int* ret);
-int mp_submod(mp_int* a, mp_int* b, mp_int* c, mp_int* d);
+int32_t mp_jacobi(mp_int* a, mp_int* p, int32_t* c);
+int32_t mp_sqrtmod_prime(mp_int* n, mp_int* prime, mp_int* ret);
+int32_t mp_submod(mp_int* a, mp_int* b, mp_int* c, mp_int* d);
 
 #ifdef HAVE_COMP_KEY
-static int ecc_export_x963_compressed(ecc_key*, byte* out, word32* outLen);
+static int32_t ecc_export_x963_compressed(ecc_key*, byte* out, word32* outLen);
 #endif
 
 /* helper for either lib */
-static int get_digit_count(mp_int* a)
+static int32_t get_digit_count(mp_int* a)
 {
     if (a == NULL)
         return 0;
@@ -195,7 +195,7 @@ static int get_digit_count(mp_int* a)
 }
 
 /* helper for either lib */
-static mp_digit get_digit(mp_int* a, int n)
+static mp_digit get_digit(mp_int* a, int32_t n)
 {
     if (a == NULL)
         return 0;
@@ -217,11 +217,11 @@ static mp_digit get_digit(mp_int* a, int n)
    mp       The "b" value from montgomery_setup()
    return   MP_OKAY on success
 */
-int ecc_projective_add_point(ecc_point *P, ecc_point *Q, ecc_point *R,
+int32_t ecc_projective_add_point(ecc_point *P, ecc_point *Q, ecc_point *R,
                              mp_int* modulus, mp_digit* mp)
 {
    fp_int t1, t2, x, y, z;
-   int    err;
+   int32_t    err;
 
    if (P == NULL || Q == NULL || R == NULL || modulus == NULL || mp == NULL)
        return ECC_BAD_ARG_E;
@@ -375,11 +375,11 @@ int ecc_projective_add_point(ecc_point *P, ecc_point *Q, ecc_point *R,
    mp       The "b" value from montgomery_setup()
    return   MP_OKAY on success
 */
-int ecc_projective_dbl_point(ecc_point *P, ecc_point *R, mp_int* modulus,
+int32_t ecc_projective_dbl_point(ecc_point *P, ecc_point *R, mp_int* modulus,
                              mp_digit* mp)
 {
    fp_int   t1, t2;
-   int      err;
+   int32_t      err;
 
    if (P == NULL || R == NULL || modulus == NULL || mp == NULL)
        return ECC_BAD_ARG_E;
@@ -492,7 +492,7 @@ int ecc_projective_dbl_point(ecc_point *P, ecc_point *R, mp_int* modulus,
    mp       The "b" value from montgomery_setup()
    return   MP_OKAY on success
 */
-int ecc_projective_add_point(ecc_point* P, ecc_point* Q, ecc_point* R,
+int32_t ecc_projective_add_point(ecc_point* P, ecc_point* Q, ecc_point* R,
                              mp_int* modulus, mp_digit* mp)
 {
    mp_int t1;
@@ -500,7 +500,7 @@ int ecc_projective_add_point(ecc_point* P, ecc_point* Q, ecc_point* R,
    mp_int x;
    mp_int y;
    mp_int z;
-   int    err;
+   int32_t    err;
 
    if (P == NULL || Q == NULL || R == NULL || modulus == NULL || mp == NULL)
        return ECC_BAD_ARG_E;
@@ -741,12 +741,12 @@ int ecc_projective_add_point(ecc_point* P, ecc_point* Q, ecc_point* R,
    mp       The "b" value from montgomery_setup()
    return   MP_OKAY on success
 */
-int ecc_projective_dbl_point(ecc_point *P, ecc_point *R, mp_int* modulus,
+int32_t ecc_projective_dbl_point(ecc_point *P, ecc_point *R, mp_int* modulus,
                              mp_digit* mp)
 {
    mp_int t1;
    mp_int t2;
-   int    err;
+   int32_t    err;
 
    if (P == NULL || R == NULL || modulus == NULL || mp == NULL)
        return ECC_BAD_ARG_E;
@@ -907,11 +907,11 @@ int ecc_projective_dbl_point(ecc_point *P, ecc_point *R, mp_int* modulus,
   mp       The "b" value from montgomery_setup()
   return   MP_OKAY on success
 */
-int ecc_map(ecc_point* P, mp_int* modulus, mp_digit* mp)
+int32_t ecc_map(ecc_point* P, mp_int* modulus, mp_digit* mp)
 {
    mp_int t1;
    mp_int t2;
-   int    err;
+   int32_t    err;
 
    if (P == NULL || mp == NULL || modulus == NULL)
        return ECC_BAD_ARG_E;
@@ -974,19 +974,19 @@ int ecc_map(ecc_point* P, mp_int* modulus, mp_digit* mp)
    return MP_OKAY on success
 */
 #ifdef FP_ECC
-static int normal_ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R,
-                             mp_int* modulus, int map)
+static int32_t normal_ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R,
+                             mp_int* modulus, int32_t map)
 #else
-static int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
-                      int map)
+static int32_t ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
+                      int32_t map)
 #endif
 {
    ecc_point *tG, *M[8];
-   int           i, j, err;
+   int32_t           i, j, err;
    mp_int        mu;
    mp_digit      mp;
    mp_digit      buf;
-   int           first = 1, bitbuf = 0, bitcpy = 0, bitcnt = 0, mode = 0,
+   int32_t           first = 1, bitbuf = 0, bitcpy = 0, bitcnt = 0, mode = 0,
                  digidx = 0;
 
    if (k == NULL || G == NULL || R == NULL || modulus == NULL)
@@ -1072,12 +1072,12 @@ static int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
                    break;
                }
                buf    = get_digit(k, digidx);
-               bitcnt = (int) DIGIT_BIT; 
+               bitcnt = (int32_t) DIGIT_BIT; 
                --digidx;
            }
 
            /* grab the next msb from the ltiplicand */
-           i = (int)(buf >> (DIGIT_BIT - 1)) & 1;
+           i = (int32_t)(buf >> (DIGIT_BIT - 1)) & 1;
            buf <<= 1;
 
            /* skip leading zero bits */
@@ -1189,19 +1189,19 @@ static int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
    return MP_OKAY on success
 */
 #ifdef FP_ECC
-static int normal_ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R,
-                             mp_int* modulus, int map)
+static int32_t normal_ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R,
+                             mp_int* modulus, int32_t map)
 #else
-static int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
-                      int map)
+static int32_t ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
+                      int32_t map)
 #endif
 {
    ecc_point    *tG, *M[3];
-   int           i, j, err;
+   int32_t           i, j, err;
    mp_int        mu;
    mp_digit      mp;
    mp_digit      buf;
-   int           first = 1, bitbuf = 0, bitcpy = 0, bitcnt = 0, mode = 0,
+   int32_t           first = 1, bitbuf = 0, bitcpy = 0, bitcnt = 0, mode = 0,
                  digidx = 0;
 
    if (k == NULL || G == NULL || R == NULL || modulus == NULL)
@@ -1276,7 +1276,7 @@ static int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
                    break;
                }
                buf = get_digit(k, digidx);
-               bitcnt = (int) DIGIT_BIT;
+               bitcnt = (int32_t) DIGIT_BIT;
                --digidx;
            }
 
@@ -1378,9 +1378,9 @@ void ecc_del_point(ecc_point* p)
   n      The idx number to check
   return 1 if valid, 0 if not
 */  
-static int ecc_is_valid_idx(int n)
+static int32_t ecc_is_valid_idx(int32_t n)
 {
-   int x;
+   int32_t x;
 
    for (x = 0; ecc_sets[x].size != 0; x++)
        ;
@@ -1402,13 +1402,13 @@ static int ecc_is_valid_idx(int n)
   outlen           [in/out] The max size and resulting size of the shared secret
   return           MP_OKAY if successful
 */
-int ecc_shared_secret(ecc_key* private_key, ecc_key* public_key, byte* out,
+int32_t ecc_shared_secret(ecc_key* private_key, ecc_key* public_key, byte* out,
                       word32* outlen)
 {
    word32         x = 0;
    ecc_point*     result;
    mp_int         prime;
-   int            err;
+   int32_t            err;
 
    if (private_key == NULL || public_key == NULL || out == NULL ||
                                                     outlen == NULL)
@@ -1462,7 +1462,7 @@ int ecc_shared_secret(ecc_key* private_key, ecc_key* public_key, byte* out,
 }
 
 
-int ecc_make_key_ex(RNG* rng, ecc_key* key, const ecc_set_type* dp);
+int32_t ecc_make_key_ex(RNG* rng, ecc_key* key, const ecc_set_type* dp);
 
 /**
   Make a new ECC key 
@@ -1472,9 +1472,9 @@ int ecc_make_key_ex(RNG* rng, ecc_key* key, const ecc_set_type* dp);
   return       MP_OKAY if successful,
                        upon error all allocated memory will be freed
 */
-int ecc_make_key(RNG* rng, int keysize, ecc_key* key)
+int32_t ecc_make_key(RNG* rng, int32_t keysize, ecc_key* key)
 {
-   int x, err;
+   int32_t x, err;
 
    if (key == NULL || rng == NULL)
        return ECC_BAD_ARG_E;
@@ -1493,9 +1493,9 @@ int ecc_make_key(RNG* rng, int keysize, ecc_key* key)
    return err;
 }
 
-int ecc_make_key_ex(RNG* rng, ecc_key* key, const ecc_set_type* dp)
+int32_t ecc_make_key_ex(RNG* rng, ecc_key* key, const ecc_set_type* dp)
 {
-   int            err;
+   int32_t            err;
    ecc_point*     base;
    mp_int         prime;
    mp_int         order;
@@ -1504,7 +1504,7 @@ int ecc_make_key_ex(RNG* rng, ecc_key* key, const ecc_set_type* dp)
 #else
    byte           buf[ECC_MAXSIZE];
 #endif
-   int            keysize;
+   int32_t            keysize;
 
    if (key == NULL || rng == NULL || dp == NULL)
        return ECC_BAD_ARG_E;
@@ -1613,14 +1613,14 @@ void ecc_init(ecc_key* key)
   key       A private ECC key
   return    MP_OKAY if successful
 */
-int ecc_sign_hash(const byte* in, word32 inlen, byte* out, word32 *outlen, 
+int32_t ecc_sign_hash(const byte* in, word32 inlen, byte* out, word32 *outlen, 
                   RNG* rng, ecc_key* key)
 {
    mp_int        r;
    mp_int        s;
    mp_int        e;
    mp_int        p;
-   int           err;
+   int32_t           err;
 
    if (in == NULL || out == NULL || outlen == NULL || key == NULL || rng ==NULL)
        return ECC_BAD_ARG_E;
@@ -1742,11 +1742,11 @@ void ecc_free(ecc_key* key)
   return MP_OKAY on success
 */
 #ifdef FP_ECC
-static int normal_ecc_mul2add(ecc_point* A, mp_int* kA,
+static int32_t normal_ecc_mul2add(ecc_point* A, mp_int* kA,
                              ecc_point* B, mp_int* kB,
                              ecc_point* C, mp_int* modulus)
 #else
-static int ecc_mul2add(ecc_point* A, mp_int* kA,
+static int32_t ecc_mul2add(ecc_point* A, mp_int* kA,
                     ecc_point* B, mp_int* kB,
                     ecc_point* C, mp_int* modulus)
 #endif
@@ -1755,9 +1755,9 @@ static int ecc_mul2add(ecc_point* A, mp_int* kA,
   unsigned       bitbufA, bitbufB, lenA, lenB, len, x, y, nA, nB, nibble;
   unsigned char* tA;
   unsigned char* tB;
-  int            err = MP_OKAY, first;
-  int            muInit    = 0;
-  int            tableInit = 0;
+  int32_t            err = MP_OKAY, first;
+  int32_t            muInit    = 0;
+  int32_t            tableInit = 0;
   mp_digit mp;
   mp_int   mu;
  
@@ -1983,8 +1983,8 @@ static int ecc_mul2add(ecc_point* A, mp_int* kA,
    key         The corresponding public ECC key
    return      MP_OKAY if successful (even if the signature is not valid)
 */
-int ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
-                    word32 hashlen, int* stat, ecc_key* key)
+int32_t ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
+                    word32 hashlen, int32_t* stat, ecc_key* key)
 {
    ecc_point    *mG, *mQ;
    mp_int        r;
@@ -1996,7 +1996,7 @@ int ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
    mp_int        e;
    mp_int        p;
    mp_int        m;
-   int           err;
+   int32_t           err;
 
    if (sig == NULL || hash == NULL || stat == NULL || key == NULL)
        return ECC_BAD_ARG_E; 
@@ -2056,7 +2056,7 @@ int ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
    /* read hash */
    if (err == MP_OKAY) {
        /* we may need to truncate if hash is longer than key size */
-       unsigned int orderBits = mp_count_bits(&p);
+       uint32_t orderBits = mp_count_bits(&p);
 
        /* truncate down to byte size, may be all that's needed */
        if ( (CYASSL_BIT_SIZE * hashlen) > orderBits)
@@ -2152,7 +2152,7 @@ int ecc_verify_hash(const byte* sig, word32 siglen, const byte* hash,
 
 
 /* export public ECC key in ANSI X9.63 format */
-int ecc_export_x963(ecc_key* key, byte* out, word32* outLen)
+int32_t ecc_export_x963(ecc_key* key, byte* out, word32* outLen)
 {
 #ifdef CYASSL_SMALL_STACK
    byte*  buf;
@@ -2160,7 +2160,7 @@ int ecc_export_x963(ecc_key* key, byte* out, word32* outLen)
    byte   buf[ECC_BUFSIZE];
 #endif
    word32 numlen;
-   int    ret = MP_OKAY;
+   int32_t    ret = MP_OKAY;
 
    /* return length needed only */
    if (key != NULL && out == NULL && outLen != NULL) {
@@ -2221,7 +2221,7 @@ int ecc_export_x963(ecc_key* key, byte* out, word32* outLen)
 
 /* export public ECC key in ANSI X9.63 format, extended with
  * compression option */
-int ecc_export_x963_ex(ecc_key* key, byte* out, word32* outLen, int compressed)
+int32_t ecc_export_x963_ex(ecc_key* key, byte* out, word32* outLen, int32_t compressed)
 {
     if (compressed == 0)
         return ecc_export_x963(key, out, outLen);
@@ -2235,10 +2235,10 @@ int ecc_export_x963_ex(ecc_key* key, byte* out, word32* outLen, int compressed)
 
 
 /* import public ECC key in ANSI X9.63 format */
-int ecc_import_x963(const byte* in, word32 inLen, ecc_key* key)
+int32_t ecc_import_x963(const byte* in, word32 inLen, ecc_key* key)
 {
-   int x, err;
-   int compressed = 0;
+   int32_t x, err;
+   int32_t compressed = 0;
    
    if (in == NULL || key == NULL)
        return ECC_BAD_ARG_E;
@@ -2372,7 +2372,7 @@ int ecc_import_x963(const byte* in, word32 inLen, ecc_key* key)
 
 /* export ecc private key only raw, outLen is in/out size 
    return MP_OKAY on success */
-int ecc_export_private_only(ecc_key* key, byte* out, word32* outLen)
+int32_t ecc_export_private_only(ecc_key* key, byte* out, word32* outLen)
 {
    word32 numlen;
 
@@ -2396,10 +2396,10 @@ int ecc_export_private_only(ecc_key* key, byte* out, word32* outLen)
 
 
 /* ecc private key import, public key in ANSI X9.63 format, private raw */
-int ecc_import_private_key(const byte* priv, word32 privSz, const byte* pub,
+int32_t ecc_import_private_key(const byte* priv, word32 privSz, const byte* pub,
                            word32 pubSz, ecc_key* key)
 {
-    int ret = ecc_import_x963(pub, pubSz, key);
+    int32_t ret = ecc_import_x963(pub, pubSz, key);
     if (ret != 0)
         return ret;
 
@@ -2416,9 +2416,9 @@ int ecc_import_private_key(const byte* priv, word32 privSz, const byte* pub,
    outlen  [in/out] output buffer size, output signature size
    return  MP_OKAY on success
 */
-int ecc_rs_to_sig(const char* r, const char* s, byte* out, word32* outlen)
+int32_t ecc_rs_to_sig(const char* r, const char* s, byte* out, word32* outlen)
 {
-    int err;
+    int32_t err;
     mp_int rtmp;
     mp_int stmp;
 
@@ -2457,10 +2457,10 @@ int ecc_rs_to_sig(const char* r, const char* s, byte* out, word32* outlen)
    curveName ECC curve name, from ecc_sets[]
    return    MP_OKAY on success
 */
-int ecc_import_raw(ecc_key* key, const char* qx, const char* qy,
+int32_t ecc_import_raw(ecc_key* key, const char* qx, const char* qy,
                    const char* d, const char* curveName)
 {
-    int err, x;
+    int32_t err, x;
 
     if (key == NULL || qx == NULL || qy == NULL || d == NULL ||
         curveName == NULL)
@@ -2520,7 +2520,7 @@ int ecc_import_raw(ecc_key* key, const char* qx, const char* qy,
 
 
 /* key size in octets */
-int ecc_size(ecc_key* key)
+int32_t ecc_size(ecc_key* key)
 {
     if (key == NULL) return 0;
 
@@ -2530,9 +2530,9 @@ int ecc_size(ecc_key* key)
 
 /* worst case estimate, check actual return from ecc_sign_hash for actual value
    of signature size in octets */
-int ecc_sig_size(ecc_key* key)
+int32_t ecc_sig_size(ecc_key* key)
 {
-    int sz = ecc_size(key);
+    int32_t sz = ecc_size(key);
     if (sz < 0)
         return sz;
 
@@ -2570,8 +2570,8 @@ typedef struct {
    ecc_point* g;               /* cached COPY of base point */
    ecc_point* LUT[1U<<FP_LUT]; /* fixed point lookup */ 
    mp_int     mu;              /* copy of the montgomery constant */
-   int        lru_count;       /* amount of times this entry has been used */
-   int        lock;            /* flag to indicate cache eviction */
+   int32_t        lru_count;       /* amount of times this entry has been used */
+   int32_t        lock;            /* flag to indicate cache eviction */
                                /* permitted (0) or not (1) */
 } fp_cache_t;
 
@@ -2579,13 +2579,13 @@ typedef struct {
 static THREAD_LS_T fp_cache_t fp_cache[FP_ENTRIES];
 
 #ifndef HAVE_THREAD_LS
-    static volatile int initMutex = 0;  /* prevent multiple mutex inits */
+    static volatile int32_t initMutex = 0;  /* prevent multiple mutex inits */
     static CyaSSL_Mutex ecc_fp_lock;
 #endif /* HAVE_THREAD_LS */
 
 /* simple table to help direct the generation of the LUT */
 static const struct {
-   int ham, terma, termb;
+   int32_t ham, terma, termb;
 } lut_orders[] = {
    { 0, 0, 0 }, { 1, 0, 0 }, { 1, 0, 0 }, { 2, 1, 2 }, { 1, 0, 0 }, { 2, 1, 4 }, { 2, 2, 4 }, { 3, 3, 4 }, 
    { 1, 0, 0 }, { 2, 1, 8 }, { 2, 2, 8 }, { 3, 3, 8 }, { 2, 4, 8 }, { 3, 5, 8 }, { 3, 6, 8 }, { 4, 7, 8 }, 
@@ -3114,10 +3114,10 @@ static const struct {
 };
 
 /* find a hole and free as required, return -1 if no hole found */
-static int find_hole(void)
+static int32_t find_hole(void)
 {
    unsigned x;
-   int      y, z;
+   int32_t      y, z;
    for (z = -1, y = INT_MAX, x = 0; x < FP_ENTRIES; x++) {
        if (fp_cache[x].lru_count < y && fp_cache[x].lock == 0) {
           z = x;
@@ -3147,9 +3147,9 @@ static int find_hole(void)
 }
 
 /* determine if a base is already in the cache and if so, where */
-static int find_base(ecc_point* g)
+static int32_t find_base(ecc_point* g)
 {
-   int x;
+   int32_t x;
    for (x = 0; x < FP_ENTRIES; x++) {
       if (fp_cache[x].g != NULL && 
           mp_cmp(&fp_cache[x].g->x, &g->x) == MP_EQ && 
@@ -3165,7 +3165,7 @@ static int find_base(ecc_point* g)
 }
 
 /* add a new base to the cache */
-static int add_entry(int idx, ecc_point *g)
+static int32_t add_entry(int32_t idx, ecc_point *g)
 {
    unsigned x, y;
 
@@ -3208,7 +3208,7 @@ static int add_entry(int idx, ecc_point *g)
  * The algorithm builds patterns in increasing bit order by first making all 
  * single bit input patterns, then all two bit input patterns and so on
  */
-static int build_lut(int idx, mp_int* modulus, mp_digit* mp, mp_int* mu)
+static int32_t build_lut(int32_t idx, mp_int* modulus, mp_digit* mp, mp_int* mu)
 { 
    unsigned x, y, err, bitlen, lut_gap;
    mp_int tmp;
@@ -3277,7 +3277,7 @@ static int build_lut(int idx, mp_int* modulus, mp_digit* mp, mp_int* mu)
        for (y = 0; y < (1UL<<FP_LUT); y++) {
            if (err != MP_OKAY)
              break;
-           if (lut_orders[y].ham != (int)x) continue;
+           if (lut_orders[y].ham != (int32_t)x) continue;
                      
            /* perform the add */
            if ((err = ecc_projective_add_point(
@@ -3344,8 +3344,8 @@ static int build_lut(int idx, mp_int* modulus, mp_digit* mp, mp_int* mu)
 }
 
 /* perform a fixed point ECC mulmod */
-static int accel_fp_mul(int idx, mp_int* k, ecc_point *R, mp_int* modulus,
-                        mp_digit* mp, int map)
+static int32_t accel_fp_mul(int32_t idx, mp_int* k, ecc_point *R, mp_int* modulus,
+                        mp_digit* mp, int32_t map)
 {
 #define KB_SIZE 128
 
@@ -3354,7 +3354,7 @@ static int accel_fp_mul(int idx, mp_int* k, ecc_point *R, mp_int* modulus,
 #else
    unsigned char kb[128];
 #endif
-   int      x;
+   int32_t      x;
    unsigned y, z, err, bitlen, bitpos, lut_gap, first;
    mp_int   tk;
 
@@ -3408,7 +3408,7 @@ static int accel_fp_mul(int idx, mp_int* k, ecc_point *R, mp_int* modulus,
    lut_gap = bitlen / FP_LUT;
         
    /* get the k value */
-   if (mp_unsigned_bin_size(&tk) > (int)(KB_SIZE - 2)) {
+   if (mp_unsigned_bin_size(&tk) > (int32_t)(KB_SIZE - 2)) {
       mp_clear(&tk);
       return BUFFER_E;
    }
@@ -3495,7 +3495,7 @@ static int accel_fp_mul(int idx, mp_int* k, ecc_point *R, mp_int* modulus,
 
 #ifdef ECC_SHAMIR
 /* perform a fixed point ECC mulmod */
-static int accel_fp_mul2add(int idx1, int idx2, 
+static int32_t accel_fp_mul2add(int32_t idx1, int32_t idx2, 
                             mp_int* kA, mp_int* kB,
                             ecc_point *R, mp_int* modulus, mp_digit* mp)
 {
@@ -3506,7 +3506,7 @@ static int accel_fp_mul2add(int idx1, int idx2,
 #else
    unsigned char kb[2][128];
 #endif
-   int      x;
+   int32_t      x;
    unsigned y, z, err, bitlen, bitpos, lut_gap, first, zA, zB;
    mp_int tka;
    mp_int tkb;
@@ -3602,8 +3602,8 @@ static int accel_fp_mul2add(int idx1, int idx2,
    lut_gap = bitlen / FP_LUT;
         
    /* get the k value */
-   if ((mp_unsigned_bin_size(&tka) > (int)(KB_SIZE - 2)) ||
-       (mp_unsigned_bin_size(&tkb) > (int)(KB_SIZE - 2))  ) {
+   if ((mp_unsigned_bin_size(&tka) > (int32_t)(KB_SIZE - 2)) ||
+       (mp_unsigned_bin_size(&tkb) > (int32_t)(KB_SIZE - 2))  ) {
       mp_clear(&tka);
       mp_clear(&tkb);
       return BUFFER_E;
@@ -3743,11 +3743,11 @@ static int accel_fp_mul2add(int idx1, int idx2,
   modulus  Modulus for curve 
   return MP_OKAY on success
 */ 
-int ecc_mul2add(ecc_point* A, mp_int* kA,
+int32_t ecc_mul2add(ecc_point* A, mp_int* kA,
                 ecc_point* B, mp_int* kB,
                 ecc_point* C, mp_int* modulus)
 {
-   int  idx1 = -1, idx2 = -1, err = MP_OKAY, mpInit = 0;
+   int32_t  idx1 = -1, idx2 = -1, err = MP_OKAY, mpInit = 0;
    mp_digit mp;
    mp_int   mu;
   
@@ -3865,13 +3865,13 @@ int ecc_mul2add(ecc_point* A, mp_int* kA,
              otherwise it's left in jacobian-montgomery form
     return MP_OKAY if successful
 */   
-int ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
-               int map)
+int32_t ecc_mulmod(mp_int* k, ecc_point *G, ecc_point *R, mp_int* modulus,
+               int32_t map)
 {
-   int   idx, err = MP_OKAY;
+   int32_t   idx, err = MP_OKAY;
    mp_digit mp;
    mp_int   mu;
-   int      mpSetup = 0;
+   int32_t      mpSetup = 0;
 
    if (mp_init(&mu) != MP_OKAY)
        return MP_INIT_E;
@@ -4058,7 +4058,7 @@ const byte* ecc_ctx_get_own_salt(ecEncCtx* ctx)
 
 
 /* optional set info, can be called before or after set_peer_salt */
-int ecc_ctx_set_info(ecEncCtx* ctx, const byte* info, int sz)
+int32_t ecc_ctx_set_info(ecEncCtx* ctx, const byte* info, int32_t sz)
 {
     if (ctx == NULL || info == 0 || sz < 0)
         return BAD_FUNC_ARG;
@@ -4072,10 +4072,10 @@ int ecc_ctx_set_info(ecEncCtx* ctx, const byte* info, int sz)
 
 static const char* exchange_info = "Secure Message Exchange";
 
-int ecc_ctx_set_peer_salt(ecEncCtx* ctx, const byte* salt)
+int32_t ecc_ctx_set_peer_salt(ecEncCtx* ctx, const byte* salt)
 {
     byte tmp[EXCHANGE_SALT_SZ/2];
-    int  halfSz = EXCHANGE_SALT_SZ/2;
+    int32_t  halfSz = EXCHANGE_SALT_SZ/2;
 
     if (ctx == NULL || ctx->protocol == 0 || salt == NULL)
         return BAD_FUNC_ARG;
@@ -4121,7 +4121,7 @@ int ecc_ctx_set_peer_salt(ecEncCtx* ctx, const byte* salt)
 }
 
 
-static int ecc_ctx_set_salt(ecEncCtx* ctx, int flags, RNG* rng)
+static int32_t ecc_ctx_set_salt(ecEncCtx* ctx, int32_t flags, RNG* rng)
 {
     byte* saltBuffer = NULL;
 
@@ -4134,7 +4134,7 @@ static int ecc_ctx_set_salt(ecEncCtx* ctx, int flags, RNG* rng)
 }
 
 
-static void ecc_ctx_init(ecEncCtx* ctx, int flags)
+static void ecc_ctx_init(ecEncCtx* ctx, int32_t flags)
 {
     if (ctx) {
         XMEMSET(ctx, 0, sizeof(ecEncCtx));
@@ -4153,7 +4153,7 @@ static void ecc_ctx_init(ecEncCtx* ctx, int flags)
 
 
 /* allow ecc context reset so user doesn't have to init/free for resue */
-int ecc_ctx_reset(ecEncCtx* ctx, RNG* rng)
+int32_t ecc_ctx_reset(ecEncCtx* ctx, RNG* rng)
 {
     if (ctx == NULL || rng == NULL)
         return BAD_FUNC_ARG;
@@ -4164,9 +4164,9 @@ int ecc_ctx_reset(ecEncCtx* ctx, RNG* rng)
 
 
 /* alloc/init and set defaults, return new Context  */
-ecEncCtx* ecc_ctx_new(int flags, RNG* rng)
+ecEncCtx* ecc_ctx_new(int32_t flags, RNG* rng)
 {
-    int       ret = 0;
+    int32_t       ret = 0;
     ecEncCtx* ctx = (ecEncCtx*)XMALLOC(sizeof(ecEncCtx), 0, DYNAMIC_TYPE_ECC);
 
     if (ctx)
@@ -4192,8 +4192,8 @@ void ecc_ctx_free(ecEncCtx* ctx)
 }
 
 
-static int ecc_get_key_sizes(ecEncCtx* ctx, int* encKeySz, int* ivSz,
-                             int* keysLen, word32* digestSz, word32* blockSz)
+static int32_t ecc_get_key_sizes(ecEncCtx* ctx, int32_t* encKeySz, int32_t* ivSz,
+                             int32_t* keysLen, word32* digestSz, word32* blockSz)
 {
     if (ctx) {
         switch (ctx->encAlgo) {
@@ -4226,10 +4226,10 @@ static int ecc_get_key_sizes(ecEncCtx* ctx, int* encKeySz, int* ivSz,
    ctx holds non default algos and inputs
    msgSz should be the right size for encAlgo, i.e., already padded 
    return 0 on success */
-int ecc_encrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
+int32_t ecc_encrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
                 word32 msgSz, byte* out, word32* outSz, ecEncCtx* ctx)
 {
-    int          ret;
+    int32_t          ret;
     word32       blockSz;
     word32       digestSz;
     ecEncCtx     localCtx;
@@ -4241,10 +4241,10 @@ int ecc_encrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
     byte         keys[ECC_BUFSIZE];         /* max size */
 #endif
     word32       sharedSz = ECC_MAXSIZE;
-    int          keysLen;
-    int          encKeySz;
-    int          ivSz;
-    int          offset = 0;         /* keys offset if doing msg exchange */
+    int32_t          keysLen;
+    int32_t          encKeySz;
+    int32_t          ivSz;
+    int32_t          offset = 0;         /* keys offset if doing msg exchange */
     byte*        encKey;
     byte*        encIv;
     byte*        macKey;
@@ -4378,10 +4378,10 @@ int ecc_encrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
 /* ecc decrypt with shared secret run through kdf
    ctx holds non default algos and inputs
    return 0 on success */
-int ecc_decrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
+int32_t ecc_decrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
                 word32 msgSz, byte* out, word32* outSz, ecEncCtx* ctx)
 {
-    int          ret;
+    int32_t          ret;
     word32       blockSz;
     word32       digestSz;
     ecEncCtx     localCtx;
@@ -4393,10 +4393,10 @@ int ecc_decrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
     byte         keys[ECC_BUFSIZE];         /* max size */
 #endif
     word32       sharedSz = ECC_MAXSIZE;
-    int          keysLen;
-    int          encKeySz;
-    int          ivSz;
-    int          offset = 0;       /* in case using msg exchange */
+    int32_t          keysLen;
+    int32_t          encKeySz;
+    int32_t          ivSz;
+    int32_t          offset = 0;       /* in case using msg exchange */
     byte*        encKey;
     byte*        encIv;
     byte*        macKey;
@@ -4540,10 +4540,10 @@ int ecc_decrypt(ecc_key* privKey, ecc_key* pubKey, const byte* msg,
 /* computes the jacobi c = (a | n) (or Legendre if n is prime)
  * HAC pp. 73 Algorithm 2.149
  */
-int mp_jacobi(mp_int* a, mp_int* p, int* c)
+int32_t mp_jacobi(mp_int* a, mp_int* p, int32_t* c)
 {
   mp_int   a1, p1;
-  int      k, s, r, res;
+  int32_t      k, s, r, res;
   mp_digit residue;
 
   /* if p <= 0 return MP_VAL */
@@ -4624,9 +4624,9 @@ int mp_jacobi(mp_int* a, mp_int* p, int* c)
 }
 
 
-int mp_sqrtmod_prime(mp_int* n, mp_int* prime, mp_int* ret)
+int32_t mp_sqrtmod_prime(mp_int* n, mp_int* prime, mp_int* ret)
 {
-  int res, legendre, done = 0;
+  int32_t res, legendre, done = 0;
   mp_int t1, C, Q, S, Z, M, T, R, two;
   mp_digit i;
 
@@ -4781,10 +4781,10 @@ int mp_sqrtmod_prime(mp_int* n, mp_int* prime, mp_int* ret)
 
 
 /* export public ECC key in ANSI X9.63 format compressed */
-int ecc_export_x963_compressed(ecc_key* key, byte* out, word32* outLen)
+int32_t ecc_export_x963_compressed(ecc_key* key, byte* out, word32* outLen)
 {
    word32 numlen;
-   int    ret = MP_OKAY;
+   int32_t    ret = MP_OKAY;
 
    if (key == NULL || out == NULL || outLen == NULL)
        return ECC_BAD_ARG_E;
@@ -4812,9 +4812,9 @@ int ecc_export_x963_compressed(ecc_key* key, byte* out, word32* outLen)
 
 
 /* d = a - b (mod c) */
-int mp_submod(mp_int* a, mp_int* b, mp_int* c, mp_int* d)
+int32_t mp_submod(mp_int* a, mp_int* b, mp_int* c, mp_int* d)
 {
-  int     res;
+  int32_t     res;
   mp_int  t;
 
   if ((res = mp_init (&t)) != MP_OKAY) {

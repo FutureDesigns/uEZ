@@ -10,12 +10,12 @@
 
 /* func_args from test.h, so don't have to pull in other junk */
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
-extern int ctaocrypt_test(void* args);
+extern int32_t ctaocrypt_test(void* args);
 
 /*
  *  ======== testCtaocrypt ========
@@ -34,7 +34,7 @@ void testCtaocrypt(UArg arg0, UArg arg1)
 /*
  *  ======== main ========
  */
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 {
     func_args args;
     args.argc = argc;

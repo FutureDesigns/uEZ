@@ -529,7 +529,7 @@ static const TaskParameters_t xCheckTaskParameters =
 	}
 };
 
-int main( void )
+int32_t main( void )
 {
 TaskHandle_t xHandle;
 

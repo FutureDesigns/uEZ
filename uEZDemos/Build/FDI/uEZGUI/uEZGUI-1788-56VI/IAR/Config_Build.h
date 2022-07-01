@@ -14,7 +14,7 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   1
+#define SEGGER_ENABLE_RTT                   0
 #define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
@@ -25,7 +25,7 @@
 
 #define UEZ_ENABLE_AUDIO_AMP                1
 #define UEZ_ENABLE_USB_HOST_STACK           1
-#define UEZ_ENABLE_USB_DEVICE_STACK         0
+#define UEZ_ENABLE_USB_DEVICE_STACK         1
 #define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
@@ -40,9 +40,9 @@
 #define UEZ_ENABLE_BUTTON_BOARD             0 // Turn on for button board
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
-//#define UEZ_ICONS_SET                     ICONS_SET_PROFESSIONAL_ICONS
-#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS_LARGE
-#define SIMPLEUI_DOUBLE_SIZED_ICONS         0// 1 to 1 icons
+#define UEZ_ICONS_SET                     ICONS_SET_PROFESSIONAL_ICONS
+//#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS_LARGE
+#define SIMPLEUI_DOUBLE_SIZED_ICONS         1// 1 to 1 icons
 
 // Modify the default accelerometer demo settings
 #define ACCEL_DEMO_SWAP_XY                  0
@@ -61,7 +61,7 @@
 #define APP_DEMO_COM                        1
 #endif
 #define APP_DEMO_YOUR_APP                   0
-#define SHOW_GUIDEMO_AUTOMOTIVE             1
+#define SHOW_GUIDEMO_AUTOMOTIVE             0
 #define SHOW_GUIDEMO_GRAPH                  0
 #define SHOW_GUIDEMO_LISTVIE                0
 #define SHOW_GUIDEMO_SPEED                  0
@@ -71,3 +71,4 @@
 #define SLIDESHOW_PREFETCH_AHEAD            5
 #define SLIDESHOW_PREFETCH_BEHIND           1
 #define SLIDESHOW_NUM_CACHED_SLIDES         5
+

@@ -86,30 +86,6 @@ static T_uezError IReadData(
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  ICalcG
- *---------------------------------------------------------------------------*
- * Description:
- *      Convert the G's of the current movement based on the current
- *      configuration and reading of x, y, or z.
- * Inputs:
- *      T_ST_Accelo_LIS3DH_I2C_Workspace *p -- Workspace
- *      TUInt8 aMSB                 -- Most significant bits (bits 7..0)
- *      TUInt8 aLSB                 -- Least significant bits (bits 7..6)
- * Outputs:
- *      float                      -- signed result in g
- *---------------------------------------------------------------------------*/
-static inline float ICalcG(
-                TUInt8 msb, 
-                TUInt8 lsb)
-{    
-    TInt16 vi; 
-    vi = (int16_t) (msb << 8);
-    vi = (int16_t) (lsb | vi);
-
-    return (float)vi / (float)16384.0;
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  ST_Accelo_LIS3DH_I2C_InitializeWorkspace
  *---------------------------------------------------------------------------*
  * Description:
@@ -143,17 +119,118 @@ T_uezError ST_Accelo_LIS3DH_I2C_InitializeWorkspace(void *aW)
  * Description:
  *      Temporary stub  
  * Inputs:
- *      void *aWorkspace                    -- Workspace
+ *      void *aWorkspace            -- Workspace
  * Outputs:
  *      T_uezError                  -- Error code, UEZ_ERROR_TIMEOUT if no
  *                                      reading.
  *---------------------------------------------------------------------------*/
-
 T_uezError ST_Accelo_LIS3DH_I2C_GetInfo(
         void *aWorkspace,
         AccelerometerInfo *aInfo)
 {
     return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ICalc10Bit8G
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Convert the G's of the current movement based on the 8G
+ *      configuration and reading of x, y, or z.
+ * Inputs:
+ *      T_Accelerometer_Freescale_MMA7455_I2C_Workspace *p -- Workspace
+ *      TUInt8 aMSB                 -- Most significant bits (bits 7..0)
+ *      TUInt8 aLSB                 -- Least significant bits (bits 7..6)
+ * Outputs:
+ *      TInt32                      -- 15.16 signed result in g
+ *---------------------------------------------------------------------------*/
+// TODO If switching to 8g mode use this conversion function instead
+/*static TInt32 ICalc10Bit8G(TUInt8 msb, TUInt8 lsb)
+{
+    TInt16 vi;
+    TInt32 r;
+
+    // Turn the MSB and LSB into a single 16-bit number
+    vi = msb << 8;
+    vi |= lsb;
+    // Resulting number is left justified!
+
+    // The 10-bit number is a [iiii.ffff ff00 0000] number (thus 0001.000000 is +1g)
+    // in a 16-bit number.  iiii is 0-8 g, signed value
+
+    // Extend the sign into a 32-bit signed number
+    r = vi;
+
+    // Now shift up the number
+    // It now looks like this:
+    // iiii iiii iiii iiii . ffff ff00 0000 0000
+    // or a 15.16 signed number
+    r <<= 4;
+
+    return r;
+}*/
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ICalc10Bit2G
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Convert the G's of the current movement based on the 2G
+ *      configuration and reading of x, y, or z.
+ * Inputs:
+ *      T_Accelerometer_Freescale_MMA7455_I2C_Workspace *p -- Workspace
+ *      TUInt8 aMSB                 -- Most significant bits (bits 7..0)
+ *      TUInt8 aLSB                 -- Least significant bits (bits 7..6)
+ * Outputs:
+ *      TInt32                      -- 15.16 signed result in g
+ *---------------------------------------------------------------------------*/
+static TInt32 ICalc10Bit2G(TUInt8 msb, TUInt8 lsb)
+{
+    TInt16 vi;
+    TInt32 r;
+
+    // Turn the MSB and LSB into a single 16-bit number
+    vi = msb << 8;
+    vi |= lsb;
+    // Resulting number is left justified!
+    
+    // The 10-bit number is a [ii.ff ffff ff00 0000] number (thus 01.00000000 is +1g)
+    // in a 16-bit number.  ii is 0-2 g, signed value
+    
+    // Extend the sign into a 32-bit signed number
+    r = vi;
+
+    // Now shift up the number
+    // It now looks like this:
+    // iiii iiii iiii iiii . ffff ffff 0000 0000
+    // or a 15.16 signed number
+    r <<= 2;
+
+    return r;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ICalcG
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Convert the G's of the current movement based on the current
+ *      configuration and reading of x, y, or z.
+ * Inputs:
+ *      T_ST_Accelo_LIS3DH_I2C_Workspace *p -- Workspace
+ *      TUInt8 aMSB                 -- Most significant bits (bits 7..0)
+ *      TUInt8 aLSB                 -- Least significant bits (bits 7..6)
+ * Outputs:
+ *      float                      -- signed result in g
+ *---------------------------------------------------------------------------*/
+ // TODO add conversion for other modes such as 4g, 8, etc. This is 2G only!
+static inline float ICalcG(
+                TUInt8 msb, 
+                TUInt8 lsb)
+{    
+    TInt16 vi; 
+    vi = (int16_t) (msb << 8);
+    vi = (int16_t) (lsb | vi);
+
+    return (float)vi / (float)16384.0;
 }
 
 /*---------------------------------------------------------------------------*
@@ -174,118 +251,42 @@ T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ(
         AccelerometerReading *aReading,
         TUInt32 aTimeout)
 {
-    /*T_uezError error;
-    TUInt32 i;
-    TUInt8 status;
-    static TUInt8 accdata[18];
-    float tempReadingX[10];
-    float tempReadingY[10];
-    float tempReadingZ[10];
-    
-    T_ST_Accelo_LIS3DH_I2C_Workspace *p = 
-        (T_ST_Accelo_LIS3DH_I2C_Workspace *)aWorkspace;*/
-
-    aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
-	
-    return UEZ_ERROR_NOT_SUPPORTED; // TODO implement 15.16 signed
-/*
-    // Allow only one transfer at a time
-    error = UEZSemaphoreGrab(p->iSem, aTimeout);
-    if (error)
-        return error;
-
-    for (i=0; i<10; i++) { // try 10 times
-        memset(accdata, 0xCC, sizeof(accdata));
-        error = IReadData(p, accdata, 0x27, 7, 100);
-        status = accdata[0];
-        if (status & (1<<3)) {
-            tempReadingX[i] = ICalcG(accdata[2], accdata[1]);
-            tempReadingY[i] = ICalcG(accdata[4], accdata[3]);
-            tempReadingZ[i] = ICalcG(accdata[6], accdata[5]);
-						
-            p->iLastReading = *aReading;
-            break;  // break if successful 
-        }
-        UEZTaskDelay(2);
-    }
-    if (i==10) {
-        *aReading = p->iLastReading;
-		
-		aReading->iX=0.0;
-        aReading->iY=0.0;
-        aReading->iZ=0.0;
-        for(int k=0;k<10;k++){
-            aReading->iX = aReading->iX + tempReadingX[k];
-            aReading->iY = aReading->iY + tempReadingY[k];
-            aReading->iZ = aReading->iZ + tempReadingZ[k];
-        }
-        aReading->iX = aReading->iX/(float)10;
-        aReading->iY = aReading->iY/(float)10;
-        aReading->iZ = aReading->iZ/(float)10;
-    }
-    UEZSemaphoreRelease(p->iSem);
-
-    return error;*/
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  ST_Accelo_LIS3DH_I2C_ReadXYZ_Single
- *---------------------------------------------------------------------------*
- * Description:
- *      Try to get the XYZ reading of the accelerometer
- * Inputs:
- *      void *aW                    -- Workspace
- *      aReading -- Place to store reading
- *      TUInt32 aTimeout            -- Time to wait until reading is ready
- * Outputs:
- *      T_uezError                  -- Error code, UEZ_ERROR_TIMEOUT if no
- *                                      reading.
- *---------------------------------------------------------------------------*/
-T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ_Single(
-        void *aWorkspace, 
-        AccelerometerReading *aReading,
-        TUInt32 aTimeout)
-{
-    /*T_uezError error;
+    T_uezError error;
 	T_ST_Accelo_LIS3DH_I2C_Workspace *p = (T_ST_Accelo_LIS3DH_I2C_Workspace *)aWorkspace;
-	//static TUInt8 accdata[18];
-    TUInt8 status;*/
+	static TUInt8 accdata[18];
+    TUInt8 status;
 
     aReading->iX = 0;
     aReading->iY = 0;
     aReading->iZ = 0;
 	
-    return UEZ_ERROR_NOT_SUPPORTED;	 // TODO implement 15.16 signed
-/*
+    //return UEZ_ERROR_NOT_SUPPORTED;	 // TODO implement 15.16 signed
+
     // Allow only one transfer at a time
     error = UEZSemaphoreGrab(p->iSem, aTimeout);
-    if (error) { // do nothiing on error		
-	} else {		
-		memset(accdata, 0xCC, sizeof(accdata));
-		error = IReadData(p, accdata, 0x27, 7, 100); // TODO change 100 to aTimeout?
-		status = accdata[0];
-		if (status & (1<<3)) {
-			//p->iLastReading = *aReading; // no last reading when single read
-			aReading->iX = ICalcG(accdata[2], accdata[1]);
-			aReading->iY = ICalcG(accdata[4], accdata[3]);
-			aReading->iZ = ICalcG(accdata[6], accdata[5]);
-			//break;  // break if successful 
-		}		
-		UEZSemaphoreRelease(p->iSem);
-	}
-    return error;*/
+    if (!error) {      	
+      memset(accdata, 0xCC, sizeof(accdata));
+      error = IReadData(p, accdata, 0x27, 7, aTimeout);
+      status = accdata[0];
+      if (status & (1<<3)) {
+          p->iLastReading = *aReading;
+          aReading->iX = ICalc10Bit2G(accdata[2], accdata[1]);
+          aReading->iY = ICalc10Bit2G(accdata[4], accdata[3]);
+          aReading->iZ = ICalc10Bit2G(accdata[6], accdata[5]);
+      }		
+      UEZSemaphoreRelease(p->iSem);
+    }
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
  * Routine:  ST_Accelo_LIS3DH_I2C_ReadXYZ_Float
  *---------------------------------------------------------------------------*
  * Description:
- *      Try to get the XYZ reading of the accelerometer
+ *      Get single XYZ reading of the accelerometer
  * Inputs:
  *      void *aW                    -- Workspace
- *      aReading -- Place to store reading
+ *      aReading                    -- Place to store reading
  *      TUInt32 aTimeout            -- Time to wait until reading is ready
  * Outputs:
  *      T_uezError                  -- Error code, UEZ_ERROR_TIMEOUT if no
@@ -293,42 +294,23 @@ T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ_Single(
  *---------------------------------------------------------------------------*/
 T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ_Float(
         void *aWorkspace, 
-        AccelerometerReadingFloat *aReading,
+        AccelerometerReadingFloat *aReadingF,
         TUInt32 aTimeout)
 {
     T_uezError error;
-	TUInt32 i;
-    TUInt8 status;
+    T_ST_Accelo_LIS3DH_I2C_Workspace *p = (T_ST_Accelo_LIS3DH_I2C_Workspace *)aWorkspace;
     static TUInt8 accdata[18];
-    float tempReadingX[10] = {0.0};
-    float tempReadingY[10] = {0.0};
-    float tempReadingZ[10] = {0.0};
-    
-    T_ST_Accelo_LIS3DH_I2C_Workspace *p = 
-        (T_ST_Accelo_LIS3DH_I2C_Workspace *)aWorkspace;
+    TUInt8 status;
 
-    aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
+    aReadingF->iX = 0;
+    aReadingF->iY = 0;
+    aReadingF->iZ = 0;
 
     // Allow only one transfer at a time
     error = UEZSemaphoreGrab(p->iSem, aTimeout);
-    if (error)
-        return error;
-
-    for (i=0; i<10; i++) { // try 10 times
-        memset(accdata, 0xCC, sizeof(accdata));
-        error = IReadData(p, accdata, 0x27, 7, 100);
-        status = accdata[0];
-        if (status & (1<<3)) {
-            tempReadingX[i] = ICalcG(accdata[2], accdata[1]);
-            tempReadingY[i] = ICalcG(accdata[4], accdata[3]);
-            tempReadingZ[i] = ICalcG(accdata[6], accdata[5]);
-						
-            p->iLastReadingFloat = *aReading;
-            break;  // break if successful 
-        }
-        UEZTaskDelay(2);
+    if (!error) {      	
+      memset(accdata, 0xCC, sizeof(accdata));
+      error = IReadData(p, accdata, 0x27, 7, aTimeout);
 /*
 Array Contents After Read
 accdata[0] - STATUS_REG (0x27)
@@ -339,70 +321,15 @@ accdata[4] - OUTY_H     (0x2B)
 accdata[5] - OUTZ_L     (0x2C)
 accdata[6] - OUTZ_H     (0x2D)
 */
+      status = accdata[0];
+      if (status & (1<<3)) {
+          p->iLastReadingFloat = *aReadingF;
+          aReadingF->iX = ICalcG(accdata[2], accdata[1]);
+          aReadingF->iY = ICalcG(accdata[4], accdata[3]);
+          aReadingF->iZ = ICalcG(accdata[6], accdata[5]);
+      }		
+      UEZSemaphoreRelease(p->iSem);
     }
-    if (i==10) {
-        *aReading = p->iLastReadingFloat;
-		
-	aReading->iX=0.0;
-        aReading->iY=0.0;
-        aReading->iZ=0.0;
-        for(int k=0;k<10;k++){
-            aReading->iX = aReading->iX + tempReadingX[k];
-            aReading->iY = aReading->iY + tempReadingY[k];
-            aReading->iZ = aReading->iZ + tempReadingZ[k];
-        }
-        aReading->iX = aReading->iX/(float)10;
-        aReading->iY = aReading->iY/(float)10;
-        aReading->iZ = aReading->iZ/(float)10;
-    }
-    UEZSemaphoreRelease(p->iSem);
-
-    return error;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  ST_Accelo_LIS3DH_I2C_ReadXYZ_Float_Single
- *---------------------------------------------------------------------------*
- * Description:
- *      Try to get the XYZ reading of the accelerometer
- * Inputs:
- *      void *aW                    -- Workspace
- *      aReading -- Place to store reading
- *      TUInt32 aTimeout            -- Time to wait until reading is ready
- * Outputs:
- *      T_uezError                  -- Error code, UEZ_ERROR_TIMEOUT if no
- *                                      reading.
- *---------------------------------------------------------------------------*/
-T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ_Float_Single(
-        void *aWorkspace, 
-        AccelerometerReadingFloat *aReading,
-        TUInt32 aTimeout)
-{
-    T_uezError error;
-	T_ST_Accelo_LIS3DH_I2C_Workspace *p = (T_ST_Accelo_LIS3DH_I2C_Workspace *)aWorkspace;
-	static TUInt8 accdata[18];
-	TUInt8 status;
-
-    aReading->iX = 0;
-    aReading->iY = 0;
-    aReading->iZ = 0;
-
-    // Allow only one transfer at a time
-    error = UEZSemaphoreGrab(p->iSem, aTimeout);
-    if (error) { // do nothiing on error		
-	} else {		
-		memset(accdata, 0xCC, sizeof(accdata));
-		error = IReadData(p, accdata, 0x27, 7, 100); // TODO change 100 to aTimeout?
-		status = accdata[0];
-		if (status & (1<<3)) {
-			//p->iLastReading = *aReading; // no last reading when single read
-			aReading->iX = ICalcG(accdata[2], accdata[1]);
-			aReading->iY = ICalcG(accdata[4], accdata[3]);
-			aReading->iZ = ICalcG(accdata[6], accdata[5]);
-			//break;  // break if successful 
-		}		
-		UEZSemaphoreRelease(p->iSem);
-	}
     return error;
 }
 
@@ -475,6 +402,8 @@ T_uezError ST_Accelo_LIS3DH_I2C_Create(
     UEZDeviceTableGetWorkspace(i2c, (T_uezDeviceWorkspace **)&p_i2c);
 	
 	// Addr 0x20 Data 0x97 -- CTRL_REG1 set freq to 1.344KHz/enable all axes
+        // We are setting normal mode (10-bit 2s compliment) in CTRL_REG1.
+        // We are not setting CTRL_REG4 so we are in ±2 g mode.
     return ST_Accelo_LIS3DH_Configure(p_accel, // set default settings	
             (DEVICE_I2C_BUS **)p_i2c, LIS3DH_REGISTER_CTRL_REG1,
 	LIS3DH_CTRL1_ODR_HR_NORM_1_344KHZ_LPM_5_375KHZ | LIS3DH_CTRL1_XYZ_AXIS_EN);
@@ -495,9 +424,7 @@ const DEVICE_Accelerometer Accelerometer_ST_LIS3DH_via_I2C_Interface = {
     // Functions
     ST_Accelo_LIS3DH_I2C_GetInfo,
     ST_Accelo_LIS3DH_I2C_ReadXYZ,
-	ST_Accelo_LIS3DH_I2C_ReadXYZ_Single,
-	ST_Accelo_LIS3DH_I2C_ReadXYZ_Float,
-    ST_Accelo_LIS3DH_I2C_ReadXYZ_Float_Single,
+    ST_Accelo_LIS3DH_I2C_ReadXYZ_Float,
 } ;
 
 /*-------------------------------------------------------------------------*

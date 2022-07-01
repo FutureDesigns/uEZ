@@ -43,7 +43,7 @@ static mxml_node_t        *mxml_new(mxml_node_t *parent, mxml_type_t type);
 
 void
 mxmlAdd(mxml_node_t *parent,                /* I - Parent node */
-        int         where,                /* I - Where to add, MXML_ADD_BEFORE or MXML_ADD_AFTER */
+        int32_t         where,                /* I - Where to add, MXML_ADD_BEFORE or MXML_ADD_AFTER */
         mxml_node_t *child,                /* I - Child node for where or MXML_ADD_TO_PARENT */
         mxml_node_t *node)                /* I - Node to add */
 {
@@ -178,7 +178,7 @@ mxmlAdd(mxml_node_t *parent,                /* I - Parent node */
 void
 mxmlDelete(mxml_node_t *node)                /* I - Node to delete */
 {
-  int      i;                              /* Looping var */
+  int32_t      i;                              /* Looping var */
 
 
 #ifdef DEBUG
@@ -269,7 +269,7 @@ mxmlDelete(mxml_node_t *node)                /* I - Node to delete */
  * @since Mini-XML 2.7@.
  */
 
-int                                        /* O - Reference count */
+int32_t                                        /* O - Reference count */
 mxmlGetRefCount(mxml_node_t *node)        /* I - Node */
 {
  /*
@@ -415,7 +415,7 @@ mxmlNewElement(mxml_node_t *parent,        /* I - Parent node or MXML_NO_PARENT 
 
 mxml_node_t *                                /* O - New node */
 mxmlNewInteger(mxml_node_t *parent,        /* I - Parent node or MXML_NO_PARENT */
-               int         integer) /* I - Integer value */
+               int32_t         integer) /* I - Integer value */
 {
   mxml_node_t      *node;                      /* New node */
 
@@ -516,7 +516,7 @@ mxmlNewReal(mxml_node_t *parent,        /* I - Parent node or MXML_NO_PARENT */
 
 mxml_node_t *                                /* O - New node */
 mxmlNewText(mxml_node_t *parent,        /* I - Parent node or MXML_NO_PARENT */
-            int         whitespace,    /* I - 1 = leading whitespace, 0 = no whitespace */
+            int32_t         whitespace,    /* I - 1 = leading whitespace, 0 = no whitespace */
             const char  *string)    /* I - String */
 {
   mxml_node_t      *node;                      /* New node */
@@ -560,7 +560,7 @@ mxmlNewText(mxml_node_t *parent,        /* I - Parent node or MXML_NO_PARENT */
 
 mxml_node_t *                                /* O - New node */
 mxmlNewTextf(mxml_node_t *parent,        /* I - Parent node or MXML_NO_PARENT */
-             int         whitespace,   /* I - 1 = leading whitespace, 0 = no whitespace */
+             int32_t         whitespace,   /* I - 1 = leading whitespace, 0 = no whitespace */
              const char  *format,   /* I - Printf-style frmat string */
              ...)                   /* I - Additional args as needed */
 {
@@ -696,7 +696,7 @@ mxmlNewXML(const char *version)                /* I - Version number to use */
  * @since Mini-XML 2.3@
  */
 
-int                                        /* O - New reference count */
+int32_t                                        /* O - New reference count */
 mxmlRelease(mxml_node_t *node)                /* I - Node */
 {
   if (node)
@@ -720,7 +720,7 @@ mxmlRelease(mxml_node_t *node)                /* I - Node */
  * @since Mini-XML 2.3@
  */
 
-int                                        /* O - New reference count */
+int32_t                                        /* O - New reference count */
 mxmlRetain(mxml_node_t *node)                /* I - Node */
 {
   if (node)

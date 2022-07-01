@@ -59,7 +59,7 @@
 /**********************/
 /* USBCMD Register */
 /**********************/
-#define INT_THRESHOLD_CTRL              0x00080000UL/* Max Int Interval = 8 uframes */
+#define INT_THRESHOLD_CTRL              0x00080000UL/* Max int32_t Interval = 8 uframes */
 #define ASYNC_SCHEDULE_PARK_MODE_ENABLE NO
 #define ASYNC_SCHEDULE_PARK_MODE_COUNT  0
 

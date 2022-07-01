@@ -124,7 +124,7 @@ lwip_strnstr(const char* buffer, const char* token, size_t n)
  * lwIP default implementation for stricmp() non-standard function.
  * This can be \#defined to stricmp() depending on your platform port.
  */
-int
+int32_t
 lwip_stricmp(const char* str1, const char* str2)
 {
   char c1, c2;
@@ -159,7 +159,7 @@ lwip_stricmp(const char* str1, const char* str2)
  * lwIP default implementation for strnicmp() non-standard function.
  * This can be \#defined to strnicmp() depending on your platform port.
  */
-int
+int32_t
 lwip_strnicmp(const char* str1, const char* str2, size_t len)
 {
   char c1, c2;
@@ -195,11 +195,11 @@ lwip_strnicmp(const char* str1, const char* str2, size_t len)
  * This can be \#defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform port.
  */
 void
-lwip_itoa(char* result, size_t bufsize, int number)
+lwip_itoa(char* result, size_t bufsize, int32_t number)
 {
-  const int base = 10;
+  const int32_t base = 10;
   char* ptr = result, *ptr1 = result, tmp_char;
-  int tmp_value;
+  int32_t tmp_value;
   LWIP_UNUSED_ARG(bufsize);
 
   do {

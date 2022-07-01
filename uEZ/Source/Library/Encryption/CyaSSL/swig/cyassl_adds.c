@@ -45,7 +45,7 @@
 	    #include <ws2tcpip.h>
         #include <wspiapi.h>
     #endif
-    #define SOCKET_T int
+    #define SOCKET_T int32_t
 #else
     #include <string.h>
     #include <unistd.h>
@@ -63,7 +63,7 @@
     #ifdef TEST_IPV6
         #include <netdb.h>
     #endif
-    #define SOCKET_T unsigned int
+    #define SOCKET_T uint32_t
 #endif /* _WIN32 */
 
 #ifdef _MSC_VER
@@ -74,7 +74,7 @@
 
 #if defined(__MACH__) || defined(_WIN32)
     #ifndef _SOCKLEN_T
-        typedef int socklen_t;
+        typedef int32_t socklen_t;
     #endif
 #endif
 
@@ -83,7 +83,7 @@
 #if !defined(__hpux__)
     typedef socklen_t* ACCEPT_THIRD_T;
 #else
-    typedef int*       ACCEPT_THIRD_T;
+    typedef int32_t*       ACCEPT_THIRD_T;
 #endif
 
 
@@ -111,7 +111,7 @@ enum {
 };
 
 
-static int tcp_socket(SOCKET_T* sockfd, SOCKADDR_IN_T* addr, const char* peer,
+static int32_t tcp_socket(SOCKET_T* sockfd, SOCKADDR_IN_T* addr, const char* peer,
                        short port)
 {
     const char* host = peer;
@@ -139,7 +139,7 @@ static int tcp_socket(SOCKET_T* sockfd, SOCKADDR_IN_T* addr, const char* peer,
 
 #ifdef SO_NOSIGPIPE
     {
-        int on = 1;
+        int32_t on = 1;
         socklen_t len = sizeof(on);
         setsockopt(*sockfd, SOL_SOCKET, SO_NOSIGPIPE, &on, len);
     }
@@ -149,10 +149,10 @@ static int tcp_socket(SOCKET_T* sockfd, SOCKADDR_IN_T* addr, const char* peer,
 }
 
 
-static int tcp_connect(SOCKET_T* sockfd, const char* ip, short port)
+static int32_t tcp_connect(SOCKET_T* sockfd, const char* ip, short port)
 {
     SOCKADDR_IN_T addr;
-    int ret = tcp_socket(sockfd, &addr, ip, port);
+    int32_t ret = tcp_socket(sockfd, &addr, ip, port);
     if (ret != 0) return ret;
 
     if (connect(*sockfd, (const struct sockaddr*)&addr, sizeof(addr)) != 0)
@@ -162,10 +162,10 @@ static int tcp_connect(SOCKET_T* sockfd, const char* ip, short port)
 }
     
 
-int CyaSSL_swig_connect(CYASSL* ssl, const char* server, int port)
+int32_t CyaSSL_swig_connect(CYASSL* ssl, const char* server, int32_t port)
 {
     SOCKET_T sockfd;
-    int ret = tcp_connect(&sockfd, server, port);
+    int32_t ret = tcp_connect(&sockfd, server, port);
     if (ret != 0) return ret;
     
     CyaSSL_set_fd(ssl, sockfd);
@@ -174,7 +174,7 @@ int CyaSSL_swig_connect(CYASSL* ssl, const char* server, int port)
 }
 
 
-char* CyaSSL_error_string(int err)
+char* CyaSSL_error_string(int32_t err)
 {
     static char buffer[CYASSL_MAX_ERROR_SZ];
 
@@ -203,7 +203,7 @@ RsaKey* GetRsaPrivateKey(const char* keyFile)
     if (key) {
         byte   tmp[1024];
         size_t bytes;
-        int    ret;
+        int32_t    ret;
         word32 idx = 0;
         FILE*  file = fopen(keyFile, "rb");
 
@@ -227,7 +227,7 @@ RsaKey* GetRsaPrivateKey(const char* keyFile)
 }
 
 
-void FillSignStr(unsigned char* dst, const char* src, int size)
+void FillSignStr(unsigned char* dst, const char* src, int32_t size)
 {
     memcpy(dst, src, size);
 }

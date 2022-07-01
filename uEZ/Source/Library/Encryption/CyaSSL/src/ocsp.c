@@ -32,7 +32,7 @@
 #include <cyassl/internal.h>
 
 
-int InitOCSP(CYASSL_OCSP* ocsp, CYASSL_CERT_MANAGER* cm)
+int32_t InitOCSP(CYASSL_OCSP* ocsp, CYASSL_CERT_MANAGER* cm)
 {
     CYASSL_ENTER("InitOCSP");
     XMEMSET(ocsp, 0, sizeof(*ocsp));
@@ -44,7 +44,7 @@ int InitOCSP(CYASSL_OCSP* ocsp, CYASSL_CERT_MANAGER* cm)
 }
 
 
-static int InitOCSP_Entry(OCSP_Entry* ocspe, DecodedCert* cert)
+static int32_t InitOCSP_Entry(OCSP_Entry* ocspe, DecodedCert* cert)
 {
     CYASSL_ENTER("InitOCSP_Entry");
 
@@ -70,7 +70,7 @@ static void FreeOCSP_Entry(OCSP_Entry* ocspe)
 }
 
 
-void FreeOCSP(CYASSL_OCSP* ocsp, int dynamic)
+void FreeOCSP(CYASSL_OCSP* ocsp, int32_t dynamic)
 {
     OCSP_Entry* tmp = ocsp->ocspList;
 
@@ -89,7 +89,7 @@ void FreeOCSP(CYASSL_OCSP* ocsp, int dynamic)
 }
 
 
-static int xstat2err(int stat)
+static int32_t xstat2err(int32_t stat)
 {
     switch (stat) {
         case CERT_GOOD:
@@ -102,16 +102,16 @@ static int xstat2err(int stat)
 }
 
 
-int CheckCertOCSP(CYASSL_OCSP* ocsp, DecodedCert* cert)
+int32_t CheckCertOCSP(CYASSL_OCSP* ocsp, DecodedCert* cert)
 {
     byte* ocspReqBuf = NULL;
-    int ocspReqSz = 2048;
+    int32_t ocspReqSz = 2048;
     byte* ocspRespBuf = NULL;
-    int result = -1;
+    int32_t result = -1;
     OCSP_Entry* ocspe;
     CertStatus* certStatus = NULL;
     const char *url;
-    int urlSz;
+    int32_t urlSz;
 #ifdef CYASSL_SMALL_STACK
     CertStatus* newStatus;
     OcspRequest* ocspRequest;
@@ -185,7 +185,7 @@ int CheckCertOCSP(CYASSL_OCSP* ocsp, DecodedCert* cert)
     if (ocsp->cm->ocspUseOverrideURL) {
         url = ocsp->cm->ocspOverrideURL;
         if (url != NULL && url[0] != '\0')
-            urlSz = (int)XSTRLEN(url);
+            urlSz = (int32_t)XSTRLEN(url);
         else
             return OCSP_NEED_URL;
     }

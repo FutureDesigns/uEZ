@@ -80,9 +80,9 @@ static int _HeartBeat[] = {
 };
 
 static GUI_COLOR _aColorData[MAX_NUM_DATA_OBJ] = {
-  GUI_MAKE_COLOR(0x50C0FF),
-  GUI_MAKE_COLOR(0xFFC050),
-  GUI_MAKE_COLOR(0x50FFC0),
+  GUI_MAKE_COLOR(0xFF50C0FF),
+  GUI_MAKE_COLOR(0xFFFFC050),
+  GUI_MAKE_COLOR(0xFF50FFC0),
 };
 
 static GRAPH_SCALE_Handle _hScaleH;
@@ -311,6 +311,8 @@ static void _GraphDemo(void) {
     GRAPH_SetGridOffY (hGraph, GUIDEMO_ShiftRight(Data_ySize * _aWave[i].GridVOff, GRAPH_DIV));
     GRAPH_SCALE_SetOff(_hScaleV, GUIDEMO_ShiftRight((Data_ySize - BORDER_BOTTOM) * _aWave[i].ScaleVOff, GRAPH_DIV));
     _ShowGraph(hGraph, hData, _aWave[i].NumWaves, _aWave[i].pfAddData);
+    WM_InvalidateWindow(WM_HBKWIN); // make sure that we clear the old vertical scale numbers before drawing new ones
+    // In a real application you would figure out the coordinates of the axis and only invalidate that rectangular area.
   }
   //
   // Clean up

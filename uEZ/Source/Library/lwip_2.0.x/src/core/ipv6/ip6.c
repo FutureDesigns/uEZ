@@ -397,7 +397,7 @@ ip6_input(struct pbuf *p, struct netif *inp)
   u8_t i;
 #if 0 /*IP_ACCEPT_LINK_LAYER_ADDRESSING*/
   @todo
-  int check_ip_src=1;
+  int32_t check_ip_src=1;
 #endif /* IP_ACCEPT_LINK_LAYER_ADDRESSING */
 
   IP6_STATS_INC(ip6.recv);
@@ -498,7 +498,7 @@ ip6_input(struct pbuf *p, struct netif *inp)
     /* start trying with inp. if that's not acceptable, start walking the
        list of configured netifs.
        'first' is used as a boolean to mark whether we started walking the list */
-    int first = 1;
+    int32_t first = 1;
     netif = inp;
     do {
       /* interface is up? */
@@ -889,7 +889,7 @@ ip6_output_if_src(struct pbuf *p, const ip6_addr_t *src, const ip6_addr_t *dest,
 
 #if ENABLE_LOOPBACK
   {
-    int i;
+    int32_t i;
 #if !LWIP_HAVE_LOOPIF
     if (ip6_addr_isloopback(dest)) {
       return netif_loop_output(netif, p);

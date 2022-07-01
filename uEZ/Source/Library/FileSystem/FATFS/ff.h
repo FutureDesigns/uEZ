@@ -277,12 +277,12 @@ FRESULT f_expand (FIL* fp, FSIZE_t szf, BYTE opt);					/* Allocate a contiguous 
 FRESULT f_mount (FATFS* fs, const TCHAR* path, BYTE opt);			/* Mount/Unmount a logical drive */
 FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len);	/* Create a FAT volume */
 FRESULT f_fdisk (BYTE pdrv, const DWORD* szt, void* work);			/* Divide a physical drive into some partitions */
-int f_putc (TCHAR c, FIL* fp);										/* Put a character to the file */
-int f_puts (const TCHAR* str, FIL* cp);								/* Put a string to the file */
-int f_printf (FIL* fp, const TCHAR* str, ...);						/* Put a formatted string to the file */
-TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);						/* Get a string from the file */
+int32_t f_putc (TCHAR c, FIL* fp);										/* Put a character to the file */
+int32_t f_puts (const TCHAR* str, FIL* cp);								/* Put a string to the file */
+int32_t f_printf (FIL* fp, const TCHAR* str, ...);						/* Put a formatted string to the file */
+TCHAR* f_gets (TCHAR* buff, int32_t len, FIL* fp);						/* Get a string from the file */
 
-#define f_eof(fp) ((int)((fp)->fptr == (fp)->obj.objsize))
+#define f_eof(fp) ((int32_t)((fp)->fptr == (fp)->obj.objsize))
 #define f_error(fp) ((fp)->err)
 #define f_tell(fp) ((fp)->fptr)
 #define f_size(fp) ((fp)->obj.objsize)
@@ -316,10 +316,10 @@ void ff_memfree (void* mblock);			/* Free memory block */
 
 /* Sync functions */
 #if _FS_REENTRANT
-int ff_cre_syncobj (BYTE vol, _SYNC_t* sobj);	/* Create a sync object */
-int ff_req_grant (_SYNC_t sobj);				/* Lock sync object */
+int32_t ff_cre_syncobj (BYTE vol, _SYNC_t* sobj);	/* Create a sync object */
+int32_t ff_req_grant (_SYNC_t sobj);				/* Lock sync object */
 void ff_rel_grant (_SYNC_t sobj);				/* Unlock sync object */
-int ff_del_syncobj (_SYNC_t sobj);				/* Delete a sync object */
+int32_t ff_del_syncobj (_SYNC_t sobj);				/* Delete a sync object */
 #endif
 
 

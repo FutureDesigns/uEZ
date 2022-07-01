@@ -76,9 +76,9 @@ typedef struct Camellia {
 } Camellia;
 
 
-CYASSL_API int  CamelliaSetKey(Camellia* cam,
+CYASSL_API int32_t  CamelliaSetKey(Camellia* cam,
                                    const byte* key, word32 len, const byte* iv);
-CYASSL_API int  CamelliaSetIV(Camellia* cam, const byte* iv);
+CYASSL_API int32_t  CamelliaSetIV(Camellia* cam, const byte* iv);
 CYASSL_API void CamelliaEncryptDirect(Camellia* cam, byte* out, const byte* in);
 CYASSL_API void CamelliaDecryptDirect(Camellia* cam, byte* out, const byte* in);
 CYASSL_API void CamelliaCbcEncrypt(Camellia* cam,

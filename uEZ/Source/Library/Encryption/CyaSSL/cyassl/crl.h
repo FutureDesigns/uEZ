@@ -35,12 +35,12 @@
 
 typedef struct CYASSL_CRL CYASSL_CRL;
 
-CYASSL_LOCAL int  InitCRL(CYASSL_CRL*, CYASSL_CERT_MANAGER*);
-CYASSL_LOCAL void FreeCRL(CYASSL_CRL*, int dynamic);
+CYASSL_LOCAL int32_t  InitCRL(CYASSL_CRL*, CYASSL_CERT_MANAGER*);
+CYASSL_LOCAL void FreeCRL(CYASSL_CRL*, int32_t dynamic);
 
-CYASSL_LOCAL int  LoadCRL(CYASSL_CRL* crl, const char* path, int type, int mon);
-CYASSL_LOCAL int  BufferLoadCRL(CYASSL_CRL*, const byte*, long, int);
-CYASSL_LOCAL int  CheckCertCRL(CYASSL_CRL*, DecodedCert*);
+CYASSL_LOCAL int32_t  LoadCRL(CYASSL_CRL* crl, const char* path, int32_t type, int32_t mon);
+CYASSL_LOCAL int32_t  BufferLoadCRL(CYASSL_CRL*, const byte*, long, int32_t);
+CYASSL_LOCAL int32_t  CheckCertCRL(CYASSL_CRL*, DecodedCert*);
 
 
 #ifdef __cplusplus

@@ -26,7 +26,7 @@
  * Local functions...
  */
 
-static int	mxml_set_attr(mxml_node_t *node, const char *name,
+static int32_t	mxml_set_attr(mxml_node_t *node, const char *name,
 		              char *value);
 
 
@@ -40,7 +40,7 @@ void
 mxmlElementDeleteAttr(mxml_node_t *node,/* I - Element */
                       const char  *name)/* I - Attribute name */
 {
-  int		i;			/* Looping var */
+  int32_t		i;			/* Looping var */
   mxml_attr_t	*attr;			/* Cirrent attribute */
 
 
@@ -102,7 +102,7 @@ const char *				/* O - Attribute value or NULL */
 mxmlElementGetAttr(mxml_node_t *node,	/* I - Element node */
                    const char  *name)	/* I - Name of attribute */
 {
-  int		i;			/* Looping var */
+  int32_t		i;			/* Looping var */
   mxml_attr_t	*attr;			/* Cirrent attribute */
 
 
@@ -244,12 +244,12 @@ mxmlElementSetAttrf(mxml_node_t *node,	/* I - Element node */
  * 'mxml_set_attr()' - Set or add an attribute name/value pair.
  */
 
-static int				/* O - 0 on success, -1 on failure */
+static int32_t				/* O - 0 on success, -1 on failure */
 mxml_set_attr(mxml_node_t *node,	/* I - Element node */
               const char  *name,	/* I - Attribute name */
               char        *value)	/* I - Attribute value */
 {
-  int		i;			/* Looping var */
+  int32_t		i;			/* Looping var */
   mxml_attr_t	*attr;			/* New attribute */
 
 

@@ -162,13 +162,13 @@ static struct wordlist *extra_options;
 static bool default_auth;
 
 /* Hook to enable a plugin to control the idle time limit */
-int (*idle_time_hook) (struct ppp_idle *) = NULL;
+int32_t (*idle_time_hook) (struct ppp_idle *) = NULL;
 
 /* Hook for a plugin to say whether we can possibly authenticate any peer */
-int (*pap_check_hook) (void) = NULL;
+int32_t (*pap_check_hook) (void) = NULL;
 
 /* Hook for a plugin to check the PAP user and password */
-int (*pap_auth_hook) (char *user, char *passwd, char **msgp,
+int32_t (*pap_auth_hook) (char *user, char *passwd, char **msgp,
 			  struct wordlist **paddrs,
 			  struct wordlist **popts) = NULL;
 
@@ -176,20 +176,20 @@ int (*pap_auth_hook) (char *user, char *passwd, char **msgp,
 void (*pap_logout_hook) (void) = NULL;
 
 /* Hook for a plugin to get the PAP password for authenticating us */
-int (*pap_passwd_hook) (char *user, char *passwd) = NULL;
+int32_t (*pap_passwd_hook) (char *user, char *passwd) = NULL;
 
 /* Hook for a plugin to say if we can possibly authenticate a peer using CHAP */
-int (*chap_check_hook) (void) = NULL;
+int32_t (*chap_check_hook) (void) = NULL;
 
 /* Hook for a plugin to get the CHAP password for authenticating us */
-int (*chap_passwd_hook) (char *user, char *passwd) = NULL;
+int32_t (*chap_passwd_hook) (char *user, char *passwd) = NULL;
 
 /* Hook for a plugin to say whether it is OK if the peer
    refuses to authenticate. */
-int (*null_auth_hook) (struct wordlist **paddrs,
+int32_t (*null_auth_hook) (struct wordlist **paddrs,
 			   struct wordlist **popts) = NULL;
 
-int (*allowed_address_hook) (u32_t addr) = NULL;
+int32_t (*allowed_address_hook) (u32_t addr) = NULL;
 #endif /* UNUSED */
 
 #ifdef HAVE_MULTILINK
@@ -244,25 +244,25 @@ static void check_idle(void *arg);
 static void connect_time_expired(void *arg);
 #endif /* PPP_MAXCONNECT */
 #if 0 /* UNUSED */
-static int  null_login (int);
-/* static int  get_pap_passwd (char *); */
-static int  have_pap_secret (int *);
-static int  have_chap_secret (char *, char *, int, int *);
-static int  have_srp_secret (char *client, char *server, int need_ip,
-    int *lacks_ipp);
-static int  ip_addr_check (u32_t, struct permitted_ip *);
-static int  scan_authfile (FILE *, char *, char *, char *,
+static int32_t  null_login (int32_t);
+/* static int32_t  get_pap_passwd (char *); */
+static int32_t  have_pap_secret (int32_t *);
+static int32_t  have_chap_secret (char *, char *, int32_t, int32_t *);
+static int32_t  have_srp_secret (char *client, char *server, int32_t need_ip,
+    int32_t *lacks_ipp);
+static int32_t  ip_addr_check (u32_t, struct permitted_ip *);
+static int32_t  scan_authfile (FILE *, char *, char *, char *,
 			       struct wordlist **, struct wordlist **,
-			       char *, int);
+			       char *, int32_t);
 static void free_wordlist (struct wordlist *);
-static void set_allowed_addrs (int, struct wordlist *, struct wordlist *);
-static int  some_ip_ok (struct wordlist *);
-static int  setupapfile (char **);
-static int  privgroup (char **);
-static int  set_noauth_addr (char **);
-static int  set_permitted_number (char **);
+static void set_allowed_addrs (int32_t, struct wordlist *, struct wordlist *);
+static int32_t  some_ip_ok (struct wordlist *);
+static int32_t  setupapfile (char **);
+static int32_t  privgroup (char **);
+static int32_t  set_noauth_addr (char **);
+static int32_t  set_permitted_number (char **);
 static void check_access (FILE *, char *);
-static int  wordlist_count (struct wordlist *);
+static int32_t  wordlist_count (struct wordlist *);
 #endif /* UNUSED */
 
 #ifdef MAXOCTETS
@@ -412,12 +412,12 @@ option_t auth_options[] = {
 /*
  * setupapfile - specifies UPAP info for authenticating with peer.
  */
-static int
+static int32_t
 setupapfile(argv)
     char **argv;
 {
     FILE *ufile;
-    int l;
+    int32_t l;
     uid_t euid;
     char u[MAXNAMELEN], p[MAXSECRETLEN];
     char *fname;
@@ -475,12 +475,12 @@ setupapfile(argv)
 /*
  * privgroup - allow members of the group to have privileged access.
  */
-static int
+static int32_t
 privgroup(argv)
     char **argv;
 {
     struct group *g;
-    int i;
+    int32_t i;
 
     g = getgrnam(*argv);
     if (g == 0) {
@@ -501,12 +501,12 @@ privgroup(argv)
  * set_noauth_addr - set address(es) that can be used without authentication.
  * Equivalent to specifying an entry like `"" * "" addr' in pap-secrets.
  */
-static int
+static int32_t
 set_noauth_addr(argv)
     char **argv;
 {
     char *addr = *argv;
-    int l = strlen(addr) + 1;
+    int32_t l = strlen(addr) + 1;
     struct wordlist *wp;
 
     wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
@@ -523,12 +523,12 @@ set_noauth_addr(argv)
 /*
  * set_permitted_number - set remote telephone number(s) that may connect.
  */
-static int
+static int32_t
 set_permitted_number(argv)
     char **argv;
 {
     char *number = *argv;
-    int l = strlen(number) + 1;
+    int32_t l = strlen(number) + 1;
     struct wordlist *wp;
 
     wp = (struct wordlist *) malloc(sizeof(struct wordlist) + l);
@@ -554,7 +554,7 @@ void link_required(ppp_pcb *pcb) {
  * Bring the link up to the point of being able to do ppp.
  */
 void start_link(unit)
-    int unit;
+    int32_t unit;
 {
     ppp_pcb *pcb = &ppp_pcb_list[unit];
     char *msg;
@@ -714,7 +714,7 @@ void link_down(ppp_pcb *pcb) {
 }
 
 void upper_layers_down(ppp_pcb *pcb) {
-    int i;
+    int32_t i;
     const struct protent *protp;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i) {
@@ -733,7 +733,7 @@ void upper_layers_down(ppp_pcb *pcb) {
  */
 void link_established(ppp_pcb *pcb) {
 #if PPP_AUTH_SUPPORT
-    int auth;
+    int32_t auth;
 #if PPP_SERVER
 #if PAP_SUPPORT
     lcp_options *wo = &pcb->lcp_wantoptions;
@@ -742,7 +742,7 @@ void link_established(ppp_pcb *pcb) {
 #endif /* PPP_SERVER */
     lcp_options *ho = &pcb->lcp_hisoptions;
 #endif /* PPP_AUTH_SUPPORT */
-    int i;
+    int32_t i;
     const struct protent *protp;
 
     /*
@@ -916,7 +916,7 @@ static void network_phase(ppp_pcb *pcb) {
 
 void start_networks(ppp_pcb *pcb) {
 #if CCP_SUPPORT || ECP_SUPPORT
-    int i;
+    int32_t i;
     const struct protent *protp;
 #endif /* CCP_SUPPORT || ECP_SUPPORT */
 
@@ -969,7 +969,7 @@ void start_networks(ppp_pcb *pcb) {
 }
 
 void continue_networks(ppp_pcb *pcb) {
-    int i;
+    int32_t i;
     const struct protent *protp;
 
     /*
@@ -1003,13 +1003,13 @@ void continue_networks(ppp_pcb *pcb) {
  *      1: Authentication succeeded.
  * In either case, msg points to an appropriate message and msglen to the message len.
  */
-int auth_check_passwd(ppp_pcb *pcb, char *auser, int userlen, char *apasswd, int passwdlen, const char **msg, int *msglen) {
-  int secretuserlen;
-  int secretpasswdlen;
+int32_t auth_check_passwd(ppp_pcb *pcb, char *auser, int32_t userlen, char *apasswd, int32_t passwdlen, const char **msg, int32_t *msglen) {
+  int32_t secretuserlen;
+  int32_t secretpasswdlen;
 
   if (pcb->settings.user && pcb->settings.passwd) {
-    secretuserlen = (int)strlen(pcb->settings.user);
-    secretpasswdlen = (int)strlen(pcb->settings.passwd);
+    secretuserlen = (int32_t)strlen(pcb->settings.user);
+    secretpasswdlen = (int32_t)strlen(pcb->settings.passwd);
     if (secretuserlen == userlen
         && secretpasswdlen == passwdlen
         && !memcmp(auser, pcb->settings.user, userlen)
@@ -1028,7 +1028,7 @@ int auth_check_passwd(ppp_pcb *pcb, char *auser, int userlen, char *apasswd, int
 /*
  * The peer has failed to authenticate himself using `protocol'.
  */
-void auth_peer_fail(ppp_pcb *pcb, int protocol) {
+void auth_peer_fail(ppp_pcb *pcb, int32_t protocol) {
     LWIP_UNUSED_ARG(protocol);
     /*
      * Authentication failure: take the link down
@@ -1043,8 +1043,8 @@ void auth_peer_fail(ppp_pcb *pcb, int protocol) {
 /*
  * The peer has been successfully authenticated using `protocol'.
  */
-void auth_peer_success(ppp_pcb *pcb, int protocol, int prot_flavor, const char *name, int namelen) {
-    int bit;
+void auth_peer_success(ppp_pcb *pcb, int32_t protocol, int32_t prot_flavor, const char *name, int32_t namelen) {
+    int32_t bit;
 #ifndef HAVE_MULTILINK
     LWIP_UNUSED_ARG(name);
     LWIP_UNUSED_ARG(namelen);
@@ -1090,8 +1090,8 @@ void auth_peer_success(ppp_pcb *pcb, int protocol, int prot_flavor, const char *
     /*
      * Save the authenticated name of the peer for later.
      */
-    if (namelen > (int)sizeof(pcb->peer_authname) - 1)
-	namelen = (int)sizeof(pcb->peer_authname) - 1;
+    if (namelen > (int32_t)sizeof(pcb->peer_authname) - 1)
+	namelen = (int32_t)sizeof(pcb->peer_authname) - 1;
     MEMCPY(pcb->peer_authname, name, namelen);
     pcb->peer_authname[namelen] = 0;
 #endif /* HAVE_MULTILINK */
@@ -1114,7 +1114,7 @@ void auth_peer_success(ppp_pcb *pcb, int protocol, int prot_flavor, const char *
 /*
  * We have failed to authenticate ourselves to the peer using `protocol'.
  */
-void auth_withpeer_fail(ppp_pcb *pcb, int protocol) {
+void auth_withpeer_fail(ppp_pcb *pcb, int32_t protocol) {
     LWIP_UNUSED_ARG(protocol);
     /*
      * We've failed to authenticate ourselves to our peer.
@@ -1133,8 +1133,8 @@ void auth_withpeer_fail(ppp_pcb *pcb, int protocol) {
 /*
  * We have successfully authenticated ourselves with the peer using `protocol'.
  */
-void auth_withpeer_success(ppp_pcb *pcb, int protocol, int prot_flavor) {
-    int bit;
+void auth_withpeer_success(ppp_pcb *pcb, int32_t protocol, int32_t prot_flavor) {
+    int32_t bit;
     const char *prot = "";
 
     switch (protocol) {
@@ -1195,9 +1195,9 @@ void auth_withpeer_success(ppp_pcb *pcb, int protocol, int prot_flavor) {
 /*
  * np_up - a network protocol has come up.
  */
-void np_up(ppp_pcb *pcb, int proto) {
+void np_up(ppp_pcb *pcb, int32_t proto) {
 #if PPP_IDLETIMELIMIT
-    int tlim;
+    int32_t tlim;
 #endif /* PPP_IDLETIMELIMIT */
     LWIP_UNUSED_ARG(proto);
 
@@ -1246,7 +1246,7 @@ void np_up(ppp_pcb *pcb, int proto) {
 /*
  * np_down - a network protocol has gone down.
  */
-void np_down(ppp_pcb *pcb, int proto) {
+void np_down(ppp_pcb *pcb, int32_t proto) {
     LWIP_UNUSED_ARG(proto);
     if (--pcb->num_np_up == 0) {
 #if PPP_IDLETIMELIMIT
@@ -1265,7 +1265,7 @@ void np_down(ppp_pcb *pcb, int proto) {
 /*
  * np_finished - a network protocol has finished using the link.
  */
-void np_finished(ppp_pcb *pcb, int proto) {
+void np_finished(ppp_pcb *pcb, int32_t proto) {
     LWIP_UNUSED_ARG(proto);
     if (--pcb->num_np_open <= 0) {
 	/* no further use for the link: shut up shop. */
@@ -1279,7 +1279,7 @@ check_maxoctets(arg)
     void *arg;
 {
 #if PPP_STATS_SUPPORT
-    unsigned int used;
+    uint32_t used;
 
     update_link_stats(ifunit);
     link_stats_valid=0;
@@ -1322,7 +1322,7 @@ static void check_idle(void *arg) {
     ppp_pcb *pcb = (ppp_pcb*)arg;
     struct ppp_idle idle;
     time_t itime;
-    int tlim;
+    int32_t tlim;
 
     if (!get_idle_time(pcb, &idle))
 	return;
@@ -1370,8 +1370,8 @@ void
 auth_check_options()
 {
     lcp_options *wo = &lcp_wantoptions[0];
-    int can_auth;
-    int lacks_ip;
+    int32_t can_auth;
+    int32_t lacks_ip;
 
     /* Default our_name to hostname, and user to our_name */
     if (our_name[0] == 0 || usehostname)
@@ -1509,11 +1509,11 @@ auth_check_options()
  */
 void
 auth_reset(unit)
-    int unit;
+    int32_t unit;
 {
     lcp_options *go = &lcp_gotoptions[unit];
     lcp_options *ao = &lcp_allowoptions[unit];
-    int hadchap;
+    int32_t hadchap;
 
     hadchap = -1;
     ao->neg_upap = !refuse_pap && (passwd[0] != 0 || get_pap_passwd(NULL));
@@ -1554,23 +1554,23 @@ auth_reset(unit)
  *	UPAP_AUTHACK: Authentication succeeded.
  * In either case, msg points to an appropriate message.
  */
-int
+int32_t
 check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
-    int unit;
+    int32_t unit;
     char *auser;
-    int userlen;
+    int32_t userlen;
     char *apasswd;
-    int passwdlen;
+    int32_t passwdlen;
     char **msg;
 {
   return UPAP_AUTHNAK;
-    int ret;
+    int32_t ret;
     char *filename;
     FILE *f;
     struct wordlist *addrs = NULL, *opts = NULL;
     char passwd[256], user[256];
     char secret[MAXWORDLEN];
-    static int attempts = 0;
+    static int32_t attempts = 0;
 
     /*
      * Make copies of apasswd and auser, then null-terminate them.
@@ -1620,7 +1620,7 @@ check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
 	     * If the secret is "@login", it means to check
 	     * the password against the login database.
 	     */
-	    int login_secret = strcmp(secret, "@login") == 0;
+	    int32_t login_secret = strcmp(secret, "@login") == 0;
 	    ret = UPAP_AUTHACK;
 	    if (uselogin || login_secret) {
 		/* login option or secret is @login */
@@ -1681,13 +1681,13 @@ check_passwd(unit, auser, userlen, apasswd, passwdlen, msg)
  * acceptable, and iff so, set the list of acceptable IP addresses
  * and return 1.
  */
-static int
+static int32_t
 null_login(unit)
-    int unit;
+    int32_t unit;
 {
     char *filename;
     FILE *f;
-    int i, ret;
+    int32_t i, ret;
     struct wordlist *addrs, *opts;
     char secret[MAXWORDLEN];
 
@@ -1731,13 +1731,13 @@ null_login(unit)
  * could be found.
  * Assumes passwd points to MAXSECRETLEN bytes of space (if non-null).
  */
-static int
+static int32_t
 get_pap_passwd(passwd)
     char *passwd;
 {
     char *filename;
     FILE *f;
-    int ret;
+    int32_t ret;
     char secret[MAXWORDLEN];
 
     /*
@@ -1770,12 +1770,12 @@ get_pap_passwd(passwd)
  * have_pap_secret - check whether we have a PAP file with any
  * secrets that we could possibly use for authenticating the peer.
  */
-static int
+static int32_t
 have_pap_secret(lacks_ipp)
-    int *lacks_ipp;
+    int32_t *lacks_ipp;
 {
     FILE *f;
-    int ret;
+    int32_t ret;
     char *filename;
     struct wordlist *addrs;
 
@@ -1811,15 +1811,15 @@ have_pap_secret(lacks_ipp)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-static int
+static int32_t
 have_chap_secret(client, server, need_ip, lacks_ipp)
     char *client;
     char *server;
-    int need_ip;
-    int *lacks_ipp;
+    int32_t need_ip;
+    int32_t *lacks_ipp;
 {
     FILE *f;
-    int ret;
+    int32_t ret;
     char *filename;
     struct wordlist *addrs;
 
@@ -1859,15 +1859,15 @@ have_chap_secret(client, server, need_ip, lacks_ipp)
  * on `server'.  Either can be the null string, meaning we don't
  * know the identity yet.
  */
-static int
+static int32_t
 have_srp_secret(client, server, need_ip, lacks_ipp)
     char *client;
     char *server;
-    int need_ip;
-    int *lacks_ipp;
+    int32_t need_ip;
+    int32_t *lacks_ipp;
 {
     FILE *f;
-    int ret;
+    int32_t ret;
     char *filename;
     struct wordlist *addrs;
 
@@ -1901,8 +1901,8 @@ have_srp_secret(client, server, need_ip, lacks_ipp)
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-int get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secret, int *secret_len, int am_server) {
-  int len;
+int32_t get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secret, int32_t *secret_len, int32_t am_server) {
+  int32_t len;
   LWIP_UNUSED_ARG(server);
   LWIP_UNUSED_ARG(am_server);
 
@@ -1910,7 +1910,7 @@ int get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secre
     return 0;
   }
 
-  len = (int)strlen(pcb->settings.passwd);
+  len = (int32_t)strlen(pcb->settings.passwd);
   if (len > MAXSECRETLEN) {
     ppp_error("Secret for %s on %s is too long", client, server);
     len = MAXSECRETLEN;
@@ -1922,7 +1922,7 @@ int get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secre
 
 #if 0 /* UNUSED */
     FILE *f;
-    int ret, len;
+    int32_t ret, len;
     char *filename;
     struct wordlist *addrs, *opts;
     char secbuf[MAXWORDLEN];
@@ -1983,16 +1983,16 @@ int get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secre
  * for authenticating the given client on the given server.
  * (We could be either client or server).
  */
-int
+int32_t
 get_srp_secret(unit, client, server, secret, am_server)
-    int unit;
+    int32_t unit;
     char *client;
     char *server;
     char *secret;
-    int am_server;
+    int32_t am_server;
 {
     FILE *fp;
-    int ret;
+    int32_t ret;
     char *filename;
     struct wordlist *addrs, *opts;
 
@@ -2034,11 +2034,11 @@ get_srp_secret(unit, client, server, secret, am_server)
  */
 static void
 set_allowed_addrs(unit, addrs, opts)
-    int unit;
+    int32_t unit;
     struct wordlist *addrs;
     struct wordlist *opts;
 {
-    int n;
+    int32_t n;
     struct wordlist *ap, **plink;
     struct permitted_ip *ip;
     char *ptr_word, *ptr_mask;
@@ -2093,10 +2093,10 @@ set_allowed_addrs(unit, addrs, opts)
 	offset = 0;
 	ptr_mask = strchr (ptr_word, '/');
 	if (ptr_mask != NULL) {
-	    int bit_count;
+	    int32_t bit_count;
 	    char *endp;
 
-	    bit_count = (int) strtol (ptr_mask+1, &endp, 10);
+	    bit_count = (int32_t) strtol (ptr_mask+1, &endp, 10);
 	    if (bit_count <= 0 || bit_count > 32) {
 		ppp_warn("invalid address length %v in auth. address list",
 		     ptr_mask+1);
@@ -2188,12 +2188,12 @@ set_allowed_addrs(unit, addrs, opts)
  * auth_ip_addr - check whether the peer is authorized to use
  * a given IP address.  Returns 1 if authorized, 0 otherwise.
  */
-int
+int32_t
 auth_ip_addr(unit, addr)
-    int unit;
+    int32_t unit;
     u32_t addr;
 {
-    int ok;
+    int32_t ok;
 
     /* don't allow loopback or multicast address */
     if (bad_ip_adrs(addr))
@@ -2215,7 +2215,7 @@ auth_ip_addr(unit, addr)
     return allow_any_ip || privileged || !have_route_to(addr);
 }
 
-static int
+static int32_t
 ip_addr_check(addr, addrs)
     u32_t addr;
     struct permitted_ip *addrs;
@@ -2230,7 +2230,7 @@ ip_addr_check(addr, addrs)
  * to use, such as an address in the loopback net or a multicast address.
  * addr is in network byte order.
  */
-int
+int32_t
 bad_ip_adrs(addr)
     u32_t addr;
 {
@@ -2243,7 +2243,7 @@ bad_ip_adrs(addr)
  * some_ip_ok - check a wordlist to see if it authorizes any
  * IP address(es).
  */
-static int
+static int32_t
 some_ip_ok(addrs)
     struct wordlist *addrs;
 {
@@ -2260,11 +2260,11 @@ some_ip_ok(addrs)
  * auth_number - check whether the remote number is allowed to connect.
  * Returns 1 if authorized, 0 otherwise.
  */
-int
+int32_t
 auth_number()
 {
     struct wordlist *wp = permitted_numbers;
-    int l;
+    int32_t l;
 
     /* Allow all if no authorization list. */
     if (!wp)
@@ -2316,7 +2316,7 @@ check_access(f, filename)
  * Flags are non-zero if we need two colons in the secret in order to
  * match.
  */
-static int
+static int32_t
 scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
     FILE *f;
     char *client;
@@ -2325,10 +2325,10 @@ scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
     struct wordlist **addrs;
     struct wordlist **opts;
     char *filename;
-    int flags;
+    int32_t flags;
 {
-    int newline, xxx;
-    int got_flag, best_flag;
+    int32_t newline, xxx;
+    int32_t got_flag, best_flag;
     FILE *sf;
     struct wordlist *ap, *addr_list, *alist, **app;
     char word[MAXWORDLEN];
@@ -2479,11 +2479,11 @@ scan_authfile(f, client, server, secret, addrs, opts, filename, flags)
 /*
  * wordlist_count - return the number of items in a wordlist
  */
-static int
+static int32_t
 wordlist_count(wp)
     struct wordlist *wp;
 {
-    int n;
+    int32_t n;
 
     for (n = 0; wp != NULL; wp = wp->next)
 	++n;

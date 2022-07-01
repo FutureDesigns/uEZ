@@ -82,13 +82,13 @@ THREAD_RETURN CYASSL_THREAD echoserver_test(void* args)
     CYASSL_METHOD* method = 0;
     CYASSL_CTX*    ctx    = 0;
 
-    int    doDTLS = 0;
-    int    doPSK = 0;
-    int    outCreated = 0;
-    int    shutDown = 0;
-    int    useAnyAddr = 0;
+    int32_t    doDTLS = 0;
+    int32_t    doPSK = 0;
+    int32_t    outCreated = 0;
+    int32_t    shutDown = 0;
+    int32_t    useAnyAddr = 0;
     word16 port = yasslPort;
-    int    argc = ((func_args*)args)->argc;
+    int32_t    argc = ((func_args*)args)->argc;
     char** argv = ((func_args*)args)->argv;
 
 #ifdef ECHO_OUT
@@ -218,10 +218,10 @@ THREAD_RETURN CYASSL_THREAD echoserver_test(void* args)
     while (!shutDown) {
         CYASSL* ssl = 0;
         char    command[SVR_COMMAND_SIZE+1];
-        int     echoSz = 0;
-        int     clientfd;
-        int     firstRead = 1;
-        int     gotFirstG = 0;
+        int32_t     echoSz = 0;
+        int32_t     clientfd;
+        int32_t     firstRead = 1;
+        int32_t     gotFirstG = 0;
                 
 #ifndef CYASSL_DTLS 
         SOCKADDR_IN_T client;
@@ -291,11 +291,11 @@ THREAD_RETURN CYASSL_THREAD echoserver_test(void* args)
                 echoSz = sizeof(type) - 1;
 
                 strncpy(&command[echoSz], header, sizeof(header));
-                echoSz += (int)sizeof(header) - 1;
+                echoSz += (int32_t)sizeof(header) - 1;
                 strncpy(&command[echoSz], body, sizeof(body));
-                echoSz += (int)sizeof(body) - 1;
+                echoSz += (int32_t)sizeof(body) - 1;
                 strncpy(&command[echoSz], footer, sizeof(footer));
-                echoSz += (int)sizeof(footer);
+                echoSz += (int32_t)sizeof(footer);
 
                 if (CyaSSL_write(ssl, command, echoSz) != echoSz)
                     err_sys("SSL_write failed");
@@ -349,12 +349,12 @@ THREAD_RETURN CYASSL_THREAD echoserver_test(void* args)
 /* so overall tests can pull in test function */
 #ifndef NO_MAIN_DRIVER
 
-    int main(int argc, char** argv)
+    int32_t main(int32_t argc, char** argv)
     {
         func_args args;
 
 #ifdef HAVE_CAVIUM
-        int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+        int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
         if (ret != 0)
             err_sys("Cavium OpenNitroxDevice failed");
 #endif /* HAVE_CAVIUM */

@@ -76,12 +76,12 @@ u32_t inet_addr(const char *cp)
  *
  * @param cp IP address in ascii represenation (e.g. "127.0.0.1")
  * @param addr pointer to which to save the ip address in network order
- * @return int 1 if cp could be converted to addr, 0 on failure
+ * @return int32_t 1 if cp could be converted to addr, 0 on failure
  */
-int inet_aton(const char *cp, struct in_addr *addr)
+int32_t inet_aton(const char *cp, struct in_addr *addr)
 {
   u32_t val;
-  int base, n, c;
+  int32_t base, n, c;
   u32_t parts[4];
   u32_t *pp = parts;
 
@@ -106,10 +106,10 @@ int inet_aton(const char *cp, struct in_addr *addr)
     }
     for (;;) {
       if (isdigit(c)) {
-        val = (val * base) + (int)(c - '0');
+        val = (val * base) + (int32_t)(c - '0');
         c = *++cp;
       } else if (base == 16 && isxdigit(c)) {
-        val = (val << 4) | (int)(c + 10 - (islower(c) ? 'a' : 'A'));
+        val = (val << 4) | (int32_t)(c + 10 - (islower(c) ? 'a' : 'A'));
         c = *++cp;
       } else
         break;

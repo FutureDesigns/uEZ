@@ -473,7 +473,7 @@ void stats_display(void);
 void stats_display_proto(struct stats_proto *proto, const char *name);
 void stats_display_igmp(struct stats_igmp *igmp, const char *name);
 void stats_display_mem(struct stats_mem *mem, const char *name);
-void stats_display_memp(struct stats_mem *mem, int index);
+void stats_display_memp(struct stats_mem *mem, int32_t index);
 void stats_display_sys(struct stats_sys *sys);
 #else /* LWIP_STATS_DISPLAY */
 #define stats_display()

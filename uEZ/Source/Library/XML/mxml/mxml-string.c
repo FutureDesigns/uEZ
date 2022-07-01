@@ -40,14 +40,14 @@
  * '_mxml_snprintf()' - Format a string.
  */
 
-int					/* O - Number of bytes formatted */
+int32_t					/* O - Number of bytes formatted */
 _mxml_snprintf(char       *buffer,	/* I - Output buffer */
                size_t     bufsize,	/* I - Size of output buffer */
 	       const char *format,	/* I - Printf-style format string */
 	       ...)			/* I - Additional arguments as needed */
 {
   va_list	ap;			/* Argument list */
-  int		bytes;			/* Number of bytes formatted */
+  int32_t		bytes;			/* Number of bytes formatted */
 
 
   va_start(ap, format);
@@ -111,7 +111,7 @@ _mxml_strdupf(const char *format,	/* I - Printf-style format string */
  * '_mxml_vsnprintf()' - Format a string into a fixed size buffer.
  */
 
-int					/* O - Number of bytes formatted */
+int32_t					/* O - Number of bytes formatted */
 _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
                 size_t     bufsize,	/* O - Size of output buffer */
 		const char *format,	/* I - Printf-style format string */
@@ -122,14 +122,14 @@ _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
 		sign,			/* Sign of format width */
 		size,			/* Size character (h, l, L) */
 		type;			/* Format type character */
-  int		width,			/* Width of field */
+  int32_t		width,			/* Width of field */
 		prec;			/* Number of characters of precision */
   char		tformat[100],		/* Temporary format string for sprintf() */
 		*tptr,			/* Pointer into temporary format */
 		temp[1024];		/* Buffer for formatted numbers */
   char		*s;			/* Pointer to string */
-  int		slen;			/* Length of string */
-  int		bytes;			/* Total number of bytes needed */
+  int32_t		slen;			/* Length of string */
+  int32_t		bytes;			/* Total number of bytes needed */
 
 
  /*
@@ -170,7 +170,7 @@ _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
 	*/
 
 	format ++;
-	width = va_arg(ap, int);
+	width = va_arg(ap, int32_t);
 
 	snprintf(tptr, sizeof(tformat) - (tptr - tformat), "%d", width);
 	tptr += strlen(tptr);
@@ -202,7 +202,7 @@ _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
 	  */
 
 	  format ++;
-	  prec = va_arg(ap, int);
+	  prec = va_arg(ap, int32_t);
 
 	  snprintf(tptr, sizeof(tformat) - (tptr - tformat), "%d", prec);
 	  tptr += strlen(tptr);
@@ -297,7 +297,7 @@ _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
 	      sprintf(temp, tformat, va_arg(ap, long long));
 	    else
 #endif /* HAVE_LONG_LONG */
-	    sprintf(temp, tformat, va_arg(ap, int));
+	    sprintf(temp, tformat, va_arg(ap, int32_t));
 
             bytes += strlen(temp);
 
@@ -345,7 +345,7 @@ _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
 	    if (bufptr)
 	    {
 	      if (width <= 1)
-	        *bufptr++ = va_arg(ap, int);
+	        *bufptr++ = va_arg(ap, int32_t);
 	      else
 	      {
 		if ((bufptr + width) > bufend)
@@ -391,7 +391,7 @@ _mxml_vsnprintf(char       *buffer,	/* O - Output buffer */
 	    break;
 
 	case 'n' : /* Output number of chars so far */
-	    *(va_arg(ap, int *)) = bytes;
+	    *(va_arg(ap, int32_t *)) = bytes;
 	    break;
       }
     }
@@ -425,7 +425,7 @@ char *					/* O - New string pointer */
 _mxml_vstrdupf(const char *format,	/* I - Printf-style format string */
                va_list    ap)		/* I - Pointer to additional arguments */
 {
-  int		bytes;			/* Number of bytes required */
+  int32_t		bytes;			/* Number of bytes required */
   char		*buffer,		/* String buffer */
 		temp[256];		/* Small buffer for first vsnprintf */
   va_list	apcopy;			/* Copy of argument list */

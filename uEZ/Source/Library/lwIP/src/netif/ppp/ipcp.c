@@ -86,12 +86,12 @@
  * Callbacks for fsm code.  (CI = Configuration Information)
  */
 static void ipcp_resetci (fsm *);                     /* Reset our CI */
-static int  ipcp_cilen (fsm *);                       /* Return length of our CI */
-static void ipcp_addci (fsm *, u_char *, int *);      /* Add our CI */
-static int  ipcp_ackci (fsm *, u_char *, int);        /* Peer ack'd our CI */
-static int  ipcp_nakci (fsm *, u_char *, int);        /* Peer nak'd our CI */
-static int  ipcp_rejci (fsm *, u_char *, int);        /* Peer rej'd our CI */
-static int  ipcp_reqci (fsm *, u_char *, int *, int); /* Rcv CI */
+static int32_t  ipcp_cilen (fsm *);                       /* Return length of our CI */
+static void ipcp_addci (fsm *, u_char *, int32_t *);      /* Add our CI */
+static int32_t  ipcp_ackci (fsm *, u_char *, int32_t);        /* Peer ack'd our CI */
+static int32_t  ipcp_nakci (fsm *, u_char *, int32_t);        /* Peer nak'd our CI */
+static int32_t  ipcp_rejci (fsm *, u_char *, int32_t);        /* Peer rej'd our CI */
+static int32_t  ipcp_reqci (fsm *, u_char *, int32_t *, int32_t); /* Rcv CI */
 static void ipcp_up (fsm *);                          /* We're UP */
 static void ipcp_down (fsm *);                        /* We're DOWN */
 #if 0
@@ -102,15 +102,15 @@ static void ipcp_finished (fsm *);                    /* Don't need lower layer 
 /*
  * Protocol entry points from main code.
  */
-static void ipcp_init (int);
-static void ipcp_open (int);
-static void ipcp_close (int, char *);
-static void ipcp_lowerup (int);
-static void ipcp_lowerdown (int);
-static void ipcp_input (int, u_char *, int);
-static void ipcp_protrej (int);
+static void ipcp_init (int32_t);
+static void ipcp_open (int32_t);
+static void ipcp_close (int32_t, char *);
+static void ipcp_lowerup (int32_t);
+static void ipcp_lowerdown (int32_t);
+static void ipcp_input (int32_t, u_char *, int32_t);
+static void ipcp_protrej (int32_t);
 
-static void ipcp_clear_addrs (int);
+static void ipcp_clear_addrs (int32_t);
 
 #define CODENAME(x) ((x) == CONFACK ? "ACK" : \
                      (x) == CONFNAK ? "NAK" : "REJ")
@@ -156,8 +156,8 @@ struct protent ipcp_protent = {
 /*** LOCAL DATA STRUCTURES ***/
 /*****************************/
 /* local vars */
-static int cis_received[NUM_PPP];      /* # Conf-Reqs received */
-static int default_route_set[NUM_PPP]; /* Have set up a default route */
+static int32_t cis_received[NUM_PPP];      /* # Conf-Reqs received */
+static int32_t default_route_set[NUM_PPP]; /* Have set up a default route */
 
 static fsm_callbacks ipcp_callbacks = { /* IPCP callback routines */
   ipcp_resetci,  /* Reset our Configuration Information */
@@ -202,7 +202,7 @@ _inet_ntoa(u32_t n)
  * ipcp_init - Initialize IPCP.
  */
 static void
-ipcp_init(int unit)
+ipcp_init(int32_t unit)
 {
   fsm           *f = &ipcp_fsm[unit];
   ipcp_options *wo = &ipcp_wantoptions[unit];
@@ -244,7 +244,7 @@ ipcp_init(int unit)
  * ipcp_open - IPCP is allowed to come up.
  */
 static void
-ipcp_open(int unit)
+ipcp_open(int32_t unit)
 {
   fsm_open(&ipcp_fsm[unit]);
 }
@@ -254,7 +254,7 @@ ipcp_open(int unit)
  * ipcp_close - Take IPCP down.
  */
 static void
-ipcp_close(int unit, char *reason)
+ipcp_close(int32_t unit, char *reason)
 {
   fsm_close(&ipcp_fsm[unit], reason);
 }
@@ -264,7 +264,7 @@ ipcp_close(int unit, char *reason)
  * ipcp_lowerup - The lower layer is up.
  */
 static void
-ipcp_lowerup(int unit)
+ipcp_lowerup(int32_t unit)
 {
   fsm_lowerup(&ipcp_fsm[unit]);
 }
@@ -274,7 +274,7 @@ ipcp_lowerup(int unit)
  * ipcp_lowerdown - The lower layer is down.
  */
 static void
-ipcp_lowerdown(int unit)
+ipcp_lowerdown(int32_t unit)
 {
   fsm_lowerdown(&ipcp_fsm[unit]);
 }
@@ -284,7 +284,7 @@ ipcp_lowerdown(int unit)
  * ipcp_input - Input IPCP packet.
  */
 static void
-ipcp_input(int unit, u_char *p, int len)
+ipcp_input(int32_t unit, u_char *p, int32_t len)
 {
   fsm_input(&ipcp_fsm[unit], p, len);
 }
@@ -296,7 +296,7 @@ ipcp_input(int unit, u_char *p, int len)
  * Pretend the lower layer went down, so we shut up.
  */
 static void
-ipcp_protrej(int unit)
+ipcp_protrej(int32_t unit)
 {
   fsm_lowerdown(&ipcp_fsm[unit]);
 }
@@ -328,7 +328,7 @@ ipcp_resetci(fsm *f)
 /*
  * ipcp_cilen - Return length of our CI.
  */
-static int
+static int32_t
 ipcp_cilen(fsm *f)
 {
   ipcp_options *go = &ipcp_gotoptions[f->unit];
@@ -374,14 +374,14 @@ ipcp_cilen(fsm *f)
  * ipcp_addci - Add our desired CIs to a packet.
  */
 static void
-ipcp_addci(fsm *f, u_char *ucp, int *lenp)
+ipcp_addci(fsm *f, u_char *ucp, int32_t *lenp)
 {
   ipcp_options *go = &ipcp_gotoptions[f->unit];
-  int len = *lenp;
+  int32_t len = *lenp;
 
 #define ADDCIVJ(opt, neg, val, old, maxslotindex, cflag) \
   if (neg) { \
-    int vjlen = old? CILEN_COMPRESS : CILEN_VJ; \
+    int32_t vjlen = old? CILEN_COMPRESS : CILEN_VJ; \
     if (len >= vjlen) { \
       PUTCHAR(opt, ucp); \
       PUTCHAR(vjlen, ucp); \
@@ -398,7 +398,7 @@ ipcp_addci(fsm *f, u_char *ucp, int *lenp)
 
 #define ADDCIADDR(opt, neg, old, val1, val2) \
   if (neg) { \
-    int addrlen = (old? CILEN_ADDRS: CILEN_ADDR); \
+    int32_t addrlen = (old? CILEN_ADDRS: CILEN_ADDR); \
     if (len >= addrlen) { \
       u32_t l; \
       PUTCHAR(opt, ucp); \
@@ -450,8 +450,8 @@ ipcp_addci(fsm *f, u_char *ucp, int *lenp)
  *  0 - Ack was bad.
  *  1 - Ack was good.
  */
-static int
-ipcp_ackci(fsm *f, u_char *p, int len)
+static int32_t
+ipcp_ackci(fsm *f, u_char *p, int32_t len)
 {
   ipcp_options *go = &ipcp_gotoptions[f->unit];
   u_short cilen, citype, cishort;
@@ -466,7 +466,7 @@ ipcp_ackci(fsm *f, u_char *p, int len)
 
 #define ACKCIVJ(opt, neg, val, old, maxslotindex, cflag) \
   if (neg) { \
-    int vjlen = old? CILEN_COMPRESS : CILEN_VJ; \
+    int32_t vjlen = old? CILEN_COMPRESS : CILEN_VJ; \
     if ((len -= vjlen) < 0) { \
       goto bad; \
     } \
@@ -494,7 +494,7 @@ ipcp_ackci(fsm *f, u_char *p, int len)
   
 #define ACKCIADDR(opt, neg, old, val1, val2) \
   if (neg) { \
-    int addrlen = (old? CILEN_ADDRS: CILEN_ADDR); \
+    int32_t addrlen = (old? CILEN_ADDRS: CILEN_ADDR); \
     u32_t l; \
     if ((len -= addrlen) < 0) { \
       goto bad; \
@@ -570,8 +570,8 @@ bad:
  *  0 - Nak was bad.
  *  1 - Nak was good.
  */
-static int
-ipcp_nakci(fsm *f, u_char *p, int len)
+static int32_t
+ipcp_nakci(fsm *f, u_char *p, int32_t len)
 {
   ipcp_options *go = &ipcp_gotoptions[f->unit];
   u_char cimaxslotindex, cicflag;
@@ -775,8 +775,8 @@ bad:
 /*
  * ipcp_rejci - Reject some of our CIs.
  */
-static int
-ipcp_rejci(fsm *f, u_char *p, int len)
+static int32_t
+ipcp_rejci(fsm *f, u_char *p, int32_t len)
 {
   ipcp_options *go = &ipcp_gotoptions[f->unit];
   u_char cimaxslotindex, ciflag, cilen;
@@ -894,8 +894,8 @@ bad:
  * appropriately.  If reject_if_disagree is non-zero, doesn't return
  * CONFNAK; returns CONFREJ if it can't return CONFACK.
  */
-static int
-ipcp_reqci(fsm *f, u_char *inp/* Requested CIs */,int *len/* Length of requested CIs */,int reject_if_disagree)
+static int32_t
+ipcp_reqci(fsm *f, u_char *inp/* Requested CIs */,int32_t *len/* Length of requested CIs */,int32_t reject_if_disagree)
 {
   ipcp_options *wo = &ipcp_wantoptions[f->unit];
   ipcp_options *ho = &ipcp_hisoptions[f->unit];
@@ -910,13 +910,13 @@ ipcp_reqci(fsm *f, u_char *inp/* Requested CIs */,int *len/* Length of requested
 #ifdef OLD_CI_ADDRS
   u32_t ciaddr2;          /* Parsed address values */
 #endif
-  int rc = CONFACK;       /* Final packet return code */
-  int orc;                /* Individual option return code */
+  int32_t rc = CONFACK;       /* Final packet return code */
+  int32_t orc;                /* Individual option return code */
   u_char *p;              /* Pointer to next char to parse */
   u_char *ucp = inp;      /* Pointer to current output char */
-  int l = *len;           /* Length left */
+  int32_t l = *len;           /* Length left */
   u_char maxslotindex, cflag;
-  int d;
+  int32_t d;
 
   cis_received[f->unit] = 1;
 
@@ -1212,7 +1212,7 @@ endswitch:
     PUTLONG(tl, ucp);
   }
 
-  *len = (int)(ucp - inp);    /* Compute output length */
+  *len = (int32_t)(ucp - inp);    /* Compute output length */
   IPCPDEBUG((LOG_INFO, "ipcp_reqci: returning Configure-%s\n", CODENAME(rc)));
   return (rc);      /* Return final code */
 }
@@ -1351,7 +1351,7 @@ ipcp_down(fsm *f)
  * ipcp_clear_addrs() - clear the interface addresses, routes, etc.
  */
 static void
-ipcp_clear_addrs(int unit)
+ipcp_clear_addrs(int32_t unit)
 {
   u32_t ouraddr, hisaddr;
 
@@ -1375,8 +1375,8 @@ ipcp_finished(fsm *f)
 }
 
 #if 0
-static int
-ipcp_printpkt(u_char *p, int plen, void (*printer) (void *, char *, ...), void *arg)
+static int32_t
+ipcp_printpkt(u_char *p, int32_t plen, void (*printer) (void *, char *, ...), void *arg)
 {
   LWIP_UNUSED_ARG(p);
   LWIP_UNUSED_ARG(plen);
@@ -1408,11 +1408,11 @@ ipcp_printpkt(u_char *p, int plen, void (*printer) (void *, char *, ...), void *
 #define get_tcpoff(x)   (((unsigned char *)(x))[12] >> 4)
 #define get_tcpflags(x) (((unsigned char *)(x))[13])
 
-static int
-ip_active_pkt(u_char *pkt, int len)
+static int32_t
+ip_active_pkt(u_char *pkt, int32_t len)
 {
   u_char *tcp;
-  int hlen;
+  int32_t hlen;
 
   len -= PPP_HDRLEN;
   pkt += PPP_HDRLEN;

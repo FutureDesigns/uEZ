@@ -9,15 +9,15 @@
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/hal/Timer.h>
 
-static int initialized = 0;
+static int32_t initialized = 0;
 static double msTicks = 0;
 static Timer_Handle hdl = NULL;
 
-double current_time(int reset);
-static void tick(unsigned int arg0);
+double current_time(int32_t reset);
+static void tick(uint32_t arg0);
 void msTimer_init(void);
 void runBenchmarks(UArg arg0, UArg arg1);
-extern int benchmark_test(void* args);
+extern int32_t benchmark_test(void* args);
 
 /*
  *  ======== runBenchmarks ========
@@ -40,7 +40,7 @@ void runBenchmarks(UArg arg0, UArg arg1)
  *  ======== ticks ========
  *  Keeps track of time in millisec
  */
-static void tick(unsigned int arg0)
+static void tick(uint32_t arg0)
 {
     Swi_disable();
     msTicks++;
@@ -51,7 +51,7 @@ static void tick(unsigned int arg0)
  *  ======== current_time ========
  *  Returns the time in sec (double precision)
  */
-double current_time(int reset)
+double current_time(int32_t reset)
 {
     if (reset) {
         msTicks = 0;
@@ -90,7 +90,7 @@ void msTimer_init(void)
 /*
  *  ======== main ========
  */
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 {
     /* Initialize the defaults and set the parameters. */
     Task_Handle handle;

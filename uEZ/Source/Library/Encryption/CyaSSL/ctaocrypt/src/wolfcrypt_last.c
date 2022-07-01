@@ -31,15 +31,15 @@
 #ifdef HAVE_FIPS
 
 /* last function of text/code segment */
-int wolfCrypt_FIPS_last(void);
-int wolfCrypt_FIPS_last(void)
+int32_t wolfCrypt_FIPS_last(void);
+int32_t wolfCrypt_FIPS_last(void)
 {
     return 0;
 }
 
 
 /* read only end address */
-const unsigned int wolfCrypt_FIPS_ro_end[] =
+const uint32_t wolfCrypt_FIPS_ro_end[] =
 { 0x1a2b3c4d, 0xffffffff };
 
 

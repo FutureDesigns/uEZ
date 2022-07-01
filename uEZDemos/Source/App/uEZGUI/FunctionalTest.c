@@ -840,7 +840,7 @@ exit:
     RTOS_EXIT_CRITICAL();
 
     // Return size in bytes
-    return Check-((TUInt8 *)0xA0000000);
+    return Check-((TUInt8 *)UEZBSP_SDRAM_BASE_ADDR);
 }
 
 #if UEZBSP_SDRAM
@@ -849,7 +849,7 @@ TUInt32 SDRAMMemoryTest(TUInt32 aSize)
     TUInt8 mem[100];
     TUInt8 prime;
     volatile TUInt8 *Base = (TUInt8 *)UEZBSP_SDRAM_BASE_ADDR;
-    volatile TUInt8 *Check = (TUInt8 *)UEZBSP_SDRAM_BASE_ADDR+0x10000;
+    volatile TUInt8 *Check = (TUInt8 *)UEZBSP_SDRAM_BASE_ADDR+0x10000; // 64KB
 //volatile TUInt8 *Check = (TUInt8 *)UEZBSP_SDRAM_BASE_ADDR+0x400000;
     TUInt32 i;
     TUInt32 j;

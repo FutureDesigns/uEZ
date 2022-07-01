@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GRAPH.h
 Purpose     : GRAPH include
@@ -108,13 +109,13 @@ typedef WM_HMEM GRAPH_SCALE_Handle;
 **********************************************************************
 */
 
-GRAPH_Handle GRAPH_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
-GRAPH_Handle GRAPH_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
-GRAPH_Handle GRAPH_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+GRAPH_Handle GRAPH_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id);
+GRAPH_Handle GRAPH_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t NumExtraBytes);
+GRAPH_Handle GRAPH_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
 
-GRAPH_DATA_Handle  GRAPH_DATA_XY_Create(GUI_COLOR Color, unsigned MaxNumItems, GUI_POINT * pData, unsigned NumItems);
-GRAPH_DATA_Handle  GRAPH_DATA_YT_Create(GUI_COLOR Color, unsigned MaxNumItems, I16 * pData, unsigned NumItems);
-GRAPH_SCALE_Handle GRAPH_SCALE_Create  (int Pos, int TextAlign, unsigned Flags, unsigned TickDist);
+GRAPH_DATA_Handle  GRAPH_DATA_XY_Create(GUI_COLOR Color, unsigned MaxNumItems, const GUI_POINT * pData, unsigned NumItems);
+GRAPH_DATA_Handle  GRAPH_DATA_YT_Create(GUI_COLOR Color, unsigned MaxNumItems, const I16 * pData, unsigned NumItems);
+GRAPH_SCALE_Handle GRAPH_SCALE_Create  (int32_t Pos, int32_t TextAlign, unsigned Flags, unsigned TickDist);
 
 /*********************************************************************
 *
@@ -127,13 +128,6 @@ void GRAPH_Callback(WM_MESSAGE * pMsg);
 
 /*********************************************************************
 *
-*       Standard member functions
-*
-**********************************************************************
-*/
-
-/*********************************************************************
-*
 *       Member functions
 *
 **********************************************************************
@@ -142,12 +136,14 @@ void      GRAPH_AttachData             (GRAPH_Handle hObj, GRAPH_DATA_Handle hDa
 void      GRAPH_AttachScale            (GRAPH_Handle hObj, GRAPH_SCALE_Handle hScale);
 void      GRAPH_DetachData             (GRAPH_Handle hObj, GRAPH_DATA_Handle hData);
 void      GRAPH_DetachScale            (GRAPH_Handle hObj, GRAPH_SCALE_Handle hScale);
+GUI_COLOR GRAPH_GetColor               (GRAPH_Handle hObj, unsigned Index);
 I32       GRAPH_GetScrollValue         (GRAPH_Handle hObj, U8 Coord);
-int       GRAPH_GetUserData            (GRAPH_Handle hObj, void * pDest, int NumBytes);
+int32_t       GRAPH_GetUserData            (GRAPH_Handle hObj, void * pDest, int32_t NumBytes);
 void      GRAPH_SetAutoScrollbar       (GRAPH_Handle hObj, U8 Coord, U8 OnOff);
 void      GRAPH_SetBorder              (GRAPH_Handle hObj, unsigned BorderL, unsigned BorderT, unsigned BorderR, unsigned BorderB);
 GUI_COLOR GRAPH_SetColor               (GRAPH_Handle hObj, GUI_COLOR Color, unsigned Index);
 unsigned  GRAPH_SetGridFixedX          (GRAPH_Handle hObj, unsigned OnOff);
+unsigned  GRAPH_SetGridOffX            (GRAPH_Handle hObj, unsigned Value);
 unsigned  GRAPH_SetGridOffY            (GRAPH_Handle hObj, unsigned Value);
 unsigned  GRAPH_SetGridVis             (GRAPH_Handle hObj, unsigned OnOff);
 unsigned  GRAPH_SetGridDistX           (GRAPH_Handle hObj, unsigned Value);
@@ -158,25 +154,28 @@ void      GRAPH_SetLineStyle           (GRAPH_Handle hObj, U8 Value);
 void      GRAPH_SetScrollValue         (GRAPH_Handle hObj, U8 Coord, U32 Value);
 unsigned  GRAPH_SetVSizeX              (GRAPH_Handle hObj, unsigned Value);
 unsigned  GRAPH_SetVSizeY              (GRAPH_Handle hObj, unsigned Value);
-int       GRAPH_SetUserData            (GRAPH_Handle hObj, const void * pSrc, int NumBytes);
-void      GRAPH_SetUserDraw            (GRAPH_Handle hObj, void (* pOwnerDraw)(WM_HWIN, int));
+int32_t       GRAPH_SetUserData            (GRAPH_Handle hObj, const void * pSrc, int32_t NumBytes);
+void      GRAPH_SetUserDraw            (GRAPH_Handle hObj, void (* pOwnerDraw)(WM_HWIN, int32_t));
 
 void      GRAPH_DATA_YT_AddValue       (GRAPH_DATA_Handle hDataObj, I16 Value);
 void      GRAPH_DATA_YT_Clear          (GRAPH_DATA_Handle hDataObj);
 void      GRAPH_DATA_YT_Delete         (GRAPH_DATA_Handle hDataObj);
-void      GRAPH_DATA_YT_SetAlign       (GRAPH_DATA_Handle hDataObj, int Align);
-void      GRAPH_DATA_YT_SetOffY        (GRAPH_DATA_Handle hDataObj, int Off);
-void      GRAPH_DATA_YT_MirrorX        (GRAPH_DATA_Handle hDataObj, int OnOff);
+int32_t       GRAPH_DATA_YT_GetValue       (GRAPH_DATA_Handle hDataObj, I16 * pValue, U32 Index);
+
+void      GRAPH_DATA_YT_SetAlign       (GRAPH_DATA_Handle hDataObj, int32_t Align);
+void      GRAPH_DATA_YT_SetOffY        (GRAPH_DATA_Handle hDataObj, int32_t Off);
+void      GRAPH_DATA_YT_MirrorX        (GRAPH_DATA_Handle hDataObj, int32_t OnOff);
 
 void      GRAPH_DATA_XY_AddPoint       (GRAPH_DATA_Handle hDataObj, GUI_POINT * pPoint);
 void      GRAPH_DATA_XY_Clear          (GRAPH_DATA_Handle hDataObj);
 void      GRAPH_DATA_XY_Delete         (GRAPH_DATA_Handle hDataObj);
 unsigned  GRAPH_DATA_XY_GetLineVis     (GRAPH_DATA_Handle hDataObj);
+int32_t       GRAPH_DATA_XY_GetPoint       (GRAPH_DATA_Handle hDataObj, GUI_POINT * pPoint, U32 Index);
 unsigned  GRAPH_DATA_XY_GetPointVis    (GRAPH_DATA_Handle hDataObj);
 void      GRAPH_DATA_XY_SetLineStyle   (GRAPH_DATA_Handle hDataObj, U8 LineStyle);
 unsigned  GRAPH_DATA_XY_SetLineVis     (GRAPH_DATA_Handle hDataObj, unsigned OnOff);
-void      GRAPH_DATA_XY_SetOffX        (GRAPH_DATA_Handle hDataObj, int Off);
-void      GRAPH_DATA_XY_SetOffY        (GRAPH_DATA_Handle hDataObj, int Off);
+void      GRAPH_DATA_XY_SetOffX        (GRAPH_DATA_Handle hDataObj, int32_t Off);
+void      GRAPH_DATA_XY_SetOffY        (GRAPH_DATA_Handle hDataObj, int32_t Off);
 void      GRAPH_DATA_XY_SetPenSize     (GRAPH_DATA_Handle hDataObj, U8 PenSize);
 void      GRAPH_DATA_XY_SetPointSize   (GRAPH_DATA_Handle hDataObj, unsigned PointSize);
 unsigned  GRAPH_DATA_XY_SetPointVis    (GRAPH_DATA_Handle hDataObj, unsigned OnOff);
@@ -185,9 +184,9 @@ void      GRAPH_DATA_XY_SetOwnerDraw   (GRAPH_DATA_Handle hDataObj, WIDGET_DRAW_
 void             GRAPH_SCALE_Delete      (GRAPH_SCALE_Handle hScaleObj);
 float            GRAPH_SCALE_SetFactor   (GRAPH_SCALE_Handle hScaleObj, float Factor);
 const GUI_FONT * GRAPH_SCALE_SetFont     (GRAPH_SCALE_Handle hScaleObj, const GUI_FONT * pFont);
-int              GRAPH_SCALE_SetNumDecs  (GRAPH_SCALE_Handle hScaleObj, int NumDecs);
-int              GRAPH_SCALE_SetOff      (GRAPH_SCALE_Handle hScaleObj, int Off);
-int              GRAPH_SCALE_SetPos      (GRAPH_SCALE_Handle hScaleObj, int Pos);
+int32_t              GRAPH_SCALE_SetNumDecs  (GRAPH_SCALE_Handle hScaleObj, int32_t NumDecs);
+int32_t              GRAPH_SCALE_SetOff      (GRAPH_SCALE_Handle hScaleObj, int32_t Off);
+int32_t              GRAPH_SCALE_SetPos      (GRAPH_SCALE_Handle hScaleObj, int32_t Pos);
 GUI_COLOR        GRAPH_SCALE_SetTextColor(GRAPH_SCALE_Handle hScaleObj, GUI_COLOR Color);
 unsigned         GRAPH_SCALE_SetTickDist (GRAPH_SCALE_Handle hScaleObj, unsigned Value);
 

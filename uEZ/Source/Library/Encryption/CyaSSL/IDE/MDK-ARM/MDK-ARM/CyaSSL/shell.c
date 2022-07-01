@@ -41,9 +41,9 @@
 #include "cyassl/test.h"
 #else
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 #endif
 
@@ -320,10 +320,10 @@ enum jobtype { FORGROUND, BACKGROUND }  ;
 #define IF_DELIMITER(ch) ((ch) == ' ' || (ch) == '\n')
 
 /*******  Get Command Line *****************************/
-static int getline(char * line, int sz, func_args *args, int*bf_flg) 
+static int32_t getline(char * line, int32_t sz, func_args *args, int32_t*bf_flg) 
 {
     char * ret ;
-    int i ;
+    int32_t i ;
     
     #define MAXARGS 10
     #define MAXARGLEN 30
@@ -357,7 +357,7 @@ static int getline(char * line, int sz, func_args *args, int*bf_flg)
     return i ;
 }
 
-static int BackGround = 0 ; /* 1: background job is running */
+static int32_t BackGround = 0 ; /* 1: background job is running */
 
 /************* Embedded Shell Commands **********************************/
 #define IP_SIZE 16
@@ -387,7 +387,7 @@ static void ipaddr_comm(void *args)
 
 
 #if defined(HAVE_KEIL_RTX)
-static int stack_ck = 0 ;
+static int32_t stack_ck = 0 ;
 
 static void stack_comm(void *args) 
 {
@@ -401,25 +401,25 @@ static void stack_comm(void *args)
 }
     
 #define FILL_PATTERN 0xa596695a
-void stack_fill(char * stack, int size)
+void stack_fill(char * stack, int32_t size)
 {
-    int i ;
+    int32_t i ;
 
     if(stack_ck == 0)return ;
     for(i=1; i<size/4-10; i++)
-        ((int *)stack)[i] = FILL_PATTERN ;
+        ((int32_t *)stack)[i] = FILL_PATTERN ;
 }
 
-void stack_check(char * stack, int size) 
+void stack_check(char * stack, int32_t size) 
 {
-    int i ;
+    int32_t i ;
     
     if(stack_ck == 0)return ;
     if(stack_ck == 1) {
         stack_ck ++ ; return ; 
     }
     for(i=1; i<size/4 ; i++) {
-        if(((int *)stack)[i] != FILL_PATTERN) break ;
+        if(((int32_t *)stack)[i] != FILL_PATTERN) break ;
     }
     if(i < size/4) {
         printf("Stack is used %d bytes out of %d\n", size - i*4, size) ;
@@ -430,7 +430,7 @@ void stack_check(char * stack, int size)
 
 #endif /* HAVE_KEIL_RTX */
 
-static int for_iteration = 1 ;
+static int32_t for_iteration = 1 ;
 
 static void for_command(void *args) 
 {
@@ -444,7 +444,7 @@ static void for_command(void *args)
 
 #if defined(DEBUG_CYASSL)
 
-static int CyasslDebug = 1 ;
+static int32_t CyasslDebug = 1 ;
 
 static void dbg_comm(void *args) 
 {
@@ -487,7 +487,7 @@ static   CyaSSL_Mutex command_mutex ;
 static void command_invoke(void *args) 
 {
     void (*func)(void * ) ;
-    int i,iteration ;
+    int32_t i,iteration ;
 
     func = (void(*)(void *))((func_args *)args)->argv[0] ; 
     #ifdef  HAVE_KEIL_RTX
@@ -539,9 +539,9 @@ static char line[LINESIZE] ;
 
 /********* SHEULL MAIN LOOP ***********************************/
 void shell_main(void) {
-    int i ; 
+    int32_t i ; 
     func_args args ;
-    int bf_flg ;
+    int32_t bf_flg ;
    
     i = BackGround ; 
         /* Dummy for avoiding warning: BackGround is defined but not used. */

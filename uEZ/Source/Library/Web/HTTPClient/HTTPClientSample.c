@@ -159,7 +159,7 @@ INT32 HTTPParseCommandLineArgs(UINT32 argc, CHAR *argv[],HTTPParameters *pClient
             if(pSearchPtr)
             {
                 PortNum[0] = 0; // Reset the string
-                nResult = (int)(pSearchPtr - pClientParams->ProxyHost); // Look for the offest in bytes
+                nResult = (int32_t)(pSearchPtr - pClientParams->ProxyHost); // Look for the offest in bytes
                 strcpy(PortNum,pClientParams->ProxyHost + nResult + 1); // copy to temporary buffer
                 pClientParams->ProxyHost[nResult] = 0;    // null terminate the host string
                 pClientParams->ProxyPort = atol(PortNum); // convert the port to a numeric value
@@ -183,7 +183,7 @@ INT32 HTTPParseCommandLineArgs(UINT32 argc, CHAR *argv[],HTTPParameters *pClient
                 HTTPDumpHelp("Error: /C argument must be in the form of user:password");
                 return -1;
             }
-            nResult = (int)(pSearchPtr - pClientParams->UserName); // Look for the offest in bytes
+            nResult = (int32_t)(pSearchPtr - pClientParams->UserName); // Look for the offest in bytes
             strcpy(pClientParams->Password,pClientParams->UserName + nResult +1);
             pClientParams->UserName[nResult] = 0;    // null terminate the host string
             continue;
@@ -231,7 +231,7 @@ INT32 HTTPParseCommandLineArgs(UINT32 argc, CHAR *argv[],HTTPParameters *pClient
 ///////////////////////////////////////////////////////////////////////////////
 
 
-int main(int argc, CHAR *argv[])
+int32_t main(int32_t argc, CHAR *argv[])
 {
 
     INT32                  nRetCode;
@@ -329,7 +329,7 @@ int main(int argc, CHAR *argv[])
 
     if(ClientParams.Verbose == TRUE)
     {
-        printf("\n\nHTTP Client terminated %d (got %d kb)\n\n",(int)nRetCode,(int)(nTotal/ 1024));
+        printf("\n\nHTTP Client terminated %d (got %d kb)\n\n",(int32_t)nRetCode,(int32_t)(nTotal/ 1024));
     }
 
 #ifdef _WIN32

@@ -719,10 +719,10 @@
 	/* Private Interface - For use in library only: */
 	#if !defined(__DOXYGEN__)
 		/* Macros: */
-			#define VERSION_TENS(x)                   (int)((x) / 10)
-			#define VERSION_ONES(x)                   (int)((x) - (10 * VERSION_TENS(x)))
-			#define VERSION_TENTHS(x)                 (int)(((x) - (int)(x)) * 10)
-			#define VERSION_HUNDREDTHS(x)             (int)((((x) - (int)(x)) * 100) - (10 * VERSION_TENTHS(x)))
+			#define VERSION_TENS(x)                   (int32_t)((x) / 10)
+			#define VERSION_ONES(x)                   (int32_t)((x) - (10 * VERSION_TENS(x)))
+			#define VERSION_TENTHS(x)                 (int32_t)(((x) - (int32_t)(x)) * 10)
+			#define VERSION_HUNDREDTHS(x)             (int32_t)((((x) - (int32_t)(x)) * 100) - (10 * VERSION_TENTHS(x)))
 	#endif
 
 	/* Disable C linkage for C++ Compilers: */

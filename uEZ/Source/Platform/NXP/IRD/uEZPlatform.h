@@ -44,9 +44,9 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <Config.h>
-#include <UEZNetwork.h>
+#include <uEZNetwork.h>
 #include <Types/GPIO.h>
-#include <UEZPlatformAPI.h>
+#include <uEZPlatformAPI.h>
 
 #ifdef __cplusplus
 extern "C" {

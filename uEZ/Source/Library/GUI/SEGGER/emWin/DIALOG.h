@@ -1,15 +1,15 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                SEGGER Microcontroller GmbH                         *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.30 - Graphical user interface for embedded applications **
+** emWin V5.48 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -26,15 +26,16 @@ Full source code is available at: www.segger.com
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
 Licensing information
-
 Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors
+Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011
-Licensed product:         -
-Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
-Licensed number of seats: -
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2011-08-19 - 2018-09-02
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : Dialog.h
 Purpose     : Dialog box include
@@ -45,6 +46,7 @@ Purpose     : Dialog box include
 #define DIALOG_H
 
 #include "WM.h"
+
 #include "BUTTON.h"
 #include "CALENDAR.h"
 #include "CHECKBOX.h"
@@ -57,6 +59,7 @@ Purpose     : Dialog box include
 #include "HEADER.h"
 #include "ICONVIEW.h"
 #include "IMAGE.h"
+#include "KNOB.h"
 #include "LISTBOX.h"
 #include "LISTVIEW.h"
 #include "LISTWHEEL.h"
@@ -68,9 +71,9 @@ Purpose     : Dialog box include
 #include "SCROLLBAR.h"
 #include "SLIDER.h"
 #include "SPINBOX.h"
+#include "SWIPELIST.h"
 #include "TEXT.h"
 #include "TREEVIEW.h"
-#include "KNOB.h"
 
 #if GUI_WINSUPPORT
 
@@ -82,14 +85,14 @@ Purpose     : Dialog box include
 *
 *       WINDOW API
 */
-WM_HWIN   WINDOW_CreateEx         (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, WM_CALLBACK * cb);
-WM_HWIN   WINDOW_CreateUser       (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, WM_CALLBACK * cb, int NumExtraBytes);
-WM_HWIN   WINDOW_CreateIndirect   (const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
+WM_HWIN   WINDOW_CreateEx         (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, WM_CALLBACK * cb);
+WM_HWIN   WINDOW_CreateUser       (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, WM_CALLBACK * cb, int32_t NumExtraBytes);
+WM_HWIN   WINDOW_CreateIndirect   (const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
 GUI_COLOR WINDOW_GetDefaultBkColor(void);
-int       WINDOW_GetUserData      (WM_HWIN hObj, void * pDest, int NumBytes);
+int32_t       WINDOW_GetUserData      (WM_HWIN hObj, void * pDest, int32_t NumBytes);
 void      WINDOW_SetBkColor       (WM_HWIN hObj, GUI_COLOR Color);
 void      WINDOW_SetDefaultBkColor(GUI_COLOR Color);
-int       WINDOW_SetUserData      (WM_HWIN hObj, const void * pSrc, int NumBytes);
+int32_t       WINDOW_SetUserData      (WM_HWIN hObj, const void * pSrc, int32_t NumBytes);
 
 void WINDOW_Callback(WM_MESSAGE * pMsg);
 

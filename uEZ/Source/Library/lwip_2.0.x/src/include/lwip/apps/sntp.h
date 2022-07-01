@@ -64,7 +64,7 @@ char *sntp_getservername(u8_t idx);
 #endif /* SNTP_SERVER_DNS */
 
 #if SNTP_GET_SERVERS_FROM_DHCP
-void sntp_servermode_dhcp(int set_servers_from_dhcp);
+void sntp_servermode_dhcp(int32_t set_servers_from_dhcp);
 #else /* SNTP_GET_SERVERS_FROM_DHCP */
 #define sntp_servermode_dhcp(x)
 #endif /* SNTP_GET_SERVERS_FROM_DHCP */

@@ -225,7 +225,7 @@ eMBTCPInit( USHORT ucTCPPort )
 eMBErrorCode
 eMBRegisterCB( UCHAR ucFunctionCode, pxMBFunctionHandler pxHandler )
 {
-    int             i;
+    int32_t             i;
     eMBErrorCode    eStatus;
 
     if( ( 0 < ucFunctionCode ) && ( ucFunctionCode <= 127 ) )
@@ -338,7 +338,7 @@ eMBPoll( void )
     static USHORT   usLength;
     static eMBException eException;
 
-    int             i;
+    int32_t             i;
     eMBErrorCode    eStatus = MB_ENOERR;
     eMBEventType    eEvent;
 
@@ -425,7 +425,7 @@ eMBTCPPoll( void )
     static USHORT   usLength;
     static eMBException eException;
 
-    int             i;
+    int32_t             i;
     eMBErrorCode    eStatus = MB_ENOERR;
     eMBEventType    eEvent;
 
@@ -497,7 +497,7 @@ eMBTCPHandleMessage( void *pvSession, UCHAR *ucMBFrame, USHORT usLength )
 {
     UCHAR    ucFunctionCode;
     eMBException eException;
-    int             i;
+    int32_t             i;
 
     /* Check if the protocol stack is ready. */
     if( eMBState != STATE_ENABLED )

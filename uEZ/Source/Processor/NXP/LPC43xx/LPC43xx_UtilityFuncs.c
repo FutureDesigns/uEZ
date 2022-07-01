@@ -209,14 +209,14 @@ void CPUEnableInterrupts(void)
 //ToDo: remove these functions
 void LPC43xxPowerOn(TUInt32 bits)
 {
-    extern unsigned int G_LPC43xx_powerSetting;
+    extern uint32_t G_LPC43xx_powerSetting;
     G_LPC43xx_powerSetting |= (bits);
     //LPC_SC->PCONP = G_LPC43xx_powerSetting;
 }
 
 void LPC43xxPowerOff(TUInt32 bits)
 {
-    extern unsigned int G_LPC43xx_powerSetting;
+    extern uint32_t G_LPC43xx_powerSetting;
     G_LPC43xx_powerSetting &= ~(bits);
     //LPC_SC->PCONP = G_LPC43xx_powerSetting;
 }

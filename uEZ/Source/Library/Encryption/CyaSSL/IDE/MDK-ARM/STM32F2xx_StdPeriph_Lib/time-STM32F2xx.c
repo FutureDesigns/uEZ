@@ -260,9 +260,9 @@ double current_time()
 }
 
 typedef struct func_args {
-    int    argc;
+    int32_t    argc;
     char** argv;
-    int    return_code;
+    int32_t    return_code;
 } func_args;
 
 void time_main(void *args) 
@@ -280,14 +280,14 @@ void time_main(void *args)
               ((func_args *)args)->argv[1][0] == '-' && 
               ((func_args *)args)->argv[1][1] == 'd' ) {
         datetime = ((func_args *)args)->argv[2];
-        sscanf(datetime, "%d/%d/%d", (int *)&mo, (int *)&d, (int *) &y) ;
+        sscanf(datetime, "%d/%d/%d", (int32_t *)&mo, (int32_t *)&d, (int32_t *) &y) ;
         SetDate(y-2000, mo, d) ;        
     } else if(((func_args *)args)->argc == 3 && 
               ((func_args *)args)->argv[1][0] == '-' && 
               ((func_args *)args)->argv[1][1] == 't' ) {
         datetime = ((func_args *)args)->argv[2];
         sscanf(datetime, "%d:%d:%d",            
-            (int *)&h, (int *)&m, (int *)&s) ;
+            (int32_t *)&h, (int32_t *)&m, (int32_t *)&s) ;
         SetTime(h, m, s) ;
     } else printf("Invalid argument\n") ; 
 }

@@ -174,7 +174,7 @@ extern "C" {
 #define  EMEDIUMTYPE    124  /* Wrong medium type */
 
 #ifndef errno
-extern int errno;
+extern int32_t errno;
 #endif
 
 #else /* LWIP_PROVIDE_ERRNO */

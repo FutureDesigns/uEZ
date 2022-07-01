@@ -69,14 +69,14 @@ static const byte blake2b_sigma[12][16] =
 };
 
 
-static INLINE int blake2b_set_lastnode( blake2b_state *S )
+static INLINE int32_t blake2b_set_lastnode( blake2b_state *S )
 {
   S->f[1] = ~0ULL;
   return 0;
 }
 
 /* Some helper functions, not necessarily useful */
-static INLINE int blake2b_set_lastblock( blake2b_state *S )
+static INLINE int32_t blake2b_set_lastblock( blake2b_state *S )
 {
   if( S->last_node ) blake2b_set_lastnode( S );
 
@@ -84,7 +84,7 @@ static INLINE int blake2b_set_lastblock( blake2b_state *S )
   return 0;
 }
 
-static INLINE int blake2b_increment_counter( blake2b_state *S, const word64
+static INLINE int32_t blake2b_increment_counter( blake2b_state *S, const word64
                                              inc )
 {
   S->t[0] += inc;
@@ -92,9 +92,9 @@ static INLINE int blake2b_increment_counter( blake2b_state *S, const word64
   return 0;
 }
 
-static INLINE int blake2b_init0( blake2b_state *S )
+static INLINE int32_t blake2b_init0( blake2b_state *S )
 {
-  int i;
+  int32_t i;
   XMEMSET( S, 0, sizeof( blake2b_state ) );
 
   for( i = 0; i < 8; ++i ) S->h[i] = blake2b_IV[i];
@@ -103,7 +103,7 @@ static INLINE int blake2b_init0( blake2b_state *S )
 }
 
 /* init xors IV with input parameter block */
-int blake2b_init_param( blake2b_state *S, const blake2b_param *P )
+int32_t blake2b_init_param( blake2b_state *S, const blake2b_param *P )
 {
   word32 i;
   blake2b_init0( S );
@@ -118,7 +118,7 @@ int blake2b_init_param( blake2b_state *S, const blake2b_param *P )
 
 
 
-int blake2b_init( blake2b_state *S, const byte outlen )
+int32_t blake2b_init( blake2b_state *S, const byte outlen )
 {
   blake2b_param P[1];
 
@@ -139,7 +139,7 @@ int blake2b_init( blake2b_state *S, const byte outlen )
 }
 
 
-int blake2b_init_key( blake2b_state *S, const byte outlen, const void *key,
+int32_t blake2b_init_key( blake2b_state *S, const byte outlen, const void *key,
                       const byte keylen )
 {
   blake2b_param P[1];
@@ -186,10 +186,10 @@ int blake2b_init_key( blake2b_state *S, const byte outlen, const void *key,
   return 0;
 }
 
-static int blake2b_compress( blake2b_state *S,
+static int32_t blake2b_compress( blake2b_state *S,
                              const byte block[BLAKE2B_BLOCKBYTES] )
 {
-  int i;
+  int32_t i;
 
 #ifdef CYASSL_SMALL_STACK
   word64* m;
@@ -275,7 +275,7 @@ static int blake2b_compress( blake2b_state *S,
 }
 
 /* inlen now in bytes */
-int blake2b_update( blake2b_state *S, const byte *in, word64 inlen )
+int32_t blake2b_update( blake2b_state *S, const byte *in, word64 inlen )
 {
   while( inlen > 0 )
   {
@@ -309,10 +309,10 @@ int blake2b_update( blake2b_state *S, const byte *in, word64 inlen )
 }
 
 /* Is this correct? */
-int blake2b_final( blake2b_state *S, byte *out, byte outlen )
+int32_t blake2b_final( blake2b_state *S, byte *out, byte outlen )
 {
   byte buffer[BLAKE2B_OUTBYTES];
-  int     i;
+  int32_t     i;
 
   if( S->buflen > BLAKE2B_BLOCKBYTES )
   {
@@ -338,7 +338,7 @@ int blake2b_final( blake2b_state *S, byte *out, byte outlen )
 }
 
 /* inlen, at least, should be word64. Others can be size_t. */
-int blake2b( byte *out, const void *in, const void *key, const byte outlen,
+int32_t blake2b( byte *out, const void *in, const void *key, const byte outlen,
              const word64 inlen, byte keylen )
 {
   blake2b_state S[1];
@@ -367,7 +367,7 @@ int blake2b( byte *out, const void *in, const void *key, const byte outlen,
 #if defined(BLAKE2B_SELFTEST)
 #include <string.h>
 #include "blake2-kat.h"
-int main( int argc, char **argv )
+int32_t main( int32_t argc, char **argv )
 {
   byte key[BLAKE2B_KEYBYTES];
   byte buf[KAT_LENGTH];
@@ -403,7 +403,7 @@ int main( int argc, char **argv )
 /* CTaoCrypt API */
 
 /* Init Blake2b digest, track size incase final doesn't want to "remember" */
-int InitBlake2b(Blake2b* b2b, word32 digestSz)
+int32_t InitBlake2b(Blake2b* b2b, word32 digestSz)
 {
     b2b->digestSz = digestSz;
 
@@ -412,14 +412,14 @@ int InitBlake2b(Blake2b* b2b, word32 digestSz)
 
 
 /* Blake2b Update */
-int Blake2bUpdate(Blake2b* b2b, const byte* data, word32 sz)
+int32_t Blake2bUpdate(Blake2b* b2b, const byte* data, word32 sz)
 {
     return blake2b_update(b2b->S, data, sz);
 }
 
 
 /* Blake2b Final, if pass in zero size we use init digestSz */
-int Blake2bFinal(Blake2b* b2b, byte* final, word32 requestSz)
+int32_t Blake2bFinal(Blake2b* b2b, byte* final, word32 requestSz)
 {
     word32 sz = requestSz ? requestSz : b2b->digestSz;
 

@@ -78,7 +78,7 @@
 	/* Architecture specific utility includes: */
 		#if defined(__DOXYGEN__)
 			/** Type define for an unsigned integer the same width as the selected architecture's machine register.
-			 *  This is distinct from the non-specific standard int data type, whose width is machine dependant but
+			 *  This is distinct from the non-specific standard int32_t data type, whose width is machine dependant but
 			 *  which may not reflect the actual machine register width on some targets (e.g. LPC).
 			 */
 			typedef MACHINE_REG_t uint_reg_t;	

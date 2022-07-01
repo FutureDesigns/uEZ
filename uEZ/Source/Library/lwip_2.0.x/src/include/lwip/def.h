@@ -119,15 +119,15 @@ u32_t lwip_htonl(u32_t x);
 
 #ifndef lwip_itoa
 /* This can be #defined to itoa() or snprintf(result, bufsize, "%d", number) depending on your platform */
-void  lwip_itoa(char* result, size_t bufsize, int number);
+void  lwip_itoa(char* result, size_t bufsize, int32_t number);
 #endif
 #ifndef lwip_strnicmp
 /* This can be #defined to strnicmp() or strncasecmp() depending on your platform */
-int   lwip_strnicmp(const char* str1, const char* str2, size_t len);
+int32_t   lwip_strnicmp(const char* str1, const char* str2, size_t len);
 #endif
 #ifndef lwip_stricmp
 /* This can be #defined to stricmp() or strcasecmp() depending on your platform */
-int   lwip_stricmp(const char* str1, const char* str2);
+int32_t   lwip_stricmp(const char* str1, const char* str2);
 #endif
 #ifndef lwip_strnstr
 /* This can be #defined to strnstr() depending on your platform */

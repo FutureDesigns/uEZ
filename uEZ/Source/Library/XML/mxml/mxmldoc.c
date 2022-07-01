@@ -142,24 +142,24 @@ static mxml_node_t	*add_variable(mxml_node_t *parent, const char *name,
 static mxml_node_t	*find_public(mxml_node_t *node, mxml_node_t *top,
 			             const char *name);
 static char		*get_comment_info(mxml_node_t *description);
-static char		*get_text(mxml_node_t *node, char *buffer, int buflen);
+static char		*get_text(mxml_node_t *node, char *buffer, int32_t buflen);
 static mxml_type_t	load_cb(mxml_node_t *node);
 static mxml_node_t	*new_documentation(mxml_node_t **mxmldoc);
-static int		remove_directory(const char *path);
+static int32_t		remove_directory(const char *path);
 static void		safe_strcpy(char *dst, const char *src);
-static int		scan_file(const char *filename, FILE *fp,
+static int32_t		scan_file(const char *filename, FILE *fp,
 			          mxml_node_t *doc);
 static void		sort_node(mxml_node_t *tree, mxml_node_t *func);
 static void		update_comment(mxml_node_t *parent,
 			               mxml_node_t *comment);
 static void		usage(const char *option);
 static void		write_description(FILE *out, mxml_node_t *description,
-			                  const char *element, int summary);
+			                  const char *element, int32_t summary);
 static void		write_element(FILE *out, mxml_node_t *doc,
-			              mxml_node_t *element, int mode);
+			              mxml_node_t *element, int32_t mode);
 static void		write_file(FILE *out, const char *file);
 static void		write_function(FILE *out, mxml_node_t *doc,
-			               mxml_node_t *function, int level);
+			               mxml_node_t *function, int32_t level);
 static void		write_html(const char *section, const char *title,
 			           const char *footerfile,
 			           const char *headerfile,
@@ -176,25 +176,25 @@ static void		write_man(const char *man_name, const char *section,
 				  mxml_node_t *doc);
 static void		write_scu(FILE *out, mxml_node_t *doc,
 			          mxml_node_t *scut);
-static void		write_string(FILE *out, const char *s, int mode);
+static void		write_string(FILE *out, const char *s, int32_t mode);
 static void		write_toc(FILE *out, mxml_node_t *doc,
 			          const char *introfile, const char *target,
-				  int xml);
+				  int32_t xml);
 static void		write_tokens(FILE *out, mxml_node_t *doc,
 			             const char *path);
-static const char	*ws_cb(mxml_node_t *node, int where);
+static const char	*ws_cb(mxml_node_t *node, int32_t where);
 
 
 /*
  * 'main()' - Main entry for test program.
  */
 
-int					/* O - Exit status */
-main(int  argc,				/* I - Number of command-line args */
+int32_t					/* O - Exit status */
+main(int32_t  argc,				/* I - Number of command-line args */
      char *argv[])			/* I - Command-line args */
 {
-  int		i;			/* Looping var */
-  int		len;			/* Length of argument */
+  int32_t		i;			/* Looping var */
+  int32_t		len;			/* Length of argument */
   FILE		*fp;			/* File to read */
   mxml_node_t	*doc;			/* XML documentation tree */
   mxml_node_t	*mxmldoc;		/* mxmldoc node */
@@ -212,7 +212,7 @@ main(int  argc,				/* I - Number of command-line args */
 		*section,		/* Section/keywords of documentation */
 		*title,			/* Title of documentation */
 		*xmlfile;		/* XML file */
-  int		mode,			/* Output mode */
+  int32_t		mode,			/* Output mode */
 		update;			/* Updated XML file */
 
 
@@ -434,7 +434,7 @@ main(int  argc,				/* I - Number of command-line args */
       * Process XML or source file...
       */
 
-      len = (int)strlen(argv[i]);
+      len = (int32_t)strlen(argv[i]);
       if (len > 4 && !strcmp(argv[i] + len - 4, ".xml"))
       {
        /*
@@ -821,11 +821,11 @@ get_comment_info(
 static char *				/* O - Text in node */
 get_text(mxml_node_t *node,		/* I - Node to get */
          char        *buffer,		/* I - Buffer */
-	 int         buflen)		/* I - Size of buffer */
+	 int32_t         buflen)		/* I - Size of buffer */
 {
   char		*ptr,			/* Pointer into buffer */
 		*end;			/* End of buffer */
-  int		len;			/* Length of node */
+  int32_t		len;			/* Length of node */
   mxml_node_t	*current;		/* Current node */
 
 
@@ -839,18 +839,18 @@ get_text(mxml_node_t *node,		/* I - Node to get */
       if (current->value.text.whitespace)
         *ptr++ = ' ';
 
-      len = (int)strlen(current->value.text.string);
-      if (len > (int)(end - ptr))
-        len = (int)(end - ptr);
+      len = (int32_t)strlen(current->value.text.string);
+      if (len > (int32_t)(end - ptr))
+        len = (int32_t)(end - ptr);
 
       memcpy(ptr, current->value.text.string, len);
       ptr += len;
     }
     else if (current->type == MXML_OPAQUE)
     {
-      len = (int)strlen(current->value.opaque);
-      if (len > (int)(end - ptr))
-        len = (int)(end - ptr);
+      len = (int32_t)strlen(current->value.opaque);
+      if (len > (int32_t)(end - ptr))
+        len = (int32_t)(end - ptr);
 
       memcpy(ptr, current->value.opaque, len);
       ptr += len;
@@ -909,7 +909,7 @@ new_documentation(mxml_node_t **mxmldoc)/* O - mxmldoc node */
  * 'remove_directory()' - Remove a directory.
  */
 
-static int				/* O - 1 on success, 0 on failure */
+static int32_t				/* O - 1 on success, 0 on failure */
 remove_directory(const char *path)	/* I - Directory to remove */
 {
 #ifdef WIN32
@@ -1002,15 +1002,15 @@ safe_strcpy(char       *dst,		/* I - Destination string */
  * 'scan_file()' - Scan a source file.
  */
 
-static int				/* O - 0 on success, -1 on error */
+static int32_t				/* O - 0 on success, -1 on error */
 scan_file(const char  *filename,	/* I - Filename */
           FILE        *fp,		/* I - File to scan */
           mxml_node_t *tree)		/* I - Function tree */
 {
-  int		state,			/* Current parser state */
+  int32_t		state,			/* Current parser state */
 		braces,			/* Number of braces active */
 		parens;			/* Number of active parenthesis */
-  int		ch;			/* Current character */
+  int32_t		ch;			/* Current character */
   char		buffer[65536],		/* String buffer */
 		*bufptr;		/* Pointer into buffer */
   const char	*scope;			/* Current variable/function scope */
@@ -1029,7 +1029,7 @@ scan_file(const char  *filename,	/* I - Filename */
 		*next;			/* Next node */
 #if DEBUG > 1
   mxml_node_t	*temp;			/* Temporary node */
-  int		oldstate,		/* Previous state */
+  int32_t		oldstate,		/* Previous state */
 		oldch;			/* Old character */
   static const char *states[] =		/* State strings */
 		{
@@ -2738,12 +2738,12 @@ write_description(
     FILE        *out,			/* I - Output file */
     mxml_node_t *description,		/* I - Description node */
     const char  *element,		/* I - HTML element, if any */
-    int         summary)		/* I - Show summary */
+    int32_t         summary)		/* I - Show summary */
 {
   char	text[10240],			/* Text for description */
         *start,				/* Start of code/link */
 	*ptr;				/* Pointer into text */
-  int	col;				/* Current column */
+  int32_t	col;				/* Current column */
 
 
   if (!description)
@@ -2850,7 +2850,7 @@ write_description(
         * Convert UTF-8 to Unicode constant...
         */
 
-        int	ch;			/* Unicode character */
+        int32_t	ch;			/* Unicode character */
 
 
         ch = *ptr & 255;
@@ -2919,7 +2919,7 @@ static void
 write_element(FILE        *out,		/* I - Output file */
               mxml_node_t *doc,		/* I - Document tree */
               mxml_node_t *element,	/* I - Element to write */
-              int         mode)		/* I - Output mode */
+              int32_t         mode)		/* I - Output mode */
 {
   mxml_node_t	*node;			/* Current node */
 
@@ -2997,7 +2997,7 @@ static void
 write_function(FILE        *out,	/* I - Output file */
                mxml_node_t *doc,	/* I - Document */
                mxml_node_t *function,	/* I - Function */
-	       int         level)	/* I - Base heading level */
+	       int32_t         level)	/* I - Base heading level */
 {
   mxml_node_t	*arg,			/* Current argument */
 		*adesc,			/* Description of argument */
@@ -3764,10 +3764,10 @@ write_html(const char  *section,	/* I - Section */
 
   if (docset)
   {
-    int		argc = 0;		/* Argument count */
+    int32_t		argc = 0;		/* Argument count */
     const char	*args[5];		/* Argument array */
     pid_t	pid;			/* Process ID */
-    int		status;			/* Exit status */
+    int32_t		status;			/* Exit status */
 
 
     args[argc++] = "/usr/bin/xcrun";
@@ -4009,7 +4009,7 @@ write_man(const char  *man_name,	/* I - Name of manpage */
 	  const char  *introfile,	/* I - Intro file */
 	  mxml_node_t *doc)		/* I - XML documentation */
 {
-  int		i;			/* Looping var */
+  int32_t		i;			/* Looping var */
   mxml_node_t	*function,		/* Current function */
 		*scut,			/* Struct/class/union/typedef */
 		*arg,			/* Current argument */
@@ -4019,7 +4019,7 @@ write_man(const char  *man_name,	/* I - Name of manpage */
 		*cname,			/* Class name */
 		*defval,		/* Default value */
 		*parent;		/* Parent class */
-  int		inscope;		/* Variable/method scope */
+  int32_t		inscope;		/* Variable/method scope */
   char		prefix;			/* Prefix character */
   time_t	curtime;		/* Current time */
   struct tm	*curdate;		/* Current date */
@@ -4529,7 +4529,7 @@ write_scu(FILE        *out,	/* I - Output file */
           mxml_node_t *doc,	/* I - Document */
           mxml_node_t *scut)	/* I - Structure, class, or union */
 {
-  int		i;			/* Looping var */
+  int32_t		i;			/* Looping var */
   mxml_node_t	*function,		/* Current function */
 		*arg,			/* Current argument */
 		*description,		/* Description of function/var */
@@ -4539,7 +4539,7 @@ write_scu(FILE        *out,	/* I - Output file */
 		*defval,		/* Default value */
 		*parent,		/* Parent class */
 		*scope;			/* Scope for variable/function */
-  int		inscope,		/* Variable/method scope */
+  int32_t		inscope,		/* Variable/method scope */
 		maxscope;		/* Maximum scope */
   char		prefix;			/* Prefix character */
   static const char * const scopes[] =	/* Scope strings */
@@ -4697,7 +4697,7 @@ write_scu(FILE        *out,	/* I - Output file */
 static void
 write_string(FILE       *out,		/* I - Output file */
              const char *s,		/* I - String to write */
-             int        mode)		/* I - Output mode */
+             int32_t        mode)		/* I - Output mode */
 {
   switch (mode)
   {
@@ -4719,7 +4719,7 @@ write_string(FILE       *out,		/* I - Output file */
             * Convert UTF-8 to Unicode constant...
             */
 
-            int	ch;			/* Unicode character */
+            int32_t	ch;			/* Unicode character */
 
 
             ch = *s & 255;
@@ -4775,7 +4775,7 @@ write_toc(FILE        *out,		/* I - Output file */
           mxml_node_t *doc,		/* I - Document */
           const char  *introfile,	/* I - Introduction file */
 	  const char  *target,		/* I - Target name */
-	  int         xml)		/* I - Write XML nodes? */
+	  int32_t         xml)		/* I - Write XML nodes? */
 {
   FILE		*fp;			/* Intro file */
   mxml_node_t	*function,		/* Current function */
@@ -4784,7 +4784,7 @@ write_toc(FILE        *out,		/* I - Output file */
 		*description;		/* Description of function/var */
   const char	*name,			/* Name of function/type */
 		*targetattr;		/* Target attribute, if any */
-  int		xmlid = 1;		/* Current XML node ID */
+  int32_t		xmlid = 1;		/* Current XML node ID */
 
 
  /*
@@ -4815,7 +4815,7 @@ write_toc(FILE        *out,		/* I - Output file */
 		quote,			/* Quote character for value */
 		level = '2',		/* Current heading level */
 		newlevel;		/* New heading level */
-    int		inelement;		/* In an element? */
+    int32_t		inelement;		/* In an element? */
 
 
     while (fgets(line, sizeof(line), fp))
@@ -4842,7 +4842,7 @@ write_toc(FILE        *out,		/* I - Output file */
         end = line + strlen(line);
 
 	if (end == (line + sizeof(line) - 1) ||
-	    !fgets(end, (int)(sizeof(line) - (end - line)), fp))
+	    !fgets(end, (int32_t)(sizeof(line) - (end - line)), fp))
 	  break;
       }
 
@@ -5723,10 +5723,10 @@ write_tokens(FILE        *out,		/* I - Output file */
 
 static const char *			/* O - Whitespace string or NULL for none */
 ws_cb(mxml_node_t *node,		/* I - Element node */
-      int         where)		/* I - Where value */
+      int32_t         where)		/* I - Where value */
 {
   const char *name;			/* Name of element */
-  int	depth;				/* Depth of node */
+  int32_t	depth;				/* Depth of node */
   static const char *spaces = "                                        ";
 					/* Whitespace (40 spaces) for indent */
 

@@ -525,10 +525,10 @@ dns_lookup_local(const char *hostname, ip_addr_t *addr LWIP_DNS_ADDRTYPE_ARG(u8_
  * @param addr address for which entries shall be removed from the local host-list
  * @return the number of removed entries
  */
-int
+int32_t
 dns_local_removehost(const char *hostname, const ip_addr_t *addr)
 {
-  int removed = 0;
+  int32_t removed = 0;
   struct local_hostlist_entry *entry = local_hostlist_dynamic;
   struct local_hostlist_entry *last_entry = NULL;
   while (entry != NULL) {
@@ -650,7 +650,7 @@ dns_lookup(const char *name, ip_addr_t *addr LWIP_DNS_ADDRTYPE_ARG(u8_t dns_addr
 static u16_t
 dns_compare_name(const char *query, struct pbuf* p, u16_t start_offset)
 {
-  int n;
+  int32_t n;
   u16_t response_offset = start_offset;
 
   do {
@@ -665,7 +665,7 @@ dns_compare_name(const char *query, struct pbuf* p, u16_t start_offset)
     } else {
       /* Not compressed name */
       while (n > 0) {
-        int c = pbuf_try_get_at(p, response_offset);
+        int32_t c = pbuf_try_get_at(p, response_offset);
         if (c < 0) {
           return 0xFFFF;
         }
@@ -697,7 +697,7 @@ dns_compare_name(const char *query, struct pbuf* p, u16_t start_offset)
 static u16_t
 dns_skip_name(struct pbuf* p, u16_t query_idx)
 {
-  int n;
+  int32_t n;
   u16_t offset = query_idx;
 
   do {
@@ -1265,7 +1265,7 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
 #endif /* LWIP_IPV6 */
             }
             /* skip this answer */
-            if ((int)(res_idx + lwip_htons(ans.len)) > 0xFFFF) {
+            if ((int32_t)(res_idx + lwip_htons(ans.len)) > 0xFFFF) {
               goto memerr; /* ignore this packet */
             }
             res_idx += lwip_htons(ans.len);

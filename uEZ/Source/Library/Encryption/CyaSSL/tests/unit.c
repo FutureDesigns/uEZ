@@ -9,20 +9,20 @@
 #include <tests/unit.h>
 
 
-int myoptind = 0;
+int32_t myoptind = 0;
 char* myoptarg = NULL;
-int unit_test(int argc, char** argv);
+int32_t unit_test(int32_t argc, char** argv);
 
 #ifndef NO_TESTSUITE_MAIN_DRIVER
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 {
     return unit_test(argc, argv);
 }
 #endif
 
-int unit_test(int argc, char** argv)
+int32_t unit_test(int32_t argc, char** argv)
 {
-    int ret;
+    int32_t ret;
 
     (void)argc;
     (void)argv;
@@ -123,7 +123,7 @@ void join_thread(THREAD_TYPE thread)
         Task_yield();
     }
 #else
-    int res = WaitForSingleObject((HANDLE)thread, INFINITE);
+    int32_t res = WaitForSingleObject((HANDLE)thread, INFINITE);
     assert(res == WAIT_OBJECT_0);
     res = CloseHandle((HANDLE)thread);
     assert(res);

@@ -291,7 +291,7 @@ START_TEST(test_tcp_fast_retx_recover)
   EXPECT_RET(txcounters.num_tx_bytes == 0);
   memset(&txcounters, 0, sizeof(txcounters));
   {
-    int i = 0;
+    int32_t i = 0;
     do
     {
       err = tcp_write(pcb, data6, TCP_MSS, TCP_WRITE_FLAG_COPY);
@@ -367,10 +367,10 @@ END_TEST
 static u8_t tx_data[TCP_WND*2];
 
 static void
-check_seqnos(struct tcp_seg *segs, int num_expected, u32_t *seqnos_expected)
+check_seqnos(struct tcp_seg *segs, int32_t num_expected, u32_t *seqnos_expected)
 {
   struct tcp_seg *s = segs;
-  int i;
+  int32_t i;
   for (i = 0; i < num_expected; i++, s = s->next) {
     EXPECT_RET(s != NULL);
     EXPECT(s->tcphdr->seqno == htonl(seqnos_expected[i]));

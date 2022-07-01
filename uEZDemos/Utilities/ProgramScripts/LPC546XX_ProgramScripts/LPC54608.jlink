@@ -1,0 +1,15 @@
+ExitOnError 1
+usb 0
+device LPC54608J512 (allow ECRP)
+si SWD
+speed 4000
+
+rx 200
+h
+
+erase
+loadfile "LPC54608.hex"
+
+rx 200
+g
+qc

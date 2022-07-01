@@ -32,7 +32,7 @@
 void vncEncryptBytes(unsigned char *bytes, char *passwd)
 {
     unsigned char key[8];
-    int i;
+    int32_t i;
 
     /* key is simply password padded with nulls */
 

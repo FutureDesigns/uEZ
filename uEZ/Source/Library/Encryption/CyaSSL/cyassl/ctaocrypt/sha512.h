@@ -51,10 +51,10 @@ typedef struct Sha512 {
 } Sha512;
 
 
-CYASSL_API int InitSha512(Sha512*);
-CYASSL_API int Sha512Update(Sha512*, const byte*, word32);
-CYASSL_API int Sha512Final(Sha512*, byte*);
-CYASSL_API int Sha512Hash(const byte*, word32, byte*);
+CYASSL_API int32_t InitSha512(Sha512*);
+CYASSL_API int32_t Sha512Update(Sha512*, const byte*, word32);
+CYASSL_API int32_t Sha512Final(Sha512*, byte*);
+CYASSL_API int32_t Sha512Hash(const byte*, word32, byte*);
 
 
 #if defined(CYASSL_SHA384) || defined(HAVE_AESGCM)
@@ -78,17 +78,17 @@ typedef struct Sha384 {
 } Sha384;
 
 
-CYASSL_API int InitSha384(Sha384*);
-CYASSL_API int Sha384Update(Sha384*, const byte*, word32);
-CYASSL_API int Sha384Final(Sha384*, byte*);
-CYASSL_API int Sha384Hash(const byte*, word32, byte*);
+CYASSL_API int32_t InitSha384(Sha384*);
+CYASSL_API int32_t Sha384Update(Sha384*, const byte*, word32);
+CYASSL_API int32_t Sha384Final(Sha384*, byte*);
+CYASSL_API int32_t Sha384Hash(const byte*, word32, byte*);
 
 
 #ifdef HAVE_FIPS
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int InitSha512_fips(Sha512*);
-    CYASSL_API int Sha512Update_fips(Sha512*, const byte*, word32);
-    CYASSL_API int Sha512Final_fips(Sha512*, byte*);
+    CYASSL_API int32_t InitSha512_fips(Sha512*);
+    CYASSL_API int32_t Sha512Update_fips(Sha512*, const byte*, word32);
+    CYASSL_API int32_t Sha512Final_fips(Sha512*, byte*);
     #ifndef FIPS_NO_WRAPPERS
         /* if not impl or fips.c impl wrapper force fips calls if fips build */
         #define InitSha512   InitSha512_fips
@@ -97,9 +97,9 @@ CYASSL_API int Sha384Hash(const byte*, word32, byte*);
     #endif /* FIPS_NO_WRAPPERS */
 
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int InitSha384_fips(Sha384*);
-    CYASSL_API int Sha384Update_fips(Sha384*, const byte*, word32);
-    CYASSL_API int Sha384Final_fips(Sha384*, byte*);
+    CYASSL_API int32_t InitSha384_fips(Sha384*);
+    CYASSL_API int32_t Sha384Update_fips(Sha384*, const byte*, word32);
+    CYASSL_API int32_t Sha384Final_fips(Sha384*, byte*);
     #ifndef FIPS_NO_WRAPPERS
         /* if not impl or fips.c impl wrapper force fips calls if fips build */
         #define InitSha384   InitSha384_fips

@@ -81,7 +81,7 @@ const T_choice *IFindChoice(const T_choice *aChoiceList, TUInt16 aX, TUInt16 aY)
 void ChoicesDraw(SWIM_WINDOW_T *aWin, const T_choice *aChoices)
 {
     INT_32 imageX, imageY;
-    int c;
+    int32_t c;
     const char *p;
     const T_choice *p_choice;
     TUInt32 width;

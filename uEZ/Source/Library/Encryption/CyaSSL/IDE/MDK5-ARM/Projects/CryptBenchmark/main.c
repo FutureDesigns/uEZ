@@ -58,7 +58,7 @@ extern void init_time(void) ;
  *       mian entry 
  *----------------------------------------------------------------------------*/
 
-int main() 
+int32_t main() 
 {
     void * arg = NULL ;
 

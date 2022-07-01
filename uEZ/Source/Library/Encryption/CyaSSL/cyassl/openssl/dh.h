@@ -30,9 +30,9 @@ typedef struct CYASSL_DH {
 CYASSL_API CYASSL_DH* CyaSSL_DH_new(void);
 CYASSL_API void       CyaSSL_DH_free(CYASSL_DH*);
 
-CYASSL_API int CyaSSL_DH_size(CYASSL_DH*);
-CYASSL_API int CyaSSL_DH_generate_key(CYASSL_DH*);
-CYASSL_API int CyaSSL_DH_compute_key(unsigned char* key, CYASSL_BIGNUM* pub,
+CYASSL_API int32_t CyaSSL_DH_size(CYASSL_DH*);
+CYASSL_API int32_t CyaSSL_DH_generate_key(CYASSL_DH*);
+CYASSL_API int32_t CyaSSL_DH_compute_key(unsigned char* key, CYASSL_BIGNUM* pub,
                                      CYASSL_DH*);
 
 typedef CYASSL_DH DH;

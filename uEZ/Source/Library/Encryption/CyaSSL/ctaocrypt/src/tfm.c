@@ -61,7 +61,7 @@ word32 CheckRunTimeFastMath(void)
 
 void fp_add(fp_int *a, fp_int *b, fp_int *c)
 {
-  int     sa, sb;
+  int32_t     sa, sb;
 
   /* get sign of both inputs */
   sa = a->sign;
@@ -91,7 +91,7 @@ void fp_add(fp_int *a, fp_int *b, fp_int *c)
 /* unsigned addition */
 void s_fp_add(fp_int *a, fp_int *b, fp_int *c)
 {
-  int      x, y, oldused;
+  int32_t      x, y, oldused;
   register fp_word  t;
 
   y       = MAX(a->used, b->used);
@@ -119,7 +119,7 @@ void s_fp_add(fp_int *a, fp_int *b, fp_int *c)
 /* c = a - b */
 void fp_sub(fp_int *a, fp_int *b, fp_int *c)
 {
-  int     sa, sb;
+  int32_t     sa, sb;
 
   sa = a->sign;
   sb = b->sign;
@@ -154,7 +154,7 @@ void fp_sub(fp_int *a, fp_int *b, fp_int *c)
 /* unsigned subtraction ||a|| >= ||b|| ALWAYS! */
 void s_fp_sub(fp_int *a, fp_int *b, fp_int *c)
 {
-  int      x, oldbused, oldused;
+  int32_t      x, oldbused, oldused;
   fp_word  t;
 
   oldused  = c->used;
@@ -180,7 +180,7 @@ void s_fp_sub(fp_int *a, fp_int *b, fp_int *c)
 /* c = a * b */
 void fp_mul(fp_int *A, fp_int *B, fp_int *C)
 {
-    int   y, yy;
+    int32_t   y, yy;
 
     y  = MAX(A->used, B->used);
     yy = MIN(A->used, B->used);
@@ -293,7 +293,7 @@ void fp_mul(fp_int *A, fp_int *B, fp_int *C)
 
 void fp_mul_2(fp_int * a, fp_int * b)
 {
-  int     x, oldused;
+  int32_t     x, oldused;
    
   oldused = b->used;
   b->used = a->used;
@@ -347,7 +347,7 @@ void fp_mul_2(fp_int * a, fp_int * b)
 void fp_mul_d(fp_int *a, fp_digit b, fp_int *c)
 {
    fp_word  w;
-   int      x, oldused;
+   int32_t      x, oldused;
 
    oldused = c->used;
    c->used = a->used;
@@ -369,10 +369,10 @@ void fp_mul_d(fp_int *a, fp_digit b, fp_int *c)
 }
 
 /* c = a * 2**d */
-void fp_mul_2d(fp_int *a, int b, fp_int *c)
+void fp_mul_2d(fp_int *a, int32_t b, fp_int *c)
 {
    fp_digit carry, carrytmp, shift;
-   int x;
+   int32_t x;
 
    /* copy it */
    fp_copy(a, c);
@@ -403,7 +403,7 @@ void fp_mul_2d(fp_int *a, int b, fp_int *c)
 /* generic PxQ multiplier */
 void fp_mul_comba(fp_int *A, fp_int *B, fp_int *C)
 {
-   int       ix, iy, iz, tx, ty, pa;
+   int32_t       ix, iy, iz, tx, ty, pa;
    fp_digit  c0, c1, c2, *tmpx, *tmpy;
    fp_int    tmp, *dst;
 
@@ -457,10 +457,10 @@ void fp_mul_comba(fp_int *A, fp_int *B, fp_int *C)
 }
 
 /* a/b => cb + d == a */
-int fp_div(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
+int32_t fp_div(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
 {
   fp_int  q, x, y, t1, t2;
-  int     n, t, i, norm, neg;
+  int32_t     n, t, i, norm, neg;
 
   /* is divisor zero ? */
   if (fp_iszero (b) == 1) {
@@ -492,7 +492,7 @@ int fp_div(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
 
   /* normalize both x and y, ensure that y >= b/2, [b == 2**DIGIT_BIT] */
   norm = fp_count_bits(&y) % DIGIT_BIT;
-  if (norm < (int)(DIGIT_BIT-1)) {
+  if (norm < (int32_t)(DIGIT_BIT-1)) {
      norm = (DIGIT_BIT-1) - norm;
      fp_mul_2d (&x, norm, &x);
      fp_mul_2d (&y, norm, &y);
@@ -602,7 +602,7 @@ int fp_div(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
 /* b = a/2 */
 void fp_div_2(fp_int * a, fp_int * b)
 {
-  int     x, oldused;
+  int32_t     x, oldused;
 
   oldused = b->used;
   b->used = a->used;
@@ -639,9 +639,9 @@ void fp_div_2(fp_int * a, fp_int * b)
 }
 
 /* c = a / 2**b */
-void fp_div_2d(fp_int *a, int b, fp_int *c, fp_int *d)
+void fp_div_2d(fp_int *a, int32_t b, fp_int *c, fp_int *d)
 {
-  int      D;
+  int32_t      D;
   fp_int   t;
 
   /* if the shift count is <= 0 then we do no work */
@@ -664,7 +664,7 @@ void fp_div_2d(fp_int *a, int b, fp_int *c, fp_int *d)
   fp_copy(a, c);
 
   /* shift by as many digits in the bit count */
-  if (b >= (int)DIGIT_BIT) {
+  if (b >= (int32_t)DIGIT_BIT) {
     fp_rshd (c, b / DIGIT_BIT);
   }
 
@@ -680,10 +680,10 @@ void fp_div_2d(fp_int *a, int b, fp_int *c, fp_int *d)
 }
 
 /* c = a mod b, 0 <= c < b  */
-int fp_mod(fp_int *a, fp_int *b, fp_int *c)
+int32_t fp_mod(fp_int *a, fp_int *b, fp_int *c)
 {
    fp_int t;
-   int    err;
+   int32_t    err;
 
    fp_zero(&t);
    if ((err = fp_div(a, b, NULL, &t)) != FP_OKAY) {
@@ -698,9 +698,9 @@ int fp_mod(fp_int *a, fp_int *b, fp_int *c)
 }
 
 /* c = a mod 2**d */
-void fp_mod_2d(fp_int *a, int b, fp_int *c)
+void fp_mod_2d(fp_int *a, int32_t b, fp_int *c)
 {
-   int x;
+   int32_t x;
 
    /* zero if count less than or equal to zero */
    if (b <= 0) {
@@ -725,10 +725,10 @@ void fp_mod_2d(fp_int *a, int b, fp_int *c)
   fp_clamp (c);
 }
 
-static int fp_invmod_slow (fp_int * a, fp_int * b, fp_int * c)
+static int32_t fp_invmod_slow (fp_int * a, fp_int * b, fp_int * c)
 {
   fp_int  x, y, u, v, A, B, C, D;
-  int     res;
+  int32_t     res;
 
   /* b cannot be negative */
   if (b->sign == FP_NEG || fp_iszero(b) == 1) {
@@ -831,10 +831,10 @@ top:
 }
 
 /* c = 1/a (mod b) for odd b only */
-int fp_invmod(fp_int *a, fp_int *b, fp_int *c)
+int32_t fp_invmod(fp_int *a, fp_int *b, fp_int *c)
 {
   fp_int  x, y, u, v, B, D;
-  int     neg;
+  int32_t     neg;
 
   /* 2. [modified] b must be odd   */
   if (fp_iseven (b) == FP_YES) {
@@ -919,7 +919,7 @@ top:
 }
 
 /* d = a * b (mod c) */
-int fp_mulmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
+int32_t fp_mulmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
 {
   fp_int tmp;
   fp_zero(&tmp);
@@ -933,11 +933,11 @@ int fp_mulmod(fp_int *a, fp_int *b, fp_int *c, fp_int *d)
 
    Based on work by Marc Joye, Sung-Ming Yen, "The Montgomery Powering Ladder", Cryptographic Hardware and Embedded Systems, CHES 2002
 */
-static int _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
+static int32_t _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 {
   fp_int   R[2];
   fp_digit buf, mp;
-  int      err, bitcnt, digidx, y;
+  int32_t      err, bitcnt, digidx, y;
 
   /* now setup montgomery  */
   if ((err = fp_montgomery_setup (P, &mp)) != FP_OKAY) {
@@ -977,11 +977,11 @@ static int _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
       }
       /* read next digit and reset bitcnt */
       buf    = X->dp[digidx--];
-      bitcnt = (int)DIGIT_BIT;
+      bitcnt = (int32_t)DIGIT_BIT;
     }
 
     /* grab the next msb from the exponent */
-    y     = (int)(buf >> (DIGIT_BIT - 1)) & 1;
+    y     = (int32_t)(buf >> (DIGIT_BIT - 1)) & 1;
     buf <<= (fp_digit)1;
 
     /* do ops */
@@ -999,11 +999,11 @@ static int _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 /* y = g**x (mod b) 
  * Some restrictions... x must be positive and < b
  */
-static int _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
+static int32_t _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 {
   fp_int   M[64], res;
   fp_digit buf, mp;
-  int      err, bitbuf, bitcpy, bitcnt, mode, digidx, x, y, winsize;
+  int32_t      err, bitbuf, bitcpy, bitcnt, mode, digidx, x, y, winsize;
 
   /* find window size */
   x = fp_count_bits (X);
@@ -1079,11 +1079,11 @@ static int _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
       }
       /* read next digit and reset bitcnt */
       buf    = X->dp[digidx--];
-      bitcnt = (int)DIGIT_BIT;
+      bitcnt = (int32_t)DIGIT_BIT;
     }
 
     /* grab the next msb from the exponent */
-    y     = (int)(buf >> (DIGIT_BIT - 1)) & 1;
+    y     = (int32_t)(buf >> (DIGIT_BIT - 1)) & 1;
     buf <<= (fp_digit)1;
 
     /* if the bit is zero and mode == 0 then we ignore it
@@ -1157,7 +1157,7 @@ static int _fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 
 #endif
 
-int fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
+int32_t fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 {
    /* prevent overflows */
    if (P->used > (FP_SIZE/2)) {
@@ -1166,7 +1166,7 @@ int fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 
    if (X->sign == FP_NEG) {
 #ifndef POSITIVE_EXP_ONLY  /* reduce stack if assume no negatives */
-      int    err;
+      int32_t    err;
       fp_int tmp;
 
       /* yes, copy G and invmod it */
@@ -1191,9 +1191,9 @@ int fp_exptmod(fp_int * G, fp_int * X, fp_int * P, fp_int * Y)
 }
 
 /* computes a = 2**b */
-void fp_2expt(fp_int *a, int b)
+void fp_2expt(fp_int *a, int32_t b)
 {
-   int     z;
+   int32_t     z;
 
    /* zero a as per default */
    fp_zero (a);
@@ -1217,7 +1217,7 @@ void fp_2expt(fp_int *a, int b)
 /* b = a*a  */
 void fp_sqr(fp_int *A, fp_int *B)
 {
-    int y = A->used;
+    int32_t y = A->used;
 
     /* call generic if we're out of range */
     if (y + y > FP_SIZE) {
@@ -1321,7 +1321,7 @@ void fp_sqr(fp_int *A, fp_int *B)
 /* generic comba squarer */
 void fp_sqr_comba(fp_int *A, fp_int *B)
 {
-  int       pa, ix, iz;
+  int32_t       pa, ix, iz;
   fp_digit  c0, c1, c2;
   fp_int    tmp, *dst;
 #ifdef TFM_ISO
@@ -1347,7 +1347,7 @@ void fp_sqr_comba(fp_int *A, fp_int *B)
   }
 
   for (ix = 0; ix < pa; ix++) { 
-      int      tx, ty, iy;
+      int32_t      tx, ty, iy;
       fp_digit *tmpy, *tmpx;
 
       /* get offsets into the two bignums */
@@ -1398,7 +1398,7 @@ void fp_sqr_comba(fp_int *A, fp_int *B)
   }
 }
 
-int fp_cmp(fp_int *a, fp_int *b)
+int32_t fp_cmp(fp_int *a, fp_int *b)
 {
    if (a->sign == FP_NEG && b->sign == FP_ZPOS) {
       return FP_LT;
@@ -1416,7 +1416,7 @@ int fp_cmp(fp_int *a, fp_int *b)
 }
 
 /* compare against a single digit */
-int fp_cmp_d(fp_int *a, fp_digit b)
+int32_t fp_cmp_d(fp_int *a, fp_digit b)
 {
   /* compare based on sign */
   if ((b && a->used == 0) || a->sign == FP_NEG) {
@@ -1439,9 +1439,9 @@ int fp_cmp_d(fp_int *a, fp_digit b)
 
 }
 
-int fp_cmp_mag(fp_int *a, fp_int *b)
+int32_t fp_cmp_mag(fp_int *a, fp_int *b)
 {
-   int x;
+   int32_t x;
 
    if (a->used > b->used) {
       return FP_GT;
@@ -1460,7 +1460,7 @@ int fp_cmp_mag(fp_int *a, fp_int *b)
 }
 
 /* setups the montgomery reduction */
-int fp_montgomery_setup(fp_int *a, fp_digit *rho)
+int32_t fp_montgomery_setup(fp_int *a, fp_digit *rho)
 {
   fp_digit x, b;
 
@@ -1497,7 +1497,7 @@ int fp_montgomery_setup(fp_int *a, fp_digit *rho)
  */
 void fp_montgomery_calc_normalization(fp_int *a, fp_int *b)
 {
-  int     x, bits;
+  int32_t     x, bits;
 
   /* how many bits of last digit does b use */
   bits = fp_count_bits (b) % DIGIT_BIT;
@@ -1512,7 +1512,7 @@ void fp_montgomery_calc_normalization(fp_int *a, fp_int *b)
   }
 
   /* now compute C = A * B mod b */
-  for (x = bits - 1; x < (int)DIGIT_BIT; x++) {
+  for (x = bits - 1; x < (int32_t)DIGIT_BIT; x++) {
     fp_mul_2 (a, a);
     if (fp_cmp_mag (a, b) != FP_LT) {
       s_fp_sub (a, b, a);
@@ -1529,7 +1529,7 @@ void fp_montgomery_calc_normalization(fp_int *a, fp_int *b)
 void fp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp)
 {
    fp_digit c[FP_SIZE], *_c, *tmpm, mu = 0;
-   int      oldused, x, y, pa;
+   int32_t      oldused, x, y, pa;
 
    /* bail if too large */
    if (m->used > (FP_SIZE/2)) {
@@ -1604,9 +1604,9 @@ void fp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp)
   }
 }
 
-void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int c)
+void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int32_t c)
 {
-  /* zero the int */
+  /* zero the int32_t */
   fp_zero (a);
 
   /* If we know the endianness of this architecture, and we're using
@@ -1620,7 +1620,7 @@ void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int c)
      unsigned char *pd = (unsigned char *)a->dp;
 
      if ((unsigned)c > (FP_SIZE * sizeof(fp_digit))) {
-        int excess = c - (FP_SIZE * sizeof(fp_digit));
+        int32_t excess = c - (FP_SIZE * sizeof(fp_digit));
         c -= excess;
         b += excess;
      }
@@ -1629,7 +1629,7 @@ void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int c)
 #ifdef BIG_ENDIAN_ORDER
      {
        /* Use Duff's device to unroll the loop. */
-       int idx = (c - 1) & ~3;
+       int32_t idx = (c - 1) & ~3;
        switch (c % 4) {
        case 0:	do { pd[idx+0] = *b++;
        case 3:	     pd[idx+1] = *b++;
@@ -1658,7 +1658,7 @@ void fp_read_unsigned_bin(fp_int *a, unsigned char *b, int c)
 
 void fp_to_unsigned_bin(fp_int *a, unsigned char *b)
 {
-  int     x;
+  int32_t     x;
   fp_int  t;
 
   fp_init_copy(&t, a);
@@ -1671,9 +1671,9 @@ void fp_to_unsigned_bin(fp_int *a, unsigned char *b)
   fp_reverse (b, x);
 }
 
-int fp_unsigned_bin_size(fp_int *a)
+int32_t fp_unsigned_bin_size(fp_int *a)
 {
-  int     size = fp_count_bits (a);
+  int32_t     size = fp_count_bits (a);
   return (size / 8 + ((size & 7) != 0 ? 1 : 0));
 }
 
@@ -1684,9 +1684,9 @@ void fp_set(fp_int *a, fp_digit b)
    a->used  = a->dp[0] ? 1 : 0;
 }
 
-int fp_count_bits (fp_int * a)
+int32_t fp_count_bits (fp_int * a)
 {
-  int     r;
+  int32_t     r;
   fp_digit q;
 
   /* shortcut */
@@ -1706,13 +1706,13 @@ int fp_count_bits (fp_int * a)
   return r;
 }
 
-int fp_leading_bit(fp_int *a)
+int32_t fp_leading_bit(fp_int *a)
 {
-    int bit = 0;
+    int32_t bit = 0;
 
     if (a->used != 0) {
         fp_digit q = a->dp[a->used - 1];
-        int qSz = sizeof(fp_digit);
+        int32_t qSz = sizeof(fp_digit);
 
         while (qSz > 0) {
             if ((unsigned char)q != 0)
@@ -1725,12 +1725,12 @@ int fp_leading_bit(fp_int *a)
     return bit;
 }
 
-void fp_lshd(fp_int *a, int x)
+void fp_lshd(fp_int *a, int32_t x)
 {
-   int y;
+   int32_t y;
 
    /* move up and truncate as required */
-   y = MIN(a->used + x - 1, (int)(FP_SIZE-1));
+   y = MIN(a->used + x - 1, (int32_t)(FP_SIZE-1));
 
    /* store new size */
    a->used = y + 1;
@@ -1751,7 +1751,7 @@ void fp_lshd(fp_int *a, int x)
 
 
 /* right shift by bit count */
-void fp_rshb(fp_int *c, int x)
+void fp_rshb(fp_int *c, int32_t x)
 {
     register fp_digit *tmpc, mask, shift;
     fp_digit r, rr;
@@ -1782,9 +1782,9 @@ void fp_rshb(fp_int *c, int x)
 }
 
 
-void fp_rshd(fp_int *a, int x)
+void fp_rshd(fp_int *a, int32_t x)
 {
-  int y;
+  int32_t y;
 
   /* too many digits just zero and return */
   if (x >= a->used) {
@@ -1808,9 +1808,9 @@ void fp_rshd(fp_int *a, int x)
 }
 
 /* reverse an array, used for radix code */
-void fp_reverse (unsigned char *s, int len)
+void fp_reverse (unsigned char *s, int32_t len)
 {
-  int     ix, iy;
+  int32_t     ix, iy;
   unsigned char t;
 
   ix = 0;
@@ -1837,7 +1837,7 @@ void fp_sub_d(fp_int *a, fp_digit b, fp_int *c)
 /* CyaSSL callers from normal lib */
 
 /* init a new mp_int */
-int mp_init (mp_int * a)
+int32_t mp_init (mp_int * a)
 {
   if (a)
     fp_init(a);
@@ -1851,7 +1851,7 @@ void mp_clear (mp_int * a)
 }
 
 /* handle up to 6 inits */
-int mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e, mp_int* f)
+int32_t mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e, mp_int* f)
 {
     if (a)
         fp_init(a);
@@ -1870,40 +1870,40 @@ int mp_init_multi(mp_int* a, mp_int* b, mp_int* c, mp_int* d, mp_int* e, mp_int*
 }
 
 /* high level addition (handles signs) */
-int mp_add (mp_int * a, mp_int * b, mp_int * c)
+int32_t mp_add (mp_int * a, mp_int * b, mp_int * c)
 {
   fp_add(a, b, c);
   return MP_OKAY;
 }
 
 /* high level subtraction (handles signs) */
-int mp_sub (mp_int * a, mp_int * b, mp_int * c)
+int32_t mp_sub (mp_int * a, mp_int * b, mp_int * c)
 {
   fp_sub(a, b, c);
   return MP_OKAY;
 }
 
 /* high level multiplication (handles sign) */
-int mp_mul (mp_int * a, mp_int * b, mp_int * c)
+int32_t mp_mul (mp_int * a, mp_int * b, mp_int * c)
 {
   fp_mul(a, b, c);
   return MP_OKAY;
 }
 
 /* d = a * b (mod c) */
-int mp_mulmod (mp_int * a, mp_int * b, mp_int * c, mp_int * d)
+int32_t mp_mulmod (mp_int * a, mp_int * b, mp_int * c, mp_int * d)
 {
   return fp_mulmod(a, b, c, d);
 }
 
 /* c = a mod b, 0 <= c < b */
-int mp_mod (mp_int * a, mp_int * b, mp_int * c)
+int32_t mp_mod (mp_int * a, mp_int * b, mp_int * c)
 {
   return fp_mod (a, b, c);
 }
 
 /* hac 14.61, pp608 */
-int mp_invmod (mp_int * a, mp_int * b, mp_int * c)
+int32_t mp_invmod (mp_int * a, mp_int * b, mp_int * c)
 {
   return fp_invmod(a, b, c);
 }
@@ -1913,45 +1913,45 @@ int mp_invmod (mp_int * a, mp_int * b, mp_int * c)
  * embedded in the normal function but that wasted alot of stack space
  * for nothing (since 99% of the time the Montgomery code would be called)
  */
-int mp_exptmod (mp_int * G, mp_int * X, mp_int * P, mp_int * Y)
+int32_t mp_exptmod (mp_int * G, mp_int * X, mp_int * P, mp_int * Y)
 {
   return fp_exptmod(G, X, P, Y);
 }
 
 /* compare two ints (signed)*/
-int mp_cmp (mp_int * a, mp_int * b)
+int32_t mp_cmp (mp_int * a, mp_int * b)
 {
   return fp_cmp(a, b);
 }
 
 /* compare a digit */
-int mp_cmp_d(mp_int * a, mp_digit b)
+int32_t mp_cmp_d(mp_int * a, mp_digit b)
 {
   return fp_cmp_d(a, b);
 }
 
 /* get the size for an unsigned equivalent */
-int mp_unsigned_bin_size (mp_int * a)
+int32_t mp_unsigned_bin_size (mp_int * a)
 {
   return fp_unsigned_bin_size(a);
 }
 
 /* store in unsigned [big endian] format */
-int mp_to_unsigned_bin (mp_int * a, unsigned char *b)
+int32_t mp_to_unsigned_bin (mp_int * a, unsigned char *b)
 {
   fp_to_unsigned_bin(a,b);
   return MP_OKAY;
 }
 
 /* reads a unsigned char array, assumes the msb is stored first [big endian] */
-int mp_read_unsigned_bin (mp_int * a, const unsigned char *b, int c)
+int32_t mp_read_unsigned_bin (mp_int * a, const unsigned char *b, int32_t c)
 {
   fp_read_unsigned_bin(a, (unsigned char *)b, c);
   return MP_OKAY;
 }
 
 
-int mp_sub_d(fp_int *a, fp_digit b, fp_int *c)
+int32_t mp_sub_d(fp_int *a, fp_digit b, fp_int *c)
 {
     fp_sub_d(a, b, c);
     return MP_OKAY;
@@ -1959,7 +1959,7 @@ int mp_sub_d(fp_int *a, fp_digit b, fp_int *c)
 
 
 /* fast math conversion */
-int mp_copy(fp_int* a, fp_int* b)
+int32_t mp_copy(fp_int* a, fp_int* b)
 {
     fp_copy(a, b);
     return MP_OKAY;
@@ -1967,41 +1967,41 @@ int mp_copy(fp_int* a, fp_int* b)
 
 
 /* fast math conversion */
-int mp_isodd(mp_int* a)
+int32_t mp_isodd(mp_int* a)
 {
     return fp_isodd(a);
 }
 
 
 /* fast math conversion */
-int mp_iszero(mp_int* a)
+int32_t mp_iszero(mp_int* a)
 {
     return fp_iszero(a);
 }
 
 
 /* fast math conversion */
-int mp_count_bits (mp_int* a)
+int32_t mp_count_bits (mp_int* a)
 {
     return fp_count_bits(a);
 }
 
 
-int mp_leading_bit (mp_int* a)
+int32_t mp_leading_bit (mp_int* a)
 {
     return fp_leading_bit(a);
 }
 
 
 /* fast math conversion */
-void mp_rshb (mp_int* a, int x)
+void mp_rshb (mp_int* a, int32_t x)
 {
     fp_rshb(a, x);
 }
 
 
 /* fast math wrappers */
-int mp_set_int(fp_int *a, fp_digit b)
+int32_t mp_set_int(fp_int *a, fp_digit b)
 {
     fp_set(a, b);
     return MP_OKAY;
@@ -2011,7 +2011,7 @@ int mp_set_int(fp_int *a, fp_digit b)
 #if defined(CYASSL_KEY_GEN) || defined (HAVE_ECC)
 
 /* c = a * a (mod b) */
-int fp_sqrmod(fp_int *a, fp_int *b, fp_int *c)
+int32_t fp_sqrmod(fp_int *a, fp_int *b, fp_int *c)
 {
   fp_int tmp;
   fp_zero(&tmp);
@@ -2020,13 +2020,13 @@ int fp_sqrmod(fp_int *a, fp_int *b, fp_int *c)
 }
 
 /* fast math conversion */
-int mp_sqrmod(mp_int *a, mp_int *b, mp_int *c)
+int32_t mp_sqrmod(mp_int *a, mp_int *b, mp_int *c)
 {
     return fp_sqrmod(a, b, c);
 }
 
 /* fast math conversion */
-int mp_montgomery_calc_normalization(mp_int *a, mp_int *b)
+int32_t mp_montgomery_calc_normalization(mp_int *a, mp_int *b)
 {
     fp_montgomery_calc_normalization(a, b);
     return MP_OKAY;
@@ -2037,14 +2037,14 @@ int mp_montgomery_calc_normalization(mp_int *a, mp_int *b)
 
 #if defined(CYASSL_KEY_GEN) || defined(HAVE_COMP_KEY)
 
-static const int lnz[16] = {
+static const int32_t lnz[16] = {
    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0
 };
 
 /* Counts the number of lsbs which are zero before the first zero bit */
-int fp_cnt_lsb(fp_int *a)
+int32_t fp_cnt_lsb(fp_int *a)
 {
-   int x;
+   int32_t x;
    fp_digit q, qq;
 
    /* easy out */
@@ -2071,9 +2071,9 @@ int fp_cnt_lsb(fp_int *a)
 
 
 
-static int s_is_power_of_two(fp_digit b, int *p)
+static int32_t s_is_power_of_two(fp_digit b, int32_t *p)
 {
-   int x;
+   int32_t x;
 
    /* fast return if no power of two */
    if ((b==0) || (b & (b-1))) {
@@ -2090,12 +2090,12 @@ static int s_is_power_of_two(fp_digit b, int *p)
 }
 
 /* a/b => cb + d == a */
-static int fp_div_d(fp_int *a, fp_digit b, fp_int *c, fp_digit *d)
+static int32_t fp_div_d(fp_int *a, fp_digit b, fp_int *c, fp_digit *d)
 {
   fp_int   q;
   fp_word  w;
   fp_digit t;
-  int      ix;
+  int32_t      ix;
 
   /* cannot divide by zero */
   if (b == 0) {
@@ -2156,12 +2156,12 @@ static int fp_div_d(fp_int *a, fp_digit b, fp_int *c, fp_digit *d)
 
 
 /* c = a mod b, 0 <= c < b  */
-static int fp_mod_d(fp_int *a, fp_digit b, fp_digit *c)
+static int32_t fp_mod_d(fp_int *a, fp_digit b, fp_digit *c)
 {
    return fp_div_d(a, b, NULL, c);
 }
 
-int mp_mod_d(fp_int *a, fp_digit b, fp_digit *c)
+int32_t mp_mod_d(fp_int *a, fp_digit b, fp_digit *c)
 {
    return fp_mod_d(a, b, c);
 }
@@ -2172,23 +2172,23 @@ int mp_mod_d(fp_int *a, fp_digit b, fp_digit *c)
 
 void fp_gcd(fp_int *a, fp_int *b, fp_int *c);
 void fp_lcm(fp_int *a, fp_int *b, fp_int *c);
-int  fp_isprime(fp_int *a);
+int32_t  fp_isprime(fp_int *a);
 
-int mp_gcd(fp_int *a, fp_int *b, fp_int *c)
+int32_t mp_gcd(fp_int *a, fp_int *b, fp_int *c)
 {
     fp_gcd(a, b, c);
     return MP_OKAY;
 }
 
 
-int mp_lcm(fp_int *a, fp_int *b, fp_int *c)
+int32_t mp_lcm(fp_int *a, fp_int *b, fp_int *c)
 {
     fp_lcm(a, b, c);
     return MP_OKAY;
 }
 
 
-int mp_prime_is_prime(mp_int* a, int t, int* result)
+int32_t mp_prime_is_prime(mp_int* a, int32_t t, int32_t* result)
 {
     (void)t;
     *result = fp_isprime(a);
@@ -2202,10 +2202,10 @@ int mp_prime_is_prime(mp_int* a, int t, int* result)
  * Randomly the chance of error is no more than 1/4 and often 
  * very much lower.
  */
-static void fp_prime_miller_rabin (fp_int * a, fp_int * b, int *result)
+static void fp_prime_miller_rabin (fp_int * a, fp_int * b, int32_t *result)
 {
   fp_int  n1, y, r;
-  int     s, j;
+  int32_t     s, j;
 
   /* default */
   *result = FP_NO;
@@ -2298,11 +2298,11 @@ static const fp_digit primes[256] = {
   0x062B, 0x062F, 0x063D, 0x0641, 0x0647, 0x0649, 0x064D, 0x0653
 };
 
-int fp_isprime(fp_int *a)
+int32_t fp_isprime(fp_int *a)
 {
    fp_int   b;
    fp_digit d = 0;
-   int      r, res;
+   int32_t      r, res;
 
    /* do trial division */
    for (r = 0; r < 256; r++) {
@@ -2398,7 +2398,7 @@ void fp_add_d(fp_int *a, fp_digit b, fp_int *c)
 }
 
 /* external compatibility */
-int mp_add_d(fp_int *a, fp_digit b, fp_int *c)
+int32_t mp_add_d(fp_int *a, fp_digit b, fp_int *c)
 {
     fp_add_d(a, b, c);
     return MP_OKAY;
@@ -2412,9 +2412,9 @@ int mp_add_d(fp_int *a, fp_digit b, fp_int *c)
 /* chars used in radix conversions */
 static const char *fp_s_rmap = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
 
-static int fp_read_radix(fp_int *a, const char *str, int radix)
+static int32_t fp_read_radix(fp_int *a, const char *str, int32_t radix)
 {
-  int     y, neg;
+  int32_t     y, neg;
   char    ch;
 
   /* make sure the radix is ok */
@@ -2469,27 +2469,27 @@ static int fp_read_radix(fp_int *a, const char *str, int radix)
 }
 
 /* fast math conversion */
-int mp_read_radix(mp_int *a, const char *str, int radix)
+int32_t mp_read_radix(mp_int *a, const char *str, int32_t radix)
 {
     return fp_read_radix(a, str, radix);
 }
 
 /* fast math conversion */
-int mp_set(fp_int *a, fp_digit b)
+int32_t mp_set(fp_int *a, fp_digit b)
 {
     fp_set(a,b);
     return MP_OKAY;
 }
 
 /* fast math conversion */
-int mp_sqr(fp_int *A, fp_int *B)
+int32_t mp_sqr(fp_int *A, fp_int *B)
 {
     fp_sqr(A, B);
     return MP_OKAY;
 }
   
 /* fast math conversion */
-int mp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp)
+int32_t mp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp)
 {
     fp_montgomery_reduce(a, m, mp);
     return MP_OKAY;
@@ -2497,19 +2497,19 @@ int mp_montgomery_reduce(fp_int *a, fp_int *m, fp_digit mp)
 
 
 /* fast math conversion */
-int mp_montgomery_setup(fp_int *a, fp_digit *rho)
+int32_t mp_montgomery_setup(fp_int *a, fp_digit *rho)
 {
     return fp_montgomery_setup(a, rho);
 }
 
-int mp_div_2(fp_int * a, fp_int * b)
+int32_t mp_div_2(fp_int * a, fp_int * b)
 {
     fp_div_2(a, b);
     return MP_OKAY;
 }
 
 
-int mp_init_copy(fp_int * a, fp_int * b)
+int32_t mp_init_copy(fp_int * a, fp_int * b)
 {
     fp_init_copy(a, b);
     return MP_OKAY;
@@ -2518,13 +2518,13 @@ int mp_init_copy(fp_int * a, fp_int * b)
 
 #ifdef HAVE_COMP_KEY
 
-int mp_cnt_lsb(fp_int* a)
+int32_t mp_cnt_lsb(fp_int* a)
 {
     fp_cnt_lsb(a);
     return MP_OKAY;
 }
 
-int mp_div_2d(fp_int* a, int b, fp_int* c, fp_int* d)
+int32_t mp_div_2d(fp_int* a, int32_t b, fp_int* c, fp_int* d)
 {
     fp_div_2d(a, b, c, d);
     return MP_OKAY;

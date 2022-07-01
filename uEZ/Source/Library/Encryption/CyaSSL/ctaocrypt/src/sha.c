@@ -66,7 +66,7 @@
     #include "stm32f2xx.h"
     #include "stm32f2xx_hash.h"
 
-    int InitSha(Sha* sha)
+    int32_t InitSha(Sha* sha)
     {
         /* STM32F2 struct notes:
          * sha->buffer  = first 4 bytes used to hold partial block if needed 
@@ -91,7 +91,7 @@
         return 0;
     }
 
-    int ShaUpdate(Sha* sha, const byte* data, word32 len)
+    int32_t ShaUpdate(Sha* sha, const byte* data, word32 len)
     {
         word32 i = 0;
         word32 fill = 0;
@@ -139,7 +139,7 @@
         return 0;
     }
 
-    int ShaFinal(Sha* sha, byte* hash)
+    int32_t ShaFinal(Sha* sha, byte* hash)
     {
         __IO uint16_t nbvalidbitsdata = 0;
         
@@ -187,7 +187,7 @@
 #endif /* min */
 
 
-int InitSha(Sha* sha)
+int32_t InitSha(Sha* sha)
 {
     #ifdef FREESCALE_MMCAU
         cau_sha1_initialize_output(sha->digest);
@@ -315,7 +315,7 @@ static INLINE void AddLength(Sha* sha, word32 len)
 }
 
 
-int ShaUpdate(Sha* sha, const byte* data, word32 len)
+int32_t ShaUpdate(Sha* sha, const byte* data, word32 len)
 {
     /* do block size increments */
     byte* local = (byte*)sha->buffer;
@@ -342,7 +342,7 @@ int ShaUpdate(Sha* sha, const byte* data, word32 len)
 }
 
 
-int ShaFinal(Sha* sha, byte* hash)
+int32_t ShaFinal(Sha* sha, byte* hash)
 {
     byte* local = (byte*)sha->buffer;
 
@@ -395,9 +395,9 @@ int ShaFinal(Sha* sha, byte* hash)
 #endif /* STM32F2_HASH */
 
 
-int ShaHash(const byte* data, word32 len, byte* hash)
+int32_t ShaHash(const byte* data, word32 len, byte* hash)
 {
-    int ret = 0;
+    int32_t ret = 0;
 #ifdef CYASSL_SMALL_STACK
     Sha* sha;
 #else

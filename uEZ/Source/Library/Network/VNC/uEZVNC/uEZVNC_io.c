@@ -38,12 +38,12 @@
  * Prototypes:
  *-------------------------------------------------------------------------*/
 #if 0
-TBool UEZVNC_Read(int aConnection, TUInt8 *aBuffer, TUInt32 aNumBytes)
+TBool UEZVNC_Read(int32_t aConnection, TUInt8 *aBuffer, TUInt32 aNumBytes)
 {
     return EFalse;
 }
 
-TBool UEZVNC_Write(int aConnection, TUInt8 *aBuffer, TUInt32 aNumBytes)
+TBool UEZVNC_Write(int32_t aConnection, TUInt8 *aBuffer, TUInt32 aNumBytes)
 {
     return EFalse;
 }

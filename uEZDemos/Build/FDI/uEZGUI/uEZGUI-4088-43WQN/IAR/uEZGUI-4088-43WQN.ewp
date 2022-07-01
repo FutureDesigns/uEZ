@@ -307,7 +307,6 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -1375,7 +1374,6 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -2443,7 +2441,6 @@
                 <option>
                     <name>IExtraOptions</name>
                     <state>--no_unaligned_access</state>
-                    
                 </option>
                 <option>
                     <name>CCLangConformance</name>
@@ -3779,7 +3776,7 @@
                             <group>
                                 <name>NXP</name>
                                 <file>
-                                    <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_530_IAR_M4F.a</name>
+                                    <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emwin_548_IAR_M4F.a</name>
                                 </file>
                             </group>
                         </group>

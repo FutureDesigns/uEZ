@@ -36,10 +36,10 @@
 
 typedef struct CYASSL_OCSP CYASSL_OCSP;
 
-CYASSL_LOCAL int  InitOCSP(CYASSL_OCSP*, CYASSL_CERT_MANAGER*);
-CYASSL_LOCAL void FreeOCSP(CYASSL_OCSP*, int dynamic);
+CYASSL_LOCAL int32_t  InitOCSP(CYASSL_OCSP*, CYASSL_CERT_MANAGER*);
+CYASSL_LOCAL void FreeOCSP(CYASSL_OCSP*, int32_t dynamic);
 
-CYASSL_LOCAL int  CheckCertOCSP(CYASSL_OCSP*, DecodedCert*);
+CYASSL_LOCAL int32_t  CheckCertOCSP(CYASSL_OCSP*, DecodedCert*);
 
 #ifdef __cplusplus
     }  /* extern "C" */

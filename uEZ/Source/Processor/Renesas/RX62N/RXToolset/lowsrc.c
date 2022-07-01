@@ -73,7 +73,7 @@
 #if defined( __RX )
 const long _nfiles = IOSTREAM; /* The number of files for input/output files */
 #else
-const int _nfiles = IOSTREAM;  /* The number of files for input/output files */
+const int32_t _nfiles = IOSTREAM;  /* The number of files for input/output files */
 #endif
 char flmod[IOSTREAM];          /* The location for the mode of opened file.  */
 
@@ -218,9 +218,9 @@ long open(const char *name,                  /* File name                 */
      long  mode,                             /* Open mode                 */
      long  flg)                              /* Open flag                 */
 #else
-int open(char *name,                         /* File name                 */
-     int  mode,                              /* Open mode                 */
-     int  flg)                               /* Open flag                 */
+int32_t open(char *name,                         /* File name                 */
+     int32_t  mode,                              /* Open mode                 */
+     int32_t  flg)                               /* Open flag                 */
 #endif
 {
 
@@ -249,7 +249,7 @@ int open(char *name,                         /* File name                 */
 #if defined( __RX )
 long close( long fileno )
 #else
-int close( int fileno )
+int32_t close( int32_t fileno )
 #endif
 {
     return 1;
@@ -265,9 +265,9 @@ long write(long  fileno,             /* File number                       */
       const unsigned char *buf,       /* The address of destination buffer */
       long  count)                   /* The number of chacter to write    */
 #else
-int write(int  fileno,               /* File number                       */
+int32_t write(int32_t  fileno,               /* File number                       */
       char *buf,                     /* The address of destination buffer */
-      int  count)                    /* The number of chacter to write    */
+      int32_t  count)                    /* The number of chacter to write    */
 #endif
 {
     long    i;                          /* A variable for counter         */
@@ -296,7 +296,7 @@ int write(int  fileno,               /* File number                       */
 #if defined( __RX )
 long read( long fileno, unsigned char *buf, long count )
 #else
-int read( int fileno, char *buf, unsigned int count )
+int32_t read( int32_t fileno, char *buf, uint32_t count )
 #endif
 {
 	   long i;
@@ -321,7 +321,7 @@ int read( int fileno, char *buf, unsigned int count )
 #if defined( __RX )
 long lseek( long fileno, long offset, long base )
 #else
-long lseek( int fileno, long offset, int base )
+long lseek( int32_t fileno, long offset, int32_t base )
 #endif
 {
     return -1L;

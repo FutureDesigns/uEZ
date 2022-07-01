@@ -26,7 +26,7 @@
  * 'mxmlEntityAddCallback()' - Add a callback to convert entities to Unicode.
  */
 
-int					/* O - 0 on success, -1 on failure */
+int32_t					/* O - 0 on success, -1 on failure */
 mxmlEntityAddCallback(
     mxml_entity_cb_t cb)		/* I - Callback function to add */
 {
@@ -34,7 +34,7 @@ mxmlEntityAddCallback(
 					/* Global data */
 
 
-  if (global->num_entity_cbs < (int)(sizeof(global->entity_cbs) / sizeof(global->entity_cbs[0])))
+  if (global->num_entity_cbs < (int32_t)(sizeof(global->entity_cbs) / sizeof(global->entity_cbs[0])))
   {
     global->entity_cbs[global->num_entity_cbs] = cb;
     global->num_entity_cbs ++;
@@ -57,7 +57,7 @@ mxmlEntityAddCallback(
  */
 
 const char *				/* O - Entity name or NULL */
-mxmlEntityGetName(int val)		/* I - Character value */
+mxmlEntityGetName(int32_t val)		/* I - Character value */
 {
   switch (val)
   {
@@ -86,11 +86,11 @@ mxmlEntityGetName(int val)		/* I - Character value */
  * name is not known.
  */
 
-int					/* O - Character value or -1 on error */
+int32_t					/* O - Character value or -1 on error */
 mxmlEntityGetValue(const char *name)	/* I - Entity name */
 {
-  int		i;			/* Looping var */
-  int		ch;			/* Character value */
+  int32_t		i;			/* Looping var */
+  int32_t		ch;			/* Character value */
   _mxml_global_t *global = _mxml_global();
 					/* Global data */
 
@@ -111,7 +111,7 @@ void
 mxmlEntityRemoveCallback(
     mxml_entity_cb_t cb)		/* I - Callback function to remove */
 {
-  int		i;			/* Looping var */
+  int32_t		i;			/* Looping var */
   _mxml_global_t *global = _mxml_global();
 					/* Global data */
 
@@ -138,17 +138,17 @@ mxmlEntityRemoveCallback(
  * '_mxml_entity_cb()' - Lookup standard (X)HTML entities.
  */
 
-int					/* O - Unicode value or -1 */
+int32_t					/* O - Unicode value or -1 */
 _mxml_entity_cb(const char *name)	/* I - Entity name */
 {
-  int	diff,				/* Difference between names */
+  int32_t	diff,				/* Difference between names */
 	current,			/* Current entity in search */
 	first,				/* First entity in search */
 	last;				/* Last entity in search */
   static const struct
   {
     const char	*name;			/* Entity name */
-    int		val;			/* Character value */
+    int32_t		val;			/* Character value */
   }	entities[] =
   {
     { "AElig",		198 },
@@ -284,7 +284,7 @@ _mxml_entity_cb(const char *name)	/* I - Entity name */
     { "igrave",		236 },
     { "image",		8465 },
     { "infin",		8734 },
-    { "int",		8747 },
+    { "int32_t",		8747 },
     { "iota",		953 },
     { "iquest",		191 },
     { "isin",		8712 },
@@ -416,7 +416,7 @@ _mxml_entity_cb(const char *name)	/* I - Entity name */
   */
 
   first = 0;
-  last  = (int)(sizeof(entities) / sizeof(entities[0]) - 1);
+  last  = (int32_t)(sizeof(entities) / sizeof(entities[0]) - 1);
 
   while ((last - first) > 1)
   {

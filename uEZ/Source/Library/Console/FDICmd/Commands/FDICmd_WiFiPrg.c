@@ -49,7 +49,7 @@
  *  @return         TUInt32         0 if success, non-zero for error.
  */
 /*---------------------------------------------------------------------------*/
-int UEZCmdWiFiPrg(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdWiFiPrg(void *aWorkspace, int32_t argc, char *argv[])
 {
     if (argc == 1) {
         FDICmdPrintf(aWorkspace, "PASS: Entering WiFi pass-through programming mode...\n");
@@ -62,7 +62,7 @@ int UEZCmdWiFiPrg(void *aWorkspace, int argc, char *argv[])
     return UEZ_ERROR_NONE;
 }
 
-int UEZCmdWiFiRun(void *aWorkspace, int argc, char *argv[])
+int32_t UEZCmdWiFiRun(void *aWorkspace, int32_t argc, char *argv[])
 {
     if (argc == 1) {
         FDICmdPrintf(aWorkspace, "PASS: Entering WiFi pass-through run mode...\n");

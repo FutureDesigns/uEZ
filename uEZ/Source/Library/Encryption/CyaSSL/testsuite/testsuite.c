@@ -54,15 +54,15 @@ enum {
 #endif
 
 
-int myoptind = 0;
+int32_t myoptind = 0;
 char* myoptarg = NULL;
 
 
 #ifndef NO_TESTSUITE_MAIN_DRIVER
 
-    static int testsuite_test(int argc, char** argv);
+    static int32_t testsuite_test(int32_t argc, char** argv);
 
-    int main(int argc, char** argv)
+    int32_t main(int32_t argc, char** argv)
     {
         return testsuite_test(argc, argv);
     }
@@ -70,7 +70,7 @@ char* myoptarg = NULL;
 #endif /* NO_TESTSUITE_MAIN_DRIVER */
 
 
-int testsuite_test(int argc, char** argv)
+int32_t testsuite_test(int32_t argc, char** argv)
 {
     func_args server_args;
 
@@ -78,7 +78,7 @@ int testsuite_test(int argc, char** argv)
     THREAD_TYPE serverThread;
 
 #ifdef HAVE_CAVIUM
-        int ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
+        int32_t ret = OpenNitroxDevice(CAVIUM_DIRECT, CAVIUM_DEV_ID);
         if (ret != 0)
             err_sys("Cavium OpenNitroxDevice failed");
 #endif /* HAVE_CAVIUM */
@@ -326,7 +326,7 @@ void join_thread(THREAD_TYPE thread)
         Task_yield();
     }
 #else
-    int res = WaitForSingleObject((HANDLE)thread, INFINITE);
+    int32_t res = WaitForSingleObject((HANDLE)thread, INFINITE);
     assert(res == WAIT_OBJECT_0);
     res = CloseHandle((HANDLE)thread);
     assert(res);
@@ -359,7 +359,7 @@ void FreeTcpReady(tcp_ready* ready)
 void file_test(const char* file, byte* check)
 {
     FILE* f;
-    int   i = 0, j, ret;
+    int32_t   i = 0, j, ret;
     Sha256   sha256;
     byte  buf[1024];
     byte  shasum[SHA256_DIGEST_SIZE];
@@ -373,7 +373,7 @@ void file_test(const char* file, byte* check)
         printf("Can't open %s\n", file);
         return;
     }
-    while( ( i = (int)fread(buf, 1, sizeof(buf), f )) > 0 ) {
+    while( ( i = (int32_t)fread(buf, 1, sizeof(buf), f )) > 0 ) {
         ret = Sha256Update(&sha256, buf, i);
         if (ret != 0) {
             printf("Can't Sha256Update %d\n", ret);
@@ -401,11 +401,11 @@ void file_test(const char* file, byte* check)
 #else /* SINGLE_THREADED */
 
 
-int myoptind = 0;
+int32_t myoptind = 0;
 char* myoptarg = NULL;
 
 
-int main(int argc, char** argv)
+int32_t main(int32_t argc, char** argv)
 {
     func_args server_args;
 

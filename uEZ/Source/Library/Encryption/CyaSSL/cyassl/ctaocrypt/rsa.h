@@ -42,10 +42,10 @@ enum {
 /* RSA */
 typedef struct RsaKey {
     mp_int n, e, d, p, q, dP, dQ, u;
-    int   type;                               /* public or private */
+    int32_t   type;                               /* public or private */
     void* heap;                               /* for user memory overrides */
 #ifdef HAVE_CAVIUM
-    int    devId;           /* nitrox device id */
+    int32_t    devId;           /* nitrox device id */
     word32 magic;           /* using cavium magic */
     word64 contextHandle;   /* nitrox context memory handle */
     byte*  c_n;             /* cavium byte buffers for key parts */
@@ -61,64 +61,64 @@ typedef struct RsaKey {
 } RsaKey;
 
 
-CYASSL_API int  InitRsaKey(RsaKey* key, void*);
-CYASSL_API int  FreeRsaKey(RsaKey* key);
+CYASSL_API int32_t  InitRsaKey(RsaKey* key, void*);
+CYASSL_API int32_t  FreeRsaKey(RsaKey* key);
 
-CYASSL_API int  RsaPublicEncrypt(const byte* in, word32 inLen, byte* out,
+CYASSL_API int32_t  RsaPublicEncrypt(const byte* in, word32 inLen, byte* out,
                                  word32 outLen, RsaKey* key, RNG* rng);
-CYASSL_API int  RsaPrivateDecryptInline(byte* in, word32 inLen, byte** out,
+CYASSL_API int32_t  RsaPrivateDecryptInline(byte* in, word32 inLen, byte** out,
                                         RsaKey* key);
-CYASSL_API int  RsaPrivateDecrypt(const byte* in, word32 inLen, byte* out,
+CYASSL_API int32_t  RsaPrivateDecrypt(const byte* in, word32 inLen, byte* out,
                                   word32 outLen, RsaKey* key);
-CYASSL_API int  RsaSSL_Sign(const byte* in, word32 inLen, byte* out,
+CYASSL_API int32_t  RsaSSL_Sign(const byte* in, word32 inLen, byte* out,
                             word32 outLen, RsaKey* key, RNG* rng);
-CYASSL_API int  RsaSSL_VerifyInline(byte* in, word32 inLen, byte** out,
+CYASSL_API int32_t  RsaSSL_VerifyInline(byte* in, word32 inLen, byte** out,
                                     RsaKey* key);
-CYASSL_API int  RsaSSL_Verify(const byte* in, word32 inLen, byte* out,
+CYASSL_API int32_t  RsaSSL_Verify(const byte* in, word32 inLen, byte* out,
                               word32 outLen, RsaKey* key);
-CYASSL_API int  RsaEncryptSize(RsaKey* key);
+CYASSL_API int32_t  RsaEncryptSize(RsaKey* key);
 
-CYASSL_API int RsaPrivateKeyDecode(const byte* input, word32* inOutIdx, RsaKey*,
+CYASSL_API int32_t RsaPrivateKeyDecode(const byte* input, word32* inOutIdx, RsaKey*,
                                    word32);
-CYASSL_API int RsaPublicKeyDecode(const byte* input, word32* inOutIdx, RsaKey*,
+CYASSL_API int32_t RsaPublicKeyDecode(const byte* input, word32* inOutIdx, RsaKey*,
                                   word32);
-CYASSL_API int RsaPublicKeyDecodeRaw(const byte* n, word32 nSz, const byte* e,
+CYASSL_API int32_t RsaPublicKeyDecodeRaw(const byte* n, word32 nSz, const byte* e,
                                      word32 eSz, RsaKey* key);
-CYASSL_API int RsaFlattenPublicKey(RsaKey*, byte*, word32*, byte*, word32*);
+CYASSL_API int32_t RsaFlattenPublicKey(RsaKey*, byte*, word32*, byte*, word32*);
 
 #ifdef CYASSL_KEY_GEN
-    CYASSL_API int MakeRsaKey(RsaKey* key, int size, long e, RNG* rng);
-    CYASSL_API int RsaKeyToDer(RsaKey*, byte* output, word32 inLen);
+    CYASSL_API int32_t MakeRsaKey(RsaKey* key, int32_t size, long e, RNG* rng);
+    CYASSL_API int32_t RsaKeyToDer(RsaKey*, byte* output, word32 inLen);
 #endif
 
 #ifdef HAVE_CAVIUM
-    CYASSL_API int  RsaInitCavium(RsaKey*, int);
+    CYASSL_API int32_t  RsaInitCavium(RsaKey*, int32_t);
     CYASSL_API void RsaFreeCavium(RsaKey*);
 #endif
 
 
 #ifdef HAVE_FIPS
     /* fips wrapper calls, user can call direct */
-    CYASSL_API int  InitRsaKey_fips(RsaKey* key, void*);
-    CYASSL_API int  FreeRsaKey_fips(RsaKey* key);
+    CYASSL_API int32_t  InitRsaKey_fips(RsaKey* key, void*);
+    CYASSL_API int32_t  FreeRsaKey_fips(RsaKey* key);
 
-    CYASSL_API int  RsaPublicEncrypt_fips(const byte* in,word32 inLen,byte* out,
+    CYASSL_API int32_t  RsaPublicEncrypt_fips(const byte* in,word32 inLen,byte* out,
                                  word32 outLen, RsaKey* key, RNG* rng);
-    CYASSL_API int  RsaPrivateDecryptInline_fips(byte* in, word32 inLen,
+    CYASSL_API int32_t  RsaPrivateDecryptInline_fips(byte* in, word32 inLen,
                                                  byte** out, RsaKey* key);
-    CYASSL_API int  RsaPrivateDecrypt_fips(const byte* in, word32 inLen,
+    CYASSL_API int32_t  RsaPrivateDecrypt_fips(const byte* in, word32 inLen,
                                            byte* out,word32 outLen,RsaKey* key);
-    CYASSL_API int  RsaSSL_Sign_fips(const byte* in, word32 inLen, byte* out,
+    CYASSL_API int32_t  RsaSSL_Sign_fips(const byte* in, word32 inLen, byte* out,
                             word32 outLen, RsaKey* key, RNG* rng);
-    CYASSL_API int  RsaSSL_VerifyInline_fips(byte* in, word32 inLen, byte** out,
+    CYASSL_API int32_t  RsaSSL_VerifyInline_fips(byte* in, word32 inLen, byte** out,
                                     RsaKey* key);
-    CYASSL_API int  RsaSSL_Verify_fips(const byte* in, word32 inLen, byte* out,
+    CYASSL_API int32_t  RsaSSL_Verify_fips(const byte* in, word32 inLen, byte* out,
                               word32 outLen, RsaKey* key);
-    CYASSL_API int  RsaEncryptSize_fips(RsaKey* key);
+    CYASSL_API int32_t  RsaEncryptSize_fips(RsaKey* key);
 
-    CYASSL_API int RsaPrivateKeyDecode_fips(const byte* input, word32* inOutIdx,
+    CYASSL_API int32_t RsaPrivateKeyDecode_fips(const byte* input, word32* inOutIdx,
                                             RsaKey*, word32);
-    CYASSL_API int RsaPublicKeyDecode_fips(const byte* input, word32* inOutIdx,
+    CYASSL_API int32_t RsaPublicKeyDecode_fips(const byte* input, word32* inOutIdx,
                                            RsaKey*, word32);
     #ifndef FIPS_NO_WRAPPERS
         /* if not impl or fips.c impl wrapper force fips calls if fips build */

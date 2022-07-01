@@ -80,7 +80,7 @@ extern const u16_t memp_sizes[MEMP_MAX];
 void  memp_init(void);
 
 #if MEMP_OVERFLOW_CHECK
-void *memp_malloc_fn(memp_t type, const char* file, const int line);
+void *memp_malloc_fn(memp_t type, const char* file, const int32_t line);
 #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
 #else
 void *memp_malloc(memp_t type);

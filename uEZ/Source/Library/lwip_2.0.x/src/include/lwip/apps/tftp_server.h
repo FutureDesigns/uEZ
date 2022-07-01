@@ -73,7 +73,7 @@ struct tftp_context {
    * @param bytes Number of bytes to copy to buf
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int (*read)(void* handle, void* buf, int bytes);
+  int32_t (*read)(void* handle, void* buf, int32_t bytes);
   /**
    * Write to file
    * @param handle File handle returned by open()
@@ -82,7 +82,7 @@ struct tftp_context {
    *             TFTP headers are stripped off.
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int (*write)(void* handle, struct pbuf* p);
+  int32_t (*write)(void* handle, struct pbuf* p);
 };
 
 err_t tftp_init(const struct tftp_context* ctx);

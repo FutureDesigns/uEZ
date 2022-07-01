@@ -88,7 +88,7 @@ END_TEST
 
 START_TEST(test_pbuf_queueing_bigger_than_64k)
 {
-  int i;
+  int32_t i;
   err_t err;
   struct pbuf *p1, *p2, *p3, *rest2=NULL, *rest3=NULL;
   LWIP_UNUSED_ARG(_i);
@@ -150,7 +150,7 @@ START_TEST(test_pbuf_take_at_edge)
 {
   err_t res;
   u8_t *out;
-  int i;
+  int32_t i;
   u8_t testdata[] = { 0x01, 0x08, 0x82, 0x02 };
   struct pbuf *p = pbuf_alloc(PBUF_RAW, 1024, PBUF_POOL);
   struct pbuf *q = p->next;
@@ -165,7 +165,7 @@ START_TEST(test_pbuf_take_at_edge)
   fail_unless(res == ERR_OK);
 
   out = (u8_t*)p->payload;
-  for (i = 0; i < (int)sizeof(testdata); i++) {
+  for (i = 0; i < (int32_t)sizeof(testdata); i++) {
     fail_unless(out[i] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", i, out[i], testdata[i]);
   }
@@ -178,7 +178,7 @@ START_TEST(test_pbuf_take_at_edge)
   fail_unless(out[p->len - 1] == testdata[0],
     "Bad data at pos %d, was %02X, expected %02X", p->len - 1, out[p->len - 1], testdata[0]);
   out = (u8_t*)q->payload;
-  for (i = 1; i < (int)sizeof(testdata); i++) {
+  for (i = 1; i < (int32_t)sizeof(testdata); i++) {
     fail_unless(out[i-1] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", p->len - 1 + i, out[i-1], testdata[i]);
   }
@@ -188,7 +188,7 @@ START_TEST(test_pbuf_take_at_edge)
   fail_unless(res == ERR_OK);
 
   out = (u8_t*)p->payload;
-  for (i = 0; i < (int)sizeof(testdata); i++) {
+  for (i = 0; i < (int32_t)sizeof(testdata); i++) {
     fail_unless(out[i] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", p->len+i, out[i], testdata[i]);
   }

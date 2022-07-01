@@ -93,7 +93,7 @@ static unsigned char Shell_stack[SHELL_STACKSIZE] ;
 extern void shell_main(void) ;
 #endif
 
-extern void time_main(int) ;
+extern void time_main(int32_t) ;
 extern void benchmark_test(void) ;
 extern void SER_Init(void) ;
 
@@ -134,7 +134,7 @@ void main_task (void)
 }
 
 
-    int myoptind = 0;
+    int32_t myoptind = 0;
     char* myoptarg = NULL;
 
 #if defined(DEBUG_CYASSL)
@@ -146,7 +146,7 @@ void main_task (void)
 extern void init_time(void) ;
 extern void 	SystemInit(void);
 
-int main() {
+int32_t main() {
 
     SystemInit();  
     SER_Init() ;
