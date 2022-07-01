@@ -53,7 +53,7 @@
  *-------------------------------------------------------------------------*/
 typedef struct _T_LAFMapping {
     // ID in window, or 0 if last entry in mapping list
-    TInt32 iID;
+    int iID;
 
     // Optional default text, or 0 for no changes
     const char *iText;
@@ -67,7 +67,7 @@ typedef struct _T_LAFMapping {
     void (*iSetup)(const struct _T_LAFMapping *p, WM_HWIN hItem);
 
     // Command to call on appropriate message types
-    TBool (*iCommand)(WM_MESSAGE * pMsg, TInt32 aID, TInt32 aNCode);
+    TBool (*iCommand)(WM_MESSAGE * pMsg, int aID, int aNCode);
 
     // possible additional data, or 0 for none
     void *iData;
@@ -83,11 +83,11 @@ void LAFSetupScrollbar(const T_LAFMapping *p, WM_HWIN hItem);
 TBool LAFHandleEvent(
         const T_LAFMapping *aMapping,
         WM_MESSAGE * pMsg,
-        TInt32 aNCode,
-        TInt32 aID);
+        int aNCode,
+        int aID);
 void LAFSetup(
         WM_HWIN hWin,
-        TInt32 aWindowID,
+        int aWindowID,
         const T_LAFMapping *aMapping);
 
 void TouchscreenClearPresses(void);

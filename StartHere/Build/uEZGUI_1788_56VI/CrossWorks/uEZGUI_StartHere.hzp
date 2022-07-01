@@ -1,0 +1,311 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="uEZGUI_StartHere" target="8" version="2">
+  <project Name="uEZGUI_StartHere">
+    <configuration
+      Name="Common"
+      Target="LPC1788"
+      arm_architecture="v7M"
+      arm_core_type="Cortex-M3"
+      arm_gcc_target="arm-unknown-eabi"
+      arm_interwork="No"
+      arm_linker_heap_size="500000"
+      arm_linker_process_stack_size="2024"
+      arm_linker_stack_size="2024"
+      arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll"
+      arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_loader_parameter="12000000"
+      batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug-Trace;THUMB Flash Release"
+      build_debug_information="Yes"
+      build_output_directory="$(Configuration)"
+      build_output_file_name="$(OutDir)/$(ProjectName)_$(Configuration)$(LIB)"
+      build_remove_unused_symbols="Yes"
+      c_additional_options="-fms-extensions;-Wall;-Wno-missing-braces;-Wno-strict-aliasing;-Wno-unused-function"
+      c_only_additional_options="-fms-extensions;-Wall;-Wno-missing-braces;-Wno-strict-aliasing;-Wno-unused-function"
+      c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET"
+      c_user_include_directories=".;../../../.;../../../Source/App/;../../../../uEZ;../../../../uEZ/Include;../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/include;../../../../uEZ/Source/Library/lwIP/src/include;../../../../uEZ/Source/Library/lwIP/src;../../../../uEZ/Source/Library/lwIP/Include;../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../uEZ/Source/Platform/emWin/Inc;../../../../uEZ/Source/Platform/emWin/Config;../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI;&#xa;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/CrossWorks/include"
+      debug_startup_completion_point="main"
+      gcc_short_enum="Minimal Container Size"
+      gcc_wchar_size="32-Bit"
+      link_include_startup_code="No"
+      linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)"
+      linker_memory_map_file="$(ProjectDir)/uEZGUI_StartHere_MemoryMap.xml"
+      linker_output_format="hex"
+      linker_printf_fp_enabled="Yes"
+      linker_section_placement_file="$(ProjectDir)/uEZGUI_StartHere_placement.xml"
+      oscillator_frequency="12MHz"
+      package_dependencies="LPC1000"
+      project_directory=""
+      project_type="Executable"
+      property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml"
+      target_reset_script="FLASHReset()"
+      target_script_file="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/CrossWorks/LPC177x_8x_Target.js" />
+    <configuration
+      Name="Flash"
+      Placement="Flash"
+      arm_target_flash_loader_file_path="$(TargetsDir)/LPC1000/Release/Loader_lpc177x_8x.elf"
+      arm_target_flash_loader_type="LIBMEM RPC Loader"
+      linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC1000/LPC1000_LinkPatch.js\&quot;);patch(\&quot;$(TargetPath)\&quot;);&quot;"
+      target_reset_script="FLASHReset()" />
+    <file file_name="Config_Build.h" />
+    <folder Name="Source">
+      <folder Name="Scripts">
+        <folder Name="Compilers">
+          <folder Name="CrossWorks">
+            <folder Name="FreeRTOS">
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+                <configuration Name="Common" file_type="Threads Script" />
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Platform">
+        <folder Name="FDI">
+          <folder Name="uEZGUI_1788_56VI">
+            <file file_name="../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/uEZGUI_1788_56VI.c" />
+            <file file_name="../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_56VI/uEZPlatform.h" />
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Processor">
+        <folder Name="NXP">
+          <folder Name="LPC17xx_40xx">
+            <folder Name="CrossWorks">
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/CrossWorks/LPC177x_8x_Target.js">
+                <configuration Name="Common" file_type="Reset Script" />
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Library">
+        <folder Name="uEZ">
+          <file file_name="../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Debug/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Debug.a">
+            <configuration
+              Name="THUMB Flash Release"
+              build_exclude_from_build="Yes" />
+          </file>
+          <file file_name="../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Release/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Release.a">
+            <configuration
+              Name="THUMB Flash Debug"
+              build_exclude_from_build="Yes" />
+          </file>
+        </folder>
+        <folder Name="SEGGER">
+          <folder Name="emWin">
+            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/CrossWorks/libemWin_530_LPCXpresso_M3.a" />
+          </folder>
+        </folder>
+      </folder>
+    </folder>
+    <folder Name="Include">
+      <folder Name="Device">
+        <folder Name="LCD">
+          <file file_name="../../../../uEZ/Include/Device/LCD/Config_LCD.h" />
+        </folder>
+        <file file_name="../../../../uEZ/Include/Device/Watchdog.h" />
+        <file file_name="../../../../uEZ/Include/Device/Accelerometer.h" />
+        <file file_name="../../../../uEZ/Include/Device/ADCBank.h" />
+        <file file_name="../../../../uEZ/Include/Device/AudioAmp.h" />
+        <file file_name="../../../../uEZ/Include/Device/AudioCodec.h" />
+        <file file_name="../../../../uEZ/Include/Device/Backlight.h" />
+        <file file_name="../../../../uEZ/Include/Device/ButtonBank.h" />
+        <file file_name="../../../../uEZ/Include/Device/CharDisplay.h" />
+        <file file_name="../../../../uEZ/Include/Device/DAC.h" />
+        <file file_name="../../../../uEZ/Include/Device/EEPROM.h" />
+        <file file_name="../../../../uEZ/Include/Device/ExternalInterrupt.h" />
+        <file file_name="../../../../uEZ/Include/Device/FileSystem.h" />
+        <file file_name="../../../../uEZ/Include/Device/Flash.h" />
+        <file file_name="../../../../uEZ/Include/Device/GPDMA.h" />
+        <file file_name="../../../../uEZ/Include/Device/I2CBus.h" />
+        <file file_name="../../../../uEZ/Include/Device/I2S.h" />
+        <file file_name="../../../../uEZ/Include/Device/Keypad.h" />
+        <file file_name="../../../../uEZ/Include/Device/LCD.h" />
+        <file file_name="../../../../uEZ/Include/Device/LEDBank.h" />
+        <file file_name="../../../../uEZ/Include/Device/LightSensor.h" />
+        <file file_name="../../../../uEZ/Include/Device/MassStorage.h" />
+        <file file_name="../../../../uEZ/Include/Device/Network.h" />
+        <file file_name="../../../../uEZ/Include/Device/PWM.h" />
+        <file file_name="../../../../uEZ/Include/Device/RTC.h" />
+        <file file_name="../../../../uEZ/Include/Device/SPIBus.h" />
+        <file file_name="../../../../uEZ/Include/Device/SSPBus.h" />
+        <file file_name="../../../../uEZ/Include/Device/Stream.h" />
+        <file file_name="../../../../uEZ/Include/Device/Temperature.h" />
+        <file file_name="../../../../uEZ/Include/Device/ToneGenerator.h" />
+        <file file_name="../../../../uEZ/Include/Device/Touchscreen.h" />
+        <file file_name="../../../../uEZ/Include/Device/USBDevice.h" />
+        <file file_name="../../../../uEZ/Include/Device/USBHost.h" />
+      </folder>
+      <folder Name="HAL">
+        <file file_name="../../../../uEZ/Include/HAL/Watchdog.h" />
+        <file file_name="../../../../uEZ/Include/HAL/ADCBank.h" />
+        <file file_name="../../../../uEZ/Include/HAL/BatteryRAM.h" />
+        <file file_name="../../../../uEZ/Include/HAL/DAC.h" />
+        <file file_name="../../../../uEZ/Include/HAL/EEPROM.h" />
+        <file file_name="../../../../uEZ/Include/HAL/EMAC.h" />
+        <file file_name="../../../../uEZ/Include/HAL/GPDMA.h" />
+        <file file_name="../../../../uEZ/Include/HAL/GPIO.h" />
+        <file file_name="../../../../uEZ/Include/HAL/HAL.h" />
+        <file file_name="../../../../uEZ/Include/HAL/I2CBus.h" />
+        <file file_name="../../../../uEZ/Include/HAL/I2SBus.h" />
+        <file file_name="../../../../uEZ/Include/HAL/Interrupt.h" />
+        <file file_name="../../../../uEZ/Include/HAL/LCDController.h" />
+        <file file_name="../../../../uEZ/Include/HAL/PWM.h" />
+        <file file_name="../../../../uEZ/Include/HAL/RTC.h" />
+        <file file_name="../../../../uEZ/Include/HAL/Serial.h" />
+        <file file_name="../../../../uEZ/Include/HAL/SPI.h" />
+        <file file_name="../../../../uEZ/Include/HAL/SSP.h" />
+        <file file_name="../../../../uEZ/Include/HAL/Timer.h" />
+        <file file_name="../../../../uEZ/Include/HAL/USBDeviceController.h" />
+        <file file_name="../../../../uEZ/Include/HAL/USBHost.h" />
+      </folder>
+      <folder Name="netinet">
+        <file file_name="../../../../uEZ/Include/netinet/in.h" />
+      </folder>
+      <folder Name="sys">
+        <file file_name="../../../../uEZ/Include/sys/types.h" />
+        <file file_name="../../../../uEZ/Include/sys/mman.h" />
+        <file file_name="../../../../uEZ/Include/sys/socket.h" />
+        <file file_name="../../../../uEZ/Include/sys/stat.h" />
+        <file file_name="../../../../uEZ/Include/sys/time.h" />
+      </folder>
+      <folder Name="Types">
+        <file file_name="../../../../uEZ/Include/Types/USBHost.h" />
+        <file file_name="../../../../uEZ/Include/Types/Accelerometer.h" />
+        <file file_name="../../../../uEZ/Include/Types/ADC.h" />
+        <file file_name="../../../../uEZ/Include/Types/EEPROM.h" />
+        <file file_name="../../../../uEZ/Include/Types/EMAC.h" />
+        <file file_name="../../../../uEZ/Include/Types/File.h" />
+        <file file_name="../../../../uEZ/Include/Types/Flash.h" />
+        <file file_name="../../../../uEZ/Include/Types/GPDMA.h" />
+        <file file_name="../../../../uEZ/Include/Types/I2C.h" />
+        <file file_name="../../../../uEZ/Include/Types/I2S.h" />
+        <file file_name="../../../../uEZ/Include/Types/InputEvent.h" />
+        <file file_name="../../../../uEZ/Include/Types/LCD.h" />
+        <file file_name="../../../../uEZ/Include/Types/Network.h" />
+        <file file_name="../../../../uEZ/Include/Types/Serial.h" />
+        <file file_name="../../../../uEZ/Include/Types/SPI.h" />
+        <file file_name="../../../../uEZ/Include/Types/SSP.h" />
+        <file file_name="../../../../uEZ/Include/Types/TimeDate.h" />
+        <file file_name="../../../../uEZ/Include/Types/USBDevice.h" />
+        <file file_name="../../../../uEZ/Include/Types/USBHost.h" />
+        <file file_name="../../../../uEZ/Include/Types/Accelerometer.h" />
+        <file file_name="../../../../uEZ/Include/Types/ADC.h" />
+        <file file_name="../../../../uEZ/Include/Types/EEPROM.h" />
+        <file file_name="../../../../uEZ/Include/Types/EMAC.h" />
+        <file file_name="../../../../uEZ/Include/Types/File.h" />
+        <file file_name="../../../../uEZ/Include/Types/Flash.h" />
+        <file file_name="../../../../uEZ/Include/Types/GPDMA.h" />
+        <file file_name="../../../../uEZ/Include/Types/I2C.h" />
+        <file file_name="../../../../uEZ/Include/Types/I2S.h" />
+        <file file_name="../../../../uEZ/Include/Types/InputEvent.h" />
+        <file file_name="../../../../uEZ/Include/Types/LCD.h" />
+        <file file_name="../../../../uEZ/Include/Types/Network.h" />
+        <file file_name="../../../../uEZ/Include/Types/Serial.h" />
+        <file file_name="../../../../uEZ/Include/Types/SPI.h" />
+        <file file_name="../../../../uEZ/Include/Types/SSP.h" />
+        <file file_name="../../../../uEZ/Include/Types/TimeDate.h" />
+        <file file_name="../../../../uEZ/Include/Types/USBDevice.h" />
+      </folder>
+      <file file_name="../../../../uEZ/Include/unistd.h" />
+      <file file_name="../../../../uEZ/Include/Config.h" />
+      <file file_name="../../../../uEZ/Include/fcntl.h" />
+      <file file_name="../../../../uEZ/Include/netdb.h" />
+      <file file_name="../../../../uEZ/Include/signal.h" />
+      <file file_name="../../../../uEZ/Include/uEZ.h" />
+      <file file_name="../../../../uEZ/Include/uEZADC.h" />
+      <file file_name="../../../../uEZ/Include/uEZAudioAmp.h" />
+      <file file_name="../../../../uEZ/Include/uEZCharDisplay.h" />
+      <file file_name="../../../../uEZ/Include/uEZDAC.h" />
+      <file file_name="../../../../uEZ/Include/uEZDevice.h" />
+      <file file_name="../../../../uEZ/Include/uEZDeviceTable.h" />
+      <file file_name="../../../../uEZ/Include/uEZEINT.h" />
+      <file file_name="../../../../uEZ/Include/uEZErrors.h" />
+      <file file_name="../../../../uEZ/Include/uEZFile.h" />
+      <file file_name="../../../../uEZ/Include/uEZFlash.h" />
+      <file file_name="../../../../uEZ/Include/uEZI2C.h" />
+      <file file_name="../../../../uEZ/Include/uEZInline.h" />
+      <file file_name="../../../../uEZ/Include/uEZKeypad.h" />
+      <file file_name="../../../../uEZ/Include/uEZLCD.h" />
+      <file file_name="../../../../uEZ/Include/uEZLEDBank.h" />
+      <file file_name="../../../../uEZ/Include/uEZMemory.h" />
+      <file file_name="../../../../uEZ/Include/uEZNetwork.h" />
+      <file file_name="../../../../uEZ/Include/uEZPacked.h" />
+      <file file_name="../../../../uEZ/Include/uEZProcessor.h" />
+      <file file_name="../../../../uEZ/Include/uEZPWM.h" />
+      <file file_name="../../../../uEZ/Include/uEZRTOS.h" />
+      <file file_name="../../../../uEZ/Include/uEZSPI.h" />
+      <file file_name="../../../../uEZ/Include/uEZSSP.h" />
+      <file file_name="../../../../uEZ/Include/uEZStream.h" />
+      <file file_name="../../../../uEZ/Include/uEZTemperature.h" />
+      <file file_name="../../../../uEZ/Include/uEZTickCounter.h" />
+      <file file_name="../../../../uEZ/Include/uEZTimeDate.h" />
+      <file file_name="../../../../uEZ/Include/uEZToneGenerator.h" />
+      <file file_name="../../../../uEZ/Include/uEZTS.h" />
+      <file file_name="../../../../uEZ/Include/uEZTypes.h" />
+      <file file_name="../../../../uEZ/Include/uEZWatchdog.h" />
+    </folder>
+    <folder Name="App">
+      <folder Name="emWin">
+        <folder Name="Fonts">
+          <file file_name="../../../Source/App/emWin/Fonts/Fonts.h" />
+        </folder>
+        <folder Name="Graphics">
+          <file file_name="../../../Source/App/emWin/Graphics/Graphics.h" />
+        </folder>
+        <file file_name="../../../Source/App/emWin/Create_Window_Functions.h" />
+        <file file_name="../../../Source/App/emWin/WindowManager.c" />
+        <file file_name="../../../Source/App/emWin/WindowManager.h" />
+        <file file_name="../../../Source/App/emWin/HomeScreen.c" />
+        <file file_name="../../../Source/App/emWin/LookAndFeel.c" />
+        <file file_name="../../../Source/App/emWin/LookAndFeel.h" />
+      </folder>
+      <file file_name="../../../Source/App/main.c" />
+      <file file_name="../../../Source/App/NVSettings.c" />
+      <file file_name="../../../Source/App/Calibration.c" />
+      <file file_name="../../../Source/App/Calibration.h" />
+    </folder>
+    <configuration Name="Release" build_debug_information="No" />
+    <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes" />
+    <configuration
+      Name="THUMB Flash Release"
+      gcc_optimization_level="Level 2" />
+    <configuration Name="Release" gcc_optimization_level="Level 2" />
+    <configuration
+      Name="THUMB Flash Debug-Trace"
+      c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
+  </project>
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="THUMB"
+    arm_library_instruction_set="THUMB"
+    c_preprocessor_definitions="__THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="Flash"
+    c_preprocessor_definitions="__FLASH_BUILD"
+    hidden="Yes" />
+  <configuration
+    Name="Debug"
+    build_debug_information="Yes"
+    c_preprocessor_definitions="DEBUG"
+    gcc_debugging_level="Level 2"
+    gcc_optimization_level="None"
+    hidden="Yes" />
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_optimization_level="Level 1"
+    hidden="Yes" />
+  <configuration
+    Name="THUMB Flash Debug"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration
+    Name="THUMB Flash Release"
+    inherited_configurations="THUMB;Flash;Release" />
+  <configuration
+    Name="THUMB Flash Debug-Trace"
+    inherited_configurations="THUMB;Flash;Debug" />
+</solution>

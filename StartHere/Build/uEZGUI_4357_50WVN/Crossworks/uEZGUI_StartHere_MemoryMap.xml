@@ -1,0 +1,38 @@
+<!DOCTYPE Board_Memory_Definition_File>
+
+        
+          
+<Root name="LPC4357">
+  <MemorySegment start="0x10000000" name="SRAM1" size="0x8000-$(SRAM1_CM0_SIZE:0)" access="Read/Write" />
+  <MemorySegment start="0x10000000+0x8000-$(SRAM1_CM0_SIZE:0x8000/2)" name="SRAM1_CM0" size="$(SRAM1_CM0_SIZE:0)" access="Read/Write" />
+  <MemorySegment start="0x10080000" name="SRAM2" size="0xa000-$(SRAM2_CM0_SIZE:0xa000/2)" access="Read/Write" />
+  <MemorySegment start="0x10080000+0xa000-$(SRAM2_CM0_SIZE:0xa000/2)" name="SRAM2_CM0" size="$(SRAM2_CM0_SIZE:0xa000/2)" access="Read/Write" />
+  <MemorySegment start="0x10400000" name="ROM" size="0x10000" access="ReadOnly" />
+  <MemorySegment start="0x14000000" name="$(SPIFI_NAME:SPIFI)" size="$(SPIFI_SIZE:0)-$(SPIFI_CM0_SIZE:0)" access="ReadOnly" />
+  <MemorySegment start="0x14000000+$(SPIFI_SIZE:0)-$(SPIFI_CM0_SIZE:0)" name="SPIFI_CM0" size="$(SPIFI_CM0_SIZE:0)" access="ReadOnly" />
+  <MemorySegment start="0x1A000000" name="FLASHA" size="0x80000-$(FLASHA_CM0_SIZE:0)" access="ReadOnly" />
+  <MemorySegment start="0x1A000000+0x80000-$(FLASHA_CM0_SIZE:0x80000/2)" name="FLASHA_CM0" size="$(FLASHA_CM0_SIZE:0)" access="ReadOnly" />
+  <MemorySegment start="0x1B000000" name="FLASHB" size="0x80000-$(FLASHB_CM0_SIZE:0x80000/2)" access="ReadOnly" />
+  <MemorySegment start="0x1B000000+0x80000-$(FLASHB_CM0_SIZE:0x80000/2)" name="FLASHB_CM0" size="$(FLASHB_CM0_SIZE:0x80000/2)" access="ReadOnly" />
+  <MemorySegment start="0x1C000000" name="$(CS0_NAME:CS0)" size="$(CS0_SIZE:0)-$(CS0_CM0_SIZE:0)" access="$(CS0_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1C000000+$(CS0_SIZE:0)-$(CS0_CM0_SIZE:0)" name="$(CS0_NAME:CS0)_CM0" size="$(CS0_CM0_SIZE:0)" access="$(CS0_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1D000000" name="$(CS1_NAME:CS1)" size="$(CS1_SIZE:0)" access="$(CS1_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1D000000+$(CS1_SIZE:0)-$(CS1_CM0_SIZE:0)" name="$(CS1_NAME:CS1)_CM0" size="$(CS1_CM0_SIZE:0)" access="$(CS1_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1E000000" name="$(CS2_NAME:CS2)" size="$(CS2_SIZE:0)" access="$(CS2_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1E000000+$(CS2_SIZE:0)-$(CS2_CM0_SIZE:0)" name="$(CS2_NAME:CS2)_CM0" size="$(CS2_CM0_SIZE:0)" access="$(CS2_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1F000000" name="$(CS3_NAME:CS3)" size="$(CS3_SIZE:0)" access="$(CS3_ACCESS:Read/Write)" />
+  <MemorySegment start="0x1F000000+$(CS3_SIZE:0)-$(CS3_CM0_SIZE:0)" name="$(CS3_NAME:CS3)_CM0" size="$(CS3_CM0_SIZE:0)" access="$(CS3_ACCESS:Read/Write)" />
+  <MemorySegment start="0x20000000" name="AHBSRAM1" size="0xc000-$(AHBSRAM1_CM0_SIZE:0xc000/2)" access="Read/Write" />
+  <MemorySegment start="0x20000000+0xc000-$(AHBSRAM1_CM0_SIZE:0xc000/2)" name="AHBSRAM1_CM0" size="$(AHBSRAM1_CM0_SIZE:0xc000/2)" access="Read/Write" />
+  <MemorySegment start="0x20040000" name="EEPROM" size="0x4000" access="ReadOnly">
+    <ProgramSection alignment="4" load="Yes" name=".eeprom" />
+  </MemorySegment>
+  <MemorySegment start="0x2000C000" name="AHBSRAM2" size="0x4000-$(AHBSRAM2_CM0_SIZE:0x2000)" access="Read/Write" />
+  <MemorySegment start="0x2000C000+0x4000-$(AHBSRAM2_CM0_SIZE:0x2000)" name="AHBSRAM2_CM0" size="$(AHBSRAM2_CM0_SIZE:0x2000)" access="Read/Write" />
+  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(DYCS0_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
+  <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(DYCS0_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(DYCS0_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />  
+  <MemorySegment start="0x30000000" name="$(DYCS1_NAME:DYCS1)" size="$(DYCS1_SIZE:0)-$(DYCS0_CM1_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />
+  <MemorySegment start="0x30000000+$(DYCS1_SIZE:0)-$(DYCS1_CM0_SIZE:0)" name="$(DYCS1_NAME:DYCS1)_CM0" size="$(DYCS1_CM0_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />
+  <MemorySegment start="0x40045000" name="OTP" size="0x40" access="ReadOnly" />
+</Root>
+ 
