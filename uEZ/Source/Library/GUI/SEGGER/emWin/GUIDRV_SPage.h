@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : GUIDRV_SPage.h
 Purpose     : Interface definition for GUIDRV_SPage driver
@@ -227,14 +238,6 @@ extern const GUI_DEVICE_API GUIDRV_SPage_OSXY_4C1_API;
 
 #endif
 
-//
-// Epson controller definitions
-//
-#define GUIDRV_SPAGE_EPSON_S1D15E05   0
-#define GUIDRV_SPAGE_EPSON_S1D15E06   1
-#define GUIDRV_SPAGE_EPSON_S1D15719   2
-#define GUIDRV_SPAGE_EPSON_S1D15721   3
-
 /*********************************************************************
 *
 *       Public routines
@@ -243,22 +246,28 @@ extern const GUI_DEVICE_API GUIDRV_SPage_OSXY_4C1_API;
   
   #define GUIDRV_SPage_Config(pDevice, pConfig)
   #define GUIDRV_SPage_SetBus8(pDevice, pHW_API)
+  #define GUIDRV_SPage_Set1502(pDevice)
   #define GUIDRV_SPage_Set1510(pDevice)
   #define GUIDRV_SPage_Set1512(pDevice)
+  #define GUIDRV_SPage_SetST75256(pDevice)
   #define GUIDRV_SPage_SetST7591(pDevice)
   #define GUIDRV_SPage_SetUC1611(pDevice)
+  #define GUIDRV_SPage_SetUC1638(pDevice)
 
   // Obsolete
   #define GUIDRV_SPage_SetS1D15(pDevice, Controller)
 
 #else
 
-  void GUIDRV_SPage_Config   (GUI_DEVICE * pDevice, CONFIG_SPAGE * pConfig);
-  void GUIDRV_SPage_SetBus8  (GUI_DEVICE * pDevice, GUI_PORT_API * pHW_API);
-  void GUIDRV_SPage_Set1510  (GUI_DEVICE * pDevice);
-  void GUIDRV_SPage_Set1512  (GUI_DEVICE * pDevice);
-  void GUIDRV_SPage_SetST7591(GUI_DEVICE * pDevice);
-  void GUIDRV_SPage_SetUC1611(GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_Config    (GUI_DEVICE * pDevice, CONFIG_SPAGE * pConfig);
+  void GUIDRV_SPage_SetBus8   (GUI_DEVICE * pDevice, GUI_PORT_API * pHW_API);
+  void GUIDRV_SPage_Set1502   (GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_Set1510   (GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_Set1512   (GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_SetST75256(GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_SetST7591 (GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_SetUC1611 (GUI_DEVICE * pDevice);
+  void GUIDRV_SPage_SetUC1638 (GUI_DEVICE * pDevice);
 
   // Obsolete
   void GUIDRV_SPage_SetS1D15 (GUI_DEVICE * pDevice, int Controller);

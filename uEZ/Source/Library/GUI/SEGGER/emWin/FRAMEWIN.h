@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : FRAMEWIN.h
 Purpose     : Frame window include
@@ -176,7 +187,7 @@ void FRAMEWIN_SetActive      (FRAMEWIN_Handle hObj, int State);
 void FRAMEWIN_SetBarColor    (FRAMEWIN_Handle hObj, unsigned Index, GUI_COLOR Color);
 void FRAMEWIN_SetBorderSize  (FRAMEWIN_Handle hObj, unsigned Size);
 void FRAMEWIN_SetClientColor (FRAMEWIN_Handle hObj, GUI_COLOR Color);
-void FRAMEWIN_SetFont        (FRAMEWIN_Handle hObj, const GUI_FONT GUI_UNI_PTR * pFont);
+void FRAMEWIN_SetFont        (FRAMEWIN_Handle hObj, const GUI_FONT * pFont);
 void FRAMEWIN_SetMoveable    (FRAMEWIN_Handle hObj, int State);
 void FRAMEWIN_SetOwnerDraw   (FRAMEWIN_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawItem);
 void FRAMEWIN_SetResizeable  (FRAMEWIN_Handle hObj, int State);
@@ -210,7 +221,7 @@ WIDGET_DRAW_ITEM_FUNC * FRAMEWIN_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSk
 *
 **********************************************************************
 */
-const GUI_FONT GUI_UNI_PTR * FRAMEWIN_GetFont(FRAMEWIN_Handle hObj);
+const GUI_FONT * FRAMEWIN_GetFont(FRAMEWIN_Handle hObj);
 
 int       FRAMEWIN_GetActive      (FRAMEWIN_Handle hObj);
 int       FRAMEWIN_GetTitleHeight (FRAMEWIN_Handle hObj);
@@ -229,20 +240,20 @@ int       FRAMEWIN_IsMaximized    (FRAMEWIN_Handle hObj);
 *
 **********************************************************************
 */
-GUI_COLOR       FRAMEWIN_GetDefaultBarColor   (unsigned Index);
-int             FRAMEWIN_GetDefaultBorderSize (void);
-int             FRAMEWIN_GetDefaultTitleHeight(void);
-GUI_COLOR       FRAMEWIN_GetDefaultClientColor(void);
-const GUI_FONT GUI_UNI_PTR * FRAMEWIN_GetDefaultFont       (void);
-GUI_COLOR       FRAMEWIN_GetDefaultTextColor  (unsigned Index);
-int             FRAMEWIN_OwnerDraw            (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
-void            FRAMEWIN_SetDefaultBarColor   (unsigned Index, GUI_COLOR Color);
-void            FRAMEWIN_SetDefaultBorderSize (int DefaultBorderSize);
-void            FRAMEWIN_SetDefaultTitleHeight(int DefaultTitleHeight);
-void            FRAMEWIN_SetDefaultClientColor(GUI_COLOR Color);
-void            FRAMEWIN_SetDefaultFont       (const GUI_FONT GUI_UNI_PTR * pFont);
-int             FRAMEWIN_SetDefaultTextAlign  (int TextAlign);
-void            FRAMEWIN_SetDefaultTextColor  (unsigned Index, GUI_COLOR Color);
+GUI_COLOR        FRAMEWIN_GetDefaultBarColor   (unsigned Index);
+int              FRAMEWIN_GetDefaultBorderSize (void);
+int              FRAMEWIN_GetDefaultTitleHeight(void);
+GUI_COLOR        FRAMEWIN_GetDefaultClientColor(void);
+const GUI_FONT * FRAMEWIN_GetDefaultFont       (void);
+GUI_COLOR        FRAMEWIN_GetDefaultTextColor  (unsigned Index);
+int              FRAMEWIN_OwnerDraw            (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+void             FRAMEWIN_SetDefaultBarColor   (unsigned Index, GUI_COLOR Color);
+void             FRAMEWIN_SetDefaultBorderSize (int DefaultBorderSize);
+void             FRAMEWIN_SetDefaultTitleHeight(int DefaultTitleHeight);
+void             FRAMEWIN_SetDefaultClientColor(GUI_COLOR Color);
+void             FRAMEWIN_SetDefaultFont       (const GUI_FONT * pFont);
+int              FRAMEWIN_SetDefaultTextAlign  (int TextAlign);
+void             FRAMEWIN_SetDefaultTextColor  (unsigned Index, GUI_COLOR Color);
 
 /*********************************************************************
 *

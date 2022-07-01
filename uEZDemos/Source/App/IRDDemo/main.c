@@ -21,25 +21,32 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <uEZ.h>
 #include <HAL/EMAC.h>
+#include <HAL/GPIO.h>
 #include <uEZI2C.h>
 #include "NVSettings.h"
 #include "AppTasks.h"
 #include "AppDemo.h"
-#include "NVSettings.h"
 #include <uEZADC.h>
 #include <uEZTemperature.h>
 #include "Device\ToneGenerator.h"
 #include <Types/InputEvent.h>
 #include <uEZToneGenerator.h>
 #include <uEZKeypad.h>
-#include <Source\RTOS\FreeRTOS\include\task.h>
+#include <Source/RTOS/FreeRTOS/include/task.h>
 #include <uEZLEDBank.h>
 #include <uEZPlatform.h>
+#include <uEZPlatformAPI.h>
+#include <uEZProcessor.h>
+#include <Include/uEZRTOS.h>
+#include <uEZRTOS.h>
+#include <uEZNetwork.h>
+#include <NetworkStartup.h>
+#include <AppHTTPServer.h>
 
 #if UEZ_BASIC_WEB_SERVER
     #include "Source/Library/Web/BasicWeb/BasicWEB.h"
@@ -399,6 +406,7 @@ int MainTask(void)
     T_uezDevice adcDev;
     T_uezDevice lcd;
     ADC_RequestSingle adcRequest;
+    static T_uezQueue queue = (TUInt32)NULL;
     TUInt32 value;
     char buffer[1024];
     T_uezDevice keypad;
@@ -465,14 +473,14 @@ int MainTask(void)
     // Output it followed by spin:
 	printf("\fTask          State  Priority  Stack	#\n************************************************\n" );
 	/* ... Then the list of tasks and their status... */
-	vTaskList( ( signed portCHAR * ) buffer);	
+// TODO FIX*********************	UEZGetTaskList(buffer);//vTaskList( ( signed portCHAR * ) buffer);	
 //    puts(buffer);
     printf("%s", buffer);
 
     UEZADCOpen("ADC0", &adcDev);
     UEZTemperatureOpen("TempRemote", &G_remoteTempDev);
     UEZTemperatureOpen("TempLocal", &G_localTempDev);
-    UEZKeypadOpen("Keypad", &keypad);
+    UEZKeypadOpen("Keypad", &keypad, &queue);
     while (1) {
         static char spin[4] = "-\\|/";
         static int spinstate = 0;
@@ -512,10 +520,10 @@ int MainTask(void)
         }
 
         // See if there is anything pressed on the keypad
-        while (UEZKeypadRead(keypad, &event, 0) == UEZ_ERROR_NONE) {
+/* TODOD FIX********************* while (UEZKeypadRead(keypad, &event, &queue, 0) == UEZ_ERROR_NONE) {
             // Got some event
             ShowButtonPressedOnCharDisplay(lcd, event);
-        }
+        }*/
     }
 #if (COMPILER_TYPE != IAR)
     // We should not exit main unless we want to reset the board

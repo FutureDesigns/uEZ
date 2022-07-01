@@ -29,13 +29,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -80,12 +80,9 @@ typedef struct {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-void Network_GainSpan_Create(
+T_uezError Network_GainSpan_Create(
     const char *aName,
     const T_GainSpan_Network_SPISettings *aSettings);
-static T_uezError Network_GainSpan_GetStatus(
-    void *aWorkspace,
-    T_uezNetworkStatus *aStatus);
 extern const DEVICE_Network GainSpan_Network_Interface;
 
 #ifdef __cplusplus

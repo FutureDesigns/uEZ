@@ -58,6 +58,28 @@ T_uezError FATFS_RegisterMassStorageDevice(
     return UEZ_ERROR_NONE;
 }
 
+T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
+{
+    char message[10];
+    IEnsureInit();
+    if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
+        return UEZ_ERROR_OUT_OF_RANGE;
+
+    // Is there anything registered there?
+    if (G_fatfsMassStorageDevices[aSlot] == 0)
+        return UEZ_ERROR_NONE;
+
+    sprintf(message, "%d:", aSlot);
+    f_mount(G_fatfs+aSlot, message, 0);
+    // Clear the slot for the next drive
+    memset(G_fatfs+aSlot, 0, sizeof(G_fatfs[aSlot]));
+
+    // Ok, clear it out
+    G_fatfsMassStorageDevices[aSlot] = 0;
+
+    return UEZ_ERROR_NONE;
+}
+
 
 /*-----------------------------------------------------------------------*/
 /* Inidialize a Drive                                                    */
@@ -100,6 +122,11 @@ DSTATUS disk_status (BYTE drv)
         if (error != UEZ_ERROR_NONE)
             return STA_NOINIT;
 
+        if ((status & MASS_STORAGE_STATUS_NO_MEDIUM) || (status & MASS_STORAGE_STATUS_NEED_INIT)) {
+            // No Medium?  Mark as not mounted and try again
+            G_fatfs[drv].fs_type = 0;
+            error = (*p_ms)->GetStatus(p_ms, &status);
+        }
         dstatus = 0;
         if (status & MASS_STORAGE_STATUS_NEED_INIT)
             dstatus |= STA_NOINIT;

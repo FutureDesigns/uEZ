@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -394,12 +394,12 @@ static void IPHYWrite(T_LPC1768_EMAC_Workspace *p, TUInt8 PhyReg, TUInt32 Value)
     TUInt32 timeout;
 
     // Write the PHY's register with the value
-    EMAC->MADR = p->iSettings.iPHYAddr | PhyReg;
-    EMAC->MWTD = Value;
+    LPC_EMAC->MADR = p->iSettings.iPHYAddr | PhyReg;
+    LPC_EMAC->MWTD = Value;
 
     // Wait utill operation completed
     for (timeout=0; timeout < MII_WR_TOUT; timeout++) {
-        if ((EMAC->MIND & MIND_BUSY) == 0) {
+        if ((LPC_EMAC->MIND & MIND_BUSY) == 0) {
             break;
         }
     }
@@ -420,18 +420,18 @@ static TUInt16 IPHYRead(T_LPC1768_EMAC_Workspace *p, TUInt8 PhyReg)
     TUInt32 timeout;
 
     // Read the PHY's register
-    EMAC->MADR = p->iSettings.iPHYAddr | PhyReg;
-    EMAC->MCMD = MCMD_READ;
+    LPC_EMAC->MADR = p->iSettings.iPHYAddr | PhyReg;
+    LPC_EMAC->MCMD = MCMD_READ;
 
     // Wait until operation completed
     for (timeout=0; timeout < MII_RD_TOUT; timeout++) {
-        if ((EMAC->MIND & MIND_BUSY) == 0) {
+        if ((LPC_EMAC->MIND & MIND_BUSY) == 0) {
             break;
         }
     }
-    EMAC->MCMD = 0;
+    LPC_EMAC->MCMD = 0;
 
-    return (EMAC->MRDD);
+    return (LPC_EMAC->MRDD);
 }
 
 /*---------------------------------------------------------------------------*
@@ -482,21 +482,21 @@ static T_uezError IEMACConfigPHY_National(T_LPC1768_EMAC_Workspace *p)
         // Configure Full/Half Duplex mode.
         if (regv & 0x0004) {
             // Full duplex is enabled.
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT    = IPGT_FULL_DUP;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT    = IPGT_FULL_DUP;
         } else {
             // Half duplex mode.
-            EMAC->IPGT = IPGT_HALF_DUP;
+            LPC_EMAC->IPGT = IPGT_HALF_DUP;
         }
 
         // Configure 100MBit/10MBit mode.
         if (regv & 0x0002) {
             // 10MBit mode.
-            EMAC->SUPP = 0;
+            LPC_EMAC->SUPP = 0;
         } else {
             // 100MBit mode.
-            EMAC->SUPP = SUPP_SPEED;
+            LPC_EMAC->SUPP = SUPP_SPEED;
         }
     }
 
@@ -545,42 +545,42 @@ static T_uezError IEMACConfigPHY_Micrel(T_LPC1768_EMAC_Workspace *p)
         case 0x0004:
             // Half duplex mode.
             // 10MBit mode.
-            EMAC->SUPP    &= ~SUPP_SPEED;
-            EMAC->MAC2    &= ~MAC2_FULL_DUP;
-            EMAC->Command &= ~CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_HALF_DUP;
+            LPC_EMAC->SUPP    &= ~SUPP_SPEED;
+            LPC_EMAC->MAC2    &= ~MAC2_FULL_DUP;
+            LPC_EMAC->Command &= ~CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_HALF_DUP;
             break;
         case 0x0008:
             // Half duplex mode.
             // 100MBit mode.
-            EMAC->SUPP    |= SUPP_SPEED;
-            EMAC->MAC2    &= ~MAC2_FULL_DUP;
-            EMAC->Command &= ~CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_HALF_DUP;
+            LPC_EMAC->SUPP    |= SUPP_SPEED;
+            LPC_EMAC->MAC2    &= ~MAC2_FULL_DUP;
+            LPC_EMAC->Command &= ~CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_HALF_DUP;
             break;
         case 0x0014:
             // Full duplex is enabled.
             // 10MBit mode.
-            EMAC->SUPP    &= ~SUPP_SPEED;
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_FULL_DUP;
+            LPC_EMAC->SUPP    &= ~SUPP_SPEED;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_FULL_DUP;
             break;
         case 0x0018:
             // Full duplex is enabled.
             // 100MBit mode.
-            EMAC->SUPP    |= SUPP_SPEED;
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_FULL_DUP;
+            LPC_EMAC->SUPP    |= SUPP_SPEED;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_FULL_DUP;
             break;
         default:	// Should not come here, force to set default, 100 FULL_DUPLEX
             // Full duplex is enabled.
             // 100MBit mode.
-            EMAC->SUPP    |= SUPP_SPEED;
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_FULL_DUP;
+            LPC_EMAC->SUPP    |= SUPP_SPEED;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_FULL_DUP;
             break;
     }
 
@@ -641,42 +641,42 @@ static T_uezError IEMACConfigPHY_MicrelKSZ8001L(T_LPC1768_EMAC_Workspace *p)
         case 0x0004:
             // Half duplex mode.
             // 10MBit mode.
-            EMAC->SUPP    &= ~SUPP_SPEED;
-            EMAC->MAC2    &= ~MAC2_FULL_DUP;
-            EMAC->Command &= ~CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_HALF_DUP;
+            LPC_EMAC->SUPP    &= ~SUPP_SPEED;
+            LPC_EMAC->MAC2    &= ~MAC2_FULL_DUP;
+            LPC_EMAC->Command &= ~CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_HALF_DUP;
             break;
         case 0x0008:
             // Half duplex mode.
             // 100MBit mode.
-            EMAC->SUPP    |= SUPP_SPEED;
-            EMAC->MAC2    &= ~MAC2_FULL_DUP;
-            EMAC->Command &= ~CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_HALF_DUP;
+            LPC_EMAC->SUPP    |= SUPP_SPEED;
+            LPC_EMAC->MAC2    &= ~MAC2_FULL_DUP;
+            LPC_EMAC->Command &= ~CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_HALF_DUP;
             break;
         case 0x0014:
             // Full duplex is enabled.
             // 10MBit mode.
-            EMAC->SUPP    &= ~SUPP_SPEED;
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_FULL_DUP;
+            LPC_EMAC->SUPP    &= ~SUPP_SPEED;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_FULL_DUP;
             break;
         case 0x0018:
             // Full duplex is enabled.
             // 100MBit mode.
-            EMAC->SUPP    |= SUPP_SPEED;
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_FULL_DUP;
+            LPC_EMAC->SUPP    |= SUPP_SPEED;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_FULL_DUP;
             break;
         default:	// Should not come here, force to set default, 100 FULL_DUPLEX
             // Full duplex is enabled.
             // 100MBit mode.
-            EMAC->SUPP    |= SUPP_SPEED;
-            EMAC->MAC2    |= MAC2_FULL_DUP;
-            EMAC->Command |= CR_FULL_DUP;
-            EMAC->IPGT     = IPGT_FULL_DUP;
+            LPC_EMAC->SUPP    |= SUPP_SPEED;
+            LPC_EMAC->MAC2    |= MAC2_FULL_DUP;
+            LPC_EMAC->Command |= CR_FULL_DUP;
+            LPC_EMAC->IPGT     = IPGT_FULL_DUP;
             break;
     }
 
@@ -708,12 +708,12 @@ static void ILPC1768_EMAC_InitRxDescriptors(void)
     }
 
     // Set EMAC Receive Descriptor Registers.
-    EMAC->RxDescriptor    = RX_DESC_BASE;
-    EMAC->RxStatus        = RX_STAT_BASE;
-    EMAC->RxDescriptorNumber = NUM_RX_FRAG-1;
+    LPC_EMAC->RxDescriptor    = RX_DESC_BASE;
+    LPC_EMAC->RxStatus        = RX_STAT_BASE;
+    LPC_EMAC->RxDescriptorNumber = NUM_RX_FRAG-1;
 
     /* Rx Descriptors Point to 0 */
-    EMAC->RxConsumeIndex  = 0;
+    LPC_EMAC->RxConsumeIndex  = 0;
 }
 
 /*---------------------------------------------------------------------------*
@@ -733,12 +733,12 @@ void ILPC1768_EMAC_InitTxDescriptors(void)
     }
 
     /* Set EMAC Transmit Descriptor Registers. */
-    EMAC->TxDescriptor    = TX_DESC_BASE;
-    EMAC->TxStatus        = TX_STAT_BASE;
-    EMAC->TxDescriptorNumber = NUM_TX_FRAG-1;
+    LPC_EMAC->TxDescriptor    = TX_DESC_BASE;
+    LPC_EMAC->TxStatus        = TX_STAT_BASE;
+    LPC_EMAC->TxDescriptorNumber = NUM_TX_FRAG-1;
 
     /* Tx Descriptors Point to 0 */
-    EMAC->TxProduceIndex  = 0;
+    LPC_EMAC->TxProduceIndex  = 0;
 }
 /*---------------------------------------------------------------------------*
  * Routine:  LPC1768_EMAC_InitializeWorkspace
@@ -790,42 +790,42 @@ T_uezError LPC1768_EMAC_Configure(
 
     // Initializes the EMAC ethernet controller
     // Ensure EMAC is powered up
-    SC->PCONP |= (1<<30);
+    LPC_SC->PCONP |= (1<<30);
 
     // Delay a small amount
     UEZBSPDelayMS(100);
 
     // Reset all EMAC internal modules.
     // TBD: Should we use rx and tx flow control since we might be running too slow
-    EMAC->MAC1 = MAC1_RES_TX | MAC1_RES_MCS_TX | MAC1_RES_RX | MAC1_RES_MCS_RX |
+    LPC_EMAC->MAC1 = MAC1_RES_TX | MAC1_RES_MCS_TX | MAC1_RES_RX | MAC1_RES_MCS_RX |
         MAC1_SIM_RES | MAC1_SOFT_RES | MAC1_RX_FLOWC | MAC1_TX_FLOWC;
-    EMAC->Command = CR_REG_RES | CR_TX_RES | CR_RX_RES;
+    LPC_EMAC->Command = CR_REG_RES | CR_TX_RES | CR_RX_RES;
 
     // A short delay after reset.
     UEZBSPDelayMS(1);
 
     // Initialize MAC control registers.
-    EMAC->MAC1 = MAC1_PASS_ALL;
-    EMAC->MAC2 = MAC2_CRC_EN | MAC2_PAD_EN;
-    EMAC->MAXF = ETH_MAX_FLEN;
-    EMAC->CLRT = CLRT_DEF;
-    EMAC->IPGR = IPGR_DEF;
+    LPC_EMAC->MAC1 = MAC1_PASS_ALL;
+    LPC_EMAC->MAC2 = MAC2_CRC_EN | MAC2_PAD_EN;
+    LPC_EMAC->MAXF = ETH_MAX_FLEN;
+    LPC_EMAC->CLRT = CLRT_DEF;
+    LPC_EMAC->IPGR = IPGR_DEF;
 
     // host clock divided by 28, no suppress preamble, no scan increment
     // TBD: Should this be calculated at run time?
-    EMAC->MCFG = 0x801C;	
+    LPC_EMAC->MCFG = 0x801C;	
     UEZBSPDelayMS(10);
 
     // Apply a reset
-    EMAC->MCFG = 0x0018;	
-    EMAC->MCMD = 0;
+    LPC_EMAC->MCFG = 0x0018;	
+    LPC_EMAC->MCMD = 0;
 
     // RMII configuration
-    EMAC->Command |= CR_RMII;
+    LPC_EMAC->Command |= CR_RMII;
 
     // PHY support: [8]=0 ->10 Mbps mode, =1 -> 100 Mbps mode
     // RMII setting, at power-on, default set to 100.
-    EMAC->SUPP = SUPP_SPEED;	
+    LPC_EMAC->SUPP = SUPP_SPEED;	
 
     UEZBSPDelayMS(100);
 
@@ -899,9 +899,9 @@ T_uezError LPC1768_EMAC_Configure(
             break;
     }
 
-    EMAC->SA0 = (p->iSettings.iMACAddress[5] << 8) | p->iSettings.iMACAddress[4];
-    EMAC->SA1 = (p->iSettings.iMACAddress[3] << 8) | p->iSettings.iMACAddress[2];
-    EMAC->SA2 = (p->iSettings.iMACAddress[1] << 8) | p->iSettings.iMACAddress[0];
+    LPC_EMAC->SA0 = (p->iSettings.iMACAddress[5] << 8) | p->iSettings.iMACAddress[4];
+    LPC_EMAC->SA1 = (p->iSettings.iMACAddress[3] << 8) | p->iSettings.iMACAddress[2];
+    LPC_EMAC->SA2 = (p->iSettings.iMACAddress[1] << 8) | p->iSettings.iMACAddress[0];
 
     // Initialize Tx and Rx DMA Descriptors
     ILPC1768_EMAC_InitRxDescriptors();
@@ -910,17 +910,17 @@ T_uezError LPC1768_EMAC_Configure(
     // Receive Broadcast and Perfect Match Packets
     //Ake changed, RFC_UCAST_EN seems to be incorrect.
     //RxFilterCtrl = RFC_UCAST_EN | RFC_BCAST_EN | RFC_PERFECT_EN;
-    EMAC->RxFilterCtrl = RFC_BCAST_EN | RFC_PERFECT_EN;
+    LPC_EMAC->RxFilterCtrl = RFC_BCAST_EN | RFC_PERFECT_EN;
 
     // Create the semaphore used ot wake the uIP task.
 //??    vSemaphoreCreateBinary( xEMACSemaphore );
 
     // Reset all interrupts
-    EMAC->IntClear  = 0xFFFF;
+    LPC_EMAC->IntClear  = 0xFFFF;
 
     /* Enable receive and transmit mode of MAC Ethernet core */
-    EMAC->Command  |= (CR_RX_EN | CR_TX_EN);
-    EMAC->MAC1     |= MAC1_REC_EN;
+    LPC_EMAC->Command  |= (CR_RX_EN | CR_TX_EN);
+    LPC_EMAC->MAC1     |= MAC1_REC_EN;
 
     return error;
 }
@@ -938,7 +938,7 @@ T_uezError LPC1768_EMAC_Configure(
 TBool LPC1768_EMAC_CheckFrameReceived(void *aWorkspace)
 {
     // more packets received ?
-    if (EMAC->RxProduceIndex != EMAC->RxConsumeIndex)
+    if (LPC_EMAC->RxProduceIndex != LPC_EMAC->RxConsumeIndex)
         return ETrue;
     return EFalse;
 }
@@ -960,7 +960,7 @@ TUInt16 LPC1768_EMAC_StartReadFrame(void *aWorkspace)
     TUInt32 idx;
     T_LPC1768_EMAC_Workspace *p = (T_LPC1768_EMAC_Workspace *)aWorkspace;
 
-    idx = EMAC->RxConsumeIndex;
+    idx = LPC_EMAC->RxConsumeIndex;
     RxLen = (RX_STAT_INFO(idx) & RINFO_SIZE) - 3;
     p->rptr = (TUInt16 *)RX_DESC_PACKET(idx);
 
@@ -980,10 +980,10 @@ void LPC1768_EMAC_EndReadFrame(void *aWorkspace)
     TUInt32 idx;
 
     // DMA free packet.
-    idx = EMAC->RxConsumeIndex;
+    idx = LPC_EMAC->RxConsumeIndex;
     if (++idx == NUM_RX_FRAG)
         idx = 0;
-    EMAC->RxConsumeIndex = idx;
+    LPC_EMAC->RxConsumeIndex = idx;
 }
 
 /*---------------------------------------------------------------------------*
@@ -999,7 +999,7 @@ void LPC1768_EMAC_RequestSend(void *aWorkspace)
     T_LPC1768_EMAC_Workspace *p = (T_LPC1768_EMAC_Workspace *)aWorkspace;
     TUInt32 idx;
 
-    idx  = EMAC->TxProduceIndex;
+    idx  = LPC_EMAC->TxProduceIndex;
     p->tptr = (TUInt16 *)TX_DESC_PACKET(idx);
 }
 
@@ -1016,11 +1016,11 @@ void LPC1768_EMAC_DoSend(void *aWorkspace, TUInt16 aFrameSize)
 {
     TUInt32 idx;
 
-    idx = EMAC->TxProduceIndex;
+    idx = LPC_EMAC->TxProduceIndex;
     TX_DESC_CTRL(idx) = (aFrameSize-1) | TCTRL_LAST; /*Corrected problem with the size, -1 was missing*/
     if (++idx == NUM_TX_FRAG)
         idx = 0;
-    EMAC->TxProduceIndex = idx;
+    LPC_EMAC->TxProduceIndex = idx;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1132,14 +1132,14 @@ static void LPC1768_EMAC_ProcessInterrupt(void)
     TUInt32 status;
 
     // Clear the interrupt.
-    status = EMAC->IntStatus;
+    status = LPC_EMAC->IntStatus;
     if (status & EMAC_INT_RXDONE) {
         if (p->iReceiveCallback) {
             p->iReceiveCallback(p->iReceiveCallbackWorkspace);
         }
     }
     // Clear any interrupts that triggered this code
-    EMAC->IntClear = status;
+    LPC_EMAC->IntClear = status;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1186,7 +1186,7 @@ void LPC1768_EMAC_EnableReceiveInterrupt(
             INTERRUPT_PRIORITY_HIGH, "EMAC");
     InterruptEnable(ENET_IRQn);
     // Turn on those types of interrupts
-    EMAC->IntEnable = INT_RX_DONE;
+    LPC_EMAC->IntEnable = INT_RX_DONE;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1198,7 +1198,7 @@ void LPC1768_EMAC_EnableReceiveInterrupt(
 void LPC1768_EMAC_DisableReceiveInterrupt(void *aWorkspace)
 {
     // Turn off those types of interrupts
-    EMAC->IntClear = INT_RX_DONE;
+    LPC_EMAC->IntClear = INT_RX_DONE;
     // Turn off the whole interrutp since it is the only one
     InterruptEnable(ENET_IRQn);
 }

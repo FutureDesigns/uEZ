@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -27,7 +27,7 @@ void uEZProcessorServicesInit(void)
 {
     // Read the default PCONP setting, but from this point
     // on, use LPC1768PowerOn() and LPC1768PowerOff()
-    G_LPC1768_PowerSetting = SC->PCONP;
+    G_LPC1768_PowerSetting = LPC_SC->PCONP;
 }
 
 /*-------------------------------------------------------------------------*

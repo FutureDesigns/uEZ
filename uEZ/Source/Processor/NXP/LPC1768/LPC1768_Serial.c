@@ -14,12 +14,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -45,7 +45,7 @@
 typedef struct {
     TUInt32 iInterruptChannel;
     T_irqPriority iPriority;
-    UART1_TypeDef *iUART;
+    LPC_UART1_TypeDef *iUART;
     TISRFPtr iISR;
 } T_Serial_LPC1768_SerialInfo;
 
@@ -102,7 +102,7 @@ static void ISerialProcessInterrupt(T_Serial_LPC1768_Workspace *p)
     TUInt8 iir;
 
     // Process states until completely done (no more interrupts)
-    while (((iir = p->iInfo->iUART->u3.IIR) & 0x01) == 0) {
+    while (((iir = p->iInfo->iUART->IIR) & 0x01) == 0) {
         // Process that state or return
         switch ((iir>>1) & 7)
         {
@@ -116,7 +116,7 @@ static void ISerialProcessInterrupt(T_Serial_LPC1768_Workspace *p)
                 // something with this received byte
                 p->iReceivedByteFunc(
                     p->iCallbackWorkspace,
-                    p->iInfo->iUART->u1.RBR);
+                    p->iInfo->iUART->RBR);
                 break;
             case 0x0:  //Modem interrupt
             case 0x3:  //Receive line status interrupt (RDA)
@@ -195,7 +195,7 @@ IRQ_ROUTINE(ISerialUART3)
 T_uezError LPC1768_Serial_OutputByte(void *aWorkspace, TUInt8 aByte)
 {
     T_Serial_LPC1768_Workspace *p = (T_Serial_LPC1768_Workspace *)aWorkspace;
-    p->iInfo->iUART->u1.THR = aByte;
+    p->iInfo->iUART->THR = aByte;
     return UEZ_ERROR_NONE;
 }
 
@@ -355,10 +355,10 @@ T_uezError LPC1768_Serial_Configure(
 
 // Configure the PCLK divider here to be CCLK/1 on UART0, 1/
 // TBD: UART3 and 4 should be CCLK/1!
-SC->PCLKSEL0 = (SC->PCLKSEL0 & ~(3<<6)) | (1<<6);
-SC->PCLKSEL0 = (SC->PCLKSEL0 & ~(3<<8)) | (1<<8);
-SC->PCLKSEL1 = (SC->PCLKSEL1 & ~(3<<16)) | (1<<16);
-SC->PCLKSEL1 = (SC->PCLKSEL1 & ~(3<<18)) | (1<<18);
+LPC_SC->PCLKSEL0 = (LPC_SC->PCLKSEL0 & ~(3<<6)) | (1<<6);
+LPC_SC->PCLKSEL0 = (LPC_SC->PCLKSEL0 & ~(3<<8)) | (1<<8);
+LPC_SC->PCLKSEL1 = (LPC_SC->PCLKSEL1 & ~(3<<16)) | (1<<16);
+LPC_SC->PCLKSEL1 = (LPC_SC->PCLKSEL1 & ~(3<<18)) | (1<<18);
 
     p->iReceivedByteFunc = aReceivedByteCallback;
     p->iTransmitEmptyFunc = aTransmitEmptyCallback;
@@ -368,19 +368,19 @@ SC->PCLKSEL1 = (SC->PCLKSEL1 & ~(3<<18)) | (1<<18);
 
     // Set the FIFO enable bit in the FCR register. This bit must be set for
     // proper UART operation.
-    p_info->iUART->u3.FCR = 7; // FCRFE|RFR|TFR
+    p_info->iUART->FCR = 7; // FCRFE|RFR|TFR
 
     // Set baudrate
     p_info->iUART->LCR |= 0x80;
-    p_info->iUART->u1.DLL = divider & 0x00ff;
-    p_info->iUART->u2.DLM = (divider >> 8) & 0x00ff;
+    p_info->iUART->DLL = divider & 0x00ff;
+    p_info->iUART->DLM = (divider >> 8) & 0x00ff;
     p_info->iUART->LCR &= ~0x80;
 
     // Set default mode (8 bits, 1 stop bit, no parity)
     p_info->iUART->LCR = 0x03;
 
     //Enable UART0 interrupts
-    p_info->iUART->u2.IER = 0x03; // Interrupts and TX and RX
+    p_info->iUART->IER = 0x03; // Interrupts and TX and RX
 
     InterruptRegister(
         p_info->iInterruptChannel,
@@ -420,8 +420,8 @@ T_uezError LPC1768_Serial_SetSerialSettings(
     // Change the baud rate
     divider = BAUD_DIVIDER(aSettings->iBaud);
     p_info->iUART->LCR |= 0x80;
-    p_info->iUART->u1.DLL = divider & 0x00ff;
-    p_info->iUART->u2.DLM = (divider >> 8) & 0x00ff;
+    p_info->iUART->DLL = divider & 0x00ff;
+    p_info->iUART->DLM = (divider >> 8) & 0x00ff;
     p_info->iUART->LCR &= ~0x80;
 
     return UEZ_ERROR_NONE;
@@ -604,28 +604,28 @@ const HAL_Serial G_LPC1768_Serial_UART3 = {
 const T_Serial_LPC1768_SerialInfo G_LPC1768_Serial_Info_UART0 = {
     UART0_IRQn,
     INTERRUPT_PRIORITY_HIGH,
-    (UART1_TypeDef *)UART0_BASE,
+    (LPC_UART1_TypeDef *)LPC_UART0_BASE,
     (TISRFPtr)ISerialUART0,
 };
 
 const T_Serial_LPC1768_SerialInfo G_LPC1768_Serial_Info_UART1 = {
     UART1_IRQn,
     INTERRUPT_PRIORITY_HIGH,
-    (UART1_TypeDef *)UART1_BASE,
+    (LPC_UART1_TypeDef *)LPC_UART1_BASE,
     (TISRFPtr)ISerialUART1,
 };
 
 const T_Serial_LPC1768_SerialInfo G_LPC1768_Serial_Info_UART2 = {
     UART2_IRQn,
     INTERRUPT_PRIORITY_HIGH,
-    (UART1_TypeDef *)UART2_BASE,
+    (LPC_UART1_TypeDef *)LPC_UART2_BASE,
     (TISRFPtr)ISerialUART2,
 };
 
 const T_Serial_LPC1768_SerialInfo G_LPC1768_Serial_Info_UART3 = {
     UART3_IRQn,
     INTERRUPT_PRIORITY_HIGH,
-    (UART1_TypeDef *)UART3_BASE,
+    (LPC_UART1_TypeDef *)LPC_UART3_BASE,
     (TISRFPtr)ISerialUART3,
 };
 

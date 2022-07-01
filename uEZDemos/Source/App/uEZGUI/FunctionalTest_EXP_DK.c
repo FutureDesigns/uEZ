@@ -571,7 +571,7 @@ void EXP_DK_FuncTestRS485(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
           }
           
           // Send out a 1 character string to the serial
-          error = (*p->iStream)->Write(p->iStream, "|", 1, &num, 100);
+          error = (*p->iStream)->Write(p->iStream, (TUInt8*)"|", 1, &num, 100);
           if (error) {
                aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -584,7 +584,7 @@ void EXP_DK_FuncTestRS485(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
           }
           
           // Do again, send out a 1 character string to the serial
-          error = (*p->iStream)->Write(p->iStream, "|", 1, &num, 100);
+          error = (*p->iStream)->Write(p->iStream, (TUInt8*)"|", 1, &num, 100);
           if (error) {
                aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -653,7 +653,7 @@ void EXP_DK_FuncTestRS232(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
           }
           
           // Send out a 1 character string to the serial
-          error = (*p->iStream)->Write(p->iStream, "|", 1, &num, 100);
+          error = (*p->iStream)->Write(p->iStream, (TUInt8*)"|", 1, &num, 100);
           if (error) {
                aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -666,7 +666,7 @@ void EXP_DK_FuncTestRS232(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
           }
           
           // Do again, send out a 1 character string to the serial
-          error = (*p->iStream)->Write(p->iStream, "|", 1, &num, 100);
+          error = (*p->iStream)->Write(p->iStream, (TUInt8*)"|", 1, &num, 100);
           if (error) {
                aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -822,9 +822,9 @@ void EXP_DK_FuncTestButtonLED(const T_testAPI *aAPI, T_testData *aData, TUInt16 
 // Finished
 void EXP_DK_FuncTestFET(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-     typedef struct {
-          char iLine[80];
-     } T_FETTest;
+//     typedef struct {
+//          char iLine[80];
+//     } T_FETTest;
      if (aButton == OPT_INIT) {
           aAPI->iTextLine(aData, 0, "Checking  FET... ");
           aAPI->iTextLine(aData, 1, "  Did the connected device and LED turn on, off, then back on?");

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,10 +25,28 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : GUI_SetOrientationC0.c
 Purpose     : Runtime display orientation without cache
 ---------------------------END-OF-HEADER------------------------------
 */
+
+#ifndef GUI_SETORIENTATIONCX_H
+#define GUI_SETORIENTATIONCX_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include "GUI_SetOrientation.h"
 
@@ -81,7 +99,7 @@ static void _Sort(int * p0, int * p1) {
 *
 *       Draw Bitmap 1 BPP
 */
-static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 const GUI_UNI_PTR * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX IndexMask, Index0, Index1, Pixel;
   unsigned (* pfGetPixelIndex)(GUI_DEVICE *, int, int);
   PIXEL * pData;
@@ -142,7 +160,7 @@ static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 co
 *
 *       Draw Bitmap 2 BPP
 */
-static void _DrawBitLine2BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_UNI_PTR * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine2BPP(GUI_DEVICE * pDevice, int x, int y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX Pixels, PixelIndex;
   int CurrentPixel, Shift, Index;
   PIXEL * pData;
@@ -219,7 +237,7 @@ static void _DrawBitLine2BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_UN
 *
 *       Draw Bitmap 4 BPP
 */
-static void _DrawBitLine4BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_UNI_PTR * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine4BPP(GUI_DEVICE * pDevice, int x, int y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX Pixels, PixelIndex;
   int CurrentPixel, Shift, Index;
   PIXEL * pData;
@@ -296,7 +314,7 @@ static void _DrawBitLine4BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_UN
 *
 *       Draw Bitmap 8 BPP
 */
-static void _DrawBitLine8BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_UNI_PTR * p, int xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine8BPP(GUI_DEVICE * pDevice, int x, int y, U8 const * p, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX Pixel;
   PIXEL * pData;
   int x_phys, y_phys;
@@ -346,7 +364,7 @@ static void _DrawBitLine8BPP(GUI_DEVICE * pDevice, int x, int y, U8 const GUI_UN
 *
 *       Draw Bitmap 16 BPP
 */
-static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int x, int y, U16 const GUI_UNI_PTR * p, int xsize) {
+static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int x, int y, U16 const * p, int xsize) {
   PIXEL * pData;
   int x_phys, y_phys, PixelOffset;
   DRIVER_CONTEXT * pContext;
@@ -365,7 +383,7 @@ static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int x, int y, U16 const GUI_
 *
 *       Draw Bitmap 32 BPP
 */
-static void _DrawBitLine32BPP(GUI_DEVICE * pDevice, int x, int y, U32 const GUI_UNI_PTR * p, int xsize) {
+static void _DrawBitLine32BPP(GUI_DEVICE * pDevice, int x, int y, U32 const * p, int xsize) {
   PIXEL * pData;
   int x_phys, y_phys, PixelOffset;
   DRIVER_CONTEXT * pContext;
@@ -394,8 +412,8 @@ static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int x0, int y0,
                        int xSize, int ySize,
                        int BitsPerPixel,
                        int BytesPerLine,
-                       const U8 GUI_UNI_PTR * pData, int Diff,
-                       const LCD_PIXELINDEX* pTrans) {
+                       const U8 * pData, int Diff,
+                       const LCD_PIXELINDEX * pTrans) {
   int x0_phys, y0_phys, x1_phys, y1_phys;
   int i;
   PIXEL * pDataBM;
@@ -598,5 +616,10 @@ const GUI_ORIENTATION_API API_NAME = {
   _XorPixel_CX,
   BYTES_PER_PIXEL
 };
+
+#ifdef __cplusplus
+}
+#endif
+#endif /* GUI_SETORIENTATIONCX_H */
 
 /*************************** End of file ****************************/

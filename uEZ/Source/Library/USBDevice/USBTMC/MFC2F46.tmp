@@ -1,0 +1,116 @@
+/*-------------------------------------------------------------------------*
+ * File:  USBMSDrive.h
+ *-------------------------------------------------------------------------*
+ | Description:
+ |      USB implementation of the device side of a virtual comm port
+ |      following CDC rules.
+ *-------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
+#ifndef _USBTMC_H_
+#define _USBTMC_H_
+
+#define USBTMC_STATUS_SUCCESS                   (0x01)
+#define USBTMC_STATUS_PENDING                   (0x02)
+#define USBTMC_STATUS_FAILED                    (0x80)
+#define USBTMC_STATUS_TRANSFER_NOT_IN_PROGRESS  (0x81)
+#define USBTMC_STATUS_SPLIT_NOT_IN_PROGRESS     (0x82)
+#define USBTMC_STATUS_SPLIT_IN_PROGRESS         (0x83)
+
+// Outbound TMC MsgIDs - host to device
+#define USBTMC_DEV_DEP_MSG_OUT              (1)
+#define USBTMC_REQUEST_DEV_DEP_MSG_IN       (2)
+#define USBTMC_VENDOR_SPECIFIC_OUT          (126)
+#define USBTMC_REQUEST_VENDOR_SPECIFIC_IN   (127)
+
+// Inbound TMC MsgIDs - device to host
+#define USBTMC_DEV_DEP_MSG_IN               (2)
+#define USBTMC_VENDOR_SPECIFIC_IN           (127)
+
+// USB488 specific -
+#define USB488_CLS          "*CLS\n"
+#define USB488_ESE          "*ESE\n"
+#define USB488_ESE_QUERY    "*ESE?\n"
+#define USB488_ESR_QUERY    "*ESR?\n"
+#define USB488_ID_QUERY     "*IDN?\n"
+#define USB488_OPC          "*OPC\n"
+#define USB488_OPC_QUERY    "*OPC?\n"
+#define USB488_RST          "*RST\n"
+#define USB488_SRE          "*SRE\n"
+#define USB488_SRE_QUERY    "*SRE?\n"
+#define USB488_STB_QUERY    "*STB?\n"
+#define USB488_TRG          "*TRG\n"
+#define USB488_TST_QUERY    "*TST?\n"
+#define USB488_WAI          "*WAI\n"
+
+typedef struct 
+{
+    TUInt8 MsgID;
+    TUInt8 bTag;
+    TUInt8 bTagInverse;
+    TUInt8 Reserved_0;
+    TUInt32 TransferSize;
+    struct  __packed bmTransferAttributes 
+    {
+        TUInt32 EOM         : 1;
+        TUInt32 Reserved_1  : 7;
+    };
+    TUInt8 Reserved_2[3];
+    TUInt8 *cmd;
+} __packed UsbTmcDevDepMsgOut_t;
+
+/*
+typedef struct
+{
+    TUInt8 MsgID;
+    TUInt8 bTag;
+    TUInt8 bTagInverse;
+    TUInt8 Reserved_0;
+    TUInt32 TransferSize;
+    struct bmTransferAttributes
+    {
+        TUInt32 zero            : 1;
+        TUInt32 termCharEnabled : 1;
+        TUInt32 Reserved_1      : 7;
+    } __packed;
+    TUInt8 termChar;
+    TUInt8 Reserved_2[2];
+} __packed UsbTmcDevDepMsgIn_t;
+*/
+
+typedef struct _UEZTMCSettingsData {
+    TUInt16 usVendorId;
+    TUInt16 usProductId;
+    TUInt8* sManf;
+    TUInt8* sModel;
+    TUInt8* sSerial;
+    TUInt8* sVersion;
+    TBool   bSupportsSRQ;
+    TBool   bSupportsActivity;
+    TBool   bSupportsEOS;
+    TUInt8  ucEOSChar;
+} T_UsbTmcSettings;
+
+typedef struct {
+    void (*iUSBMSDriveActivity)(void *aWorkspace);
+} T_UsbTmcCallbacks;
+
+T_uezError UsbTmcOpen(const char *aDeviceName, T_UsbTmcSettings *settings);
+TUInt32 UsbTmc_read(TUInt8 *buf, TUInt32 len);
+
+#endif // _USBTMC_H_
+
+/*-------------------------------------------------------------------------*
+ * End of File:  Usbtmc.h
+ *-------------------------------------------------------------------------*/

@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -242,6 +242,26 @@ static T_uezError LPC17xx_40xx_PWM_DisableOutput(
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  LPC17xx_40xx_PWM_SetMatchCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      PWM Match callback
+ * Inputs:
+ *      void *aWorkspace        -- PWM's workspace
+ *      TUInt8 aMatchRegister   -- Point in Fpclk cycles where PWM switches
+ * Outputs:
+ *      T_uezError              -- UEZ_ERROR_NONE
+ *---------------------------------------------------------------------------*/
+static T_uezError LPC17xx_40xx_PWM_SetMatchCallback(
+        void *aWorkspace,
+        TUInt8 aMatchRegister,
+        void (*aCallback)(void *),
+        void *aCallbackWorkspace)
+{
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  LPC17xx_40xx_PWM_PWM0_InitializeWorkspace
  *---------------------------------------------------------------------------*
  * Description:
@@ -294,6 +314,8 @@ const HAL_PWM PWM_LPC17xx_40xx_Port0_Interface = {
     LPC17xx_40xx_PWM_SetMatchRegister,
     LPC17xx_40xx_PWM_EnableSingleEdgeOutput,
     LPC17xx_40xx_PWM_DisableOutput,
+
+    LPC17xx_40xx_PWM_SetMatchCallback,
 };
 
 const HAL_PWM PWM_LPC17xx_40xx_Port1_Interface = {
@@ -308,6 +330,8 @@ const HAL_PWM PWM_LPC17xx_40xx_Port1_Interface = {
     LPC17xx_40xx_PWM_SetMatchRegister,
     LPC17xx_40xx_PWM_EnableSingleEdgeOutput,
     LPC17xx_40xx_PWM_DisableOutput,
+
+    LPC17xx_40xx_PWM_SetMatchCallback,
 };
 
 /*---------------------------------------------------------------------------*

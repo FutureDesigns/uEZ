@@ -276,7 +276,7 @@ void FunctionalTestLoop(const T_choice *aChoice)
                         if (num == 1) {
                             if (memcmp(p->iReceived, "|", 1) == 0) {  // check to see if it's an or bar
                             // Send out "J.Ha" character string to the serial
-                            error = (*p->iStream)->Write(p->iStream, "J.Ha", 4, &num, 400);  // reply
+                            error = (*p->iStream)->Write(p->iStream, (TUInt8*)"J.Ha", 4, &num, 400);  // reply
                                 if (error) {
                                    return;
                                 }

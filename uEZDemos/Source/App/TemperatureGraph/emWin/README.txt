@@ -1,1 +1,0 @@
-Designed for WVGA Display

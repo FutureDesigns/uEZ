@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -22,8 +22,8 @@
  *    @addtogroup Platform_CARRIER_LPC1788
  *  @{
  *  @brief     uEZ Platform file for the CARRIER LPC1788
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *  @see http://goo.gl/UDtTCR/
+ *  @see http://goo.gl/UDtTCR/files/uEZ License.pdf
  *
  *    uEZ Platform file for the CARRIER LPC1788
  *
@@ -953,7 +953,7 @@ void UEZPlatform_LCD_Require(void)
             GPIO_P2_3,  // LCD_FP
             GPIO_NONE,  // LCD_LE
             GPIO_P2_5,  // LCD_LP
-
+            {
             GPIO_NONE,  // LCD_VD0
             GPIO_NONE,  // LCD_VD1
             GPIO_P4_28, // LCD_VD2
@@ -980,11 +980,12 @@ void UEZPlatform_LCD_Require(void)
             GPIO_P1_27, // LCD_VD21
             GPIO_P1_28, // LCD_VD22
             GPIO_P1_29, // LCD_VD23
-
+            },
             GPIO_NONE,  // LCD_CLKIN
 
             GPIO_NONE, // No power pin (use default LCD Controller)
             EFalse,
+            0,
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
@@ -1037,12 +1038,16 @@ void UEZPlatform_LCD_Require(void)
 void UEZPlatform_Timer0_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T0_CAP[0]
             GPIO_NONE,      // T0_CAP[1]
+            },
+            {
             GPIO_NONE,      // T0_MAT[0]
             GPIO_NONE,      // T0_MAT[1]
             GPIO_NONE,      // T0_MAT[2]
             GPIO_NONE,      // T0_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer0_Require(&settings);
@@ -1059,12 +1064,16 @@ void UEZPlatform_Timer0_Require(void)
 void UEZPlatform_Timer1_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T1_CAP[0]
             GPIO_NONE,      // T1_CAP[1]
+            },
+            {
             GPIO_NONE,      // T1_MAT[0]
             GPIO_NONE,      // T1_MAT[1]
             GPIO_NONE,      // T1_MAT[2]
             GPIO_NONE,      // T1_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer1_Require(&settings);
@@ -1081,12 +1090,16 @@ void UEZPlatform_Timer1_Require(void)
 void UEZPlatform_Timer2_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T2_CAP[0]
             GPIO_NONE,      // T2_CAP[1]
+            },
+            {
             GPIO_NONE,      // T2_MAT[0]
             GPIO_NONE,      // T2_MAT[1]
             GPIO_NONE,      // T2_MAT[2]
             GPIO_NONE,      // T2_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer2_Require(&settings);
@@ -1103,12 +1116,16 @@ void UEZPlatform_Timer2_Require(void)
 void UEZPlatform_Timer3_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
+            {
             GPIO_NONE,      // T3_CAP[0]
             GPIO_NONE,      // T3_CAP[1]
+            },
+            {
             GPIO_NONE,      // T3_MAT[0]
             GPIO_NONE,      // T3_MAT[1]
             GPIO_NONE,      // T3_MAT[2]
             GPIO_NONE,      // T3_MAT[3]
+            }
     };
     DEVICE_CREATE_ONCE();
     LPC17xx_40xx_Timer3_Require(&settings);

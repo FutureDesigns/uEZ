@@ -12,12 +12,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -66,7 +66,7 @@
 
 typedef struct {
     const HAL_I2CBus *iHAL;
-    I2C_TypeDef *iRegs;
+    LPC_I2C_TypeDef *iRegs;
     I2C_Request *iRequest;
     TUInt8 iAddress;
     TUInt8 *iData;
@@ -199,7 +199,7 @@ static TUInt8 ILPC1768_I2CSlaveGetTransmitByte(T_LPC1768_I2C_Workspace *aWorkspa
 }
 #endif
 
-void ILPC1768_I2CSetSpeed(I2C_TypeDef *aRegs, TUInt16 aSpeed)
+void ILPC1768_I2CSetSpeed(LPC_I2C_TypeDef *aRegs, TUInt16 aSpeed)
 {
     // Calculate the speed value to use
     TUInt16 v;
@@ -597,7 +597,7 @@ IRQ_ROUTINE(ILPC1768_I2C2InterruptHandler)
 T_uezError LPC1768_I2C_Bus0_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_I2C_Workspace *p = (T_LPC1768_I2C_Workspace *)aWorkspace;
-    p->iRegs = I2C0;
+    p->iRegs = LPC_I2C0;
     p->iDoneFlag = ETrue;
     p->iCompleteFunc = 0;
     G_lpc1768_i2c0Workspace = p;
@@ -626,7 +626,7 @@ T_uezError LPC1768_I2C_Bus0_InitializeWorkspace(void *aWorkspace)
 T_uezError LPC1768_I2C_Bus1_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_I2C_Workspace *p = (T_LPC1768_I2C_Workspace *)aWorkspace;
-    p->iRegs = I2C1;
+    p->iRegs = LPC_I2C1;
     p->iDoneFlag = ETrue;
     p->iCompleteFunc = 0;
     G_lpc1768_i2c1Workspace = p;
@@ -655,7 +655,7 @@ T_uezError LPC1768_I2C_Bus1_InitializeWorkspace(void *aWorkspace)
 T_uezError LPC1768_I2C_Bus2_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_I2C_Workspace *p = (T_LPC1768_I2C_Workspace *)aWorkspace;
-    p->iRegs = I2C2;
+    p->iRegs = LPC_I2C2;
     p->iDoneFlag = ETrue;
     p->iCompleteFunc = 0;
     G_lpc1768_i2c2Workspace = p;

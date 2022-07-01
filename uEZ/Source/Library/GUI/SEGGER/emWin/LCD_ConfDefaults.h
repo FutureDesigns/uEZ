@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -25,6 +25,17 @@ Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
 ----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
+----------------------------------------------------------------------
 File        : LCD_ConfDefaults.h
 Purpose     : Valid LCD configuration and defaults
 ----------------------------------------------------------------------
@@ -32,6 +43,11 @@ Purpose     : Valid LCD configuration and defaults
 
 #ifndef LCD_CONFIG_DEFAULTS_H
 #define LCD_CONFIG_DEFAULTS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include "LCDConf.h"            /* Configuration header file */
 
@@ -62,6 +78,13 @@ Purpose     : Valid LCD configuration and defaults
 #endif
 #ifndef   LCD_ENDIAN_BIG
   #define LCD_ENDIAN_BIG 0
+#endif
+#ifndef   LCD_ALLOW_NON_OPTIMIZED_MODE
+  #define LCD_ALLOW_NON_OPTIMIZED_MODE 1
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* LCD_CONFIG_DEFAULTS_H */

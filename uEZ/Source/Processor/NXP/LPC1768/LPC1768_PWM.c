@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -62,7 +62,7 @@ typedef struct {
 typedef struct {
     const HAL_PWM *iHAL;
 //    PWM_TypeDef *iReg;
-    PWM_TypeDef *iReg;
+    old_T_LPC1768_PWM_Registers *iReg;
     TUInt32 iPeriod;
 } T_LPC1768_PWM_Workspace;
 
@@ -75,32 +75,32 @@ static T_uezError LPC1768_PWM_SetMatchRegister(
         TBool aDoStop);
 
 static void ISetMatchReg(
-            PWM_TypeDef *r,
+            old_T_LPC1768_PWM_Registers *r,
             TUInt8 aMatchReg,
             TUInt32 aValue)
 {
     // Set the toggle point for this pin
     switch (aMatchReg) {
         case 0:
-            r->MR0 = aValue;
+            r->iMR0 = aValue;
             break;
         case 1:
-            r->MR1 = aValue;
+            r->iMR1 = aValue;
             break;
         case 2:
-            r->MR2 = aValue;
+            r->iMR2 = aValue;
             break;
         case 3:
-            r->MR3 = aValue;
+            r->iMR3 = aValue;
             break;
         case 4:
-            r->MR4 = aValue;
+            r->iMR4 = aValue;
             break;
         case 5:
-            r->MR5 = aValue;
+            r->iMR5 = aValue;
             break;
         case 6:
-            r->MR6 = aValue;
+            r->iMR6 = aValue;
             break;
     }
 }
@@ -121,13 +121,13 @@ static T_uezError LPC1768_PWM_SetMaster(
         TUInt8 aMatchRegister)
 {
     T_LPC1768_PWM_Workspace *p = (T_LPC1768_PWM_Workspace *)aWorkspace;
-    PWM_TypeDef *r = p->iReg;
+    old_T_LPC1768_PWM_Registers *r = p->iReg;
 
     // No prescaling
-    r->PR = 0;
+    r->iPR = 0;
 
     // Stop the timer, otherwise we cannot change it
-    r->TCR &= ~(PWM_TCR_PWM_ENABLE|PWM_TCR_COUNTER_ENABLE);
+    r->iTCR &= ~(PWM_TCR_PWM_ENABLE|PWM_TCR_COUNTER_ENABLE);
 
     // Set the master match register
     LPC1768_PWM_SetMatchRegister(
@@ -139,9 +139,9 @@ static T_uezError LPC1768_PWM_SetMaster(
             EFalse);
 
     // Reset the counter
-    r->TC = 0;
+    r->iTC = 0;
     // Let the counter run
-    r->TCR = PWM_TCR_PWM_ENABLE|PWM_TCR_COUNTER_ENABLE;
+    r->iTCR = PWM_TCR_PWM_ENABLE|PWM_TCR_COUNTER_ENABLE;
 
     return UEZ_ERROR_NONE;
 }
@@ -172,7 +172,7 @@ static T_uezError LPC1768_PWM_SetMatchRegister(
         TBool aDoStop)
 {
     T_LPC1768_PWM_Workspace *p = (T_LPC1768_PWM_Workspace *)aWorkspace;
-    PWM_TypeDef *r = p->iReg;
+    old_T_LPC1768_PWM_Registers *r = p->iReg;
     TUInt32 aFlags = 0;
 
     if (aDoInterrupt)
@@ -183,13 +183,13 @@ static T_uezError LPC1768_PWM_SetMatchRegister(
         aFlags |= (1<<2);
 
     // Set the condition
-    r->MCR &= ~(7<<(aMatchRegister*3));
-    r->MCR |= (aFlags<<(aMatchRegister*3));
+    r->iMCR &= ~(7<<(aMatchRegister*3));
+    r->iMCR |= (aFlags<<(aMatchRegister*3));
 
     ISetMatchReg(r, aMatchRegister, aMatchPoint);
 
     // Latch it
-    r->LER = (1<<aMatchRegister);
+    r->iLER = (1<<aMatchRegister);
 
     return UEZ_ERROR_NONE;
 }
@@ -211,13 +211,13 @@ static T_uezError LPC1768_PWM_EnableSingleEdgeOutput(
         TUInt8 aMatchRegister)
 {
     T_LPC1768_PWM_Workspace *p = (T_LPC1768_PWM_Workspace *)aWorkspace;
-    PWM_TypeDef *r = p->iReg;
+    old_T_LPC1768_PWM_Registers *r = p->iReg;
 
     // Set to single output mode
-    r->PCR &= ~(1<<aMatchRegister);
+    r->iPCR &= ~(1<<aMatchRegister);
 
     // Enable output
-    r->PCR |= (1<<(8+aMatchRegister));
+    r->iPCR |= (1<<(8+aMatchRegister));
 
     return UEZ_ERROR_NONE;
 }
@@ -239,10 +239,10 @@ static T_uezError LPC1768_PWM_DisableOutput(
         TUInt8 aMatchRegister)
 {
     T_LPC1768_PWM_Workspace *p = (T_LPC1768_PWM_Workspace *)aWorkspace;
-    PWM_TypeDef *r = p->iReg;
+    old_T_LPC1768_PWM_Registers *r = p->iReg;
 
     // Disable output
-    r->PCR &= ~(1<<(8+aMatchRegister));
+    r->iPCR &= ~(1<<(8+aMatchRegister));
 
     return UEZ_ERROR_NONE;
 }
@@ -260,7 +260,7 @@ static T_uezError LPC1768_PWM_DisableOutput(
 T_uezError LPC1768_PWM_PWM1_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_PWM_Workspace *p = (T_LPC1768_PWM_Workspace *)aWorkspace;
-    p->iReg = (PWM_TypeDef *)PWM1_BASE;
+    p->iReg = (old_T_LPC1768_PWM_Registers *)LPC_PWM1_BASE;
 
     return UEZ_ERROR_NONE;
 }
@@ -292,7 +292,7 @@ void LPC1768_PWM1_Require(void)
     HALInterfaceRegister("PWM1",
             (T_halInterface *)&PWM_LPC1768_Port1_Interface, 0, 0);
     // Set the PWM divider to be 1
-    SC->PCLKSEL0 = (SC->PCLKSEL0 & ~(3<<12))|(1<<12);
+    LPC_SC->PCLKSEL0 = (LPC_SC->PCLKSEL0 & ~(3<<12))|(1<<12);
 }
 
 void LPC1768_PWM1_1_Require(T_uezGPIOPortPin aPortPin)

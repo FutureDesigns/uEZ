@@ -26,7 +26,7 @@
 #define ATLIBGS_RX_CMD_MAX_SIZE         (1536)
 #endif
 #ifndef GAINSPAN_SPI_RX_BUFFER_SIZE
-#define GAINSPAN_SPI_RX_BUFFER_SIZE     (1024)
+#define GAINSPAN_SPI_RX_BUFFER_SIZE     (4096) // Must be 4x TX_BUFFER
 #endif
 #ifndef GAINSPAN_SPI_TX_BUFFER_SIZE
 #define GAINSPAN_SPI_TX_BUFFER_SIZE     (1024)
@@ -102,11 +102,16 @@ void GainSpan_CmdLib_Update(void);
  */
 void IGainSpan_CmdLib_ProcessIncomingData(uint8_t rxData);
 
+extern void GainSpan_CmdLib_AllowFlow(void);
+extern void IGainSpan_CmdLib_EndIncomingData(void);
+
 // Port the application calls in the AtCmdLibrary to our UEZ definitions
+#define App_EnsureFlow()                GainSpan_CmdLib_AllowFlow()
 #define App_Write(txData, dataLength)   IGainSpan_CmdLib_Write(txData, dataLength)
 #define App_Read(rxData, len, block)    IGainSpan_CmdLib_Read(rxData, len, block)
 #define App_Update()                    GainSpan_CmdLib_Update()
 #define App_ProcessIncomingData(c)      IGainSpan_CmdLib_ProcessIncomingData(c)
+#define App_EndIncomingData()           IGainSpan_CmdLib_EndIncomingData()
 #define App_DelayMS(ms)                 UEZTaskDelay(ms)
 
 // Outside hooks:
@@ -143,6 +148,11 @@ bool GainSpan_SPI_Transfer(
         const uint8_t *send_buffer,
         uint8_t *receive_buffer,
         void(*callback)(void));
+bool GainSpan_SPI_TransferPolled(
+        uint8_t channel,
+        uint32_t numBytes,
+        const uint8_t *send_buffer,
+        uint8_t *receive_buffer);
 /**
  *	Check if SPI is busy
  *

@@ -1,5 +1,5 @@
 @if not exist "DK-TS-LPC1788_IAR_APP.bin" goto missing_app
-@"DK-TS-LPC1788_IAR.jlink"
+@"..\JLink_V480h\JLink.exe" -CommanderScript "DK-TS-LPC1788_IAR.jlink"
 @goto end
 
 :missing_app

@@ -10,12 +10,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -185,7 +185,8 @@ T_uezError TS_FT5306DE4_Configure(T_uezDeviceWorkspace *aW)
 {
     T_FT5306DE4Workspace *p = (T_FT5306DE4Workspace *)aW;
 
-    UEZBSPDelayMS(300); // Time between power on and reset must be at least 300ms
+    UEZBSPDelayMS(200); // Time between power on and reset must be at least 1ms (Tvdr), 
+    // due to differences with compiler task switching set this higher than needed.
 
     UEZSemaphoreGrab(p->iSemWaitForTouch, 0);
     UEZGPIOSetMux(p->iResetPin, 0);//Set to GPIO
@@ -196,10 +197,10 @@ T_uezError TS_FT5306DE4_Configure(T_uezDeviceWorkspace *aW)
     UEZBSPDelayMS(300); // Time between reset and init must be at least 300ms
 
     UEZGPIOConfigureInterruptCallback(
-        UEZ_GPIO_PORT_FROM_PORT_PIN(p->iInteruptPin),
+        p->iInteruptPin,
         TS_FT5306DE4_InterruptISR,
         p);
-    UEZGPIOEnableIRQ(p->iInteruptPin, GPIO_INTERRUPT_RISING_EDGE);
+    UEZGPIOEnableIRQ(p->iInteruptPin, GPIO_INTERRUPT_FALLING_EDGE);
 
     return UEZ_ERROR_NONE;
 }
@@ -274,7 +275,7 @@ T_uezError TS_FT5306DE4_Poll(void *aWorkspace, T_uezTSReading *aReading)
     TUInt32 x;
     TUInt32 y;
     
-    error = UEZI2COpen("I2C1", &i2c);
+    error = UEZI2COpen(p->iI2CBus, &i2c);
 
     // Try to grab the semaphore -- do we have new data?
     if (UEZSemaphoreGrab(p->iSemWaitForTouch, 0) == UEZ_ERROR_NONE) {
@@ -343,7 +344,7 @@ T_uezError TS_FT5306DE4_Poll(void *aWorkspace, T_uezTSReading *aReading)
                     (TUInt32 *) &aReading->iY);
         }
 
-        UEZGPIOClearIRQ(GPIO_P2_19);
+        UEZGPIOClearIRQ(p->iInteruptPin);
         UEZI2CClose(i2c);
         return error;
     }

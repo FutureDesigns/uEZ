@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -23,6 +23,7 @@
 #include <HAL/GPIO.h>
 #include <uEZSPI.h>
 #include "Sharp_LQ043T1DG01.h"
+#include "uEZPlatform.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -101,7 +102,7 @@ static const T_LCDControllerSettings LCD_LQ043T1DG01_params16bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
     LCD_CLOCK_RATE,
 };
 
@@ -146,7 +147,7 @@ static const T_LCDControllerSettings LCD_LQ043T1DG01_paramsI15bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
     LCD_CLOCK_RATE,
 //    2000000,
 };
@@ -180,7 +181,7 @@ static const T_LCDControllerSettings LCD_LQ043T1DG01_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
     LCD_CLOCK_RATE,
 };
 
@@ -237,7 +238,7 @@ extern const DEVICE_LCD LCD_SHARP_LQ043T1DG01_Interface;
 T_uezError LCD_LQ043T1DG01_InitializeWorkspace_16Bit(void *aW)
 {
     T_LQ043T1DG01Workspace *p = (T_LQ043T1DG01Workspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_LQ043T1DG01_configuration_16Bit;
@@ -258,7 +259,7 @@ T_uezError LCD_LQ043T1DG01_InitializeWorkspace_16Bit(void *aW)
 T_uezError LCD_LQ043T1DG01_InitializeWorkspace_I15Bit(void *aW)
 {
     T_LQ043T1DG01Workspace *p = (T_LQ043T1DG01Workspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_LQ043T1DG01_configuration_I15Bit;
@@ -279,7 +280,7 @@ T_uezError LCD_LQ043T1DG01_InitializeWorkspace_I15Bit(void *aW)
 T_uezError LCD_LQ043T1DG01_InitializeWorkspace_8Bit(void *aW)
 {
     T_LQ043T1DG01Workspace *p = (T_LQ043T1DG01Workspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_LQ043T1DG01_configuration_8Bit;

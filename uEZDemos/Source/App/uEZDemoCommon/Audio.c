@@ -32,7 +32,6 @@
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-static volatile TUInt32 G_dummyCounter = 0;
 static T_uezDevice G_ToneGenerator;
 TBool G_audioIsStarted = EFalse;
 

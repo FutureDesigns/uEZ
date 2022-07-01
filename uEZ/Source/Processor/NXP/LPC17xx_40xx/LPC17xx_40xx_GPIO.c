@@ -12,12 +12,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -801,6 +801,7 @@ static IRQ_ROUTINE(LPC17xx_40xx_GPIO_IRQ)
  *---------------------------------------------------------------------------*/
 T_uezError LPC17xx_40xx_GPIO_ConfigureInterruptCallback(
         void *aWorkspace,
+        TUInt32 aPortPins,
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
@@ -819,6 +820,7 @@ T_uezError LPC17xx_40xx_GPIO_ConfigureInterruptCallback(
 
 T_uezError LPC17xx_40xx_GPIO_ConfigureInterruptCallback_NotSupported(
         void *aWorkspace,
+        TUInt32 aPortPins,
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
@@ -883,9 +885,9 @@ T_uezError LPC17xx_40xx_GPIO_EnableInterrupts(
     const LPC17xx_40xx_GPIO_PortInfo *p_info = p->iPortInfo;
 
     if (aType == GPIO_INTERRUPT_FALLING_EDGE)
-        (*p_info->iIOIntEnF) |= aPortPins;
+        (*p_info->iIOIntEnF) |= (1 << (aPortPins & 0xFF));//port pin to index
     else if (aType == GPIO_INTERRUPT_RISING_EDGE)
-        (*p_info->iIOIntEnR) |= aPortPins;
+        (*p_info->iIOIntEnR) |= (1 << (aPortPins & 0xFF));
 
     return UEZ_ERROR_NONE;
 }
@@ -909,9 +911,9 @@ T_uezError LPC17xx_40xx_GPIO_DisableInterrupts(
     const LPC17xx_40xx_GPIO_PortInfo *p_info = p->iPortInfo;
 
     if (aType == GPIO_INTERRUPT_FALLING_EDGE)
-        (*p_info->iIOIntEnF) &= ~aPortPins;
+        (*p_info->iIOIntEnF) &= ~(1 << (aPortPins & 0xFF));
     else if (aType == GPIO_INTERRUPT_RISING_EDGE)
-        (*p_info->iIOIntEnR) &= ~aPortPins;
+        (*p_info->iIOIntEnR) &= ~(1 << (aPortPins & 0xFF));
 
     return UEZ_ERROR_NONE;
 }
@@ -930,7 +932,7 @@ T_uezError LPC17xx_40xx_GPIO_ClearInterrupts(void *aWorkspace, TUInt32 aPortPins
     T_LPC17xx_40xx_GPIO_Workspace *p = (T_LPC17xx_40xx_GPIO_Workspace *)aWorkspace;
     const LPC17xx_40xx_GPIO_PortInfo *p_info = p->iPortInfo;
 
-    (*p_info->iIOIntClr) = aPortPins;
+    (*p_info->iIOIntClr) = (1 << (aPortPins & 0xFF));
 
     return UEZ_ERROR_NONE;
 }

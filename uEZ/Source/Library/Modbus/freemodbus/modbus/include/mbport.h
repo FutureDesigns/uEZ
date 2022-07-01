@@ -64,7 +64,7 @@ typedef enum
 /* ----------------------- Supporting functions -----------------------------*/
 BOOL            xMBPortEventInit( void );
 
-#define NEW_PORT_EVENT 1
+#define NEW_PORT_EVENT 0
 
 #if NEW_PORT_EVENT == 0
 BOOL            xMBPortEventPost( eMBEventType eEvent );
@@ -88,7 +88,7 @@ void            vMBPortSerialEnable( BOOL xRxEnable, BOOL xTxEnable );
 
 BOOL            xMBPortSerialGetByte( CHAR * pucByte );
 
-BOOL            xMBPortSerialPutByte( CHAR ucByte );
+BOOL            xMBPortSerialPutByte( CHAR *ucByte, TUInt32 aSize );
 
 /* ----------------------- Timers functions ---------------------------------*/
 BOOL            xMBPortTimersInit( USHORT usTimeOut50us );

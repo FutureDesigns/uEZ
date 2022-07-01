@@ -5,7 +5,7 @@
     <path>$WS_DIR$\IRD-1768.ewp</path>
   </project>
   <project>
-    <path>$WS_DIR$\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1768\FreeRTOS\IAR6.x\uEZ_NXP_LPC1768_FreeRTOS_IAR6.ewp</path>
+    <path>$WS_DIR$\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1768\FreeRTOS\IAR\uEZ_NXP_LPC1768_FreeRTOS_IAR6.ewp</path>
   </project>
   <batchBuild/>
 </workspace>

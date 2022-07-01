@@ -30,7 +30,7 @@
 #include "AppDemo.h"
 #include <uEZLCD.h>
 #include <uEZKeypad.h>
-
+#include <UEZPlatform.h>
 #include <Types/InputEvent.h>
 
 /*-------------------------------------------------------------------------*
@@ -567,12 +567,12 @@ void DrawMode(const T_choice *aChoice)
     T_pixelColor *pixels;
     T_uezInputEvent inputEvent;
     TBool isDrawing = EFalse;
-    INT_32 lastWinX, lastWinY;
+    INT_32 lastWinX = 0, lastWinY = 0;
     G_drExit = EFalse;
 #if ENABLE_UEZ_BUTTON
     T_uezDevice keypadDevice;
 #endif
-#ifdef NO_DYNAMIC_MEMORY_ALLOC	
+#ifdef NO_DYNAMIC_MEMORY_ALLOC
 	if (NULL == queue)
 	{
 	  	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) != UEZ_ERROR_NONE)
@@ -580,10 +580,10 @@ void DrawMode(const T_choice *aChoice)
 		  	queue = NULL;
 		}
 	}
-	
+
     if (NULL != queue) {
 		/* Register the queue so that the IAR Stateviewer Plugin knows about it. */
-	  	UEZQueueAddToRegistry( queue, "Draw TS" );	
+	  	UEZQueueAddToRegistry( queue, "Draw TS" );
 #else
 	if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
 #if UEZ_REGISTER
@@ -617,9 +617,9 @@ void DrawMode(const T_choice *aChoice)
                                 (winY > DR_IMAGE_TOP) && (winY < DR_IMAGE_BOTTOM)) {
                             // Pen down or up?
                             if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD)  {
-                                
+
                                 UEZLCDScreensaverWake();
-                                
+
                                 if (G_drColor == BLACK) {
                                     // Draw a 3x3 block in the area
                                     swim_set_pen_color(&G_drWin, G_drColor);
@@ -658,7 +658,7 @@ void DrawMode(const T_choice *aChoice)
 #if ENABLE_UEZ_BUTTON
         UEZKeypadClose(keypadDevice, &queue);
 #endif
-#ifndef NO_DYNAMIC_MEMORY_ALLOC	
+#ifndef NO_DYNAMIC_MEMORY_ALLOC
         UEZQueueDelete(queue);
 #endif
     }

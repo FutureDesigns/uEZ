@@ -42,8 +42,8 @@
 /**
  *  @file   BasicWEB.c
  *  @brief  uEZ BasicWEB
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *  @see http://goo.gl/UDtTCR/
+ *  @see http://goo.gl/UDtTCR/files/uEZ License.pdf
  *
  *  uEZ BasicWEB, includes task and start functions
  */
@@ -97,7 +97,7 @@
     "<html>\
     <head>\
     </head>\
-    <BODY onLoad=\"window.setTimeout(&quot;location.href='index.html'&quot;,1000)\"bgcolor=\"#CCCCff\">\
+    <BODY onLoad=\"window.setTimeout(&quot;location.href='index.html'&quot;,3000)\"bgcolor=\"#CCCCff\">\
     \r\nPage Hits = "
 
 #define webHTML_END \

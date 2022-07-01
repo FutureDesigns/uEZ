@@ -10,12 +10,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -23,6 +23,7 @@
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
 #include "Seiko_70WVW2T.h"
+#include "uEZPlatform.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -82,7 +83,7 @@ static T_LCDControllerSettings LCD_70WVW2T_params16bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     SEIKO_70WVW2T_DOTCLOCK_HZ,    // 33.26 MHz Typical value from datasheet (Min 29.40, Max 42.48)
 };
@@ -116,7 +117,7 @@ static T_LCDControllerSettings LCD_70WVW2T_paramsI15bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
         
     SEIKO_70WVW2T_DOTCLOCK_HZ,  // Min 29.40 MHz, Typical 33.26, Max 42.48
 };
@@ -150,7 +151,7 @@ static const T_LCDControllerSettings LCD_70WVW2T_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     SEIKO_70WVW2T_DOTCLOCK_HZ,    // 33.26 MHz Typical value from datasheet (Min 29.40, Max 42.48)
 };
@@ -209,7 +210,7 @@ extern const DEVICE_LCD LCD_SEIKO_70WVW2T_Interface;
 T_uezError LCD_70WVW2T_InitializeWorkspace_16Bit(void *aW)
 {
     T_70WVW2TWorkspace *p = (T_70WVW2TWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_70WVW2T_configuration_16Bit;
@@ -235,7 +236,7 @@ T_uezError LCD_70WVW2T_InitializeWorkspace_16Bit(void *aW)
 T_uezError LCD_70WVW2T_InitializeWorkspace_I15Bit(void *aW)
 {
     T_70WVW2TWorkspace *p = (T_70WVW2TWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_70WVW2T_configuration_I15Bit;
@@ -261,7 +262,7 @@ T_uezError LCD_70WVW2T_InitializeWorkspace_I15Bit(void *aW)
 T_uezError LCD_70WVW2T_InitializeWorkspace_8Bit(void *aW)
 {
     T_70WVW2TWorkspace *p = (T_70WVW2TWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_70WVW2T_configuration_8Bit;

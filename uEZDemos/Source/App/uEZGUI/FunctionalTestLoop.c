@@ -282,7 +282,7 @@ void FunctionalTest_EXP_DK_Loopback(const T_choice *aChoice)
                     if (num == 1) {
                         if (memcmp(p->iReceived, "|", 1) == 0) {  // check to see if it's an or bar
                             // Send out "J.Ha" character string to the serial
-                            error = (*p->iStream)->Write(p->iStream, "J.Ha", 4, &num, 400);  // reply
+                            error = (*p->iStream)->Write(p->iStream, (TUInt8*)"J.Ha", 4, &num, 400);  // reply
                             if (error) {
                                 return;
                             }
@@ -293,9 +293,9 @@ void FunctionalTest_EXP_DK_Loopback(const T_choice *aChoice)
                     (*p->iStream2)->Read(p->iStream2, (TUInt8 *)(p->iReceived2 + p->iCount2), 1, &num2, 100);
                     //p->iCount2 += num2;
                     if (num2 == 1) {
-                        if (memcmp(p->iReceived2, "|", 1) == 0) {  // check to see if it's an or bar
+                        if (memcmp(p->iReceived2, (TUInt8*)"|", 1) == 0) {  // check to see if it's an or bar
                             // Send out "J.Ha" character string to the serial
-                            error = (*p->iStream2)->Write(p->iStream2, "J.Ha", 4, &num2, 400);  // reply
+                            error = (*p->iStream2)->Write(p->iStream2, (TUInt8*)"J.Ha", 4, &num2, 400);  // reply
                             if (error) {
                                 return;
                             }

@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -554,7 +554,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
             if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_SEMAPHORE){
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
-                vQueueAddToRegistry(Semaphore, '\0');
+                vQueueAddToRegistry(Semaphore, (const char*)'\0');
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 vTraceSetSemaphoreName(Semaphore, '\0');
 #endif
@@ -822,7 +822,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
             if((ulHandleType & UEZ_HANDLE_TYPE_MASK) != UEZ_HANDLE_QUEUE){
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
-                vQueueAddToRegistry(Queue, '\0');
+                vQueueAddToRegistry(Queue, (const char*)'\0');
 #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 vTraceSetQueueName(Queue, '\0');
 #endif

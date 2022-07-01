@@ -239,6 +239,36 @@ memory_set:
   b memory_set
 1:
   bx lr
+  
+    // default C/C++ library helpers
+
+.macro HELPER helper_name
+  .section .text.\helper_name, "ax", %progbits
+  .global \helper_name
+  .weak \helper_name  
+\helper_name:
+  .thumb_func
+.endm
+
+HELPER __aeabi_read_tp
+  ldr r0, =__tbss_start__-8
+  bx lr
+HELPER __heap_lock
+  bx lr
+HELPER __heap_unlock
+  bx lr
+HELPER __printf_lock
+  bx lr
+HELPER __printf_unlock
+  bx lr
+HELPER __scanf_lock
+  bx lr
+HELPER __scanf_unlock
+  bx lr
+HELPER __debug_io_lock
+  bx lr
+HELPER __debug_io_unlock
+  bx lr
 
 #ifdef FULL_LIBRARY
   .bss

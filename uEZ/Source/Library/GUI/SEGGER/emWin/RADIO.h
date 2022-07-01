@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : RADIO.h
 Purpose     : RADIO include
@@ -118,13 +129,13 @@ void RADIO_Callback(WM_MESSAGE * pMsg);
 **********************************************************************
 */
 
-void      RADIO_SetDefaultFont      (const GUI_FONT GUI_UNI_PTR* pFont);
+void      RADIO_SetDefaultFont      (const GUI_FONT * pFont);
 GUI_COLOR RADIO_SetDefaultFocusColor(GUI_COLOR Color);
 void      RADIO_SetDefaultImage     (const GUI_BITMAP * pBitmap, unsigned int Index);
 void      RADIO_SetDefaultTextColor (GUI_COLOR TextColor);
 
-const GUI_FONT GUI_UNI_PTR* RADIO_GetDefaultFont      (void);
-GUI_COLOR                   RADIO_GetDefaultTextColor (void);
+const GUI_FONT * RADIO_GetDefaultFont      (void);
+GUI_COLOR        RADIO_GetDefaultTextColor (void);
 
 /*********************************************************************
 *
@@ -140,7 +151,7 @@ int       RADIO_GetUserData  (RADIO_Handle hObj, void * pDest, int NumBytes);
 void      RADIO_Inc          (RADIO_Handle hObj);
 void      RADIO_SetBkColor   (RADIO_Handle hObj, GUI_COLOR Color);
 GUI_COLOR RADIO_SetFocusColor(RADIO_Handle hObj, GUI_COLOR Color);
-void      RADIO_SetFont      (RADIO_Handle hObj, const GUI_FONT GUI_UNI_PTR* pFont);
+void      RADIO_SetFont      (RADIO_Handle hObj, const GUI_FONT * pFont);
 void      RADIO_SetGroupId   (RADIO_Handle hObj, U8 GroupId);
 void      RADIO_SetImage     (RADIO_Handle hObj, const GUI_BITMAP * pBitmap, unsigned int Index);
 void      RADIO_SetText      (RADIO_Handle hObj, const char* pText, unsigned Index);

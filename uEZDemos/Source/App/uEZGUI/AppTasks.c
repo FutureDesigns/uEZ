@@ -47,6 +47,7 @@
  *---------------------------------------------------------------------------*/
 TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
+#if (UEZ_PROCESSOR != NXP_LPC4357)
     HAL_GPIOPort **p_gpio;
     TUInt8 heartbeatLED = HEARTBEATLED;
 
@@ -61,6 +62,19 @@ TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
         (*p_gpio)->Clear(p_gpio, 1 << heartbeatLED);
         UEZTaskDelay(250);
     }
+#else
+    TUInt32 blinkrate = 250;
+
+    UEZGPIOOutput(GPIO_P0_11);
+
+    // Blink
+    for (;;) {
+        UEZGPIOSet(GPIO_P0_11);
+        UEZTaskDelay(blinkrate);
+        UEZGPIOClear(GPIO_P0_11);
+        UEZTaskDelay(blinkrate);
+    }
+#endif
 }
 
 /*---------------------------------------------------------------------------*

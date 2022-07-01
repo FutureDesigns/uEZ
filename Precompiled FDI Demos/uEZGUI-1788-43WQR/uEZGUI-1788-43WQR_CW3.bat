@@ -1,5 +1,5 @@
 @if not exist "uEZGUI-1788-43WQR_CW3.bin" goto missing
-@uEZGUI-1788-43WQR_CW3.jlink
+@"..\JLink_V512j\JLink.exe" -jtagconf -1,-1 -autoconnect 1 -CommanderScript "uEZGUI-1788-43WQR_CW3.jlink"
 @goto end
 
 :missing

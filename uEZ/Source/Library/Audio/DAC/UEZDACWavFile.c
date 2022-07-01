@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -48,7 +48,7 @@
 #ifdef UEZ_DAC_WAV_FILE_SAMPLE_RATE
     #define SAMPLE_RATE                     UEZ_DAC_WAV_FILE_SAMPLE_RATE
 #else
-    #define SAMPLE_RATE                     22050   //11025Hz is the fastest supported sample rate
+    #define SAMPLE_RATE                     11025
 #endif
 
 #ifndef DAC_AUDIO_TASK_STACK_SIZE
@@ -221,6 +221,10 @@ static TUInt32 IPopulateHeader(T_uezFile aFile, wavFileHeader *aHeader)
         s++;
     }
     startOfData += 7;
+    while(startOfData%4 != 0){
+        //make sure offset is aligned to 32-bit boundaries.
+        startOfData++;
+    }
     return startOfData;
 }
 /*---------------------------------------------------------------------------*
@@ -250,7 +254,6 @@ T_uezError UEZDACWAVPlay(char* aFileName, wavFileHeader *aHeader)
 
         if(UEZFileOpen(aFileName, FILE_FLAG_READ_ONLY, &G_DACFileWorkspace.iFile) == UEZ_ERROR_NONE){
             G_DACFileWorkspace.iFileOpen = ETrue;
-            //UEZFileRead(G_DACFileWorkspace.iFile, &G_DACFileWorkspace.iHeader, 44, &G_DACFileWorkspace.iNumBytesReadHeader);
             pos = IPopulateHeader(G_DACFileWorkspace.iFile, &G_DACFileWorkspace.iHeader);
             memcpy((void*)aHeader, (void*)&G_DACFileWorkspace.iHeader, sizeof(G_DACFileWorkspace.iHeader));
             if(G_DACFileWorkspace.iHeader.iNumChannels != MONO || pos == 0){//|| G_DACFileWorkspace.iHeader.sampleRate != SAMPLE_RATE){
@@ -261,7 +264,7 @@ T_uezError UEZDACWAVPlay(char* aFileName, wavFileHeader *aHeader)
             }
             error = (*G_DACFileWorkspace.iTimer)->SetMatchRegister(G_DACFileWorkspace.iTimer,
                                                                     0,
-                                                                    (PROCESSOR_OSCILLATOR_FREQUENCY/1)/G_DACFileWorkspace.iHeader.iSampleRate,
+                                                                    ((PROCESSOR_OSCILLATOR_FREQUENCY/1)/G_DACFileWorkspace.iHeader.iSampleRate),
                                                                     ETrue,
                                                                     ETrue,
                                                                     EFalse);
@@ -285,6 +288,8 @@ T_uezError UEZDACWAVPlay(char* aFileName, wavFileHeader *aHeader)
             G_DACFileWorkspace.iPlayFromMem = EFalse;
             G_DACFileWorkspace.iPause = EFalse;
 
+            (*G_DACFileWorkspace.iTimer)->Reset(G_DACFileWorkspace.iTimer);
+            (*G_DACFileWorkspace.iTimer)->Enable(G_DACFileWorkspace.iTimer);
             UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
             error = UEZSemaphoreRelease(G_DACFileWorkspace.iDACAudioTaskSem);
         } else {
@@ -416,6 +421,8 @@ T_uezError UEZDACWAVStop()
         G_DACFileWorkspace.iPlayFromFile = EFalse;
         UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
         UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+
+        (*G_DACFileWorkspace.iTimer)->Disable(G_DACFileWorkspace.iTimer);
 
         UEZSemaphoreRelease(G_DACFileWorkspace.iSem);
     } else {
@@ -584,7 +591,7 @@ static T_HALTimer_Callback playDACAudio(void * workspace)
                     v = (v * G_DACFileWorkspace.iVolume) / 256;
 #else
                     v = (*((TUInt16 *)(G_DACFileWorkspace.iBuffer1 + G_DACFileWorkspace.iCount)) + 0x8000) & 0xFFFF;
-                    v = (v * G_DACFileWorkspace.iVolume) / 256;
+                    //v = (v * G_DACFileWorkspace.iVolume) / 256;
                     v >>= 6;
                     G_DACFileWorkspace.iCount+=2;
 #endif
@@ -610,7 +617,7 @@ static T_HALTimer_Callback playDACAudio(void * workspace)
                     G_DACFileWorkspace.iSamplePos++;
 #else
                     v = (*((TUInt16 *)(G_DACFileWorkspace.iBuffer2 + G_DACFileWorkspace.iCount)) + 0x8000) & 0xFFFF;
-                    v = (v * G_DACFileWorkspace.iVolume) / 256;
+                    //v = (v * G_DACFileWorkspace.iVolume) / 256;
                     v >>= 6;
                     G_DACFileWorkspace.iCount+=2;
 #endif

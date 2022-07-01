@@ -1,4 +1,3 @@
-usb 518110194
 exec device = LPC1788
 speed 4000
 rx 200

@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -235,7 +235,6 @@ T_uezError ExternalInterrupt_Generic_Create(
 {
     T_uezDeviceWorkspace *p;
 
-    // Initialize the DAC0 device
     UEZDeviceTableRegister(aName,
             (T_uezDeviceInterface *)&ExternalInterrupt_Generic_Interface, 0, &p);
     return ExternalInterrupt_Generic_Configure(p, aHALName);

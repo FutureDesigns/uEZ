@@ -9,18 +9,19 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <HAL/LCDController.h>
 #include "Toshiba_LTA057A347F.h"
+#include "uEZPlatform.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -77,7 +78,7 @@ static T_LCDControllerSettings LCD_LTA057A347F_params16bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 6.3 MHz is optimal
 };
@@ -111,7 +112,7 @@ static T_LCDControllerSettings LCD_LTA057A347F_paramsI15bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 6.3 MHz is optimal
 };
@@ -146,7 +147,7 @@ static T_LCDControllerSettings LCD_LTA057A347F_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 6.3 MHz is optimal
 };
@@ -180,7 +181,7 @@ static const T_LCDControllerSettings LCD_LTA057A347F_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     DOTCLK_HZ,    // 8.0 MHz is optimal (12 ns min per dot = 8.333 MHz)
 };
@@ -240,7 +241,7 @@ extern const DEVICE_LCD LCD_Toshiba_LTA057A347F_Interface;
 T_uezError LCD_LTA057A347F_InitializeWorkspace_16Bit(void *aW)
 {
     T_LTA057A347FWorkspace *p = (T_LTA057A347FWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_LTA057A347F_configuration_16Bit;
@@ -261,7 +262,7 @@ T_uezError LCD_LTA057A347F_InitializeWorkspace_16Bit(void *aW)
 T_uezError LCD_LTA057A347F_InitializeWorkspace_I15Bit(void *aW)
 {
     T_LTA057A347FWorkspace *p = (T_LTA057A347FWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_LTA057A347F_configuration_I15Bit;
@@ -282,7 +283,7 @@ T_uezError LCD_LTA057A347F_InitializeWorkspace_I15Bit(void *aW)
 T_uezError LCD_LTA057A347F_InitializeWorkspace_8Bit(void *aW)
 {
     T_LTA057A347FWorkspace *p = (T_LTA057A347FWorkspace *)aW;
-    p->iBaseAddress = 0xA0000000;
+    p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 256; // 100%
     p->iConfiguration = &LCD_LTA057A347F_configuration_8Bit;

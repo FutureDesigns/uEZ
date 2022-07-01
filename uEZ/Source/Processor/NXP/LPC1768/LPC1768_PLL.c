@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -127,93 +127,93 @@ void LPC1768_PLL_SetFrequencies(const T_LPC1768_PLL_Frequencies *aFreq)
     G_EMCFrequency = 0;
 
     // Configure PLL0 Multiplier/Divider
-    if (SC->PLL0STAT & PLL0STAT_PLLC0_STAT) {
+    if (LPC_SC->PLL0STAT & PLL0STAT_PLLC0_STAT) {
         // Disconnect PLL0
-        SC->PLL0CON = PLL0CON_PLLE0;
-        SC->PLL0FEED = 0xAA;
-        SC->PLL0FEED = 0x55;
+        LPC_SC->PLL0CON = PLL0CON_PLLE0;
+        LPC_SC->PLL0FEED = 0xAA;
+        LPC_SC->PLL0FEED = 0x55;
     }
 
     // Disable PLL0
-    SC->PLL0CON = 0;
-    SC->PLL0FEED = 0xAA;
-    SC->PLL0FEED = 0x55;
+    LPC_SC->PLL0CON = 0;
+    LPC_SC->PLL0FEED = 0xAA;
+    LPC_SC->PLL0FEED = 0x55;
 
     // Enable main oscillator
-    SC->SCS |= SCS_OSCEN;
-    while ((SC->SCS & SCS_OSCSTAT) == 0)
+    LPC_SC->SCS |= SCS_OSCEN;
+    while ((LPC_SC->SCS & SCS_OSCSTAT) == 0)
         {}
 
     // Select main oscillator as the PLL0 clock source
-    SC->CLKSRCSEL = 1;
+    LPC_SC->CLKSRCSEL = 1;
 
     // Set PLL0 Config
-    SC->PLL0CFG = PLL0CFG_VAL;
-    SC->PLL0FEED = 0xAA;
-    SC->PLL0FEED = 0x55;
+    LPC_SC->PLL0CFG = PLL0CFG_VAL;
+    LPC_SC->PLL0FEED = 0xAA;
+    LPC_SC->PLL0FEED = 0x55;
 
     // Enable PLL0
-    SC->PLL0CON = PLL0CON_PLLE0;
-    SC->PLL0FEED = 0xAA;
-    SC->PLL0FEED = 0x55;
+    LPC_SC->PLL0CON = PLL0CON_PLLE0;
+    LPC_SC->PLL0FEED = 0xAA;
+    LPC_SC->PLL0FEED = 0x55;
 
 #ifdef CCLKCFG_VAL
     // Set the CPU clock divider
-    SC->CCLKCFG = CCLKCFG_VAL;
+    LPC_SC->CCLKCFG = CCLKCFG_VAL;
 #endif
 
 #ifdef FLASHCFG_VAL
-    SC->FLASHCFG = FLASHCFG_VAL;
+    LPC_SC->FLASHCFG = FLASHCFG_VAL;
 #endif
 
     // Wait for PLL0 to lock
-    while ((SC->PLL0STAT & PLL0STAT_PLOCK0)==0)
+    while ((LPC_SC->PLL0STAT & PLL0STAT_PLOCK0)==0)
         {}
 
     // PLL0 Locked, connect PLL as clock source
-    SC->PLL0CON = (PLL0CON_PLLE0 | PLL0CON_PLLC0);
-    SC->PLL0FEED = 0xAA;
-    SC->PLL0FEED = 0x55;
+    LPC_SC->PLL0CON = (PLL0CON_PLLE0 | PLL0CON_PLLC0);
+    LPC_SC->PLL0FEED = 0xAA;
+    LPC_SC->PLL0FEED = 0x55;
 
     // Wait for PLL0 to connect
-    while ((SC->PLL0STAT & PLL0STAT_PLLC0_STAT) == 0)
+    while ((LPC_SC->PLL0STAT & PLL0STAT_PLLC0_STAT) == 0)
         {}
 
 #ifdef CONFIGURE_USB
     // Configure PLL1 Multiplier/Divider
-    if (SC->PLL1STAT & PLL1STAT_PLLC1_STAT) {
+    if (LPC_SC->PLL1STAT & PLL1STAT_PLLC1_STAT) {
         // Disconnect PLL1
-        SC->PLL1CON = PLL1CON_PLLE1;
-        SC->PLL1FEED = 0xAA;
-        SC->PLL1FEED = 0x55;
+        LPC_SC->PLL1CON = PLL1CON_PLLE1;
+        LPC_SC->PLL1FEED = 0xAA;
+        LPC_SC->PLL1FEED = 0x55;
     }
 
     // Disable PLL1
-    SC->PLL1CON = 0;
-    SC->PLL1FEED = 0xAA;
-    SC->PLL1FEED = 0x55;
+    LPC_SC->PLL1CON = 0;
+    LPC_SC->PLL1FEED = 0xAA;
+    LPC_SC->PLL1FEED = 0x55;
 
     // Set PLL1CFG
-    SC->PLL1CFG = PLL1CFG_VAL;
-    SC->PLL1FEED = 0xAA;
-    SC->PLL1FEED = 0x55;
+    LPC_SC->PLL1CFG = PLL1CFG_VAL;
+    LPC_SC->PLL1FEED = 0xAA;
+    LPC_SC->PLL1FEED = 0x55;
 
     // Enable PLL1
-    SC->PLL1CON = PLL1CON_PLLE1;
-    SC->PLL1FEED = 0xAA;
-    SC->PLL1FEED = 0x55;
+    LPC_SC->PLL1CON = PLL1CON_PLLE1;
+    LPC_SC->PLL1FEED = 0xAA;
+    LPC_SC->PLL1FEED = 0x55;
 
     // Wait for PLL1 to lock
-    while ((SC->PLL1STAT & PLL1STAT_PLOCK1)==0)
+    while ((LPC_SC->PLL1STAT & PLL1STAT_PLOCK1)==0)
         {}
 
     // PLL1 locked, connect PLL as clock source
-    SC->PLL1CON = (PLL1CON_PLLE1 | PLL1CON_PLLC1);
-    SC->PLL1FEED = 0xAA;
-    SC->PLL1FEED = 0x55;
+    LPC_SC->PLL1CON = (PLL1CON_PLLE1 | PLL1CON_PLLC1);
+    LPC_SC->PLL1FEED = 0xAA;
+    LPC_SC->PLL1FEED = 0x55;
 
     // Wait for PLL1 to connect
-    while ((SC->PLL1STAT & PLL1STAT_PLLC1_STAT)==0)
+    while ((LPC_SC->PLL1STAT & PLL1STAT_PLLC1_STAT)==0)
         {}
 #endif
 }

@@ -5,8 +5,8 @@
  *    @addtogroup HTTPServer
  *  @{
  *  @brief     HTTP Server Implementation
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *  @see http://goo.gl/UDtTCR/
+ *  @see http://goo.gl/UDtTCR/files/uEZ License.pdf
  *
  *    HTTP Server Implementation
  *
@@ -22,12 +22,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!  |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -87,12 +87,14 @@
 #define WEB_SERVER_REPORT_VERSION         0
 #endif
 		
-#define MAX_LINE_LENGTH           512 // Max length of message to send/receive per packet
+#define MAX_LINE_LENGTH           1024 // Max length of message to send/receive per packet
 #define MAX_HTTP_VERSION          30  // Supported version of HTTP advertised by the server
 #define MAX_HTTP_CONTENT_TYPE     120 // Type of content supplied from the HTTP Server
 #define MAX_HTTP_CONTENT_BOUNDARY 80  // Content boundary of the HTTP Server
 #define MAX_VAR_NAME_LENGTH       20  // Maximum length of variable name
-#define HTTP_WRITE_BUFFER_SIZE    512 // Max length of write buffer size
+//#define HTTP_WRITE_BUFFER_SIZE    512 // Max length of write buffer size
+#define HTTP_WRITE_BUFFER_SIZE    1024 // Max length of write buffer size
+//#define HTTP_WRITE_BUFFER_SIZE    2048 // Max length of write buffer size
 
 #if DEBUG_HTTP_SERVER
 	#define dprintf printf
@@ -486,11 +488,16 @@ static void IHTTPParameter(
 static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
 {
     T_uezError error;
-
+    unsigned int start;
+    
+    start = UEZTickCounterGet();
+    dprintf("FlushStart: %d (%d)\n", start, aState->iWriteLen);
     error = UEZNetworkSocketWrite(aState->iNetwork, aState->iSocket,
         aState->iWriteBuffer, aState->iWriteLen, (aMoreToCome) ? EFalse : ETrue,
         UEZ_TIMEOUT_INFINITE);
     aState->iWriteLen = 0;
+    dprintf("FlushEnd: %d\n", UEZTickCounterGet()-start);
+    start--;
 
     return error;
 }
@@ -1021,6 +1028,7 @@ static T_uezError IHTTPGet(T_httpState *aState)
         // If there is a function to parse types and this a HTML file
         // then we need to parse the data, getting values as found, and
         // determine the real length
+//aState->iGetFunc = 0;
         if ((aState->iGetFunc) && (strcmp(mimeType, "text/html") == 0)) {
             error = IHTTPParseFileForVars(aState, file, &len);
             // Close the file and open again (if no errors)
@@ -1629,6 +1637,10 @@ static T_uezError IParseHeaderLine(T_httpState *aState)
         if (c == '\r') {
             // Ignore
         } else if (c == '\n') {
+#if DEBUG_HTTP_SERVER
+            aState->iLine[aState->iLength] = '\0';
+            printf("Header Line: %s\n", aState->iLine);
+#endif
             // End of line!  Process!
             error = IProcessHeaderLine(aState);
 
@@ -1679,31 +1691,43 @@ static void vProcessConnection(
     T_httpState *p_parse;
     TBool done = EFalse;
 
-    p_parse = IHTTPStateAlloc(aNetwork, aSocket);
-    if (p_parse) {
-        p_parse->iGetFunc = aGetFunc;
-        p_parse->iSetFunc = aSetFunc;
-        p_parse->iDrivePrefix = aDrivePrefix;
-        while (!done) {
-            do {
-                error = UEZNetworkSocketRead(aNetwork, aSocket,
-                    p_parse->iReceiveBuffer, sizeof(p_parse->iReceiveBuffer),
-                    &p_parse->iReceiveLength, 50);
-                if ((error == UEZ_ERROR_NONE) || (error == UEZ_ERROR_TIMEOUT)) {
-                    // Got data, process it.
-                    error = IParseHeaderLine(p_parse);
-                    if (error)
+    do {
+        done = EFalse;
+        p_parse = IHTTPStateAlloc(aNetwork, aSocket);
+        if (p_parse) {
+            p_parse->iGetFunc = aGetFunc;
+            p_parse->iSetFunc = aSetFunc;
+            p_parse->iDrivePrefix = aDrivePrefix;
+            while (!done) {
+                do {
+                    error = UEZNetworkSocketRead(aNetwork, aSocket,
+                        p_parse->iReceiveBuffer, sizeof(p_parse->iReceiveBuffer),
+                        &p_parse->iReceiveLength, 200);
+                    if ((error == UEZ_ERROR_NONE) || (error == UEZ_ERROR_TIMEOUT)) {
+                        // Got data, process it.
+                        error = IParseHeaderLine(p_parse);
+                        if (error) {
+                            dprintf("HTTP Error on parse: %d\n", error);
+                            done = ETrue;
+                        }
+                    } else {
+                        // If there are any errors (closed socket, etc.) then
+                        // end the connection.
+                        dprintf("HTTP Error: %d\n", error);
                         done = ETrue;
-                } else {
-                    // If there are any errors (closed socket, etc.) then
-                    // end the connection.
-                    done = ETrue;
-                }
-            } while (!done);
-        }
+                    }
+                } while (!done);
+            }
 
-        IHTTPStateFree(p_parse);
-    }
+            IHTTPStateFree(p_parse);
+        }
+        // NOTE: We use the error of stall when the above HTTP connection has completed
+        // but we want to keep the HTTP 1.1 connection open.  When we get a STALL
+        // the GET or POST request is done processing and we go back to handling
+        // the next request.
+    } while (error == UEZ_ERROR_STALL);
+
+    dprintf("HTTP Close\n");
     UEZNetworkSocketClose(aNetwork, aSocket);
 }
 

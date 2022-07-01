@@ -1,5 +1,5 @@
 @if not exist "DK-TS-LPC1788_CW3.bin" goto missing
-@DK-TS-LPC1788_CW3.jlink
+@"..\JLink_V512j\JLink.exe" -jtagconf -1,-1 -autoconnect 1 -CommanderScript "DK-TS-LPC1788_CW3.jlink"
 @goto end
 
 :missing

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : GUIDRV_FlexColor.h
 Purpose     : Interface definition for GUIDRV_FlexColor driver
@@ -72,6 +83,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #define GUIDRV_FLEXCOLOR_F66719   GUIDRV_FlexColor_SetFunc66719
 #define GUIDRV_FLEXCOLOR_F66720   GUIDRV_FlexColor_SetFunc66720
 #define GUIDRV_FLEXCOLOR_F66721   GUIDRV_FlexColor_SetFunc66721
+#define GUIDRV_FLEXCOLOR_F66722   GUIDRV_FlexColor_SetFunc66722
 #define GUIDRV_FLEXCOLOR_F66772   GUIDRV_FlexColor_SetFunc66772
 
 //
@@ -145,6 +157,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   void GUIDRV_FlexColor_SetFunc66719     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66720     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66721     (GUI_DEVICE * pDevice);
+  void GUIDRV_FlexColor_SetFunc66722     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66772     (GUI_DEVICE * pDevice);
 
   //
@@ -203,6 +216,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   #define GUIDRV_FlexColor_SetFunc66719(pDevice)
   #define GUIDRV_FlexColor_SetFunc66720(pDevice)
   #define GUIDRV_FlexColor_SetFunc66721(pDevice)
+  #define GUIDRV_FlexColor_SetFunc66722(pDevice)
   #define GUIDRV_FlexColor_SetFunc66772(pDevice)
 
   //

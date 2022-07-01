@@ -12,12 +12,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -64,32 +64,32 @@ typedef struct {
  * Globals:
  *---------------------------------------------------------------------------*/
 const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port0_PortInfo = {
-    (TVUInt32 *)&PINCON->PINSEL0,
-    (TVUInt32 *)&PINCON->PINSEL1,
-    (TVUInt32 *)&PINCON->PINMODE0,
-    (TVUInt32 *)&PINCON->PINMODE1,
-    (TVUInt32 *)&GPIO0->FIOPIN,
-    (TVUInt32 *)&GPIO0->FIOSET,
-    (TVUInt32 *)&GPIO0->FIOCLR,
-    (TVUInt32 *)&GPIO0->FIODIR,
-    (TVUInt32 *)&PINCON->PINMODE_OD0,
-    (TVUInt32 *)&GPIOINT->IO0IntEnR,
-    (TVUInt32 *)&GPIOINT->IO0IntEnF,
-    (TVUInt32 *)&GPIOINT->IO0IntStatR,
-    (TVUInt32 *)&GPIOINT->IO0IntStatF,
-    (TVUInt32 *)&GPIOINT->IO0IntClr,
+    (TVUInt32 *)&LPC_PINCON->PINSEL0,
+    (TVUInt32 *)&LPC_PINCON->PINSEL1,
+    (TVUInt32 *)&LPC_PINCON->PINMODE0,
+    (TVUInt32 *)&LPC_PINCON->PINMODE1,
+    (TVUInt32 *)&LPC_GPIO0->FIOPIN,
+    (TVUInt32 *)&LPC_GPIO0->FIOSET,
+    (TVUInt32 *)&LPC_GPIO0->FIOCLR,
+    (TVUInt32 *)&LPC_GPIO0->FIODIR,
+    (TVUInt32 *)&LPC_PINCON->PINMODE_OD0,
+    (TVUInt32 *)&LPC_GPIOINT->IO0IntEnR,
+    (TVUInt32 *)&LPC_GPIOINT->IO0IntEnF,
+    (TVUInt32 *)&LPC_GPIOINT->IO0IntStatR,
+    (TVUInt32 *)&LPC_GPIOINT->IO0IntStatF,
+    (TVUInt32 *)&LPC_GPIOINT->IO0IntClr,
 };
 
 const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port1_PortInfo = {
-    (TVUInt32 *)&PINCON->PINSEL2,
-    (TVUInt32 *)&PINCON->PINSEL3,
-    (TVUInt32 *)&PINCON->PINMODE2,
-    (TVUInt32 *)&PINCON->PINMODE3,
-    (TVUInt32 *)&GPIO1->FIOPIN,
-    (TVUInt32 *)&GPIO1->FIOSET,
-    (TVUInt32 *)&GPIO1->FIOCLR,
-    (TVUInt32 *)&GPIO1->FIODIR,
-    (TVUInt32 *)&PINCON->PINMODE_OD1,
+    (TVUInt32 *)&LPC_PINCON->PINSEL2,
+    (TVUInt32 *)&LPC_PINCON->PINSEL3,
+    (TVUInt32 *)&LPC_PINCON->PINMODE2,
+    (TVUInt32 *)&LPC_PINCON->PINMODE3,
+    (TVUInt32 *)&LPC_GPIO1->FIOPIN,
+    (TVUInt32 *)&LPC_GPIO1->FIOSET,
+    (TVUInt32 *)&LPC_GPIO1->FIOCLR,
+    (TVUInt32 *)&LPC_GPIO1->FIODIR,
+    (TVUInt32 *)&LPC_PINCON->PINMODE_OD1,
     0,
     0,
     0,
@@ -98,32 +98,32 @@ const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port1_PortInfo = {
 };
 
 const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port2_PortInfo = {
-    (TVUInt32 *)&PINCON->PINSEL4,
-    (TVUInt32 *)&PINCON->PINSEL5,
-    (TVUInt32 *)&PINCON->PINMODE4,
-    (TVUInt32 *)&PINCON->PINMODE5,
-    (TVUInt32 *)&GPIO2->FIOPIN,
-    (TVUInt32 *)&GPIO2->FIOSET,
-    (TVUInt32 *)&GPIO2->FIOCLR,
-    (TVUInt32 *)&GPIO2->FIODIR,
-    (TVUInt32 *)&PINCON->PINMODE_OD2,
-    (TVUInt32 *)&GPIOINT->IO2IntEnR,
-    (TVUInt32 *)&GPIOINT->IO2IntEnF,
-    (TVUInt32 *)&GPIOINT->IO2IntStatR,
-    (TVUInt32 *)&GPIOINT->IO2IntStatF,
-    (TVUInt32 *)&GPIOINT->IO2IntClr,
+    (TVUInt32 *)&LPC_PINCON->PINSEL4,
+    (TVUInt32 *)&LPC_PINCON->PINSEL5,
+    (TVUInt32 *)&LPC_PINCON->PINMODE4,
+    (TVUInt32 *)&LPC_PINCON->PINMODE5,
+    (TVUInt32 *)&LPC_GPIO2->FIOPIN,
+    (TVUInt32 *)&LPC_GPIO2->FIOSET,
+    (TVUInt32 *)&LPC_GPIO2->FIOCLR,
+    (TVUInt32 *)&LPC_GPIO2->FIODIR,
+    (TVUInt32 *)&LPC_PINCON->PINMODE_OD2,
+    (TVUInt32 *)&LPC_GPIOINT->IO2IntEnR,
+    (TVUInt32 *)&LPC_GPIOINT->IO2IntEnF,
+    (TVUInt32 *)&LPC_GPIOINT->IO2IntStatR,
+    (TVUInt32 *)&LPC_GPIOINT->IO2IntStatF,
+    (TVUInt32 *)&LPC_GPIOINT->IO2IntClr,
 };
 
 const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port3_PortInfo = {
-    (TVUInt32 *)&PINCON->PINSEL6,
-    (TVUInt32 *)&PINCON->PINSEL7,
-    (TVUInt32 *)&PINCON->PINMODE6,
-    (TVUInt32 *)&PINCON->PINMODE7,
-    (TVUInt32 *)&GPIO3->FIOPIN,
-    (TVUInt32 *)&GPIO3->FIOSET,
-    (TVUInt32 *)&GPIO3->FIOCLR,
-    (TVUInt32 *)&GPIO3->FIODIR,
-    (TVUInt32 *)&PINCON->PINMODE_OD3,
+    (TVUInt32 *)&LPC_PINCON->PINSEL6,
+    (TVUInt32 *)&LPC_PINCON->PINSEL7,
+    (TVUInt32 *)&LPC_PINCON->PINMODE6,
+    (TVUInt32 *)&LPC_PINCON->PINMODE7,
+    (TVUInt32 *)&LPC_GPIO3->FIOPIN,
+    (TVUInt32 *)&LPC_GPIO3->FIOSET,
+    (TVUInt32 *)&LPC_GPIO3->FIOCLR,
+    (TVUInt32 *)&LPC_GPIO3->FIODIR,
+    (TVUInt32 *)&LPC_PINCON->PINMODE_OD3,
     0,
     0,
     0,
@@ -132,15 +132,15 @@ const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port3_PortInfo = {
 };
 
 const LPC1768_GPIO_PortInfo GPIO_LPC1768_Port4_PortInfo = {
-    (TVUInt32 *)&PINCON->PINSEL8,
-    (TVUInt32 *)&PINCON->PINSEL9,
-    (TVUInt32 *)&PINCON->PINMODE8,
-    (TVUInt32 *)&PINCON->PINMODE9,
-    (TVUInt32 *)&GPIO4->FIOPIN,
-    (TVUInt32 *)&GPIO4->FIOSET,
-    (TVUInt32 *)&GPIO4->FIOCLR,
-    (TVUInt32 *)&GPIO4->FIODIR,
-    (TVUInt32 *)&PINCON->PINMODE_OD4,
+    (TVUInt32 *)&LPC_PINCON->PINSEL8,
+    (TVUInt32 *)&LPC_PINCON->PINSEL9,
+    (TVUInt32 *)&LPC_PINCON->PINMODE8,
+    (TVUInt32 *)&LPC_PINCON->PINMODE9,
+    (TVUInt32 *)&LPC_GPIO4->FIOPIN,
+    (TVUInt32 *)&LPC_GPIO4->FIOSET,
+    (TVUInt32 *)&LPC_GPIO4->FIOCLR,
+    (TVUInt32 *)&LPC_GPIO4->FIODIR,
+    (TVUInt32 *)&LPC_PINCON->PINMODE_OD4,
     0,
     0,
     0,
@@ -647,9 +647,9 @@ static IRQ_ROUTINE(LPC1768_GPIO_IRQ)
     IRQ_START();
 
     // It's port 0 and/or port 2, is this port 0 firing?
-    if (GPIOINT->IntStatus & IOIntStatus_P0Int)
+    if (LPC_GPIOINT->IntStatus & IOIntStatus_P0Int)
         LPC1768_GPIO_ProcessIRQ(G_LPC1768Port0Workspace);
-    if (GPIOINT->IntStatus & IOIntStatus_P2Int)
+    if (LPC_GPIOINT->IntStatus & IOIntStatus_P2Int)
         LPC1768_GPIO_ProcessIRQ(G_LPC1768Port2Workspace);
 
     IRQ_END();
@@ -670,6 +670,7 @@ static IRQ_ROUTINE(LPC1768_GPIO_IRQ)
  *---------------------------------------------------------------------------*/
 T_uezError LPC1768_GPIO_ConfigureInterruptCallback(
         void *aWorkspace,
+        TUInt32 aPortPins,
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
@@ -688,6 +689,7 @@ T_uezError LPC1768_GPIO_ConfigureInterruptCallback(
 
 T_uezError LPC1768_GPIO_ConfigureInterruptCallback_NotSupported(
         void *aWorkspace,
+        TUInt32 aPortPins,
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
@@ -752,9 +754,9 @@ T_uezError LPC1768_GPIO_EnableInterrupts(
     const LPC1768_GPIO_PortInfo *p_info = p->iPortInfo;
 
     if (aType == GPIO_INTERRUPT_FALLING_EDGE)
-        (*p_info->iIOIntEnF) |= aPortPins;
+        (*p_info->iIOIntEnF) |= (1 << (aPortPins & 0xFF));
     else if (aType == GPIO_INTERRUPT_RISING_EDGE)
-        (*p_info->iIOIntEnR) |= aPortPins;
+        (*p_info->iIOIntEnR) |= (1 << (aPortPins & 0xFF));
 
     return UEZ_ERROR_NONE;
 }
@@ -778,9 +780,9 @@ T_uezError LPC1768_GPIO_DisableInterrupts(
     const LPC1768_GPIO_PortInfo *p_info = p->iPortInfo;
 
     if (aType == GPIO_INTERRUPT_FALLING_EDGE)
-        (*p_info->iIOIntEnF) &= ~aPortPins;
+        (*p_info->iIOIntEnF) &= ~(1 << (aPortPins & 0xFF));
     else if (aType == GPIO_INTERRUPT_RISING_EDGE)
-        (*p_info->iIOIntEnR) &= ~aPortPins;
+        (*p_info->iIOIntEnR) &= ~(1 << (aPortPins & 0xFF));
 
     return UEZ_ERROR_NONE;
 }
@@ -799,7 +801,7 @@ T_uezError LPC1768_GPIO_ClearInterrupts(void *aWorkspace, TUInt32 aPortPins)
     T_LPC1768_GPIO_Workspace *p = (T_LPC1768_GPIO_Workspace *)aWorkspace;
     const LPC1768_GPIO_PortInfo *p_info = p->iPortInfo;
 
-    (*p_info->iIOIntClr) = aPortPins;
+    (*p_info->iIOIntClr) = (1 << (aPortPins & 0xFF));
 
     return UEZ_ERROR_NONE;
 }

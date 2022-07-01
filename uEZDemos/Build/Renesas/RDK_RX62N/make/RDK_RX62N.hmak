@@ -111,7 +111,8 @@ RDK_RX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h" "
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
 	"..\..\..\..\..\uEZ\Include\uEZAccelerometer.h" "..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" \
 	"..\..\..\..\Source\App\RDK_RX62N\RDKDemo\NVSettings.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
 	"..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_api.h" "..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_cfg.h" \
@@ -152,7 +153,8 @@ RDK_RX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config.h
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZStream.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZStream.h" \
 	"..\..\..\..\..\uEZ\Include\Device\Stream.h" "..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" \
 	"..\..\..\..\..\uEZ\Include\UEZI2C.h" "..\..\..\..\..\uEZ\Include\Types\I2C.h" "..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
 	"..\..\..\..\..\uEZ\Include\HAL\SPI.h" "..\..\..\..\..\uEZ\Include\Types\SPI.h" "..\..\..\..\..\uEZ\Include\Device\ADCBank.h" \
@@ -482,7 +484,8 @@ RDK_RX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="..\..\..\..\..\uEZ\Include\uEZ.h"
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZTemperature.h" \
 	"..\..\..\..\..\uEZ\Include\uEZAccelerometer.h" "..\..\..\..\..\uEZ\Include\Types\Accelerometer.h" \
 	"..\..\..\..\Source\App\RDK_RX62N\RDKDemo\NVSettings.h" "$(TC_INSTALL_DIR)\include\stdio.h" \
 	"..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_api.h" "..\..\..\..\..\uEZ\Source\Library\Graphics\Glyph\glyph_cfg.h" \
@@ -523,7 +526,8 @@ RDK_RX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\uEZ\Include\Config
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZStream.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\uEZ\Include\uEZStream.h" \
 	"..\..\..\..\..\uEZ\Include\Device\Stream.h" "..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" \
 	"..\..\..\..\..\uEZ\Include\UEZI2C.h" "..\..\..\..\..\uEZ\Include\Types\I2C.h" "..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
 	"..\..\..\..\..\uEZ\Include\HAL\SPI.h" "..\..\..\..\..\uEZ\Include\Types\SPI.h" "..\..\..\..\..\uEZ\Include\Device\ADCBank.h" \

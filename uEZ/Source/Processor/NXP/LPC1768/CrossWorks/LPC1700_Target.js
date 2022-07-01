@@ -12,8 +12,24 @@
 
 function Reset()
 {
-  TargetInterface.stopAndReset(1);
-  TargetInterface.pokeWord(0x400FC040, 1); /* Map FLASH at 0x00000000 */
+  var impl = TargetInterface.implementation ? TargetInterface.implementation() : "";
+  if (impl == "j-link")
+    TargetInterface.resetAndStop(100);
+  else
+    {
+      TargetInterface.pokeWord(0xE000EDFC, 0x00000001);
+      TargetInterface.pokeWord(0xE000ED0C, 0x05FA0004);
+      TargetInterface.pokeWord(0xE000EDFC, 0x01000000);
+      TargetInterface.pokeWord(0xE0001020, 0x00000000);
+      TargetInterface.pokeWord(0xE0001024, 0x00000000);
+      TargetInterface.pokeWord(0xE0001028, 0x00000805);
+      TargetInterface.pokeWord(0xE000EDF0, 0xA05F0001);
+      TargetInterface.delay(100);
+      TargetInterface.resetDebugInterface();
+      TargetInterface.pokeWord(0xE000EDF0, 0xA05F0003);
+      TargetInterface.waitForDebugState(100);
+      TargetInterface.pokeWord(0xE0001028, 0x00000000);
+    }
 }
 
 function SRAMReset()

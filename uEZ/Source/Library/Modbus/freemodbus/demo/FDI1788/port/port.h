@@ -47,16 +47,16 @@ PR_BEGIN_EXTERN_C
 #define MB_TCP_ERROR_ADDRESS    0xff
 #define MB_TCP_DEBUG            1       /* Debug output in TCP module. */
 /* ----------------------- Type definitions ---------------------------------*/
-typedef char    BOOL;
+typedef TInt8    BOOL;
 
-typedef unsigned char UCHAR;
-typedef char    CHAR;
+typedef TUInt8 UCHAR;
+//typedef char    CHAR;
 
-typedef unsigned short USHORT;
-typedef short   SHORT;
+typedef TUInt16 USHORT;
+typedef TInt16   SHORT;
 
-typedef unsigned long ULONG;
-typedef long    LONG;
+typedef TUInt32 ULONG;
+typedef TInt32    LONG;
 
 #ifdef MB_TCP_DEBUG
 typedef enum

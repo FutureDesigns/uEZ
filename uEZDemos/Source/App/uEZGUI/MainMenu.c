@@ -159,11 +159,15 @@ static const T_appMenu mainmenu = {
  *---------------------------------------------------------------------------*/
 TUInt32 ROMChecksumCalculate()
 {
-    TUInt8 *p = (TUInt8 *)0;
+#if (UEZ_PROCESSOR != NXP_LPC4357)
+    TUInt8 *p = (TUInt8 *)0x00000000;
+#else
+    TUInt8 *p = (TUInt8 *)0x1A000000;
+#endif
     TUInt32 checksum = 0;
     TUInt32 count;
 
-    for (count=32; count<0x7E000; count++, p) {
+    for (count=32; count<0x7E000; count++) {
         checksum += *(p++);
     }
 

@@ -7,6 +7,7 @@ REM Run each build both release and debug
 call Build_Library_CrossWorks_1768.bat >> BuildLog_Library.txt 2>&1 <NUL
 call Build_Library_CrossWorks_1788.bat >> BuildLog_Library.txt 2>&1 <NUL
 call Build_Library_CrossWorks_4088.bat >> BuildLog_Library.txt 2>&1 <NUL
+call Build_Library_CrossWorks_4357.bat >> BuildLog_Library.txt 2>&1 <NUL
 call Build_Library_CrossWorks_2478.bat >> BuildLog_Library.txt 2>&1 <NUL
 
 call Build_Library_IAR_1756.bat >> BuildLog_Library.txt <NUL
@@ -15,6 +16,7 @@ call Build_Library_IAR_1768.bat >> BuildLog_Library.txt <NUL
 call Build_Library_IAR_1788.bat >> BuildLog_Library.txt <NUL
 call Build_Library_IAR_1788_SafeRTOS.bat >> BuildLog_Library.txt <NUL
 call Build_Library_IAR_4088.bat >> BuildLog_Library.txt <NUL
+call Build_Library_IAR_4357.bat >> BuildLog_Library.txt <NUL
 call Build_Library_IAR_2478.bat >> BuildLog_Library.txt <NUL
 call Build_Library_IAR_2478_Thumb.bat >> BuildLog_Library.txt <NUL
 
@@ -23,5 +25,6 @@ call Build_Library_HEW_RX63N.bat >> BuildLog_Library.txt <NUL
 
 call Build_Library_Keil_1788.bat >> BuildLog_Library.txt <NUL
 call Build_Library_Keil_4088.bat >> BuildLog_Library.txt <NUL
+call Build_Library_Keil_4357.bat >> BuildLog_Library.txt <NUL
 
 REM Results are in BuildLog_Library.txt

@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -175,7 +175,7 @@ T_uezError UEZAudioMixerRegister(T_uezAudioMixerOutput aOutput, T_AudioMixer_Cal
        iHaveRun = ETrue;
     }
 
-    if(!aOutput == UEZ_AUDIO_MIXER_OUTPUT_MASTER && aOutput < MAX_AUDIO_MIXER_OUTPUTS){
+    if(((!aOutput) == UEZ_AUDIO_MIXER_OUTPUT_MASTER) && (aOutput < MAX_AUDIO_MIXER_OUTPUTS)){
         G_AudioMixer[aOutput].iCallback = *aCallback;
     }
     return error;

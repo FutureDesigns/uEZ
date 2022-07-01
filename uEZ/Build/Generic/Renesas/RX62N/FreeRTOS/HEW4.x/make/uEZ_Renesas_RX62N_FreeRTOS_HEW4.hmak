@@ -205,7 +205,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC7="..\..\..\..\.
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\Flash_Renesas_RX62N.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\Flash_Renesas_RX62N.h" \
 	"..\..\..\..\..\..\..\Include\Device\Flash.h" "..\..\..\..\..\..\..\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\Include\Types\Flash.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC8="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\flash_api_rx600.obj"
@@ -234,7 +235,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC8="$(TC_INSTALL_
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC9="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\flash_data.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC9="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\errno.h" \
@@ -260,7 +262,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC9="$(TC_INSTALL_
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\flash_data.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\flash_data.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC10="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\Generic_i2c.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC10="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -300,7 +303,9 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC11="..\..\..\..\
 	"..\..\..\..\..\..\..\Include\uEZLCD.h" "..\..\..\..\..\..\..\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\Include\HAL\HAL.h" "..\..\..\..\..\..\..\Source\Devices\LCD\Tianma\TM035KBH02\Tianma_TM035NBH02.h" \
 	"..\..\..\..\..\..\..\Include\Device\LCD.h" "..\..\..\..\..\..\..\Include\uEZDevice.h" \
-	"..\..\..\..\..\..\..\Include\HAL\PWM.h" "..\..\..\..\..\..\..\Include\Device\Backlight.h"
+	"..\..\..\..\..\..\..\Include\HAL\PWM.h" "..\..\..\..\..\..\..\Include\Device\Backlight.h" \
+	"..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "..\..\..\..\..\..\..\Include\UEZNetwork.h" \
+	"..\..\..\..\..\..\..\Include\Types\Network.h" "..\..\..\..\..\..\..\Include\lwipopts.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC12="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\Tianma_TM043NBH02.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -319,7 +324,9 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\
 	"..\..\..\..\..\..\..\Include\uEZLCD.h" "..\..\..\..\..\..\..\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\Include\uEZDevice.h" "..\..\..\..\..\..\..\Include\HAL\LCDController.h" \
 	"..\..\..\..\..\..\..\Include\HAL\HAL.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
-	"..\..\..\..\..\..\..\Include\Device\Backlight.h" "..\..\..\..\..\..\..\Include\HAL\GPIO.h"
+	"..\..\..\..\..\..\..\Include\Device\Backlight.h" "..\..\..\..\..\..\..\Include\HAL\GPIO.h" \
+	"..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "..\..\..\..\..\..\..\Include\UEZNetwork.h" \
+	"..\..\..\..\..\..\..\Include\Types\Network.h" "..\..\..\..\..\..\..\Include\lwipopts.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC13="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\Tianma_TM047NBH01.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -341,7 +348,9 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\
 	"..\..\..\..\..\..\..\Include\Device\Backlight.h" "..\..\..\..\..\..\..\Include\HAL\GPIO.h" \
 	"..\..\..\..\..\..\..\Include\uEZSPI.h" "..\..\..\..\..\..\..\Include\Types\SPI.h" \
 	"..\..\..\..\..\..\..\Include\uEZGPIO.h" "..\..\..\..\..\..\..\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\Include\uEZDeviceTable.h" "$(TC_INSTALL_DIR)\include\string.h"
+	"..\..\..\..\..\..\..\Include\uEZDeviceTable.h" "$(TC_INSTALL_DIR)\include\string.h" \
+	"..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "..\..\..\..\..\..\..\Include\UEZNetwork.h" \
+	"..\..\..\..\..\..\..\Include\Types\Network.h" "..\..\..\..\..\..\..\Include\lwipopts.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC14="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\LED_NXP_PCA9551_driver.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -2106,7 +2115,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC107="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" \
 	"..\..\..\..\..\..\..\Include\UEZNetwork.h" "..\..\..\..\..\..\..\Include\Types\Network.h" \
 	"..\..\..\..\..\..\..\Include\lwipopts.h" "..\..\..\..\..\..\..\Source\Library\lwIP\src\include\lwip\opt.h" \
 	"..\..\..\..\..\..\..\Source\Library\lwIP\src\include\lwip\debug.h" "..\..\..\..\..\..\..\Source\Library\lwIP\src\include\lwip\arch.h" \
@@ -2261,7 +2271,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC112="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC113="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\GUIConf.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC113="..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_ConfDefaults.h" \
 	"..\..\..\..\..\..\..\Source\Platform\emWin\Config\GUIConf.h" "..\..\..\..\..\..\..\Include\Config.h" \
@@ -2305,7 +2316,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC114="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h" \
 	"..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_ConfDefaults.h" "..\..\..\..\..\..\..\Source\Platform\emWin\Config\GUIConf.h" \
 	"..\..\..\..\..\..\..\Source\Platform\emWin\Inc\SEGGER.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\Global.h" \
 	"..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_Type.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\LCD.h" \
@@ -2324,7 +2336,7 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC114="..\..\..\..
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC115="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\GUI_X_uEZ.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC115="$(TC_INSTALL_DIR)\include\stdio.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\errno.h" \
-	"..\..\..\..\..\..\..\Include\uEZRTOS.h" "..\..\..\..\..\..\..\Include\Config.h" \
+	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\Include\uEZRTOS.h" "..\..\..\..\..\..\..\Include\Config.h" \
 	"..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" "..\..\..\..\..\..\..\Include\uEZTypes.h" \
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\Include\uEZErrors.h" "..\..\..\..\..\..\..\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
@@ -2361,7 +2373,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC116="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_ADCBank_S12AD.h" \
 	"..\..\..\..\..\..\..\Include\HAL\ADCBank.h" "..\..\..\..\..\..\..\Include\Types\ADC.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC117="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_EMAC.obj"
@@ -2387,7 +2400,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC117="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\EMAC.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\EMAC.h" \
 	"..\..\..\..\..\..\..\Include\Types\EMAC.h" "..\..\..\..\..\..\..\Include\uEZBSP.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_EMAC.h"
@@ -2414,7 +2428,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC118="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_ExternalInterrupt.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_ExternalInterrupt.h" \
 	"..\..\..\..\..\..\..\Include\HAL\ExternalInterrupt.h" "..\..\..\..\..\..\..\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\Include\HAL\Interrupt.h" "..\..\..\..\..\..\..\Include\Types\EINT.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC119="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_GPIO.obj"
@@ -2440,7 +2455,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC119="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_GPIO.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_GPIO.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC120="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_HALInit.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC120="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
@@ -2465,7 +2481,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC120="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC121="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_I2C.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC121="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -2489,7 +2506,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC121="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_I2C.h" \
 	"..\..\..\..\..\..\..\Include\HAL\I2CBus.h" "..\..\..\..\..\..\..\Include\Types\I2C.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC122="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_Interrupt.obj"
@@ -2516,7 +2534,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC122="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC123="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_PWM_MTU.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC123="..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
 	"$(TC_INSTALL_DIR)\include\sys\yvals.h" "$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\Include\uEZProcessor.h" \
@@ -2540,7 +2559,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC123="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
 	"..\..\..\..\..\..\..\Include\HAL\Interrupt.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_PWM_MTU.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC124="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_PWM_TMR.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC124="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
@@ -2565,7 +2585,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC124="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
 	"..\..\..\..\..\..\..\Include\HAL\Interrupt.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_PWM_TMR.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC125="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_RTC.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC125="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
@@ -2607,7 +2628,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC126="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\SPI.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\SPI.h" \
 	"..\..\..\..\..\..\..\Include\Types\SPI.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_SPI.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC127="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_Serial.obj"
@@ -2634,7 +2656,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC127="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_Serial.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_OUTFILESC128="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Debug\RX62N_UtilityFuncs.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_DEBUG_RX_CC_COMPILER02_DEPFILESC128="..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\uEZGPIO.h" \
@@ -8705,7 +8728,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC7="..\..\..\..
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\Flash_Renesas_RX62N.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\Flash_Renesas_RX62N.h" \
 	"..\..\..\..\..\..\..\Include\Device\Flash.h" "..\..\..\..\..\..\..\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\Include\Types\Flash.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC8="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\flash_api_rx600.obj"
@@ -8734,7 +8758,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC8="$(TC_INSTAL
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC9="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\flash_data.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC9="$(TC_INSTALL_DIR)\include\string.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\errno.h" \
@@ -8760,7 +8785,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC9="$(TC_INSTAL
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\flash_data.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Devices\Flash\Renesas\RX62N\flash_data.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC10="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\Generic_i2c.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC10="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -8800,7 +8826,9 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC11="..\..\..\.
 	"..\..\..\..\..\..\..\Include\uEZLCD.h" "..\..\..\..\..\..\..\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\Include\HAL\HAL.h" "..\..\..\..\..\..\..\Source\Devices\LCD\Tianma\TM035KBH02\Tianma_TM035NBH02.h" \
 	"..\..\..\..\..\..\..\Include\Device\LCD.h" "..\..\..\..\..\..\..\Include\uEZDevice.h" \
-	"..\..\..\..\..\..\..\Include\HAL\PWM.h" "..\..\..\..\..\..\..\Include\Device\Backlight.h"
+	"..\..\..\..\..\..\..\Include\HAL\PWM.h" "..\..\..\..\..\..\..\Include\Device\Backlight.h" \
+	"..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "..\..\..\..\..\..\..\Include\UEZNetwork.h" \
+	"..\..\..\..\..\..\..\Include\Types\Network.h" "..\..\..\..\..\..\..\Include\lwipopts.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC12="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\Tianma_TM043NBH02.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC12="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -8819,7 +8847,9 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC12="..\..\..\.
 	"..\..\..\..\..\..\..\Include\uEZLCD.h" "..\..\..\..\..\..\..\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\Include\uEZDevice.h" "..\..\..\..\..\..\..\Include\HAL\LCDController.h" \
 	"..\..\..\..\..\..\..\Include\HAL\HAL.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
-	"..\..\..\..\..\..\..\Include\Device\Backlight.h" "..\..\..\..\..\..\..\Include\HAL\GPIO.h"
+	"..\..\..\..\..\..\..\Include\Device\Backlight.h" "..\..\..\..\..\..\..\Include\HAL\GPIO.h" \
+	"..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "..\..\..\..\..\..\..\Include\UEZNetwork.h" \
+	"..\..\..\..\..\..\..\Include\Types\Network.h" "..\..\..\..\..\..\..\Include\lwipopts.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC13="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\Tianma_TM047NBH01.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC13="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -8841,7 +8871,9 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC13="..\..\..\.
 	"..\..\..\..\..\..\..\Include\Device\Backlight.h" "..\..\..\..\..\..\..\Include\HAL\GPIO.h" \
 	"..\..\..\..\..\..\..\Include\uEZSPI.h" "..\..\..\..\..\..\..\Include\Types\SPI.h" \
 	"..\..\..\..\..\..\..\Include\uEZGPIO.h" "..\..\..\..\..\..\..\Include\Types\GPIO.h" \
-	"..\..\..\..\..\..\..\Include\uEZDeviceTable.h" "$(TC_INSTALL_DIR)\include\string.h"
+	"..\..\..\..\..\..\..\Include\uEZDeviceTable.h" "$(TC_INSTALL_DIR)\include\string.h" \
+	"..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" "..\..\..\..\..\..\..\Include\UEZNetwork.h" \
+	"..\..\..\..\..\..\..\Include\Types\Network.h" "..\..\..\..\..\..\..\Include\lwipopts.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC14="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\LED_NXP_PCA9551_driver.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -10606,7 +10638,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC107="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Platform\FDI\uEZGUI_RX62N_35QT\uEZPlatform.h" \
 	"..\..\..\..\..\..\..\Include\UEZNetwork.h" "..\..\..\..\..\..\..\Include\Types\Network.h" \
 	"..\..\..\..\..\..\..\Include\lwipopts.h" "..\..\..\..\..\..\..\Source\Library\lwIP\src\include\lwip\opt.h" \
 	"..\..\..\..\..\..\..\Source\Library\lwIP\src\include\lwip\debug.h" "..\..\..\..\..\..\..\Source\Library\lwIP\src\include\lwip\arch.h" \
@@ -10761,7 +10794,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC112="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC113="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\GUIConf.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC113="..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_ConfDefaults.h" \
 	"..\..\..\..\..\..\..\Source\Platform\emWin\Config\GUIConf.h" "..\..\..\..\..\..\..\Include\Config.h" \
@@ -10805,7 +10839,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC114="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h" \
 	"..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_ConfDefaults.h" "..\..\..\..\..\..\..\Source\Platform\emWin\Config\GUIConf.h" \
 	"..\..\..\..\..\..\..\Source\Platform\emWin\Inc\SEGGER.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\Global.h" \
 	"..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_Type.h" "..\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\LCD.h" \
@@ -10824,7 +10859,7 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC114="..\..\..\
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC115="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\GUI_X_uEZ.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC115="$(TC_INSTALL_DIR)\include\stdio.h" "$(TC_INSTALL_DIR)\include\macro.h" "$(TC_INSTALL_DIR)\include\sys\yvals.h" \
 	"$(TC_INSTALL_DIR)\include\stdarg.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\errno.h" \
-	"..\..\..\..\..\..\..\Include\uEZRTOS.h" "..\..\..\..\..\..\..\Include\Config.h" \
+	"$(TC_INSTALL_DIR)\include\string.h" "..\..\..\..\..\..\..\Include\uEZRTOS.h" "..\..\..\..\..\..\..\Include\Config.h" \
 	"..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" "..\..\..\..\..\..\..\Include\uEZTypes.h" \
 	"$(TC_INSTALL_DIR)\include\stdint.h" "..\..\..\..\..\..\..\Include\uEZErrors.h" "..\..\..\..\..\..\..\Include\uEZTickCounter.h" \
 	"..\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\FreeRTOS.h" "$(TC_INSTALL_DIR)\include\stddef.h" \
@@ -10861,7 +10896,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC116="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_ADCBank_S12AD.h" \
 	"..\..\..\..\..\..\..\Include\HAL\ADCBank.h" "..\..\..\..\..\..\..\Include\Types\ADC.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC117="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_EMAC.obj"
@@ -10887,7 +10923,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC117="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\EMAC.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\EMAC.h" \
 	"..\..\..\..\..\..\..\Include\Types\EMAC.h" "..\..\..\..\..\..\..\Include\uEZBSP.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_EMAC.h"
@@ -10914,7 +10951,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC118="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_ExternalInterrupt.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_ExternalInterrupt.h" \
 	"..\..\..\..\..\..\..\Include\HAL\ExternalInterrupt.h" "..\..\..\..\..\..\..\Include\uEZDevice.h" \
 	"..\..\..\..\..\..\..\Include\HAL\Interrupt.h" "..\..\..\..\..\..\..\Include\Types\EINT.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC119="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_GPIO.obj"
@@ -10940,7 +10978,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC119="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_GPIO.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_GPIO.h" \
 	"$(TC_INSTALL_DIR)\include\stdio.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC120="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_HALInit.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC120="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
@@ -10965,7 +11004,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC120="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC121="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_I2C.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC121="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
 	"..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
@@ -10989,7 +11029,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC121="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\Interrupt.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_I2C.h" \
 	"..\..\..\..\..\..\..\Include\HAL\I2CBus.h" "..\..\..\..\..\..\..\Include\Types\I2C.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC122="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_Interrupt.obj"
@@ -11016,7 +11057,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC122="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h"
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC123="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_PWM_MTU.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC123="..\..\..\..\..\..\..\Include\uEZTypes.h" "$(TC_INSTALL_DIR)\include\stdint.h" "$(TC_INSTALL_DIR)\include\macro.h" \
 	"$(TC_INSTALL_DIR)\include\sys\yvals.h" "$(TC_INSTALL_DIR)\include\stdarg.h" "..\..\..\..\..\..\..\Include\uEZProcessor.h" \
@@ -11040,7 +11082,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC123="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
 	"..\..\..\..\..\..\..\Include\HAL\Interrupt.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_PWM_MTU.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC124="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_PWM_TMR.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC124="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
@@ -11065,7 +11108,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC124="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\PWM.h" \
 	"..\..\..\..\..\..\..\Include\HAL\Interrupt.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_PWM_TMR.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC125="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_RTC.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC125="..\..\..\..\..\..\..\Include\uEZ.h" "..\..\..\..\..\..\..\Include\Config.h" "..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Config_Build.h" \
@@ -11107,7 +11151,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC126="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\SPI.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\HAL\SPI.h" \
 	"..\..\..\..\..\..\..\Include\Types\SPI.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_SPI.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC127="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_Serial.obj"
@@ -11134,7 +11179,8 @@ UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC127="..\..\..\
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\uEZProcessor_RX62N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\uEZProcessor_RX63N.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756.h" \
-	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" "..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_Serial.h"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_OUTFILESC128="..\uEZ_Renesas_RX62N_FreeRTOS_HEW4\Release\RX62N_UtilityFuncs.obj"
 UEZ_RENESAS_RX62N_FREERTOS_HEW4_RELEASE_RX_CC_COMPILER02_DEPFILESC128="..\..\..\..\..\..\..\Source\Processor\Renesas\RX62N\RX62N_UtilityFuncs.h" "..\..\..\..\..\..\..\Include\uEZGPIO.h" \

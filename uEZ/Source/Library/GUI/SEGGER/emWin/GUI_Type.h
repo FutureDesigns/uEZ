@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : GUI_Type.h
 Purpose     : Include file define the types used for GUI
@@ -56,8 +67,8 @@ typedef struct {
                          int y0,
                          int xsize, 
                          int ysize, 
-                         const U8 GUI_UNI_PTR * pPixel, 
-                         const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, 
+                         const U8 * pPixel, 
+                         const LCD_LOGPALETTE * pLogPal, 
                          int xMag, 
                          int yMag);
   GUI_COLOR (* pfIndex2Color)(unsigned Index);
@@ -65,10 +76,11 @@ typedef struct {
                          int y0,
                          int xsize, 
                          int ysize, 
-                         const U8 GUI_UNI_PTR * pPixel, 
-                         const LCD_LOGPALETTE GUI_UNI_PTR * pLogPal, 
+                         const U8 * pPixel, 
+                         const LCD_LOGPALETTE * pLogPal, 
                          int xMag, 
                          int yMag);
+  const LCD_API_COLOR_CONV * pColorConvAPI;
 } GUI_BITMAP_METHODS;
 
 typedef struct {
@@ -76,8 +88,8 @@ typedef struct {
   U16P YSize;
   U16P BytesPerLine;
   U16P BitsPerPixel;
-  const U8 GUI_UNI_PTR * pData;
-  const GUI_LOGPALETTE GUI_UNI_PTR * pPal;
+  const U8 * pData;
+  const GUI_LOGPALETTE * pPal;
   const GUI_BITMAP_METHODS * pMethods;
 } GUI_BITMAP;
 
@@ -145,6 +157,16 @@ struct GUI_REGISTER_EXIT {
   GUI_REGISTER_EXIT * pNext;
 };
 
+typedef struct {
+  void (* cbBegin)(void);
+  void (* cbEnd)  (void);
+} GUI_MULTIBUF_API;
+
+typedef struct {
+  void (* cbBeginEx)(int LayerIndex);
+  void (* cbEndEx)  (int LayerIndex);
+} GUI_MULTIBUF_API_EX;
+
 /*********************************************************************
 *
 *       FONT structures
@@ -161,14 +183,14 @@ typedef struct {
 typedef struct {
   U16P FirstChar;
   U16P LastChar;
-  const GUI_FONT_TRANSLIST GUI_UNI_PTR * pList;
+  const GUI_FONT_TRANSLIST * pList;
 } GUI_FONT_TRANSINFO;
 
 typedef struct {
   U8 XSize;
   U8 XDist;
   U8 BytesPerLine;
-  const unsigned char GUI_UNI_PTR * pData;
+  const unsigned char * pData;
 } GUI_CHARINFO;
 
 typedef struct {
@@ -177,32 +199,32 @@ typedef struct {
   I8 XPos;
   I8 YPos;
   U8 XDist;
-  const unsigned char GUI_UNI_PTR * pData;
+  const unsigned char * pData;
 } GUI_CHARINFO_EXT;
 
 typedef struct GUI_FONT_PROP {
-  U16P First;                                              /* First character               */
-  U16P Last;                                               /* Last character                */
-  const GUI_CHARINFO         GUI_UNI_PTR * paCharInfo;     /* Address of first character    */
-  const struct GUI_FONT_PROP GUI_UNI_PTR * pNext;          /* Pointer to next               */
+  U16P First;                                  /* First character               */
+  U16P Last;                                   /* Last character                */
+  const GUI_CHARINFO         * paCharInfo;     /* Address of first character    */
+  const struct GUI_FONT_PROP * pNext;          /* Pointer to next               */
 } GUI_FONT_PROP;
 
 typedef struct GUI_FONT_PROP_EXT {
-  U16P First;                                              /* First character               */
-  U16P Last;                                               /* Last character                */
-  const GUI_CHARINFO_EXT         GUI_UNI_PTR * paCharInfo; /* Address of first character    */
-  const struct GUI_FONT_PROP_EXT GUI_UNI_PTR * pNext;      /* Pointer to next               */
+  U16P First;                                  /* First character               */
+  U16P Last;                                   /* Last character                */
+  const GUI_CHARINFO_EXT         * paCharInfo; /* Address of first character    */
+  const struct GUI_FONT_PROP_EXT * pNext;      /* Pointer to next               */
 } GUI_FONT_PROP_EXT;
 
 typedef struct {
-  const unsigned char GUI_UNI_PTR * pData;
-  const U8 GUI_UNI_PTR * pTransData;
-  const GUI_FONT_TRANSINFO GUI_UNI_PTR * pTrans;
-  U16P FirstChar;
-  U16P LastChar;
-  U8 XSize;
-  U8 XDist;
-  U8 BytesPerLine;
+  const unsigned char      * pData;
+  const U8                 * pTransData;
+  const GUI_FONT_TRANSINFO * pTrans;
+  U16P                       FirstChar;
+  U16P                       LastChar;
+  U8                         XSize;
+  U8                         XDist;
+  U8                         BytesPerLine;
 } GUI_FONT_MONO;
 
 /*********************************************************************
@@ -230,30 +252,30 @@ typedef struct {
 *
 *       UNICODE Encoding
 */
-typedef U16  tGUI_GetCharCode(const char GUI_UNI_PTR *s);
-typedef int  tGUI_GetCharSize(const char GUI_UNI_PTR *s);
+typedef U16  tGUI_GetCharCode   (const char * s);
+typedef int  tGUI_GetCharSize   (const char * s);
 typedef int  tGUI_CalcSizeOfChar(U16 Char);
-typedef int  tGUI_Encode(char *s, U16 Char);
+typedef int  tGUI_Encode        (char * s, U16 Char);
 
 typedef struct {
-  tGUI_GetCharCode*            pfGetCharCode;
-  tGUI_GetCharSize*            pfGetCharSize;
-  tGUI_CalcSizeOfChar*         pfCalcSizeOfChar;
-  tGUI_Encode*                 pfEncode;
+  tGUI_GetCharCode    * pfGetCharCode;
+  tGUI_GetCharSize    * pfGetCharSize;
+  tGUI_CalcSizeOfChar * pfCalcSizeOfChar;
+  tGUI_Encode         * pfEncode;
 } GUI_UC_ENC_APILIST;
 
 /*********************************************************************
 *
 *       FONT Encoding
 */
-typedef int  tGUI_GetLineDistX(const char GUI_UNI_PTR *s, int Len);
-typedef int  tGUI_GetLineLen(const char GUI_UNI_PTR *s, int MaxLen);
-typedef void tGL_DispLine(const char GUI_UNI_PTR *s, int Len);
+typedef int  tGUI_GetLineDistX(const char * s, int Len);
+typedef int  tGUI_GetLineLen  (const char * s, int MaxLen);
+typedef void tGL_DispLine     (const char * s, int Len);
 
 typedef struct {
-  tGUI_GetLineDistX*          pfGetLineDistX;
-  tGUI_GetLineLen*            pfGetLineLen;
-  tGL_DispLine*               pfDispLine;
+  tGUI_GetLineDistX * pfGetLineDistX;
+  tGUI_GetLineLen   * pfGetLineLen;
+  tGL_DispLine      * pfDispLine;
 } tGUI_ENC_APIList;
 
 extern const tGUI_ENC_APIList GUI_ENC_APIList_SJIS;
@@ -267,15 +289,15 @@ typedef struct GUI_FONT GUI_FONT;
 
 typedef void GUI_DISPCHAR    (U16 c);
 typedef int  GUI_GETCHARDISTX(U16P c, int * pSizeX);
-typedef void GUI_GETFONTINFO (const GUI_FONT GUI_UNI_PTR * pFont, GUI_FONTINFO * pfi);
-typedef char GUI_ISINFONT    (const GUI_FONT GUI_UNI_PTR * pFont, U16 c);
+typedef void GUI_GETFONTINFO (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
+typedef char GUI_ISINFONT    (const GUI_FONT * pFont, U16 c);
 typedef int  GUI_GETCHARINFO (U16P c, GUI_CHARINFO_EXT * pInfo);
 
 #define DECLARE_FONT(Type)                                     \
 void GUI##Type##_DispChar    (U16P c);                         \
 int  GUI##Type##_GetCharDistX(U16P c, int * pSizeX);                         \
-void GUI##Type##_GetFontInfo (const GUI_FONT GUI_UNI_PTR * pFont, GUI_FONTINFO * pfi); \
-char GUI##Type##_IsInFont    (const GUI_FONT GUI_UNI_PTR * pFont, U16 c); \
+void GUI##Type##_GetFontInfo (const GUI_FONT * pFont, GUI_FONTINFO * pfi); \
+char GUI##Type##_IsInFont    (const GUI_FONT * pFont, U16 c); \
 int  GUI##Type##_GetCharInfo (U16P c, GUI_CHARINFO_EXT * pInfo)
 
 #if defined(__cplusplus)
@@ -416,10 +438,10 @@ struct GUI_FONT {
   U8 XMag;
   U8 YMag;
   union {
-    const void              GUI_UNI_PTR * pFontData;
-    const GUI_FONT_MONO     GUI_UNI_PTR * pMono;
-    const GUI_FONT_PROP     GUI_UNI_PTR * pProp;
-    const GUI_FONT_PROP_EXT GUI_UNI_PTR * pPropExt;
+    const void              * pFontData;
+    const GUI_FONT_MONO     * pMono;
+    const GUI_FONT_PROP     * pProp;
+    const GUI_FONT_PROP_EXT * pPropExt;
   } p;
   U8 Baseline;
   U8 LHeight;     /* Height of a small lower case character (a,x) */
@@ -558,6 +580,42 @@ typedef     GUI_HMEM      GUI_HSPRITE;
 
 /*********************************************************************
 *
+*       Multi touch input
+*/
+#ifndef   GUI_MTOUCH_MAX_NUM_POINTS
+  #define GUI_MTOUCH_MAX_NUM_POINTS 10
+#endif
+
+typedef struct {
+  I32 x;
+  I32 y;
+  U32 Id;
+  U16 Flags;
+} GUI_MTOUCH_INPUT;
+
+typedef struct {
+  int            LayerIndex;
+  unsigned       NumPoints;
+  GUI_TIMER_TIME TimeStamp;
+  GUI_HMEM       hInput;
+} GUI_MTOUCH_EVENT;
+
+//
+// Used for emWinSPY with reduced data types and array sizes
+//
+typedef struct {
+  U8  Layer;
+  U8  NumPoints;
+  I16 ax[5];
+  I16 ay[5];
+  U16 aId[5];
+  U8  aFlags[5];
+} GUI_MTOUCH_STATE;
+
+typedef void (* T_GUI_MTOUCH_STOREEVENT)(GUI_MTOUCH_EVENT *, GUI_MTOUCH_INPUT * pInput);
+
+/*********************************************************************
+*
 *       Hardware routines
 */
 typedef struct {
@@ -603,6 +661,20 @@ typedef struct {
   //
   void (* pfFlushBuffer)(void);
 } GUI_PORT_API;
+
+/*********************************************************************
+*
+*       Send/Receive function for VNC and/or emWinSPY
+*/
+typedef int    (* GUI_tSend)  (const U8 * pData, int len, void * p);
+typedef int    (* GUI_tRecv)  (      U8 * pData, int len, void * p);
+
+/*********************************************************************
+*
+*       Memory allocation replacement for emWinSPY
+*/
+typedef void * (* GUI_tMalloc)(unsigned int);
+typedef void   (* GUI_tFree)  (void *);
 
 #endif  /* GUITYPE_H_INCLUDED */
 

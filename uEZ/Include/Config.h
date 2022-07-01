@@ -27,13 +27,13 @@
 * A special exception to the GPL can be applied should you wish to
 * distribute a combined work that includes uEZ(r), without being obliged
 * to provide the source code for any proprietary components.  See the
-* licensing section of http://www.teamfdi.com/uez for full details of how
+* licensing section of http://goo.gl/UDtTCR for full details of how
 * and when the exception can be applied.
 *
 *    *===============================================================*
 *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
 *    |             We can get you up and running fast!               |
-*    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
@@ -48,9 +48,9 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           07
-#define UEZ_VERSION_STRING          "2.07"
-#define UEZ_VERSION_DATE            "05/11/2015" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           08
+#define UEZ_VERSION_STRING          "2.08"
+#define UEZ_VERSION_DATE            "06/09/2016" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler
@@ -127,6 +127,7 @@ extern "C" {
 #define NXP_LPC1756                             7
 #define RENESAS_RX63N                           8
 #define NXP_LPC4088                             9
+#define NXP_LPC4357                             10
 
 // Select processor:
 #ifndef UEZ_PROCESSOR

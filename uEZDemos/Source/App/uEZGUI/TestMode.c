@@ -181,7 +181,7 @@ void TestModeTouchscreenProcedure(
         { 0, 750, 460, 1 },
         { 0, 480, 240, 1 },
     };
-#elif (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD43480272MF)
+#elif (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD43480272MF | UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD50800480TF)
        static const T_uezTSReading G_expectedReadings[5] = {
        { 0,    0+TP_INSET,                 TP_INSET,                   1 }, // 0
        { 0,    DISPLAY_WIDTH-TP_INSET,     TP_INSET,                   1 }, // 1

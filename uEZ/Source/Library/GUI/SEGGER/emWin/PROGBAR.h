@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2013  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2015  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.22 - Graphical user interface for embedded applications **
+** emWin V5.30 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -24,6 +24,17 @@ Agreement.
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+
+Licensor:                 SEGGER Microcontroller Systems LLC
+Licensed to:              NXP Semiconductors
+Licensed SEGGER software: emWin
+License number:           GUI-00186
+License model:            emWin License Agreement, dated August 20th 2011
+Licensed product:         -
+Licensed platform:        NXP's ARM 7/9, Cortex-M0,M3,M4
+Licensed number of seats: -
 ----------------------------------------------------------------------
 File        : PROGBAR.h
 Purpose     : Progressbar include
@@ -128,9 +139,11 @@ void PROGBAR_Callback(WM_MESSAGE * pMsg);
 **********************************************************************
 */
 
+void PROGBAR_GetMinMax   (PROGBAR_Handle hObj, int * pMin, int * pMax);
 int  PROGBAR_GetUserData (PROGBAR_Handle hObj, void * pDest, int NumBytes);
+int  PROGBAR_GetValue    (PROGBAR_Handle hObj);
 void PROGBAR_SetBarColor (PROGBAR_Handle hObj, unsigned int index, GUI_COLOR color);
-void PROGBAR_SetFont     (PROGBAR_Handle hObj, const GUI_FONT GUI_UNI_PTR * pfont);
+void PROGBAR_SetFont     (PROGBAR_Handle hObj, const GUI_FONT * pfont);
 void PROGBAR_SetMinMax   (PROGBAR_Handle hObj, int Min, int Max);
 void PROGBAR_SetText     (PROGBAR_Handle hObj, const char* s);
 void PROGBAR_SetTextAlign(PROGBAR_Handle hObj, int Align);

@@ -30,60 +30,14 @@
  *   you are developing and only define STARTUP_FROM_RESET when development is
  *   complete.
  *
+ * NO_SYSTEM_INIT
  *
- * CONFIGURE_USB
+ *   If defined, the SystemInit() function will NOT be called. By default 
+ *   SystemInit() is called after reset to enable the clocks and memories to
+ *   be initialised prior to any C startup initialisation.
  *
- *   If defined, the USB clock will be configured.
  *
  *****************************************************************************/
-
-#include "Config.h"
-#if (UEZ_PROCESSOR==NXP_LPC1768)
-
-#define __TARGET_PROCESSOR                      LPC1768
-
-#include <LPC1000.h>
-
-#if OSCILLATOR_CLOCK_FREQUENCY==12000000
-
-/* Fosc = 12Mhz, Fcco = 400Mhz, cclk = 100Mhz */
-#ifndef PLL0CFG_VAL
-#define PLL0CFG_VAL ((49 << PLL0CFG_MSEL0_BIT) | (2 << PLL0CFG_NSEL0_BIT))
-#endif
-
-#ifndef CCLKCFG_VAL
-#define CCLKCFG_VAL 3
-#endif
-
-#ifndef FLASHCFG_VAL
-#define FLASHCFG_VAL 0x0000403A
-#endif
-
-/* Fosc = 12Mhz, Fcco = 192Mhz, usbclk = 48Mhz */
-#ifndef PLL1CFG_VAL
-#define PLL1CFG_VAL ((3 << PLL1CFG_MSEL1_BIT) | (1 << PLL1CFG_PSEL1_BIT))
-#endif
-
-#ifndef CONFIGURE_USB
-#define CONFIGURE_USB
-#endif
-
-#elif OSCILLATOR_CLOCK_FREQUENCY==4000000
-
-/* Fosc = 4Mhz, Fcco = 400Mhz, cclk = 100Mhz */
-#ifndef PLL0CFG_VAL
-#define PLL0CFG_VAL ((49 << PLL0CFG_MSEL0_BIT) | (0 << PLL0CFG_NSEL0_BIT))
-#endif
-
-#ifndef CCLKCFG_VAL
-#define CCLKCFG_VAL 3
-#endif
-
-#ifndef FLASHCFG_VAL
-#define FLASHCFG_VAL 0x0000403A
-#endif
-
-#endif
 
   .global reset_handler
 
@@ -117,11 +71,11 @@ _vectors:
   .word 0 // Reserved
   .word 0 // Reserved
   .word 0 // Reserved
-  .word vPortSVCHandler
+  .word SVC_Handler
   .word DebugMon_Handler
   .word 0 // Reserved
-  .word xPortPendSVHandler
-  .word xPortSysTickHandler 
+  .word PendSV_Handler
+  .word SysTick_Handler 
   .word WDT_IRQHandler
   .word TIMER0_IRQHandler
   .word TIMER1_IRQHandler
@@ -161,155 +115,17 @@ _vectors:
   .section .init, "ax"
   .thumb_func
 
-  reset_handler:
-#ifndef __FLASH_BUILD
-  /* If this is a RAM build, configure vector table offset register to point 
-     to the RAM vector table. */
+reset_handler:
+#ifndef NO_SYSTEM_INIT
+  ldr sp, =__RAM_segment_end__
+  ldr r0, =SystemInit
+  blx r0
+#endif
+
+  /* Configure vector table offset register */
   ldr r0, =0xE000ED08
   ldr r1, =_vectors
   str r1, [r0]
-#endif
-
-  ldr r0, =SC_BASE_ADDRESS
-
-  /* Configure PLL0 Multiplier/Divider */
-  ldr r1, [r0, #PLL0STAT_OFFSET]
-  tst r1, #PLL0STAT_PLLC0_STAT
-  beq 1f
-
-  /* Disconnect PLL0 */
-  ldr r1, =PLL0CON_PLLE0
-  str r1, [r0, #PLL0CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL0FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL0FEED_OFFSET]
-1:
-  /* Disable PLL0 */
-  ldr r1, =0
-  str r1, [r0, #PLL0CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL0FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL0FEED_OFFSET]
-
-  /* Enable main oscillator */
-  ldr r1, [r0, #SCS_OFFSET]
-  orr r1, r1, #SCS_OSCEN
-  str r1, [r0, #SCS_OFFSET]
-1:
-  ldr r1, [r0, #SCS_OFFSET]
-  tst r1, #SCS_OSCSTAT
-  beq 1b
-
-  /* Select main oscillator as the PLL0 clock source */
-  ldr r1, =1
-  str r1, [r0, #CLKSRCSEL_OFFSET]
-
-  /* Set PLL0CFG */
-  ldr r1, =PLL0CFG_VAL
-  str r1, [r0, #PLL0CFG_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL0FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL0FEED_OFFSET]
-
-  /* Enable PLL0 */
-  ldr r1, =PLL0CON_PLLE0
-  str r1, [r0, #PLL0CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL0FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL0FEED_OFFSET]
-
-#ifdef CCLKCFG_VAL
-  /* Set the CPU clock divider */
-  ldr r1, =CCLKCFG_VAL
-  str r1, [r0, #CCLKCFG_OFFSET]
-#endif
-
-#ifdef FLASHCFG_VAL
-  /* Configure the FLASH accelerator */
-  ldr r1, =FLASHCFG_VAL
-  str r1, [r0, #FLASHCFG_OFFSET]
-#endif
-
-  /* Wait for PLL0 to lock */
-1:
-  ldr r1, [r0, #PLL0STAT_OFFSET]
-  tst r1, #PLL0STAT_PLOCK0
-  beq 1b
-
-  /* PLL0 Locked, connect PLL as clock source */
-  mov r1, #(PLL0CON_PLLE0 | PLL0CON_PLLC0)
-  str r1, [r0, #PLL0CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL0FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL0FEED_OFFSET]
-  /* Wait for PLL0 to connect */
-1:
-  ldr r1, [r0, #PLL0STAT_OFFSET]
-  tst r1, #PLL0STAT_PLLC0_STAT
-  beq 1b
-
-#ifdef CONFIGURE_USB
-  /* Configure PLL1 Multiplier/Divider */
-  ldr r1, [r0, #PLL1STAT_OFFSET]
-  tst r1, #PLL1STAT_PLLC1_STAT
-  beq 1f
-
-  /* Disconnect PLL1 */
-  ldr r1, =PLL1CON_PLLE1
-  str r1, [r0, #PLL1CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL1FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL1FEED_OFFSET]
-1:
-  /* Disable PLL1 */
-  ldr r1, =0
-  str r1, [r0, #PLL1CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL1FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL1FEED_OFFSET]
-
-  /* Set PLL1CFG */
-  ldr r1, =PLL1CFG_VAL
-  str r1, [r0, #PLL1CFG_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL1FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL1FEED_OFFSET]
-
-  /* Enable PLL1 */
-  ldr r1, =PLL1CON_PLLE1
-  str r1, [r0, #PLL1CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL1FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL1FEED_OFFSET]
-
-  /* Wait for PLL1 to lock */
-1:
-  ldr r1, [r0, #PLL1STAT_OFFSET]
-  tst r1, #PLL1STAT_PLOCK1
-  beq 1b
-
-  /* PLL1 Locked, connect PLL as clock source */
-  mov r1, #(PLL1CON_PLLE1 | PLL1CON_PLLC1)
-  str r1, [r0, #PLL1CON_OFFSET]
-  mov r1, #0xAA
-  str r1, [r0, #PLL1FEED_OFFSET]
-  mov r1, #0x55
-  str r1, [r0, #PLL1FEED_OFFSET]
-  /* Wait for PLL1 to connect */
-1:
-  ldr r1, [r0, #PLL1STAT_OFFSET]
-  tst r1, #PLL1STAT_PLLC1_STAT
-  beq 1b
-#endif
 
   b _start
 
@@ -361,6 +177,4 @@ DEFAULT_ISR_HANDLER CANACT_IRQHandler
 #ifndef STARTUP_FROM_RESET
 DEFAULT_ISR_HANDLER reset_wait
 #endif /* STARTUP_FROM_RESET */
-
-#endif // (UEZ_PROCESSOR==NXP_LPC1768)
 

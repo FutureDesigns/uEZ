@@ -3204,6 +3204,21 @@
             <file>
               <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_ZoomAndRotate.c</name>
             </file>
+			<file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_AntialiasedText.c</name>
+            </file>
+			<file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_BarGraph.c</name>
+            </file>
+			<file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Conf.c</name>
+            </file>
+			<file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_RadialMenu.c</name>
+            </file>
+			<file>
+              <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\GUIDEMO\GUIDEMO_Start.c</name>
+            </file>
           </group>
           <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\App\SEGGER\emWin\emWin.c</name>
@@ -3302,7 +3317,7 @@
               <group>
                 <name>NXP</name>
                 <file>
-                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_522_IAR_M3.a</name>
+                  <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Libraries\NXP\IAR\emWin_530_IAR_M3.a</name>
                 </file>
               </group>
             </group>
@@ -3333,21 +3348,21 @@
     </file>
   </group>
   <file>
-    <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR6.x\Debug-Trace\Exe\uEZ_NXP_LPC1788_FreeRTOS_IAR6_Debug-Trace.a</name>
+    <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR\Debug-Trace\Exe\uEZ_NXP_LPC1788_FreeRTOS_IAR_Debug-Trace.a</name>
     <excluded>
       <configuration>Debug</configuration>
       <configuration>Release</configuration>
     </excluded>
   </file>
   <file>
-    <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR6.x\Debug\Exe\uEZ_NXP_LPC1788_FreeRTOS_IAR6_Debug.a</name>
+    <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR\Debug\Exe\uEZ_NXP_LPC1788_FreeRTOS_IAR_Debug.a</name>
     <excluded>
       <configuration>Release</configuration>
       <configuration>Debug-Trace</configuration>
     </excluded>
   </file>
   <file>
-    <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR6.x\Release\Exe\uEZ_NXP_LPC1788_FreeRTOS_IAR6_Release.a</name>
+    <name>$PROJ_DIR$\..\..\..\..\..\..\..\uEZ\Build\Generic\NXP\LPC1788\FreeRTOS\IAR\Release\Exe\uEZ_NXP_LPC1788_FreeRTOS_IAR_Release.a</name>
     <excluded>
       <configuration>Debug</configuration>
       <configuration>Debug-Trace</configuration>

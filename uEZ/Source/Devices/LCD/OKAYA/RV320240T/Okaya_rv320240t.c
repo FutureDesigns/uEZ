@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -24,6 +24,7 @@
 #include <HAL/LCDController.h>
 #include <Device/Backlight.h>
 #include "Okaya_RV320240T.h"
+#include "uEZPlatform.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -79,7 +80,7 @@ static const T_LCDControllerSettings LCD_RV320240T_params16bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     8000000,    // 8.0 MHz is optimal (12 ns min per dot = 8.333 MHz)
 };
@@ -113,7 +114,7 @@ static T_LCDControllerSettings LCD_RV320240T_paramsI15bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     6300000,    // 6.4 MHz is optimal
 };
@@ -147,7 +148,7 @@ static const T_LCDControllerSettings LCD_RV320240T_params8bit = {
     EFalse,     // Top to bottom (NOT bottom to top)
     LCD_COLOR_ORDER_BGR,    // BGR order please
 
-    0xA0000000, // Default Base address
+    0, // Default Base address
 
     6300000,    // 8.0 MHz is optimal (12 ns min per dot = 8.333 MHz)
 };

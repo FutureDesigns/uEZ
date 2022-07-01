@@ -48,6 +48,7 @@
 #define SERIAL_PORTS_DEFAULT_BAUD           115200
 
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
+#define MAIN_TASK_STACK_SIZE                UEZ_TASK_STACK_BYTES(4096)
 
 /*-------------------------------------------------------------------------*
  * Default Values:

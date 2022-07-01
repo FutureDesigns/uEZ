@@ -77,6 +77,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC0="$(TC_INSTALL_DIR)\include\stdio.h" 
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppTasks.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\NVSettings.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Web\BasicWeb\BasicWeb.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Web\HTTPServer\HTTPServer.h"
@@ -115,6 +117,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\..\..\..\uEZ\Include
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -153,6 +157,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC2="$(TC_INSTALL_DIR)\include\stdlib.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\task.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\list.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\queue.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC3="..\DK-TS-RX62N\Debug\FunctionalTest.obj"
@@ -197,6 +203,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC3="$(TC_INSTALL_DIR)\include\math.h" "
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -249,6 +257,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\..\..\..\uEZ\Include
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -292,6 +302,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC5="$(TC_INSTALL_DIR)\include\stdio.h" 
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -376,6 +388,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC7="$(TC_INSTALL_DIR)\include\string.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Audio.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZSPI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\SPI.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\USBDevice\MassStorage\Generic\USBMSDrive.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\MassStorage.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
@@ -452,6 +466,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC9="..\..\..\..\..\..\..\..\uEZ\Include
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -525,6 +541,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" \
@@ -666,6 +684,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -704,6 +724,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h" \
@@ -750,6 +772,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
@@ -800,6 +824,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
@@ -851,6 +877,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" \
@@ -898,6 +926,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -1014,6 +1044,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZStream.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Stream.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\SPI.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\SPI.h" \
@@ -1119,6 +1151,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\Interrupt.h"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_OUTFILESC22="..\DK-TS-RX62N\Debug\ExMemory.obj"
 DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Include\Config.h" "..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -1168,6 +1202,8 @@ DKTSRX62N_DEBUG_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Includ
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD_Types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\LCDController.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" \
@@ -2111,6 +2147,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC0="$(TC_INSTALL_DIR)\include\stdio.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppTasks.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\NVSettings.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Web\BasicWeb\BasicWeb.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\AppHTTPServer.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Web\HTTPServer\HTTPServer.h"
@@ -2149,6 +2187,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC1="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -2187,6 +2227,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC2="$(TC_INSTALL_DIR)\include\stdlib.
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\task.h" "..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\list.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\include\queue.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC3="..\DK-TS-RX62N\Release\FunctionalTest.obj"
@@ -2231,6 +2273,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC3="$(TC_INSTALL_DIR)\include\math.h"
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -2283,6 +2327,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC4="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -2326,6 +2372,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC5="$(TC_INSTALL_DIR)\include\stdio.h
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -2410,6 +2458,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC7="$(TC_INSTALL_DIR)\include\string.
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Audio.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZSPI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Types\SPI.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\USBDevice\MassStorage\Generic\USBMSDrive.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\Device\MassStorage.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZDevice.h" \
@@ -2486,6 +2536,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC9="..\..\..\..\..\..\..\..\uEZ\Inclu
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -2559,6 +2611,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC11="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\TimeDate.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\LCD.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" \
@@ -2700,6 +2754,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC14="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -2738,6 +2794,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC15="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h" \
@@ -2784,6 +2842,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC16="$(TC_INSTALL_DIR)\include\stdio.
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
@@ -2834,6 +2894,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC17="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" "..\..\..\..\..\..\..\Source\App\uEZDemoCommon\uEZDemoCommon.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_helvr10.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_winfreesystem14x16.h" \
@@ -2885,6 +2947,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC18="$(TC_INSTALL_DIR)\include\string
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZTimeDate.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\AppDemo.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_swim.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_fonts.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\Graphics\SWIM\lpc_colors.h" \
@@ -2932,6 +2996,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC19="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\Source\App\uEZDemoCommon\UDCImages.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Types.h" "..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_UtilityFunctions.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Library\GUI\FDI\SimpleUI\SimpleUI_Regions.h" \
@@ -3048,6 +3114,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC20="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\uEZStream.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\Stream.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\UEZPlatformAPI.h" "..\..\..\..\..\..\..\..\uEZ\Include\Device\SPIBus.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\SPI.h" "..\..\..\..\..\..\..\..\uEZ\Include\Types\SPI.h" \
@@ -3153,6 +3221,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC21="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\Interrupt.h"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_OUTFILESC22="..\DK-TS-RX62N\Release\ExMemory.obj"
 DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC22="..\..\..\..\..\..\..\..\uEZ\Include\Config.h" "..\DK-TS-RX62N\Config_Build.h" "..\..\..\..\..\..\..\Source\App\DKTSKit_RX\Config_App.h" \
@@ -3202,6 +3272,8 @@ DKTSRX62N_RELEASE_RX_CC_COMPILER02_DEPFILESC23="..\..\..\..\..\..\..\..\uEZ\Incl
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\Renesas\RX63N\RXToolset\iodefine.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\uEZProcessor_LPC1756.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756.h" "..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC1756\LPC1756_UtilityFuncs.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\uEZProcessor_LPC43xx.h" \
+	"..\..\..\..\..\..\..\..\uEZ\Source\Processor\NXP\LPC43xx\LPC43xx_UtilityFuncs.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD_Types.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Source\Platform\FDI\CARRIER_RX62N\DirectDrive\DirectLCD.h" \
 	"..\..\..\..\..\..\..\..\uEZ\Include\HAL\LCDController.h" "..\..\..\..\..\..\..\..\uEZ\Include\uEZLCD.h" \

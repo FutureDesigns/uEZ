@@ -33,7 +33,7 @@
 #include "SingleSlideshowMode.h"
 #include <uEZLCD.h>
 #include <uEZKeypad.h>
-
+#include <UEZPlatform.h>
 /*---------------------------------------------------------------------------*
  * Defines:
  *---------------------------------------------------------------------------*/
@@ -673,7 +673,7 @@ TUInt32 SSMLoadTask(T_uezTask aMyTask, void *aParameters)
     TUInt32 slideNum;
     T_slideLoadResponse slideResponse;
     //TUInt32 i;
-    TBool doResponse;
+    TBool doResponse = EFalse;
     T_uezError error;
     TUInt32 centerSlide = 0;
     TUInt32 centerCacheEntry = 0;
@@ -798,7 +798,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
     T_uezInputEvent inputEvent;
     TUInt32 slideNum;
     T_slideLoadResponse slideResponse;
-    TUInt32 time;
+    TUInt32 time = 0;
     TInt32 diffY;
 #if ENABLE_UEZ_BUTTON
     T_uezDevice keypadDevice;
@@ -873,10 +873,10 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
 
                     // Sit here in a loop until we are done
                     while (!G_ws->iExit) {
-                        
+
                         // Prevent Screen Saver operation while in slide show
                         UEZLCDScreensaverWake();
-                        
+
                         // If we need to load a slide, do it now
                         if (G_ws->iNeedLoad) {
                             SSMLoadSlide();

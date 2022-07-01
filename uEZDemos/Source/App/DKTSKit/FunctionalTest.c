@@ -489,7 +489,7 @@ void IFuncTestSerial(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
         }
 
         // Send out a 1 character string to the serial
-        error = (*p->iStream)->Write(p->iStream, "|", 1, &num, 100);
+        error = (*p->iStream)->Write(p->iStream, (TUInt8*)"|", 1, &num, 100);
         if (error) {
             aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
             aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -502,7 +502,7 @@ void IFuncTestSerial(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
         }
 
         // Do again, send out a 1 character string to the serial
-        error = (*p->iStream)->Write(p->iStream, "|", 1, &num, 100);
+        error = (*p->iStream)->Write(p->iStream, (TUInt8*)"|", 1, &num, 100);
         if (error) {
             aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
             aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -761,7 +761,7 @@ static void ITestPatternColors(T_testData *aData)
 
     for (y=1; y<32; y++)  {
         for (x=0; x<256; x++, i++)  {
-            c = RGB(y*8-1, 0, 0);
+            c = RGB(((y*8)-1), 0, 0);
             swim_set_pen_color(&aData->iWin, c /*(y<<10)+((x&128)?0x8000:0)*/);
             swim_put_pixel(&aData->iWin,
                     x+20,
@@ -769,7 +769,7 @@ static void ITestPatternColors(T_testData *aData)
         }
     }
     for (y=1; y<32; y++)  {
-        c = RGB(0, y*8-1, 0);
+        c = RGB(0, ((y*8)-1), 0);
         for (x=0; x<256; x++, i++)  {
             swim_set_pen_color(&aData->iWin, c /*(y<<5)+((x&128)?0x8000:0)*/);
             swim_put_pixel(&aData->iWin,
@@ -778,7 +778,7 @@ static void ITestPatternColors(T_testData *aData)
         }
     }
     for (y=1; y<32; y++)  {
-        c = RGB(0, 0, y*8-1);
+        c = RGB(0, 0, ((y*8)-1));
         for (x=0; x<256; x++, i++)  {
             swim_set_pen_color(&aData->iWin, c /*(y<<0)+((x&128)?0x8000:0)*/);
             swim_put_pixel(&aData->iWin,

@@ -371,6 +371,7 @@ static TUInt32 BasicTCPServer(T_uezTask aMyTask, void *aParams)
     char command[80];
     char line[80];
     int clen=0;
+    TBool forever = ETrue;
     TBool needPrompt = EFalse;
     const char banner[] = PROJECT_NAME " " VERSION_AS_TEXT "\r\n";
 
@@ -388,7 +389,7 @@ static TUInt32 BasicTCPServer(T_uezTask aMyTask, void *aParams)
     /* OK, set queue length for client calls */  			
     listen(SrvrDescriptor,5);  			
 
-    while (1)  	 {  			
+    while (forever){  			
         CO_AddString("\r\n\r\nWaiting...\r\n");			
         /* wait for a call */  			
         len = sizeof(rem);
@@ -452,6 +453,7 @@ static TUInt32 BasicTCPServer(T_uezTask aMyTask, void *aParams)
         CO_AddString("Closed.\r\n");			
         close(ClntDescriptor);
     }
+    return 0;
 } 	 			
 #endif /* UEZ_ENABLE_TCPIP_STACK */
 

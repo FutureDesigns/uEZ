@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -22,8 +22,8 @@
  *    @addtogroup uEZGPIO
  *  @{
  *  @brief     uEZ GPIO Interface
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *  @see http://goo.gl/UDtTCR/
+ *  @see http://goo.gl/UDtTCR/files/uEZ License.pdf
  *
  *    The uEZ GPIO interface.
  *
@@ -416,7 +416,7 @@ T_uezError UEZGPIOEnableIRQ(
 {
     HAL_GPIOPort **p = UEZGPIOGetPortOrFail(
             UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
-    return (*p)->EnableInterrupts(p, 1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin),
+    return (*p)->EnableInterrupts(p, aPortPin,
             aType);
 }
 
@@ -453,7 +453,7 @@ T_uezError UEZGPIODisableIRQ(
     HAL_GPIOPort **p = UEZGPIOGetPortOrFail(
             UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
     return (*p)->DisableInterrupts(p,
-            1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin), aType);
+            aPortPin, aType);
 }
 
 /*---------------------------------------------------------------------------*
@@ -484,7 +484,7 @@ T_uezError UEZGPIOClearIRQ(T_uezGPIOPortPin aPortPin)
 {
     HAL_GPIOPort **p = UEZGPIOGetPortOrFail(
             UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
-    return (*p)->ClearInterrupts(p, 1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin));
+    return (*p)->ClearInterrupts(p, aPortPin);
 }
 
 /*---------------------------------------------------------------------------*
@@ -517,12 +517,12 @@ T_uezError UEZGPIOClearIRQ(T_uezGPIOPortPin aPortPin)
  */
 /*---------------------------------------------------------------------------*/
 T_uezError UEZGPIOConfigureInterruptCallback(
-        T_uezGPIOPort aPort,
+        T_uezGPIOPortPin aPortPin,
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
-    HAL_GPIOPort **p = UEZGPIOGetPortOrFail(aPort);
-    return (*p)->ConfigureInterruptCallback(p, aInterruptCallback,
+    HAL_GPIOPort **p = UEZGPIOGetPortOrFail(UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
+    return (*p)->ConfigureInterruptCallback(p, aPortPin, aInterruptCallback,
             aInterruptCallbackWorkspace);
 }
 

@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -182,9 +182,9 @@ static void IWaitForDeviceInterrupt(
                 TUInt32 aDevInterruptFlags)
 {
     PARAM_NOT_USED(p);
-    while ((USB->USBDevIntSt & aDevInterruptFlags) != aDevInterruptFlags)
+    while ((LPC_USB->USBDevIntSt & aDevInterruptFlags) != aDevInterruptFlags)
         {}
-    USB->USBDevIntClr = aDevInterruptFlags;
+    LPC_USB->USBDevIntClr = aDevInterruptFlags;
 }
 
 /*-------------------------------------------------------------------------*
@@ -217,12 +217,12 @@ else
     dprintf("[Cmd ?%02X]", aCommand);
     // Start by clearing the full and empty flags for the
     // command.
-    USB->USBDevIntClr = CDFULL | CCEMTY;
+    LPC_USB->USBDevIntClr = CDFULL | CCEMTY;
 
     // Write a command in the form of:
     //    0x00CC0500
     //    where CC = 8-bit command
-    USB->USBCmdCode = 0x00000500 | (aCommand << 16);
+    LPC_USB->USBCmdCode = 0x00000500 | (aCommand << 16);
 
     // Wait for there to be room for another command
     IWaitForDeviceInterrupt(p, CCEMTY);
@@ -247,7 +247,7 @@ static void ILPC1768_USBDev_CommandAndWrite(
     ILPC1768_USBDev_Command(p, aCommand);
 
     // Then, write the data
-    USB->USBCmdCode = 0x00000100 | (aData << 16);
+    LPC_USB->USBCmdCode = 0x00000100 | (aData << 16);
 
     // Wait for room to be made available for more data
     IWaitForDeviceInterrupt(p, CCEMTY);
@@ -272,12 +272,12 @@ static TUInt8 ILPC1768_USBDev_CommandAndRead(
     ILPC1768_USBDev_Command(p, aCommand);
 
     // Second, read back a byte
-    USB->USBCmdCode = 0x00000200 | (aCommand << 16);
+    LPC_USB->USBCmdCode = 0x00000200 | (aCommand << 16);
 
     // Wait until data is ready to be read
     IWaitForDeviceInterrupt(p, CDFULL);
 
-    return (TUInt8)USB->USBCmdData;
+    return (TUInt8)LPC_USB->USBCmdData;
 }
 
 /*-------------------------------------------------------------------------*
@@ -315,8 +315,8 @@ static void LPC1768_USBDev_EndpointInterruptsEnable(
 
     // Enable interrupts for this endpoint
     // using regular "slow" method
-    USB->USBEpIntEn |= (1 << aIndex);
-    USB->USBDevIntEn |= EP_SLOW;
+    LPC_USB->USBEpIntEn |= (1 << aIndex);
+    LPC_USB->USBDevIntEn |= EP_SLOW;
 }
 
 /*-------------------------------------------------------------------------*
@@ -335,7 +335,7 @@ static void LPC1768_USBDev_EndpointInterruptsDisable(
     TUInt32 aIndex = IEndpointToIndex(aEndpoint);
 
     // Disable interrupts for this endpoint
-    USB->USBEpIntEn &= ~(1 << aIndex);
+    LPC_USB->USBEpIntEn &= ~(1 << aIndex);
 }
 
 
@@ -400,11 +400,11 @@ static void ILPC1768_USBDev_InterruptProcess(T_LPC1768_USBDev_Workspace *p)
     T_USBStatus usbStatus;
     T_USBDevice *p_dev = p->iSettings.iUSBDevice;
 
-    status = USB->USBDevIntSt;
+    status = LPC_USB->USBDevIntSt;
 
     if (status & DEV_STAT) {
         // Clear the device status change flag
-        USB->USBDevIntClr = DEV_STAT;
+        LPC_USB->USBDevIntClr = DEV_STAT;
 
         if (p_dev) {
             // Read the device status and run the callback (if it exists)
@@ -422,18 +422,18 @@ static void ILPC1768_USBDev_InterruptProcess(T_LPC1768_USBDev_Workspace *p)
     if (status & EP_SLOW) {
 
 #if 0
-        USB->USBDevIntClr = EP_SLOW;
+        LPC_USB->USBDevIntClr = EP_SLOW;
         // Handle endpoints with data on them
         for (i = 0; i < 32; i++) {
-            if (USB->USBEpIntSt & (1<<i)) {
+            if (LPC_USB->USBEpIntSt & (1<<i)) {
                 // Clear the interrupt flag
-                USB->USBEpIntClr = (1<<i);
+                LPC_USB->USBEpIntClr = (1<<i);
 
                 // Be sure wait for a command to be available
                 IWaitForDeviceInterrupt(p, CDFULL);
 
                 // Get the end point's status
-                endpointStatus = USB->USBCmdData;
+                endpointStatus = LPC_USB->USBCmdData;
 
                 // Call the end point handler
                 if (i & 1)  {
@@ -469,7 +469,7 @@ static void ILPC1768_USBDev_InterruptProcess(T_LPC1768_USBDev_Workspace *p)
     // USB_DEV_FRAME status?
     if (status & USB_DEV_FRAME) {
         // Clear USB_DEV_FRAME flag
-        USB->USBDevIntClr = USB_DEV_FRAME;
+        LPC_USB->USBDevIntClr = USB_DEV_FRAME;
 
         // Do nothing for now
     }
@@ -491,20 +491,20 @@ void LPC1768_USBDev_ProcessEndpoints(void *aWorkspace)
     T_USBEndpointStatus endpointStatus;
     T_USBDevice *p_dev = p->iSettings.iUSBDevice;
 
-    USB->USBDevIntClr = EP_SLOW;
+    LPC_USB->USBDevIntClr = EP_SLOW;
 
     // Handle endpoints with data on them
     for (i = 0; i < 32; i++) {
-        if (USB->USBEpIntSt & (1<<i)) {
+        if (LPC_USB->USBEpIntSt & (1<<i)) {
             // Clear the interrupt flag
-            USB->USBEpIntClr = (1<<i);
+            LPC_USB->USBEpIntClr = (1<<i);
 
             if (p_dev) {
                 // Be sure wait for a command to be available
                 IWaitForDeviceInterrupt(p, CDFULL);
 
                 // Get the end point's status
-                endpointStatus = USB->USBCmdData;
+                endpointStatus = LPC_USB->USBCmdData;
 
                 // Call the end point handler
                 if (i & 1)  {
@@ -660,11 +660,11 @@ TInt16 LPC1768_USBDev_Read(
 
 dprintf("[R %d %d]", aEndpoint, iMaxLen);
     // Setup the endpoint for reading
-    USB->USBCtrl = RD_EN | ((aEndpoint & 0xF) << 2);
+    LPC_USB->USBCtrl = RD_EN | ((aEndpoint & 0xF) << 2);
 
     // Wait for the packet to be ready (or an error)
     while (1)  {
-        if ((rxLength = USB->USBRxPLen) & PKT_RDY)
+        if ((rxLength = LPC_USB->USBRxPLen) & PKT_RDY)
             break;
     }
 
@@ -677,9 +677,9 @@ dprintf("[R %d %d]", aEndpoint, iMaxLen);
     rxLength &= PKT_LNGTH_MASK;
 
     // Read data while it is available (32 bits at a time).
-    while (USB->USBCtrl & RD_EN) {
+    while (LPC_USB->USBCtrl & RD_EN) {
         // Get the 32 bits (or less)
-        rxData = USB->USBRxData;
+        rxData = LPC_USB->USBRxData;
 
         // Only store the data if there is a place to put it
         if (aData != 0) {
@@ -737,20 +737,20 @@ TUInt16 LPC1768_USBDev_Write(
 
 dprintf("[W %d %d]", aEndpoint, aLength);
     // Enable writing to the end point and the number of bytes to be written
-    USB->USBCtrl = WR_EN | ((aEndpoint & 0xF) << 2);
-    USB->USBTxPLen = aLength;
+    LPC_USB->USBCtrl = WR_EN | ((aEndpoint & 0xF) << 2);
+    LPC_USB->USBTxPLen = aLength;
 
     if (aLength == 0)  {
-        while (USB->USBCtrl & WR_EN)  {
+        while (LPC_USB->USBCtrl & WR_EN)  {
             // Just force zeroes into without using
             // the pointer.
-            USB->USBTxData = 0;
+            LPC_USB->USBTxData = 0;
         }
     } else {
         // Write data as long as it lets us
-        while (USB->USBCtrl & WR_EN)  {
+        while (LPC_USB->USBCtrl & WR_EN)  {
             // Write in 32 bit blocks
-            USB->USBTxData =
+            LPC_USB->USBTxData =
                 (aData[3] << 24) |
                 (aData[2] << 16) |
                 (aData[1] << 8) |
@@ -973,11 +973,11 @@ static void LPC1768_USBDev_EndpointRealize(
 {
     // Declare which endpoint is going to be realized
     // using a bit position.
-    USB->USBReEp |= (1 << aIndex);
-    USB->USBEpInd = aIndex;
+    LPC_USB->USBReEp |= (1 << aIndex);
+    LPC_USB->USBEpInd = aIndex;
 
     // Declare size of maximum packets
-    USB->USBMaxPSize = aMaxPacketSize;
+    LPC_USB->USBMaxPSize = aMaxPacketSize;
 
     // Wait for endpoint to be fully realized
     IWaitForDeviceInterrupt(p, EP_RLZED);
@@ -1025,13 +1025,13 @@ void LPC1768_USBDev_Initialize(void *aWorkspace)
     T_LPC1768_USBDev_Workspace *p = (T_LPC1768_USBDev_Workspace *)aWorkspace;
 
     // Ensure power is on
-    SC->PCONP |= 0x80000000;
+    LPC_SC->PCONP |= 0x80000000;
 
-    USB->u1.OTGClkCtrl = 0x0000001B;
-    while ((USB->u2.OTGClkSt & 0x0000001B) != 0x1B) {
+    LPC_USB->OTGClkCtrl = 0x0000001B;
+    while ((LPC_USB->OTGClkSt & 0x0000001B) != 0x1B) {
         ;
     }
-    USB->OTGStCtrl = 0;
+    LPC_USB->OTGStCtrl = 0;
 
     // Setup standard control endpoints
     LPC1768_USBDev_EndpointConfigure(

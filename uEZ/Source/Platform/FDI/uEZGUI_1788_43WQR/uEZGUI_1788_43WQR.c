@@ -9,12 +9,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -23,8 +23,8 @@
  *    @addtogroup uEZGUI-1788-43WQR
  *  @{
  *  @brief     uEZGUI-1788-43WQR platform
- *  @see http://www.teamfdi.com/uez/
- *  @see http://www.teamfdi.com/uez/files/uEZ License.pdf
+ *  @see http://goo.gl/UDtTCR/
+ *  @see http://goo.gl/UDtTCR/files/uEZ License.pdf
  *
  *    The uEZGUI-1788-43WQR platform interface.
 */
@@ -39,6 +39,7 @@
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDeviceController.h>
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
+#include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
 #include <Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h>
 #include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
@@ -507,11 +508,36 @@ void UEZPlatform_Temp0_Require(void)
 /*---------------------------------------------------------------------------*/
 void UEZPlatform_Accel0_Require(void)
 {
+    T_uezDevice I2C;
+    T_uezError error;
+    I2C_Request r;
+    TUInt8 dataIn;
+    TUInt8 dataOut = 0x0F;
+
     DEVICE_CREATE_ONCE();
 
     UEZPlatform_I2C1_Require();
-    Accelerometer_Freescale_MMA7455_I2C_Create("Accel0", "I2C1",
+
+    // Detect which accelerometer is loaded
+
+    UEZI2COpen("I2C1", &I2C);
+    r.iAddr = 0x18;
+    r.iSpeed = 400; //kHz
+    r.iWriteData = &dataOut;
+    r.iWriteLength = 1; // send 1 byte
+    r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+    r.iReadData = &dataIn;
+    r.iReadLength = 1; // read 1 bytes
+    r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
+
+    error = UEZI2CTransaction(I2C, &r);
+
+    if(!error && (dataIn == 0x33)) {
+        ST_Accelo_LIS3DH_I2C_Create("Accel0", "I2C1");
+    } else {
+        Accelerometer_Freescale_MMA7455_I2C_Create("Accel0", "I2C1",
             MMA7455_I2C_ADDR);
+    }
 }
 
 /*---------------------------------------------------------------------------*
@@ -1223,6 +1249,7 @@ void UEZPlatform_LCD_Require(void)
 
             GPIO_P1_31,//GPIO_NONE, // No power pin
             EFalse,
+            0,
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;

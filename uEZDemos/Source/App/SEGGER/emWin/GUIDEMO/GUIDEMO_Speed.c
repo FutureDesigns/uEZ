@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2011  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2012  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.08 - Graphical user interface for embedded applications **
+** emWin V5.18 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only be used in accordance with a license and should not be re-
@@ -20,11 +20,12 @@ Purpose     : Speed demo
 ----------------------------------------------------------------------
 */
 
-#include <stdlib.h>  /* for rand */
-
 #include "GUIDEMO.h"
+#include <stdlib.h>  // Definition of NULL
 
 #if (SHOW_GUIDEMO_SPEED)
+
+#include <stdlib.h>  // rand()
 
 /*********************************************************************
 *
@@ -33,13 +34,13 @@ Purpose     : Speed demo
 **********************************************************************
 */
 static const GUI_COLOR _aColor[8] = {
-  0x000000, 
-  0x0000FF, 
-  0x00FF00, 
-  0x00FFFF, 
-  0xFF0000, 
-  0xFF00FF, 
-  0xFFFF00, 
+  0x000000,
+  0x0000FF,
+  0x00FF00,
+  0x00FFFF,
+  0xFF0000,
+  0xFF00FF,
+  0xFFFF00,
   0xFFFFFF
 };
 
@@ -54,10 +55,19 @@ static const GUI_COLOR _aColor[8] = {
 *       _GetPixelsPerSecond
 */
 static U32 _GetPixelsPerSecond(void) {
-  GUI_COLOR Color, BkColor;
-  U32 x0, y0, x1, y1, xSize, ySize;
-  I32 t, t0;
-  U32 Cnt, PixelsPerSecond, PixelCnt;
+  GUI_COLOR BkColor;
+  GUI_COLOR Color;
+  I32       PixelsPerSecond;
+  I32       PixelCnt;
+  I32       t0;
+  I32       t;
+  U32       xSize;
+  U32       ySize;
+  U32       Cnt;
+  U32       x0;
+  U32       x1;
+  U32       y0;
+  U32       y1;
 
   //
   // Find an area which is not obstructed by any windows
@@ -79,14 +89,14 @@ static U32 _GetPixelsPerSecond(void) {
   do {
     GUI_FillRect(x0, y0, x1, y1);
     Cnt++;
-    t = GUIDEMO_GetTime();    
+    t = GUIDEMO_GetTime();
   } while ((t - (t0 + 100)) <= 0);
   //
   // Compute result
   //
   t -= t0;
   PixelCnt = (x1 - x0 + 1) * (y1 - y0 + 1) * Cnt;
-  PixelsPerSecond = PixelCnt / t * 1000;   
+  PixelsPerSecond = PixelCnt / t * 1000;
   GUI_SetColor(Color);
   return PixelsPerSecond;
 }
@@ -102,19 +112,24 @@ static U32 _GetPixelsPerSecond(void) {
 *       GUIDEMO_Speed
 */
 void GUIDEMO_Speed(void) {
-  int      TimeStart, i;
-  U32      PixelsPerSecond;
-  unsigned aColorIndex[8];
-  int      xSize, ySize, vySize;
-  GUI_RECT Rect, ClipRect;
-  char     cText[40] = { 0 };
+  #if GUI_SUPPORT_TOUCH
+    GUI_PID_STATE State;
+  #endif
+  GUI_RECT        ClipRect;
+  GUI_RECT        Rect;
+  char            acText[40] = { 0 };
+  U32             PixelsPerSecond;
+  int             aColorIndex[8];
+  int             TimeStart;
+  int             vySize;
+  int             xSize;
+  int             ySize;
+  int             i;
 
+  GUIDEMO_ConfigureDemo("High speed", "Multi layer clipping\nHighly optimized drivers", 0);
   xSize  = LCD_GetXSize();
   ySize  = LCD_GetYSize();
   vySize = LCD_GetVYSize();
-#if SHOW_GUIDEMO_CURSOR
-  GUI_CURSOR_Hide();
-#endif
   if (vySize > ySize) {
     ClipRect.x0 = 0;
     ClipRect.y0 = 0;
@@ -122,12 +137,9 @@ void GUIDEMO_Speed(void) {
     ClipRect.y1 = ySize;
     GUI_SetClipRect(&ClipRect);
   }
-  GUIDEMO_ShowIntro("High speed",
-                    "Multi layer clipping\n"
-                    "Highly optimized drivers");
   for (i = 0; i< 8; i++) {
     aColorIndex[i] = GUI_Color2Index(_aColor[i]);
-  }  
+  }
   TimeStart = GUIDEMO_GetTime();
   for (i = 0; ((GUIDEMO_GetTime() - TimeStart) < 5000) && (GUIDEMO_CheckCancel() == 0); i++) {
     GUI_SetColorIndex(aColorIndex[i&7]);
@@ -154,30 +166,35 @@ void GUIDEMO_Speed(void) {
     if (Rect.y1 < 0) {
       Rect.y1 = 0;
     }
-    GUI_Exec();
     //
-    // Allow short breaks so we do not use all available CPU time ...
+    // There is no control window. A simple click on any position has to skip the demo.
     //
+    #if GUI_SUPPORT_TOUCH
+      GUI_PID_GetState(&State);
+      if (State.Pressed) {
+        break;
+      }
+    #endif
   }
   GUIDEMO_NotifyStartNext();
   PixelsPerSecond = _GetPixelsPerSecond();
   GUI_SetClipRect(NULL);
-  GUIDEMO_DrawBk(0);
+  GUIDEMO_AddStringToString(acText, "Pixels/sec: ");
+  GUIDEMO_AddIntToString(acText, PixelsPerSecond);
+  GUIDEMO_DrawBk();
   GUI_SetColor(GUI_WHITE);
   GUI_SetTextMode(GUI_TM_TRANS);
   GUI_SetFont(&GUI_FontRounded22);
-  GUI_DrawBitmap(&bmSeggerLogo70x35, 5, 5);
-  GUIDEMO_AddStringToString(cText, "Pixels/sec: ");
-  GUIDEMO_AddIntToString(cText, PixelsPerSecond);
-  GUI_DispStringHCenterAt(cText, xSize >> 1, (ySize - GUI_GetFontSizeY()) >> 1);
+  GUI_DispStringHCenterAt(acText, xSize / 2, (ySize - GUI_GetFontSizeY()) / 2);
+  GUIDEMO_ConfigureDemo(NULL, NULL, GUIDEMO_SHOW_CURSOR | GUIDEMO_SHOW_CONTROL);
   GUIDEMO_Delay(4000);
-#if SHOW_GUIDEMO_CURSOR
-  GUI_CURSOR_Show();
-#endif
 }
 
 #else
 
-void GUIDEMO_Speed(void) {}
+void GUIDEMO_Speed_C(void);
+void GUIDEMO_Speed_C(void) {}
 
-#endif
+#endif  // SHOW_GUIDEMO_SPEED
+
+/*************************** End of file ****************************/

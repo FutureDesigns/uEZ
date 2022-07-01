@@ -1,0 +1,47 @@
+/*-------------------------------------------------------------------------*
+ * File:  USBMSDrive.h
+ *-------------------------------------------------------------------------*
+ | Description:
+ |      USB implementation of the device side of a virtual comm port
+ |      following CDC rules.
+ *-------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------
+ * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
+ *--------------------------------------------------------------------------
+ * This file is part of the uEZ(R) distribution.  See the included
+ * uEZLicense.txt or visit http://www.teamfdi.com/uez for details.
+ *
+ *    *===============================================================*
+ *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
+ *    |             We can get you up and running fast!               |
+ *    |      See http://www.teamfdi.com/uez for more details.         |
+ *    *===============================================================*
+ *
+ *-------------------------------------------------------------------------*/
+#ifndef _USBTMC_H_
+#define _USBTMC_H_
+
+// Outbound TMC MsgIDs - host to device
+#define USBTMC_DEV_DEP_MSG_OUT              (1)
+#define USBTMC_REQUEST_DEV_DEP_MSG_IN       (2)
+#define USBTMC_VENDOR_SPECIFIC_OUT          (126)
+#define USBTMC_REQUEST_VENDOR_SPECIFIC_IN   (127)
+
+// Inbound TMC MsgIDs - device to host
+#define USBTMC_DEV_DEP_MSG_IN               (2)
+#define USBTMC_VENDOR_SPECIFIC_IN           (127)
+
+typedef struct {
+    void (*iUSBMSDriveActivity)(void *aWorkspace);
+} T_UsbTmcCallbacks;
+
+// Main Virtual Comm Functions:
+T_uezError UsbTmcInitialize(T_UsbTmcCallbacks *aCallbacks,
+                            void *aCallbackWorkspace,
+                            const char *aDeviceName);
+
+#endif // _USBTMC_H_
+
+/*-------------------------------------------------------------------------*
+ * End of File:  Usbtmc.h
+ *-------------------------------------------------------------------------*/

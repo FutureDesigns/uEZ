@@ -11,12 +11,12 @@
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
  * This file is part of the uEZ(R) distribution.  See the included
- * uEZ License.pdf or visit http://www.teamfdi.com/uez for details.
+ * uEZ License.pdf or visit http://goo.gl/UDtTCR for details.
  *
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(r) to your own hardware!   |
  *    |             We can get you up and running fast!               |
- *    |      See http://www.teamfdi.com/uez for more details.         |
+*    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
@@ -404,7 +404,7 @@ static void IClear(T_LPC1768_Timer_InterruptCallback aCallbacks[4])
 T_uezError LPC1768_Timer0_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_Timer_Workspace *p = (T_LPC1768_Timer_Workspace *)aWorkspace;
-    p->iReg = (T_LPC1768_Timer_Registers *)TIM0_BASE;
+    p->iReg = (T_LPC1768_Timer_Registers *)LPC_TIM0_BASE;
     p->iInfo = &G_Timer0_Info;
     IClear(p->iCallbacks);
 
@@ -426,7 +426,7 @@ T_uezError LPC1768_Timer0_InitializeWorkspace(void *aWorkspace)
 T_uezError LPC1768_Timer1_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_Timer_Workspace *p = (T_LPC1768_Timer_Workspace *)aWorkspace;
-    p->iReg = (T_LPC1768_Timer_Registers *)TIM1_BASE;
+    p->iReg = (T_LPC1768_Timer_Registers *)LPC_TIM1_BASE;
     p->iInfo = &G_Timer1_Info;
     IClear(p->iCallbacks);
 
@@ -448,7 +448,7 @@ T_uezError LPC1768_Timer1_InitializeWorkspace(void *aWorkspace)
 T_uezError LPC1768_Timer2_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_Timer_Workspace *p = (T_LPC1768_Timer_Workspace *)aWorkspace;
-    p->iReg = (T_LPC1768_Timer_Registers *)TIM2_BASE;
+    p->iReg = (T_LPC1768_Timer_Registers *)LPC_TIM2_BASE;
     p->iInfo = &G_Timer2_Info;
     IClear(p->iCallbacks);
 
@@ -470,7 +470,7 @@ T_uezError LPC1768_Timer2_InitializeWorkspace(void *aWorkspace)
 T_uezError LPC1768_Timer3_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC1768_Timer_Workspace *p = (T_LPC1768_Timer_Workspace *)aWorkspace;
-    p->iReg = (T_LPC1768_Timer_Registers *)TIM3_BASE;
+    p->iReg = (T_LPC1768_Timer_Registers *)LPC_TIM3_BASE;
     p->iInfo = &G_Timer3_Info;
     IClear(p->iCallbacks);
 

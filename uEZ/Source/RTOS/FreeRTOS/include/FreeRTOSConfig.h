@@ -224,7 +224,8 @@ to exclude the API function. */
     #ifdef __NVIC_PRIO_BITS
         #define configPRIO_BITS       __NVIC_PRIO_BITS
     #else
-        #define configPRIO_BITS       5        /* 32 priority levels */
+//CS, LPC43xx not setup properly
+        #define configPRIO_BITS       3        /* 32 priority levels */
     #endif
 
     /* The lowest priority. */
@@ -264,6 +265,7 @@ to exclude the API function. */
 #define VICVectCntl5 VICVectPriority5
 
 // New to FreeRTOS 7.
+//ToDo: turn back on and figure out why this doesn't work
 #define configASSERT( x ) if( ( x ) == 0 ) \
     { extern void UEZBSP_FatalError(int aCode); \
         UEZBSP_FatalError(25); }
