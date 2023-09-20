@@ -65,6 +65,14 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 #define UEZ_PROCESSOR                       NXP_LPC1788
 
+#ifndef UEZ_ENABLE_TOUCHSCREEN_CALIBRATION
+  #if (USE_RESISTIVE_TOUCH == 1)
+    #define UEZ_ENABLE_TOUCHSCREEN_CALIBRATION 1
+  #else
+    #define UEZ_ENABLE_TOUCHSCREEN_CALIBRATION 1
+  #endif
+#endif
+
 #ifndef UEZ_NUM_HANDLES
 #define UEZ_NUM_HANDLES           150 // more than the average number of handles
 #endif
@@ -104,29 +112,29 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Platform Volume Settings:
  *-------------------------------------------------------------------------*/
+// AMP constants
 #define AUDIO_AMP_NONE                        0   // Unique number per AMP
 #define AUDIO_AMP_TDA8551                     1
 #define AUDIO_AMP_WOLFSON                     2
 #define AUDIO_AMP_LM48110                     3
+// Max output limit changes based on AMP
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output for SMS1515-08H04 LF Speaker (8 OHM,87db,0.5W)
+
+#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 // Limit audio to 0.5W output
+#endif
 
 // Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level // will lower OB speaker level
+    #define UEZ_DEFAULT_AUDIO_LEVEL  192 // default master volume level in range of 0-255. Will be scaled to allowed AMP volume.
 #endif
-
-#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
-    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  140 // Limit audio to 0.5W output
-#endif
-
-// Max output limit changes based on AMP
-#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
-#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output
 
 // Define these for your own speakers or headphones.
 #ifndef UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL
     #define UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL  255
 #endif
-#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL
+#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL // Onboard headphones use the built-in headphone jack if present.
     #define UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL  255
 #endif
 #ifndef UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL

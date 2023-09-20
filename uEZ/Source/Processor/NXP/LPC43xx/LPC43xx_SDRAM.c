@@ -245,7 +245,23 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
 //        LPC_EMC->DynamicConfig3 = dynconfig;
     }
 
-    LPC_EMC->DYNAMICRASCAS0 = 0x00000303;
+    TUInt32 rasCas = 0;
+    if(aConfig->iCAS == SDRAM_CAS_3) {
+      rasCas += 0x0003;
+    } else if (aConfig->iCAS == SDRAM_CAS_2) {
+      rasCas += 0x0002;
+    } else {
+        UEZFailureMsg("SDRAM Init");
+    }
+    if(aConfig->iRAS == SDRAM_RAS_3) {
+      rasCas += 0x0300;
+    } else if (aConfig->iRAS == SDRAM_RAS_2) {
+      rasCas += 0x0200;
+    } else {
+        UEZFailureMsg("SDRAM Init");
+    }
+
+    LPC_EMC->DYNAMICRASCAS0 = rasCas;
     // Command delayed strategy, using EMCCLKDELAY
     LPC_EMC->DYNAMICREADCONFIG = 0x00000001; // Command delayed by EMC_CCLK /2
     //LPC_EMC->DYNAMICREADCONFIG = 0x00000002; // Command delayed by EMC_CCLK /2 plus 1 clock cycle
@@ -323,10 +339,19 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
         }
     }
 
+    TUInt32 casMode = 0;
+    if(aConfig->iCAS == SDRAM_CAS_3) {
+      casMode = EMC_DYN_MODE_CAS_3;
+    } else if (aConfig->iCAS == SDRAM_CAS_2) {
+      casMode = EMC_DYN_MODE_CAS_2;
+    } else {
+        UEZFailureMsg("SDRAM Init");
+    }
+
     // setup internal SDRAM mode command
     devBusWidth = EMC_DYN_MODE_WBMODE_PROGRAMMED | //(0<<9)
     EMC_DYN_MODE_OPMODE_STANDARD | //(0<<7)
-    EMC_DYN_MODE_CAS_3 | //(3<<4)
+    casMode | //(3<<4) or (2<<4) 
     EMC_DYN_MODE_BURST_TYPE_SEQUENTIAL | //(0<<3)
     EMC_DYN_MODE_BURST_LEN_4; //(2)
     // Use read command at specific address to set SDRAM mode register.

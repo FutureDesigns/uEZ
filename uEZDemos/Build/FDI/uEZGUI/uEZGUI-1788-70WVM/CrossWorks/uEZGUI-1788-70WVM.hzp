@@ -31,11 +31,11 @@
       arm_architecture="v7M"
       arm_compiler_variant="gcc"
       arm_core_type="Cortex-M3"
+      arm_debugIO_Implementation="None"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
-      arm_debugIO_Implementation="None"
       arm_link_debugio_type="None"
-      arm_linker_heap_size="920000"
+      arm_linker_heap_size="905000"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
       arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll"
@@ -144,23 +144,22 @@
         </folder>
         <folder Name="uEZDemoCommon">
           <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/App_RTOS.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/App_RTOS.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/BrightnessControlMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Calibration.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Calibration.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/ConsoleMode.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/DrawMode.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FuncTestFramework.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTestLoop.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.c">
             <configuration
               Name="THUMB Flash Debug"
@@ -173,10 +172,11 @@
               build_exclude_from_build="No" />
           </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTestLoop.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/MultiSlideshowMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Slideshow.h" />
@@ -187,19 +187,19 @@
           <file file_name="../../../../../Source/App/uEZDemoCommon/TimeDateMode.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayerSelection.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h" />
         </folder>
         <folder Name="uEZGUI">
           <file file_name="../../../../../Source/App/uEZGUI/AppDemo.h" />
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c" />
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h" />
           <file file_name="../../../../../Source/App/uEZGUI/Config_App.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c" />
           <file file_name="../../../../../Source/App/uEZGUI/main.c" />
+          <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c" />
         </folder>
       </folder>
       <folder Name="ExpansionBoard">
@@ -245,13 +245,13 @@
         <folder Name="NXP">
           <folder Name="LPC17xx_40xx">
             <folder Name="CMSIS">
-              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm3.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
             </folder>

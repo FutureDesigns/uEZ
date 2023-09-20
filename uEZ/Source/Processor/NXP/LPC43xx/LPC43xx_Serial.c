@@ -86,7 +86,6 @@ typedef struct {
     T_irqPriority iPriority;
     T_16550UART *iUART;
     TISRFPtr iISR;
-    TUInt8 iPowerBitIndex; // PCONP bit to set
 } T_Serial_LPC43xx_SerialInfo;
 
 typedef struct {
@@ -705,12 +704,15 @@ const HAL_Serial G_LPC43xx_Serial_UART3 = {
         0,
         LPC43xx_Serial_GetStatus, };
 	
+
+
+
+#ifdef CORE_M4
 const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART0 = {
         USART0_IRQn,
         INTERRUPT_PRIORITY_HIGH,
         (T_16550UART *)LPC_USART0_BASE,
         (TISRFPtr)ISerialUART0,
-        3, // PCUART0
         };
 
 const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART1 = {
@@ -718,7 +720,6 @@ const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART1 = {
         INTERRUPT_PRIORITY_HIGH,
         (T_16550UART *)LPC_UART1_BASE,
         (TISRFPtr)ISerialUART1,
-        4, // PCUART1
         };
 
 const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART2 = {
@@ -726,7 +727,6 @@ const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART2 = {
         INTERRUPT_PRIORITY_HIGH,
         (T_16550UART *)LPC_USART2_BASE,
         (TISRFPtr)ISerialUART2,
-        24, // PCUART2
         };
 
 const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART3 = {
@@ -734,8 +734,67 @@ const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART3 = {
         INTERRUPT_PRIORITY_HIGH,
         (T_16550UART *)LPC_USART3_BASE,
         (TISRFPtr)ISerialUART3,
-        25, // PCUART3
         };
+#endif
+#ifdef CORE_M0
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART0 = {
+        M0_USART0_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_USART0_BASE,
+        (TISRFPtr)ISerialUART0,
+        };
+
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART1 = {
+        M0_UART1_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_UART1_BASE,
+        (TISRFPtr)ISerialUART1,
+        };
+
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART2 = {
+        M0_USART2_OR_C_CAN1_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_USART2_BASE,
+        (TISRFPtr)ISerialUART2,
+        };
+
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART3 = {
+        M0_USART3_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_USART3_BASE,
+        (TISRFPtr)ISerialUART3,
+        };
+#endif
+#ifdef CORE_M0SUB
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART0 = {
+        M0S_USART0_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_USART0_BASE,
+        (TISRFPtr)ISerialUART0,
+        };
+
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART1 = {
+        M0S_UART1_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_UART1_BASE,
+        (TISRFPtr)ISerialUART1,
+        };
+
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART2 = {
+        MS0_USART2_OR_C_CAN1_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_USART2_BASE,
+        (TISRFPtr)ISerialUART2,
+        };
+
+const T_Serial_LPC43xx_SerialInfo G_LPC43xx_Serial_Info_UART3 = {
+        M0S_USART3_IRQn,
+        INTERRUPT_PRIORITY_HIGH,
+        (T_16550UART *)LPC_USART3_BASE,
+        (TISRFPtr)ISerialUART3,
+        };
+#endif
+
 
 /*---------------------------------------------------------------------------*
  * Requirement routines:

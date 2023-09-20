@@ -9,14 +9,22 @@
 
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 
+#define UEZGUI_4357_50WVN_REV               2 // For Rev 1 change to 1. Need to reduce SDRAM size in projects to 16MB.
+
 // For Rev 2.1 units and later Newhaven updated the LCD (but kept the same PN) so use the Rev2 option for correct alignment.
 // You cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
-//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF // Original version of LCD
+#if (UEZGUI_4357_50WVN_REV == 2)
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2 // Rev 2 version of LCD
+#else
+// For Rev 1.X units the UEZBSP_SDRAM_SIZE is 16MB and the project files need to be changed for 16MB only.
+#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF // Original version of LCD
+#endif
+
 #define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
-
+#define APP_ENABLE_HEARTBEAT_LED            1
+#define LPC43XX_ENABLE_M0_CORES             0 // 1 to start M0 core. Should program M0 app first.
 
 #ifdef NDEBUG
 #define UEZ_REGISTER              	        0
@@ -69,12 +77,12 @@
 #define APP_DEMO_DRAW                       1
 #define APP_DEMO_APPS                       1
 #define APP_DEMO_SLIDESHOW                  1
-#define APP_DEMO_VIDEO_PLAYER               1 // must not include in QSPI!
+#define APP_DEMO_VIDEO_PLAYER               1
 
 #define INCLUDE_EMWIN                       1
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
 #ifndef FREERTOS_PLUS_TRACE
-#define APP_DEMO_COM                        1
+#define APP_DEMO_COM                        0
 #endif
 
 // smaller demos

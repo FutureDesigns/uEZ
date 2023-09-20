@@ -45,6 +45,8 @@
 #define ID_RADIO_TESTLEN        (GUI_ID_USER + 0x0C)
 #define ID_BUTTON_STRESS_BEGIN  (GUI_ID_USER + 0x0D)
 #define ID_BUTTON_STRESS_END    (GUI_ID_USER + 0x0E)
+#define ID_TEXT_SDCARDAVAIL     (GUI_ID_USER + 0x0F)
+#define ID_TEXT_USBAVAIL        (GUI_ID_USER + 0x10)
 
 // auto screen sizing defines
 #if(UEZ_DEFAULT_LCD == LCD_RES_WVGA)
@@ -100,6 +102,9 @@ static TBool IHandleCapture(WM_MESSAGE * pMsg, int aNCode, int aID);
  *---------------------------------------------------------------------------*/
 WM_HWIN hMultiedit;
 
+extern TBool G_SDCard_inserted;
+extern TBool G_USBFlash_inserted;
+
 /** Structure to hold all of the widgets used in this dialog */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {               //XP          YP               XS           YS
   { WINDOW_CreateIndirect, "Window", ID_WINDOW,                         0, 0, WINDOW_XSIZE, WINDOW_YSIZE, 0, 0x0, 0 },
@@ -108,6 +113,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {               //XP     
   { RADIO_CreateIndirect, "Radio_SelectMedium", ID_RADIO_SELMED,        BUTTON_XPOS(0), TEXT_YPOS(2), TEXT_XSIZE, 3*TEXT_YSIZE, 0, 0x1402, 0 },
   { TEXT_CreateIndirect, "Text_TestLength", ID_TEXT_TESTLEN,            BUTTON_XPOS(0), TEXT_YPOS(4),TEXT_XSIZE, TEXT_YSIZE, 0, 0x64, 0 },
   { RADIO_CreateIndirect, "Radio", ID_RADIO_TESTLEN,                    BUTTON_XPOS(0), TEXT_YPOS(5), TEXT_XSIZE, 5*TEXT_YSIZE, 0, 0x1403, 0 },
+  { TEXT_CreateIndirect, "", ID_TEXT_USBAVAIL,                          BUTTON_XPOS(0), TEXT_YPOS(8),TEXT_XSIZE, TEXT_YSIZE, 0, 0x64, 0 },
+  { TEXT_CreateIndirect, "", ID_TEXT_SDCARDAVAIL,                       BUTTON_XPOS(0), TEXT_YPOS(9),TEXT_XSIZE, TEXT_YSIZE, 0, 0x64, 0 },
   //{ BUTTON_CreateIndirect, "Button_FormatMedium", ID_BUTTON_FORMAT,     BUTTON_XPOS(0), BUTTON_YPOS(4), BUTTON_XSIZE, BUTTON_YSIZE, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Button_FormatMedium", ID_BUTTON_FORMAT,     (WINDOW_XSIZE-BUTTON_XSIZE-SPACING)/2, WINDOW_YSIZE-BUTTON_YSIZE-SPACING, BUTTON_XSIZE, BUTTON_YSIZE, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Button_SmallFileTest", ID_BUTTON_FTSMALL,   BUTTON_XPOS(1), BUTTON_YPOS(0), BUTTON_XSIZE, BUTTON_YSIZE, 0, 0x0, 0 },
@@ -152,6 +159,8 @@ static T_LAFMapping StorageWindowMapping[] = {
     { ID_RADIO_SELMED  , "" , GUI_BLACK, GUI_WHITE, STORAGE_TEXT_SIZE, LAFSetupRadioText, 0},
     { ID_TEXT_TESTLEN  , "" , GUI_BLACK, GUI_WHITE, STORAGE_TEXT_SIZE, LAFSetupText, 0},
     { ID_RADIO_TESTLEN  , "" , GUI_BLACK, GUI_WHITE, STORAGE_TEXT_SIZE, LAFSetupRadioText, 0},
+    { ID_TEXT_SDCARDAVAIL  , "" , GUI_BLACK, GUI_WHITE, STORAGE_TEXT_SIZE, LAFSetupText, 0},
+    { ID_TEXT_USBAVAIL  , "" , GUI_BLACK, GUI_WHITE, STORAGE_TEXT_SIZE, LAFSetupText, 0},
     {0},
 };
 
@@ -239,12 +248,27 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
-    Id = WM_GetId(pMsg->hWinSrc);
-        NCode = pMsg->Data.v;
         if( !LAFHandleEvent(StorageWindowMapping, pMsg, NCode, Id))
         {
             //Handle special cases here
         }
+    break;
+  case WM_PAINT:
+    Id    = WM_GetId(pMsg->hWinSrc);
+    NCode = pMsg->Data.v;
+    hItem = pMsg->hWin;
+
+    if(G_SDCard_inserted == ETrue) {
+      hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_SDCARDAVAIL);
+      TEXT_SetTextColor(hItem, GUI_MAKE_COLOR(0x00FFFF00));
+      TEXT_SetText(hItem, "SDC Avail");
+    }
+    if(G_USBFlash_inserted == ETrue) {
+      hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_USBAVAIL);
+      TEXT_SetTextColor(hItem, GUI_MAKE_COLOR(0x00FFFF00));
+      TEXT_SetText(hItem, "USB Avail");
+    }
+
     break;
   default:
     WM_DefaultProc(pMsg);

@@ -944,10 +944,10 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
     Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
             aWriteBufferSize, aReadBufferSize);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*
@@ -1563,10 +1563,10 @@ void UEZPlatform_Standard_Require(void)
     RTT_enable_additional_buffers(); // enable additional buffers        
     Stream_RTT_Create("Console");
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 #elif (PRINTF_ON_UART_2 == 1)
     UEZPlatform_Console_FullDuplex_UART2_Require(1024, 1024); //J6 pins 8/10    
 #elif (PRINTF_ON_UART_3 == 1)
@@ -1575,7 +1575,7 @@ void UEZPlatform_Standard_Require(void)
     #error Choose a printf output source!
 #endif
 
-    UEZPlatform_IRTC_Require();
+    //UEZPlatform_IRTC_Require(); // Only init RTC after main task to prevent boot stall.
 
     UEZPlatform_Temp0_Require();//Added in Rev two hardware
     

@@ -67,7 +67,13 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #define BK_COLOR_0        GUI_MAKE_COLOR(0xFFFF5555)
 #define BK_COLOR_1        GUI_MAKE_COLOR(0xFF880000)
 #define NUMBYTES_NEEDED   0x200000UL
+
+#if ((DISPLAY_WIDTH*DISPLAY_HEIGHT) > 140000) // Any elements that need to change size?
 #define CIRCLE_RADIUS     100
+#else
+#define CIRCLE_RADIUS     100
+#endif
+
 #define LOGO_DIST_BORDER  5
 #define CHAR_READING_TIME 80
 #define XSIZE_MIN         320

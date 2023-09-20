@@ -199,7 +199,7 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
     while(us--);
 
     //Ramp up to full speed
-    IPLLSetup1((T_pllRegs *)LPC_CGU, aFreq->iPLL1Frequency, aFreq->iOscillatorClockHz);
+    IPLLSetup1((T_pllRegs *)LPC_CGU, aFreq->iPLL1Frequency, aFreq->iOscillatorClockHz); // TODO support 200MHz/50MHz SD properly if possible
 
     TUInt32 n,c,temp;
     int32_t i;
@@ -243,11 +243,17 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
 
     G_EMCFrequency = G_ProcessorFrequency / aFreq->iEMCClockDivider;
 
-    LPC_SCU->SFSCLK_0 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0;            /* CLK0*/
-    LPC_SCU->SFSCLK_1 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0;            /* CLK1*/
-    LPC_SCU->SFSCLK_2 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0;            /* CLK2*/
-    LPC_SCU->SFSCLK_3 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0;            /* CLK3*/
-
+    // Per UM All four EMC_CLK clock signals must be configured for all SDRAM devices by selecting the EMC_CLK function and enabling the input buffer (EZI = 1) in all four SFSCLKn registers.
+    
+    // From Errata: When using only one external chip, use the CLK1 or CLK3 pin to drive the SDRAM clock for best performance. 
+    // CLK0 and CLK2 pins are used for SDRAM read capture feedback clocks and must not be used for any other function.
+    
+    // We cannot change ANY of the other 3 pins to another mode or SDRAM will stop operating, even though we only connected one clock pin.
+    LPC_SCU->SFSCLK_0 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0; // CLK0 - Disable input filter, enable input buffer, high speed EHFS, disable pull-up/pull-down, func 0 SDRAM clock
+    LPC_SCU->SFSCLK_1 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0; // CLK1 - Disable input filter, enable input buffer, high speed EHFS, disable pull-up/pull-down, func 0 SDRAM clock
+    LPC_SCU->SFSCLK_2 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0; // CLK2 - Disable input filter, enable input buffer, high speed EHFS, disable pull-up/pull-down, func 0 SDRAM clock
+    LPC_SCU->SFSCLK_3 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 0; // CLK3 - Disable input filter, enable input buffer, high speed EHFS, disable pull-up/pull-down, func 0 SDRAM clock
+    
     LPC_CGU->BASE_PERIPH_CLK = (9<<24) | (1<<11);
     G_PeripheralFrequency = G_ProcessorFrequency;
 
@@ -291,8 +297,6 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
     LPC_CGU->BASE_APB1_CLK = (9<<24) | (1<<11);
     LPC_CGU->BASE_APB3_CLK = (9<<24) | (1<<11);
 
-    LPC_CGU->BASE_OUT_CLK = (1<<24);
-
     LPC_CCU2->CLK_APB2_USART3_CFG = 3;
 
     //1KHz and 32KHz enabled
@@ -310,17 +314,40 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
 
     LPC_CGU->PLL0USB_CTRL |= (1<<4); // enable clock
 
-    LPC_CCU1->CLK_M4_USB0_CFG = 3;
-    LPC_CCU1->CLK_M4_USB1_CFG = 3;
+    LPC_CCU1->CLK_M4_USB0_CFG = 3; // enabled, auto AHB disable enabled, no wakeup
+    LPC_CCU1->CLK_M4_USB1_CFG = 3; // enabled, auto AHB disable enabled, no wakeup
 
     G_USBFrequency = 48000000;
+    
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1) // Don't turn on clocks we currently only use for extra cores.
+#else
+    // This clock can be divided by up to 16. // Same as calling Chip_RGU_ClearReset(RGU_M0APP_RST); //
+    LPC_CCU1->CLK_M4_M0APP_CFG = (0<<5) | (1<<2) | (1<<1) | (1<<0); // enabled, auto AHB disable enabled, wakeup, no div (204MHz)
 
-    if(aFreq->iClockOutEnable == EFalse){ // DIsable all 3 clock out signals. Note that pins shouldn't be enabled.
+    // This clock can't be divided further from the CCU source clock. RITIMER clock normally used for simple tick/time keeping.
+    LPC_CCU1->CLK_M4_RITIMER_CFG = (0<<5) | (1<<2) | (1<<1) | (1<<0); // enabled, auto AHB disable enabled, wakeup (204MHz)
+#endif
+
+    if(aFreq->iClockOutEnable == EFalse){ // DIsable all 3 clock out signals. Note that pins shouldn't be enabled. Note that all 4 pins will output EMC 102MHz clock!
       LPC_CGU->BASE_OUT_CLK = 1;      // Power down output pin, 32KHz crystal, no autoblock
       LPC_CGU->BASE_CGU_OUT0_CLK = 1; // Power down output pin, 32KHz crystal, no autoblock
       LPC_CGU->BASE_CGU_OUT1_CLK = 1; // Power down output pin, 32KHz crystal, no autoblock
-    } else {
-      // TODO enable a clcok out pin here, but which pin?
+    } else { // enable 2 clock out pins, but we can't boot up SDRAM anymore
+      LPC_SCU->SFSCLK_0 = ((1 << 7) | (0 << 6) | (1 << 5) | (1 << 4)) | 1; // CLK0 - Disable input filter, disable input buffer, high speed EHFS, disable pull-up/pull-down, func 1 CLKOUT
+      LPC_SCU->SFSCLK_3 = ((1 << 7) | (0 << 6) | (1 << 5) | (1 << 4)) | 5; // CLK3 - Disable input filter, disable input buffer, high speed EHFS, disable pull-up/pull-down, func 5 CGU_OUT1
+  
+      LPC_CGU->BASE_OUT_CLK = CGU_BASE_OUT_CLK_AUTOBLOCK_Msk | (0x00 <<CGU_BASE_CGU_OUT1_CLK_CLK_SEL_Pos); // Enabled, 32KHz crystal, autoblock
+
+      // P8_8 and CLK1 not availabe for CGU_OUT0 testing
+      //LPC_CGU->BASE_CGU_OUT0_CLK = CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk | (0x06 <<CGU_BASE_CGU_OUT1_CLK_CLK_SEL_Pos); // Enabled, 12MHz crystal, autoblock
+
+      // CLK3 pin is available for testing.
+      //LPC_CGU->BASE_CGU_OUT1_CLK = CGU_BASE_CGU_OUT1_CLK_AUTOBLOCK_Msk | (0x07 <<CGU_BASE_CGU_OUT1_CLK_CLK_SEL_Pos); // Enabled, USB, autoblock      
+      LPC_CGU->BASE_CGU_OUT1_CLK = CGU_BASE_CGU_OUT1_CLK_AUTOBLOCK_Msk | (0x06 <<CGU_BASE_CGU_OUT1_CLK_CLK_SEL_Pos); // Enabled, 12MHz crystal, autoblock
+      
+      LPC_CREG->CREG0 &= ~((1 << 3) | (1 << 2));	/* Reset 32Khz oscillator, enable 32K power */
+      LPC_CREG->CREG0 |= (1 << 0) | (1 << 1); // enable 32k and 1k output
+      while (1) {} // We can't boot with SDRAM any longer (even though we didn't change the pin connected to SDRAM), so stop here.
     }
 }
 

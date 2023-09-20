@@ -31,23 +31,23 @@
 #define INTERRUPT_BASED_EMAC        1
 
 #ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY  1 // enabled not working
+#define configUSE_TRACE_FACILITY  1
 #define configUSE_TIMERS          1
 #define USE_PRIMASK_CS            1
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#ifdef NDEBUG
+#ifdef NDEBUG // release build settings
 #define UEZ_REGISTER              0
+#define UEZ_DEBUG_HEAVY_ASSERTS   0 // set to 0 to disble some assert code
 
-#define configUSE_TRACE_FACILITY      0
-//#define configGENERATE_RUN_TIME_STATS 0
-#else
+#else // debug build settings
 #define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_DEBUG_HEAVY_ASSERTS   1 
 
-#define configUSE_TRACE_FACILITY      1
-//#define configGENERATE_RUN_TIME_STATS 0
 #endif
+
+#define DEBUG_HTTP_SERVER           	      0
 
 #define NETWORK_LWIP_MAX_NUM_SOCKETS          16
 
@@ -64,6 +64,7 @@
 #ifdef DISABLE_FEATURES_FOR_BOOTLOADER
 #define FREERTOS_HEAP_SELECTION         2 // default Heap for bootloader, less code space than 4.
 #else
+//#define FREERTOS_HEAP_SELECTION         4 // Need Heap 2, 4, 5 for heap monitoring. TODO
 #define FREERTOS_HEAP_SELECTION         3 // default Heap for all other projects
 // TODO switch default demo projects to use heap 4
 #endif
@@ -86,9 +87,8 @@
 // TODO see https://www.freertos.org/a00111.html#heap_5.
 #endif
 
+#define ALLOW_LOCKING_XSPI_OTP 0 // set to 1 to allow sending WRSCUR command for 512/1024 byte hidden region in spifiLockOtp function.
+
 #ifdef DISABLE_FEATURES_FOR_BOOTLOADER
 #define DISABLE_UEZ_FATAL_ERROR         1
-
 #endif
-
-#define ALLOW_LOCKING_XSPI_OTP 0 // set to 1 to allow sending WRSCUR command for 512/1024 byte hidden region in spifiLockOtp function.

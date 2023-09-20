@@ -791,11 +791,16 @@ static HCD_STATUS QueueSITDs(uint8_t HostID, uint8_t HeadIdx, uint8_t *dataBuff,
 }
 
 static HCD_STATUS WaitForTransferComplete(uint8_t HostID, uint8_t EdIdx)/* TODO indentical to OHCI now */
-{
-
+{ // https://community.nxp.com/t5/LPC-Microcontrollers/Reasonable-timeout-in-Mass-storage-class-WaitForTransferComplete/m-p/897076?tstart=0
+        //TUInt32 i = 5000; // TODO validate timeout code if we ever really need it.
 #ifndef __TEST__
 	while ( HcdQHD(HostID, EdIdx)->status == HCD_STATUS_TRANSFER_QUEUED ) {
-		/* Should have time-out but left blank intentionally for bug catcher */
+          /* Should have time-out but left blank intentionally for bug catcher */
+          /*i--;
+          UEZTaskDelay(1);
+          if(i == 0){
+            break;
+          }*/
 	}
 	return (HCD_STATUS) HcdQHD(HostID, EdIdx)->status;
 #else
@@ -967,13 +972,13 @@ static void RemoveCompletedQTD(uint8_t HostID, PHCD_QHD pQhd)
 	pQhd->FirstQtd = TdLink;
 	if(is_data_remain)
 	{
-		uint32_t pQtd;
-		QueueQTDs(HostID, &pQtd,(uint8_t*)PipeStreaming[HostID].BufferAddress,
+		uint32_t pQtd; // TODO is this supposed to be the same variable as above? This seems to work ok with USB Host
+		QueueQTDs(HostID, (uint32_t* )&pQtd,(uint8_t*)PipeStreaming[HostID].BufferAddress,
 				PipeStreaming[HostID].RemainBytes,
 				pQhd->Direction ? IN_TRANSFER : OUT_TRANSFER,
 				PipeStreaming[HostID].DataToggle);
-		pQhd->FirstQtd = Align32( (uint32_t) HcdQTD(HostID,pQtd) );
-		pQhd->Overlay.NextQtd = (uint32_t) HcdQTD(HostID,pQtd);
+		pQhd->FirstQtd = Align32( (uint32_t) HcdQTD(HostID,(uint32_t)pQtd) );
+		pQhd->Overlay.NextQtd = (uint32_t) HcdQTD(HostID, (uint32_t)pQtd);
 	}	
 }
 

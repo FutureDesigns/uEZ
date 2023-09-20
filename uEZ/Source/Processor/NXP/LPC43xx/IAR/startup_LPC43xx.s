@@ -67,15 +67,15 @@ __vector_table_0x1c
         DCD     0
         DCD     0
         DCD     0
-        DCD     vPortSVCHandler ;SVC_Handler
+        DCD     vPortSVCHandler ; SVC_Handler
         DCD     DebugMon_Handler
         DCD     0
-        DCD     xPortPendSVHandler ;PendSV_Handler
-        DCD     xPortSysTickHandler ;SysTick_Handler
+        DCD     xPortPendSVHandler ; PendSV_Handler
+        DCD     xPortSysTickHandler ; SysTick_Handler
 
         ; External Interrupts
         DCD   DAC_IRQHandler         ; 16 D/A Converter
-        DCD   M0CORE_IRQHandler      ; 17 CortexM0
+        DCD   M0APP_IRQHandler       ; 17 CortexM0
         DCD   DMA_IRQHandler         ; 18 General Purpose DMA
         DCD   0                      ; 19 Reserved
         DCD   FLASHEEPROM_IRQHandler ; 20 FlashEEPROM
@@ -216,10 +216,10 @@ SysTick_Handler
 DAC_IRQHandler
         B DAC_IRQHandler
 
-        PUBWEAK M0CORE_IRQHandler
+        PUBWEAK M0APP_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
-M0CORE_IRQHandler
-        B M0CORE_IRQHandler
+M0APP_IRQHandler
+        B M0APP_IRQHandler
 
         PUBWEAK DMA_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)

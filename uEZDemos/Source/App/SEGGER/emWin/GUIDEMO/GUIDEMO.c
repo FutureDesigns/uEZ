@@ -23,10 +23,22 @@ Purpose     : Several GUIDEMO routines
 #include "GUI.h"
 #include "GUIDEMO.h"
 
+#include <uEZ.h>
+#include <uEZLCD.h>
+#include <string.h>
+
+#include <Config_App.h>
+
 //
 // Recommended memory to run the sample with adequate performance
 //
+
+#if ((DISPLAY_WIDTH*DISPLAY_HEIGHT) > 140000)
+#define RECOMMENDED_MEMORY (1024L * 3000)
+#else
 #define RECOMMENDED_MEMORY (1024L * 2200)
+#endif
+
 
 /*********************************************************************
 *

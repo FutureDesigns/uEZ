@@ -44,7 +44,7 @@ void Storage_Initialize(void);
 void Storage_SetLogHandel(WM_HWIN hMultiedit);
 void Storage_BeginStressTest(void);
 void Storage_EndStressTest(void);
-void Storage_PrintInfo(char driveLetter);
+TBool Storage_PrintInfo(char driveLetter);
 
 #endif // STORAGE_CALLBACK_H_
 /*-------------------------------------------------------------------------*

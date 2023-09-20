@@ -27,7 +27,7 @@
 #include <Device/ADCBank.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
-#include <uEZTimeDate.h>
+//#include <uEZTimeDate.h>
 #include <uEZLCD.h>
 #include "uEZDemoCommon.h"
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>

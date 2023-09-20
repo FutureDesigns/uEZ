@@ -175,14 +175,38 @@ T_uezError UEZ_LPCUSBLib_Device_Require(int32_t aUnitAddress, T_LPCUSBLib_Device
 
     if (aUnitAddress == 0) {
         // Ensure the interrupt is registers for USB0
+#ifdef CORE_M4
         if (!InterruptIsRegistered(USB0_IRQn))
             InterruptRegister(USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
                 INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
+#ifdef CORE_M0
+        if (!InterruptIsRegistered(M0_USB0_IRQn))
+            InterruptRegister(M0_USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
+#ifdef CORE_M0SUB
+        if (!InterruptIsRegistered(M0S_USB0_IRQn))
+            InterruptRegister(M0S_USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
     } else {
         // Ensure the interrupt is registers for USB1
+#ifdef CORE_M4
         if (!InterruptIsRegistered(USB1_IRQn))
             InterruptRegister(USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
                 INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
+#ifdef CORE_M0
+        if (!InterruptIsRegistered(M0_USB1_IRQn))
+            InterruptRegister(M0_USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
+#ifdef CORE_M0SUB
+        if (!InterruptIsRegistered(M0S_USB1_IRQn))
+            InterruptRegister(M0S_USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
     }
 
     // If we have callbacks, register them now
@@ -195,15 +219,19 @@ T_uezError UEZ_LPCUSBLib_Device_Require(int32_t aUnitAddress, T_LPCUSBLib_Device
     if (aUnitAddress == 0) {
         Chip_USB0_Init();
         USB_Init(0, USB_MODE_Device);
+        
+        // Other speed modes don't work on our HW.
+        HAL_USBForceFullSpeed(aUnitAddress, 1); // Force the full speed
+    } else {
+        Chip_USB1_Init();
+        USB_Init(1, USB_MODE_Device);
+
         // For now, force to Full Speed until we figure out how to do high speed
-        if (aForceFullspeed) {
+        if (aForceFullspeed == 1) {
             HAL_USBForceFullSpeed(aUnitAddress, 1);
         } else {
             HAL_USBForceFullSpeed(aUnitAddress, 0);
         }
-    } else {
-        Chip_USB1_Init();
-        USB_Init(1, USB_MODE_Device);
     }
 
     if (G_usbDevTask == 0) {
@@ -328,15 +356,45 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
     error = UEZ_LPCUSBLib_Require();
 
     if (aUnitAddress == 0) {
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB1 only off board usb
+#else
         // Ensure the interrupt is registers for USB0
+#ifdef CORE_M4
         if (!InterruptIsRegistered(USB0_IRQn))
             InterruptRegister(USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
                 INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
+#ifdef CORE_M0
+        if (!InterruptIsRegistered(M0_USB0_IRQn))
+            InterruptRegister(M0_USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
+#ifdef CORE_M0SUB
+        if (!InterruptIsRegistered(M0S_USB0_IRQn))
+            InterruptRegister(M0S_USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB0");
+#endif
+#endif
     } else {
+//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB0 only onboard usb
+//#else
         // Ensure the interrupt is registers for USB1
+#ifdef CORE_M4
         if (!InterruptIsRegistered(USB1_IRQn))
             InterruptRegister(USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
                 INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
+#ifdef CORE_M0
+        if (!InterruptIsRegistered(M0_USB1_IRQn))
+            InterruptRegister(M0_USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
+#ifdef CORE_M0SUB
+        if (!InterruptIsRegistered(M0S_USB1_IRQn))
+            InterruptRegister(M0S_USB1_IRQn, LPCUSBLib_USB1_IRQHandler,
+                INTERRUPT_PRIORITY_NORMAL, "USB1");
+#endif
+//#endif
     }
 
     // If we have callbacks, register them now
@@ -347,27 +405,42 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
 
     // Note that we probably call this function multiple times when it should be called only once so we shouldn't shut off clocks here.
     if (aUnitAddress == 0) {
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER  // Allow USB1 only off board USB
+#else
         //USB_Disable(0, USB_MODE_Host);
         Chip_USB0_Init();
         USB_Init(0, USB_MODE_Host);
+#endif
     } else {
+//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER  // Allow USB0 only on board USB
+//#else
         //USB_Disable(1, USB_MODE_Host);
         Chip_USB1_Init();
         USB_Init(1, USB_MODE_Host);
+//#endif
     }
 
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER   // Allow USB1 only off board USB
+    HAL_USBForceFullSpeed(aUnitAddress, 1); // Force the full speed USB1 port
+#else
+    
     if (aUnitAddress == 0) { // Other speed modes don't work on our HW.
        HAL_USBForceFullSpeed(aUnitAddress, 1); // Force the full speed
     }
 
     if (aUnitAddress == 1) { // This port only goes to one spot. With ULPI HW could do high speed mode someday. (maybe)
       // Force the full speed?
-      if (aForceFullspeed) {
+      if (aForceFullspeed == 1) {
           HAL_USBForceFullSpeed(aUnitAddress, 1);
       } else {
           HAL_USBForceFullSpeed(aUnitAddress, 0);
       }
     }
+#endif
+
+//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER   // Allow USB0 only onboard USB
+    //HAL_USBForceFullSpeed(aUnitAddress, 0); // Force the full speed USB0 port
+//#endif
 
     // Start up the host monitoring task
     if (G_usbHostTask == 0) {

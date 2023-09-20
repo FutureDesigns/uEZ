@@ -384,7 +384,7 @@ static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
             }
             IReleaseList();
             if (error == UEZ_ERROR_NONE) {
-#if UEZ_GENERIC_USBHOST_REPORT_CONNECT_DISCONNECT            
+#if (UEZ_GENERIC_USBHOST_REPORT_CONNECT_DISCONNECT == 1)
                 printf("USBHost: Device connected ... %s found\n", p_reg->iDeviceDriver->iInterface->iName);
 #endif                
                 isConnected = ETrue;
@@ -419,7 +419,7 @@ static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
                 (*p_usbHost)->Init(p_usbHost);
                 (*p_usbHost)->ResetPort(p_usbHost);
             }
-#if UEZ_GENERIC_USBHOST_REPORT_CONNECT_DISCONNECT            
+#if (UEZ_GENERIC_USBHOST_REPORT_CONNECT_DISCONNECT == 1)
             printf("USBHost: %s disconnected\n", p_reg->iDeviceDriver->iInterface->iName);
 #endif
             isConnected = EFalse;

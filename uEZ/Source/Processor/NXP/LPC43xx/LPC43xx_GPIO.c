@@ -103,6 +103,7 @@ static T_LPC43xx_GPIO_Interrupt_Workspace G_Interrupt_Workspace = {
     (TVInt32 *)&LPC_GPIO_PIN_INT->IST,
     0,
 
+#ifdef CORE_M4
     {
         PIN_INT0_IRQn,  /*!<  32  PIN_INT0 */
         PIN_INT1_IRQn,  /*!<  33  PIN_INT1 */
@@ -123,6 +124,24 @@ static T_LPC43xx_GPIO_Interrupt_Workspace G_Interrupt_Workspace = {
         "PIN_INT6",
         "PIN_INT7",
     },
+#endif
+#ifdef CORE_M0 // TODO
+    {
+        M0_PIN_INT4_IRQn,  /*!<  36  PIN_INT4 */
+    },
+    {
+        "PIN_INT4",
+    },
+#endif
+#ifdef CORE_M0SUB // TODO
+    {
+        M0S_PIN_INT5_IRQn,  /*!<  37  PIN_INT5 */
+    },
+    {
+        "PIN_INT5",
+    },
+#endif
+
 };
 
 const LPC43xx_GPIO_PortInfo GPIO_LPC43xx_Port0_PortInfo

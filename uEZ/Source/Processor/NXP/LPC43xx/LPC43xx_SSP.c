@@ -464,7 +464,16 @@ T_uezError LPC43xx_SSP_SSP0_InitializeWorkspace(void *aWorkspace)
 
     G_SSP0Workspace = p;
     p->iIsBusy = EFalse;
+
+#ifdef CORE_M4
     p->iIRQChannel = SSP0_IRQn;
+#endif
+#ifdef CORE_M0
+    p->iIRQChannel = M0_SSP0_OR_SSP1_IRQn;
+#endif
+#ifdef CORE_M0SUB
+    p->iIRQChannel = M0S_SSP0_OR_SSP1_IRQn;
+#endif
 
     //Turn on peripheral clock
     LPC_CGU->BASE_SPI_CLK = (9<<24) | (1<<11);
@@ -492,7 +501,16 @@ T_uezError LPC43xx_SSP_SSP1_InitializeWorkspace(void *aWorkspace)
 
     G_SSP1Workspace = p;
     p->iIsBusy = EFalse;
+
+#ifdef CORE_M4
     p->iIRQChannel = SSP1_IRQn;
+#endif
+#ifdef CORE_M0
+    p->iIRQChannel = M0_SSP0_OR_SSP1_IRQn;
+#endif
+#ifdef CORE_M0SUB
+    p->iIRQChannel = M0S_SSP0_OR_SSP1_IRQn;
+#endif
 
     //Turn on peripheral clock
     LPC_CGU->BASE_SPI_CLK = (9<<24) | (1<<11);
@@ -878,8 +896,18 @@ void LPC43xx_SSP0_Require(
     LPC43xx_SCU_ConfigPinOrNone(aPinMOSI0, mosi0, ARRAY_COUNT(mosi0));
 
     // Setup interrupt, but do not enable
+#ifdef CORE_M4
     InterruptRegister(SSP0_IRQn, ISSP0IRQ, INTERRUPT_PRIORITY_HIGH, "SSP0");
     InterruptDisable(SSP0_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptRegister(M0_SSP0_OR_SSP1_IRQn, ISSP0IRQ, INTERRUPT_PRIORITY_HIGH, "SSP");
+    InterruptDisable(M0_SSP0_OR_SSP1_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    InterruptRegister(M0S_SSP0_OR_SSP1_IRQn, ISSP0IRQ, INTERRUPT_PRIORITY_HIGH, "SSP");
+    InterruptDisable(M0S_SSP0_OR_SSP1_IRQn);
+#endif
 }
 
 void LPC43xx_SSP1_Require(
@@ -921,8 +949,18 @@ void LPC43xx_SSP1_Require(
     LPC43xx_SCU_ConfigPinOrNone(aPinMOSI1, mosi1, ARRAY_COUNT(mosi1));
 
     // Setup interrupt, but do not enable
+#ifdef CORE_M4
     InterruptRegister(SSP1_IRQn, ISSP1IRQ, INTERRUPT_PRIORITY_HIGH, "SSP1");
     InterruptDisable(SSP1_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptRegister(M0_SSP0_OR_SSP1_IRQn, ISSP1IRQ, INTERRUPT_PRIORITY_HIGH, "SSP");
+    InterruptDisable(M0_SSP0_OR_SSP1_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    InterruptRegister(M0S_SSP0_OR_SSP1_IRQn, ISSP1IRQ, INTERRUPT_PRIORITY_HIGH, "SSP");
+    InterruptDisable(M0S_SSP0_OR_SSP1_IRQn);
+#endif
 }
 
 /*-------------------------------------------------------------------------*

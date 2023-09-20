@@ -82,12 +82,7 @@
 
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
-#ifndef configUSE_TRACE_FACILITY
-  #define configUSE_TRACE_FACILITY	        1 // needed for vTaskList
-#endif
-#ifndef configGENERATE_RUN_TIME_STATS
-  #define configGENERATE_RUN_TIME_STATS		0 // TODO
-#endif
+
 //#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() // TODO
 //#define portGET_RUN_TIME_COUNTER_VALUE  // TODO
 
@@ -102,10 +97,7 @@
    
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
-#ifndef configUSE_TRACE_FACILITY
-  #define configUSE_TRACE_FACILITY		0
-#endif
-#define configGENERATE_RUN_TIME_STATS		0
+
 #define configUSE_MALLOC_FAILED_HOOK		0 // For release build we should know that we aren't overflowing at boot-up.
 #define configCHECK_FOR_STACK_OVERFLOW		0
 #define INCLUDE_uxTaskGetStackHighWaterMark	0
@@ -232,14 +224,17 @@ should any of these 16 bytes not remain at their initial value.
 This method is less efficient than method one, but still fairly fast. It is very
 likely to catch stack overflows but is still not guaranteed to catch all overflows.*/
 
+#ifndef UEZ_DEBUG_HEAVY_ASSERTS
+#define UEZ_DEBUG_HEAVY_ASSERTS     1
+#endif
 
-
-//ToDo: turn back on and figure out why this doesn't work
+#if (UEZ_DEBUG_HEAVY_ASSERTS == 1)
 #define configASSERT( x ) if( ( x ) == 0 ) \
     { extern void UEZBSP_FatalError(int32_t aCode); \
         UEZBSP_FatalError(25); }
-
-//#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled(); // new application specific call
+    //#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled(); // new application specific call
+#else // disable the freeRTOS assert (defned in FreeRTOSConfig.h to empty by default)    
+#endif
 
 // We cannot include //#include <uEZProcessor.h> here so we must set Priobits manually per MCU if needed!
 
@@ -327,6 +322,28 @@ kernel is doing. */
 // Set these paths specific to your project.
 
 #include "SEGGER_RTT_SYSVIEW_Config.h"
+
+
+#ifdef DEBUG // Debug Build Unique Settings
+#ifndef configUSE_TRACE_FACILITY
+  #define configUSE_TRACE_FACILITY	        1 // needed for vTaskList
+#endif
+
+#ifndef configGENERATE_RUN_TIME_STATS
+  #define configGENERATE_RUN_TIME_STATS		0 // TODO
+#endif
+
+#else // Release Build Unique Settings
+
+#ifndef configUSE_TRACE_FACILITY
+ #define configUSE_TRACE_FACILITY      0
+#endif
+
+#ifndef configGENERATE_RUN_TIME_STATS
+#define configGENERATE_RUN_TIME_STATS 0
+#endif
+
+#endif /* #ifdef DEBUG */
 
 #ifdef FREERTOS_PLUS_TRACE
   // Don't enable SystemView with FreeRTOS+Trace

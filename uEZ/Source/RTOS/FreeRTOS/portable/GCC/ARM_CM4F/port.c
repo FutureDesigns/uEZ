@@ -319,8 +319,8 @@ BaseType_t xPortStartScheduler( void )
 	/* This port can be used on all revisions of the Cortex-M7 core other than
 	the r0p1 parts.  r0p1 parts should use the port from the
 	/source/portable/GCC/ARM_CM7/r0p1 directory. */
-	configASSERT( portCPUID != portCORTEX_M7_r0p1_ID );
-	configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+	//configASSERT( portCPUID != portCORTEX_M7_r0p1_ID );
+	//configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
 
 	#if( configASSERT_DEFINED == 1 )
 	{

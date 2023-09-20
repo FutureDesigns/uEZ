@@ -17,9 +17,9 @@
   <!-- Part contains 2 separate 512KB Flash Banks, not direclty next to each other. -->
   <!-- Part contains 2 separate 4 Byte Code Read Protection words, 1 in each Flash Bank at offset 0x2FC. -->
   <!-- Bank A -->
-  <MemorySegment start="0x1A000000" name="FLASHA0" size="0x2FC" access="ReadOnly" />
+  <MemorySegment start="$(FLASHA0_START:0x0)" name="FLASHA0" size="$(FLASHA0_SIZE:0x0)" access="ReadOnly" />
   <MemorySegment start="0x1A0002FC" name="CRP1" size="0x4" access="ReadOnly" /> <!-- CRP Region A -->
-  <MemorySegment start="$(FLASHA0_START:0x0)" name="FLASHA" size="0x1A080000-$(FLASHA_CM0_SIZE:0)-$(FLASHA0_START:0x0)" access="ReadOnly" />
+  <MemorySegment start="$(FLASHA_START:0x0)" name="FLASHA" size="0x1A080000-$(FLASHA_CM0_SIZE:0)-$(FLASHA_START:0x0)" access="ReadOnly" />
   <MemorySegment start="0x1A080000-$(FLASHA_CM0_SIZE:0x0)" name="FLASHA_CM0" size="$(FLASHA_CM0_SIZE:0x0)" access="ReadOnly" />
   <!-- Bank B -->
   <MemorySegment start="0x1B000000" name="FLASHB0" size="0x2FC" access="ReadOnly" />
@@ -49,7 +49,7 @@
   </MemorySegment>
 
   <!-- 1st SDRAM section used with 16MB part. Use DYCS0_SIZE variable to increase size instead of editing this file. -->
-  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(DYCS0_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
+  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
   <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />  
   <!-- Second SDRAM section not currently used. -->
   <MemorySegment start="0x30000000" name="$(DYCS1_NAME:DYCS1)" size="$(DYCS1_SIZE:0)-$(DYCS0_CM1_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />

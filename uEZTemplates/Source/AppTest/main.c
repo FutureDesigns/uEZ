@@ -210,9 +210,15 @@ TUInt32 GUIInterfaceTask(T_uezTask aMyTask, void *aParams)
  *      setup the system and then run the main loop of the program.       
  *---------------------------------------------------------------------------*/
 void MainTask(void)
-{    
+{
     // Start up the heart beat of the LED first thing.
+#if (LPC43XX_ENABLE_M0_CORES == 1)
+#ifdef CORE_M0  // on this LPC don't start this task on M4 in dual core project.
     UEZTaskCreate(HeartbeatTask, "Heart", 1024, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+#endif
+#else // Other LPCs always start heartbeat task.
+    UEZTaskCreate(HeartbeatTask, "Heart", 1024, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+#endif
 
 #if COMPILE_OPTION_USB_SDCARD_DISK
     T_USBMSDriveCallbacks usbMSDiskCallbacks = {0};
@@ -244,7 +250,11 @@ void MainTask(void)
 #endif
 #endif
 
+#if (UEZ_ENABLE_USB_HOST_STACK == 1)
     Storage_PrintInfo('1');
+#else
+#endif
+
 #if RENAME_INI
     UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
 #endif
@@ -636,6 +646,9 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
      // Create a main task (not running yet)
      UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
                    UEZ_PRIORITY_NORMAL, &G_mainTask);
+                   
+     // For LPC4357 make sure to start other tasks first so that RTC doesn't stall boot.
+     UEZPlatform_IRTC_Require();
      
      // Done with this task, fall out
      return 0;

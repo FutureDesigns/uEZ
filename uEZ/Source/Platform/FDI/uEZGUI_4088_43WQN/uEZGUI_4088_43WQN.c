@@ -1103,9 +1103,10 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
     Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
             aWriteBufferSize, aReadBufferSize);
     // Set standard output to console
-    T_uezDevice G_stdptr = StdoutGet();
-    UEZStreamOpen("Console", &G_stdptr); // set stdOut
-    StdinRedirect(G_stdptr); // set stdIn
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*
@@ -1139,9 +1140,10 @@ void UEZPlatform_Console_HalfDuplex_UART_Require(
             aWriteBufferSize, aReadBufferSize, aDriveEnablePortPin,
             aDriveEnablePolarity, aDriveEnableReleaseTime);
     // Set standard output to console
-    T_uezDevice G_stdptr = StdoutGet();
-    UEZStreamOpen("Console", &G_stdptr); // set stdOut
-    StdinRedirect(G_stdptr); // set stdIn
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*
@@ -1269,9 +1271,10 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
 
     RS485_GenericHalfDuplex_Create("Console", &aSettings);
     // Set standard output to console
-    T_uezDevice G_stdptr = StdoutGet();
-    UEZStreamOpen("Console", &G_stdptr); // set stdOut
-    StdinRedirect(G_stdptr); // set stdIn
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*
@@ -2332,7 +2335,7 @@ void UEZPlatform_USBDevice_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_EMAC_Require(void)
 {
-    // This EMAC is RMII (less pins)
+    // This EMAC is RMII (less pins) // Due to RMII require, struct will be different from 4357.
     const T_LPC17xx_40xx_EMAC_Settings emacSettings = {
             GPIO_P1_4,      // ENET_TX_ENn      = P1.4_ENET_TXEN
             GPIO_NONE,      // ENET_TX_TXD[3]   = not used for RMII
@@ -2341,7 +2344,7 @@ void UEZPlatform_EMAC_Require(void)
             GPIO_P1_0,      // ENET_TX_TXD[0]   = P1.0_ENET_TXD0
             GPIO_NONE,      // ENET_TX_ER       = not used for RMII
             GPIO_NONE,      // ENET_TX_CLK      = not used for RMII
-            GPIO_NONE,      // ENET_RX_DV       = not used for RMII
+            GPIO_NONE,      // ENET_RX_DV       = not used for RMII pin set to DV mode below
             GPIO_NONE,      // ENET_RXD[3]      = not used for RMII
             GPIO_NONE,      // ENET_RXD[2]      = not used for RMII
             GPIO_P1_10,     // ENET_RXD[1]      = P1.10_ENET_RXD1
@@ -2349,7 +2352,7 @@ void UEZPlatform_EMAC_Require(void)
             GPIO_P1_14,     // ENET_RX_ER       = P1.14_ENET_RX_ER
             GPIO_P1_15,     // ENET_REFCLK      = P1.15_ENET_REFCLK
             GPIO_NONE,      // ENET_COL         = not used for RMII
-            GPIO_P1_8,      // ENET_CRS         = P1.8_ENET_CRSDV
+            GPIO_P1_8,      // ENET_CRS         = P1.8_ENET_DV dual purpose pin will run in DV mode for RMII
             GPIO_P1_16,     // ENET_MDC         = P1.16_ENET_MDC
             GPIO_P1_17,     // ENET_MDIO        = P1.17_ENET_MDIO
     };

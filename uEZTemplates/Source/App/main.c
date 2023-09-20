@@ -172,9 +172,15 @@ void printStorageInfo(char driveLetter) {
  *      setup the system and then run the main loop of the program.       
  *---------------------------------------------------------------------------*/
 void MainTask(void)
-{    
+{
     // Start up the heart beat of the LED first thing.
-    UEZTaskCreate(HeartbeatTask, "Heart", 64, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+#if (LPC43XX_ENABLE_M0_CORES == 1)
+#ifdef CORE_M0  // on this LPC don't start this task on M4 in dual core project.
+    UEZTaskCreate(HeartbeatTask, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+#endif
+#else // Other LPCs always start heartbeat task.
+    UEZTaskCreate(HeartbeatTask, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+#endif
 
 #if COMPILE_OPTION_USB_SDCARD_DISK
     T_USBMSDriveCallbacks usbMSDiskCallbacks = {0};
@@ -186,7 +192,7 @@ void MainTask(void)
     (void)_SEGGER_RTT; // Crossworks complains if we don't use this.
     SEGGER_RTT_Init();
     SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
-#endif  
+#endif
 #endif
 
 #if FREERTOS_PLUS_TRACE 
@@ -207,7 +213,17 @@ void MainTask(void)
 #endif
 #endif
 
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+#if (LPC43XX_ENABLE_M0_CORES == 1)
+     uEZPlatform_Start_Additonal_Cores(); // safe to call from M0 cores
+#endif
+#endif
+
+#if (UEZ_ENABLE_USB_HOST_STACK == 1)
     printStorageInfo('1');
+#else
+#endif
+
 #if RENAME_INI
     UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
 #endif
@@ -478,6 +494,9 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
      // Create a main task (not running yet)
      UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
                    UEZ_PRIORITY_NORMAL, &G_mainTask);
+
+     // For LPC4357 make sure to start other tasks first so that RTC doesn't stall boot.
+     UEZPlatform_IRTC_Require();
      
      // Done with this task, fall out
      return 0;

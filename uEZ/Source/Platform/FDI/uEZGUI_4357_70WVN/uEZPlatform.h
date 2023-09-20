@@ -25,7 +25,7 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
-#include <Config.h>
+#include <Config.h> //includes Config_Build.h
 #include <uEZNetwork.h>
 #include <Types/GPIO.h>
 #include <uEZPlatformAPI.h>
@@ -35,6 +35,18 @@
  * Platform Settings:
  *-------------------------------------------------------------------------*/
 #define UEZ_PROCESSOR                       NXP_LPC4357
+
+#ifndef LPC43XX_ENABLE_M0_CORES
+    #define LPC43XX_ENABLE_M0_CORES  0 // Must set to 1 to enable cores at bootup. If second core project is missing it will fault.
+#endif
+
+#ifndef UEZ_ENABLE_TOUCHSCREEN_CALIBRATION
+  #if (USE_RESISTIVE_TOUCH == 1)
+    #define UEZ_ENABLE_TOUCHSCREEN_CALIBRATION 1
+  #else
+    #define UEZ_ENABLE_TOUCHSCREEN_CALIBRATION 0
+  #endif
+#endif
 
 #ifndef UEZ_NUM_HANDLES
 #define UEZ_NUM_HANDLES           150 // more than the average number of handles
@@ -54,36 +66,35 @@
 
 #ifndef UEZBSP_SDRAM
     #define UEZBSP_SDRAM                        1
-    #define UEZBSP_SDRAM_SIZE                   (16*1024*1024)
+    #define UEZBSP_SDRAM_SIZE                   (32*1024*1024)
     #define UEZBSP_SDRAM_BASE_ADDR              0x28000000
 #endif
 
 /*-------------------------------------------------------------------------*
  * Platform Volume Settings:
  *-------------------------------------------------------------------------*/
+// AMP constants
 #define AUDIO_AMP_NONE                        0   // Unique number per AMP
 #define AUDIO_AMP_TDA8551                     1
 #define AUDIO_AMP_WOLFSON                     2
 #define AUDIO_AMP_LM48110                     3
+// Max output limit changes based on AMP
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output for SMS1515-08H04 LF Speaker (8 OHM,87db,0.5W)
+
+#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
+    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 // Limit audio to 0.5W output
+#endif
 
 // Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  192 // default master volume level // will lower OB speaker level
+    #define UEZ_DEFAULT_AUDIO_LEVEL  192 // default master volume level in range of 0-255. Will be scaled to allowed AMP volume.
 #endif
-
-#ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
-    #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  140 // Limit audio to 0.5W output
-#endif
-
-// Max output limit changes based on AMP
-#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
-#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output
 
 // Define these for your own speakers or headphones.
 #ifndef UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL
     #define UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL  255
 #endif
-#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL
+#ifndef UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL // Onboard headphones use the built-in headphone jack.
     #define UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL  255
 #endif
 #ifndef UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL
@@ -142,6 +153,8 @@ typedef struct {
 
 // LED pin(s)
 #define GPIO_HEARTBEAT_LED          GPIO_P0_11
+
+#define GPIO_PERIPHERAL_RESET       GPIO_P7_0
 
 // TODO add GPIOs on ALT PWR COM, PMOD here
  
@@ -291,6 +304,8 @@ void UEZPlatform_LED_Require(void);
 void UEZPlatform_Button_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
 void UEZPlatform_System_Reset(void);
+void uEZPlatform_Start_Additonal_Cores(void); // Don't need to add to platform API if we only call from app projects
+void uEZPlatform_Register_InterCore_WS(void);
 
 TBool UEZPlatform_Host_Port_B_Detect(void);
 

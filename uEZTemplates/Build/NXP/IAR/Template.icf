@@ -164,9 +164,9 @@ define symbol __ICFEDIT_intvec_start__ = 0x1A000000;
 
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ROM_start__ = 0x1A000114;
-define symbol __ICFEDIT_region_ROM_end__   = 0x1A07FFFF;
+define symbol __ICFEDIT_region_ROM_end__   = 0x1A06FFFF; // 448KB out of 512KB max
 define symbol __ICFEDIT_region_RAM_start__ = 0x28000000;
-define symbol __ICFEDIT_region_RAM_end__   = 0x28FFFFFF;
+define symbol __ICFEDIT_region_RAM_end__   = 0x29F7FFFF; // For 32MB SDRAM use up to 31.5MB. Change to 0x28F7FFFF for 50WVN R1.
 
 /*-Sizes-*/
 define symbol __ICFEDIT_size_cstack__   = 0x400;
@@ -187,7 +187,7 @@ define symbol IRAM_end          = 0x10007FFF;
 
 /********** Flash BankB Region **********/
 define symbol __ICFEDIT_region_ROM_BANKB_start__ = 0x1B000000;
-define symbol __ICFEDIT_region_ROM_BANKB_end__   = 0x1B07FFFF;
+define symbol __ICFEDIT_region_ROM_BANKB_end__   = 0x1B06FFFF; // 448KB out of 512KB max
 
 /********** Local SRAM Region **********/
 define symbol LOCAL_SRAM_start__    = 0x10080000;

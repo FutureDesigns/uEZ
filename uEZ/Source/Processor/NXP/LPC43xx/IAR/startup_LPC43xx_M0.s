@@ -49,11 +49,11 @@ __vector_table_0x1c
         DCD     0
         DCD     0
         DCD     0
-        DCD     SVC_Handler
+        DCD     vPortSVCHandler ; SVC_Handler
         DCD     DebugMon_Handler
         DCD     0
-        DCD     PendSV_Handler
-        DCD     SysTick_Handler
+        DCD     xPortPendSVHandler ; PendSV_Handler
+        DCD     SysTick_Handler ; No Systick on CM0 on this part!
 
         ; External Interrupts
         DCD   M0_RTC_IRQHandler                 ; 16 RTC Converter

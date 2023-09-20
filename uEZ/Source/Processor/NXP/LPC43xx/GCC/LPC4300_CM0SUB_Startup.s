@@ -60,11 +60,11 @@ ISR_RESERVED
 ISR_RESERVED
 ISR_RESERVED
 ISR_RESERVED
-ISR_HANDLER SVC_Handler
+ISR_HANDLER vPortSVCHandler // SVC_Handler
 ISR_HANDLER DebugMon_Handler
 ISR_RESERVED
-ISR_HANDLER PendSV_Handler
-ISR_HANDLER SysTick_Handler
+ISR_HANDLER xPortPendSVHandler // PendSV_Handler
+ISR_HANDLER SysTick_Handler // No Systick on CM0 on this part!
 // External interrupts start her 
 ISR_HANDLER M0S_DAC_IRQHandler
 ISR_HANDLER M0S_M4CORE_IRQHandler

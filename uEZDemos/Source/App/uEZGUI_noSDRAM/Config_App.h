@@ -155,7 +155,7 @@
 
 #define FAST_STARTUP                0
 
-#define APP_ENABLE_HEARTBEAT_LED_ON 1
+#define APP_ENABLE_HEARTBEAT_LED 1
 
 // to remove LCD memory just set num_frames to zero, and strip out all c files that are part of the GUI. (including the emWin.c)
 

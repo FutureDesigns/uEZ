@@ -49,6 +49,8 @@ static TUInt16 testIterations = 0;
 static char G_StorageDevice = 1;
 char buffer[128];
 
+extern TBool G_USBFlash_inserted;
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -259,7 +261,14 @@ TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
         }
       }
       G_TestRunning = EFalse;
-    }   
+    } else { // not running test, can poll USB status
+        if (G_USBFlash_inserted == EFalse) {
+          G_USBFlash_inserted = Storage_PrintInfo('0');          
+          if (G_USBFlash_inserted == ETrue) { // force repaint
+            WindowManager_InvalidateCurrentWindow();
+          }
+        }
+    }
   }
 }
 
@@ -451,7 +460,7 @@ void Storage_Initialize(void)
     }
 }
 
-void Storage_PrintInfo(char driveLetter) {
+TBool Storage_PrintInfo(char driveLetter) {
     char drivePath[4] = {driveLetter,':','/',0};
     uint64_t totalBytes = 0;
     float sizeDecimal = 0.0;
@@ -482,6 +491,8 @@ void Storage_PrintInfo(char driveLetter) {
         } else {
           printf("  Total Size: %f MB\n", (double) sizeDecimal);
         }
+    } else {
+      return EFalse; // Didn't find the storage device.
     }
 
     T_uezFileSystemVolumeInfo aFSInfo;
@@ -492,6 +503,8 @@ void Storage_PrintInfo(char driveLetter) {
         printf("  Num Clusters Total: %u\n  Num Clusters Free: %u\n",
             aFSInfo.iNumClustersTotal, aFSInfo.iNumClustersFree);
     }
+    
+    return ETrue; // found the storage device (even if filesystem isn't valid)
 }
 
 /*-------------------------------------------------------------------------*

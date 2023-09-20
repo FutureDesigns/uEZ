@@ -92,12 +92,13 @@ void SUIShowPage0Fancy(void)
     while (1) {
         end = UEZTickCounterGet();
         diff = ((end - start) * height) / 240;
-        if (diff > height)
+        if (diff > (height-2)) { // prevent FB going negative and stop at the last positive result below
             break;
-        SUICallbackSetLCDBase((void *)(fb + ((height - 1 - diff) * width))); // TODO this goes negative from FB start!
+        }
+        SUICallbackSetLCDBase((void *)(fb + ((height - 1 - diff) * width))); // when diff is (height-1) it is 0 offset, but we stop at (height-2) as the last call before break.
         UEZTaskDelay(1);
     }
-    SUIShowPage0();
+    SUIShowPage0(); // AFTER the break we have 0 offset.
 }
 
 /*---------------------------------------------------------------------------*

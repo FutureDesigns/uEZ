@@ -36,6 +36,8 @@
 #include "Source/Library/Web/BasicWeb/BasicWEB.h"
 #include <NetworkStartup.h>
 #include <AppHTTPServer.h>
+
+T_uezTask G_networkStartupTask;
 #endif
 
 #define HEARTBEAT_BLINK_DELAY			 250
@@ -85,10 +87,17 @@ T_uezError SetupTasks(void)
 {
     T_uezError error = UEZ_ERROR_NONE;
 
-#if APP_ENABLE_HEARTBEAT_LED_ON
-    // Start up the heart beat of the LED
-    UEZTaskCreate(Heartbeat, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, &G_heartBeatTask);
+#if (APP_ENABLE_HEARTBEAT_LED == 1)
+    // Start up the heart beat of the LED first thing.
+    #if (LPC43XX_ENABLE_M0_CORES == 1)
+        #ifdef CORE_M0  // on this LPC don't start this task on M4
+            UEZTaskCreate(Heartbeat, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, &G_heartBeatTask);
+        #endif
+    #else // Other LPCs always start heartbeat task.
+        UEZTaskCreate(Heartbeat, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, &G_heartBeatTask);
+    #endif
 #endif
+
 #if (UEZ_SPEAKER_TEST == 1)
     UEZTaskCreate(SpkrTestContinuous, "Tone", 256, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif
@@ -97,10 +106,19 @@ T_uezError SetupTasks(void)
     error = UEZTaskCreate(
                 (T_uezTaskFunction)NetworkStartup,
                 "NetStart",
+                
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+                UEZ_TASK_STACK_BYTES(1536),
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+                UEZ_TASK_STACK_BYTES(1152),
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
                 UEZ_TASK_STACK_BYTES(1024),
+#endif
                 (void *)0,
                 UEZ_PRIORITY_NORMAL,
-                0);
+                &G_networkStartupTask);
 #endif
 
     return error;

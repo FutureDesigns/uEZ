@@ -239,14 +239,26 @@ T_uezError LPC43xx_ADC_ADC0_InitializeWorkspace(void *aWorkspace)
     T_LPC43xx_ADC_Workspace *p = (T_LPC43xx_ADC_Workspace *)aWorkspace;
     p->iReg = (T_LPC43xx_ADC_Registers *)LPC_ADC0_BASE;
     G_adc0Workspace = p;
-    p->iInterruptChannel = ADC0_IRQn;
 
     //Turn on peripheral clock
     LPC_CGU->BASE_VADC_CLK = (9<<24) | (1<<11) | (0<<0);
-
+  
     // Register an interrupt for this ADC but don't start it.
+#ifdef CORE_M4
+    p->iInterruptChannel = ADC0_IRQn;
     InterruptRegister(ADC0_IRQn, ILPC43xx_ADC_ADC0_Interrupt,
             INTERRUPT_PRIORITY_NORMAL, "ADC0");
+#endif
+#ifdef CORE_M0
+    p->iInterruptChannel = M0_ADC0_IRQn;
+    InterruptRegister(M0_ADC0_IRQn, ILPC43xx_ADC_ADC0_Interrupt,
+            INTERRUPT_PRIORITY_NORMAL, "ADC0");
+#endif
+#ifdef CORE_M0SUB
+    p->iInterruptChannel = M0S_ADC0_IRQn;
+    InterruptRegister(M0S_ADC0_IRQn, ILPC43xx_ADC_ADC0_Interrupt,
+            INTERRUPT_PRIORITY_NORMAL, "ADC0");
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -266,14 +278,26 @@ T_uezError LPC43xx_ADC_ADC1_InitializeWorkspace(void *aWorkspace)
     T_LPC43xx_ADC_Workspace *p = (T_LPC43xx_ADC_Workspace *)aWorkspace;
     p->iReg = (T_LPC43xx_ADC_Registers *)LPC_ADC1_BASE;
     G_adc1Workspace = p;
-    p->iInterruptChannel = ADC1_IRQn;
 
     //Turn on peripheral clock
     LPC_CGU->BASE_VADC_CLK = (9<<24) | (1<<11) | (0<<0);
 
     // Register an interrupt for this ADC but don't start it.
+#ifdef CORE_M4
+    p->iInterruptChannel = ADC1_IRQn;
     InterruptRegister(ADC1_IRQn, ILPC43xx_ADC_ADC1_Interrupt,
             INTERRUPT_PRIORITY_NORMAL, "ADC1");
+#endif
+#ifdef CORE_M0
+    p->iInterruptChannel = M0_ADC1_IRQn;
+    InterruptRegister(M0_ADC1_IRQn, ILPC43xx_ADC_ADC1_Interrupt,
+            INTERRUPT_PRIORITY_NORMAL, "ADC1");
+#endif
+#ifdef CORE_M0SUB
+    p->iInterruptChannel = M0S_ADC1_IRQn;
+    InterruptRegister(M0S_ADC1_IRQn, ILPC43xx_ADC_ADC1_Interrupt,
+            INTERRUPT_PRIORITY_NORMAL, "ADC1");
+#endif
 
     return UEZ_ERROR_NONE;
 }

@@ -44,6 +44,10 @@
 //#define DEBUG_PRINTF_FUNCTION(...) DEBUG_RTT_WriteString(0, __VA_ARGS__)
 //#define DEBUG_PRINTF_FUNCTION(...) DEBUG_SV_PrintfE(__VA_ARGS__)
 
+#if(DEBUG_SD_CRC_COUNT==1)
+TUInt32 G_SD_CRC_error;
+#endif
+
 /** @brief SDIO FIFO threshold defines
  */
 #define MCI_FIFOTH_TX_WM(x)     ((x) & 0xFFF)
@@ -128,7 +132,7 @@
 
 /** @brief SDIO Clock Enable register defines
  */
-#define MCI_CLKEN_LOW_PWR       (1 << 16)       /*!< Enable clock idle for slot */
+#define MCI_CLKEN_LOW_PWR       (1 << 16)       /*!< Enable clock idle for slot */ // Only for SD or MMC, NOT for SDIO
 #define MCI_CLKEN_ENABLE        (1 << 0)        /*!< Enable slot clock */
 
 
@@ -258,7 +262,15 @@ static void ISetClearIntFifo(void)
  *---------------------------------------------------------------------------*/
 void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
 {
+#ifdef CORE_M4
     InterruptDisable(SDIO_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptDisable(M0_SDIO_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    // None
+#endif
 
     LPC_SDMMC->RINTSTS = MCI_INT_TXDR; // Don't use currently, clear it
     LPC_SDMMC->RINTSTS = MCI_INT_RXDR; // Don't use currently, clear it
@@ -301,9 +313,24 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
           DEBUG_PRINTF_FUNCTION("RCR");
       }
       
+  /* From ES_LPC435x/3x/2x/1x Rev 6.8:    Problem:
+  * The CMD6 returned status block always gets a data CRC error although the status data is
+  * correct. The data CRC error prevents the switching of the SD memory card from the
+  * default mode to high-speed mode.
+
+  * Work-around:
+  * Capture the 64 bits of CRC data that follow the 512 bits of data allowing the CRC data to
+  * be calculated in software. The DMA buffer length and SD/MMC BYTCNT must be set to
+  * 72 (versus 64). The CRC data consists of four interleaved 16-bit words, one for each of
+  * the four serialized SD data bits. If all four of the calculated CRCs match the captured
+  * CRCs, the software can clear the data CRC error flag bit.*/
+
       if (LPC_SDMMC->RINTSTS & MCI_INT_DCRC) { // Data CRC error - CRC error occurred during data reception.
           LPC_SDMMC->RINTSTS = MCI_INT_DCRC; // clear error
           DEBUG_PRINTF_FUNCTION("DCR"); // We get this with wrong pin settings or too high frequency and it is a real CRC error and we fail file comparison read back.
+          #if(DEBUG_SD_CRC_COUNT==1)
+          G_SD_CRC_error++;
+          #endif
       }
       
       if (LPC_SDMMC->RINTSTS & MCI_INT_RTO) { // Response timeout error
@@ -467,6 +494,10 @@ T_uezError LPC43xx_SD_MMC_Reset(void *aWorkspace)
     /* disable clock to CIU (needs latch) */
     LPC_SDMMC->CLKENA = 0;
     LPC_SDMMC->CLKSRC = 0;
+
+    #if(DEBUG_SD_CRC_COUNT==1)
+    G_SD_CRC_error = 0;
+    #endif
 
     return UEZ_ERROR_NONE;
 }
@@ -661,9 +692,14 @@ T_uezError ISetClockRate(
     } else {
         /* compute SD/MCI clock dividers */
         uint32_t div;
+        uint32_t div_rem;
 
+        div_rem = ((clk_rate % aHz)); // This doesn't handle less than 400KHz since that is MAX divider!
         div = ((clk_rate / aHz)) >> 1;
-        if ((div == LPC_SDMMC->CLKDIV) && LPC_SDMMC->CLKENA) {
+        if(div_rem != 0) {
+          div = div +1;
+        }
+        if ((div == LPC_SDMMC->CLKDIV) && (LPC_SDMMC->CLKENA & SDMMC_CLKENA_CCLK_ENABLE_Msk)) {
             return UEZ_ERROR_NONE; /* Closest speed is already set */
 
         }
@@ -683,7 +719,11 @@ T_uezError ISetClockRate(
         ISendCommand(MCI_CMD_UPD_CLK | MCI_CMD_PRV_DAT_WAIT, 0);
 
         /* enable clock */
-        LPC_SDMMC->CLKENA = MCI_CLKEN_ENABLE;
+        if(aHz <=400000UL) {
+          LPC_SDMMC->CLKENA = MCI_CLKEN_ENABLE; // run clock constantly
+        } else {
+          LPC_SDMMC->CLKENA = MCI_CLKEN_ENABLE | MCI_CLKEN_LOW_PWR; // only run clock when not idling.
+        }
 
         /* inform CIU */
         ISendCommand(MCI_CMD_UPD_CLK | MCI_CMD_PRV_DAT_WAIT, 0);
@@ -701,6 +741,11 @@ T_uezError LPC43xx_SD_MMC_SetClockRate(
     // Remember speed for later
     p->iSpeed = aHz;
 
+    if(aHz <=400000UL) { // force clock to come on even if we haven't sent a command yet.
+      ISetClockRate(aWorkspace, p->iSpeed);
+    } else { // otherwise set clock back into low power mode (will take affect before first real command is sent).      
+    }
+
     return UEZ_ERROR_NONE;
 }
 
@@ -709,10 +754,25 @@ static void IEventSetup(T_LPC43xx_SD_MMC_Workspace *p, void *bits)
     uint32_t bit_mask = *((uint32_t *)bits);
 
     /* Wait for IRQ - for an RTOS, you would pend on an event here with a IRQ based wakeup. */
+
+#ifdef CORE_M4
     NVIC_ClearPendingIRQ(SDIO_IRQn);
     p->sdio_wait_exit = 1;
     LPC_SDMMC->INTMASK = bit_mask;
     InterruptEnable(SDIO_IRQn);
+#endif
+#ifdef CORE_M0
+    NVIC_ClearPendingIRQ(M0_SDIO_IRQn);
+    p->sdio_wait_exit = 1;
+    LPC_SDMMC->INTMASK = bit_mask;
+    InterruptEnable(M0_SDIO_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    //NVIC_ClearPendingIRQ(SDIO_IRQn);
+    p->sdio_wait_exit = 1;
+    LPC_SDMMC->INTMASK = bit_mask;
+    //InterruptEnable(SDIO_IRQn);
+#endif
 }
 
 static uint32_t IIRQWait(T_LPC43xx_SD_MMC_Workspace *p)
@@ -729,7 +789,7 @@ static uint32_t IIRQWait(T_LPC43xx_SD_MMC_Workspace *p)
         if (UEZTickCounterGetDelta(start) >= 25) {
             break; // from testing so far we basically never hit this
         }
-        UEZTaskDelay(1);
+        UEZTaskDelay(0); // force reschedule to allow quick background tasks to run, but don't delay.
     }
 
     /* Get status and clear interrupts */
@@ -989,33 +1049,8 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     T_LPC43xx_SD_MMC_Workspace *p;
 
     static const T_LPC43xx_SCU_ConfigList sd_cd[] = {
-            {GPIO_P1_6     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CD    SD/MMC card detect input.
-            {GPIO_P6_7     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CD    SD/MMC card detect input.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_cmd[] = {
-            {GPIO_P1_9     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CMD   SD/MMC command signal.
-            {GPIO_P6_9     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CMD   SD/MMC command signal.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat0[] = {
-            {GPIO_P1_2     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT0  SD/MMC data bus line 0.
-            {GPIO_P6_3     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT0  SD/MMC data bus line 0.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat1[] = {
-            {GPIO_P1_3     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT1  SD/MMC data bus line 1.
-            {GPIO_P6_4     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT1  SD/MMC data bus line 1.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat2[] = {
-            {GPIO_P1_4     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT2  SD/MMC data bus line 2.
-            {GPIO_P6_5     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT2  SD/MMC data bus line 2.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat3[] = {
-            {GPIO_P1_5     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT3  SD/MMC data bus line 3.
-            {GPIO_P6_6     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT3  SD/MMC data bus line 3.
+            {GPIO_P1_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
+            {GPIO_P6_7     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_pow[] = {
@@ -1029,9 +1064,36 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
             {GPIO_P7_24    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
     };
 
+    // Recommend settings for EHS=0 for CMD/DAT and EHS=1 for clock from LPC435x/3x/2x/1x 11.20 SD/MMC.
     static const T_LPC43xx_SCU_ConfigList sd_clk[] = {
-            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_FAST, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CLK   SD/MMC card clock.
+            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_FAST, SCU_EZI_DISABLE,SCU_ZIF_DISABLE)}, //SD_CLK   SD/MMC card clock.
     };
+
+    static const T_LPC43xx_SCU_ConfigList sd_cmd[] = {
+            {GPIO_P1_9     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P6_9     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CMD   SD/MMC command signal.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat0[] = {
+            {GPIO_P1_2     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT0  SD/MMC data bus line 0.
+            {GPIO_P6_3     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT0  SD/MMC data bus line 0.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat1[] = {
+            {GPIO_P1_3     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT1  SD/MMC data bus line 1.
+            {GPIO_P6_4     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT1  SD/MMC data bus line 1.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat2[] = {
+            {GPIO_P1_4     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT2  SD/MMC data bus line 2.
+            {GPIO_P6_5     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT2  SD/MMC data bus line 2.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat3[] = {
+            {GPIO_P1_5     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT3  SD/MMC data bus line 3.
+            {GPIO_P6_6     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT3  SD/MMC data bus line 3.
+    };
+
 
     HAL_DEVICE_REQUIRE_ONCE();
 
@@ -1041,10 +1103,22 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     p = (T_LPC43xx_SD_MMC_Workspace *)p_SD_MMC;
 
     // Turn on the SD_MMC Controller
-    //clock based on PCLK
-    G_SourceClkFrequency = UEZPlatform_GetPCLKFrequency();
+    G_SourceClkFrequency = UEZPlatform_GetPCLKFrequency(); //clock based on PCLK
     LPC_CGU->BASE_SDIO_CLK = (9<<24) | (1<<11); //Use PLL1 clock
     LPC_CCU1->CLK_M4_SDIO_CFG = 3;
+
+    /* 17.4.10 SD/MMC delay register
+     * This register provides a programmable delay for the SD/MMC sample and drive inputs
+     * and outputs. See the LPC43xx/LPC43Sxx data sheets for recommended settings.
+     * Typical setting for SD cards are SAMPLE_DELAY = 0x8 and DRV_DELAY = 0xF.
+     * Remark: The values DRV_DELAY = 0 and DRV_DELAY = 1 are not allowed*/
+    
+    // The numbers from both the datasheet and user's manual for SDDElay are too large and lead to immediate failure of SD card at all tested frequencies.
+    // Values of 0 not only aren't allowed but cause issues, so we need small numbers for each setting.
+    // Note that other newer LPC MCU families with this same register appear to have a different preferred number even for the same frequencies. (different range)
+
+    // Drive delay minimum of 2 is required.    
+    LPC_SCU->SDDELAY = 0x2 | (3 << SCU_SDDELAY_DRV_DELAY_Pos); // This passes test with 34MHz read, 48MHz read/write, 51MHz read/write, and 25.5MHz read/write.
 
     LPC43xx_SCU_ConfigPinOrNone(aPins->iCardDetect, sd_cd, ARRAY_COUNT(sd_cd));
     LPC43xx_SCU_ConfigPinOrNone(aPins->iCMD, sd_cmd, ARRAY_COUNT(sd_cmd));
@@ -1060,9 +1134,20 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     LPC43xx_SD_MMC_Reset((void *)p);
 
     // Setup interrupt for the SD_MMC
+
+#ifdef CORE_M4
     InterruptRegister(SDIO_IRQn, LPC43xx_SD_MMC_Interrupt,
         INTERRUPT_PRIORITY_HIGH, "SD_MMC");
     InterruptEnable(SDIO_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptRegister(M0_SDIO_IRQn, LPC43xx_SD_MMC_Interrupt,
+        INTERRUPT_PRIORITY_HIGH, "SD_MMC");
+    InterruptEnable(M0_SDIO_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    //None
+#endif
 }
 
 /*-------------------------------------------------------------------------*

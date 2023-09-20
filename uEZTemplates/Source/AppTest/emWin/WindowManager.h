@@ -68,6 +68,7 @@ void WindowManager_ShowSystemSetupScreen(void);
 void WindowManager_BackLight_On(TUInt8 alevel);
 void WindowManager_BackLight_Off(void);
 void WindowManager_SaveScreenShotBMP(char driveNumber);
+void WindowManager_InvalidateCurrentWindow(void);
 
 
 #endif /* _WindowManager_H */

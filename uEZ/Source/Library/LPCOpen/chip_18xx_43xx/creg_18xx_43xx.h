@@ -32,6 +32,8 @@
 #ifndef __CREG_18XX_43XX_H_
 #define __CREG_18XX_43XX_H_
 
+#include "chip.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

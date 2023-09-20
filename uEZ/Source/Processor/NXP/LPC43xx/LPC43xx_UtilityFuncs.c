@@ -27,6 +27,16 @@
 #include <uEZBSP.h>
 #include <uEZGPIO.h>
 #include <uEZLCD.h>
+#include <HAL/Interrupt.h>
+
+/*-------------------------------------------------------------------------*
+ * Prototypes:
+ *-------------------------------------------------------------------------*/
+void LPC43xx_M0_APP_ProcessInterrupt(T_LPC43xx_M0_APP_Workspace *p);
+void LPC43xx_M4_CORE_ProcessInterrupt(T_LPC43xx_M4_CORE_Workspace *p);
+
+T_LPC43xx_M0_APP_Workspace *G_M0_APPWorkspace;
+T_LPC43xx_M4_CORE_Workspace *G_M4_COREWorkspace;
 
 /*---------------------------------------------------------------------------*
  * Routine:  ReadLE32U
@@ -184,7 +194,12 @@ void WriteBE16U(volatile TUInt8 *pmem, TUInt16 val)
  *-------------------------------------------------------------------------*/
 void CPUDisableInterrupts(void)
 {
+
+#if (__CORTEX_M >= 0x03)
     __set_BASEPRI(16UL << (8 - 5));
+#else
+    portDISABLE_INTERRUPTS();
+#endif
     /* // In the LPC4357 IAP this was used instead.
     portDISABLE_INTERRUPTS();
     return;
@@ -199,7 +214,12 @@ void CPUDisableInterrupts(void)
  *-------------------------------------------------------------------------*/
 void CPUEnableInterrupts(void)
 {
+
+#if (__CORTEX_M >= 0x03)
     __set_BASEPRI(0UL);
+#else
+    portENABLE_INTERRUPTS();
+ #endif
     /* // In the LPC4357 IAP this was used instead.
     portENABLE_INTERRUPTS();
     return;
@@ -257,6 +277,123 @@ void LPC43xx_SCU_ConfigPinOrNone(
         aList++;
     }
     UEZFailureMsg("Bad Pin");
+}
+
+// For now override these weak functions in application projects.
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC43xx_M0_APP_ProcessInterrupt
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Process an interrupt for this workspace.  This is ISR on M4 FROM M0.
+ * Inputs:
+ *      void *aWorkspace          -- M0_APP Workspace
+ * Outputs:
+ *      void
+ *---------------------------------------------------------------------------*/
+__WEAK void LPC43xx_M0_APP_ProcessInterrupt(T_LPC43xx_M0_APP_Workspace *p)
+{
+    //InterruptDisable(M0APP_IRQn);
+        
+    // Determine the type of interrupt
+    //TUInt32 flags = No flags on this ISR;
+
+    // TODO application callback for ISR
+    //uEZPlatform_IPC_Callback(); // TODO
+
+    // Clear any interrupts processed by this interrupt
+    //LPC_->INTCLR = flags; // No flags on this ISR
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC43xx_M4_CORE_ProcessInterrupt
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Process an interrupt for this workspace. This is ISR on M0 FROM M4.
+ * Inputs:
+ *      void *aWorkspace          -- M4_CORE Workspace
+ * Outputs:
+ *      void
+ *---------------------------------------------------------------------------*/
+__WEAK void LPC43xx_M4_CORE_ProcessInterrupt(T_LPC43xx_M4_CORE_Workspace *p)
+{
+    //InterruptDisable(M0_M4CORE_IRQn);
+        
+    // Determine the type of interrupt
+    //TUInt32 flags = No flags on this ISR;
+
+    // TODO application callback for ISR
+
+    // Clear any interrupts processed by this interrupt
+    //LPC_->INTCLR = flags; // No flags on this ISR
+}
+
+/*---------------------------------------------------------------------------*
+ * Interrupt:  LPC43xx_M0_APP_Interrupt
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      A M0_APP Interrupt has come in.  Process the one workspace attached
+ *      to this interrupt.
+ *---------------------------------------------------------------------------*/
+IRQ_ROUTINE(LPC43xx_M0_APP_Interrupt)
+{
+    IRQ_START();
+    LPC43xx_M0_APP_ProcessInterrupt(G_M0_APPWorkspace);
+    IRQ_END();
+}
+
+/*---------------------------------------------------------------------------*
+ * Interrupt:  LPC43xx_M4_CORE_Interrupt
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      A M4_CORE Interrupt has come in.  Process the one workspace attached
+ *      to this interrupt.
+ *---------------------------------------------------------------------------*/
+IRQ_ROUTINE(LPC43xx_M4_CORE_Interrupt)
+{
+    IRQ_START();
+    LPC43xx_M4_CORE_ProcessInterrupt(G_M4_COREWorkspace);
+    IRQ_END();
+}
+
+T_uezError LPC43xx_InterCore_InitializeWorkspace(void *aWorkspace)
+{
+#ifdef CORE_M4 // TODO
+    T_LPC43xx_M0_APP_Workspace *p = (T_LPC43xx_M0_APP_Workspace *)aWorkspace;
+    p->iCore = 0;
+    p->iTest = 0;
+
+    G_M0_APPWorkspace = p;
+#endif
+#ifdef CORE_M0 // TODO
+    T_LPC43xx_M4_CORE_Workspace *p = (T_LPC43xx_M4_CORE_Workspace *)aWorkspace;
+    p->iCore = 1;
+    p->iTest = 0;
+
+    G_M4_COREWorkspace = p;
+#endif
+#ifdef CORE_M0SUB // TODO
+    p->iCore = 2;
+#endif
+
+    return UEZ_ERROR_NONE;
+}
+
+void LPC43xxSetupInterCoreInterrupts(void){
+
+#ifdef CORE_M4 // TODO
+// Setup interrupt for the M0APP
+    InterruptRegister(M0APP_IRQn, LPC43xx_M0_APP_Interrupt, 
+      INTERRUPT_PRIORITY_HIGH, "M0_APP");
+    InterruptEnable(M0APP_IRQn);
+#endif
+#ifdef CORE_M0 // TODO
+// Setup interrupt for the M4
+    InterruptRegister(M0_M4CORE_IRQn, LPC43xx_M4_CORE_Interrupt, 
+      INTERRUPT_PRIORITY_HIGH, "M4_CORE");
+    InterruptEnable(M0_M4CORE_IRQn);
+#endif
+#ifdef CORE_M0SUB // TODO
+#endif
 }
 
 /*-------------------------------------------------------------------------*

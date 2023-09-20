@@ -78,6 +78,9 @@ static void Chip_USB_PllSetup(void)
 
 void Chip_USB0_Init(void)
 {
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB1 only off board USB
+#else
+
     //Chip_CREG_DisableUSB0Phy(); // Seems we don't need to disable existing clocks, but could if coming from some unknown state in bootloader.
     //Chip_Clock_DisableOpts(CLK_MX_USB0);
 	//Chip_Clock_DisableBaseClock(CLK_BASE_USB0);
@@ -93,12 +96,13 @@ void Chip_USB0_Init(void)
 	Chip_Clock_EnableOpts(CLK_MX_USB0, true, true, 1);
 	/* enable USB0 phy */
 	Chip_CREG_EnableUSB0Phy();
+#endif
 }
 
 void Chip_USB1_Init(void)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
-#else
+//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB0 only on board USB
+//#else
 	/* Setup and enable the PLL */
 	Chip_USB_PllSetup();
 
@@ -106,7 +110,7 @@ void Chip_USB1_Init(void)
 	   chained to make a divide by 8 function. Connect the output of
 	   divider D to the USB1 base clock. */
 	
-    //Chip_Clock_DisableBaseClock(CLK_BASE_USB0);
+        //Chip_Clock_DisableBaseClock(CLK_BASE_USB0);
 
 #if 0
 	Chip_Clock_SetDivider(CLK_IDIV_A, CLKIN_USBPLL, 4);
@@ -122,7 +126,7 @@ void Chip_USB1_Init(void)
 	Chip_Clock_EnableOpts(CLK_MX_USB1, true, true, 1);
 	/* enable USB1_DP and USB1_DN on chip FS phy.*/
 	LPC_SCU->SFSUSB = 0x12;
-#endif
+//#endif
 }
 
 

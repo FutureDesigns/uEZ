@@ -288,30 +288,31 @@ void SEGGER_SYSVIEW_Conf(void) {
   SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
 }
 
-/*
 // These functions are missing on RX, Cortex-M0 and must be defined!
 // So far only one of these port specific functions must be added.
 U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
 	return SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific();
 }
+
 U32 SEGGER_SYSVIEW_X_GetInterruptId(void) {
   U32 IntId;
 #ifdef __RX  // Renesas CCRX
   IntId = (get_psw() & 0x0F000000) >> 24u;
-#else // Cortex-M0 example, not tested in uEZ yet.
- __asm volatile ("mvfc    PSW, %0           \t\n" // Load current PSW
-                 "and     #0x0F000000, %0   \t\n" // Clear all except IPL ([27:24])
-                 "shlr    #24, %0           \t\n" // Shift IPL to [3:0]
-                 : "=r" (IntId)                   // Output result
-                 :                                // Input
-                 :                                // Clobbered list
-                );
+	// may have to manually assign interrupt numbers such as i2c = 0, uart = 1, etc to use this feature.
+	//return (INTC_SIR_IRQ & (0x7Fu)); // INTC_SIR_IRQ[6:0]: ActiveIRQ
+#endif
+#ifdef CORE_M0 // Cortex-M0 example, not tested in uEZ yet.
+  __asm volatile ("mrs %0, ipsr"
+                  : "=r" (IntId)
+                  );
+  IntId &= 0x3F;
+#endif
+#ifdef CORE_M4 
+  IntId = 1; // prevenet warning
 #endif
   return IntId;
-	// may have to manually assign interrupt numbers such as i2c = 0, touch = 1, etc to use this feature.
-	//return (INTC_SIR_IRQ & (0x7Fu)); // INTC_SIR_IRQ[6:0]: ActiveIRQ
 }
-*/
+
 #endif
 
 #include "FreeRTOSConfig.h"

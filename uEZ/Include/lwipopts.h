@@ -33,11 +33,37 @@
 #define __LWIPOPTS_H__
 
 #define TCPIP_THREAD_NAME               "lwIP"
+
+#include <uEZPlatform.h>
+
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define TCPIP_THREAD_STACKSIZE          24576//16384
+#define TCPIP_THREAD_PRIO               5
+
+#define DEFAULT_THREAD_STACKSIZE        8192
+#define DEFAULT_THREAD_PRIO             5
+
+#elif(UEZ_PROCESSOR == NXP_LPC4088)
 #define TCPIP_THREAD_STACKSIZE          24576//16384
 #define TCPIP_THREAD_PRIO               3
 
 #define DEFAULT_THREAD_STACKSIZE        4096
 #define DEFAULT_THREAD_PRIO             1
+
+#elif(UEZ_PROCESSOR == NXP_LPC1788)
+#define TCPIP_THREAD_STACKSIZE          24576//16384
+#define TCPIP_THREAD_PRIO               3
+
+#define DEFAULT_THREAD_STACKSIZE        4096
+#define DEFAULT_THREAD_PRIO             1
+
+#else
+#define TCPIP_THREAD_STACKSIZE          24576//16384
+#define TCPIP_THREAD_PRIO               3
+
+#define DEFAULT_THREAD_STACKSIZE        4096
+#define DEFAULT_THREAD_PRIO             1
+#endif
 
 /**
  * MEMP_OVERFLOW_CHECK: memp overflow protection reserves a configurable
@@ -255,7 +281,7 @@
  * MEMP_NUM_SYS_TIMEOUT: the number of simulateously active timeouts.
  * (requires NO_SYS==0)
  */
-#define MEMP_NUM_SYS_TIMEOUT            20
+#define MEMP_NUM_SYS_TIMEOUT            20 // Need to be changed to macro?
 
 /**
  * MEMP_NUM_NETBUF: the number of struct netbufs.

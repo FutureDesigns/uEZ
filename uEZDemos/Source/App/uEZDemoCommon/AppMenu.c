@@ -126,7 +126,15 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
     
     // Short delay to allow the LCD to complete a refresh cycle
     // Otherwise we may see part of the window below.
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+    UEZTaskDelay(10);
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
     UEZTaskDelay(5);
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+    UEZTaskDelay(5);
+#endif
 
     // setup a standard window
     swim_window_open(&aWS->iWin, DISPLAY_WIDTH, DISPLAY_HEIGHT, pixels, 0, 0,

@@ -55,8 +55,12 @@ extern "C" {
 /** Defines for UEZ_PROCESSOR_CORE_TYPE */
 #define CORE_TYPE_UNDEFINED                     0
 #define CORE_TYPE_ARM7                          1
-#define CORE_TYPE_CORTEX_M3                     2
-#define CORE_TYPE_CORTEX_M4                     3
+#define CORE_TYPE_CORTEX_M0                     2
+#define CORE_TYPE_CORTEX_M0P                    3
+#define CORE_TYPE_CORTEX_M1                     4
+#define CORE_TYPE_CORTEX_M3                     5
+#define CORE_TYPE_CORTEX_M4                     6
+#define CORE_TYPE_CORTEX_M7                     7
 
 /** Defines for UEZ_PROCESS_CORE_MODE */
 #define CORE_MODE_UNKNOWN                       0
@@ -66,6 +70,7 @@ extern "C" {
 /** Defines for UEZ_PROCESS_CORE_SUBTYPE */
 #define CORE_SUBTYPE_NONE                       0
 #define CORE_SUBTYPE_ARM7TDMI_S                 1
+// TODO add correct subtypes if we ever use this.
 
 
 /*-------------------------------------------------------------------------*

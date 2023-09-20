@@ -67,6 +67,8 @@ typedef struct {
     TUInt32 iFrame;
     TUInt32 iFrameCount;
     float iMSPerFrame;
+    float iSoundNextPartial;
+    TUInt32 iTimeStart;
     TUInt32 iHiddenFrame;
     TUInt32 iVideoPosY;
     TUInt32 iVideoPosX;
@@ -195,27 +197,28 @@ void VideoPlayer_SyncWithAudio(T_VideoPlayerWorkspace *p_ws) {
     float soundMS, soundNext;
 
     soundPos = UEZDACWAVGetSamplePos();
+    
     soundMS = (float)(((float)(soundPos)*(float)100.0) / (float)(G_WaveFile.iSampleRate));
+    //soundMS = (float)((float)soundPos*(float)p_ws->iSoundNextPartial);
 
     // At 15 fps (66.66 ms per frame), where should we be next?
     soundNext = (p_ws->iFrame + 1) * p_ws->iMSPerFrame;
 
-    if (soundNext > soundMS) {
+    if (soundNext > soundMS) { // too fast
         // If the frames are ahead of audio, wait
         UEZTaskDelay((TUInt32)(soundNext - soundMS));
     } else {
-        // If the frames are behind the audio, we need to skip a frame or two
-        // to catch up.
+        // If the frames are behind the audio, we need to skip a frame or two to catch up.
         skipCount = 0;
 
-        while((soundMS - soundNext) > p_ws->iMSPerFrame) {
-            if (p_ws->iFrame == p_ws->iFrameCount)
+        while((soundMS - soundNext) > p_ws->iMSPerFrame) { // too slow, skip a frame
+            if (p_ws->iFrame == p_ws->iFrameCount) // if this is the last frame, don't skip
                 break;
             skipCount++;
             p_ws->iFrame++;
             soundMS -= p_ws->iMSPerFrame;
         }
-        if(skipCount>0) { // takes around 250 to 350 us on 4357 4-bit mode SD 51MHz
+        if(skipCount>0) { // takes around ? us on 4357 4-bit mode SD 51MHz
             UEZFileTellPosition(p_ws->iFile, &filePosition);
             UEZFileSeekPosition(p_ws->iFile, filePosition+(G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2 * skipCount));
         }
@@ -226,13 +229,31 @@ void VideoPlayer_SyncWithAudio(T_VideoPlayerWorkspace *p_ws) {
 
 void VideoPlayer_SyncWithTimer(T_VideoPlayerWorkspace *p_ws) {
     TUInt32 timeMS, timeNext;
+    TUInt32 skipCount, filePosition;
 
-    timeMS = UEZTickCounterGet();
+    timeMS = UEZTickCounterGetDelta(p_ws->iTimeStart);
     timeNext = (TUInt32)((p_ws->iFrame + 1) * p_ws->iMSPerFrame);
 
-    if (timeNext > timeMS) {
+    if (timeNext > timeMS) { // too fast
         // Add a delay to meet the desired frame rate
         UEZTaskDelay(timeNext - timeMS);
+    } else { // not too fast
+        // If the frames are behind, we need to skip a frame or two to catch up.
+        skipCount = 0;
+
+        while((timeMS - timeNext) > p_ws->iMSPerFrame) { // too slow, skip a frame
+            if (p_ws->iFrame == p_ws->iFrameCount) // if this is the last frame, don't skip
+                break;
+            skipCount++;
+            p_ws->iFrame++;
+            timeMS -= p_ws->iMSPerFrame;
+        }
+        if(skipCount>0) { // takes around ? us on 4357 4-bit mode SD 51MHz
+            UEZFileTellPosition(p_ws->iFile, &filePosition);
+            UEZFileSeekPosition(p_ws->iFile, filePosition+(G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2 * skipCount));
+        }
+
+        G_totalSkipCount+=skipCount;
     }
 }
 
@@ -249,7 +270,9 @@ extern void * G_UEZGUIWorkspace;
 
 void VideoPlayer_deprioritize_other_tasks(void)
 {
+#if (APP_ENABLE_HEARTBEAT_LED == 1)
   UEZTaskSuspend(G_heartBeatTask);
+#endif
 
   T_FDICmdWorkspace *p = (T_FDICmdWorkspace *)G_UEZGUIWorkspace;
   if(p != 0) {
@@ -264,6 +287,7 @@ void VideoPlayer_deprioritize_other_tasks(void)
   // change TS_Mon task (separate from emWin touch task)
   UEZTaskPriorityGet(G_tsMonitorTask, &PriorityList[1]);
   UEZTaskPrioritySet(G_tsMonitorTask, UEZ_PRIORITY_VERY_LOW);
+  //UEZTaskSuspend(G_tsMonitorTask);  // could disable touchscreen task to prevent being able to stop video.
 
 #if (UEZ_ENABLE_USB_HOST_STACK==1) // lower prio of USB tasks
 #if(UEZ_PROCESSOR == NXP_LPC4357)
@@ -300,7 +324,9 @@ void VideoPlayer_deprioritize_other_tasks(void)
 
 void VideoPlayer_return_other_task_priorities(void)
 {
+#if (APP_ENABLE_HEARTBEAT_LED == 1)
   UEZTaskResume(G_heartBeatTask);
+#endif
 
   T_FDICmdWorkspace *p = (T_FDICmdWorkspace *)G_UEZGUIWorkspace;
   if(p != 0) {
@@ -310,6 +336,7 @@ void VideoPlayer_return_other_task_priorities(void)
   UEZTaskPrioritySet(G_mainTask, PriorityList[0]);
 
   UEZTaskPrioritySet(G_tsMonitorTask, PriorityList[1]); //  return touch prio
+  //UEZTaskResume(G_tsMonitorTask); // resume touchscreen task if disabled
 
 #if (UEZ_ENABLE_USB_HOST_STACK==1) // return prio of USB tasks
 #if(UEZ_PROCESSOR == NXP_LPC4357)
@@ -363,6 +390,8 @@ void VideoPlayer(const T_choice *aChoice)
     //ws.iMSPerFrame = (1000 / G_pVideoInfo->iFPS);
     ws.iMSPerFrame = ((float)1000 / (float)G_pVideoInfo->iFPS);
 
+    printf("\r\nVideo FPS %d\n", G_pVideoInfo->iFPS);
+
     VideoPlayer_Open(&ws);
 
     UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue);
@@ -385,9 +414,13 @@ void VideoPlayer(const T_choice *aChoice)
     VideoPlayer_Screen(&ws, 1);
 
     G_totalSkipCount = 0;
+    ws.iTimeStart = UEZTickCounterGet();
 
     error = UEZDACWAVPlay(G_pVideoInfo->iAudioPath, &G_WaveFile);
     G_WaveFile.iSampleRate /= 10;
+    if(G_WaveFile.iSampleRate>0) {
+      ws.iSoundNextPartial = (float)(((float)100.0) / (float)(G_WaveFile.iSampleRate));
+    }
     if(error == UEZ_ERROR_NONE)
         isAudioPlaying = ETrue;
     else
@@ -395,6 +428,14 @@ void VideoPlayer(const T_choice *aChoice)
 
     while (!ws.iExit) {
 
+        VideoPlayer_DrawNextFrame(&ws);
+
+        if(isAudioPlaying) {
+            VideoPlayer_SyncWithAudio(&ws);
+        } else {
+            VideoPlayer_SyncWithTimer(&ws);
+        }
+    
         if (UEZQueueReceive(queue, &inputEvent, 0) == UEZ_ERROR_NONE) {
             // Pen down or up?
             if (inputEvent.iEvent.iXY.iAction == XY_ACTION_PRESS_AND_HOLD) {
@@ -405,17 +446,10 @@ void VideoPlayer(const T_choice *aChoice)
             }
         }
 
-        VideoPlayer_DrawNextFrame(&ws);
-
-        if(isAudioPlaying)
-            VideoPlayer_SyncWithAudio(&ws);
-        else
-            VideoPlayer_SyncWithTimer(&ws);
-
         if (ws.iFrame == ws.iFrameCount)
             ws.iExit = ETrue;
     }
-    printf("Total Skip Count: %d\r\n", G_totalSkipCount);
+    printf("Total Skip Count: %d out of %d total frames\r\n", G_totalSkipCount, ws.iFrameCount);
 
     UEZDACWAVStop();
     UEZFileClose(ws.iFile);

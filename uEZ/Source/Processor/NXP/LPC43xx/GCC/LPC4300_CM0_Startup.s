@@ -60,11 +60,11 @@ ISR_RESERVED
 ISR_RESERVED
 ISR_RESERVED
 ISR_RESERVED
-ISR_HANDLER SVC_Handler
+ISR_HANDLER vPortSVCHandler // SVC_Handler
 ISR_HANDLER DebugMon_Handler
 ISR_RESERVED
-ISR_HANDLER PendSV_Handler
-ISR_HANDLER SysTick_Handler
+ISR_HANDLER xPortPendSVHandler // PendSV_Handler
+ISR_HANDLER SysTick_Handler // No Systick on CM0 on this part!
 // External interrupts start her 
 ISR_HANDLER RTC_IRQHandler
 ISR_HANDLER M4CORE_IRQHandler
@@ -107,7 +107,10 @@ _vectors_end:
   reset_handler:
 
 #ifndef __NO_SYSTEM_INIT
-  ldr r0, =__SRAM2_segment_end__
+  // For the SRAM1 or 2 that is used on M0 select that section end here.
+  // If the SRAM size is defined as 0, the segment end will be the start and you will fault.
+  // In Crossworks projects it will always have _CM0_ in the correct SRAM or SDRAM end name.
+  ldr r0, =__SRAM2_CM0_segment_end__
   mov sp, r0
   bl SystemInit
 #endif

@@ -143,13 +143,27 @@
 
 extern int32_t MainTask(void);
 
+#ifdef CORE_M0 // Enable RITIMER interrupt.
+static void IRITimerProcessIRQ(void);
+void RITIMER_OR_WWDT_IRQHandler(void);
+#endif
+
 #define SD_LOW_POWER_SUPP   (0) // set to 1 to enable the power pin on SD card
-#define USE_TIMER_SYSTICK   (0) // TODO in some demos the timer gets disabled somehow during boot, probably wrong prio set.
+#define USE_TIMER_SYSTICK   (0) // TODO in some demos the timer gets disabled somehow during boot, probably wrong prio set. Not fully implemented
 
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
+#define LPC4357_LCD_ADDRESS_GUARD       0 // set to 1 in case you have suspect code that can set LCD start less than base address.
+
+#ifndef ENABLE_LCD_HSYNC_VSYNC_PINS
+#define ENABLE_LCD_HSYNC_VSYNC_PINS     1 // must set to 1 to enable the HYSNC/VSYNC, otherwise pines are set to low
+#endif
+
+#ifndef ENABLE_LCD_DE_PIN
+#define ENABLE_LCD_DE_PIN               1 // must set to 1 to enable the DE pin, otherwise the pin is set to input
+#endif
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -186,6 +200,7 @@ TUInt8 *_framesMemoryptr = _framesMemory;
 // If you did try to set the number in the application, it may not be able to flash it as page size is 512 bytes. (flashing may erase part of bootloader)
 // So is very important to avoid including the CRP1 section in both a bootloader project and application project.
 
+#ifdef CORE_M4
 #if (DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1 == 1)
     // Create this define set to 1 in application code to allow for only setting CRP1 in a bootloader.
 #else
@@ -199,6 +214,7 @@ UEZ_PUT_SECTION(".fillFlashB0", static const TUInt32 G_LPC43XX_CRP2_FILL = 0x6C6
 //TUInt32 *_crp2fillptr  = (TUInt32 * const)&G_LPC43XX_CRP2_FILL;
 UEZ_PUT_SECTION(".crp2", static const TUInt32 G_LPC43XX_CRP2 = 0xFFFFFFFF);
 TUInt32 *_crp2ptr  = (TUInt32 * const)&G_LPC43XX_CRP2;
+#endif
 #endif
 
 /*---------------------------------------------------------------------------*
@@ -222,7 +238,8 @@ TUInt32 *_crp2ptr  = (TUInt32 * const)&G_LPC43XX_CRP2;
  *---------------------------------------------------------------------------*/
 UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
 void UEZBSPDelay1US(void)
-{	
+{
+#ifdef CORE_M4
 /* 	Measured to 1.004 microseconds GPIO switch time: (RTOS off)
  *  -   Based on release build with high optimization speed setting, inline
  *      small functions enabled, with GPIO on/off verified with a scope.
@@ -243,8 +260,43 @@ void UEZBSPDelay1US(void)
     nop();
     nop();
     nop();
+#elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 200000000) // TODO not validated yet.
+    nops50();
+    nops50();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops10();
+    nop();
 #else
     #error "1 microSecond delay not defined for CPU speed"
+#endif
+#endif
+
+#ifdef CORE_M0 // 
+// 	Measured to 1.005s from gcc build UEZBSPDelayMS(1000) call.
+#if ( PROCESSOR_OSCILLATOR_FREQUENCY == 204000000)
+    nops50();
+    nops50();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops10();
+#elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 200000000) // TODO not validated yet.
+    nops50();
+    nops50();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops5();
+    nop();
+    nop();
+#else
+    #error "1 microSecond delay not defined for CPU speed"
+#endif
 #endif
 })
 
@@ -281,6 +333,16 @@ void UEZBSPDelayMS(uint32_t aMilliseconds)
     }
 })
 
+#ifdef CORE_M0
+void RITIMER_OR_WWDT_IRQHandler(void)
+{
+    IRQ_START();
+    IRITimerProcessIRQ();
+    IRQ_END()
+    ;
+}
+#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPSDRAMInit
  *---------------------------------------------------------------------------*
@@ -288,32 +350,123 @@ void UEZBSPDelayMS(uint32_t aMilliseconds)
  *      Initialize the external SDRAM.
  *---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
-{ // 7 ns is slowest speed rating supported/used. Driver only supports CAS 3. Some numbers would change for CAS 2.
-    static const T_LPC43xx_SDRAM_Configuration sdramConfig_IS42S32800J_6_IS42S32800D_7TL = {
+{
+#ifdef CORE_M4
+
+#if (UEZGUI_4357_50WVN_REV == 2)
+
+#if 0 // Testing CAS2 mode with -75E timings. Several parts support up to 133MHz.
+    static const T_LPC43xx_SDRAM_Configuration sdramConfig_TODO_75E = {
             UEZBSP_SDRAM_BASE_ADDR,
             UEZBSP_SDRAM_SIZE,
-            SDRAM_CAS_3, // only 3 supported, this number ignored
-            SDRAM_RAS_3, // only 3 supported, this number ignored
+            SDRAM_CAS_2, 
+            SDRAM_RAS_2, 
             LPC43xx_SDRAM_CLKOUT1,
             SDRAM_CLOCK_FREQUENCY,
             64, // ms
             4096, // cycles
-            SDRAM_CYCLES(20), // tRP precharge to activate period - All used parts 18/20. 20 is a higher cycle number, so we slow down for that part
-            SDRAM_CYCLES(45), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(18), // tRP precharge to activate period - All used parts 18.
+            SDRAM_CYCLES(42), // tRAS min // Used parts 42/45. Same register value up to 49
             SDRAM_CYCLES(70), // tXSR min // 69-78 = same cycles, no used parts list SREX. Original part (not available) used 67
-            SDRAM_CYCLES(20), // tAPR/tRCD Active Command to Read Command // 20+ = same cycles, no parts used < 18, slowed down for newer parts
+            SDRAM_CYCLES(18), // tAPR/tRCD Active Command to Read Command // 20+ = same cycles, no parts used < 18
             SDRAM_CLOCKS(5), // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 3 is used.
-            SDRAM_CYCLES(14), // tDPL/tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than <=14 cycles
-            SDRAM_CYCLES(68), // tRC Row Cycle Time or Command Period // 59-68 are same same number, so some parts that are less have same regiser stting
-            SDRAM_CYCLES(68), // Refresh Cycle Time tRFC/tREF  // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(12), // tDPL/tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than <=14 cycles
+            SDRAM_CYCLES(60), // tRC Row Cycle Time or Command Period // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(60), // Refresh Cycle Time tRFC/tREF  // 59-68 are same same number, so some parts that are less have same regiser stting
             SDRAM_CYCLES(70), // tXSR Exit Self-Refresh Time // 69-78 = same cycles.  Original part (not available) used 67
-            SDRAM_CYCLES(14), // tRRD Row active to Row Active (or command period) // no parts use > 19, so same register setting
+            SDRAM_CYCLES(12), // tRRD Row active to Row Active (or command period) // no parts use > 19, so same register setting
             SDRAM_CLOCKS(2) // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
             };
-    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_IS42S32800J_6_IS42S32800D_7TL);
+    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_TODO_75E);
+#endif
+
+#if 0 // Testing CAS2 mode with -6 timings. Some parts only support up to 100Mhz in spec across temperature range.
+    static const T_LPC43xx_SDRAM_Configuration sdramConfig_IS42S32800J_6 = {
+            UEZBSP_SDRAM_BASE_ADDR,
+            UEZBSP_SDRAM_SIZE,
+            SDRAM_CAS_2, 
+            SDRAM_RAS_2, 
+            LPC43xx_SDRAM_CLKOUT1,
+            SDRAM_CLOCK_FREQUENCY,
+            64, // ms
+            4096, // cycles
+            SDRAM_CYCLES(18), // tRP precharge to activate period - All used parts 18.
+            SDRAM_CYCLES(42), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(70), // tXSR min // 69-78 = same cycles, no used parts list SREX. Original part (not available) used 67
+            SDRAM_CYCLES(18), // tAPR/tRCD Active Command to Read Command // 20+ = same cycles, no parts used < 18
+            SDRAM_CLOCKS(5), // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 3 is used.
+            SDRAM_CYCLES(12), // tDPL/tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than <=14 cycles
+            SDRAM_CYCLES(60), // tRC Row Cycle Time or Command Period // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(60), // Refresh Cycle Time tRFC/tREF  // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(70), // tXSR Exit Self-Refresh Time // 69-78 = same cycles.  Original part (not available) used 67
+            SDRAM_CYCLES(12), // tRRD Row active to Row Active (or command period) // no parts use > 19, so same register setting
+            SDRAM_CLOCKS(2) // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
+            };
+    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_IS42S32800J_6);
+#endif
+
+#if 1 // Optimal timing mode to support -6 parts in CAS3 only. // 6 ns is slowest speed rating actually loaded.
+    static const T_LPC43xx_SDRAM_Configuration sdramConfig_IS42S32800J_6 = {
+            UEZBSP_SDRAM_BASE_ADDR,
+            UEZBSP_SDRAM_SIZE,
+            SDRAM_CAS_3, 
+            SDRAM_RAS_3, 
+            LPC43xx_SDRAM_CLKOUT1,
+            SDRAM_CLOCK_FREQUENCY,
+            64, // ms
+            4096, // cycles
+            SDRAM_CYCLES(18), // tRP precharge to activate period - All used parts 18.
+            SDRAM_CYCLES(42), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(70), // tXSR min // 69-78 = same cycles, no used parts list SREX. Original part (not available) used 67
+            SDRAM_CYCLES(18), // tAPR/tRCD Active Command to Read Command // 20+ = same cycles, no parts used < 18
+            SDRAM_CLOCKS(5), // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 3 is used.
+            SDRAM_CYCLES(12), // tDPL/tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than <=14 cycles
+            SDRAM_CYCLES(60), // tRC Row Cycle Time or Command Period // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(60), // Refresh Cycle Time tRFC/tREF  // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(70), // tXSR Exit Self-Refresh Time // 69-78 = same cycles.  Original part (not available) used 67
+            SDRAM_CYCLES(12), // tRRD Row active to Row Active (or command period) // no parts use > 19, so same register setting
+            SDRAM_CLOCKS(2) // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
+            };
+    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_IS42S32800J_6);
+#endif
+
+#else //  Rev 1 uEZGUI only had 16MB Micron Part
+
+#if 1 // TODO Updated micron timings not tested across full temperature range
+ // Compatible timing mode to support -6A parts in CAS3. 
+    static const T_LPC43xx_SDRAM_Configuration sdramConfig_MT48LC2M32B2P_6A = {
+            UEZBSP_SDRAM_BASE_ADDR,
+            UEZBSP_SDRAM_SIZE,
+            SDRAM_CAS_3, 
+            SDRAM_RAS_3, 
+            LPC43xx_SDRAM_CLKOUT1,
+            SDRAM_CLOCK_FREQUENCY,
+            64, // ms
+            4096, // cycles
+            SDRAM_CYCLES(18), // tRP precharge to activate period - All used parts 18. 20 is a higher cycle number, so we slow down for that part
+            SDRAM_CYCLES(42), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(67), // tXSR min // 69-78 = same cycles, no used parts list SREX.
+            SDRAM_CYCLES(18), // tAPR/tRCD Active Command to Read Command // 20+ = same cycles, no parts used < 18, slowed down for newer parts
+            SDRAM_CLOCKS(5),  // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 3 is used.
+            SDRAM_CLOCKS(3),  // tDPL/tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than <=14 cycles
+            SDRAM_CYCLES(60), // tRC Row Cycle Time or Command Period // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(60), // Refresh Cycle Time tRFC/tREF  // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(67), // tXSR Exit Self-Refresh Time // 69-78 = same cycles.
+            SDRAM_CYCLES(12), // tRRD Row active to Row Active (or command period) // no parts use > 19, so same register setting
+            SDRAM_CLOCKS(2)   // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
+            };
+    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P_6A);
+#endif
+
+#endif
 
 #if CONFIG_MEMORY_TEST_ON_SDRAM
     MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
+#endif
+#endif
+
+#ifdef CORE_M0
+
 #endif
 }
 
@@ -326,6 +479,7 @@ void UEZBSP_RAMInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_ROMInit(void)
 {
+#ifdef CORE_M4
   // Dummy code to keep various memory location declarations from optimizing out
 #if (DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1 == 1)
 #else
@@ -333,6 +487,11 @@ void UEZBSP_ROMInit(void)
 #endif
 #ifndef BBL_BASE_ADDRESS // Don't include anything in the second flash section in a bootloader application.
    _crp2ptr = _crp2ptr;
+#endif
+#endif
+
+#ifdef CORE_M0
+
 #endif
 }
 
@@ -344,6 +503,7 @@ void UEZBSP_ROMInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_PLLConfigure(void)
 {
+#ifdef CORE_M4
     const T_LPC43xx_PLL_Frequencies freq = {
             OSCILLATOR_CLOCK_FREQUENCY,
 
@@ -379,6 +539,10 @@ void UEZBSP_PLLConfigure(void)
             EFalse, }; // no clock out by default
 
     LPC43xx_PLL_SetFrequencies(&freq);
+#endif
+#ifdef CORE_M0
+
+#endif
 }
 
 
@@ -424,7 +588,9 @@ memset((void *)__section_begin("__kernel_functions_block__"), 0x0,
  *      Can call before PLL comes on. For example to set LED initial state.
  *      To use any RAM here set it with UEZ_PUT_SECTION(".IRAM", variable);
  *---------------------------------------------------------------------------*/
-void UEZBSP_Pre_PLL_SystemInit(void) {  
+void UEZBSP_Pre_PLL_SystemInit(void)
+{
+#ifdef CORE_M4
     // Turn off LED before init clocks. 
     // Then it will only start blinking after RTOS
     // TODO need to test this code. It most likely doesn't work.
@@ -474,6 +640,11 @@ void UEZBSP_Pre_PLL_SystemInit(void) {
     break;
   }
 #endif
+
+#endif
+#ifdef CORE_M0
+
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -486,6 +657,7 @@ void UEZBSP_Pre_PLL_SystemInit(void) {
  *---------------------------------------------------------------------------*/
 void UEZBSP_CPU_PinConfigInit(void)
 {
+#ifdef CORE_M4
     // Place any pin configuration that MUST be initially here (at power up
     // but before even SDRAM is initialized)
     // Can chage LED state here if troubleshooting SDRAM or want CLK OK signal 
@@ -531,6 +703,11 @@ void UEZBSP_CPU_PinConfigInit(void)
     break;
   }
 #endif
+
+#endif
+#ifdef CORE_M0
+
+#endif
 }
 
 #if (defined __GNUC__) // GCC
@@ -557,6 +734,7 @@ void UEZBSP_CPU_PinConfigInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_Post_SystemInit(void)
 {
+#ifdef CORE_M4
 #if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
   switch(G_hardwareTest.iTestMode){
     case HARDWARE_TEST_CRYSTAL:
@@ -603,6 +781,11 @@ memset((void *)__section_begin(".usbhostmem"), 0x0,
 #elif (defined __CC_ARM) // ARM RealView Compiler
 #else
   #error "Early memory clear not implemented yet for this compiler."
+#endif
+
+#endif
+#ifdef CORE_M0
+
 #endif
 }
 
@@ -1155,6 +1338,48 @@ T_uezError UEZLCDBacklight(T_uezDevice aLCDDevice, TUInt32 aLevel)
 #endif 
 #endif
 
+void LCD_Pin_Power_Off(T_uezGPIOPortPin portPin)
+{
+    TUInt32 value;
+    UEZGPIOOutput(portPin); 
+    UEZGPIOSetMux(portPin, (portPin >> 8) >= 5 ? 4 : 0);
+    value = ((portPin >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(portPin, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(portPin);
+}
+void LCD_Power_Down(void)
+{
+    // Need to set all connected signals low to power down the LCD and stop current leakage.
+    LCD_Pin_Power_Off(GPIO_PZ_3_P4_7); // LCD_DCLK
+    LCD_Pin_Power_Off(GPIO_P2_6);      // LCD_ENAB_M
+    LCD_Pin_Power_Off(GPIO_P2_5);      // LCD_FP
+    LCD_Pin_Power_Off(GPIO_P3_14);     // LCD_LP
+    // Color signals
+    LCD_Pin_Power_Off(GPIO_P2_3);      // LCD_VD2
+    LCD_Pin_Power_Off(GPIO_P2_2);      // LCD_VD3
+    LCD_Pin_Power_Off(GPIO_P4_7);      // LCD_VD4
+    LCD_Pin_Power_Off(GPIO_P4_6);      // LCD_VD5
+    LCD_Pin_Power_Off(GPIO_P4_5);      // LCD_VD6
+    LCD_Pin_Power_Off(GPIO_P4_4);      // LCD_VD7
+    // no VD8 or VD9
+    LCD_Pin_Power_Off(GPIO_P5_14);     // LCD_VD10
+    LCD_Pin_Power_Off(GPIO_P5_13);     // LCD_VD11
+    LCD_Pin_Power_Off(GPIO_P4_3);      // LCD_VD12
+    LCD_Pin_Power_Off(GPIO_P5_26);     // LCD_VD13
+    LCD_Pin_Power_Off(GPIO_P5_25);     // LCD_VD14
+    LCD_Pin_Power_Off(GPIO_P5_24);     // LCD_VD15
+    // no VD16 or VD17
+    LCD_Pin_Power_Off(GPIO_P3_10);     // LCD_VD18
+    LCD_Pin_Power_Off(GPIO_P3_9);      // LCD_VD19
+    LCD_Pin_Power_Off(GPIO_P5_23);     // LCD_VD20
+    LCD_Pin_Power_Off(GPIO_P5_22);     // LCD_VD21
+    LCD_Pin_Power_Off(GPIO_P5_21);     // LCD_VD22
+    LCD_Pin_Power_Off(GPIO_P5_20);     // LCD_VD23
+    // Per NHD 5" or NHD 7" hold supply low > 5ms with some timing margin
+    // Tpdt - Time of the voltage of supply being below 0.3V: Min: 5ms
+    UEZTaskDelay(7); // Note: Can take a whole second to reach 0V, but not needed for spec.
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_LCD_Require
  *---------------------------------------------------------------------------*
@@ -1162,15 +1387,37 @@ T_uezError UEZLCDBacklight(T_uezDevice aLCDDevice, TUInt32 aLevel)
  *      Setup the LCD device driver and its backlight
  *---------------------------------------------------------------------------*/
 void UEZPlatform_LCD_Require(void)
-{
+{  
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+    LPC43xx_GPIO2_Require(); // called in minimal require
+#endif
+    LPC43xx_GPIO3_Require();
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+    LPC43xx_GPIO4_Require(); // called in minimal require
+    LPC43xx_GPIO5_Require(); // called in minimal require
+    LPC43xx_GPIOZ_Require(); // called in minimal require
+#endif
+    LCD_Power_Down();
     const T_LPC43xx_LCDController_Pins pins = {
             GPIO_NONE,  // LCD_PWR -- GPIO controlled
             GPIO_PZ_3_P4_7,  // LCD_DCLK
+#if (ENABLE_LCD_DE_PIN == 1)
             GPIO_P2_6,  // LCD_ENAB_M
+#else
+            GPIO_NONE,  // DE Pin Not Used
+#endif
+            
+#if (ENABLE_LCD_HSYNC_VSYNC_PINS == 1)
             GPIO_P2_5,  // LCD_FP
+#else
+            GPIO_NONE,  // VSYNC Not Used
+#endif
             GPIO_NONE,  // LCD_LE
+#if (ENABLE_LCD_HSYNC_VSYNC_PINS == 1)
             GPIO_P3_14,  // LCD_LP
-
+#else
+            GPIO_NONE,  // HSYNC Not Used
+#endif
             {
                 GPIO_NONE,  // LCD_VD0
                 GPIO_NONE,  // LCD_VD1
@@ -1208,24 +1455,48 @@ void UEZPlatform_LCD_Require(void)
     };
     T_halWorkspace *p_lcdc;
     T_uezDeviceWorkspace *p_lcd;
-#if (DISABLE_BACKLIGHT_PWM_UEZ_API == 1)
     
+    // Below we disable some code bloat when building a bootloader.
+#if (DISABLE_BACKLIGHT_PWM_UEZ_API == 1)
+    // No backlight device or workspace created.
 #else
     T_uezDevice backlight;
     T_uezDeviceWorkspace *p_backlight = 0;
 #endif
-    extern const T_uezDeviceInterface *UEZ_LCD_INTERFACE_ARRAY[];
-
-    LPC43xx_GPIO2_Require();
-    LPC43xx_GPIO3_Require();
-    LPC43xx_GPIO4_Require();
-    LPC43xx_GPIO5_Require();
-    LPC43xx_GPIOZ_Require();
 
 #if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
     // Don't use LPC timer driver. It is only used for 167 ms turn on/off on this LPC.
 #else
     UEZPlatform_Timer0_Require();
+#endif
+
+#if (ENABLE_LCD_DE_PIN == 0)
+      // set DE pin to input mode
+      TUInt32 valueDE = ((GPIO_P2_6 >> 8) & 0x7) >= 5 ? 4 : 0;
+      UEZGPIOSetMux(GPIO_P2_6, (GPIO_P2_6 >> 8) >= 5 ? 4 : 0);
+      UEZGPIOControl(GPIO_P2_6, GPIO_CONTROL_SET_CONFIG_BITS, valueDE);
+      //UEZGPIOClear(GPIO_P2_6);
+      //UEZGPIOSet(GPIO_P2_6);
+      //UEZGPIOOutput(GPIO_P2_6);
+      UEZGPIOInput(GPIO_P2_6);
+      UEZGPIOLock(GPIO_P2_6);
+#endif
+
+#if (ENABLE_LCD_HSYNC_VSYNC_PINS == 0)
+      // set VSYNC pin low
+      TUInt32 valueHV = ((GPIO_P2_5 >> 8) & 0x7) >= 5 ? 4 : 0;
+      UEZGPIOSetMux(GPIO_P2_5, (GPIO_P2_5 >> 8) >= 5 ? 4 : 0);
+      UEZGPIOControl(GPIO_P2_5, GPIO_CONTROL_SET_CONFIG_BITS, valueHV);
+      UEZGPIOClear(GPIO_P2_5);    
+      UEZGPIOOutput(GPIO_P2_5);
+      UEZGPIOLock(GPIO_P2_5); 
+      // set HSYNC pin low
+      valueHV = ((GPIO_P3_14 >> 8) & 0x7) >= 5 ? 4 : 0;
+      UEZGPIOSetMux(GPIO_P3_14, (GPIO_P3_14 >> 8) >= 5 ? 4 : 0);
+      UEZGPIOControl(GPIO_P3_14, GPIO_CONTROL_SET_CONFIG_BITS, valueHV);
+      UEZGPIOClear(GPIO_P3_14);    
+      UEZGPIOOutput(GPIO_P3_14);
+      UEZGPIOLock(GPIO_P3_14);
 #endif
    
 #if(UEZ_PROCESSOR == NXP_LPC4357)
@@ -1254,7 +1525,7 @@ void UEZPlatform_LCD_Require(void)
    // Enable output
    G_LPC43XX_PWM_register_Base->iCON_SET = (1 << (0 + (PWM_MATCH_REGISTER * 8)));
       
-   TUInt32 value = ((GPIO_P3_11 >> 8) & 0x7) >= 5 ? 4 : 0;   
+   TUInt32 value = ((GPIO_P3_11 >> 8) & 0x7) >= 5 ? 4 : 0;
    UEZGPIOOutput(GPIO_P3_11); 
    UEZGPIOSetMux(GPIO_P3_11, (GPIO_P3_11 >> 8) >= 5 ? 4 : 0);
    UEZGPIOControl(GPIO_P3_11, GPIO_CONTROL_SET_CONFIG_BITS, value);
@@ -1265,6 +1536,7 @@ void UEZPlatform_LCD_Require(void)
 #endif    
 
     LPC43xx_LCDController_Require(&pins);
+    extern const T_uezDeviceInterface *UEZ_LCD_INTERFACE_ARRAY[];
 
     // Need to register LCD device and use existing LCD Controller
     UEZDeviceTableRegister(
@@ -1637,12 +1909,10 @@ static T_uezError UEZGUI50WVN_AudioMixerCallback(
                     error = UEZAudioAmpUnMute(G_Amp);
                 } 
                 // This insures we scale the 0-255 input volume to the correct maximum volume for the onboard speaker.
-                if(G_Amp_In_Use == AUDIO_AMP_TDA8551) { // enforce maximum volume based on AMP
-                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 /255);
+                if(G_Amp_In_Use == AUDIO_AMP_LM48110) { // enforce maximum volume based on AMP
+                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 /255);
                 } else if(G_Amp_In_Use == AUDIO_AMP_WOLFSON) {
                   aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL /255);
-                } else if(G_Amp_In_Use == AUDIO_AMP_LM48110) {
-                  aLevel = (aLevel * UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 /255);
                 } else {
                     aLevel = 0; // NEED TO DEFINE AMP AND MAX SAFE VOLUME LEVEL!
                 }
@@ -1764,9 +2034,10 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
     Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
             aWriteBufferSize, aReadBufferSize);
     // Set standard output to console
-    T_uezDevice G_stdptr = StdoutGet();
-    UEZStreamOpen("Console", &G_stdptr); // set stdOut
-    StdinRedirect(G_stdptr); // set stdIn
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*
@@ -2002,8 +2273,12 @@ void UEZPlatform_Speaker_Require(void)
 void UEZPlatform_IRTC_Require(void)
 {
     DEVICE_CREATE_ONCE();
-
-    LPC43xx_RTC_Require(ETrue);
+    
+    // Come up with some mechanism (non-volatile storage, or LPC OTP, or QSPI OTP, etc)
+    // to load a unique calibration value for each LPC43XX internal RTC. This is the only
+    // way to get passable accuracy, otherwise you may be off a whole minute in a month.
+    TUInt32 aPerUnitRtcCalibrationValue = 0;
+    LPC43xx_RTC_Require(ETrue, aPerUnitRtcCalibrationValue);
     RTC_Generic_Create("RTC", "RTC");
 }
 
@@ -2058,7 +2333,7 @@ void UEZPlatform_Accel0_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_EMAC_Require(void)
 {
-    // This EMAC is RMII (less pins)
+    // This EMAC is RMII (less pins)// Due to RMII require, struct will be different from 4088.
     const T_LPC43xx_EMAC_Settings emacSettings = {
             GPIO_P0_1,          // ENET_TX_ENn      = PIN_P0_1_ENET_TXEN
             GPIO_NONE,          // ENET_TX_TXD[3]   = not used for RMII
@@ -2066,8 +2341,8 @@ void UEZPlatform_EMAC_Require(void)
             GPIO_P0_15,         // ENET_TX_TXD[1]   = PIN_P1_20_ENET_TXD1
             GPIO_P0_13,         // ENET_TX_TXD[0]   = PIN_P1_18_ENET_TXD0
             GPIO_NONE,          // ENET_TX_ER       = not used for RMII
-            GPIO_PZ_0_P1_19,    // ENET_TX_CLK      = PIN_P1_19_ENET_REFCLK
-            GPIO_P0_3,          // ENET_RX_DV       = ENET_RX_DV
+            GPIO_PZ_0_P1_19,    // ENET_TX_CLK      = PIN_P1_19_ENET_REFCLK (input into LPC)
+            GPIO_P0_3,          // ENET_RX_DV       = ENET_RX_DV is proper mode for RMII
             GPIO_NONE,          // ENET_RXD[3]      = not used for RMII
             GPIO_NONE,          // ENET_RXD[2]      = not used for RMII
             GPIO_P0_0,          // ENET_RXD[1]      = PIN_P0_0_ENET_RXD1
@@ -2079,6 +2354,7 @@ void UEZPlatform_EMAC_Require(void)
             GPIO_P6_0,          // ENET_MDC         = PIN_P6_0_ENET_MDC
             GPIO_P0_12,         // ENET_MDIO        = PIN_P1_17_ENET_MDIO
     };
+
     DEVICE_CREATE_ONCE();
 
     LPC43xx_GPIO0_Require();
@@ -2186,6 +2462,7 @@ void UEZPlatform_USBHost_PortA_Require(void)
     G_USBHostDriveNumber = 1;
 #if 1
     LPC43xx_GPIO5_Require();
+    UEZGPIOSetPull(GPIO_P5_5, GPIO_PULL_NONE); // disable pulls on the offboard USB1_VBUS pin. We probably aren't using this pin in Host mode.
 
     // If the expansion board USB1H_PPWR is active high you can use the USB mode.
     // Otherwise we MUST set GPIO low to enable power on existing boards.
@@ -2194,7 +2471,11 @@ void UEZPlatform_USBHost_PortA_Require(void)
     UEZGPIOSetMux(GPIO_P5_18, (GPIO_P5_18 >> 8) >= 5 ? 4 : 0); // Turn on GPIO mode
     UEZGPIOClear(GPIO_P5_18);
     UEZGPIOOutput(GPIO_P5_18);
+    // We can take apparently over 2.5ms for power to rise with a flash drive connected,
+    // so delay to make sure it is fully on first to match other port.
+    UEZTaskDelay(5);
 #endif
+    
     // Note: We don't have GPIO power control in the USB software, so a manual
     // power reset should be done here. It seems this isn't ever necessary.
 
@@ -2224,7 +2505,7 @@ void UEZPlatform_USBHost_PortA_Require(void)
  * regardless of the result of the host device chirp result and the resulting port speed will be
  * indicated by the PSPD field in PORTSC1 (see Section 25.6.15).
  *
- *  Per documentation would we would need special handling to allow for proper speed detection
+ *  Per documentation we would need special handling to allow for proper speed detection
  *  so currently we will force full-speed mode until future HW/SW work is performed.
  *  Existing HW may not be suitable for proper operation at high-speed mode.
  *---------------------------------------------------------------------------*/
@@ -2244,6 +2525,7 @@ void UEZPlatform_USBHost_PortB_Require(void)
     //UEZGPIOOutput(currentPortPin);
     //UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
 
+    // USB0_VBUS isn't a GPIO pin so we can't change the pull resistor or any function change. Has a unique internal pull-down.
     UEZGPIOSetMux(GPIO_P3_2, 1); // Turn on P6_3 USB0_PPWR USB 0 peripheral mode func 1
 #endif
     InterruptRegister(USB0_IRQn, LPCUSBLib_USB0_IRQHandler,
@@ -2325,7 +2607,6 @@ void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
     FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms0);
 }
 
-
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_System_Reset
  *---------------------------------------------------------------------------*
@@ -2339,10 +2620,15 @@ void UEZPlatform_System_Reset(void){
     // By default use HW reset pin on this board.
     // Use low level code to save code space and allow for calling outside of API.
     LPC_SCU->SFSPE_14 = 0x4; //PIN_HW_RESET
-    LPC_GPIO_PORT->CLR[7] |= (1<<14);// off
-    LPC_GPIO_PORT->DIR[7] |= (1<<14);    
+    LPC_GPIO_PORT->CLR[7] |= (1<<14); // set low
+    LPC_GPIO_PORT->DIR[7] |= (1<<14); // set output
     
-    //NVIC_SystemReset();
+    /* From ES_LPC435x/3x/2x/1x Rev 6.8:    Problem:
+     * On the LPC43xx, PERIPH_RST is not functional. CMSIS call NVIC_SystemReset() uses
+     * PERIPH_RST internally and is also non-functional.
+     * Work-around:
+     * There is no work-around. To reset the entire chip, use the CORE_RST instead of using
+     * CMSIS call NVIC_SystemReset() or PERIPH_RST.*/
 }
 
 void UEZPlatform_TouchscreenReplay_Require(void)
@@ -2463,6 +2749,7 @@ void UEZPlatform_USBHost_USB1_Serial_Require(void)
 // Don't enable console anymore in minimal requires, so that we can use this for GUI only bootloader, etc.
 void UEZPlatform_Minimal_Require(void)
 {
+#ifdef CORE_M4
 #if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
     //LPC43xx_GPIO3_Require();
     //UEZPlatform_CRC0_Require(); // Adds a few extra bytes if we require it later in code.
@@ -2476,7 +2763,7 @@ void UEZPlatform_Minimal_Require(void)
     //LPC43xx_GPIO5_Require();
     //LPC43xx_GPIOZ_Require();
 #else
-    LPC43xx_GPIO3_Require();    
+    LPC43xx_GPIO3_Require();
     UEZPlatform_CRC0_Require();
     UEZPlatform_Flash0_Require();
 
@@ -2491,16 +2778,23 @@ void UEZPlatform_Minimal_Require(void)
     LPC43xx_GPIO7_Require();
     LPC43xx_GPIOZ_Require();
 #endif
+#endif
+
+#ifdef CORE_M0
+    // TODO
+    LPC43xx_GPIO0_Require(); // heartbeat LED
+#endif
 }
 
 void UEZPlatform_Standard_Require(void)
 {
     UEZPlatform_Minimal_Require();
 
+#ifdef CORE_M4
     UEZPlatform_Console_Expansion_Require(1024, 1024); // USART0 console
     //UEZPlatform_Console_ALT_PWR_COM_Require(1024, 1024); // USART3 console
     
-    UEZPlatform_IRTC_Require();
+    //UEZPlatform_IRTC_Require(); // Only init RTC after main task to prevent boot stall.
 
     UEZPlatform_I2C0_Require();
 
@@ -2523,6 +2817,16 @@ void UEZPlatform_Standard_Require(void)
     #if (UEZ_ENABLE_LOOPBACK_TEST == 1)
     UEZPlatform_Prepare_GPIOs_For_Loopback();
     #endif
+#endif
+
+#ifdef CORE_M0
+    // TODO
+    /* Note that calling some of these will reset the peripheral that was running on M4.
+     * So even if most of the drivers will work, you want to avoid calling the same require on
+     * both parts, and instead get the existing initalized data structures (and register them)
+     * so that the normal uEZ API calls can be used on both cores. It would be simpler to use
+     * each peripheral on only 1 core at a time, to avoid issues. uEZGPIO should have no issues. */
+#endif
 }
 
 TBool UEZPlatform_Host_Port_B_Detect(void)
@@ -2627,6 +2931,11 @@ const void *UEZPlatform_GUIDisplayDriver()
 
 void SUICallbackSetLCDBase(void *aAddress)
 {
+#if (LPC4357_LCD_ADDRESS_GUARD == 1)
+    if((TUInt32)aAddress < LCD_DISPLAY_BASE_ADDRESS) {
+      aAddress = (void *)LCD_DISPLAY_BASE_ADDRESS; // On this LPC LCD will eventualy crash if less than SDRAM start address!
+    }
+#endif
     LPC_LCD->UPBASE = (TUInt32)aAddress;
 }
 
@@ -2672,6 +2981,7 @@ loopforever
 }
 #else
 void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
+#ifdef CORE_M4
 unsigned long ulStacked_pc = 0UL;
     ( void ) ulStacked_pc;
     __asm
@@ -2685,6 +2995,166 @@ unsigned long ulStacked_pc = 0UL;
     );
 
     for( ;; );     /* Inspect ulStacked_pc to locate the offending instruction. */
+    //UEZPlatform_System_Reset();
+#endif
+#ifdef CORE_M0
+// TODO create appropriate ASM for these cores
+unsigned long ulStacked_pc = 0UL;
+    ( void ) ulStacked_pc;
+    __asm
+    (
+    ""
+    );
+
+    for( ;; );     /* Inspect ulStacked_pc to locate the offending instruction. */
+    //UEZPlatform_System_Reset();
+#endif
+#ifdef CORE_M0SUB
+// TODO
+#endif
+}
+#endif
+
+#include "chip.h"
+
+#if (LPC43XX_ENABLE_M0_CORES == 1) // interrupt / workspaces between cores
+#ifdef CORE_M4
+T_LPC43xx_M0_APP_Workspace G_M0_APP_Workspace;
+#endif
+#ifdef CORE_M0
+T_LPC43xx_M4_CORE_Workspace G_M4_CORE_Workspace;
+#endif
+#ifdef CORE_M0SUB
+// TODO
+#endif
+
+// Register and intializae the interrupt. Untested so far.
+void uEZPlatform_Register_InterCore_WS(void)
+{
+#ifdef CORE_M4
+    // register the interrupt that we get from M0 APP core.
+    LPC43xx_InterCore_InitializeWorkspace(&G_M0_APP_Workspace);
+    LPC43xxSetupInterCoreInterrupts();
+#endif
+#ifdef CORE_M0
+    // register the interrupt that we get from M4 core.
+    LPC43xx_InterCore_InitializeWorkspace(&G_M4_CORE_Workspace);
+    LPC43xxSetupInterCoreInterrupts();
+#endif
+#ifdef CORE_M0SUB // TODO 
+#endif
+}
+#endif
+
+void uEZPlatform_Start_Additonal_Cores(void)
+{
+#if (LPC43XX_ENABLE_M0_CORES == 1)
+#if 0 // Enable one of the PMOD Connector GPIOs to be able to scope capture it toggling in second core.
+    TUInt32 value;
+    UEZGPIOOutput(GPIO_P7_17);
+    UEZGPIOClear(GPIO_P7_17);
+    UEZGPIOSetMux(GPIO_P7_17, (GPIO_P7_17 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P7_17 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P7_17, GPIO_CONTROL_SET_CONFIG_BITS, value);
+    
+    UEZGPIOOutput(GPIO_P7_18); 
+    UEZGPIOClear(GPIO_P7_18);
+    UEZGPIOSetMux(GPIO_P7_18, (GPIO_P4_3 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P7_18 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P7_18, GPIO_CONTROL_SET_CONFIG_BITS, value);
+#endif
+    LPC_RITIMER->CTRL = 0x1; // disable RITIMER
+
+    uEZPlatform_Register_InterCore_WS();
+
+    // It appears that holding reset is required before clearing it.
+    Chip_RGU_TriggerReset(RGU_RESET_CTRL1_M0APP_RST_Pos+32);
+    Chip_Clock_EnableOpts(CLK_M4_M0APP, true, true, 1); // enable the clock branch if not enabled    
+    
+    // Start M0 core(s)
+    Chip_CREG_SetM0AppMemMap(0x1A070000); // Wherever your M0 project flash starts you should point to that address here.
+    Chip_RGU_ClearReset(RGU_M0APP_RST); // Must trigger reset above, before clearing it here.
+    LPC_RGU->RESET_STATUS3 &= ~(RGU_RESET_STATUS3_M0APP_RST_Msk); // clear reset status
+    if((LPC_RGU->RESET_ACTIVE_STATUS1 & RGU_RESET_ACTIVE_STATUS1_M0APP_RST_Msk) == RGU_RESET_ACTIVE_STATUS1_M0APP_RST_Msk) {
+        // M0 came out of reset
+    }
+    
+#if 0 // M0Sub starting
+    Chip_CREG_SetM0AppMemMap(0x1B070000);
+    Chip_RGU_ClearReset(RGU_M0SUB_RST); //
+    LPC_RGU->RESET_STATUS0 &= ~(RGU_RESET_STATUS0_M0SUB_RST_Msk); // clear reset status
+    if((LPC_RGU->RESET_ACTIVE_STATUS0 & RGU_RESET_ACTIVE_STATUS0_M0SUB_RST_Msk) == RGU_RESET_ACTIVE_STATUS0_M0SUB_RST_Msk) {
+        // M0 Sub came out of reset
+    }
+#endif
+
+#endif
+}
+
+#ifdef CORE_M0 // Enable RITIMER interrupt.
+#include "FreeRTOS.h" // Can Get FreeRTOS config settings to configure tick rate or some other settings.
+extern void xPortSysTickHandler( void );
+
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // For SEGGER System View Time stamping
+// Make sure tick suppression is off, so that normal ticks are used and a small divider is used for higher resolution.
+#define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ) // Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_FreeRTOS.c
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_X_GetTimestamp()
+*
+* Function description
+*   Returns the current timestamp in cycles using the system tick
+*   count and the SysTick counter.
+*   All parameters of the SysTick have to be known.
+*
+* Return value
+*   The current timestamp.
+*
+* Additional information
+*   SEGGER_SYSVIEW_X_GetTimestamp is always called when interrupts are
+*   disabled. Therefore locking here is not required.
+*/
+U32 SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific(void) {
+  U32 TickCount = SEGGER_SYSVIEW_TickCnt;
+  U32 Cycles = LPC_RITIMER->COUNTER;
+  
+  if (NVIC_GetPendingIRQ(M0_RITIMER_OR_WWDT_IRQn)) {   // Check if timer interrupt pending ...
+    Cycles = LPC_RITIMER->COUNTER; // Interrupt pending, re-read timer and adjust result
+    TickCount++;
+  }
+  return ((SYSVIEW_TIMESTAMP_FREQ/configTICK_RATE_HZ) * TickCount) + Cycles;
+}
+#endif
+
+static void IRITimerProcessIRQ(void)
+{
+#if 0 // Enable one of the PMOD Connector GPIOs to be able to scope capture it toggling in second core.
+    if((LPC_GPIO_PORT->SET[7] & (1 << 17)) == (1 << 17)){ // if on
+      LPC_GPIO_PORT->CLR[7] |= 1 << 17;// off
+    } else {
+      LPC_GPIO_PORT->SET[7] |= (1 << 17); // set on
+    }
+#endif    
+    LPC_RITIMER->CTRL |= RITIMER_CTRL_RITINT_Msk; // Must clear interrupt every time for proper reload and timing.
+    // Run RTOS tick here.
+    xPortSysTickHandler();
+}
+
+// Even though the header file lists a SysTick on M0 it doesn't exist, so use RITIMER here instead. 
+void prvSetupTimerInterrupt( void )
+{
+    // This simple timer only has 4 registers
+    LPC_RITIMER->CTRL = 0x1; // disable
+    LPC_RITIMER->COUNTER = 0; // default value
+    LPC_RITIMER->MASK = 0; // default value, don't use the mask for additional interrupt triggers
+    LPC_RITIMER->COMPVAL = 204000; // value to count to for 1ms tick rate.
+    // enable rollover back to 0 on compare match, disable timer when debugger attached, enable timer, enable int
+    // Since we auto reload, we ONLY need to set the RITIMER_CTRL_RITINT_Msk every ISR to clear it, we don't need to
+    // do an additional reload. (unless we wanted to dynamicaly change tick timing)
+    LPC_RITIMER->CTRL = RITIMER_CTRL_RITINT_Msk | RITIMER_CTRL_RITENCLR_Msk | RITIMER_CTRL_RITENBR_Msk | RITIMER_CTRL_RITEN_Msk;
+
+    InterruptEnable(M0_RITIMER_OR_WWDT_IRQn); // Must call this nvic enable to actually enable the ISR.
 }
 #endif
 
@@ -2702,8 +3172,31 @@ int32_t main(void)
 {
   // To be able to check RTOS check we need to finish SystemInit and actually clear/init RAM first.
   // Starting here we can check it.
-  
+
+  // At start we are in PD0_SLEEP0_HW_ENA = 0x1 mode and second/third cores are being held in RESET.
+  // Note that some low power modes on these parts have issues that FDI didn't test/workaround.
+  // So make sure to thoroughly read the manual and errata to put either M4 or M0 in a sleep mode.
+
+#ifdef CORE_M4
+    // We want to call this before starting M0, so that full init takes place. (GPIO, PLL, SDRAM, etc)
     UEZBSP_Startup();
+#endif
+#ifdef CORE_M0
+  #if 0 // blink LED with no timer or RTOS
+      while (1) {
+          UEZBSPDelayMS(1000);
+          UEZBSP_HEARTBEAT_TOGGLE();
+      }
+  #else
+      UEZBSP_Startup();
+  #endif
+#endif
+#ifdef CORE_M0SUB
+    while (1) {
+        UEZBSPDelayMS(1000);
+        UEZBSP_HEARTBEAT_TOGGLE();
+    }
+#endif
 
     while (1) {
     } // never should get here

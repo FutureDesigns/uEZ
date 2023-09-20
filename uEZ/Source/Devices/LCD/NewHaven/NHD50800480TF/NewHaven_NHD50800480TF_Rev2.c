@@ -35,7 +35,7 @@
 #define RESOLUTION_X        800
 #define RESOLUTION_Y        480
 
-#define LCD_CLOCK_RATE      30000000
+#define LCD_CLOCK_RATE      30000000  // actual 29.14 if using 204MHz clock
 
 /*---------------------------------------------------------------------------*
  * Types:

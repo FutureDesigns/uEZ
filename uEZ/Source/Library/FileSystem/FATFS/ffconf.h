@@ -43,7 +43,7 @@
 /* This option switches f_mkfs() function. (0:Disable or 1:Enable) */
 #endif
 
-#define FF_USE_FASTSEEK	0
+#define FF_USE_FASTSEEK	1 // Doesn't improve video player noticeably.
 /* This option switches fast seek function. (0:Disable or 1:Enable) */
 
 

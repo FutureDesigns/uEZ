@@ -42,7 +42,7 @@
 #include "uEZHandles.h"
 #include <uEZGPIO.h>
 #ifdef FREERTOS_PLUS_TRACE
-#include <trcUser.h>
+//#include <trcUser.h>
 #endif
 
 extern void UEZTaskInit(void);

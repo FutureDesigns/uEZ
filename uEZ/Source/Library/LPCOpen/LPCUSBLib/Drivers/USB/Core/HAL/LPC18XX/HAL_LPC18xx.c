@@ -238,12 +238,28 @@ void HAL_USBDeInit(uint8_t corenum, uint8_t mode)
 
 void HAL_EnableUSBInterrupt(uint8_t corenum)
 {
+#ifdef CORE_M4
 	NVIC_EnableIRQ((corenum) ? USB1_IRQn : USB0_IRQn);	//  enable USB interrupts
+#endif
+#ifdef CORE_M0
+	NVIC_DisableIRQ((corenum) ? M0_USB1_IRQn : M0_USB0_IRQn);	//  disable USB interrupts
+#endif
+#ifdef CORE_M0SUB
+	NVIC_DisableIRQ((corenum) ? M0S_USB1_IRQn : M0S_USB0_IRQn);	//  disable USB interrupts
+#endif
 }
 
 void HAL_DisableUSBInterrupt(uint8_t corenum)
 {
+#ifdef CORE_M4
 	NVIC_DisableIRQ((corenum) ? USB1_IRQn : USB0_IRQn);	//  disable USB interrupts
+#endif
+#ifdef CORE_M0
+	NVIC_DisableIRQ((corenum) ? M0_USB1_IRQn : M0_USB0_IRQn);	//  disable USB interrupts
+#endif
+#ifdef CORE_M0SUB
+	NVIC_DisableIRQ((corenum) ? M0S_USB1_IRQn : M0S_USB0_IRQn);	//  disable USB interrupts
+#endif
 }
 
 void LPCUSBLib_USB0_IRQHandler(void)

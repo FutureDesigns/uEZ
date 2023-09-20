@@ -176,7 +176,9 @@
 
 #define FAST_STARTUP                0
 
-#define APP_ENABLE_HEARTBEAT_LED_ON 1
+#ifndef APP_ENABLE_HEARTBEAT_LED
+#define APP_ENABLE_HEARTBEAT_LED 1
+#endif
 
 /*-------------------------------------------------------------------------*
  * Display and frames section:
@@ -206,7 +208,7 @@
 // 16+16+14+32+20+32+16+52+44+56+32+48+12+28+52+52+40+16+(17+38+7+5)*1024+80+20
 // +2*800*480*2 = 1,605,286 bytes
 //#define EMWIN_RAM_SIZE          0x00200000
-#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*1536) // 2 frames plus 1.5MB
+#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*1792) // 2 frames plus 1.75MB
 // Note video player adds 1 more frame memory
 
 // Network Settings for future implementation

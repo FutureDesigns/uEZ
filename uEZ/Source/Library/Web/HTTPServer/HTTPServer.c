@@ -152,7 +152,7 @@ typedef struct _T_httpStateVar {
 
 typedef struct {
     int32_t iSocket; //Lwip socket, -1 if not active
-    TUInt8 iReceiveBuffer[512];
+    TUInt8 iReceiveBuffer[768]; // standard demo takes around 520 bytes of POST before seeing both variables. 
     TUInt32 iReceiveIndex;
     TUInt32 iReceiveLength;
     TUInt32 iLength;
@@ -564,7 +564,17 @@ static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
     dprintf("FlushStart: %d (%d)\n", start, aState->iWriteLen);
 #endif
 #if LWIP_NETCONN_SEM_PER_THREAD // It appears that per thread semaphore fixes this crashing issue and a 1ms delay is not needed, but call 0 delay to allow a switch.
+    
+#if(UEZ_PROCESSOR == NXP_LPC4357)
     UEZTaskDelay(0); // Will crash if flushstart debug code is not running, testing delay fix
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+    UEZTaskDelay(0); // Will crash if flushstart debug code is not running, testing delay fix
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+    UEZTaskDelay(0); // Will crash if flushstart debug code is not running, testing delay fix
+#endif
+    
 #else
     UEZTaskDelay(1); // Will crash if flushstart debug code is not running, testing delay fix
 #endif
@@ -579,10 +589,26 @@ static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
     // TODO check a flag here and UEZTaskDelay(0) until ready.
     DEBUG_SV_Print("FE");
     if(sent < 0) {
+#if(UEZ_PROCESSOR == NXP_LPC4357)
         UEZTaskDelay(1); // Will crash if flushend debug code is not running, testing delay fix
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+        UEZTaskDelay(1); // Will crash if flushend debug code is not running, testing delay fix
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+        UEZTaskDelay(1); // Will crash if flushend debug code is not running, testing delay fix
+#endif
         error = UEZ_ERROR_TIMEOUT;
     } else {
+#if(UEZ_PROCESSOR == NXP_LPC4357)
         UEZTaskDelay(0); // Will crash if flushend debug code is not running, testing delay fix
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+        UEZTaskDelay(0); // Will crash if flushend debug code is not running, testing delay fix
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+        UEZTaskDelay(0); // Will crash if flushend debug code is not running, testing delay fix
+#endif
         error = UEZ_ERROR_NONE;
     }
 
@@ -1058,10 +1084,11 @@ static T_uezError IHTTPOutputParsedFile(
         }
     }
     if (!error) {
-        // End of the parsing, flush out the last bit
-        //TODO: needed? error = IHTTPWriteFlush(aState, EFalse);
+        // End of the parsing, flush out the last bit of the file
+        error = IHTTPWriteFlush(aState, EFalse);
     } else {
         // Reset the write buffer, its invalid
+        printf("\r\nError %u: at pos %u \r\n", (TUInt32) error, i);
         aState->iWriteLen = 0;
     }
 
@@ -1960,7 +1987,26 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
 T_uezError WebServerStart(T_httpServerParameters *aParams)
 {
     return UEZTaskCreate((T_uezTaskFunction)HTTPServer, "WebSrv",
-        WEB_SERVER_STACK_SIZE, (void *)aParams, UEZ_PRIORITY_NORMAL, 0);
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+                WEB_SERVER_STACK_SIZE+UEZ_TASK_STACK_BYTES(512),
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+                WEB_SERVER_STACK_SIZE+UEZ_TASK_STACK_BYTES(128), // TODO retest
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+                WEB_SERVER_STACK_SIZE+UEZ_TASK_STACK_BYTES(0), // TODO retest
+#endif
+        (void *)aParams,
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+                UEZ_PRIORITY_HIGH,
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+                UEZ_PRIORITY_NORMAL,
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+                UEZ_PRIORITY_NORMAL,
+#endif
+         0);
 }
 /** @} */
 /*-------------------------------------------------------------------------*

@@ -33,6 +33,9 @@
 #define RTC_VALID_MARKER        0xAA55DCCD
 #define RTC_CCR_BITMASK         (0x00000013) // CCR register mask
 
+#define RTC_ENABLE_CALIBRATION  1 // If passed in aCalibrationValue is 0 it won't have any affect.
+#define RTC_ENABLE_GPIO_MEASURE  0 // Set to 1 to use dual GPIOs on PMOD to measure startup timing.
+
 /*---------------------------------------------------------------------------*
 * Types:
 *---------------------------------------------------------------------------*/
@@ -113,7 +116,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
   PARAM_NOT_USED(aWorkspace);//T_LPC43xx_RTC_Workspace *p = (T_LPC43xx_RTC_Workspace *)aWorkspace;
   uint32_t ccrValue = LPC_RTC->CCR; // read current CCR value
   T_uezDate * date = (T_uezDate*) &aTimeDate->iDate;
-  TUInt32 delayWrite = 2000; // 2300;
+  TUInt32 delayWrite = 1100; // 2300;
   
   // TODO can we optimize this? Need to ask NXP.
   // Since we must take up to 7 seconds to set the date and time, do seconds first      
@@ -197,10 +200,26 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 * Outputs:
 *      T_uezError                   -- Error code
 *---------------------------------------------------------------------------*/
-T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
+T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock, TUInt32 aCalibrationValue)
 {
   T_LPC43xx_RTC_Workspace *p = (T_LPC43xx_RTC_Workspace *)aWorkspace;
   p->iExternalClock = aIsExternalClock;
+
+#if (RTC_ENABLE_GPIO_MEASURE == 1) // Enable one of the PMOD Connector GPIOs to be able to scope capture pins for test
+    TUInt32 value;
+    UEZGPIOOutput(GPIO_P7_17);
+    UEZGPIOClear(GPIO_P7_17);
+    UEZGPIOSetMux(GPIO_P7_17, (GPIO_P7_17 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P7_17 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P7_17, GPIO_CONTROL_SET_CONFIG_BITS, value);
+    
+    UEZGPIOOutput(GPIO_P7_18); 
+    UEZGPIOClear(GPIO_P7_18);
+    UEZGPIOSetMux(GPIO_P7_18, (GPIO_P4_3 >> 8) >= 5 ? 4 : 0);
+    value = ((GPIO_P7_18 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(GPIO_P7_18, GPIO_CONTROL_SET_CONFIG_BITS, value);
+#endif
+
   //int32_t int_status; // TODO track interrupt status
   // TODO cleanup more
   
@@ -210,9 +229,26 @@ T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
   // disable input glitch filter, enable input buffer, high speed slew rate, disable pull-up, disable pull-down, select 32KHz
   //LPC_SCU->SFSCLK_3 = ((1 << 7) | (1 << 6) | (1 << 5) | (1 << 4)) | 1; // CLK3, set register to 0xF1
   
+  LPC_CREG->CREG0 &= ~((1 << 3) | (1 << 2));	/* Reset 32Khz oscillator, enable 32K power */
+
   // Enable RTC Clock
-  LPC_CREG->CREG0 &= ~((1 << 3) | (1 << 2));	/* Reset 32Khz oscillator */
-  LPC_CREG->CREG0 |= (1 << 1) | (1 << 0);	/* Enable 32 kHz & 1 kHz on osc32k and release reset */
+
+  /* Per errata ES_LPC435x/3x/2x/1x -> Section 4.1 IBAT.1: We must set alarm and sample to inactive
+   * to improve backup time; Set ALARMCTRL to Inactive 0x3.
+   * Set SAMPLECTRL to Inactive 0x3 (only listed as Reserved in manual).
+   * The setting will persist on power down until VBAT runs out, so we just need to set it on every boot. */
+
+  // Enable 32 kHz & 1 kHz on osc32k and release reset, set errata workaround for ALARMCTRL and SAMPLECTRL for first rev chips only.
+  //LPC_CREG->CREG0 |= (1 << 1) | (1 << 0) | (CREG_CREG0_ALARMCTRL_Msk) | (CREG_CREG0_SAMPLECTRL_Msk);
+
+  // Enable 32 kHz & 1 kHz on osc32k and release reset
+  //LPC_CREG->CREG0 |= (1 << 1) | (1 << 0);
+
+  //1khz output only, no errata workaround (for Rev A chip or newer), disable 32K output to alarm (RTC still works)
+  LPC_CREG->CREG0 |= (1 << 0);
+
+  // Note that we seemed to be getting inconsistent ALARM pin output results. The test point is now gone on newer boards.
+  // So it is probably best to leave that unused feature turned off by default. It could be enabled in separate driver for ALARM.
   
   // 2-Second delay after enabling RTC clock per datasheet
   LPC_ATIMER->DOWNCOUNTER = 2048;
@@ -224,6 +260,10 @@ T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
   if((LPC_RTC->CCR & RTC_CCR_CLKEN_Msk) != 0){
     return UEZ_ERROR_NONE;
   }
+
+#if (RTC_ENABLE_GPIO_MEASURE == 1) //TODO measure this time with a GPIO to see how long we block during bootup
+  LPC_GPIO_PORT->SET[7] |= (1 << 17); // set on
+#endif
   
   // HITEX RG: disable interrputs to stop FreeRTOS or anything else disturbing
   // critical time while RTC peripheral is initialised
@@ -234,9 +274,13 @@ T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
   
   // Disable RTC
   LPC_RTC->CCR = (LPC_RTC->CCR & ~RTC_CCR_CLKEN_Msk) & RTC_CCR_BITMASK;
-  
+
+#if (RTC_ENABLE_CALIBRATION == 1)
+  // RTC_CCR_CLKEN_Msk is set to 0 above.
+#else
   // Disable Calibration
   LPC_RTC->CCR |= RTC_CCR_CCALEN_Msk;
+#endif
   
   // Reset RTC clock
   LPC_RTC->CCR |= RTC_CCR_CTCRST_Msk;
@@ -252,17 +296,18 @@ T_uezError LPC43xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
   // Clear all register to be default
   LPC_RTC->CIIR = 0x00;
   LPC_RTC->AMR = 0xFF;
+
+#if (RTC_ENABLE_CALIBRATION == 1)
+  LPC_RTC->CALIBRATION = aCalibrationValue; // forward direction to add 1 second every 46526 seconds.
+#else
   LPC_RTC->CALIBRATION = 0x00;
-  
-  // HITEX RG's suggestion/comment/code
-  /* VBAT current consumption due to RTC_ALARM and SAMPLE pins can be 
-  lowered significantly by configuring the RTC_ALARM pin and SAMPLE 
-  pins as "Inactive" by setting the ALARMCTRL 7:6 field in CREG0 to 
-  0x3 and the SAMPLECTRL 13:12 field in CREG0 to 0x3. These bits persist
-  through power cycles and reset, as long as VBAT is present. */
-  LPC_CREG->CREG0 |= (CREG_CREG0_ALARMCTRL_Msk);
-  LPC_CREG->CREG0 |= (CREG_CREG0_SAMPLECTRL_Msk);
-  
+#endif
+    
+#if (RTC_ENABLE_GPIO_MEASURE == 1)
+      LPC_GPIO_PORT->CLR[7] |= 1 << 17;// off
+      LPC_GPIO_PORT->SET[7] |= (1 << 18); // set on
+#endif
+
   //if (!int_status) {
     //__enable_interrupt();     // Re-enable interrupts if they were enabled before    
     portENABLE_INTERRUPTS(); //TODO verifiy if this has same functionality as __enable_interrupt 
@@ -328,7 +373,7 @@ const HAL_RTC LPC43xx_RTC_Interface = {
 /*---------------------------------------------------------------------------*
 * Requirement routines:
 *---------------------------------------------------------------------------*/
-void LPC43xx_RTC_Require(TBool aIsExternalClock)
+void LPC43xx_RTC_Require(TBool aIsExternalClock, TUInt32 aCalibrationValue)
 {
   T_halWorkspace *p_rtc;
   
@@ -338,7 +383,7 @@ void LPC43xx_RTC_Require(TBool aIsExternalClock)
                        (T_halInterface *)&LPC43xx_RTC_Interface,
                        0,
                        &p_rtc);
-  LPC43xx_RTC_Configure(p_rtc, aIsExternalClock);
+  LPC43xx_RTC_Configure(p_rtc, aIsExternalClock, aCalibrationValue);
 }
 
 /*-------------------------------------------------------------------------*
