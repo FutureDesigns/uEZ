@@ -60,8 +60,8 @@ typedef struct {
     T_uezDeviceInterface iDevice;
 
     /* High level functions */
-    T_uezError (*Open)();
-    T_uezError (*Close)();
+    T_uezError (*Open)(void *aWorkspace);
+    T_uezError (*Close)(void *aWorkspace);
     
     /* Advanced functions: */
     T_uezError (*SetComputationType)(

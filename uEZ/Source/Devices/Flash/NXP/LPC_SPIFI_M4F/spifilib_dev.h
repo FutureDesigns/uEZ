@@ -83,7 +83,8 @@ typedef enum {
 #define SPIFI_CAP_FULLLOCK          (1 << 4)		/**< Full device lock supported */
 #define SPIFI_CAP_BLOCKLOCK         (1 << 5)		/**< Individual block device lock supported */
 #define SPIFI_CAP_SUBBLKERASE       (1 << 6)		/**< Sub-block erase supported */
-#define SPIFI_CAP_4BYTE_ADDR		(1 << 7)		/**< Supports 4 Byte addressing */
+#define SPIFI_CAP_4BYTE_ADDR	    (1 << 7)		/**< Supports 4 Byte addressing */
+#define SPIFI_CAP_ENSO_EXSO	        (1 << 8)		/**< Supports ENSO and EXSO OTP region commands */
 #define SPIFI_CAP_NOBLOCK           (1 << 16)		/**< Non-blocking mode supported */
 
 /**

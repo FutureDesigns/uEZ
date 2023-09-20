@@ -25,7 +25,7 @@
 ; Cortex-M version
 ;
 
-		INCLUDE Config.h
+	INCLUDE Config.h
         MODULE  ?cstartup
 
         ;; Forward declaration of sections.
@@ -39,9 +39,8 @@
         EXTERN xPortSysTickHandler
 		EXTERN vPortSVCHandler
 		EXTERN  vPortSysTickHandler
-        EXTERN  UEZBSP_FatalError
-        EXTERN  HardFault_HandlerC
 		EXTERN xPortPendSVHandler
+        EXTERN  UEZBSP_FatalError
         EXTERN  HardFault_HandlerC
         PUBLIC  __vector_table
         PUBLIC  __vector_table_0x1c
@@ -101,8 +100,8 @@ __vector_table_0x1c
         DCD   SSP1_IRQHandler        ; 39 SSP1
         DCD   USART0_IRQHandler      ; 40 UART0
         DCD   UART1_IRQHandler       ; 41 UART1
-        DCD   UART2_IRQHandler       ; 42 UART2
-        DCD   UART3_IRQHandler       ; 43 UART3
+        DCD   USART2_IRQHandler      ; 42 UART2
+        DCD   USART3_IRQHandler      ; 43 UART3
         DCD   I2S0_IRQHandler        ; 44 I2S0
         DCD   I2S1_IRQHandler        ; 45 I2S1
         DCD   SPIFI_IRQHandler       ; 46 SPIFI
@@ -337,15 +336,15 @@ USART0_IRQHandler
 UART1_IRQHandler
         B UART1_IRQHandler
 
-        PUBWEAK UART2_IRQHandler
+        PUBWEAK USART2_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
-UART2_IRQHandler
-        B UART2_IRQHandler
+USART2_IRQHandler
+        B USART2_IRQHandler
 
-        PUBWEAK UART3_IRQHandler
+        PUBWEAK USART3_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
-UART3_IRQHandler
-        B UART3_IRQHandler
+USART3_IRQHandler
+        B USART3_IRQHandler
 
         PUBWEAK I2S0_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
@@ -395,7 +394,7 @@ GPIO4_IRQHandler
         PUBWEAK GPIO5_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
 GPIO5_IRQHandler
-        B UART2_IRQHandler
+        B GPIO5_IRQHandler
 
         PUBWEAK GPIO6_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)

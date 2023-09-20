@@ -63,10 +63,10 @@ typedef struct {
     TUInt32 iKey;
 } T_GPIOKeypadAssignment;
 
-enum {
+typedef enum {
     KEYPAD_LOW_TRUE_SIGNALS,
     KEYPAD_HIGH_TRUE_SIGNALS
-}typedef T_KeypadGPIOPolarity;
+} T_KeypadGPIOPolarity;
 
 /*-------------------------------------------------------------------------*
  * Globals:

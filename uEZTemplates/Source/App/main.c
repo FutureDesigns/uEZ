@@ -47,6 +47,13 @@
 #include <uEZFile.h>
 #include <Device/MassStorage.h>
 
+#include <Source/Devices/ResourceCache/Generic/DirectAccess/ResourceCache_DirectAccess.h>
+#include <uEZResourceCache.h>
+
+#if (INCLUDE_UEZ_RESOURCE_EXAMPLE==1)
+#include "HImg.h"
+#endif
+
 #if COMPILE_OPTION_USB_SDCARD_DISK
 #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
 #endif
@@ -192,13 +199,18 @@ void MainTask(void)
     // So you can leave them in the application for release builds.
     // Warnings and errors show different graphical icons and colors for debug.
     // Must add #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h> even when turned off
-    DEBUG_SV_Printf("SystemView Started"); // SystemView terminal
-    DEBUG_SV_PrintfW("Warn Test"); // example warning
-    DEBUG_SV_PrintfE("Error Test"); // example error
+
+    // In our patched sytemview we provide both non-printf and printf functions. We use the non-printf here, so it just sends the strings.
+    DEBUG_SV_Print("SystemView Started"); // SystemView terminal
+    DEBUG_SV_PrintW("Warn Test"); // example warning
+    DEBUG_SV_PrintE("Error Test"); // example error
 #endif
 #endif
 
     printStorageInfo('1');
+#if RENAME_INI
+    UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
+#endif
 
     printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
 
@@ -220,6 +232,23 @@ void MainTask(void)
 // Calibration is only needed for resistive touch and not capacitive or no touch.
 #if ((UEZ_DEFAULT_TOUCH != TOUCH_PCAP) || USE_RESISTIVE_TOUCH)
     Calibrate(CalibrateTestIfTouchscreenHeld());
+#endif
+
+#if (INCLUDE_UEZ_RESOURCE_EXAMPLE==1)
+    /* When using the uEZPlus bootloader tools, you will have an HIMG to validate, and the
+     * resource file will start 0x100 bytes offset from the HIMG start address.
+     * If there was no HIMG block, the check can be skipped then the resource cache would be
+     * started directly at the flash base address. (for example if you loaded resource.bin directly into QSPI */
+    
+    // UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS will be starting address of NOR Flash or QSPI (MCU-dependent).
+
+    // Check the resource file to make sure that it has a valid HIMG block.
+    if (!HImgBlockIsValid((void *)UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS)) {
+        UEZFailureMsg("Resources are corrupt/not installed!");
+    }
+
+    // Register a new resource in the system, starting from the 0x100 offset after the HIMG block.
+    ResourceCache_DirectAccess_Create("Resources", (void *)(UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS + 0x100));
 #endif
 
     //Start emWin interface

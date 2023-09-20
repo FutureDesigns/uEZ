@@ -1,5 +1,29 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="uEZGUI-1788-43WQR" target="8" version="2">
+  <configuration Name="Debug" hidden="Yes" />
+  <configuration Name="Flash" hidden="Yes" />
+  <configuration Name="Release" hidden="Yes" />
+  <configuration
+    Name="THUMB"
+    Platform="ARM"
+    arm_instruction_set="THUMB"
+    arm_library_instruction_set="THUMB"
+    hidden="Yes" />
+  <configuration
+    Name="THUMB Flash Debug"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration
+    Name="THUMB Flash Debug CLANG"
+    inherited_configurations="Flash;Debug;THUMB" />
+  <configuration
+    Name="THUMB Flash Release-Bootloader"
+    inherited_configurations="THUMB;Flash;Release" />
+  <configuration
+    Name="THUMB Flash Debug-Trace"
+    inherited_configurations="Debug;Flash;THUMB" />
+  <configuration
+    Name="THUMB Flash Release"
+    inherited_configurations="THUMB;Flash;Release" />
   <project Name="uEZGUI-1788-43WQR">
     <configuration
       Name="Common"
@@ -9,6 +33,8 @@
       arm_core_type="Cortex-M3"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
+      arm_debugIO_Implementation="None"
+      arm_link_debugio_type="None"
       arm_linker_heap_size="700000"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
@@ -29,19 +55,26 @@
       link_include_startup_code="No"
       linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-1788-43WQR_MemoryMap.xml"
-      linker_memory_map_macros="FLASH_START=0x00000000;FLASH_START_BOOTLOADER=0x00010100;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
+      linker_memory_map_macros="NOR_START=0x80000000;NOR_SIZE=0x00800000;FLASHA0_START=0x00000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x00000300;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
       linker_output_format="hex"
       linker_printf_fmt_level="long"
       linker_printf_fp_enabled="Float"
       linker_scanf_fmt_level="long"
       linker_scanf_fp_enabled="Yes"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-1788-43WQR_placement.xml"
+      linker_section_placement_macros="CRP1_KEEP=Yes"
       oscillator_frequency="12MHz"
       project_directory=""
       project_type="Executable"
       property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml"
       target_reset_script="FLASHReset()"
       target_script_file="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js" />
+    <configuration
+      Name="Debug"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="DEBUG"
+      gcc_debugging_level="Level 3"
+      gcc_optimization_level="None" />
     <configuration
       Name="Flash"
       Placement="Flash"
@@ -56,6 +89,24 @@
       c_preprocessor_definitions="__RAM_MODE__"
       linker_section_placement_file="$(TargetsDir)/LPC1000/ram_placement.xml"
       target_reset_script="SRAMReset()" />
+    <configuration
+      Name="Release"
+      c_preprocessor_definitions="NDEBUG"
+      gcc_debugging_level="Level 1"
+      gcc_optimization_level="Level 1" />
+    <configuration Name="THUMB" target_reset_script="FlashReset()" />
+    <configuration
+      Name="THUMB Flash Debug CLANG"
+      arm_assembler_variant="clang"
+      arm_compiler_variant="clang" />
+    <configuration
+      Name="THUMB Flash Release-Bootloader"
+      c_preprocessor_definitions="RENAME_INI=1;DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+      linker_section_placement_macros="CRP1_KEEP=No" />
+    <configuration
+      Name="THUMB Flash Debug-Trace"
+      c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
     <folder Name="Source">
       <folder Name="App">
         <folder Name="SEGGER">
@@ -63,9 +114,12 @@
             <folder Name="GUIDEMO">
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO.h" />
+              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_AntialiasedText.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Automotive.c" />
+              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_BarGraph.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Bitmap.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_ColorBar.c" />
+              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Conf.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Cursor.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Fading.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Graph.c" />
@@ -73,6 +127,7 @@
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_ImageFlow.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Intro.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Listview.c" />
+              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_RadialMenu.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Resource.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Skinning.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Speed.c" />
@@ -82,54 +137,29 @@
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_VScreen.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_WashingMachine.c" />
               <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_ZoomAndRotate.c" />
-              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_Conf.c" />
-              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_AntialiasedText.c" />
-              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_BarGraph.c" />
-              <file file_name="../../../../../Source/App/SEGGER/emWin/GUIDEMO/GUIDEMO_RadialMenu.c" />
             </folder>
             <file file_name="../../../../../Source/App/SEGGER/emWin/emWin.c" />
           </folder>
         </folder>
-        <folder Name="uEZGUI">
-          <file file_name="../../../../../Source/App/uEZGUI/AppDemo.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/Config_App.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/main.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c" />
-        </folder>
         <folder Name="uEZDemoCommon">
           <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/App_RTOS.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/BrightnessControlMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Calibration.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Calibration.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/ConsoleMode.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/DrawMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/MultiSlideshowMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/Slideshow.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/TempMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/TimeDateMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayerSelection.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FuncTestFramework.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTestLoop.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.c">
             <configuration
               Name="THUMB Flash Debug"
@@ -142,12 +172,41 @@
               build_exclude_from_build="No" />
           </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTestLoop.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/MultiSlideshowMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/Slideshow.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TempMode.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/TestCmds.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/TestCmds.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/TestMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/App_RTOS.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TimeDateMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayerSelection.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h" />
+        </folder>
+        <folder Name="uEZGUI">
+          <file file_name="../../../../../Source/App/uEZGUI/AppDemo.h" />
+          <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c" />
+          <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h" />
+          <file file_name="../../../../../Source/App/uEZGUI/Config_App.h" />
+          <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c" />
+          <file file_name="../../../../../Source/App/uEZGUI/main.c" />
+        </folder>
+      </folder>
+      <folder Name="ExpansionBoard">
+        <folder Name="FDI">
+          <folder Name="UEZGUI_EXP_DK">
+            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.c" />
+            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h" />
+          </folder>
         </folder>
       </folder>
       <folder Name="Library">
@@ -160,18 +219,14 @@
                     <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M3.a" />
                   </folder>
                 </folder>
+                <folder Name="StreamIO">
+                  <folder Name="StdInOut">
+                    <folder Name="CrossWorks">
+                      <file file_name="../../../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+                    </folder>
+                  </folder>
+                </folder>
               </folder>
-            </folder>
-          </folder>
-        </folder>
-      </folder>
-      <folder Name="Scripts">
-        <folder Name="Compilers">
-          <folder Name="CrossWorks">
-            <folder Name="FreeRTOS">
-              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
-                <configuration Name="Common" file_type="Threads Script" />
-              </file>
             </folder>
           </folder>
         </folder>
@@ -190,56 +245,51 @@
         <folder Name="NXP">
           <folder Name="LPC1788">
             <folder Name="CMSIS">
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm3.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
-              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
             </folder>
             <folder Name="GCC">
-              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Startup.s" />
               <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
                 <configuration Name="Common" file_type="Target Script" />
+              </file>
+              <file file_name="../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
+            </folder>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Scripts">
+        <folder Name="Compilers">
+          <folder Name="CrossWorks">
+            <folder Name="FreeRTOS">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM3.js">
+                <configuration Name="Common" file_type="Threads Script" />
               </file>
             </folder>
           </folder>
         </folder>
       </folder>
-      <folder Name="ExpansionBoard">
-        <folder Name="FDI">
-          <folder Name="UEZGUI_EXP_DK">
-            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.c" />
-            <file file_name="../../../../../../uEZ/Source/ExpansionBoard/FDI/uEZGUI_EXP_DK/uEZGUI_EXP_DK.h" />
-          </folder>
-        </folder>
-      </folder>
     </folder>
-    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Debug/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Debug.a">
-      <configuration
-        Name="THUMB Flash Release"
-        build_exclude_from_build="Yes" />
-      <configuration Name="THUMB Flash Debug" build_exclude_from_build="No" />
-      <configuration
-        Name="THUMB Flash Debug-Trace"
-        build_exclude_from_build="Yes" />
-      <configuration
-        Name="THUMB Flash Debug CLANG"
-        build_exclude_from_build="Yes" />
-    </file>
-    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Release/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Release.a">
+    <file file_name="Config_Build.h" />
+    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Debug CLANG/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Debug CLANG.a">
       <configuration
         Name="THUMB Flash Debug"
         build_exclude_from_build="Yes" />
       <configuration
+        Name="THUMB Flash Release-Bootloader"
+        build_exclude_from_build="Yes" />
+      <configuration
         Name="THUMB Flash Debug-Trace"
         build_exclude_from_build="Yes" />
       <configuration
-        Name="THUMB Flash Debug CLANG"
+        Name="THUMB Flash Release"
         build_exclude_from_build="Yes" />
     </file>
     <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Debug-Trace/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Debug-Trace.a">
@@ -247,63 +297,43 @@
         Name="THUMB Flash Debug"
         build_exclude_from_build="Yes" />
       <configuration
-        Name="THUMB Flash Release"
-        build_exclude_from_build="Yes" />
-      <configuration
         Name="THUMB Flash Debug CLANG"
         build_exclude_from_build="Yes" />
-    </file>
-    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Debug CLANG/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Debug CLANG.a">
       <configuration
-        Name="THUMB Flash Debug"
+        Name="THUMB Flash Release-Bootloader"
         build_exclude_from_build="Yes" />
       <configuration
         Name="THUMB Flash Release"
+        build_exclude_from_build="Yes" />
+    </file>
+    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Debug/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Debug.a">
+      <configuration Name="THUMB Flash Debug" build_exclude_from_build="No" />
+      <configuration
+        Name="THUMB Flash Debug CLANG"
         build_exclude_from_build="Yes" />
       <configuration
         Name="THUMB Flash Debug-Trace"
         build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Release"
+        build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Release-Bootloader"
+        build_exclude_from_build="Yes" />
     </file>
-    <configuration
-      Name="THUMB Flash Debug-Trace"
-      c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
-    <file file_name="Config_Build.h" />
-    <configuration Name="THUMB" target_reset_script="FlashReset()" />
-    <configuration
-      Name="THUMB Flash Debug CLANG"
-      arm_assembler_variant="clang"
-      arm_compiler_variant="clang" />
-    <configuration
-      Name="Debug"
-      build_debug_information="Yes"
-      c_preprocessor_definitions="DEBUG"
-      gcc_debugging_level="Level 3"
-      gcc_optimization_level="None" />
-    <configuration
-      Name="Release"
-      c_preprocessor_definitions="NDEBUG"
-      gcc_debugging_level="Level 1"
-      gcc_optimization_level="Level 1" />
+    <file file_name="../../../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/Release/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks_Release.a">
+      <configuration
+        Name="THUMB Flash Debug"
+        build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Debug CLANG"
+        build_exclude_from_build="Yes" />
+      <configuration
+        Name="THUMB Flash Release-Bootloader"
+        build_exclude_from_build="No" />
+      <configuration
+        Name="THUMB Flash Debug-Trace"
+        build_exclude_from_build="Yes" />
+    </file>
   </project>
-  <configuration
-    Name="THUMB Flash Debug"
-    inherited_configurations="THUMB;Flash;Debug" />
-  <configuration
-    Name="THUMB"
-    Platform="ARM"
-    arm_instruction_set="THUMB"
-    arm_library_instruction_set="THUMB"
-    hidden="Yes" />
-  <configuration Name="Flash" hidden="Yes" />
-  <configuration Name="Debug" hidden="Yes" />
-  <configuration
-    Name="THUMB Flash Release"
-    inherited_configurations="THUMB;Flash;Release" />
-  <configuration Name="Release" hidden="Yes" />
-  <configuration
-    Name="THUMB Flash Debug-Trace"
-    inherited_configurations="Debug;Flash;THUMB" />
-  <configuration
-    Name="THUMB Flash Debug CLANG"
-    inherited_configurations="Flash;Debug;THUMB" />
 </solution>

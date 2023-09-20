@@ -117,7 +117,7 @@ const uint16_t  emcdivby2_opc[] =
 void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
 {
     TUInt32 dynconfig;
-    __IO uint32_t *dc;
+    __IO uint32_t *dc = &LPC_EMC->DYNAMICCONFIG0;
     volatile TUInt32 dmy = 0;
     //volatile uint32_t ringosccount[2] = { 0, 0 };
     volatile uint32_t i;
@@ -133,6 +133,11 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
 
     //for system clock over 80MHz
     if(aConfig->iClockFrequency > 80000000){
+        //LPC_SCU->EMCDELAYCLK = 0xFFFF;   /* 7.5 ns EMC clock out delay   */
+        //LPC_SCU->EMCDELAYCLK = 0xBBBB;   /* 5.5 ns EMC clock out delay   */
+        //LPC_SCU->EMCDELAYCLK = 0xAAAA;   /* 5.0 ns EMC clock out delay   */
+        //LPC_SCU->EMCDELAYCLK = 0x9999;   /* 4.5 ns EMC clock out delay   */
+        //LPC_SCU->EMCDELAYCLK = 0x8888;   /* 4.0 ns EMC clock out delay   */
         LPC_SCU->EMCDELAYCLK = 0x7777;   /* 3.5 ns EMC clock out delay   */
     } else {
         LPC_SCU->EMCDELAYCLK = 0x0;   /* 0 ns EMC clock out delay   */
@@ -163,7 +168,7 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
     LPC_SCU->SFSPE_13 = EMC_PIN_SET | 3; /* PE_13: DQMOUT3 */
 
     // Configure control pins (we really only care for bus lane 0)
-    LPC_SCU->SFSP1_3 = EMC_PIN_SET | 3; /* P1_3:  OE */
+    //LPC_SCU->SFSP1_3 = EMC_PIN_SET | 3; /* P1_3:  OE */ // This pin isn't connected!
 
     LPC_SCU->SFSP1_6 = EMC_PIN_SET | 3; /* P1_6:  WE */
 
@@ -193,7 +198,7 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
     }
 
     if (aConfig->iBaseAddress == 0x28000000) {
-        LPC_SCU->SFSP6_9 = EMC_PIN_SET | 3; /* P6_9:  DYCS0 */
+        LPC_SCU->SFSP6_9 = EMC_PIN_SET | 3; /* P6_9:  DYCS0 */ // CS# pin
 
         LPC_SCU->SFSP6_11 = EMC_PIN_SET | 3; /* P6_11: CKEOUT0  */
 
@@ -241,23 +246,26 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
     }
 
     LPC_EMC->DYNAMICRASCAS0 = 0x00000303;
-    LPC_EMC->DYNAMICREADCONFIG = 0x00000001; /* Command delayed strategy, using EMCCLKDELAY */
+    // Command delayed strategy, using EMCCLKDELAY
+    LPC_EMC->DYNAMICREADCONFIG = 0x00000001; // Command delayed by EMC_CCLK /2
+    //LPC_EMC->DYNAMICREADCONFIG = 0x00000002; // Command delayed by EMC_CCLK /2 plus 1 clock cycle
+    //LPC_EMC->DYNAMICREADCONFIG = 0x00000003; // Command delayed by EMC_CCLK /2 plus 2 clock cycles
 
     // -6 timings
     LPC_EMC->DYNAMICRP = aConfig->iDynamicRP - 1;
     LPC_EMC->DYNAMICRAS = aConfig->iDynamicRAS - 1;
     LPC_EMC->DYNAMICSREX = aConfig->iDynamicSREX - 1;
-    LPC_EMC->DYNAMICAPR = 5;//aConfig->iDynamicAPR - 1;
+    LPC_EMC->DYNAMICAPR = aConfig->iDynamicAPR - 1;
     LPC_EMC->DYNAMICDAL = aConfig->iDynamicDAL;
-    LPC_EMC->DYNAMICWR = 1;//aConfig->iDynamicWR - 1;
+    LPC_EMC->DYNAMICWR = aConfig->iDynamicWR - 1;
     LPC_EMC->DYNAMICRC = aConfig->iDynamicRC - 1;
     LPC_EMC->DYNAMICRFC = aConfig->iDynamicRFC - 1;
     LPC_EMC->DYNAMICXSR = aConfig->iDynamicXSR - 1;
     LPC_EMC->DYNAMICRRD = aConfig->iDynamicRRD - 1;
-    LPC_EMC->DYNAMICMRD =2;// aConfig->iDynamicMRD - 1;
+    LPC_EMC->DYNAMICMRD = aConfig->iDynamicMRD - 1;
 
     //Send command: NOP
-    LPC_EMC->DYNAMICCONTROL = 0x00000183;
+    LPC_EMC->DYNAMICCONTROL = 0x00000183; //self refresh mode ; CLKOUT runs cont
 
     //wait 200mS
     UEZBSPDelayMS(200);
@@ -281,7 +289,7 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
         NOP();
 
     //Send command: MODE
-    LPC_EMC->DYNAMICCONTROL = 0x00000083;
+    LPC_EMC->DYNAMICCONTROL = 0x00000083; //self refresh mode ; CLKOUT runs cont
 
     TUInt8 col_len;
     TUInt32 devBusWidth;
@@ -315,12 +323,13 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
         }
     }
 
+    // setup internal SDRAM mode command
     devBusWidth = EMC_DYN_MODE_WBMODE_PROGRAMMED | //(0<<9)
     EMC_DYN_MODE_OPMODE_STANDARD | //(0<<7)
     EMC_DYN_MODE_CAS_3 | //(3<<4)
     EMC_DYN_MODE_BURST_TYPE_SEQUENTIAL | //(0<<3)
     EMC_DYN_MODE_BURST_LEN_4; //(2)
-
+    // Use read command at specific address to set SDRAM mode register.
     dmy = *((volatile uint32_t*)(aConfig->iBaseAddress | (devBusWidth << col_len)));
     dmy = dmy;
 
@@ -328,8 +337,9 @@ void LPC43xx_SDRAM_Init_32BitBus(const T_LPC43xx_SDRAM_Configuration * aConfig)
     for (i = 0; i < 0x40; i++)
         NOP();
 
-    //Send command: NORMAL
-    LPC_EMC->DYNAMICCONTROL = 0x00000000;
+    //Send command: NORMAL, with CLKOUT enabled
+    //LPC_EMC->DYNAMICCONTROL = 0x00000003; //self refresh mode ; CLKOUT runs cont
+    LPC_EMC->DYNAMICCONTROL = 0x00000000; // CLKOUT stops when SDRAM idle; normal mode
 
     //Enable buffer
     *dc |= (1<<19);

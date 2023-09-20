@@ -40,12 +40,11 @@
 *
 *-------------------------------------------------------------------------*/
 #include <uEZ.h>
+#include "WM.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-TUInt8 TemperatureGraph(void);
 
 typedef struct{
     TBool iTimeIsAMPM;
@@ -53,6 +52,11 @@ typedef struct{
     TInt16 iLowAlarmTemp;  //Code changed by IMM - Allow for negative tempertatures by changing type from TUInt16 to TInt16
     TInt16 iHighAlarmTemp; //Code changed by IMM - Allow for negative tempertatures by changing type from TUInt16 to TInt16
 }T_TemperatureGraphSetting;
+
+TUInt8 TemperatureGraph(void);
+
+WM_HWIN Temperature_Create(void);
+
 
 #ifdef __cplusplus
 }

@@ -117,6 +117,8 @@ void UEZPlatform_MemTest_StepE_Pass(void);
 void UEZPlatform_MemTest_StepF(void);
 void UEZPlatform_MemTest_StepF_Pass(void);
 
+//Reset
+void UEZPlatform_System_Reset(void);
 
 #ifdef __cplusplus
 }

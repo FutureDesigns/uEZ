@@ -22,6 +22,9 @@
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
+#include <Types/LCD.h>
+#include <Source/Library/Graphics/SWIM/lpc_swim.h>
+
 #include <uEZFile.h>
 #include <string.h>
 #include <uEZPlatform.h>

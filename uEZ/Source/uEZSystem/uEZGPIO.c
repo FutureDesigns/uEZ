@@ -650,12 +650,15 @@ T_uezError UEZGPIOReadPort(T_uezGPIOPort aPort, TUInt32 *aReadValue)
  */
 /*---------------------------------------------------------------------------*/
 void UEZGPIOLock(T_uezGPIOPortPin aPortPin)
-{
+{  
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     HAL_GPIOPort **p = UEZGPIOGetPortOrFail(
             UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
 
     if (aPortPin != GPIO_NONE)
         (*p)->Lock(p, 1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin));
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -678,11 +681,14 @@ void UEZGPIOLock(T_uezGPIOPortPin aPortPin)
 /*---------------------------------------------------------------------------*/
 void UEZGPIOUnlock(T_uezGPIOPortPin aPortPin)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     HAL_GPIOPort **p = UEZGPIOGetPortOrFail(
             UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
 
     if (aPortPin != GPIO_NONE)
         (*p)->Unlock(p, 1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin));
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -705,6 +711,9 @@ void UEZGPIOUnlock(T_uezGPIOPortPin aPortPin)
 /*---------------------------------------------------------------------------*/
 TBool UEZGPIOGetLock(T_uezGPIOPortPin aPortPin)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  return EFalse;
+#else
     HAL_GPIOPort **p = UEZGPIOGetPort(
             UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
 
@@ -713,6 +722,7 @@ TBool UEZGPIOGetLock(T_uezGPIOPortPin aPortPin)
     } else {
         return ETrue;
     }
+#endif
 }
 
 /** @} */

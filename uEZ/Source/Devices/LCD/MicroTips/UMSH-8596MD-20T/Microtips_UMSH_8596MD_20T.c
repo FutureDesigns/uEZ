@@ -310,6 +310,8 @@ T_uezError LCD_UMSH_8596MD_20T_SetBacklightLevel(void *aW, TUInt32 aLevel)
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_UMSH_8596MD_20T_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -333,7 +335,10 @@ static T_uezError LCD_UMSH_8596MD_20T_MSTimerStart(void *aW, float milliseconds)
   }  
   return error;
 }
+#endif
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_UMSH_8596MD_20T_TimerCallback
  *---------------------------------------------------------------------------*
@@ -348,6 +353,7 @@ static void LCD_UMSH_8596MD_20T_TimerCallback(T_uezTimerCallback *aCallbackWorks
   UEZTimerClose(p->itimer);   
   p->itimerDone = ETrue;
 }
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_UMSH_8596MD_20T_On
@@ -365,12 +371,16 @@ T_uezError LCD_UMSH_8596MD_20T_On(void *aW)
   
     (*p->iLCDController)->On(p->iLCDController);
     if (p->iBacklight){
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
          LCD_UMSH_8596MD_20T_MSTimerStart(p, 167.0); // minimum 167ms timer to clear 10 frames of data so old data isn't shown on screen
          while (p->itimerDone == EFalse){;} // wait for timer before continuing
+      }  
+#endif
          (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
          LCD_UMSH_8596MD_20T_SetBacklightLevel(p, p->iBacklightLevel);// Turn back on to the remembered level
-      }
     }
     return UEZ_ERROR_NONE;
 }
@@ -391,6 +401,11 @@ T_uezError LCD_UMSH_8596MD_20T_Off(void *aW)
     
     if (p->iBacklight){ // no cool-down time requirement for this LCD, so do not impose a waiting period
       (*p->iBacklight)->Off(p->iBacklight); // Turn off, but don't remember the level
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      //UEZTaskDelay(0);
+#else
+      // Timer code here if required.
+#endif
     }    
     (*p->iLCDController)->Off(p->iLCDController); // turn LCD off
     return UEZ_ERROR_NONE;
@@ -413,13 +428,17 @@ T_uezError LCD_UMSH_8596MD_20T_Open(void *aW)
     T_UMSH_8596MD_20TWorkspace *p = (T_UMSH_8596MD_20TWorkspace *)aW;
     HAL_LCDController **plcdc;
     T_uezError error = UEZ_ERROR_NONE;
-	TUInt32 i;
-        
+    TUInt32 i;
+    
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  
+#else
     p->icallback.iTimer = p->itimer; // Setup callback information for timer
     p->icallback.iMatchRegister = 1;
     p->icallback.iTriggerSem = 0;
     p->icallback.iCallback = LCD_UMSH_8596MD_20T_TimerCallback;
     p->icallback.iData = p;
+#endif
         
     p->aNumOpen++;
     if (p->aNumOpen == 1) {

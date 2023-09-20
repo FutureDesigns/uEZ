@@ -113,7 +113,7 @@ T_uezSemaphore wavSem;
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void UEZWAWVolumeUp()
+void UEZWAWVolumeUp(void)
 {
     volume++;
     if(volume > 64)
@@ -145,7 +145,7 @@ void UEZWAWVolumeUp()
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void UEZWAWVolumeDown()
+void UEZWAWVolumeDown(void)
 {
     volume--;
     if(volume < 0)
@@ -315,7 +315,7 @@ T_uezError UEZWAVPlayFile(char* fileName)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void UEZStartWAV()
+void UEZStartWAV(void)
 {
   (*i2s)->Start((void*)i2s);
   playStatus = ETrue;
@@ -358,7 +358,7 @@ void UEZStartWAV()
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void UEZStopWAV()
+void UEZStopWAV(void)
 {
     (*i2s)->Stop((void*)i2s);
     playStatus = EFalse;
@@ -387,7 +387,7 @@ void UEZStopWAV()
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void UEZWAVCleanUp()
+void UEZWAVCleanUp(void)
 {
     T_uezError error;
 
@@ -534,7 +534,7 @@ void UEZWAVConfig(TUInt8 onBoardSpeakerVolume)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-TBool UEZWAVGetStatus()
+TBool UEZWAVGetStatus(void)
 {
     return playStatus;
 }

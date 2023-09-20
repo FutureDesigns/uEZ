@@ -9,6 +9,8 @@
       arm_core_type="Cortex-M3"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
+      arm_debugIO_Implementation="None"
+      arm_link_debugio_type="None"
       arm_linker_heap_size="40960"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="1536"
@@ -29,13 +31,14 @@
       link_include_startup_code="No"
       linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-1788-70WVM_MemoryMap.xml"
-      linker_memory_map_macros="FLASH_START=0x00000000;FLASH_START_BOOTLOADER=0x00010100;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
+      linker_memory_map_macros="NOR_START=0x80000000;NOR_SIZE=0x00800000;FLASHA0_START=0x00000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x00000300;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
       linker_output_format="hex"
       linker_printf_fmt_level="long"
       linker_printf_fp_enabled="Float"
       linker_scanf_fmt_level="long"
       linker_scanf_fp_enabled="Yes"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-1788-70WVM_placement.xml"
+      linker_section_placement_macros="CRP1_KEEP=Yes"
       oscillator_frequency="12MHz"
       project_directory=""
       project_type="Executable"
@@ -119,13 +122,20 @@
         <folder Name="Compilers">
           <folder Name="CrossWorks">
             <folder Name="FreeRTOS">
-              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM3.js">
                 <configuration Name="Common" file_type="Threads Script" />
               </file>
             </folder>
           </folder>
         </folder>
       </folder>
+          <folder Name="StreamIO">
+      <folder Name="StdInOut">
+        <folder Name="CrossWorks">
+          <file file_name="../../../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+        </folder>
+      </folder>
+    </folder>
       <folder Name="Platform">
         <folder Name="FDI">
           <folder Name="uEZGUI-1788-70WVM">

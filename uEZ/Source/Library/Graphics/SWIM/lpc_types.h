@@ -83,10 +83,10 @@ typedef INT_16 BOOL_16;
 typedef INT_8 BOOL_8;
 
 /* Pointer to Function returning Void (any number of parameters) */
-typedef void (*PFV)();
+typedef void (*PFV)(void);
 
 /* Pointer to Function returning INT_32 (any number of parameters) */
-typedef INT_32(*PFI)();
+typedef INT_32(*PFI)(void);
 
 /***********************************************************************
  * Global Macros

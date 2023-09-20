@@ -34,22 +34,23 @@
 #define RESOLUTION_X        480
 #define RESOLUTION_Y        272
 
-#define LCD_CLOCK_RATE      9000000
+// From 120MHz clock we can get 9.23MHz pixel clock with a larger number set here.
+#define LCD_CLOCK_RATE      9240000
 
-#define HORZ_BACK_PORCH         2
+#define HORZ_BACK_PORCH         43
 #define HORZ_FRONT_PORCH        2
-#define HORZ_PULSE_WIDTH        41
+#define HORZ_PULSE_WIDTH        4
 #define HORZ_PIXELS_PER_LINE    RESOLUTION_X
 
-#define VERT_BACK_PORCH         1
-#define VERT_FRONT_PORCH        1
-#define VERT_PULSE_WIDTH        11
+#define VERT_BACK_PORCH         12
+#define VERT_FRONT_PORCH        2
+#define VERT_PULSE_WIDTH        4
 #define VERT_LINES_PER_PANEL    RESOLUTION_Y
 
-#define OUTPUT_ENABLE_INVERT    EFalse
-#define OUTPUT_PCLK_INVERT      EFalse
-#define OUTPUT_HSYNC_INVERT     ETrue
-#define OUTPUT_VSYNC_INVERT     ETrue
+#define OUTPUT_ENABLE_INVERT    EFalse // DE is active high
+#define OUTPUT_PCLK_INVERT      EFalse // Latch color bit on rising DCLK edge
+#define OUTPUT_HSYNC_INVERT     ETrue // Active Low, Don't care in DE-only mode
+#define OUTPUT_VSYNC_INVERT     ETrue // Active Low, Don't care in DE-only mode
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -432,6 +433,8 @@ static T_uezError LCD_NHD43480272MF_SetBacklightLevel(void *aW, TUInt32 aLevel)
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272MF_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -455,7 +458,10 @@ static T_uezError LCD_NHD43480272MF_MSTimerStart(void *aW, float milliseconds){
   }  
   return error;
 }
+#endif
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272MF_TimerCallback
  *---------------------------------------------------------------------------*
@@ -470,6 +476,7 @@ static void LCD_NHD43480272MF_TimerCallback(T_uezTimerCallback *aCallbackWorkspa
   p->itimerDone = ETrue;
   UEZTimerClose(p->itimer);    
 }
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272MF_On
@@ -486,13 +493,17 @@ static T_uezError LCD_NHD43480272MF_On(void *aW) {
       
     (*p->iLCDController)->On(p->iLCDController);
     if (p->iBacklight){
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {          
          LCD_NHD43480272MF_MSTimerStart(p, 167.0); // minimum 167ms timer
          while (p->itimerDone == EFalse){;} // wait for timer before continuing
+      }
+#endif
          (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
          LCD_NHD43480272MF_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
       }
-    }
     return UEZ_ERROR_NONE;
 }
 
@@ -511,10 +522,14 @@ static T_uezError LCD_NHD43480272MF_Off(void *aW) {
         
     if (p->iBacklight){
       (*p->iBacklight)->Off(p->iBacklight); // Turn off backlight
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         LCD_NHD43480272MF_MSTimerStart(p, 167.0); // minimum 167ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
       }   
+#endif
     }    
     (*p->iLCDController)->Off(p->iLCDController); // turn off LCD
     return UEZ_ERROR_NONE;
@@ -539,11 +554,15 @@ static T_uezError LCD_NHD43480272MF_Open(void *aW)
     T_uezError error = UEZ_ERROR_NONE;
     TUInt32 i;
     
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  
+#else
     p->icallback.iTimer = p->itimer; // Setup callback information for timer
     p->icallback.iMatchRegister = 1;
     p->icallback.iTriggerSem = 0;
     p->icallback.iCallback = LCD_NHD43480272MF_TimerCallback;
     p->icallback.iData = p;
+#endif
 
     p->aNumOpen++;
     if (p->aNumOpen == 1) {

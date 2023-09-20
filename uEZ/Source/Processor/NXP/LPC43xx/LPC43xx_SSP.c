@@ -308,9 +308,12 @@ T_uezError LPC43xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aRequest)
     TUInt8 *p_dataMISO8;
     TUInt16 *p_dataMOSI16;
     TUInt16 *p_dataMISO16;
-    TVUInt32 dummy;
+    TVUInt32 dummy = 0;
     int32_t isToggling = aRequest->iFlags & SPI_REQUEST_TOGGLING_CS;
-
+    
+    // Do this to get rid of warning in compiler that dummy is set but not used
+    VARIABLE_NOT_USED(dummy);
+    
     // No interrupt processing
     InterruptDisable(aW->iIRQChannel);
 
@@ -437,9 +440,6 @@ T_uezError LPC43xx_SSP_TransferPolled(void *aWorkspace, SPI_Request *aRequest)
                 dummy = p->iDR;
         }
     }
-
-    // Do this to get rid of warning in compiler that dummy is set but not used
-    VARIABLE_NOT_USED(dummy);
 
     // End SSP
     ISSPEnd(aRequest);

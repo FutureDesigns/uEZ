@@ -23,11 +23,15 @@
 
 uint32_t G_LPC43xx_powerSetting;
 
+
+
 void uEZProcessorServicesInit(void)
 {
     // Read the default PCONP setting, but from this point
     // on, use LPC43xxPowerOn() and LPC43xxPowerOff()
     //G_LPC43xx_powerSetting = LPC_SC->PCONP;
+
+    // Note: this LPC doesn't have a PCONP type register, but older and newer LPCs do!
 }
 
 /*-------------------------------------------------------------------------*

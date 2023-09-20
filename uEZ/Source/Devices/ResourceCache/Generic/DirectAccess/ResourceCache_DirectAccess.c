@@ -24,7 +24,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <string.h>
-#include <UEZDeviceTable.h>
+#include <uEZDeviceTable.h>
 #include "ResourceCache_DirectAccess.h"
 #include "uEZPacked.h"
 
@@ -46,7 +46,7 @@ typedef struct {
 } T_ResourceCache_DirectAccess_Workspace;
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     PACK_STRUCT_FIELD(char iTag[4]);
     PACK_STRUCT_FIELD(TUInt32 iFirstEntry);
 }PACK_STRUCT_STRUCT T_ResourceCache_DirectAccess_Header;
@@ -54,7 +54,7 @@ PACK_STRUCT_END
 
 #define RESOURCECACHE_DIRECT_ACCESS_NAME_LEN        12
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     PACK_STRUCT_FIELD(TUInt32 iID); // 0 is reserved for end
     PACK_STRUCT_FIELD(char iName[RESOURCECACHE_DIRECT_ACCESS_NAME_LEN]);
     PACK_STRUCT_FIELD(TUInt32 iSize);

@@ -184,7 +184,7 @@ T_uezError LPC43xx_I2S_config_TX(
     //InterruptDisable(I2S_IRQn);
 
     //Power up the PCONP for the I2S
-    LPC43xxPowerOn(1 << 27);
+    LPC43xxPowerOn(1 << 27); // TODO remove, but do we track this anywhere?
 
     //Initialize function pointer
     p->iTransmitLowFunc = aTransmitLowCallback;

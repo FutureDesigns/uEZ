@@ -63,6 +63,7 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 #if (COMPILER_TYPE==CodeRed)
 #define PACK_STRUCT_BEGIN
+#define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -70,6 +71,7 @@ extern "C" {
 
 #if (COMPILER_TYPE==RowleyARM)
 #define PACK_STRUCT_BEGIN
+#define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -77,6 +79,7 @@ extern "C" {
 
 #if (COMPILER_TYPE==GCC)
 #define PACK_STRUCT_BEGIN
+#define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -84,7 +87,8 @@ extern "C" {
   
 #if (COMPILER_TYPE==IAR)
 #define PACK_STRUCT_USE_INCLUDES 1
-#define PACK_STRUCT_BEGIN __packed
+#define ATTR_IAR_PACKED	   __packed // IAR wants "typedef __packed struct"
+#define PACK_STRUCT_BEGIN //__packed
 #define PACK_STRUCT_STRUCT
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -92,6 +96,7 @@ extern "C" {
 
 #if (COMPILER_TYPE==Keil4)
 #define PACK_STRUCT_BEGIN
+#define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -101,6 +106,7 @@ extern "C" {
 #if (COMPILER_TYPE==RenesasRX)
 #define PACK_STRUCT_USE_INCLUDES 1
 #define PACK_STRUCT_BEGIN
+#define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -109,6 +115,7 @@ extern "C" {
 #if (COMPILER_TYPE==VisualC)
 /** All fields are packed by default with /Zp1 compile option */
 #define PACK_STRUCT_BEGIN
+#define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT 
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
@@ -119,7 +126,7 @@ extern "C" {
  * Example PACK_STRUCT usage to define packed MyRectangle:
  *
  *   PACK_STRUCT_BEGIN
- *   typedef struct
+ *   typedef ATTR_IAR_PACKED struct
  *   {
  *        PACK_STRUCT_FIELD(signed short xMin);
  *        PACK_STRUCT_FIELD(signed short yMin);

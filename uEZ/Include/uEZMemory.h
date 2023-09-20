@@ -182,7 +182,8 @@ TUInt32 UEZMemGetNumBlocks(void);
   #if (defined __GNUC__)
     #define UEZ_PUT_SECTION(Section, ...) __attribute__ ((section (Section))) __attribute__ ((__used__)) __VA_ARGS__
   #elif (defined __ICCARM__) || (defined __ICCRX__)
-#define UEZ_PUT_SECTION(Section, ...)  UEZ_PRAGMA(location=Section) __root \
+// There are now 2 different IAR USED defs as IAR is changing to support attribute keywords (lol)
+#define UEZ_PUT_SECTION(Section, ...)  UEZ_PRAGMA(location=Section) __USED \
                                           __VA_ARGS__
   #elif (defined __CC_ARM)
     #define UEZ_PUT_SECTION(Section, ...) __attribute__ ((section (Section), zero_init)) __VA_ARGS__
@@ -208,11 +209,24 @@ TUInt32 UEZMemGetNumBlocks(void);
  * Macro for optimization settings. Mainly to turn it off for certain functions.
  ***************************************************************************************/
 #if (defined __GNUC__)
-  #define UEZ_OPT_LEVEL_NONE  -0
-  #define UEZ_OPT_LEVEL_LOW   -1
-  #define UEZ_OPT_LEVEL_MED   -2
-  #define UEZ_OPT_LEVEL_HIGH  -3
-  #define UEZ_FUNC_OPT(Optimization, ...) __attribute__ ((optimize(Optimization))) __VA_ARGS__
+#if defined(__clang__) // Currently other levels not supported yet. https://reviews.llvm.org/D126984
+  #define UEZ_OPT_LEVEL_NONE  optnone
+  #define UEZ_OPT_LEVEL_LOW   
+  #define UEZ_OPT_LEVEL_MED   
+  #define UEZ_OPT_LEVEL_HIGH  
+#else
+  #define UEZ_OPT_LEVEL_NONE  0  //Note: Clang may expect optnone
+  #define UEZ_OPT_LEVEL_LOW   1
+  #define UEZ_OPT_LEVEL_MED   2
+  #define UEZ_OPT_LEVEL_HIGH  3
+#endif
+
+#if defined(__clang__)
+#define UEZ_FUNC_OPT(Optimization, ...) __attribute__ ((Optimization)) __VA_ARGS__
+#else
+#define UEZ_FUNC_OPT(Optimization, ...) __attribute__ ((__optimize__(Optimization))) __VA_ARGS__
+#endif
+
 #elif (defined __ICCARM__) || (defined __ICCRX__)
 /* http://ftp.iar.se/WWWfiles/arm/webic/doc/EWARM_DevelopmentGuide.ENU.pdf
  * Use this pragma directive to decrease the optimization level, or to turn 

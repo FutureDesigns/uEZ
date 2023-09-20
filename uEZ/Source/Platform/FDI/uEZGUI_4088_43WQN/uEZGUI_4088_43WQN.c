@@ -41,7 +41,6 @@
 #include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
 #include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
 #include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
 #include <Source/Devices/Button/NXP/PCA9551/Button_PCA9551.h>
@@ -63,7 +62,9 @@
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/MassStorage/USB_MS/USB_MS.h>
 #include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
 #include <Source/Devices/Network/lwIP/Network_lwIP.h>
+#endif
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
@@ -109,6 +110,7 @@
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_MCI.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
+#include <uEZCRC.h>
 #include <uEZDevice.h>
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
@@ -121,7 +123,7 @@
 #include <uEZAudioMixer.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
-#include <Source/Devices/Flash/NXP/LPC_SPIFI_M4/Flash_NXP_LPC_SPIFI_M4.h>
+#include <Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4.h>
     
 extern int32_t MainTask(void);
 
@@ -132,16 +134,23 @@ extern int32_t MainTask(void);
 #define PLATFORM_USES_NOR_FLASH         (0)//off for standard product
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
 
+#ifndef USING_43WQN_BA_REV1
 #define USING_43WQN_BA_REV1             1 // set to 1 for 1.X revisions for I2C power fix
+#endif
 
 #ifndef UEZGUI_EXP_BRK_OUT
 #define UEZGUI_EXP_BRK_OUT              0
 #endif
+
+
+#ifndef ENABLE_LCD_HSYCN_VSYNC
+#define ENABLE_LCD_HSYCN_VSYNC          1 // must set to 1 to enable the HYSNC/VSYNC, otherwise pines are set to low
+#endif
+
+
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-static T_uezDevice G_stdout = 0;
-static T_uezDevice G_stdin = 0;
 T_uezTask G_mainTask;
 
 /*---------------------------------------------------------------------------*
@@ -154,6 +163,23 @@ TUInt8 *_framesMemoryptr = _framesMemory;
 #else
 UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]);
 TUInt8 *_framesMemoryptr = _framesMemory;
+#endif
+
+// See Users Manual UM10562 Section 38.6 Code Read Protection. If you set these to certain bytes JTAG will be disabled.
+// In uEZ 2.13 all demo appications will set CRP1 bits high. (no protection)
+// However, bootloader projects will also set CRP1 bits high. (no protection)
+// If you change this here then rebuild both bootloader and application will set the same number still.
+// If you modified CRP1 in the application, then flash the original bootloader on top of it the number will get reset to 0xFFFFFFFF. (no protection)
+
+// For this LPC there is only one of these numbers. If you are using the uEZ bootloader then the CRP will be set in the
+// the bootloader and it should NOT be generated in ANY application project output. If you do not have a bootloader then
+// the CRP should be included in the application .hex output with the chosen number.
+
+#if (DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1 == 1)
+    // Create this define set to 1 in application code to allow for only setting CRP1 in a bootloader.
+#else
+UEZ_PUT_SECTION(".crp1", static const TUInt32 G_LPC17XX40XX_CRP1 = 0xFFFFFFFF);
+TUInt32 *_crp1ptr = (TUInt32 * const)&G_LPC17XX40XX_CRP1;
 #endif
 
 /* On LPC1788 we want to keep the same tested AHB memory map even if 
@@ -239,28 +265,28 @@ extern unsigned char __HEAPSIZE__[];
  *      Initialize the external SDRAM.
  *---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
-{
-    static const T_LPC17xx_40xx_SDRAM_Configuration sdramConfig_MT48LC2M32B2P = {
+{   // 7 ns is slowest speed rating supported/used. Driver only supports CAS 2. Some numbers would change for CAS 3.
+    static const T_LPC17xx_40xx_SDRAM_Configuration sdramConfig_IS45S32400F_7 = { 
             UEZBSP_SDRAM_BASE_ADDR,
             UEZBSP_SDRAM_SIZE,
-            SDRAM_CAS_2,
-            SDRAM_CAS_3,
+            SDRAM_CAS_2, // only 2 supported, this number ignored
+            SDRAM_RAS_2, // only 2 supported, this number ignored
             LPC17xx_40xx_SDRAM_CLKOUT0,
             SDRAM_CLOCK_FREQUENCY,
             64, // ms
-            8192, // cycles
-            SDRAM_CYCLES(20),
-            SDRAM_CYCLES(42),
-            SDRAM_CYCLES(70),
-            SDRAM_CYCLES(18),
-            SDRAM_CLOCKS(4),
-            (SDRAM_CYCLES(6) + SDRAM_CLOCKS(1)),
-            SDRAM_CYCLES(60),
-            SDRAM_CYCLES(60),
-            SDRAM_CYCLES(70),
-            SDRAM_CYCLES(12),
-            SDRAM_CLOCKS(2) };
-    LPC17xx_40xx_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P);
+            4096, // cycles
+            SDRAM_CYCLES(20), // tRP precharge to activate period - All used parts 18/20, which is same cycle number
+            SDRAM_CYCLES(45), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(70), // tXSR min // 67-83 = same cycles, no parts used < 67, no used parts list SREX
+            SDRAM_CYCLES(20), // tAPR/tRCD Active Command to Read Command // 17-33 = same cycles, no parts used < 18
+            SDRAM_CLOCKS(4),  // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 2 is used.
+            SDRAM_CLOCKS(2), // tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than 20 cycles, 2 tCK is worst case.
+            SDRAM_CYCLES(65), // tRC Row Cycle Time or Command Period // 50-66 are same same number
+            SDRAM_CYCLES(64), // Refresh Cycle Time tRFC/tREF  // 50-66 are same same number
+            SDRAM_CYCLES(70), // tXSR Exit Self-Refresh Time // 67-83 = same cycles, no parts used < 67
+            SDRAM_CYCLES(14), // tRRD Row active to Row Active (or command period) // no parts use > 17, so same register setting
+            SDRAM_CLOCKS(2)}; // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
+    LPC17xx_40xx_SDRAM_Init_32BitBus(&sdramConfig_IS45S32400F_7);
     
 #if CONFIG_MEMORY_TEST_ON_SDRAM
     MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
@@ -292,6 +318,12 @@ void UEZBSP_RAMInit(void)
  *---------------------------------------------------------------------------*/
 void UEZBSP_ROMInit(void)
 {
+  // Dummy code to keep various memory location declarations from optimizing out
+#if (DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1 == 1)
+#else
+   _crp1ptr = _crp1ptr;
+#endif
+
 #if PLATFORM_USES_NOR_FLASH
 #if 1
     const T_LPC17xx_40xx_EMC_Static_Configuration norFlash_M29W128G = {
@@ -705,9 +737,12 @@ void UEZBSP_FatalError(int32_t aErrorCode)
     register TUInt32 i;
     register TUInt32 count;
     
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
+#else
 //#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
     COM_Send("BSP_FATAL_ERROR!\n", 17);
 //#endif
+#endif
     // Ensure interrupts are turned off
     portDISABLE_INTERRUPTS();
 
@@ -845,7 +880,7 @@ void UEZPlatform_Accel0_Require(void)
     r.iWriteLength = 1; // send 1 byte
     r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
     r.iReadData = &dataIn;
-    r.iReadLength = 1; // read 20 bytes
+    r.iReadLength = 1; // read 1 bytes
     r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
 
     error = UEZI2CTransaction(I2C, &r);
@@ -1068,10 +1103,9 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
     Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
             aWriteBufferSize, aReadBufferSize);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice G_stdptr = StdoutGet();
+    UEZStreamOpen("Console", &G_stdptr); // set stdOut
+    StdinRedirect(G_stdptr); // set stdIn
 }
 
 /*---------------------------------------------------------------------------*
@@ -1105,10 +1139,9 @@ void UEZPlatform_Console_HalfDuplex_UART_Require(
             aWriteBufferSize, aReadBufferSize, aDriveEnablePortPin,
             aDriveEnablePolarity, aDriveEnableReleaseTime);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice G_stdptr = StdoutGet();
+    UEZStreamOpen("Console", &G_stdptr); // set stdOut
+    StdinRedirect(G_stdptr); // set stdIn
 }
 
 /*---------------------------------------------------------------------------*
@@ -1236,10 +1269,9 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
 
     RS485_GenericHalfDuplex_Create("Console", &aSettings);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice G_stdptr = StdoutGet();
+    UEZStreamOpen("Console", &G_stdptr); // set stdOut
+    StdinRedirect(G_stdptr); // set stdIn
 }
 
 /*---------------------------------------------------------------------------*
@@ -1463,7 +1495,6 @@ void UEZPlatform_DAC0_Require(void)
     DAC_Generic_Create("DAC0", "DAC0");
 }
 
-#include <Source/Devices/Flash/NXP/LPC_SPIFI_M4/Flash_NXP_LPC_SPIFI_M4.h>
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Flash0_Require
  *---------------------------------------------------------------------------*
@@ -1533,9 +1564,17 @@ void UEZPlatform_LCD_Require(void)
             GPIO_NONE,  // LCD_PWR -- GPIO controlled
             GPIO_P2_2,  // LCD_DCLK
             GPIO_P2_4,  // LCD_ENAB_M
+#if (ENABLE_LCD_HSYCN_VSYNC == 1)
             GPIO_P2_3,  // LCD_FP
+#else
+            GPIO_NONE,  // VSYNC Not Used
+#endif
             GPIO_NONE,  // LCD_LE
+#if (ENABLE_LCD_HSYCN_VSYNC == 1)
             GPIO_P2_5,  // LCD_LP
+#else
+            GPIO_NONE,  // HSYNC Not Used
+#endif
 
             {
             GPIO_NONE,  // LCD_VD0
@@ -1587,7 +1626,25 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+    // Don't use LPC timer driver. It is only used for 167 ms turn on/off on this LPC.
+#else
     UEZPlatform_Timer0_Require();
+#endif
+
+#if (ENABLE_LCD_HSYCN_VSYNC == 0) // set VSYNC pin low
+      UEZGPIOSetMux(GPIO_P2_3, 0);
+      UEZGPIOClear(GPIO_P2_3);    
+      UEZGPIOOutput(GPIO_P2_3);
+      UEZGPIOLock(GPIO_P2_3); 
+#endif
+#if (ENABLE_LCD_HSYCN_VSYNC == 0) // set HSYNC pin low            
+      UEZGPIOSetMux(GPIO_P2_5, 0);
+      UEZGPIOClear(GPIO_P2_5);    
+      UEZGPIOOutput(GPIO_P2_5);
+      UEZGPIOLock(GPIO_P2_5); 
+#endif
+
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -2102,6 +2159,8 @@ void UEZPlatform_AudioMixer_Require(void)
     
     // To seperately control offboard speaker jack uncomment this line.
     //UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, &UEZGUI70WVT_AudioMixerCallback);
+    
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER); // mute here to avoid the "beep" sound from turning on too fast.
 
     // Set all 5 volume levels from platform file
     // First set master volume
@@ -2128,7 +2187,7 @@ void UEZPlatform_Audio_Require(void)
     UEZPlatform_DAC0_Require();    // DAC output
     
     UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
-    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    //UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
     //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
 }
 
@@ -2201,6 +2260,7 @@ void UEZPlatform_Touchscreen_Require(void)
 {
     //T_uezDevice ts;
     DEVICE_CREATE_ONCE();
+    UEZPlatform_I2C1_Require();
 
     Touchscreen_FT5306DE4_Create("Touchscreen", "I2C1", GPIO_P2_19, GPIO_P1_18);
 }
@@ -2428,6 +2488,7 @@ void UEZPlatform_WiredNetwork0_Require(void)
  * Description:
  *      Setup the networking for Wireless connections.
  *---------------------------------------------------------------------------*/
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
 #include <Source/Library/Network/GainSpan/CmdLib/GainSpan_CmdLib.h>
 void UEZPlatform_WirelessNetwork0_Require(void)
 {
@@ -2454,6 +2515,7 @@ void UEZPlatform_WirelessNetwork0_Require(void)
     UEZPlatform_SSP0_Require();
     Network_GainSpan_Create("WirelessNetwork0", &spi_settings);
 }
+#endif
 
 // Need UART connection to Wifi module for this to work
 // Modify UART pins for expansion board before use
@@ -2597,8 +2659,31 @@ void UEZPlatform_System_Reset(void) {
   NVIC_SystemReset();
 }
 
+
+
+// Don't enable console anymore in minimal requires, so that we can use this for GUI only bootloader, etc.
 void UEZPlatform_Minimal_Require(void)
 {
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_GPIO2_Require();
+      
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+    //UEZPlatform_CRC0_Require(); // Adds a few extra bytes if we require it later in code.
+    //UEZPlatform_Flash0_Require(); // currently this won't fit in BBL
+    
+    // TODO could read normal QSPI or OTP region here, but will be too much space for any bootloader.
+#else
+    UEZPlatform_CRC0_Require();
+    UEZPlatform_Flash0_Require();
+#endif
+  
+    /* TODO could load QSPI OTP data right here early to determine unit Rev, 
+     * then adjust pins or other drivers/calibration as needed. (Not used at this time)
+     * Enable CRC now in case we want to CRC the rev data that we read, or 
+     * application CRC could be checked here before we start executing code from QSPI
+     * When it comes to checksumming the application, the platfrom file would be a good spot to handle
+     * start/end boundaries for checksum range(s). */
+
 #if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
     // TODO set this pin state on earlier during boot
     static TBool init = EFalse;
@@ -2610,7 +2695,17 @@ void UEZPlatform_Minimal_Require(void)
       UEZGPIOLock(GPIO_P2_0); 
       init = ETrue;
     }
-#endif
+#endif    
+
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO3_Require();
+    LPC17xx_40xx_GPIO4_Require();
+    LPC17xx_40xx_GPIO5_Require();
+}
+
+void UEZPlatform_Standard_Require(void)
+{
+    UEZPlatform_Minimal_Require();
     
     // Setup console immediately
 #if UEZ_ENABLE_CONSOLE_ALT_PWR_COM
@@ -2622,18 +2717,6 @@ void UEZPlatform_Minimal_Require(void)
         UEZ_CONSOLE_WRITE_BUFFER_SIZE,
         UEZ_CONSOLE_READ_BUFFER_SIZE);
 #endif
-
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_GPIO1_Require();
-    LPC17xx_40xx_GPIO2_Require();
-    LPC17xx_40xx_GPIO3_Require();
-    LPC17xx_40xx_GPIO4_Require();
-    LPC17xx_40xx_GPIO5_Require();
-}
-
-void UEZPlatform_Standard_Require(void)
-{
-    UEZPlatform_Minimal_Require();
         
 // Example for console on UART 1 RS485 half duplex
 // UEZPlatform_Console_HalfDuplex_RS485_Require("UART1",
@@ -2641,17 +2724,15 @@ void UEZPlatform_Standard_Require(void)
 
     UEZPlatform_LCD_Require();
 
-    //UEZPlatform_I2C0_Require(); // not used on this board, will interfer with loopback test
+    //UEZPlatform_I2C0_Require(); // not used on this board, will interfere with loopback test
     UEZPlatform_I2C1_Require();    
     //UEZPlatform_I2C2_Require(); // Cannot turn this on and run loopback test
     UEZPlatform_Temp0_Require();
     UEZPlatform_GPDMA0_Require();
     UEZPlatform_GPDMA1_Require();
-    UEZPlatform_SSP0_Require();
     UEZPlatform_ADC0_0_Require();
     UEZPlatform_ADC0_1_Require();
     UEZPlatform_ADC0_2_Require();
-    UEZPlatform_Flash0_Require();
     UEZPlatform_EEPROM0_Require();
     UEZPlatform_Accel0_Require();
     UEZPlatform_RTC_Require();

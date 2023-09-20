@@ -9,12 +9,6 @@
 #define USE_RESISTIVE_TOUCH                 1 // Set to 1 for resistive touch screen, 0 for PCAP. Affects some calibration/FCT code and startup routines.
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J11 header
 
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY  			1
-#define configUSE_TIMERS          			1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              			0
 #else
@@ -70,10 +64,10 @@
 #define APP_DEMO_YOUR_APP                   0
 
 // smaller demos
-#define SHOW_GUIDEMO_SPEED                  0
+#define SHOW_GUIDEMO_SPEED                  1
 #define SHOW_GUIDEMO_AATEXT                 1
 #define SHOW_GUIDEMO_BARGRAPH               1
-#define SHOW_GUIDEMO_COLORBAR               1
+#define SHOW_GUIDEMO_COLORBAR               0
 #define SHOW_GUIDEMO_CURSOR                 0
 
 // large demos

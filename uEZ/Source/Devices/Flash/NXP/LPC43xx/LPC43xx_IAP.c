@@ -230,6 +230,16 @@ static TIAPResult IIAPCmd(TUInt8 aCmd)
     return G_results[0];
 }
 
+// This is pretty rediculous code to fix all combinations but the following was tested in compiler explorer:
+/* // Check for expected results for addresses we actually use.
+    printf("-1: %u\n", IIAPAddressToSectorNumber(0x1a000000, 0));
+    printf(" 8: %u\n", IIAPAddressToSectorNumber(0x1a010000, 0));
+    printf(" 9: %u\n", IIAPAddressToSectorNumber(0x1a020000, 0));
+    printf("14: %u\n", IIAPAddressToSectorNumber(0x1a07FFFF, 0));    
+    printf(" 0: %u\n", IIAPAddressToSectorNumber(0x1b000000, 1));
+    printf(" 1: %u\n", IIAPAddressToSectorNumber(0x1b002000, 1));
+    printf("14: %u\n", IIAPAddressToSectorNumber(0x1b07FFFF, 1));*/
+
 /*---------------------------------------------------------------------------*
  * Routine:  IIAPAddressToSectorNumber
  *---------------------------------------------------------------------------*
@@ -241,13 +251,21 @@ static TIAPResult IIAPCmd(TUInt8 aCmd)
 static TInt32 IIAPAddressToSectorNumber(TUInt32 aAddress, TUInt32 aBank)
 {
     const T_sector *p_sector = aBank ? G_sectorMemory_BankB : G_sectorMemory_BankA;
-    const T_sector *p_prev = 0;
+    const T_sector *p_prev = p_sector;
 
     while (1) {
-        if (aAddress < p_sector->iAddress)
+        if (aAddress < p_sector->iAddress) {
             return p_prev->iIndex;
+        }
         p_prev = p_sector;
         p_sector++;
+        if (aAddress == p_sector->iAddress) {
+            if(p_sector->iIndex != -1) {
+                return p_sector->iIndex;
+            } else {
+                return p_prev->iIndex;
+            }
+        }
     }
 }
 
@@ -427,42 +445,32 @@ static T_uezError IIAPSelectBlock(TUInt32 aBlockAddress)
         return UEZ_ERROR_OUT_OF_RANGE;
     }
 
-    // Is this the same block as last time?
-    if (aBlockAddress != G_lastBlock) {
-        // We're about to change blocks
-        // Is the last block a real block?
-        if (G_lastBlock != BLOCK_NONE) {
-            // Which sector is this located?
-            sector = IIAPAddressToSectorNumber(G_lastBlock, flashBank);
+    // Which sector is this located?
+    sector = IIAPAddressToSectorNumber(aBlockAddress, flashBank);
 
-            // Is this allowed?  If not, respond with a failure
-            if (sector == -1)
-                return UEZ_ERROR_NOT_FOUND;
+    // Is this allowed?  If not, respond with a failure
+    if (sector == -1)
+        return UEZ_ERROR_NOT_FOUND;
 
-            // Erase this block if needed.  If error, fail.
-            error = IIAPEraseIfNotErased(sector, flashBank);
-            if (error)
-                return error;
-
-            // Time to write this block to flash.
-            // Do the actual write and report if failed.
-            error = IIAPFlashBlock(G_lastBlock, BLOCK_SIZE);
-            if (error)
-                return error;
-        }
-
-        // Remember what the new block is
-        G_lastBlock = aBlockAddress;
-
-        // Fill this block with FFs to match blank flash
-        for (i = 0; i < BLOCK_SIZE; i++)
-            G_block[i] = 0xFF;
-
-        // We're good and ready
+    // Erase this block if needed.  If error, fail.
+    error = IIAPEraseIfNotErased(sector, flashBank);
+    if (error)
         return error;
-    }
 
-    // Otherwise, we're in the same block, keep going
+    // Time to write this block to flash.
+    // Do the actual write and report if failed.
+    error = IIAPFlashBlock(aBlockAddress, BLOCK_SIZE);
+    if (error)
+        return error;
+    
+    // Remember what the new block is
+    G_lastBlock = aBlockAddress;        
+    
+    // Fill this block with FFs to match blank flash for next block
+    for (i = 0; i < BLOCK_SIZE; i++)
+        G_block[i] = 0xFF;        
+
+    // We're good and ready
     return error;
 }
 
@@ -485,7 +493,8 @@ static T_uezError IIAPWrite(
     TUInt32 *aAddress,
     TUInt8 **aData,
     TUInt32 *aNumBytes)
-{
+{  
+    //TUInt32 i;
     TUInt32 prefix;
     TUInt32 numBytes;
     TUInt32 blockAddr;
@@ -504,20 +513,52 @@ static T_uezError IIAPWrite(
     // Where does this block start (should be <= *aAddress)
     blockAddr = *aAddress - prefix;
 
-    // Switch to the right block in memory, writing the last
-    // block if needed
-    error = IIAPSelectBlock(blockAddr);
-    if (error)
-        return error;
-
-    // Copy over the data we are going to write
+    // Copy over the data we are going to write into the buffer that actually writes to flash
     IIAPCopyBytes(*aData, prefix, numBytes);
+    
+    if (G_lastBlock == BLOCK_NONE) { // first block
+      if(*aNumBytes == BLOCK_SIZE) { // first block is full size
+        // Switch to the right block in memory, writing the last
+        // block if needed
+        error = IIAPSelectBlock(blockAddr);
+        if (error)
+            return error;                
+
+      } else {// first block isn't a full block
+         // skip first block since it won't be complete yet until we come back in here.
+        G_lastBlock = blockAddr; // set the last block, so when we come in later to finish we end up below.
+        return UEZ_ERROR_ILLEGAL_OPERATION; // we need to avoid this now so add an error here to catch it.
+      }
+    } else { // first block finish or second block
+      // If block is complete, then we should write it.
+      if((prefix+numBytes) == BLOCK_SIZE) { // we now have a full block to write
+          // Switch to the right block in memory, writing the last
+          // block if needed
+          error = IIAPSelectBlock(blockAddr);
+          if (error)
+              return error;
+          
+      } else if (*aNumBytes < BLOCK_SIZE) {
+        if(prefix == 0) { // check for the final block that isn't full size.
+          // Switch to the right block in memory, writing the last
+          // block if needed
+          error = IIAPSelectBlock(blockAddr);
+          if (error)
+              return error;
+          // We don't clear the blocks here in case there could be more data coming.
+          // So we will write some blocks partial, then completely just to make sure we get the last block.        
+        } else { // if prefix isn't zero that means we are trying to write later in the block that we probably already wrote into.
+          // Per manual we cannot partially write a block then write over it again later so don't allow the second write.
+              return UEZ_ERROR_ILLEGAL_OPERATION;
+        }
+      }
+    }
 
     // Update for next position
     *aAddress += numBytes;
     *aNumBytes -= numBytes;
     *aData += numBytes;
-
+    
     // Everything went through, should be good now.
     return error;
 }
@@ -548,8 +589,9 @@ T_uezError ILPC43xx_IAP_Write(
     // Keep doing this until all the bytes are processed
     while (aNumBytes) {
         error = IIAPWrite(&aAddress, &aData, &aNumBytes);
-        if (error != UEZ_ERROR_NONE)
-            return error;
+        if (error != UEZ_ERROR_NONE) {
+            return error;          
+        }
     }
     return error;
 }
@@ -575,6 +617,10 @@ T_uezError ILPC43xx_IAP_Start(TBool aNeedErasing)
 
     // Declare no blocks loaded in memory
     G_lastBlock = BLOCK_NONE;
+    
+      // Fill this block with FFs to match blank flash
+      for (i = 0; i < BLOCK_SIZE; i++)
+          G_block[i] = 0xFF;
 
     return UEZ_ERROR_NONE;
 }
@@ -716,12 +762,15 @@ T_uezError Flash_NXP_LPC43xx_Read(
     ILPC43xx_IAP_End();
 
     // The memory is now accessible, copy the data over
+    
+    // TODO this check needs to be updated to handle both flash banks
     // Simple copy with check to see if the requested area is within the data flash
-    if ((aOffset + (TUInt32)aNumBytes) <= (512 * 1024)) {
+    //if ((aOffset + (TUInt32)aNumBytes) <= (512 * 1024)) {
         memcpy(aBuffer, (void *)(aOffset), aNumBytes);
-    } else {
-        return UEZ_ERROR_OUT_OF_RANGE;
-    }
+    //} else {
+        //UEZSemaphoreRelease(p->iSem);
+        //return UEZ_ERROR_OUT_OF_RANGE;
+    //}
 
     UEZSemaphoreRelease(p->iSem);
 
@@ -1025,7 +1074,10 @@ const DEVICE_Flash Flash_NXP_LPC43xx_Interface = { {
     Flash_NXP_LPC43xx_ChipErase,
     Flash_NXP_LPC43xx_QueryReg,
     Flash_NXP_LPC43xx_GetChipInfo,
-    Flash_NXP_LPC43xx_GetBlockInfo, };
+    Flash_NXP_LPC43xx_GetBlockInfo,
+    0,
+    0,
+    0, };
 
 /*-------------------------------------------------------------------------*
  * End of File:  LPC43xx_IAP.c

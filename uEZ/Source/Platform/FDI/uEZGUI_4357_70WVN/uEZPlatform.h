@@ -68,7 +68,7 @@
 
 // Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level // will lower OB speaker level
+    #define UEZ_DEFAULT_AUDIO_LEVEL  192 // default master volume level // will lower OB speaker level
 #endif
 
 #ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
@@ -101,8 +101,13 @@
     #define FATFS_MAX_MASS_STORAGE_DEVICES      2
 #endif
 
+#ifndef UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS
+    #define UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS  0x14000000
+#endif
+
+// TODO Can these defines be removed on 4357 builds?
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
-#define UEZBSP_NOR_FLASH_BASE_ADDRESS       0x80000000 //?
+#define UEZBSP_NOR_FLASH_BASE_ADDRESS       UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS
 
 #include <lwipopts.h>
 
@@ -159,7 +164,7 @@ typedef struct {
 #define LCD_GPIO_LCD_15             UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 15)
 
 // GPIO Loopback Test array for this uEZGUI
-#define LOOPBACK_TEST_NUM_PINS_A              (25)
+#define LOOPBACK_TEST_NUM_PINS_A              (36)
 #define LOOPBACK_TEST_NUM_PINS_B              (4)
 #define LOOPBACK_TEST_NUM_PINS_C              (1)
  
@@ -234,7 +239,7 @@ void UEZPlatform_Console_ISPHeader_Require(
 void UEZPlatform_CRC0_Require(void);
 void UEZPlatform_DAC0_Require(void);
 void UEZPlatform_EEPROM_I2C_Require(void);
-void UEZPlatform_EEPROM_LPC1788_Require(void);
+void UEZPlatform_EEPROM_LPC43xx_Require(void);
 void UEZPlatform_EEPROM0_Require(void);
 void UEZPlatform_EMAC_Require(void);
 void UEZPlatform_ERTC_Require(void);

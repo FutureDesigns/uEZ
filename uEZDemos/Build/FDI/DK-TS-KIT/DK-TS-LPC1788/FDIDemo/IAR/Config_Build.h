@@ -21,12 +21,6 @@
 
 #define USE_RESISTIVE_TOUCH                 1 // Set to 1 for resistive touch screen, 0 for PCAP. Affects some calibration/FCT code and startup routines.
 
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY  		1
-#define configUSE_TIMERS          		1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              		0
 #else

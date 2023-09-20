@@ -59,7 +59,7 @@ extern "C" {
  * Types:
  *-------------------------------------------------------------------------*/
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     // "BM" field
     PACK_STRUCT_FIELD(TUInt8 iMagicNumber[2]);
 
@@ -76,7 +76,7 @@ typedef struct {
 PACK_STRUCT_END
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     // Number of bytes in DIB header
     PACK_STRUCT_FIELD(TUInt32 iDIBHeaderSize);
 

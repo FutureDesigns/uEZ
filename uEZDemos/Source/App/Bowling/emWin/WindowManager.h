@@ -12,7 +12,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <GUI.h>
-#include <Dialog.h>
+#include <DIALOG.h>
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
@@ -39,9 +39,9 @@ extern WM_HWIN G_SystemWindows[];
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-T_uezError WindowManager_Start_emWin();
-T_uezError WindowManager_Close_emWin();
-void WindowMangager_Show_Window(TUInt8 aWindow);
+T_uezError WindowManager_Start_emWin(void);
+T_uezError WindowManager_Close_emWin(void);
+void WindowManager_Show_Window(TUInt8 aWindow);
 void WindowManager_Create_All_Active_Windows(void);
 
 TUInt32 EnterNameScreen(char *aName, TUInt8 aBowler);

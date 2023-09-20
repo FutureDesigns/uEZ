@@ -131,8 +131,6 @@ extern int32_t MainTask(void);
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-static T_uezDevice G_stdout = 0;
-static T_uezDevice G_stdin = 0;
 T_uezTask G_mainTask;
 //static TUInt8 G_ms0_driveNum = 0;
 //static TUInt32 G_USBHostDriveNumber = 0xFF;
@@ -1143,6 +1141,8 @@ void UEZPlatform_AudioMixer_Require(void)
     
     // To seperately control offboard speaker jack uncomment this line.
     //UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, &UEZGUI70WVT_AudioMixerCallback);
+    
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER); // mute here to avoid the "beep" sound from turning on too fast.
 
     // Set all 5 volume levels from platform file
     // First set master volume
@@ -1991,11 +1991,18 @@ void UEZPlatform_USBHost_USB1_Serial_Require(void)
         UEZ_GPIO_PORT_PIN(UEZ_GPIO_PORT_EXT1, 6));
 }*/
 
-void UEZPlatform_Standard_Require(void)
+// Don't enable console anymore in minimal requires, so that we can use this for GUI only bootloader, etc.
+void UEZPlatform_Minimal_Require(void)
 {
-    //Testing
     LPC546xx_GPIO2_Require();
     LPC546xx_GPIO3_Require();
+}
+
+void UEZPlatform_Standard_Require(void)
+{
+    UEZPlatform_Minimal_Require();
+
+    //Testing
     UEZPlatform_I2C2_Require();
 //
     UEZPlatform_LCD_Require();

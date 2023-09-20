@@ -146,8 +146,9 @@ void HAL_Reset(uint8_t corenum)
 	USB_Device_SetDeviceAddress(corenum, 0);
 
 	endpointselected[corenum] = 0;
-	for (i = 0; i < ENDPOINT_TOTAL_ENDPOINTS(corenum); i++)
+	for (i = 0; i < (uint32_t) ENDPOINT_TOTAL_ENDPOINTS(corenum); i++) {
 		endpointhandle(corenum)[i] = 0;
+        }
 
 	usb_data_buffer_size[corenum] = 0;
 	usb_data_buffer_index[corenum] = 0;

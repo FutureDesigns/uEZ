@@ -46,7 +46,7 @@ DD.MM.YYYY OSO-UID Description
 ***********************************************************************************/
 //#include <machine.h>
 #include <string.h>
-#include "GAPI.H"
+#include "gapi.h"
 
 /**********************************************************************************
 Function Name:   CopyLine_01_16
@@ -171,6 +171,9 @@ static sI32 CopyLine_04_16(const pRaster_type psr, const sI16 sPosX, pRaster_typ
   return(0);
 }
 
+/* for 8bpp operations */
+#if 0
+
 /**********************************************************************************
 Function Name:   alpha_CT
 Description:  Helper function to blend a 16bpp pixel with a color table pixel
@@ -215,8 +218,6 @@ static const uI08 mul_5x5[32*32]=
   0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-/* for 8bpp operations */
-#if 0
 static INLINE uI16 alpha_CT8(uI16 p16, uI08 alpha_mask, uI16 const *const ct)
 {
   switch (alpha_mask)

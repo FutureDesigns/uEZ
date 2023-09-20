@@ -73,32 +73,38 @@ typedef struct {
     // Functions
     T_uezError (*Open)(void *aWorkspace);
     T_uezError (*Close)(void *aWorkspace);
-    T_uezError (*Read)(
-            void *aWorkspace,
+    T_uezError (*Read)(void *aWorkspace,
             TUInt32 aOffset,
             TUInt8 *aBuffer,
             TUInt32 aNumBytes);
-    T_uezError (*Write)(
-            void *aWorkspace,
+    T_uezError (*Write)(void *aWorkspace,
             TUInt32 aOffset,
             TUInt8 *aBuffer,
             TUInt32 aNumBytes);
-    T_uezError (*BlockErase)(
-            void *aWorkspace,
+    T_uezError (*BlockErase)(void *aWorkspace,
             TUInt32 aOffset,
             TUInt32 aNumBytes);
     T_uezError (*ChipErase)(void *aWorkspace);
-    T_uezError (*QueryReg)(
-            void *aWorkspace,
+    T_uezError (*QueryReg)(void *aWorkspace,
             TUInt32 aReg,
             TUInt32 *aValue);
-    T_uezError (*GetChipInfo)(
-            void *aWorkspace,
+    T_uezError (*GetChipInfo)(void *aWorkspace,
             T_FlashChipInfo *aInfo);
-    T_uezError (*GetBlockInfo)(
-            void *aWorkspace,
+    T_uezError (*GetBlockInfo)(void *aWorkspace,
             TUInt32 aOffset,
             T_FlashBlockInfo *aBlockInfo);
+
+    // 2.13 for QSPI OTP region
+    T_uezError (*ReadOtp)(void *aWorkspace,
+            TUInt32 aOffset,
+            TUInt8 *aBuffer,
+            TUInt32 aNumBytes);
+    T_uezError (*WriteOtp)(void *aWorkspace,
+            TUInt32 aOffset,
+            TUInt8 *aBuffer,
+            TUInt32 aNumBytes);
+    T_uezError (*LockOtp)(void *aWorkspace,
+            TBool aLockOtp);
 } DEVICE_Flash;
 
 #ifdef __cplusplus

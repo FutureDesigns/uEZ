@@ -459,7 +459,7 @@ static void DateDown(const T_choice *aChoice)
                 td.iDate.iDay = day;
                 break;
             case 3:
-                if (year > 2000) {
+                if (year > 0) {
                     td.iDate.iYear = year-1;
                 }
                 break;

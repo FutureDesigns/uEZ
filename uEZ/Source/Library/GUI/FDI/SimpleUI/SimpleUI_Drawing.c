@@ -22,10 +22,17 @@
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
+
+#include <Types/LCD.h>
+#include <Source/Library/Graphics/SWIM/lpc_swim.h>
+
 #include <uEZFile.h>
 #include <string.h>
 #include <uEZPlatform.h>
 #include "SimpleUI.h"
+
+// Move this here (instead of SimpleUI_Types.h) to prevent some of the circular includes.
+#include <uEZTypes.h>
 
 /*---------------------------------------------------------------------------*
  * Globals
@@ -43,15 +50,15 @@ void SUIHidePage0(void)
 {
     const TUInt32 height = G_SUISettings.iWindow.ypsize;
     const TUInt32 width = G_SUISettings.iWindow.xpsize;
-    TUInt32 frame_buffer_size = height * width;
+    TUInt32 frame_buffer_size = height * width * sizeof(T_pixelColor);
+    // Make sure to add only the required frame size, and not double or quadrouple based on int type.
+    const TUInt32 fb1 = ((TUInt32) G_SUISettings.iWindow.fb) + (TUInt32)frame_buffer_size;
 
     // Copy current page 0 of display to page 1
-    SUICopyFast32(G_SUISettings.iWindow.fb + frame_buffer_size,
-        G_SUISettings.iWindow.fb, frame_buffer_size * sizeof(T_pixelColor));
+    SUICopyFast32((void*) fb1, G_SUISettings.iWindow.fb, frame_buffer_size);
 
     // Show page 1
-    SUICallbackSetLCDBase(
-        (void *)(G_SUISettings.iWindow.fb + frame_buffer_size));
+    SUICallbackSetLCDBase((void *) fb1);
 }
 
 /*---------------------------------------------------------------------------*
@@ -62,8 +69,9 @@ void SUIHidePage0(void)
  *---------------------------------------------------------------------------*/
 void SUIShowPage0(void)
 {
+    const T_pixelColor *fb = G_SUISettings.iWindow.fb;
     // Show page 0
-    SUICallbackSetLCDBase((void *)G_SUISettings.iWindow.fb);
+    SUICallbackSetLCDBase((void *)fb);
 }
 
 /*---------------------------------------------------------------------------*
@@ -84,9 +92,9 @@ void SUIShowPage0Fancy(void)
     while (1) {
         end = UEZTickCounterGet();
         diff = ((end - start) * height) / 240;
-        if (diff >= height)
+        if (diff > height)
             break;
-        SUICallbackSetLCDBase((void *)(fb + ((height - 1 - diff) * width)));
+        SUICallbackSetLCDBase((void *)(fb + ((height - 1 - diff) * width))); // TODO this goes negative from FB start!
         UEZTaskDelay(1);
     }
     SUIShowPage0();
@@ -140,9 +148,9 @@ void SUIShowPage0FancyDown(void)
  *---------------------------------------------------------------------------*/
 void SUIDrawPixel(TUInt32 x, TUInt32 y, T_pixelColor color)
 {
-    if (x >= G_SUISettings.iWindow.xpsize)
+    if (x >= (TUInt32) G_SUISettings.iWindow.xpsize)
         return;
-    if (y >= G_SUISettings.iWindow.ypsize)
+    if (y >= (TUInt32) G_SUISettings.iWindow.ypsize)
         return;
 
     swim_driver_put_pixel(&G_SUISettings.iWindow, x, y, color);

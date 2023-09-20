@@ -14,12 +14,6 @@
 #define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY            1
-#define configUSE_TIMERS                    1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
-
 #ifdef NDEBUG
 #define UEZ_REGISTER                        0
 #else

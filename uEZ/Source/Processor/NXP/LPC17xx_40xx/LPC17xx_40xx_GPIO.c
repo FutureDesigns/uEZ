@@ -1012,7 +1012,7 @@ T_uezError LPC17xx_40xx_GPIO_Lock(void *aWorkspace, TUInt32 aPortPins)
     // Any pins already locked?
     if (p->iLocked & aPortPins) {
         #ifndef NDEBUG
-          sprintf (buffer, "PinLock on %s Pin %d", p->iHAL->iInterface.iName, aPortPins);
+          sprintf (buffer, "PinLock on %s Pin %u", p->iHAL->iInterface.iName, aPortPins);
           UEZFailureMsg(buffer);
         #else
           UEZFailureMsg("PinLock");

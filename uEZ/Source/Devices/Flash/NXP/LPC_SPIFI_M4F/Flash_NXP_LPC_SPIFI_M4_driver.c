@@ -174,6 +174,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_Read(
     spifiDevSetMemMode(p->iPSPIFI, 0);
     //memcpy((void*)aBuffer, (void*)(((volatile TUInt8 *)SPIFLASH_BASE_ADDRESS)+ aOffset), aNumBytes);
     spifiResult = spifiDevRead(p->iPSPIFI, SPIFLASH_BASE_ADDRESS + aOffset, (TUInt32*)aBuffer, aNumBytes);
+
     spifiDevSetMemMode(p->iPSPIFI, 1);
 
     UEZSemaphoreRelease(p->iSem);
@@ -249,6 +250,8 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_BlockErase(
     /* Limit to legal address range */
     if ((firstSubBlock != ~0UL) && (lastsubBlock != ~0UL)) {
         spifiResult = spifiEraseSubBlocks(p->iPSPIFI, firstSubBlock, ((lastsubBlock - firstSubBlock) + 1));
+    } else {
+        spifiResult = SPIFI_ERR_RANGE;
     }
 
     spifiDevSetMemMode(p->iPSPIFI, 1);
@@ -359,18 +362,145 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_GetBlockInfo(
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  Flash_NXP_LPC_SPIFI_M4_ReadOtpRegion
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Disable XIP Access and switch to OTP 512/1024 byte region
+ *      Read bytes out of the Flash OTP Region.
+ * Inputs:
+ *      void *aW                    -- Workspace
+ *      TUInt32 aOffset             -- Byte Offset address into flash to read
+ *      TUInt8 *aBuffer             -- Pointer to buffer to receive data
+ *      TUInt32 aNumBytes           -- Number of bytes to read
+ * Outputs:
+ *      T_uezError                   -- Error code
+ *---------------------------------------------------------------------------*/
+T_uezError Flash_NXP_LPC_SPIFI_M4_ReadOtpRegion(
+        void *aWorkspace,
+        TUInt32 aOffset,
+        TUInt8 *aBuffer,
+        TUInt32 aNumBytes)
+{
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(aWorkspace);
+    UNUSED(aOffset);
+    UNUSED(aBuffer);
+    UNUSED(aNumBytes);
+    return UEZ_ERROR_NONE;
+#else
+   T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
+    TUInt32 spifiResult = 0;
+
+    // Make sure its not in a programming mode.
+    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+
+    spifiDevSetMemMode(p->iPSPIFI, 0); // Disable XIP
+    
+    spifiResult = spifiReadOtp(p->iPSPIFI, 0 + aOffset, (TUInt32*)aBuffer, aNumBytes);
+
+    spifiDevSetMemMode(p->iPSPIFI, 1); // Enable XIP
+
+    UEZSemaphoreRelease(p->iSem);
+
+    return IFlash_NXP_LPC_SPIFI_M4_HandleError(spifiResult);
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  Flash_NXP_LPC_SPIFI_M4_WriteOtpRegion
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Write bytes into the Flash OTP Region. This is permanent on both Macronix and Infineon Parts.
+ * Inputs:
+ *      void *aW                    -- Workspace
+ *      TUInt32 aOffset             -- Byte Offset into flash to write
+ *      TUInt8 *aBuffer             -- Pointer to buffer of data
+ *      TUInt32 aNumBytes           -- Number of bytes to write
+ * Outputs:
+ *      T_uezError                  -- Error code.
+ *---------------------------------------------------------------------------*/
+T_uezError Flash_NXP_LPC_SPIFI_M4_WriteOtpRegion(
+        void *aWorkspace,
+        TUInt32 aOffset,
+        TUInt8 *aBuffer,
+        TUInt32 aNumBytes)
+{
+
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(aWorkspace);
+    UNUSED(aOffset);
+    UNUSED(aBuffer);
+    UNUSED(aNumBytes);
+    return UEZ_ERROR_NONE;
+#else
+    T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
+    TUInt32 spifiResult = 0;
+
+    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+
+    spifiDevSetMemMode(p->iPSPIFI, 0); // Disable XIP
+    
+    //
+    spifiResult = spifiProgramOtp(p->iPSPIFI, 0 + aOffset, (TUInt32*)aBuffer, aNumBytes);
+    
+    spifiDevSetMemMode(p->iPSPIFI, 1); // Enable XIP
+
+    UEZSemaphoreRelease(p->iSem);
+
+    return IFlash_NXP_LPC_SPIFI_M4_HandleError(spifiResult);
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  Flash_NXP_LPC_SPIFI_M4_LockOtp
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Disable XIP Access, switch to OTP 512/1024 byte region, Lock OTP forever
+ * Inputs:
+ *      void *aW                    -- Workspace
+ *      TBool lockOtp               -- Lock if ETrue, otherwise return status
+ * Outputs:
+ *      T_uezError                  -- Error code.
+ *---------------------------------------------------------------------------*/
+T_uezError Flash_NXP_LPC_SPIFI_M4_LockOtp(
+        void *aWorkspace, TBool aLockOtp)
+{
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(aWorkspace);
+    UNUSED(aLockOtp);
+    return UEZ_ERROR_NONE;
+#else
+    T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
+    TUInt32 spifiResult = 0;
+
+    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+
+    spifiDevSetMemMode(p->iPSPIFI, 0); // Disable XIP
+
+    // lock or check if lockable
+    spifiResult = spifiLockOtp(p->iPSPIFI, aLockOtp);
+    
+    spifiDevSetMemMode(p->iPSPIFI, 1); // Enable XIP
+
+    UEZSemaphoreRelease(p->iSem);
+
+    return IFlash_NXP_LPC_SPIFI_M4_HandleError(spifiResult);
+#endif
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  I_SPIFI_IO_CLK_Init
  *---------------------------------------------------------------------------*
  * Description:
  *      Turn ON SPIFI and configure pins for 4088
  *---------------------------------------------------------------------------*/
-static void I_SPIFI_IO_CLK_Init()
+static void I_SPIFI_IO_CLK_Init(void)
 {
-#if (UEZ_PROCESSOR == NXP_LPC4088)
-    LPC_SC->PCONP |= 0x00010000;
+#if (UEZ_PROCESSOR == NXP_LPC4088)    
 
+    //uEZProcessorServicesInit(); // Make sure this is called first somewhere to setup G_LPC17xx_40xx_powerSetting correctly!
     // Ensure power is on to the part
-    LPC17xx_40xxPowerOn(1UL << 16);
+    LPC17xx_40xxPowerOn(1UL << 16);  
 
     LPC_IOCON->P2_7 &= ~0x07;
     LPC_IOCON->P2_7 |= 0x05;    /* SPIFI_CSN @ P2.7 */
@@ -419,7 +549,7 @@ static void I_SPIFI_IO_CLK_Init()
  *      void *aBaseAddr             -- Base address of this chip in
  *                                     processor memory map space
  *---------------------------------------------------------------------------*/
-static uint32_t lmem[21];
+UEZ_ALIGN_VAR(4,static uint32_t lmem[24]);
 void Flash_NXP_LPC_SPIFI_M4_Configure(
         void *aWorkspace)
 {
@@ -455,7 +585,7 @@ void Flash_NXP_LPC_SPIFI_M4_Create(const char *aName)
 {
     T_uezDeviceWorkspace *p_flash;
 
-    // Setup the NOR flash
+    // Setup the SPI flash
     UEZDeviceTableRegister(
             aName,
             (T_uezDeviceInterface *)&Flash_NXP_LPC_SPIFI_M4_Interface,
@@ -463,6 +593,7 @@ void Flash_NXP_LPC_SPIFI_M4_Create(const char *aName)
             &p_flash);
     Flash_NXP_LPC_SPIFI_M4_Configure(p_flash);
 }
+
 
 /*---------------------------------------------------------------------------*
  * Device Interface table:
@@ -486,6 +617,11 @@ const DEVICE_Flash Flash_NXP_LPC_SPIFI_M4_Interface = {
     Flash_NXP_LPC_SPIFI_M4_QueryReg,
     Flash_NXP_LPC_SPIFI_M4_GetChipInfo,
     Flash_NXP_LPC_SPIFI_M4_GetBlockInfo,
+
+    // 2.13 for QSPI OTP region
+    Flash_NXP_LPC_SPIFI_M4_ReadOtpRegion,
+    Flash_NXP_LPC_SPIFI_M4_WriteOtpRegion,
+    Flash_NXP_LPC_SPIFI_M4_LockOtp,
 } ;
 /*-------------------------------------------------------------------------*
  * End of File:  Flash_NXP_LPC_SPIFI_M4_driver.c

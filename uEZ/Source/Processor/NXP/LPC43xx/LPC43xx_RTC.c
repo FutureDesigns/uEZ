@@ -109,10 +109,11 @@ T_uezError LPC43xx_RTC_Get(void *aWorkspace, T_uezTimeDate *aTimeDate)
 *      T_uezError                   -- Error code
 *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
-{
+{  
   PARAM_NOT_USED(aWorkspace);//T_LPC43xx_RTC_Workspace *p = (T_LPC43xx_RTC_Workspace *)aWorkspace;
   uint32_t ccrValue = LPC_RTC->CCR; // read current CCR value
   T_uezDate * date = (T_uezDate*) &aTimeDate->iDate;
+  TUInt32 delayWrite = 2000; // 2300;
   
   // TODO can we optimize this? Need to ask NXP.
   // Since we must take up to 7 seconds to set the date and time, do seconds first      
@@ -122,7 +123,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->SEC = aTimeDate->iTime.iSecond;
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!
   
   if(LPC_RTC->MIN != aTimeDate->iTime.iMinute) { // if we already have the correct minute set, then don't set it
   if (LPC_RTC->CCR & RTC_CCR_CLKEN_Msk) { // Temporarily disable Clock Control Register
@@ -130,7 +131,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->MIN = aTimeDate->iTime.iMinute;
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!
 }
   
   if(LPC_RTC->HRS != aTimeDate->iTime.iHour) { // if we already have the correct hour set, then don't set it
@@ -139,7 +140,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->HRS = aTimeDate->iTime.iHour;
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!
 }
   
   if(LPC_RTC->DOW != UEZDateGetDayOfWeek(date)) { // if we already have the correct DOW set, then don't set it
@@ -148,7 +149,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->DOW = UEZDateGetDayOfWeek(date); // Is it required to write DOW?
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!    
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!    
 }
   
   if(LPC_RTC->DOM != aTimeDate->iDate.iDay) { // if we already have the correct day set, then don't set it
@@ -157,7 +158,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->DOM = aTimeDate->iDate.iDay;
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!
 }
   
   if(LPC_RTC->MONTH != aTimeDate->iDate.iMonth) { // if we already have the correct month set, then don't set it   
@@ -166,7 +167,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->MONTH = aTimeDate->iDate.iMonth;
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!
 }
   
   if(LPC_RTC->YEAR != aTimeDate->iDate.iYear) { // if we already have the correct year set, then don't set it    
@@ -175,7 +176,7 @@ T_uezError LPC43xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate)
 }
   LPC_RTC->YEAR = aTimeDate->iDate.iYear;
   LPC_RTC->CCR = ccrValue; // Restore Clock Control Register to old setting
-  UEZTaskDelay(2300); // It appears that you must wait for 1 second between writes!
+  UEZTaskDelay(delayWrite); // It appears that you must wait for 1 second between writes!
 }
   
   return UEZ_ERROR_NONE;

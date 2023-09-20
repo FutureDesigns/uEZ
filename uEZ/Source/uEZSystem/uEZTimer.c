@@ -46,7 +46,7 @@
  *  if (UEZTimerOpen("Timer0", &Timer) == UEZ_ERROR_NONE) {
  *      callback.iTimer = timer;
  *      callback.iMatchRegister = 1;
- *      callback.iTriggerSem = 0;
+ *      callback.iTriggerSem = UEZ_NULL_HANDLE;
  *      callback.iCallback = TimerCallback;
  *      if ( UEZTimerSetupOneShot(
  *                      timer,
@@ -70,6 +70,7 @@
 #include <uEZTimer.h>
 #include <Device/Timer.h>
 #include <uEZDeviceTable.h>
+#include <Source/uEZSystem/uEZHandles.h>
 
 /*-------------------------------------------------------------------------*
  * Routines:
@@ -174,7 +175,7 @@ T_uezError UEZTimerClose(T_uezDevice aTimer)
 static void IUEZTimerCallback(void *aCallbackWorkspace)
 {
     T_uezTimerCallback *p = (T_uezTimerCallback *)aCallbackWorkspace;
-    if (p->iTriggerSem)
+    if (p->iTriggerSem != UEZ_NULL_HANDLE)
         _isr_UEZSemaphoreRelease(p->iTriggerSem);
     if (p->iCallback)
         p->iCallback(aCallbackWorkspace);
@@ -216,7 +217,7 @@ static void IUEZTimerCallback(void *aCallbackWorkspace)
  *  if (UEZTimerOpen("Timer0", &Timer) == UEZ_ERROR_NONE) {
  *      callback.iTimer = timer;
  *      callback.iMatchRegister = 1;
- *      callback.iTriggerSem = 0;
+ *      callback.iTriggerSem = UEZ_NULL_HANDLE;
  *      callback.iCallback = TimerCallback;
  *      if ( UEZTimerSetupOneShot(
  *                      timer,
@@ -297,7 +298,7 @@ T_uezError UEZTimerSetupOneShot(
  *  if (UEZTimerOpen("Timer0", &Timer) == UEZ_ERROR_NONE) {
  *      callback.iTimer = timer;
  *      callback.iMatchRegister = 1;
- *      callback.iTriggerSem = 0;
+ *      callback.iTriggerSem = UEZ_NULL_HANDLE;
  *      callback.iCallback = TimerCallback;
  *      if ( UEZTimerSetupRegularInterval(
  *                      timer,
@@ -500,7 +501,7 @@ T_uezError UEZTimerReset(T_uezDevice aTimer)
  *  if ( UEZTimerOpen("Timer1", &timer) == UEZ_ERROR_NONE){
  *      callback.iTimer = timer;
  *      callback.iMatchRegister = 1;
- *      callback.iTriggerSem = 0;
+ *      callback.iTriggerSem = UEZ_NULL_HANDLE;
  *      callback.iCallback = TimerCallback;
  *
  *      if ( UEZTimerSetupRegularInterval(

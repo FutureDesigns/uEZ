@@ -231,6 +231,16 @@ TBool LAFHandleEvent(
     return handled;
 }
 
+// Enable or disable the button from receiving press/release events.
+void ButtonEnablePresses(WM_HWIN hItem)
+{ 
+  WM_EnableWindow(hItem);
+}
+void ButtonDisablePresses(WM_HWIN hItem)
+{
+  WM_DisableWindow(hItem);
+}
+
 void TouchscreenClearPresses(void)
 {
     GUI_PID_STATE state;

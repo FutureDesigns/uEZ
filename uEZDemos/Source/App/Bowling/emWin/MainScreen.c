@@ -21,11 +21,14 @@
 //uEZ and Application Includes
 #include "Config_Build.h"
 #include <uEZ.h>
+#include <uEZWatchdog.h>
+#include "Audio.h"
 #include "WindowManager.h"
 #include "LookAndFeel.h"
 #include "Graphics/Graphics.h"
 #include "Fonts/Fonts.h"
 
+#include "Bowlers.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -186,7 +189,7 @@ static void ISetButtonIcons(WM_MESSAGE *pMsg)
 static TBool IHandleQuickStart(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
-        WindowMangager_Show_Window(QUICK_START);
+        WindowManager_Show_Window(QUICK_START);
     } else if ( aNCode == WM_NOTIFICATION_CLICKED){
         ButtonClick();
     }
@@ -208,7 +211,7 @@ static TBool IHandleQuickStart(WM_MESSAGE * pMsg, int aNCode, int aID)
 static TBool IHandleStandardPlay(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
-        WindowMangager_Show_Window(STANDARD_PLAY);
+        WindowManager_Show_Window(STANDARD_PLAY);
     } else if ( aNCode == WM_NOTIFICATION_CLICKED){
         ButtonClick();
     }
@@ -323,7 +326,8 @@ static TBool IHandleExit(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     T_uezDevice watchdog;
 
-    if (aNCode == WM_NOTIFICATION_RELEASED) {
+    if (aNCode == WM_NOTIFICATION_RELEASED) {    
+      UEZPlatform_Watchdog_Require();
       if(UEZWatchdogOpen("Watchdog", &watchdog) == UEZ_ERROR_NONE){
         UEZWatchdogSetMaxTime(watchdog, 100);
         UEZWatchdogSetMinTime(watchdog, 1);

@@ -1,7 +1,15 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement" >
-  <MemorySegment name="$(FLASH_NAME:FLASH)" >
-    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors"/>
+  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map Macros" Section! -->
+  <MemorySegment name="FLASHA0">
+    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <!-- Can place specific read-only variables here to avoid wasting flash -->
+  </MemorySegment>
+  <MemorySegment name="CRP1">
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+  </MemorySegment>
+  <MemorySegment name="FLASHA">
     <ProgramSection alignment="4" load="Yes" inputsections="*(.init .init.*)" name=".init"/>
     <ProgramSection alignment="4" load="Yes" inputsections="*(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)" name=".text"/>
     <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>

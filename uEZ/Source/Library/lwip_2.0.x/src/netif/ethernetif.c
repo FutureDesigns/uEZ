@@ -336,6 +336,7 @@ static struct pbuf* low_level_input(struct netif *netif)
     uint32_t      len;
     uint32_t      cpyix;
     uint32_t      cpylen;
+    UEZ_PARAMETER_NOT_USED(cpyix);
 
     // Packet ready?
     if (CheckFrameReceived() == 0)

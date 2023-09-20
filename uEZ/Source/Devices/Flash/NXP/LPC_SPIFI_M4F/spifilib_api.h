@@ -75,7 +75,7 @@ uint16_t spifiGetLibVersion(void);
  * If not booting from SPIFI FLASH, the SPIFI FLASH pin muxing and SPIFI controller
  * clock need to be enabled prior to this call.
  */
-SPIFI_ERR_T spifiInit(uint32_t spifiCtrlAddr, uint8_t reset);
+SPIFI_ERR_T spifiInit(uint32_t spifiCtrlAddr, TBool reset);
 
 /**
  * @brief	Register a SPIFILIB family driver
@@ -438,6 +438,63 @@ SPIFI_ERR_T spifiEraseSubBlocks(const SPIFI_HANDLE_T *pHandle, uint32_t firstSub
  * This function only works in blocking mode.
  */
 SPIFI_ERR_T spifiEraseByAddr(const SPIFI_HANDLE_T *pHandle, uint32_t firstAddr, uint32_t lastAddr);
+
+/**
+ * @brief	Enter OTP Region
+ * @param	pHandle		: Pointer to a LPCSPIFILIB device handle
+ * @return	A SPIFI_ERR_xxx error code (SPIFI_ERR_NONE is no errors)
+ * @note	
+ * This function only works in blocking mode.
+ */
+SPIFI_ERR_T spifiSetENSO(const SPIFI_HANDLE_T *pHandle);
+
+/**
+ * @brief	Exit OTP Region
+ * @param	pHandle		: Pointer to a LPCSPIFILIB device handle
+ * @return	A SPIFI_ERR_xxx error code (SPIFI_ERR_NONE is no errors)
+ * @note	
+ * This function only works in blocking mode.
+ */
+SPIFI_ERR_T spifiSetEXSO(const SPIFI_HANDLE_T *pHandle);
+
+/**
+ * @brief	Return the current OTP status
+ * @param	pHandle		: Pointer to a LPCSPIFILIB device handle
+ * @return	Return the current OTP status
+ */
+uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle);
+
+/**
+ * @brief	Program the device OTP with the passed buffer. This permanently changes bits to 0 on most devices!
+ * @param	pHandle		: Pointer to a LPCSPIFILIB device handle
+ * @param	addr		: LPCSPIFILIB device address to start write at
+ * @param	writeBuff	: Address of buffer to write, must be 32-bit aligned
+ * @param	bytes		: Number of bytes to write
+ * @return	A SPIFI_ERR_xxx error code (SPIFI_ERR_NONE is no errors)
+ * @note	This function has no size limit. This function only works in blocking mode.
+ */
+SPIFI_ERR_T spifiProgramOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, const uint32_t *writeBuff, uint32_t bytes);
+
+/**
+ * @brief	Read the device OTP into the passed buffer
+ * @param	pHandle		: Pointer to a LPCSPIFILIB device handle
+ * @param	addr		: LPCSPIFILIB device address to start read at
+ * @param	readBuff	: Address of buffer to read into, must be 32-bit aligned
+ * @param	bytes		: Number of bytes to read
+ * @return	A SPIFI_ERR_xxx error code (SPIFI_ERR_NONE is no errors)
+ * @note	This function has no size limit. Optionally, the device can be placed into memory
+ * mode and accessed directly via memory mapped reads without using this function. This
+ * function only works in blocking mode.
+ */
+SPIFI_ERR_T spifiReadOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, uint32_t *readBuff, uint32_t bytes);
+
+/**
+ * @brief	Lock the Otp forever
+ * @param	pHandle		: Pointer to a LPCSPIFILIB device handle
+ * @param	lockOtp		: set to ETrue to lock opt forever, otherthise just read status
+ * @return	Return the current OTP status
+ */
+uint32_t spifiLockOtp(const SPIFI_HANDLE_T *pHandle, TBool lockOtp);
 
 /**
  * @}

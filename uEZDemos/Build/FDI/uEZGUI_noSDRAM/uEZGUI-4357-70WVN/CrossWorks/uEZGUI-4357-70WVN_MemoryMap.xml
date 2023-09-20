@@ -19,13 +19,13 @@
   <!-- Bank A -->
   <MemorySegment start="0x1A000000" name="FLASHA0" size="0x2FC" access="ReadOnly" />
   <MemorySegment start="0x1A0002FC" name="CRP1" size="0x4" access="ReadOnly" /> <!-- CRP Region A -->
-  <MemorySegment start="0x1A000300" name="FLASHA" size="0x7FD00-$(FLASHA_CM0_SIZE:0)" access="ReadOnly" />
-  <MemorySegment start="0x1A000300+0x7FD00-$(FLASHA_CM0_SIZE:0x7FD00/2)" name="FLASHA_CM0" size="$(FLASHA_CM0_SIZE:0)" access="ReadOnly" />
+  <MemorySegment start="$(FLASHA0_START:0x0)" name="FLASHA" size="0x1A080000-$(FLASHA_CM0_SIZE:0)-$(FLASHA0_START:0x0)" access="ReadOnly" />
+  <MemorySegment start="0x1A080000-$(FLASHA_CM0_SIZE:0x0)" name="FLASHA_CM0" size="$(FLASHA_CM0_SIZE:0x0)" access="ReadOnly" />
   <!-- Bank B -->
   <MemorySegment start="0x1B000000" name="FLASHB0" size="0x2FC" access="ReadOnly" />
   <MemorySegment start="0x1B0002FC" name="CRP2" size="0x4" access="ReadOnly" /> <!-- CRP Region A -->
-  <MemorySegment start="0x1B000300" name="FLASHB" size="0x7FD00-$(FLASHB_CM0_SIZE:0x7FD00/2)" access="ReadOnly" />
-  <MemorySegment start="0x1B000300+0x7FD00-$(FLASHB_CM0_SIZE:0x7FD00/2)" name="FLASHB_CM0" size="$(FLASHB_CM0_SIZE:0x80000/2)" access="ReadOnly" />
+  <MemorySegment start="0x1B000300" name="FLASHB" size="0x1B080000-$(FLASHB_CM0_SIZE:0)-0x1B000300" access="ReadOnly" />
+  <MemorySegment start="0x1B080000-$(FLASHB_CM0_SIZE:0x0)" name="FLASHB_CM0" size="$(FLASHB_CM0_SIZE:0x0)" access="ReadOnly" />
   
   <!-- CS0-CS3 not currently used. -->
   <MemorySegment start="0x1C000000" name="$(CS0_NAME:CS0)" size="$(CS0_SIZE:0)-$(CS0_CM0_SIZE:0)" access="$(CS0_ACCESS:Read/Write)" />

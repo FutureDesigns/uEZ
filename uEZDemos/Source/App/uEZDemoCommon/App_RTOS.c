@@ -103,14 +103,13 @@ void Processing_Before_Start_Kernel()
 }
 
 /*-----------------------------------------------------------*/
+#if (configCHECK_FOR_STACK_OVERFLOW > 0)
 void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 {
 	( void ) pcTaskName;
 	( void ) pxTask;
 
-#if (configCHECK_FOR_STACK_OVERFLOW > 0)
 	G_task_handle_failed_task = pxTask; 
-#endif
 	//softReset();
         
         // from UEZHalt();
@@ -125,6 +124,7 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	//taskDISABLE_INTERRUPTS();
 	//for( ;; );
 }
+#endif
 
 /*-----------------------------------------------------------*/
 

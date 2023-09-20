@@ -58,9 +58,11 @@ volatile T_exceptionInformation G_exceptionInformation;
 volatile T_exceptionInformation G_exceptionInformation IN_INTERNAL_RAM;
 #endif
 
+#if 0
 char BSODLine[100];
 SWIM_WINDOW_T G_bsodWin;
 TBool G_bsodActive = EFalse;
+#endif
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -68,6 +70,7 @@ TBool G_bsodActive = EFalse;
 extern void UEZBSP_FatalError(int32_t aNumBlinks);
 extern void FatalError(const char *aLine);
 
+#if 0
 void BSODPrint(const char *aLine)
 {
     if (G_bsodActive) {
@@ -94,17 +97,28 @@ void BSODStart(const char *aLine)
         BSODPrint(aLine);
     }
 }
+#endif
 
 void UEZFailureMsg(const char *aLine)
 {
+#ifdef DISABLE_UEZ_FATAL_ERROR
+    (void) aLine;
+    UEZPlatform_System_Reset();
+#else
     FatalError(aLine);
+#endif
 }
 
 void HardFault_HandlerC(
     T_exceptionInformation *aHardFaultArgs,
     TUInt32 aExceptionCode)
-{
-
+{  
+#ifdef DISABLE_UEZ_FATAL_ERROR
+    (void) aHardFaultArgs;
+    (void) aExceptionCode;
+    UEZPlatform_System_Reset();
+#else
+    // TODO should handle this in platform file so we can get MCU specific registers.
     G_exceptionInformation.iR0 = aHardFaultArgs->iR0;
     G_exceptionInformation.iR1 = aHardFaultArgs->iR1;
     G_exceptionInformation.iR2 = aHardFaultArgs->iR2;
@@ -117,6 +131,10 @@ void HardFault_HandlerC(
     while (1)
         UEZBSP_FatalError(aExceptionCode);
 
+/* Instead of a BSOD it is recommended to save the 8 register numbers and failure message
+ * in internal RAM, then you can reboot and read that memory on the next application boot.
+ * Then the application can display an error message or log the failure to SD card.*/
+    
 //BSOD no longer works with FreeRTOS changes
 //    BSODStart("** uEZ Hard Fault Exception! **\n");
 //    sprintf(BSODLine, "R0 : %08X", G_exceptionInformation.iR0);
@@ -135,6 +153,8 @@ void HardFault_HandlerC(
 //    BSODPrint(BSODLine);
 //    sprintf(BSODLine, "PSR: %08X", G_exceptionInformation.iPSR);
 //    BSODPrint(BSODLine);
+    
+#endif
 }
 
 /*-------------------------------------------------------------------------*

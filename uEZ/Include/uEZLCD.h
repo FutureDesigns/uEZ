@@ -79,10 +79,10 @@ typedef struct {
     TUInt32 iMSTillSleep;
     TUInt32 iAnimationBacklightLevel;
     TUInt32 iDimBacklightLevel;
-    void (*iCallback_AnimationStart)();
-    void (*iCallback_AnimationUpdate)();
-    void (*iCallback_AnimationSleep)();
-    void (*iCallback_AnimationEnd)();
+    void (*iCallback_AnimationStart)(void);
+    void (*iCallback_AnimationUpdate)(void);
+    void (*iCallback_AnimationSleep)(void);
+    void (*iCallback_AnimationEnd)(void);
 } T_uezLCDScreenSaverInfo;
 
 /**
@@ -174,7 +174,7 @@ T_uezError UEZLCDOff(T_uezDevice aLCDDevice);
  *
  *	@return		T_uezError
  */	
-T_uezError UEZLCDBacklight(
+__WEAK T_uezError UEZLCDBacklight(
             T_uezDevice aLCDDevice, 
             TUInt32 aLevel);
 						
@@ -237,7 +237,7 @@ T_uezError UEZLCDScreensaverStart(
  *
  *	@return		T_uezError
  */	
-T_uezError UEZLCDScreensaverStop();
+T_uezError UEZLCDScreensaverStop(void);
 
 /**
  *	Wakes the screen saver. This can be called periodically to prevent
@@ -245,14 +245,14 @@ T_uezError UEZLCDScreensaverStop();
  *
  *	@return		T_uezError
  */	
-void UEZLCDScreensaverWake();
+void UEZLCDScreensaverWake(void);
 
 /**
  *	How to deturmine if the screen saver is active
  *
  *	@return		TBool
  */	
-TBool UEZLCDScreensaverIsActive();
+TBool UEZLCDScreensaverIsActive(void);
 
 #ifdef __cplusplus
 }

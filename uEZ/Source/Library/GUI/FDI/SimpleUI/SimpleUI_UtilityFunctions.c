@@ -113,8 +113,8 @@ T_uezError SUIScreenShot(SWIM_WINDOW_T *aWin, const char *aFilename)
 
     error = UEZFileOpen(aFilename, FILE_FLAG_WRITE, &file);
     if (error == UEZ_ERROR_NONE) {
-        for (y = 0; y < aWin->xpmax; y++) {
-            for (x = 0; x < aWin->xpmax; x++) {
+        for (y = 0; y < (TUInt32) aWin->xpmax; y++) {
+            for (x = 0; x < (TUInt32) aWin->xpmax; x++) {
                 swim_driver_get_raster(aWin, x, y, &pixel, 1);
                 // Convert 5:5:5 to RGB
                 rgb[0] = ((pixel >> 10) & 0x1F) << 3;

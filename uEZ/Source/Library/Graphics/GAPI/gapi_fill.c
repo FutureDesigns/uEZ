@@ -45,9 +45,9 @@ DD.MM.YYYY OSO-UID Description
 02.04.2008 RTA-JMB Split from GAPI_BMP
 06.22.2008 RTA-JMB Split from GAPI_Copy
 ***********************************************************************************/
-#include "GAPI.H"
+#include "gapi.h"
 
-static const ColorTable_type CT_zero={0,0,0,0};
+static const ColorTable_type CT_zero={{0,0,0,0}};
 
 /**********************************************************************************
 Function Name:   calc_gradient_pixel
@@ -110,6 +110,7 @@ gapiResp_type LCDBMPFill(BMP_type *const d, const sI16 dPosX, const sI16 dPosY, 
   pRaster_type pdRaster;
   sI16 indexW;
   uI16 pixel16;
+  UEZ_PARAMETER_NOT_USED(indexW);
 
   if(d==NULL)
     return(-1);
@@ -340,6 +341,9 @@ gapiResp_type LCDBMPCopyXlate( BMP_type const *const s, BMP_type *const d, sI16 
 
   uI08 rotate = 0;
   sI16 dHeight=Height, dWidth=Width;
+  
+  UEZ_PARAMETER_NOT_USED(dHeight);
+  UEZ_PARAMETER_NOT_USED(dWidth);
 
   pRaster_type psRaster, pdRaster;
 
@@ -475,7 +479,9 @@ gapiResp_type LCDBMPCopyXlate( BMP_type const *const s, BMP_type *const d, sI16 
   pdRaster.p16 += (sI32)dbiWidth * (sI32)dPosY + (sI32)dPosX;
 
   {
-    sI32 dLineInc, dPixelInc, dPixelIndex, dLineIndex;
+    sI32 dLineInc, dPixelInc, dPixelIndex, dLineIndex;    
+    UEZ_PARAMETER_NOT_USED(dLineIndex);
+    UEZ_PARAMETER_NOT_USED(dPixelIndex);
     switch (Mode & 0xF)
     {
       case 0x00:   /* row start, pixel start,   PixelInc,   LineInc NO BMP_CX_FLIPY, NO BMP_CX_FLIPX, BMP_CX_ROT_0   */

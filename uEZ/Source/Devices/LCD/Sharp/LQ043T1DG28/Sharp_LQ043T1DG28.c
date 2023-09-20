@@ -444,6 +444,8 @@ static T_uezError ISPIConfigure(T_LQ043T1DG28Workspace *p)
     return error;
 }
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_LQ043T1DG28_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -467,7 +469,10 @@ static T_uezError LCD_LQ043T1DG28_MSTimerStart(void *aW, float milliseconds){
   }  
   return error;
 }
+#endif
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_LQ043T1DG28_TimerCallback
  *---------------------------------------------------------------------------*
@@ -482,6 +487,7 @@ static void LCD_LQ043T1DG28_TimerCallback(T_uezTimerCallback *aCallbackWorkspace
   p->itimerDone = ETrue;  
   UEZTimerClose(p->itimer);
 }
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_LQ043T1DG28_On
@@ -496,11 +502,29 @@ static void LCD_LQ043T1DG28_TimerCallback(T_uezTimerCallback *aCallbackWorkspace
 static T_uezError LCD_LQ043T1DG28_On(void *aW) {
     T_LQ043T1DG28Workspace *p = (T_LQ043T1DG28Workspace *)aW;
     T_uezError error = UEZ_ERROR_NONE;
-   
+
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)     
+        // Toggle the reset pin and hold SHUT H until programming done
+        UEZGPIOClear(p->iResetGPIOPin);
+        UEZGPIOSet(p->iShutGPIOPin);
+		
+        UEZTaskDelay(2);
+        UEZGPIOSet(p->iResetGPIOPin);
+        (*p->iLCDController)->On(p->iLCDController); // max 100us delay, start DOTCLK/HSYNC/VSYNC immediately
+        error = ISPIConfigure(p); // program registers, configure the LCD over the SPI port
+        
+        UEZTaskDelay(7);
+        UEZGPIOClear(p->iShutGPIOPin); // go to normal mode from sleep mode by clearing SHUT
+        
+        UEZTaskDelay(184);
+        (*p->iBacklight)->On(p->iBacklight); // turn backlight on
+        LCD_LQ043T1DG28_SetBacklightLevel(p, p->iBacklightLevel);
+#else
     if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         // Toggle the reset pin and hold SHUT H until programming done
         UEZGPIOClear(p->iResetGPIOPin);
         UEZGPIOSet(p->iShutGPIOPin);
+		
         LCD_LQ043T1DG28_MSTimerStart(p, 1.25); // 1.25ms itimer, minimum 1ms needed
         while (p->itimerDone == EFalse){;} // wait for itimer to finish, there will be a small task delay of a few hundred uS
         UEZGPIOSet(p->iResetGPIOPin);
@@ -517,6 +541,7 @@ static T_uezError LCD_LQ043T1DG28_On(void *aW) {
         (*p->iBacklight)->On(p->iBacklight); // turn backlight on
         LCD_LQ043T1DG28_SetBacklightLevel(p, p->iBacklightLevel);
       }
+#endif
    
     return error;
 }
@@ -537,10 +562,14 @@ static T_uezError LCD_LQ043T1DG28_Off(void *aW)
 
     if (p->iBacklight){ // Turn off backlight
       (*p->iBacklight)->Off(p->iBacklight);
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay((uint16_t)166.6);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         LCD_LQ043T1DG28_MSTimerStart(p, 166.6); // minimum 166.6ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
-      }   
+      }  
+#endif
     } 
     UEZGPIOSet(p->iShutGPIOPin); // go to sleep mode by setting SHUT
     //(*p->iLCDController)->Off(p->iLCDController); // turn off LCD
@@ -565,13 +594,17 @@ static T_uezError LCD_LQ043T1DG28_Open(void *aW)
   HAL_LCDController **plcdc;
   T_uezError error = UEZ_ERROR_NONE;
   TUInt32 i;
+
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
   
+#else
   p->icallback.iTimer = p->itimer; // Setup callback information for itimer
-	p->icallback.iData = p;
+  p->icallback.iData = p;
   p->icallback.iMatchRegister = 1;
   p->icallback.iTriggerSem = 0;
   p->icallback.iCallback = LCD_LQ043T1DG28_TimerCallback;
-  
+#endif
+
   p->aNumOpen++;
   if (p->aNumOpen == 1) {
     UEZGPIOOutput(p->iResetGPIOPin);

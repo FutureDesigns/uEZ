@@ -24,6 +24,14 @@
 #include "WindowManager.h"
 #include "Graphics/Graphics.h"
 #include "Fonts/Fonts.h"
+#include <uEZPlatform.h>
+#include <uEZWatchdog.h>
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.h>
+#include <uEZResourceCache.h>
+
+#if (INCLUDE_UEZ_RESOURCE_EXAMPLE==1)
+#include "HImg.h"
+#endif
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -34,6 +42,8 @@
 #define ID_BUTTON_RIGHT_TOP     (GUI_ID_USER + 0x03) // The top button on the right side
 #define ID_BUTTON_RIGHT_MIDDLE  (GUI_ID_USER + 0x04) // The hidden middle button on the right side
 #define ID_BUTTON_RIGHT_BOTTOM  (GUI_ID_USER + 0x05) // The bottom button on the right side
+#define ID_BUTTON_LEFT_BACK     (GUI_ID_USER + 0x06) // The back button on the left side
+#define ID_UPDATE_TIMER         (GUI_ID_USER + 0x07)
 
 #define WINDOW_XSIZE            (UEZ_LCD_DISPLAY_WIDTH)
 #define WINDOW_YSIZE            (UEZ_LCD_DISPLAY_HEIGHT)
@@ -61,6 +71,8 @@
 #define BUTTON_XPOS             ((WINDOW_XSIZE/2) + SPACING)
 #define BUTTON_YPOS(n)          ((SPACING + TITLE_TEXT_YSIZE) + (n * (BUTTON_YSIZE + SPACING)))
 
+#define BUTTON_ENABLE_TIME_MS   2000 // time before exit button is pressable.
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
@@ -72,6 +84,7 @@
 static TBool IHandleButtonRightTop(WM_MESSAGE * pMsg, int aNCode, int aID);
 static TBool IHandleButtonRightMiddle(WM_MESSAGE * pMsg, int aNCode, int aID);
 static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID);
+static TBool IHandleButtonLeftBottom(WM_MESSAGE * pMsg, int aNCode, int aID);
 
 static void IUpdateFields(WM_MESSAGE * pMsg);
 /*---------------------------------------------------------------------------*
@@ -84,9 +97,10 @@ static const GUI_WIDGET_CREATE_INFO _iHomeScreenDialog[] = {
     { TEXT_CreateIndirect       , ""            , ID_TITLE_TEXT     , TITLE_TEXT_XPOS       , TITLE_TEXT_YPOS       , TITLE_TEXT_XSIZE      , TITLE_TEXT_YSIZE  , TEXT_CF_HCENTER| TEXT_CF_VCENTER, 0, 0},
     { IMAGE_CreateIndirect      , ""            , ID_LOGO           , LOGO_XPOS             , LOGO_YPOS             , LOGO_XSIZE            , LOGO_YSIZE        , 0, 0, 0},
 
-    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_RIGHT_TOP   , BUTTON_XPOS           , BUTTON_YPOS(1)        , BUTTON_XSIZE          , BUTTON_YSIZE      , 0, 0, 0},
-    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_RIGHT_MIDDLE, BUTTON_XPOS           , BUTTON_YPOS(2)        , BUTTON_XSIZE          , BUTTON_YSIZE      , 0, 0, 0},
-    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_RIGHT_BOTTOM, BUTTON_XPOS           , BUTTON_YPOS(3)        , BUTTON_XSIZE          , BUTTON_YSIZE      , 0, 0, 0},
+    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_RIGHT_TOP   , BUTTON_XPOS       , BUTTON_YPOS(1)        , BUTTON_XSIZE          , BUTTON_YSIZE      , 0, 0, 0},
+    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_RIGHT_MIDDLE, BUTTON_XPOS       , BUTTON_YPOS(2)        , BUTTON_XSIZE          , BUTTON_YSIZE      , 0, 0, 0},
+    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_RIGHT_BOTTOM, BUTTON_XPOS       , BUTTON_YPOS(3)        , BUTTON_XSIZE          , BUTTON_YSIZE      , 0, 0, 0},
+    { BUTTON_CreateIndirect     , ""            , ID_BUTTON_LEFT_BACK, SPACING              , (WINDOW_YSIZE-SPACING-BUTTON_YSIZE), BUTTON_XSIZE-(14*SPACING), BUTTON_YSIZE      , 0, 0, 0},
 };
 
 /** Generic Mapping of Screen Layout*/
@@ -101,8 +115,12 @@ static T_LAFMapping HomeScreenMapping[] = {
                                 , GUI_GRAY  , GUI_BLACK , &FONT_LARGE, LAFSetupButton , (TBool (*)(WM_MESSAGE *, int, int))IHandleButtonRightMiddle},
     { ID_BUTTON_RIGHT_BOTTOM, "Time/Date"
                                 , GUI_GRAY  , GUI_BLACK , &FONT_LARGE, LAFSetupButton , (TBool (*)(WM_MESSAGE *, int, int))IHandleButtonRightBottom},
+    { ID_BUTTON_LEFT_BACK, "Back/Reset"
+                                , GUI_GRAY  , GUI_BLACK , &FONT_LARGE, LAFSetupButton , (TBool (*)(WM_MESSAGE *, int, int))IHandleButtonLeftBottom},
     {0},
 };
+
+static WM_HTIMER G_UpdateTimer;
 
 /** Active Flag, tell the dialog when it receives messages that the screen is in the foreground*/
 static TBool G_Active = EFalse;
@@ -169,6 +187,38 @@ static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine: IHandleButtonLeftBottom
+ *---------------------------------------------------------------------------*/
+/** Reset the unit and return to bootloader if applicable
+ *
+ *  @param [in] pMsg        WM_MESSAGE structure used by emWin to
+ *                            to handle screen information.
+ *  @param [in] aNCode      Notification code of event.
+ *  @param [in] aID            ID of widget that caused the event.
+ *  @return                    The emWin Handle to this window
+ */
+ /*---------------------------------------------------------------------------*/
+static TBool IHandleButtonLeftBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
+{
+    if (aNCode == WM_NOTIFICATION_RELEASED) {
+      UEZPlatform_Watchdog_Require();
+      T_uezDevice watchdog;
+
+      // Force a restart by tripping the watchdog
+      UEZWatchdogOpen("Watchdog", &watchdog);
+      if (!UEZIsResetFromWatchdog(watchdog)) {
+          //G_clearWatchdogBit = 1;
+          }
+      UEZWatchdogSetMaxTime(watchdog, 100);
+      UEZWatchdogStart(watchdog);
+      UEZWatchdogTrip(watchdog);
+
+      //UEZPlatform_System_Reset();
+    }
+    return EFalse;
+}
+
+/*---------------------------------------------------------------------------*
  * Routine: IUpdateFields
  *---------------------------------------------------------------------------*/
 /** Update all the fields on the screen.
@@ -215,12 +265,23 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
         NCode = pMsg->Data.v;
         LAFSetup(pMsg->hWin, ID_WINDOW, HomeScreenMapping);
         ISetLogo(pMsg);
+        
+        // This will set the newer emWin mode to help prevent accidental clicks
+        // See menual 6.2.5.1.1 BUTTON_REACT_ON_LEVEL
+        // See manual "Example for an unwanted BUTTON click"
+        BUTTON_SetReactOnLevel();
 		
-		hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_RIGHT_MIDDLE);
-		WM_HideWindow(hItem); // Hide the middle button until we have a GUI screen here.
+        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_RIGHT_MIDDLE);
+        WM_HideWindow(hItem); // Hide the middle button until we have a GUI screen here.
 
-		hItem = WM_GetDialogItem(pMsg->hWin, ID_TITLE_TEXT);
-		//TEXT_SetText(hItem, "Demo"); // Example how to change the title text at run time.
+        hItem = WM_GetDialogItem(pMsg->hWin, ID_TITLE_TEXT);
+        //TEXT_SetText(hItem, "Demo"); // Example how to change the title text at run time.
+        
+        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);        
+        ButtonDisablePresses(hItem); // disable being able to press the button
+
+        // For this button additionally use a timer as user can still accidentally press it on screen switch.
+        G_UpdateTimer = WM_CreateTimer(pMsg->hWin, ID_UPDATE_TIMER, BUTTON_ENABLE_TIME_MS, 0);
 		
         break;
     case WM_NOTIFY_PARENT:
@@ -234,18 +295,31 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
         IUpdateFields(pMsg);
         break;
     case WM_TIMER:
-      if(G_Active){
+        NCode = pMsg->Data.v;
+        if(G_Active){
         
-      }
+        }
+        if (NCode == G_UpdateTimer) { // timer expired, enable the button
+          hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+          ButtonEnablePresses(hItem);
+        }
+
       break;
     case WM_POST_PAINT:
 		
         break;
     case WM_APP_GAINED_FOCUS:
         G_Active = ETrue;
+        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+        // Disable the button every time we switch to the screen
+        ButtonDisablePresses(hItem); // Use timer to enable button after timeout
+        WM_RestartTimer(G_UpdateTimer, BUTTON_ENABLE_TIME_MS);
         break;
     case WM_APP_LOST_FOCUS:
         G_Active = EFalse;
+        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+        // Disable the button every time we switch away from the screen.
+        ButtonDisablePresses(hItem);
         break;
     default:
       WM_DefaultProc(pMsg);
@@ -265,6 +339,35 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
  /*---------------------------------------------------------------------------*/
 WM_HWIN HomeScreen_Create()
 {
+#if (INCLUDE_UEZ_RESOURCE_EXAMPLE==1)
+    // Example to load a single image from the resource file
+    T_uezDevice resources;
+    void *p_image;
+    if (UEZResourceCacheOpen("Resources", &resources)) {
+        UEZFailureMsg("Resources error!");
+    }
+    if (UEZResourceCacheLockByName(resources, "TITLE.TGA", &p_image)) {
+        UEZFailureMsg("Resource TITLE.TGA not found!");
+    }
+    
+    /* This example loads a Targa file. For emWin usage normally you would use
+     * BMP/PNG/JPEG/GIF from emWin image converter. See /emWin/IMAGE.h */
+    SUIDrawIcon(p_image, (DISPLAY_WIDTH-320)/2, (DISPLAY_HEIGHT-240)/2);
+
+    // In emWin here are some of the functions for loading common image formats.
+    //IMAGE_SetBitmap(WM_GetDialogItem(pMsg->hWin, ID_LOGO), &bmlogo);
+    //IMAGE_SetGIF(IMAGE_Handle hObj, const void * pData, U32 FileSize);
+    //IMAGE_SetJPEG(IMAGE_Handle hObj, const void * pData, U32 FileSize);
+    //IMAGE_SetPNG(IMAGE_Handle hObj, const void * pData, U32 FileSize);
+
+    UEZTaskDelay(17);
+    
+    // Turn on backlight after initializing first screen to prevent screen tear
+    WindowManager_BackLight_On(255);
+    
+    UEZTaskDelay(5000); // Delay to show icon before loading home screen.
+#endif
+
     return GUI_CreateDialogBox(_iHomeScreenDialog, GUI_COUNTOF(_iHomeScreenDialog), &_HomeScreenDialog, 0,0,0);
 }
 /** @} */

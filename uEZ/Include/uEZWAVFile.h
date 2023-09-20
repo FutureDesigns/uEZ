@@ -52,17 +52,17 @@ extern "C" {
  /**
  *	Start playing the selected WAV File
  */
-void UEZStartWAV();
+void UEZStartWAV(void);
 
 /**
  *	Start playing the WAV File
  */
-void UEZStopWAV();
+void UEZStopWAV(void);
 
 /**
  *	Clean up a WAV file
  */
-void UEZWAVCleanUp();
+void UEZWAVCleanUp(void);
 
 /**
  *	Set the output volume
@@ -90,7 +90,7 @@ T_uezError UEZWAVChangeFile(char* newFile);
  *
  *	@return TBool
  */
-TBool UEZWAVGetStatus();
+TBool UEZWAVGetStatus(void);
 
 /**
  *  Set the digital volume level control (default is 100%)

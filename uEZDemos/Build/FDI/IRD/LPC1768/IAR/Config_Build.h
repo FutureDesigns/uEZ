@@ -8,11 +8,6 @@
 #define FAST_STARTUP 				0
 
 #define APP_MENU_ALLOW_TEST_MODE    0
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY  			1
-#define configUSE_TIMERS          			1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
 
 #ifdef NDEBUG
 #define UEZ_REGISTER              			0

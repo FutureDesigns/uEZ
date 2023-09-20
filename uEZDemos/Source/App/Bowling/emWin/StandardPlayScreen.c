@@ -20,6 +20,7 @@
 
 //uEZ and Application Includes
 #include <uEZ.h>
+#include "Audio.h"
 #include "LookAndFeel.h"
 #include "WindowManager.h"
 #include "Fonts/Fonts.h"
@@ -302,7 +303,7 @@ static void ISetButtonIcons(WM_MESSAGE *pMsg)
 static TBool IHandleMenu(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
-        WindowMangager_Show_Window(MAIN_SCREEN);
+        WindowManager_Show_Window(MAIN_SCREEN);
     } else if ( aNCode == WM_NOTIFICATION_CLICKED){
         ButtonClick();
     }
@@ -405,7 +406,7 @@ static TBool IHandleBowl(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         if (G_NumBowlers > 0){
-            WindowMangager_Show_Window(BOWLING);
+            WindowManager_Show_Window(BOWLING);
         }
     } else if ( aNCode == WM_NOTIFICATION_CLICKED){
         ButtonClick();
@@ -425,7 +426,7 @@ static TBool IHandleBowl(WM_MESSAGE * pMsg, int aNCode, int aID)
 static void IUpdateFields(WM_MESSAGE * pMsg)
 {
     WM_HWIN hItem;
-    char buttonText[20];
+    char buttonText[180];
     TUInt8 i;
     TUInt8 count = 0;
 

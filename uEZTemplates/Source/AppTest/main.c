@@ -236,13 +236,18 @@ void MainTask(void)
     // So you can leave them in the application for release builds.
     // Warnings and errors show different graphical icons and colors for debug.
     // Must add #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h> even when turned off
-    DEBUG_SV_Printf("SystemView Started"); // SystemView terminal
-    DEBUG_SV_PrintfW("Warn Test"); // example warning
-    DEBUG_SV_PrintfE("Error Test"); // example error
+    
+    // In our patched sytemview we provide both non-printf and printf functions. We use the non-printf here, so it just sends the strings.
+    DEBUG_SV_Print("SystemView Started"); // SystemView terminal
+    DEBUG_SV_PrintW("Warn Test"); // example warning
+    DEBUG_SV_PrintE("Error Test"); // example error
 #endif
 #endif
 
     Storage_PrintInfo('1');
+#if RENAME_INI
+    UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
+#endif
 
     printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
 

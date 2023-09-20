@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.30                                    *
+*       SystemView version: 3.50a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -67,7 +67,6 @@ Additional information:
 #ifndef SEGGER_SYSVIEW_CONF_H
 #define SEGGER_SYSVIEW_CONF_H
 
-
 // The application name to be displayed in SystemViewer
 #define SEGGER_SYSVIEW_APP_NAME        "uEZ FreeRTOS Application"
 //#define SEGGER_SYSVIEW_APP_NAME                 "Demo Application"
@@ -84,7 +83,6 @@ Additional information:
 #else
 #define SEGGER_SYSVIEW_DEVICE_NAME     "Cortex-M4"
 #endif
-
 /*********************************************************************
 *
 *       Defines, configurable
@@ -161,6 +159,12 @@ Additional information:
 #endif
 
 //#define SEGGER_SYSVIEW_ENABLE_UART()       HIF_UART_EnableTXEInterrupt()       // Needed for SystemView via UART, only. Macro to enable the UART.
+
+
+/*********************************************************************
+* TODO: Add your defines here.                                       *
+**********************************************************************
+*/
 
 #endif  // SEGGER_SYSVIEW_CONF_H
 

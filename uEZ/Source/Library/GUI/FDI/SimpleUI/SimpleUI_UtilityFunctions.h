@@ -54,7 +54,7 @@ T_uezError SUIScreenShot(SWIM_WINDOW_T *win, const char *aFilename);
 void SUISetSettings(const T_SUISettings *aSettings);
 void SUIInitialize(TBool aDoubleSize, TBool aFlipX, TBool aFlipY);
 void SUISetDrawWindow(const SWIM_WINDOW_T *aWindow);
-SWIM_WINDOW_T *SUIGetDrawWindow();
+SWIM_WINDOW_T *SUIGetDrawWindow(void);
 
 #ifdef __cplusplus
 }

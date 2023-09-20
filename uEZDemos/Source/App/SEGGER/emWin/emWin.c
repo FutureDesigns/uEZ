@@ -48,8 +48,8 @@ Purpose     : emWin demo
 static T_uezDevice _hTouchScreen;
 static T_uezQueue  _hTSQueue;
 static U8          _RequestExit;
-TUInt8 G_emWinLoaded = EFalse;
-T_uezTask      G_hTouchTask;
+TUInt8             G_emWinLoaded = EFalse;
+T_uezTask          G_hTouchTask;
 
 
 /*********************************************************************

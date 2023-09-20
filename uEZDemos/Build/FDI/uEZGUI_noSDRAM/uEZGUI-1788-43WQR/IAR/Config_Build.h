@@ -8,12 +8,6 @@
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_SHARP_LQ043T1DG28
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY            1
-#define configUSE_TIMERS                    1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              			0
 #else

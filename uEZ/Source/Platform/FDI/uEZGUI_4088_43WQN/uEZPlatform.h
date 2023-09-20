@@ -147,6 +147,10 @@ extern "C" {
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
 #define UEZBSP_NOR_FLASH_BASE_ADDRESS       0x80000000
 
+#ifndef UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS
+    #define UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS  0x28000000 // QSPI Address
+#endif
+
 #include <lwipopts.h>
 
 #if (COMPILER_TYPE==IAR)
@@ -181,9 +185,10 @@ typedef struct {
 #define GPIO_HEARTBEAT_LED                       GPIO_P1_13
 
 // GPIO Loopback Test array for this uEZGUI
-#define LOOPBACK_TEST_NUM_PINS_A              (24)
-#define LOOPBACK_TEST_NUM_PINS_B              (5)
-#define LOOPBACK_TEST_NUM_PINS_C              (1)
+#define LOOPBACK_TEST_NUM_PINS_A       (16)
+#define LOOPBACK_TEST_NUM_PINS_B       (2)
+#define LOOPBACK_TEST_NUM_PINS_C       (3)
+#define LOOPBACK_TEST_NUM_PINS_D       (1)
 
 // TODO add GPIOs on ALT PWR COM, PMOD here 
  

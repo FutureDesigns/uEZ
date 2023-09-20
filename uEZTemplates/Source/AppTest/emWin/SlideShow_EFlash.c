@@ -18,7 +18,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-#include <stdio.h>
+//Includes needed by emWin
 #include "GUI.h"
 #include "BUTTON.h"
 #include "FRAMEWIN.h"
@@ -26,11 +26,17 @@
 #include "TEXT.h"
 #include "WM.h"
 #include "string.h"
+#include <stdio.h>
+
+//uEZ and Application Includes
+#include <stdlib.h>
 #include <uEZ.h>
 #include "LookAndFeel.h"
-#include "Graphics/Slideshow.h"
+#include "WindowManager.h"
 #include "Graphics/Graphics.h"
 #include <uEZTimeDate.h>
+#include "Fonts/Fonts.h"
+#include "Graphics/Slideshow.h"
 
 // TODO add hidden/transparent emWin buttons to this example
 
@@ -130,10 +136,10 @@ typedef struct {
 #endif
 */
 
-#define IMAGE_BUFFER_SIZE           400000
+//#define IMAGE_BUFFER_SIZE           (800*480*2)
 #define OVERLAY_TIMEOUT_MS          3000
 #define UPDATE_TIME_MS              1000
-#define SLIDESHOW_TIMEOUT_MS        7000
+#define SLIDESHOW_TIMEOUT_MS        5000//7000
 
 
 #define IS_INDEXABLE(arg) (sizeof(arg[0]))
@@ -437,7 +443,11 @@ static void _PFMainDialog(WM_MESSAGE *pMsg)
         break;
     case WM_TOUCH:
         p_touchState = (GUI_PID_STATE *)(pMsg->Data.p);
-        if (!p_touchState->Pressed) {
+        if (!p_touchState->Pressed) { // if main window is touched, then released
+
+            WindowManager_Show_Window(HOME_SCREEN);
+
+            // TODO finish implementing on-screen buttons with transparency
             WM_RestartTimer(G_OverlayTimer, OVERLAY_TIMEOUT_MS);
             //Show all the hidden text on buttons
             /*hItem = WM_GetDialogItem(pMsg->hWin, ID_TITLE_TEXT);

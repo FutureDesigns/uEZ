@@ -568,8 +568,9 @@ static T_uezError LPC43xx_Timer_SetMatchRegisterFunctions(
     r->iMCR |= (aFlags << (aMatchRegister * 3));
 
     // Change the match register
-    r->iMR[aMatchRegister] = aMatchPoint / (PROCESSOR_OSCILLATOR_FREQUENCY
-        / PCLK_FREQUENCY);
+    r->iMR[aMatchRegister] = aMatchPoint; // We can't pass in huge 64 bit numbers so allow us to change it directly.
+        // / (PROCESSOR_OSCILLATOR_FREQUENCY
+        // / PCLK_FREQUENCY);
 
     return UEZ_ERROR_NONE;
 }

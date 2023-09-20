@@ -1,11 +1,11 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH                         *
-*        Solutions for real time microcontroller applications        *
+*                    SEGGER Microcontroller GmbH                     *
+*                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
-*        Internet: www.segger.com    Support:  support@segger.com    *
+*       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -17,24 +17,14 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
-* conditions are met:                                                *
+* condition is met:                                                  *
 *                                                                    *
 * o Redistributions of source code must retain the above copyright   *
-*   notice, this list of conditions and the following disclaimer.    *
-*                                                                    *
-* o Redistributions in binary form must reproduce the above          *
-*   copyright notice, this list of conditions and the following      *
-*   disclaimer in the documentation and/or other materials provided  *
-*   with the distribution.                                           *
-*                                                                    *
-* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
-*   nor the names of its contributors may be used to endorse or      *
-*   promote products derived from this software without specific     *
-*   prior written permission.                                        *
+*   notice, this condition and the following disclaimer.             *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -50,31 +40,11 @@
 * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
 * DAMAGE.                                                            *
 *                                                                    *
-
-** emWin V6.16 - Graphical user interface for embedded applications **
-All  Intellectual Property rights  in the Software belongs to  SEGGER.
-emWin is protected by  international copyright laws.  Knowledge of the
-source code may not be used to write a similar product.  This file may
-only be used in accordance with the following terms:
-
-The software has been licensed to  NXP Semiconductors USA, Inc.  whose
-registered  office  is  situated  at 411 E. Plumeria Drive, San  Jose,
-CA 95134, USA  solely for  the  purposes  of  creating  libraries  for
-NXPs M0, M3/M4 and  ARM7/9 processor-based  devices,  sublicensed  and
-distributed under the terms and conditions of the NXP End User License
-Agreement.
-Full source code is available at: www.segger.com
-
-We appreciate your understanding and fairness.
-----------------------------------------------------------------------
-Licensing information
-Licensor:                 SEGGER Microcontroller Systems LLC
-Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
-Licensed SEGGER software: emWin
-License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
-----------------------------------------------------------------------
+**********************************************************************
+*                                                                    *
+*       SystemView version: 3.50a                                    *
+*                                                                    *
+**********************************************************************
 ----------------------------------------------------------------------
 File    : Global.h
 Purpose : Global types
@@ -82,7 +52,7 @@ Purpose : Global types
           merge the files. In order to use Segger code, the types
           U8, U16, U32, I8, I16, I32 need to be defined in Global.h;
           additional definitions do not hurt.
-Revision: $Rev: 9374 $
+Revision: $Rev: 12501 $
 ---------------------------END-OF-HEADER------------------------------
 */
 
@@ -104,6 +74,14 @@ extern "C" {
 #define I32   signed long
 #endif
 
+//
+// CC_NO_LONG_SUPPORT can be defined to compile test
+// without long support for compilers that do not
+// support C99 and its long type.
+//
+#ifdef CC_NO_LONG_SUPPORT
+  #define PTR_ADDR  U32
+#else  // Supports long type.
 #if defined(_WIN32) && !defined(__clang__) && !defined(__MINGW32__)
   //
   // Microsoft VC6 compiler related
@@ -133,11 +111,12 @@ extern "C" {
     #define PTR_ADDR  U32
   #endif
 #endif
+#endif  // Supports long type.
+
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif                      // Avoid multiple inclusion
 
 /*************************** End of file ****************************/

@@ -63,7 +63,9 @@
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/MassStorage/USB_MS/USB_MS.h>
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
 #include <Source/Devices/Network/lwIP/Network_lwIP.h>
+#endif
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
@@ -108,6 +110,7 @@
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_MCI.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
+#include <uEZCRC.h>
 #include <uEZDevice.h>
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
@@ -118,6 +121,7 @@
 #include <uEZStream.h>
 #include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
 extern int32_t MainTask(void);
 
@@ -133,8 +137,6 @@ extern int32_t MainTask(void);
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-static T_uezDevice G_stdout = 0;
-static T_uezDevice G_stdin = 0;
 T_uezTask G_mainTask;
 
 /*---------------------------------------------------------------------------*
@@ -147,6 +149,23 @@ TUInt8 *_framesMemoryptr = _framesMemory;
 #else
 UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]);
 TUInt8 *_framesMemoryptr = _framesMemory;
+#endif
+
+// See Users Manual UM10470 Section 37.6 Code Read Protection. If you set these to certain bytes JTAG will be disabled.
+// In uEZ 2.13 all demo appications will set CRP1 bits high. (no protection)
+// However, bootloader projects will also set CRP1 bits high. (no protection)
+// If you change this here then rebuild both bootloader and application will set the same number still.
+// If you modified CRP1 in the application, then flash the original bootloader on top of it the number will get reset to 0xFFFFFFFF. (no protection)
+
+// For this LPC there is only one of these numbers. If you are using the uEZ bootloader then the CRP will be set in the
+// the bootloader and it should NOT be generated in ANY application project output. If you do not have a bootloader then
+// the CRP should be included in the application .hex output with the chosen number.
+
+#if (DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1 == 1)
+    // Create this define set to 1 in application code to allow for only setting CRP1 in a bootloader.
+#else
+UEZ_PUT_SECTION(".crp1", static const TUInt32 G_LPC17XX40XX_CRP1 = 0xFFFFFFFF);
+TUInt32 *_crp1ptr = (TUInt32 * const)&G_LPC17XX40XX_CRP1;
 #endif
 
 /* On LPC1788 we want to keep the same tested AHB memory map even if 
@@ -184,12 +203,11 @@ volatile TUInt8 *_usbMemoryptr = G_usbHostMemory;
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPDelayMS
- *---------------------------------------------------------------------------*/
-/**
- *  Use a delay loop to approximate the time to delay.
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Use a delay loop to approximate the time to delay.
  *      Should use UEZTaskDelayMS() when in a task instead.
- */
-/*---------------------------------------------------------------------------*/
+ *---------------------------------------------------------------------------*/
 void UEZBSPDelay1US(void)
 {
     //Based on Flash Accelerator being on and Flash Access Time set to 6 CPU Cycles
@@ -228,35 +246,35 @@ void UEZBSPDelayMS(uint32_t aMilliseconds)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPSDRAMInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Initialize the external SDRAM.
  *---------------------------------------------------------------------------*/
-/**
- *  Initialize the external SDRAM.
- */
-/*---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
-{
-    static const T_LPC17xx_40xx_SDRAM_Configuration sdramConfig_MT48LC2M32B2P = {
+{   // 7 ns is slowest speed rating supported/used. Driver only supports CAS 2. Some numbers would change for CAS 3.
+    static const T_LPC17xx_40xx_SDRAM_Configuration sdramConfig_IS45S32400F_7 = { 
             UEZBSP_SDRAM_BASE_ADDR,
             UEZBSP_SDRAM_SIZE,
-            SDRAM_CAS_2,
-            SDRAM_CAS_3,
+            SDRAM_CAS_2, // only 2 supported, this number ignored
+            SDRAM_RAS_2, // only 2 supported, this number ignored
             LPC17xx_40xx_SDRAM_CLKOUT0,
             SDRAM_CLOCK_FREQUENCY,
             64, // ms
-            8192, // cycles
-            SDRAM_CYCLES(20),
-            SDRAM_CYCLES(42),
-            SDRAM_CYCLES(70),
-            SDRAM_CYCLES(18),
-            SDRAM_CLOCKS(4),
-            (SDRAM_CYCLES(6) + SDRAM_CLOCKS(1)),
-            SDRAM_CYCLES(60),
-            SDRAM_CYCLES(60),
-            SDRAM_CYCLES(70),
-            SDRAM_CYCLES(12),
-            SDRAM_CLOCKS(2) };
-    LPC17xx_40xx_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P);
+            4096, // cycles
+            SDRAM_CYCLES(20), // tRP precharge to activate period - All used parts 18/20, which is same cycle number
+            SDRAM_CYCLES(45), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(70), // tXSR min // 67-83 = same cycles, no parts used < 67, no used parts list SREX
+            SDRAM_CYCLES(20), // tAPR/tRCD Active Command to Read Command // 17-33 = same cycles, no parts used < 18
+            SDRAM_CLOCKS(4),  // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 2 is used.
+            SDRAM_CLOCKS(2), // tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than 20 cycles, 2 tCK is worst case.
+            SDRAM_CYCLES(65), // tRC Row Cycle Time or Command Period // 50-66 are same same number
+            SDRAM_CYCLES(64), // Refresh Cycle Time tRFC/tREF  // 50-66 are same same number
+            SDRAM_CYCLES(70), // tXSR Exit Self-Refresh Time // 67-83 = same cycles, no parts used < 67
+            SDRAM_CYCLES(14), // tRRD Row active to Row Active (or command period) // no parts use > 17, so same register setting
+            SDRAM_CLOCKS(2)}; // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
+    LPC17xx_40xx_SDRAM_Init_32BitBus(&sdramConfig_IS45S32400F_7);
 
+    
 #if CONFIG_MEMORY_TEST_ON_SDRAM
     MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
 #endif
@@ -271,6 +289,11 @@ void UEZBSP_RAMInit(void)
 /*---------------------------------------------------------------------------*/
 void UEZBSP_ROMInit(void)
 {
+  // Dummy code to keep various memory location declarations from optimizing out
+#if (DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1 == 1)
+#else
+   _crp1ptr = _crp1ptr;
+#endif
 #if 1
     const T_LPC17xx_40xx_EMC_Static_Configuration norFlash_M29W128G = {
             UEZBSP_NOR_FLASH_BASE_ADDRESS,
@@ -305,11 +328,10 @@ void UEZBSP_ROMInit(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_PLLConfigure
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Configure the PLL
  *---------------------------------------------------------------------------*/
-/**
- *  Configure the PLL
- */
-/*---------------------------------------------------------------------------*/
 void UEZBSP_PLLConfigure(void)
 {
 #if (PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
@@ -748,7 +770,7 @@ void UEZPlatform_I2C1_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    // Ensure the I2C0 exists in the HAL level
+    // Ensure the I2C1 exists in the HAL level
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_I2C1_Require(GPIO_P2_14, GPIO_P2_15);
     I2C_Generic_Create("I2C1", "I2C1", 0);
@@ -766,7 +788,7 @@ void UEZPlatform_I2C2_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    // Ensure the I2C0 exists in the HAL level
+    // Ensure the I2C2 exists in the HAL level
     LPC17xx_40xx_GPIO0_Require();
     LPC17xx_40xx_I2C2_Require(GPIO_P0_10, GPIO_P0_11);
     I2C_Generic_Create("I2C2", "I2C2", 0);
@@ -775,11 +797,10 @@ void UEZPlatform_I2C2_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Temp0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Temperature0 device driver.
  *---------------------------------------------------------------------------*/
-/**
- *   Setup the Temperature0 device driver.
- */
-/*---------------------------------------------------------------------------*/
 void UEZPlatform_Temp0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -790,11 +811,10 @@ void UEZPlatform_Temp0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_Accel0_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the Accelerometer 0 device driver.
  *---------------------------------------------------------------------------*/
-/**
- *  Setup the Accelerometer 0 device driver.
- */
-/*---------------------------------------------------------------------------*/
 void UEZPlatform_Accel0_Require(void)
 {
     T_uezDevice I2C;
@@ -831,11 +851,10 @@ void UEZPlatform_Accel0_Require(void)
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_GPDMAx_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the General Purpose DMA drivers.
  *---------------------------------------------------------------------------*/
-/**
- *  Setup the General Purpose DMA drivers.
- */
-/*---------------------------------------------------------------------------*/
 void UEZPlatform_GPDMA0_Require(void)
 {
     DEVICE_CREATE_ONCE();
@@ -974,7 +993,7 @@ void UEZPlatform_FullDuplex_UART2_Require(
 {
     // UART0 on P0.10/P0.11
     LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_UART0_Require(GPIO_P0_10, GPIO_P0_11);
+    LPC17xx_40xx_UART2_Require(GPIO_P0_10, GPIO_P0_11);
     Serial_Generic_FullDuplex_Stream_Create("UART2", "UART2",
             aWriteBufferSize, aReadBufferSize);
 }
@@ -1022,10 +1041,9 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
     Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
             aWriteBufferSize, aReadBufferSize);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice G_stdptr = StdoutGet();
+    UEZStreamOpen("Console", &G_stdptr); // set stdOut
+    StdinRedirect(G_stdptr); // set stdIn
 }
 
 /*---------------------------------------------------------------------------*
@@ -1060,10 +1078,9 @@ void UEZPlatform_Console_HalfDuplex_UART_Require(
             aWriteBufferSize, aReadBufferSize, aDriveEnablePortPin,
             aDriveEnablePolarity, aDriveEnableReleaseTime);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice G_stdptr = StdoutGet();
+    UEZStreamOpen("Console", &G_stdptr); // set stdOut
+    StdinRedirect(G_stdptr); // set stdIn
 }
 
 /*---------------------------------------------------------------------------*
@@ -1112,10 +1129,9 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
 
     RS485_GenericHalfDuplex_Create("Console", &aSettings);
     // Set standard output to console
-    UEZStreamOpen("Console", &G_stdout);
-    G_stdin = G_stdout;
-    StdinRedirect(G_stdin);
-    StdoutRedirect(G_stdout);
+    T_uezDevice G_stdptr = StdoutGet();
+    UEZStreamOpen("Console", &G_stdptr); // set stdOut
+    StdinRedirect(G_stdptr); // set stdIn
 }
 
 /*---------------------------------------------------------------------------*
@@ -1550,7 +1566,11 @@ void UEZPlatform_LCD_Require(void)
     LPC17xx_40xx_GPIO1_Require();
     LPC17xx_40xx_GPIO2_Require();
     LPC17xx_40xx_GPIO4_Require();
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+    // Don't use LPC timer driver. It is only used for 167 ms turn on/off on this LPC.
+#else
     UEZPlatform_Timer0_Require();
+#endif
     LPC17xx_40xx_LCDController_Require(&pins);
     UEZPlatform_Backlight_Require();
 
@@ -2161,6 +2181,8 @@ void UEZPlatform_AudioMixer_Require(void)
     
     // To seperately control offboard speaker jack uncomment this line.
     //UEZAudioMixerRegister(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, &UEZGUI70WVT_AudioMixerCallback);
+    
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER); // mute here to avoid the "beep" sound from turning on too fast.
 
     // Set all 5 volume levels from platform file
     // First set master volume
@@ -2172,6 +2194,22 @@ void UEZPlatform_AudioMixer_Require(void)
     //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_SPEAKER, UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL); // We call this AFTER onboard speaker, so it will set the current volume.
     //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_HEADPHONES, UEZ_DEFAULT_ONBOARD_HEADPHONES_AUDIO_LEVEL);
     //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_OFFBOARD_HEADPHONES, UEZ_DEFAULT_OFFBOARD_HEADPHONES_AUDIO_LEVEL);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_Audio_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup the audio system
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_Audio_Require(void)
+{    
+    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
+    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+
+    // Init audio outputs after amp
+    UEZPlatform_Speaker_Require(); // PWM output for basic tones
 }
 
 /*---------------------------------------------------------------------------*
@@ -2273,6 +2311,11 @@ void UEZPlatform_Touchscreen_Require(void)
     Touchscreen_FourWireTouchResist_Create("Touchscreen", &tsConfig);
     UEZDeviceTableFind("Touchscreen", &ts);
     UEZTSSetTouchDetectSensitivity(ts, 0x2000, 0x6000);
+}
+
+void UEZPlatform_TouchscreenRT_Require(void)
+{
+  UEZPlatform_Touchscreen_Require();
 }
 
 /*---------------------------------------------------------------------------*
@@ -2525,8 +2568,25 @@ void UEZPlatform_System_Reset(void){
     NVIC_SystemReset();
 }
 
+// Don't enable console anymore in minimal requires, so that we can use this for GUI only bootloader, etc.
 void UEZPlatform_Minimal_Require(void)
 {
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
+    LPC17xx_40xx_GPIO3_Require();
+    LPC17xx_40xx_GPIO4_Require();
+    LPC17xx_40xx_GPIO5_Require();
+    UEZPlatform_CRC0_Require();
+}
+
+void UEZPlatform_Standard_Require(void)
+{  
+    UEZPlatform_Minimal_Require();
+    
+// Example for console on UART 1 RS485 half duplex
+// UEZPlatform_Console_HalfDuplex_RS485_Require("UART1",
+// 1024, 256, GPIO_P0_22, ETrue, 2, GPIO_P0_17, EFalse, 2);  
     // Setup console immediately
 #if UEZ_ENABLE_CONSOLE_ALT_PWR_COM
   UEZPlatform_Console_ALT_PWR_COM_Require(
@@ -2537,23 +2597,6 @@ void UEZPlatform_Minimal_Require(void)
         UEZ_CONSOLE_WRITE_BUFFER_SIZE,
         UEZ_CONSOLE_READ_BUFFER_SIZE);
 #endif
-        
-// Example for console on UART 1 RS485 half duplex
-// UEZPlatform_Console_HalfDuplex_RS485_Require("UART1",
-// 1024, 256, GPIO_P0_22, ETrue, 2, GPIO_P0_17, EFalse, 2);        
-
-    LPC17xx_40xx_GPIO0_Require();
-    LPC17xx_40xx_GPIO1_Require();
-    LPC17xx_40xx_GPIO2_Require();
-    LPC17xx_40xx_GPIO3_Require();
-    LPC17xx_40xx_GPIO4_Require();
-    LPC17xx_40xx_GPIO5_Require();
-}
-
-void UEZPlatform_Standard_Require(void)
-{
-  
-    UEZPlatform_Minimal_Require();
     
     UEZPlatform_LCD_Require();
     UEZPlatform_I2C0_Require();
@@ -2571,12 +2614,7 @@ void UEZPlatform_Standard_Require(void)
     UEZPlatform_RTC_Require();
     UEZPlatform_Touchscreen_Require();
     
-    // Init audio outputs before amp so amp doesn't get noise/undefined signal.
-    UEZPlatform_Speaker_Require(); // PWM output for basic tones
-    
-    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
-    UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    UEZPlatform_Audio_Require();
 }
 
 void UEZPlatform_Require(void)
@@ -2667,7 +2705,13 @@ TUInt16 UEZPlatform_LCDGetWidth(void)
 {
     return UEZ_LCD_DISPLAY_WIDTH;
 }
-#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+//#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+TUInt32 UEZPlatform_GetBaseAddress(void)
+{
+    // Keep various memory location declarations from optimizing out
+    ((TUInt8 volatile *)_framesMemoryptr)[0] = _framesMemoryptr[0];
+    return LCD_DISPLAY_BASE_ADDRESS;
+}
 TUInt32 UEZPlatform_LCDGetFrame(TUInt16 aFrameNum)
 {
     return (TUInt32)FRAME(aFrameNum);
@@ -2695,10 +2739,6 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
 #else
     return 60000000;
 #endif
-}
-TUInt32 UEZPlatform_GetBaseAddress(void)
-{
-    return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
 #include <Source/Library/GUI/SEGGER/emWin/LCD.h>

@@ -181,13 +181,21 @@ static TIAPResult IIAPCmd(TUInt8 aCmd)
 static TInt32 IIAPAddressToSectorNumber(TUInt32 aAddress)
 {
     const T_sector *p_sector = G_sectorMemory;
-    const T_sector *p_prev = 0;
+    const T_sector *p_prev = p_sector;
 
     while (1) {
-        if (aAddress < p_sector->iAddress)
+        if (aAddress < p_sector->iAddress) {
             return p_prev->iIndex;
+        }
         p_prev = p_sector;
         p_sector++;
+        if (aAddress == p_sector->iAddress) {
+            if(p_sector->iIndex != -1) {
+                return p_sector->iIndex;
+            } else {
+                return p_prev->iIndex;
+            }
+        }
     }
 }
 
@@ -620,6 +628,7 @@ T_uezError Flash_NXP_LPC17xx_40xx_Read(
     if ((aOffset + (TUInt32)aNumBytes) <= (512 * 1024)) {
         memcpy(aBuffer, (void *)(aOffset), aNumBytes);
     } else {
+        UEZSemaphoreRelease(p->iSem);
         return UEZ_ERROR_OUT_OF_RANGE;
     }
 
@@ -887,7 +896,10 @@ const DEVICE_Flash Flash_NXP_LPC17xx_40xx_Interface = { {
     Flash_NXP_LPC17xx_40xx_ChipErase,
     Flash_NXP_LPC17xx_40xx_QueryReg,
     Flash_NXP_LPC17xx_40xx_GetChipInfo,
-    Flash_NXP_LPC17xx_40xx_GetBlockInfo, };
+    Flash_NXP_LPC17xx_40xx_GetBlockInfo,
+    0,
+    0,
+    0, };
 
 /*-------------------------------------------------------------------------*
  * End of File:  LPC17xx_40xx_IAP.c

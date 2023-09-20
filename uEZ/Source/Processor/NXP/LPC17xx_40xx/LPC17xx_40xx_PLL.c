@@ -121,9 +121,10 @@ void LPC17xx_40xx_PLL_SetFrequencies(const T_LPC17xx_40xx_PLL_Frequencies *aFreq
             aFreq->iOscillatorClockHz);
     LPC_SC->CCLKSEL |= 0x100;
 
-    /* It seems that the LPC_SC->SPIFISEL is W only */
+    /* It seems that the LPC_SC->SPIFICLKSEL is W only */
 #if (UEZ_PROCESSOR == NXP_LPC4088)
-    LPC_SC->SPIFICLKSEL = (1 << 8) | 2;
+    LPC_SC->SPIFICLKSEL = (1 << 8) | 2; //60Mhz clock (divide by 2) will allow 84MHz QSPI in spec, as long as we don't use READ command
+    //LPC_SC->SPIFICLKSEL = (1 << 8) | 3; //40MHz clock (divide by 3) - This would be needed for some really old parts or for READ command.
 #endif
     /* Setup USB Clock Divider on PLL1 with a divide by 1 */
     LPC_SC->USBCLKSEL = 1;

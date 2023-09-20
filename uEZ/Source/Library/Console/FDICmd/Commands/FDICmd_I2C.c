@@ -132,7 +132,7 @@ int32_t UEZCmdI2CWrite(void *aWorkspace, int32_t argc, char *argv[])
     TUInt32 v;
     TUInt8 data[128];
     char busName[] = "I2C0";
-    int32_t i;
+    uint32_t i;
 
     if (argc >= 4) {
         busName[3] = argv[1][0];
@@ -153,7 +153,7 @@ int32_t UEZCmdI2CWrite(void *aWorkspace, int32_t argc, char *argv[])
         }
 
         // Setup the data to be written
-        for (i = 3; (i < argc) && (i < sizeof(data)); i++) {
+        for (i = 3; (i < (uint32_t) argc) && (i < sizeof(data)); i++) {
             v = FDICmdUValue(argv[i]);
             if (v >= 256) {
                 FDICmdPrintf(aWorkspace,
@@ -222,7 +222,7 @@ int32_t UEZCmdI2CRead(void *aWorkspace, int32_t argc, char *argv[])
     TUInt32 num;
     TUInt8 data[128];
     char busName[] = "I2C0";
-    int32_t i;
+    uint32_t i;
 
     if (argc == 4) {
         busName[3] = argv[1][0];

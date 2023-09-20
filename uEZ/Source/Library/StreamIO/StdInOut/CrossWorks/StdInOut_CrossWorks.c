@@ -22,9 +22,10 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <debugio.h>
 #include <__cross_studio_io.h>
-#include <stdint.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <uEZ.h>
 #include "../StdInOut.h"
 
@@ -32,6 +33,10 @@
 //#define getchar(void) _Generic(void: getchar_a)(void)
 
 #define PARAMETER_NOT_USED(p) (void) ((p))
+
+//#undef __putchar
+//#undef debug_putchar
+//#undef putchar
 
 /*---------------------------------------------------------------------------*
  * Routine:  putchar
@@ -45,21 +50,40 @@
  *      int32_t                     -- Character output or EOF if could not
  *                                  output.
  *---------------------------------------------------------------------------*/
-int32_t __putchar(int32_t aChar, __printf_tag_ptr unused)
+int putchar_uEZ(int __c)
 {
-    PARAMETER_NOT_USED(unused);
-    char c = aChar;
+    char ch = __c;
     T_uezDevice stdout = StdoutGet();
 
-    if (stdout) {
-        if (aChar == '\n')
+    if (stdout != NULL) {
+        if (__c == '\n')
             putchar('\r');
-        UEZStreamWrite(stdout, &c, 1, 0, UEZ_TIMEOUT_INFINITE);
+        UEZStreamWrite(stdout, &ch, 1, 0, 1000);
     } else {
         return EOF;
     }
-    return c;
+    return ch;
 }
+
+#if 1
+int __putchar(int aChar, __printf_tag_ptr unused)
+{
+    PARAMETER_NOT_USED(unused);
+    return putchar_uEZ(aChar);
+}
+#else
+int __putchar(int ch)
+{
+    return putchar_uEZ(c);
+}
+#endif
+
+#if 0
+int debug_putchar(int c)
+{
+    return putchar_uEZ(c);
+}
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  getchar

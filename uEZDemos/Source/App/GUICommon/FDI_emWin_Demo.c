@@ -219,7 +219,7 @@ static void IHandleUpdateRTC(WM_MESSAGE * pMsg)
             hours = 12;
 
         // Put up the 12 hour format with an AM/PM tail
-        sprintf(text, "%02d:%02d:%02d %s %02d/%02d/%04d\0", hours, minutes, timedate.iTime.iSecond, (isPM)?"PM":"AM", timedate.iDate.iMonth, timedate.iDate.iDay, timedate.iDate. iYear);
+        sprintf(text, "%02d:%02d:%02d %s %02d/%02d/%04d", hours, minutes, timedate.iTime.iSecond, (isPM)?"PM":"AM", timedate.iDate.iMonth, timedate.iDate.iDay, timedate.iDate. iYear);
     } else {
         // Error getting the RTC, put up something funny
         strcpy(text, "??:??:?? PM ?? / ?? / ??");

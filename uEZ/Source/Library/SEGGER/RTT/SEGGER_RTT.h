@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.32                                    *
+*       SystemView version: 3.50a                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -87,7 +87,7 @@ Revision: $Rev: 25842 $
   //
   // Some cores support out-of-order memory accesses (reordering of memory accesses in the core)
   // For such cores, we need to define a memory barrier to guarantee the order of certain accesses to the RTT ring buffers.
-  // DMB Needed for:
+  // Needed for:
   //   Cortex-M7 (ARMv7-M)
   //   Cortex-M23 (ARM-v8M)
   //   Cortex-M33 (ARM-v8M)

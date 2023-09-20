@@ -408,7 +408,7 @@ static T_uezError SDCard_MS_MCI_Read(
     const TUInt32 aNumBlocks,
     void *aBuffer)
 {
-    T_uezError error;
+    T_uezError error = UEZ_ERROR_NONE;
     T_MassStorage_SDCard_MCI_Workspace *p =
         (T_MassStorage_SDCard_MCI_Workspace *)aWorkspace;
     TUInt32 response;

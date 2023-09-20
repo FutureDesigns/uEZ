@@ -46,7 +46,7 @@ DD.MM.YYYY OSO-UID Description
 01.28.2008 RTA-JMB Revised to remove redundent API
 ***********************************************************************************/
 #include <string.h>
-#include "GAPI.h"
+#include "gapi.h"
 
 /**********************************************************************************
 Function Name:   LCDGlyphFind

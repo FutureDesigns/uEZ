@@ -766,7 +766,7 @@ static HCD_STATUS QueueSITDs(uint8_t HostID, uint8_t HeadIdx, uint8_t *dataBuff,
 	#define FramePeriod     1
 #endif
 
-	if (xferLen > HcdQHD(HostID, HeadIdx)->MaxPackageSize * FRAME_LIST_SIZE) {	/*-- Data length overflow the Period FRAME LIST  --*/
+	if (xferLen > (uint32_t)(HcdQHD(HostID, HeadIdx)->MaxPackageSize * FRAME_LIST_SIZE)) {	/*-- Data length overflow the Period FRAME LIST  --*/
 		ASSERT_STATUS_OK_MESSAGE(
 			HCD_STATUS_DATA_OVERFLOW,
 			"ISO data length overflows the Period Frame List size, Please increase size by FRAMELIST_SIZE_BITS or reduce data length");

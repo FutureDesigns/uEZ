@@ -286,7 +286,7 @@ void LPC17xx_40xx_SDRAM_Init_32BitBus(const T_LPC17xx_40xx_SDRAM_Configuration *
 
     // Turn on EMC PCLK (if not already on)
     // [Ref: LPC178x_7x_UM_0.01 page 58, Table 36]
-    LPC_SC->PCONP |= (1 << 11);
+    LPC_SC->PCONP |= (1 << 11); // Don't use LPC17xx_40xxPowerOn here as this is before the service init.
 
     // Setup slow/default delays
     LPC_SC->EMCDLYCTL = 0x00001010;
@@ -315,12 +315,13 @@ void LPC17xx_40xx_SDRAM_Init_32BitBus(const T_LPC17xx_40xx_SDRAM_Configuration *
     //      LPC_IOCON->P4_28 |= 1; /* BLSN[2] @ P4.28 */
     //      LPC_IOCON->P4_29 |= 1; /* BLSN[3] @ P4.29 */
     dynconfig = 0;
+     // 4 banks, then either 11/12 row length, and 8/9 column length
     if (aConfig->iSize == (8 * 1024 * 1024)) {
-        dynconfig = 0x00005300;
+        dynconfig = 0x00005300; // 1 001 10 64Mbits  (2M x 32)
     } else if (aConfig->iSize == (16 * 1024 * 1024)) {
-        dynconfig = 0x00005500;
+        dynconfig = 0x00005500; // 1 010 10 128Mbits (4M x 32)
     } else if (aConfig->iSize == (32 * 1024 * 1024)) {
-        dynconfig = 0x00005480;
+        dynconfig = 0x00005480; // 1 010 01 128Mbits (8M x 16)
     } else {
         // "Unsupported UEZBSP_SDRAM_SIZE!"
         UEZFailureMsg("SDRAM Init");
@@ -431,7 +432,7 @@ void LPC17xx_40xx_SDRAM_Init_32BitBus(const T_LPC17xx_40xx_SDRAM_Configuration *
     for (i = 0; i < 0x100; i++)
         NOP();
 
-    //Set correct refresh period
+    //Set correct refresh period // NOTE: TODO This number may be smaller than needed.
     LPC_EMC->DynamicRefresh
             = (uint32_t)((((aConfig->iClockFrequency / 1000)
                     * (aConfig->iRefreshPeriod)) / aConfig->iRefreshCycles)

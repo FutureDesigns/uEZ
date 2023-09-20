@@ -1,6 +1,12 @@
 <!DOCTYPE Board_Memory_Definition_File>
-<Root name="LPC1778">
-  <MemorySegment size="0x80000" access="ReadOnly" start="0x00000000" name="FLASH"/>
+<Root name="LPC1788">
+  <!-- Part contains 1 512KB Flash Bank-->
+  <!-- Part contains a 4 Byte Code Read Protection word, 1 in each Flash Bank at offset 0x2FC. -->
+  <!-- Bank A -->
+  <MemorySegment start="$(FLASHA0_START:0x0)" name="FLASHA0" size="$(FLASHA0_SIZE:0x0)" access="ReadOnly" />
+  <MemorySegment start="0x000002FC" name="CRP1" size="0x4" access="ReadOnly" /> <!-- CRP Region A -->
+  <MemorySegment start="$(FLASHA_START:0x0)" name="FLASHA" size="$(FLASH_SIZE:0)-$(FLASHA_START:0x0)" access="ReadOnly" />  
+  <!-- NOR, then SDRAM, registers, etc. Change SDRAM size and NOR size using variables not here. -->
   <MemorySegment size="0x00800000" access="Read/Write" start="0xA0000000" name="SDRAM"/>
   <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM"/>
   <MemorySegment size="0x4000" access="Read/Write" start="0x20000000" name="AHBSRAM0"/>

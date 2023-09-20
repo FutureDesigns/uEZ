@@ -669,7 +669,7 @@ static T_uezError IHTTPReportError(
     sprintf(line, "Content-Type: text/html\r\n");
     IHTTPWrite(aState, line, strlen(line), ETrue);
 
-    sprintf(line, "Content-Length: %d\r\n\r\n", strlen(aText));
+    sprintf(line, "Content-Length: %u\r\n\r\n", strlen(aText));
     IHTTPWrite(aState, line, strlen(line), ETrue);
 
     // Now send the error msg (out of ROM)
@@ -1169,8 +1169,8 @@ static T_uezError IHTTPGet(T_httpState *aState)
                       error = UEZ_ERROR_TIMEOUT;
                     }
                     if (error == UEZ_ERROR_TIMEOUT) {                  
-                      printf("\r\nTimeout reading file: %s size %d (size read: %d)\r\n", aState->iLine, MAX_LINE_LENGTH, len);
-                      printf("Retry attempt %u", tries);
+                      printf("\r\nTimeout reading file: %s size %d (size read: %u)\r\n", aState->iLine, MAX_LINE_LENGTH, len);
+                      printf("Retry attempt %u", (TUInt32)tries);
                       
                     }
                     UEZTaskDelay(500);
@@ -1185,7 +1185,7 @@ static T_uezError IHTTPGet(T_httpState *aState)
                   }
                 }
                 if (error == UEZ_ERROR_TIMEOUT) {
-                  printf("\r\nTimeout reading file: %s size %d (size read: %d)\r\n", aState->iLine, MAX_LINE_LENGTH, len);
+                  printf("\r\nTimeout reading file: %s size %d (size read: %u)\r\n", aState->iLine, MAX_LINE_LENGTH, len);
                   break;
                 }
                 if(totalLengthLeft <= MAX_LINE_LENGTH){
@@ -1283,6 +1283,7 @@ static T_uezError IHTTPProcessURLEncodedFormData(T_httpState *aState)
     TUInt32 dataLength = 0;
     TUInt8 ch;
     T_uezError error = UEZ_ERROR_NONE;
+    //UNUSED(ch);
 
     for (i = 0; i <= aState->iContentLength; i++) {
         if (i == aState->iContentLength) {
@@ -1359,6 +1360,7 @@ static T_uezError IHTTPProcessURLEncodedFormData(T_httpState *aState)
                     ch |= (c - '0');
                 // Now stuff the character and go on
                 mode = 0;
+                // TODO was ch supposed to be used here?
                 // Normal stuffing of data here
                 if (dataLength < MAX_LINE_LENGTH)
                     aState->iLine[dataLength++] = c;

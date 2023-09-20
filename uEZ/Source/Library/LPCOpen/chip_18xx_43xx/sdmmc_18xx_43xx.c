@@ -500,7 +500,7 @@ int32_t Chip_SDMMC_ReadBlocks(LPC_SDMMC_T *pSDMMC, void *buffer, int32_t start_b
 	int32_t index;
 
 	/* if card is not acquired return immediately */
-	if (( start_block < 0) || ( (start_block + num_blocks) > g_card_info->card_info.blocknr) ) {
+	if (( start_block < 0) || ( (uint32_t) (start_block + num_blocks) > g_card_info->card_info.blocknr) ) {
 		return 0;
 	}
 
@@ -547,7 +547,7 @@ int32_t Chip_SDMMC_WriteBlocks(LPC_SDMMC_T *pSDMMC, void *buffer, int32_t start_
 	int32_t index;
 
 	/* if card is not acquired return immediately */
-	if (( start_block < 0) || ( (start_block + num_blocks) > g_card_info->card_info.blocknr) ) {
+	if (( start_block < 0) || ( (uint32_t) (start_block + num_blocks) > g_card_info->card_info.blocknr) ) {
 		return 0;
 	}
 

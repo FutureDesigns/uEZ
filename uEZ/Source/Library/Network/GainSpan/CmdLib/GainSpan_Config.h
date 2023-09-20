@@ -67,6 +67,9 @@
 #define _F8_                            "%d"
 #define _F16_                           "%d"
 #define _F32_                           "%d"
+#define _FU8_                            "%u"
+#define _FU16_                           "%u"
+#define _FU32_                           "%u"
 
 /**
  *	Write data to the GainSpan module

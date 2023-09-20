@@ -64,7 +64,8 @@ extern "C" {
 #endif
 
 #if (COMPILER_TYPE==RowleyARM)
-#error "Has not been setup yet."
+//defined also in uEZProcessor_ files
+#define INLINE inline __attribute__((always_inline))
 #endif
 
 #if (COMPILER_TYPE==IAR)

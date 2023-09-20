@@ -28,6 +28,11 @@
 #ifndef LPC_SWIM_H
 #define LPC_SWIM_H
 
+#ifndef UEZ_LIBRARY
+#include <Config_Build.h>
+#include <Device/LCD/Config_LCD.h>
+#endif
+   
 #include <Config.h>
 #include <uEZLCD.h>
 
@@ -38,6 +43,22 @@
 #if defined (__cplusplus)
 extern "C"
 {
+#endif
+   
+// Move this here (instead of SimpleUI_Types.h) to prevent some of the circular includes.
+#include <uEZTypes.h>
+
+#if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_8_BIT) // 8-bit pixels
+//#pragma message("       T_pixelColor is TUInt8.")
+    typedef TUInt8 T_pixelColor;
+#elif (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_16_BIT) // 16 bit pixels
+//#pragma message("       T_pixelColor is TUInt16.")
+    typedef TUInt16 T_pixelColor;
+#elif (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_I15_BIT) // 16-bit pixels
+    typedef TUInt16 T_pixelColor;
+//#pragma message("       T_pixelColor is TUInt16.")
+#else
+    #error "Unknown screen pixel type!"
 #endif
 
 /***********************************************************************

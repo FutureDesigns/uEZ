@@ -3,6 +3,7 @@
 
 /*-Specials-*/
 define symbol __ICFEDIT_intvec_start__ = 0x00000000;
+
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ROM_start__ = 0x00000080;
 define symbol __ICFEDIT_region_ROM_end__   = 0x0007FFFF;
@@ -30,6 +31,10 @@ define symbol AHB0_end          = 0x20003FFF;
 define symbol AHB1_start        = 0x20004000;
 define symbol AHB1_end          = 0x20007FFF;
 
+/********* CRP (Code Read Protection) REGION *********/
+define symbol __CRP1_start__   = 0x000002FC;
+define symbol __CRP1_end__     = 0x000002FF;
+
 /*-- Sizes: -----------------------------------------------------------------*/
 /* This must match the number of implemented vectors * 4 and be padded to an 8
 byte boundary (check the mapfile to ensure that the kernel function region is 
@@ -40,7 +45,7 @@ define symbol __size_vectors__              = 0xE8;
 
 /*-- Memory and Regions: ----------------------------------------------------*/
 define memory mem with size = 4G;
-define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__] - mem:[from  __CRP1_start__ to __CRP1_end__];
 define region RAM_region = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
 define region IRAM_region = mem:[from IRAM_start to IRAM_end];
 define region SPIFI_region = mem:[from SPIFI_start   to SPIFI_end];
@@ -59,7 +64,7 @@ define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
 
 /*-- Placment Commands (General): -------------------------------------------*/
 initialize by copy { readwrite };
-do not initialize  { section .noinit};
+do not initialize  { section .noinit, section .network };
 
 /* Define a block for the kernel's functions.  - __size_vectors__ because the 
 first part of the 8K is taken by the interrupt vectors. */
@@ -134,6 +139,8 @@ define block AHB_ARRAYS with fixed order {
 place in AHB_region {
     first block AHB_ARRAYS,
 };
+
+place in CRP1_region              { section .crp,  section .crp1 };
 /*-- Exports: ---------------------------------------------------------------*/
 /* Export symbols required by c code. */
 export symbol __ICFEDIT_intvec_start__;

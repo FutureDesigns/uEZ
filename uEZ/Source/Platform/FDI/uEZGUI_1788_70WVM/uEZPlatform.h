@@ -148,6 +148,10 @@ extern "C" {
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
 #define UEZBSP_NOR_FLASH_BASE_ADDRESS       0x80000000
 
+#ifndef UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS
+    #define UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS  UEZBSP_NOR_FLASH_BASE_ADDRESS
+#endif
+
 #include <lwipopts.h>
 
 #if (COMPILER_TYPE==IAR)
@@ -368,6 +372,7 @@ void UEZPlatform_I2C1_Require(void);
 void UEZPlatform_I2C2_Require(void);
 void UEZPlatform_I2S_Require(void);
 void UEZPlatform_IRTC_Require(void);
+void UEZPlatform_IAP_Require(void);
 void UEZPlatform_Flash0_Require(void);
 void UEZPlatform_GPDMA0_Require(void);
 void UEZPlatform_GPDMA1_Require(void);

@@ -3953,9 +3953,6 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\FRAMEWIN_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Global.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GRAPH.h</name>
                         </file>
                         <file>
@@ -4037,19 +4034,10 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Fujitsu_16.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Generic.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_GW7630_1.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_IST3088.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_IST3088_Private.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_L5F30919.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin.h</name>
@@ -4061,16 +4049,10 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_NoOpt_1_8.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Page1bpp.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13748.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13748_Private.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13U11.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D15G00.h</name>
@@ -4095,9 +4077,6 @@
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_TemplateI_Private.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_UC1698G4.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\HEADER.h</name>
@@ -4212,9 +4191,6 @@
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\WM_Intern.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\WM_Intern_ConfDep.h</name>
                         </file>
                     </group>
                 </group>

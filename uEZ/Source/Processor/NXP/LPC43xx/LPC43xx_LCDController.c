@@ -29,6 +29,22 @@
 #include <uEZBSP.h>
 #include <HAL/Interrupt.h>
 
+/* For using 120MHz main CPU clock the following are available in this driver:
+ * Divider (X) 0-16, clock (Y) in MHz: 120000000/(X+2)/1000/1000=Y
+ * Possible Y value clocks in MHz:
+ * 6.67,7.0588,7.5,8,8.5714,9.2307,10,10.9090,12,13.33,15,17.1428,20,24,30,40
+ * This has a noticeable impact on panel selection for higher clock rates.
+ * If a weird clock was needed, an external clock could be supplied to a pin.
+ */
+
+/* For using 102MHz main CPU clock the following are available in this driver:
+ * Divider (X) 0-16, clock (Y) in MHz: 102000000/(X+2)/1000/1000=Y
+ * Possible Y value clocks in MHz:
+ * 5.67,6,6.37,6.8,7.29,7.85,8.5,9.27,10.2,11.33,12.75,14.57,17,20.4,25.5,31,51
+ */
+
+ // Other clocks could be configured on this part for LCD such as 180MHz.
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -174,7 +190,8 @@ T_uezError LPC43xx_LCDController_Configure(
 
     // Turn on the power to the subsystem
     //Turn on peripheral clock
-    LPC_CGU->BASE_LCD_CLK = (9<<24) | (1<<11);
+    LPC_CGU->BASE_LCD_CLK = (9<<24) | (1<<11); // auto block enabled, PLL1 clock selected 102MHz
+    //LPC_CGU->BASE_LCD_CLK = (0xE<<24) | (1<<11); // auto block enabled, DIVA clock selected 120MHz
 
     // disable the display`
     LPC_LCD->CTRL &= ~LCD_CTRL_LcdEn;

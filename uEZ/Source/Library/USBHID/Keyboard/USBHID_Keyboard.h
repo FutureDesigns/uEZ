@@ -65,7 +65,7 @@ extern "C" {
  * Types:
  *-------------------------------------------------------------------------*/
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     PACK_STRUCT_FIELD(TUInt8 iFlags);           // Flags about other keys pressed
     PACK_STRUCT_FIELD(TUInt8 iReserved);
     PACK_STRUCT_FIELD(TUInt8 iKeys[6]);         // Up to 6 keys held simultaneously

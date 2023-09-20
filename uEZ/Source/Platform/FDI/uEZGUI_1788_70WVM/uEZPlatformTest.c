@@ -31,9 +31,6 @@
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
 #include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
 #include <Source/Devices/Button/NXP/PCA9551/Button_PCA9551.h>
 #include <Source/Devices/CRC/Generic/CRC_Generic.h>
@@ -47,14 +44,10 @@
 #include <Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
-#include <Source/Devices/I2S/Generic/Generic_I2S.h>
-#include <Source/Devices/LCD/Sharp/LQ043T1DG28/Sharp_LQ043T1DG28.h>
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/MassStorage/USB_MS/USB_MS.h>
-#include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
-#include <Source/Devices/Network/lwIP/Network_lwIP.h>
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
@@ -68,15 +61,7 @@
 #include <Source/Devices/Touchscreen/Newhaven/FT5306DE4/FT5306DE4TouchScreen.h>
 #include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
 #include <Source/Devices/USBHost/Generic/Generic_USBHost.h>
-#include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
 #include <Source/Devices/Keypad/GPIO/Keypad_Generic_GPIO.h>
-#include <Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h>
-#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_RTC.h>
-#include <Source/Library/Web/BasicWeb/BasicWEB.h>
-#include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
-#include <Source/Library/Graphics/SWIM/lpc_swim.h>
-#include <Source/Library/Memory/MemoryTest/MemoryTest.h>
-#include <Source/Library/StreamIO/StdInOut/StdInOut.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/uEZProcessor_LPC17xx_40xx.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_ADCBank.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CRC.h>
@@ -104,15 +89,12 @@
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
 #include <uEZI2C.h>
-#include <uEZNetwork.h>
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
 #include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
-
-#include <Source/Devices/Flash/NXP/LPC_SPIFI_M4/Flash_NXP_LPC_SPIFI_M4.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -413,97 +395,77 @@ void COM_Send(char * bytes, uint16_t numBytes) {
 void UEZPlatform_MemTest_StepA(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
+  UEZBSPDelay1MS();
+  // Currently we can't run this check before we reach main().
+  /*if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
     UEZTaskDelay(1);
-  }
+  }*/
 }
 
 void UEZPlatform_MemTest_StepA_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepB(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepB_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepC(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepC_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepD(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepD_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepE(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepE_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepF(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepF_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 /** @} */

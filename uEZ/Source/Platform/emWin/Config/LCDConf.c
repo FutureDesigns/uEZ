@@ -261,7 +261,7 @@ void LCD_X_Config(void) {
     //
     // Set custom callback function for copy operation
     //
-    LCD_SetDevFunc(0, LCD_DEVFUNC_COPYBUFFER, (void (*)())_CopyBuffer);
+    LCD_SetDevFunc(0, LCD_DEVFUNC_COPYBUFFER, (void (*)(void))_CopyBuffer);
   #endif
   //
   // Display driver configuration, required for Lin-driver

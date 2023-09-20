@@ -1,8 +1,15 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement">
-$[ifdef LPC1788]          
- <MemorySegment name="$(FLASH_NAME:FLASH)" >
-    <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)"/>
+$[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map Macros" Section! -->
+  <MemorySegment name="FLASHA0">
+    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <!-- Can place specific read-only variables here to avoid wasting flash -->
+  </MemorySegment>
+  <MemorySegment name="CRP1">
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+  </MemorySegment>
+  <MemorySegment name="FLASHA">
     <ProgramSection alignment="4" load="Yes" name=".init" />
     <ProgramSection alignment="4" load="Yes" name=".text" />
     <ProgramSection alignment="4" load="Yes" name=".dtors" />
@@ -14,6 +21,13 @@ $[ifdef LPC1788]
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+  </MemorySegment>
+   <!-- Cannot put the same section in both Flash and NOR Flash at the same time! -->
+   <MemorySegment name="NORFLASH">
+    <!-- Change individual files or folders's .text and .rodata sections to these for NOR Using bootloader -->
+    <ProgramSection alignment="4" load="Yes" name=".ExternalFlashText" />
+    <ProgramSection alignment="4" load="Yes" name=".ExternalFlashRodata" />
+    <ProgramSection alignment="4" load="Yes" name=".ExternalFlash" />
   </MemorySegment>
   <MemorySegment name="SDRAM">
     <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
@@ -55,9 +69,16 @@ $[ifdef LPC1788]
     <ProgramSection load="No" name=".emacmem"/>
   </MemorySegment>
   $[endif]
-  $[ifdef LPC4088]          
-  <MemorySegment name="FLASH">
-    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors"/>
+  $[ifdef LPC4088]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map Macros" Section! -->
+  <MemorySegment name="FLASHA0">
+    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <!-- Can place specific read-only variables here to avoid wasting flash -->
+  </MemorySegment>
+  <MemorySegment name="CRP1">
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+  </MemorySegment>
+  <MemorySegment name="FLASHA">
     <ProgramSection alignment="4" load="Yes" inputsections="*(.init .init.*)" name=".init"/>
     <ProgramSection alignment="4" load="Yes" inputsections="*(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)" name=".text"/>
     <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>
@@ -70,7 +91,7 @@ $[ifdef LPC1788]
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
   </MemorySegment>
-  <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
+   <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
    <MemorySegment name="QSPI">
     <!-- Change individual files or folders's .text and .rodata sections to these for QSPI -->
     <ProgramSection alignment="4" load="Yes" name=".ExternalFlashText" />
@@ -138,12 +159,20 @@ $[ifdef LPC1788]
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
   </MemorySegment>
+  <MemorySegment name="FLASHA_CM0">
+    <!-- Can place Cortex-M0 code here. -->
+  </MemorySegment>
+
   <MemorySegment name="FLASHB0">
     <!-- Maybe .init/CM0 vector section could be placed here or place specific read-only variables here to avoid wasting flash -->
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashB .constFlashB.*)" name=".constFlashB"/>
+    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashB0"/>
   </MemorySegment>
   <MemorySegment name="FLASHB">
     <ProgramSection alignment="4" load="Yes" name=".text" />    
+  </MemorySegment>
+  <MemorySegment name="FLASHB_CM0">
+    <!-- Can place Cortex-M0 code here. -->
   </MemorySegment>
 
   <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
@@ -202,10 +231,10 @@ $[ifdef LPC1788]
   </MemorySegment>
   
   <MemorySegment name="CRP1">
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
   <MemorySegment name="CRP2">
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.crp2 .crp2*)" name=".crp2" address_symbol="__crp2_start" end_symbol="__crp2_end" />
+    <ProgramSection alignment="4" keep="$(CRP2_KEEP)" load="Yes" inputsections="*(.crp2 .crp2*)" name=".crp2" address_symbol="__crp2_start" end_symbol="__crp2_end" />
   </MemorySegment>
 $[endif]    
 </Root>

@@ -64,7 +64,7 @@ typedef struct {
 void CPUDisableInterrupts(void);
 void CPUEnableInterrupts(void);
 
-void LPC43xxPowerOn(TUInt32 bits);
+void LPC43xxPowerOn(TUInt32 bits); // This LPC doesn't have an actual PCONP type register!
 void LPC43xxPowerOff(TUInt32 bits);
 
 TUInt32 ReadLE32U(volatile TUInt8 *pmem);

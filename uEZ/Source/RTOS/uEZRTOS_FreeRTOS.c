@@ -27,13 +27,13 @@
 #include "uEZRTOS.h"
 #include <uEZBSP.h>
 
-#if FREERTOS_PLUS_TRACE //LPC1788/LPC4088 only as of uEZ v2.06
+#ifdef FREERTOS_PLUS_TRACE //LPC1788/LPC4088 only as of uEZ v2.06
 #include "Include/trcUser.h"
 #endif
 
 static xSemaphoreHandle G_startingTaskReady;
 static xSemaphoreHandle G_semTask;
-static TBool G_isRTOSRunning = EFalse;
+UEZ_PUT_SECTION(".data", static TBool G_isRTOSRunning = EFalse);
 
 #ifndef UEZ_DEBUG_HEAVY_ASSERTS
 #define UEZ_DEBUG_HEAVY_ASSERTS     1
@@ -552,7 +552,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
     xQueueHandle Semaphore;
     TUInt32 ulHandleType;
     T_uezError error;
-#if FREERTOS_PLUS_TRACE
+#ifdef FREERTOS_PLUS_TRACE
     char name[50];
     char data[50];
     char interface[20];
@@ -566,7 +566,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
                 vQueueAddToRegistry(Semaphore, (const char*)'\0');
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 vTraceSetSemaphoreName(Semaphore, '\0');
 #endif
             }
@@ -575,7 +575,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
                 vQueueAddToRegistry(Semaphore, (char *)pcSemaphoreName);
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 if(aInterfaceName[0] != '\0'){
                     sscanf(aInterfaceName, "%s %s", data, interface);
                     sprintf(name, "%s_%s", pcSemaphoreName, interface);
@@ -820,7 +820,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
     xQueueHandle Queue;
     TUInt32 ulHandleType;
     T_uezError error;
-#if FREERTOS_PLUS_TRACE
+#ifdef FREERTOS_PLUS_TRACE
     char name[50];
     char data[50];
     char interface[20];
@@ -834,7 +834,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
                 vQueueAddToRegistry(Queue, (const char*)'\0');
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 vTraceSetQueueName(Queue, '\0');
 #endif
             }
@@ -843,7 +843,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
                 vQueueAddToRegistry(Queue, (char *)pcQueueName);
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
                 if(aInterfaceName[0] != '\0'){
                     sscanf(aInterfaceName, "%s %s", data, interface);
                     sprintf(name, "%s_%s", pcQueueName, interface);
@@ -1092,11 +1092,6 @@ TUInt32 UEZTickCounterGetDelta(TUInt32 aStart)
 {
     return xTaskGetTickCount()-aStart;
 }
-
-/*void vApplicationStackOverflowHook( TaskHandle_t xTask, char * pcTaskName )
-{
-    UEZHalt();
-}*/
 
 // Immediately context switch to another task inside the interrupt routine
 void _isr_UEZTaskContextSwitch(void)

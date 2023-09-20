@@ -97,6 +97,8 @@ void Chip_USB0_Init(void)
 
 void Chip_USB1_Init(void)
 {
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#else
 	/* Setup and enable the PLL */
 	Chip_USB_PllSetup();
 
@@ -120,6 +122,7 @@ void Chip_USB1_Init(void)
 	Chip_Clock_EnableOpts(CLK_MX_USB1, true, true, 1);
 	/* enable USB1_DP and USB1_DN on chip FS phy.*/
 	LPC_SCU->SFSUSB = 0x12;
+#endif
 }
 
 

@@ -66,7 +66,7 @@
 #include "uEZDevice.h"
 #include <uEZDeviceTable.h>
 
-enum {
+typedef enum {
     LCD_SS_IDLE_START,
     LCD_SS_IDLE,
     LCD_SS_DIM_START,
@@ -77,7 +77,7 @@ enum {
     LCD_SS_SLEEP,
     LCD_SS_RESTART,
         LCD_SS_STOPPED
-}typedef T_ssState;
+} T_ssState;
 T_ssState G_ssState;
 
 static T_uezDevice G_ssLCD=0;
@@ -439,7 +439,7 @@ T_uezError UEZLCDOff(T_uezDevice aLCDDevice)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-T_uezError UEZLCDBacklight(
+__WEAK T_uezError UEZLCDBacklight(
             T_uezDevice aLCDDevice, 
             TUInt32 aLevel)
 {
@@ -701,7 +701,7 @@ T_uezError UEZLCDScreensaverStart(
     }
 }
 
-T_uezError UEZLCDScreensaverStop()
+T_uezError UEZLCDScreensaverStop(void)
 {
     if(G_ssTaskActive) {
                 G_ssStop = ETrue;
@@ -714,12 +714,12 @@ T_uezError UEZLCDScreensaverStop()
     return UEZ_ERROR_NONE;
 }
 
-void UEZLCDScreensaverWake()
+void UEZLCDScreensaverWake(void)
 {
     G_ssWake = ETrue;
 }
 
-TBool UEZLCDScreensaverIsActive() {
+TBool UEZLCDScreensaverIsActive(void) {
     return G_ssIsActive;
 }
 

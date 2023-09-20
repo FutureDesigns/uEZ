@@ -21,6 +21,7 @@
 //uEZ and Application Includes
 #include "Config_Build.h"
 #include <uEZ.h>
+#include "Audio.h"
 #include "WindowManager.h"
 #include "LookAndFeel.h"
 #include "Fonts/Fonts.h"
@@ -154,7 +155,6 @@ static TUInt8 G_NumBowlers = 0;
 static void ISetButtonIcons(WM_MESSAGE *pMsg)
 {
     WM_HWIN hItem;
-    TUInt32 i = 0;
 /*  Code removed by IMM - Used to draw a bitmap that we are not using anymore. Replacing with a consistently sized back button
     hItem = WM_GetDialogItem(pMsg->hWin, ID_BACK_BUTTON);
     BUTTON_SetSkin(hItem, BUTTON_SKIN_FLEX);
@@ -168,6 +168,7 @@ static void ISetButtonIcons(WM_MESSAGE *pMsg)
     BUTTON_SetBitmapEx(hItem, BUTTON_CI_PRESSED, &bmStart, 1, 1);
     BUTTON_SetBitmapEx(hItem, BUTTON_CI_DISABLED, &bmStart, 0, 0);
 #if 0
+    TUInt32 i = 0;
     for ( i = ID_1_KEY; i < ID_9_KEY + 1; i ++){
         hItem = WM_GetDialogItem(pMsg->hWin, i);
         BUTTON_SetSkin(hItem, BUTTON_SKIN_FLEX);
@@ -197,7 +198,7 @@ static TBool IHandleStart(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         QuickStartBowlers(G_NumBowlers);
-        WindowMangager_Show_Window(BOWLING);
+        WindowManager_Show_Window(BOWLING);
     } else if ( aNCode == WM_NOTIFICATION_CLICKED){
         ButtonClick();
     }
@@ -219,7 +220,7 @@ static TBool IHandleStart(WM_MESSAGE * pMsg, int aNCode, int aID)
 static TBool IHandleMenu(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
-        WindowMangager_Show_Window(MAIN_SCREEN);
+        WindowManager_Show_Window(MAIN_SCREEN);
     } else if ( aNCode == WM_NOTIFICATION_CLICKED){
         ButtonClick();
     }

@@ -22,7 +22,9 @@ $[ifdef LPC4357]
       arm_fp_abi="Hard" 
 	  arm_fpu_type="FPv4-SP-D16" 
 $[endif]
-	  arm_compiler_variant="gcc"
+      arm_debugIO_Implementation="None"
+      arm_link_debugio_type="None"
+	    arm_compiler_variant="gcc"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
       arm_keep_preprocessor_output="Yes"
@@ -98,21 +100,27 @@ $[ifdef LPC4088]
 $[endif]
 	  linker_memory_map_file="$(ProjectDir)/$[sym project_name]_MemoryMap.xml"
 $[ifdef LPC1788]
-      linker_memory_map_macros="FLASH_START=0x00000000;FLASH_START_BOOTLOADER=0x00010100;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
+      linker_memory_map_macros="NOR_START=0x80000000;NOR_SIZE=0x00800000;FLASHA0_START=0x00000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x00000300;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
 $[endif]
 $[ifdef LPC4088]
-      linker_memory_map_macros="FLASH_START=0x00000000;FLASH_START_BOOTLOADER=0x00010100;QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
+      linker_memory_map_macros="QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASHA0_START=0x00000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x00000300;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
 $[endif]	  
 $[ifdef LPC4357]
-      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x1000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x1000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x1000;CS0_CM0_SIZE=0x200000"
+      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA0_START=0x1A000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x1A000300;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x1000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x1000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x1000;CS0_CM0_SIZE=0x200000"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
 $[endif]
       linker_output_format="hex"
 	  linker_printf_fp_enabled="Yes" 
-	  linker_section_placement_file="$(ProjectDir)/$[sym project_name]_placement.xml" 
+	  linker_section_placement_file="$(ProjectDir)/$[sym project_name]_placement.xml"
+$[ifdef LPC1788]
+      linker_section_placement_macros="CRP1_KEEP=Yes;"
+$[endif]
+$[ifdef LPC4088]
+      linker_section_placement_macros="CRP1_KEEP=Yes;"
+$[endif]
 $[ifdef LPC4357]
-      linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM"
-$[endif]  
+      linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM;CRP1_KEEP=Yes;CRP2_KEEP=Yes"
+$[endif]
 	  oscillator_frequency="12MHz" 	
 $[ifdef LPC1788]  
 	  package_dependencies="LPC1000"
@@ -213,7 +221,18 @@ $[endif]
         <folder Name="Compilers">
           <folder Name="CrossWorks">
             <folder Name="FreeRTOS">
-              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+          $[ifdef LPC1788]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM3.js">
+          $[endif]
+		  $[ifdef LPC4088]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
+          $[endif]
+		  $[ifdef LPC546X]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
+          $[endif]
+		  $[ifdef LPC4357]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
+          $[endif]
                 <configuration Name="Common" file_type="Threads Script" />
               </file>
             </folder>
@@ -251,7 +270,7 @@ $[endif]
 					<configuration Name="Common" file_type="Target Script" />
 				  </file>
 			  </folder>		  
-          </folder>		
+          </folder>
           $[endif]
 		  $[ifdef LPC4088]
 		  <folder Name="LPC17xx_40xx">
@@ -325,18 +344,27 @@ $[endif]
         </folder>
       </folder>
       <folder Name="Library">
+          <folder Name="StreamIO">
+      <folder Name="StdInOut">
+        <folder Name="CrossWorks">
+          <file file_name="../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+        </folder>
+      </folder>
+    </folder>
         <folder Name="uEZ">
           <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug-Trace/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug-Trace.a">
             <configuration Name="THUMB Flash Debug" build_exclude_from_build="Yes"/>
-			<configuration Name="THUMB Flash Release" build_exclude_from_build="Yes"/>
+			      <configuration Name="THUMB Flash Release" build_exclude_from_build="Yes"/>
+			      <configuration Name="THUMB Flash Release Bootload" build_exclude_from_build="Yes"/>
           </file>
           <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug.a">
             <configuration Name="THUMB Flash Release" build_exclude_from_build="Yes"/>
-			<configuration Name="THUMB Flash Debug-Trace" build_exclude_from_build="Yes"/>
+			      <configuration Name="THUMB Flash Debug-Trace" build_exclude_from_build="Yes"/>
+			      <configuration Name="THUMB Flash Release Bootload" build_exclude_from_build="Yes"/>
           </file>
           <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Release/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Release.a">
             <configuration Name="THUMB Flash Debug" build_exclude_from_build="Yes"/>
-			<configuration Name="THUMB Flash Debug-Trace" build_exclude_from_build="Yes"/>
+			      <configuration Name="THUMB Flash Debug-Trace" build_exclude_from_build="Yes"/>
           </file>
         </folder>
         <folder Name="SEGGER">
@@ -548,6 +576,8 @@ $[endif]
       </folder>
       <file file_name="../../../Source/App/App_RTOS.c" />
       <file file_name="../../../Source/App/Audio.c" />
+      <file file_name="../../../Source/App/HImg.c" />
+      <file file_name="../../../Source/App/HImg.h" />
       <file file_name="../../../Source/App/main.c" />
       <file file_name="../../../Source/App/NVSettings.c" />
       <file file_name="../../../Source/App/NetworkStartup.c" />
@@ -569,6 +599,24 @@ $[endif]
       c_preprocessor_definitions="NDEBUG"
       gcc_debugging_level="Level 1"
       gcc_optimization_level="Level 1" />
+    <configuration
+      Name="THUMB Flash Release Bootload"
+$[ifdef LPC1788]
+      linker_section_placement_macros="CRP1_KEEP=No;"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+$[endif]
+$[ifdef LPC4088]
+      linker_section_placement_macros="CRP1_KEEP=No;"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+$[endif]
+$[ifdef LPC4357]
+      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=Yes"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000120;FLASHA_START=0x1A010220"
+$[endif]
+    />
     <configuration
       Name="THUMB Flash Debug-Trace"
       c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
@@ -593,6 +641,9 @@ $[endif]
     inherited_configurations="THUMB;Flash;Debug" />
   <configuration
     Name="THUMB Flash Release"
+    inherited_configurations="THUMB;Flash;Release" />
+  <configuration
+    Name="THUMB Flash Release Bootload"
     inherited_configurations="THUMB;Flash;Release" />
   <configuration
     Name="THUMB Flash Debug-Trace"

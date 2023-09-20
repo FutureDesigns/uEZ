@@ -9,6 +9,8 @@
       arm_core_type="Cortex-M3"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
+      arm_debugIO_Implementation="None"
+      arm_link_debugio_type="None"
       arm_linker_heap_size="23552"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="4096"
@@ -119,7 +121,7 @@
         <folder Name="Compilers">
           <folder Name="CrossWorks">
             <folder Name="FreeRTOS">
-              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM3.js">
                 <configuration Name="Common" file_type="Threads Script" />
                 <configuration
                   Name="THUMB Flash Debug"
@@ -129,6 +131,14 @@
           </folder>
         </folder>
       </folder>
+    <folder Name="StreamIO">
+      <folder Name="StdInOut">
+        <folder Name="CrossWorks">
+          <file file_name="../../../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+        </folder>
+      </folder>
+    </folder>
+
       <folder Name="Platform">
         <folder Name="FDI">
           <folder Name="IRD-1768">

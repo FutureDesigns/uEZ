@@ -125,7 +125,7 @@ static void IADCConfig(T_LPC43xx_ADC_Workspace *p, ADC_RequestSingle *aRequest)
 {
 
     // Ensure the power is on
-    LPC43xxPowerOn(1 << 12);
+    LPC43xxPowerOn(1 << 12); // TODO remove, but do we track this anywhere?
 
     // Setup control register
     p->iReg->iCR =

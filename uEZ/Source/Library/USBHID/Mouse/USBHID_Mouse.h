@@ -62,7 +62,7 @@ extern "C" {
  * Types:
  *-------------------------------------------------------------------------*/
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     PACK_STRUCT_FIELD(TUInt8 iButtons);           // Flags about other keys pressed
     PACK_STRUCT_FIELD(TInt8 iDeltaX);
     PACK_STRUCT_FIELD(TInt8 iDeltaY);
