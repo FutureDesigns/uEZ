@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_S1D13781_Private.h
@@ -147,34 +147,34 @@ struct DRIVER_CONTEXT {
   //
   // Common data
   //
-  int32_t xSize, ySize;
-  int32_t vxSize, vySize;
-  int32_t MemSize;
-  int32_t SwapXY;
-  int32_t XOff;
+  int xSize, ySize;
+  int vxSize, vySize;
+  int MemSize;
+  int SwapXY;
+  int XOff;
   U32 BufferOffset;
-  int32_t NumBytesInBuffer;
+  int NumBytesInBuffer;
   U32 Addr;
   U32 BaseAddr;
-  int32_t WaitUntilVNDP;
-  int32_t Orientation;
+  int WaitUntilVNDP;
+  int Orientation;
   //
   // PIP layer
   //
-  int32_t IsVisible;
-  int32_t xPos, yPos;
+  int IsVisible;
+  int xPos, yPos;
   //
   // Driver specific data
   //
-  int32_t WriteBufferSize;
-  int32_t WriteBufferSizeNew;
-  int32_t UseLayer;
+  int WriteBufferSize;
+  int WriteBufferSizeNew;
+  int UseLayer;
   U8 aInitialWriteBuffer[10];
   //
   // Accelerators for calculation
   //
-  int32_t BitsPerPixel;
-  int32_t BytesPerPixel;
+  int BitsPerPixel;
+  int BytesPerPixel;
   //
   // VRAM
   //
@@ -194,20 +194,20 @@ struct DRIVER_CONTEXT {
 *
 **********************************************************************
 */
-void (*GUIDRV__S1D13781_GetDevFunc(GUI_DEVICE ** ppDevice, int32_t Index))(void);
-void   GUIDRV__S1D13781_SetOrg    (GUI_DEVICE *  pDevice,  int32_t x, int32_t y);
-I32    GUIDRV__S1D13781_GetDevProp(GUI_DEVICE *  pDevice,  int32_t Index);
+void (*GUIDRV__S1D13781_GetDevFunc(GUI_DEVICE ** ppDevice, int Index))(void);
+void   GUIDRV__S1D13781_SetOrg    (GUI_DEVICE *  pDevice,  int x, int y);
+I32    GUIDRV__S1D13781_GetDevProp(GUI_DEVICE *  pDevice,  int Index);
 void   GUIDRV__S1D13781_GetRect   (GUI_DEVICE *  pDevice,  LCD_RECT * pRect);
-int32_t    GUIDRV__S1D13781_InitOnce  (GUI_DEVICE *  pDevice);
-int32_t    GUIDRV__S1D13781_Init      (GUI_DEVICE *  pDevice);
-U32    GUIDRV__S1D13781_GetAddr   (DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
+int    GUIDRV__S1D13781_InitOnce  (GUI_DEVICE *  pDevice);
+int    GUIDRV__S1D13781_Init      (GUI_DEVICE *  pDevice);
+U32    GUIDRV__S1D13781_GetAddr   (DRIVER_CONTEXT * pContext, int x, int y);
 
 /*********************************************************************
 *
 *       _SetPixelIndex_##EXT
 */
 #define DEFINE_SETPIXELINDEX(EXT)                                                                 \
-static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD_PIXELINDEX PixelIndex) { \
+static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) { \
   DRIVER_CONTEXT_S1D13781 * pContext;                                                             \
                                                                                                   \
   pContext = (DRIVER_CONTEXT_S1D13781 *)pDevice->u.pContext;                                      \
@@ -219,7 +219,7 @@ static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD
 *       _GetPixelIndex_##EXT
 */
 #define DEFINE_GETPIXELINDEX(EXT)                                                \
-static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y) { \
+static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y) { \
   DRIVER_CONTEXT_S1D13781 * pContext;                                            \
   LCD_PIXELINDEX PixelIndex;                                                     \
                                                                                  \
@@ -233,7 +233,7 @@ static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int3
 *       _GetDevProp_##EXT
 */
 #define DEFINE_GETDEVPROP(EXT)                                  \
-static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
+static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int Index) { \
   DRIVER_CONTEXT_S1D13781 * pContext;                           \
                                                                 \
   GUIDRV__S1D13781_InitOnce(pDevice);                           \
@@ -275,7 +275,7 @@ static void _InitOrientation_##EXT(GUI_DEVICE * pDevice) {   \
 *       _GetDevFunc_##EXT
 */
 #define DEFINE_GETDEVFUNC(EXT)                                               \
-static void (* _GetDevFunc_##EXT(GUI_DEVICE ** ppDevice, int32_t Index))(void) { \
+static void (* _GetDevFunc_##EXT(GUI_DEVICE ** ppDevice, int Index))(void) { \
   GUI_USE_PARA(ppDevice);                                                    \
   switch (Index) {                                                           \
   case LCD_DEVFUNC_READRECT:                                                 \

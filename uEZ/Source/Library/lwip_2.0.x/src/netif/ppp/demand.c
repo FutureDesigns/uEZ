@@ -59,14 +59,14 @@
 #include "netif/ppp/lcp.h"
 
 char *frame;
-int32_t framelen;
-int32_t framemax;
-int32_t escape_flag;
-int32_t flush_flag;
-int32_t fcs;
+int framelen;
+int framemax;
+int escape_flag;
+int flush_flag;
+int fcs;
 
 struct packet {
-    int32_t length;
+    int length;
     struct packet *next;
     unsigned char data[1];
 };
@@ -74,7 +74,7 @@ struct packet {
 struct packet *pend_q;
 struct packet *pend_qtail;
 
-static int32_t active_packet (unsigned char *, int32_t);
+static int active_packet (unsigned char *, int);
 
 /*
  * demand_conf - configure the interface for doing dial-on-demand.
@@ -82,7 +82,7 @@ static int32_t active_packet (unsigned char *, int32_t);
 void
 demand_conf()
 {
-    int32_t i;
+    int i;
     const struct protent *protp;
 
 /*    framemax = lcp_allowoptions[0].mru;
@@ -127,7 +127,7 @@ demand_conf()
 void
 demand_block()
 {
-    int32_t i;
+    int i;
     const struct protent *protp;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
@@ -144,7 +144,7 @@ void
 demand_discard()
 {
     struct packet *pkt, *nextpkt;
-    int32_t i;
+    int i;
     const struct protent *protp;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
@@ -170,7 +170,7 @@ demand_discard()
 void
 demand_unblock()
 {
-    int32_t i;
+    int i;
     const struct protent *protp;
 
     for (i = 0; (protp = protocols[i]) != NULL; ++i)
@@ -221,12 +221,12 @@ static u_short fcstab[256] = {
  * Calls loop_frame when a complete frame has been accumulated.
  * Return value is 1 if we need to bring up the link, 0 otherwise.
  */
-int32_t
+int
 loop_chars(p, n)
     unsigned char *p;
-    int32_t n;
+    int n;
 {
-    int32_t c, rv;
+    int c, rv;
 
     rv = 0;
 
@@ -281,10 +281,10 @@ loop_chars(p, n)
  * We apply the active_filter to see if we want this packet to
  * bring up the link.
  */
-int32_t
+int
 loop_frame(frame, len)
     unsigned char *frame;
-    int32_t len;
+    int len;
 {
     struct packet *pkt;
 
@@ -316,7 +316,7 @@ loop_frame(frame, len)
  */
 void
 demand_rexmit(proto, newip)
-    int32_t proto;
+    int proto;
     u32_t newip;
 {
     struct packet *pkt, *prev, *nextpkt;
@@ -430,12 +430,12 @@ demand_rexmit(proto, newip)
  * Scan a packet to decide whether it is an "active" packet,
  * that is, whether it is worth bringing up the link for.
  */
-static int32_t
+static int
 active_packet(p, len)
     unsigned char *p;
-    int32_t len;
+    int len;
 {
-    int32_t proto, i;
+    int proto, i;
     const struct protent *protp;
 
     if (len < PPP_HDRLEN)

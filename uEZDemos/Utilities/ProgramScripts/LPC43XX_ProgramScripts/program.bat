@@ -1,4 +1,6 @@
 @ECHO off
+REM Change to current path of batch script
+cd /d %~dp0
 "C:\Program Files (x86)\SEGGER\JLink\JLink.exe" -CommanderScript "LPC43XX.jlink" > JLink.log.txt
 REM JLink.exe only has two values for ERRORLEVEL: 0 and 1
 REM see https://wiki.segger.com/J-Link_Commander#JLink.exe_return_value

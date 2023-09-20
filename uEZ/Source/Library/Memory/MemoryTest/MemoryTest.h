@@ -54,6 +54,19 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 void MemoryTestFail(void);
 void MemoryTest(TUInt32 aMemoryAddress, TUInt32 aMemorySize);
+void MemoryTest_StepA(void);
+void MemoryTest_StepA_Pass(void);
+void MemoryTest_StepB(void);
+void MemoryTest_StepB_Pass(void);
+void MemoryTest_StepC(void);
+void MemoryTest_StepC_Pass(void);
+void MemoryTest_StepD(void);
+void MemoryTest_StepD_Pass(void);
+void MemoryTest_StepE(void);
+void MemoryTest_StepE_Pass(void);
+void MemoryTest_StepF(void);
+void MemoryTest_StepF_Pass(void);
+
 
 #ifdef __cplusplus
 }

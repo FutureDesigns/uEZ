@@ -1,47 +1,60 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement" >
   <MemorySegment name="$(FLASH_NAME:FLASH)" >
-    <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)"/>
-    <ProgramSection alignment="4" load="Yes" name=".init" />
-    <ProgramSection alignment="4" load="Yes" name=".text" />
-    <ProgramSection alignment="4" load="Yes" name=".dtors" />
-    <ProgramSection alignment="4" load="Yes" name=".ctors" />
-    <ProgramSection alignment="4" load="Yes" name=".rodata" />
-    <ProgramSection alignment="4" load="Yes" name=".constdata" />
-    <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
-    <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
+    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.init .init.*)" name=".init"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)" name=".text"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.ctors.*))) KEEP (*(.ctors))" name=".ctors"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata .rodata.* .gnu.linkonce.r.*)" name=".rodata"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" runin=".fast_run" inputsections="*(.fast .fast.*)" name=".fast"/>
+    <ProgramSection alignment="4" load="Yes" runin=".data_run" inputsections="*(.data .data.* .gnu.linkonce.d.*)" name=".data"/>
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
+    <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashResource .ExternalFlashResource.*)" name=".ExternalFlashResource" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashHeader .ExternalFlashHeader.*)" name=".ExternalFlashHeader" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashText .ExternalFlashText.*)"     name=".ExternalFlashText" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashRodata .ExternalFlashRodata.*)" name=".ExternalFlashRodata" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlash .ExternalFlash.*)" name=".ExternalFlash" />
   </MemorySegment>
   <MemorySegment name="SDRAM">
-    <!-- 8 frames of graphics reserved -->
-    <ProgramSection alignment="4" size="800*480*2*8" load="No" name=".frames"/>
-    <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
+    <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
+    <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
+    <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
+    <!-- Reserved for emWin memory  -->
+    <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
+    <ProgramSection alignment="4" load="No" size="__HEAPSIZE__" name=".heap"/>
+    <!-- Reserved for Networking memory  -->
+    <ProgramSection alignment="4" load="No" inputsections="*(.network .network.*)" name=".network"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:RAM)" >
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
-    <ProgramSection alignment="4" load="No" name=".fast_run" />
-    <ProgramSection alignment="4" load="No" name=".data_run" />
-    <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.non_init .non_init.*)" name=".non_init"/>
-    <ProgramSection alignment="4" load="No" name=".tdata_run"/>    
+    <ProgramSection alignment="4" load="No" name=".fast_run"/>
+    <ProgramSection alignment="4" load="No" name=".data_run"/>
+    <ProgramSection alignment="4" load="No" name=".tdata_run"/>
     <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. -->
-    <ProgramSection alignment="4" load="Yes" name=".rtt" />
-    <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack" />
-    <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" />
+    <ProgramSection alignment="4" load="No" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
+    <ProgramSection alignment="4" load="No" size="__STACKSIZE__" name=".stack"/>
+    <ProgramSection alignment="4" load="No" size="__STACKSIZE_PROCESS__" name=".stack_process"/>
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
-    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
   </MemorySegment>
   <MemorySegment name="AHBSRAM0" oldname="USB RAM">
-    <ProgramSection load="No" name=".usbhostmem"/>
-    <ProgramSection load="No" name=".mcimem"/>
   </MemorySegment>
   <MemorySegment name="AHBSRAM1">
+  </MemorySegment>
+  <MemorySegment name="AHBSRAM" oldname="USB RAM">
+    <ProgramSection load="No" name=".usbhostmem"/>
+    <ProgramSection load="No" name=".mcimem"/>
     <!-- The ethernet area is reserved currently -->
     <ProgramSection load="No" name=".emacmem"/>
   </MemorySegment>

@@ -38,8 +38,8 @@
 #include "netif/ppp/pppcrypt.h"
 
 
-static u_char pppcrypt_get_7bits(u_char *input, int32_t startBit) {
-	uint32_t word;
+static u_char pppcrypt_get_7bits(u_char *input, int startBit) {
+	unsigned int word;
 
 	word  = (unsigned)input[startBit / 8] << 8;
 	word |= (unsigned)input[startBit / 8 + 1];

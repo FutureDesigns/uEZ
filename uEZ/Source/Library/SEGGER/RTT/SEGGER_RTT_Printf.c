@@ -3,13 +3,13 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*       SEGGER SystemView * Real-time application analysis           *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -17,7 +17,7 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       RTT version: 6.30g/6.70                                      *
+*       SystemView version: 3.32                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -53,6 +53,7 @@ Revision: $Rev: 17697 $
 */
 #include "SEGGER_RTT.h"
 #include "SEGGER_RTT_Conf.h"
+#include "SEGGER_RTT_SYSVIEW_Config.h"
 
 /*********************************************************************
 *
@@ -86,11 +87,13 @@ typedef struct {
   unsigned  BufferSize;
   unsigned  Cnt;
 
-  int32_t   ReturnValue;
+  int   ReturnValue;
 
   unsigned RTTBufferIndex;
 } SEGGER_RTT_PRINTF_DESC;
 
+#if (SEGGER_ENABLE_RTT == 1) // Only include if RTT is enabled
+#if (SEGGER_ENABLE_PRINTF == 1) // Only include if printf is enabled
 /*********************************************************************
 *
 *       Function prototypes
@@ -223,9 +226,9 @@ static void _PrintUnsigned(SEGGER_RTT_PRINTF_DESC * pBufferDesc, unsigned v, uns
 *
 *       _PrintInt
 */
-static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int32_t v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
+static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int v, unsigned Base, unsigned NumDigits, unsigned FieldWidth, unsigned FormatFlags) {
   unsigned Width;
-  int32_t Number;
+  int Number;
 
   Number = (v < 0) ? -v : v;
 
@@ -233,8 +236,8 @@ static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int32_t v, unsigned 
   // Get actual field width
   //
   Width = 1u;
-  while (Number >= (int32_t)Base) {
-    Number = (Number / (int32_t)Base);
+  while (Number >= (int)Base) {
+    Number = (Number / (int)Base);
     Width++;
   }
   if (NumDigits > Width) {
@@ -318,10 +321,10 @@ static void _PrintInt(SEGGER_RTT_PRINTF_DESC * pBufferDesc, int32_t v, unsigned 
 *    >= 0:  Number of bytes which have been stored in the "Up"-buffer.
 *     < 0:  Error
 */
-int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList) {
+int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList) {
   char c;
   SEGGER_RTT_PRINTF_DESC BufferDesc;
-  int32_t v;
+  int v;
   unsigned NumDigits;
   unsigned FormatFlags;
   unsigned FieldWidth;
@@ -402,22 +405,22 @@ int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list *
       switch (c) {
       case 'c': {
         char c0;
-        v = va_arg(*pParamList, int32_t);
+        v = va_arg(*pParamList, int);
         c0 = (char)v;
         _StoreChar(&BufferDesc, c0);
         break;
       }
       case 'd':
-        v = va_arg(*pParamList, int32_t);
+        v = va_arg(*pParamList, int);
         _PrintInt(&BufferDesc, v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'u':
-        v = va_arg(*pParamList, int32_t);
+        v = va_arg(*pParamList, int);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 10u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 'x':
       case 'X':
-        v = va_arg(*pParamList, int32_t);
+        v = va_arg(*pParamList, int);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, NumDigits, FieldWidth, FormatFlags);
         break;
       case 's':
@@ -434,7 +437,7 @@ int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list *
         }
         break;
       case 'p':
-        v = va_arg(*pParamList, int32_t);
+        v = va_arg(*pParamList, int);
         _PrintUnsigned(&BufferDesc, (unsigned)v, 16u, 8u, 8u, 0u);
         break;
       case '%':
@@ -456,7 +459,7 @@ int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list *
     if (BufferDesc.Cnt != 0u) {
       SEGGER_RTT_Write(BufferIndex, acBuffer, BufferDesc.Cnt);
     }
-    BufferDesc.ReturnValue += (int32_t)BufferDesc.Cnt;
+    BufferDesc.ReturnValue += (int)BufferDesc.Cnt;
   }
   return BufferDesc.ReturnValue;
 }
@@ -492,8 +495,8 @@ int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list *
 *          s: Print the string pointed to by the argument
 *          p: Print the argument as an 8-digit hexadecimal integer. (Argument shall be a pointer to void.)
 */
-int32_t SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
-  int32_t r;
+int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
+  int r;
   va_list ParamList;
 
   va_start(ParamList, sFormat);
@@ -501,4 +504,18 @@ int32_t SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
   va_end(ParamList);
   return r;
 }
+#else // when not enabled use dummy functions
+int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList) {
+	(void) BufferIndex;
+	(void) sFormat;
+	(void) pParamList;
+	return 0;
+}
+int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
+	(void) BufferIndex;
+	(void) sFormat;
+	return 0;
+}
+#endif
+#endif
 /*************************** End of file ****************************/

@@ -41,6 +41,7 @@
 #include <CMSIS/LPC43xx.h>
 #include <Types/GPIO.h>
 #include "LPC43xx_UtilityFuncs.h"
+#include "LPC43xx_EMAC.h"
 
 // Information about the processor
 #define UEZ_PROCESSOR_CORE_TYPE             CORE_TYPE_CORTEX_M4
@@ -439,6 +440,15 @@
                 SCU_EHS_FAST, \
                 SCU_EZI_ENABLE, \
                 SCU_ZIF_ENABLE)
+
+#define SCU_NORMAL_DRIVE_HIGH_FREQ(mode) \
+        SCU_NORMAL_DRIVE(mode, \
+                SCU_EPD_DISABLE, \
+                SCU_EPUN_DISABLE, \
+                SCU_EHS_FAST, \
+                SCU_EZI_ENABLE, \
+                SCU_ZIF_DISABLE)  // Disable filter for 30+MHZ signals
+
 #define SCU_HIGH_DRIVE_DEFAULT(mode) \
         SCU_HIGH_DRIVE(mode, \
                 SCU_EPD_DISABLE, \

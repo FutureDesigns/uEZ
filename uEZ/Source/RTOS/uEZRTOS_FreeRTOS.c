@@ -255,6 +255,17 @@ T_uezError UEZTaskDelete(T_uezTask aTask)
     return error;
 }
 
+T_uezRtosSchedulerState UEZIsRtosRunning(void){
+    TUInt32 temp = xTaskGetSchedulerState();
+    if(temp == taskSCHEDULER_RUNNING){
+      return RTOS_SCHEDULER_RUNNING;
+    } else if (temp == taskSCHEDULER_SUSPENDED){
+      return RTOS_SCHEDULER_SUSPENDED;
+    } else {
+      return RTOS_SCHEDULER_NOT_STARTED;
+    }
+}
+
 T_uezError UEZTaskPriorityGet(T_uezTask aTask, T_uezPriority *aPriority)
 {
     TUInt32 type;
@@ -1081,10 +1092,11 @@ TUInt32 UEZTickCounterGetDelta(TUInt32 aStart)
 {
     return xTaskGetTickCount()-aStart;
 }
-void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
+
+/*void vApplicationStackOverflowHook( TaskHandle_t xTask, char * pcTaskName )
 {
     UEZHalt();
-}
+}*/
 
 // Immediately context switch to another task inside the interrupt routine
 void _isr_UEZTaskContextSwitch(void)

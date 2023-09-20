@@ -1,0 +1,28 @@
+Upstream LWIP contains the following folders:
+  * src
+  * doc
+  * test
+  * contrib (currently in separate package until future 2.2.X release)
+
+You must fill out files in the following folders to implement the required functions for the higher level software and RTOS:
+  * Include
+  * system (mainly sys_arch.c)
+
+Note that the "arch" folder possibly contains just an older example of these files. If so the contrib->examples folder will contain more up to date examples.
+Then the "arch" folder will be removed in some future uEZ release after review of it.
+
+There is still some incomplete integration especially for RTOS functions and some thread related defines that weren't used before (possibly they didn't exist before).
+Some of this was included to allow per-thread semaphore and better working core locking but without complete testing.
+In the contrib->examples there is a more complete FreeRTOS example. Bringing in more functions and defines from that might allow more features to work.
+To use some features for non-included files more include paths may need to be added to the tool chain, such as for the IPV6 folder. (both in library and application project)
+A signification rework would be needed to avoid this so we may explore trying to read includes from a file in the future if possible. As then you could pull in the file instead of having to manually update all projects.
+
+The following files are modified from upstream lwip. When updating the modifications will need to be kept.
+  * tcpip_init -> pass up thread creating handle to check for sucess or out of memory
+  * tcp.h
+  * tcpip.h
+  * tcpip.c
+  * lwip/memp.h -> added .network section for pools
+  * netif/ethernetif.c -> uEZ integration (some of what is here may be able to be moved out in the future)
+  * src/include/lwip/opt.h	Has changes to default settings that probably affect behaivor, should be able to move them in the future.
+  

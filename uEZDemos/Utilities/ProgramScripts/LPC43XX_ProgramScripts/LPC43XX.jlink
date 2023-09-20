@@ -7,7 +7,8 @@ speed 1000
 rx 200
 h
 
-erase
+erase 0x1a000000, 0x1a07FFFF
+erase 0x1b000000, 0x1b07FFFF
 loadfile "LPC4357_M4.hex"
 
 rx 200

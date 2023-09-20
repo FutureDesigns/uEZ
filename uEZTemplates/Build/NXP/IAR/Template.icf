@@ -1,0 +1,407 @@
+/*###ICF### Section handled by ICF editor, don't touch! ****/
+/*-Editor annotation file-*/
+$[ifdef LPC1788]
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__ = 0x00000000;
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__ = 0x00000080;
+define symbol __ICFEDIT_region_ROM_end__   = 0x0007FFFF;
+define symbol __ICFEDIT_region_RAM_start__ = 0xA0000000;
+define symbol __ICFEDIT_region_RAM_end__   = 0xA07FFFFF; // Increase this for 16MB SDRAM units
+
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__   = 0x400;
+define symbol __ICFEDIT_size_svcstack__ = 0x10;
+define symbol __ICFEDIT_size_irqstack__ = 0x100;
+define symbol __ICFEDIT_size_fiqstack__ = 0x100;
+define symbol __ICFEDIT_size_undstack__ = 0x10;
+define symbol __ICFEDIT_size_abtstack__ = 0x10;
+define symbol __ICFEDIT_size_heap__     = 500000;
+/**** End of ICF editor section. ###ICF###*/
+
+
+/*-- uEZ Defines: -----------------------------------------------------------*/
+/* USe the SRAM for the system stack and the kernel data. */
+define symbol IRAM_start        = 0x10000000;
+define symbol IRAM_end          = 0x1000FFFF;
+define symbol NORFlash_start    = 0x80000000;
+define symbol NORFlash_end      = 0x807FFFFF;
+define symbol AHB0_start        = 0x20000000;
+define symbol AHB0_end          = 0x20003FFF;
+define symbol AHB1_start        = 0x20004000;
+define symbol AHB1_end          = 0x20007FFF;
+
+/*-- Sizes: -----------------------------------------------------------------*/
+/* This must match the number of implemented vectors * 4 and be padded to an 8
+byte boundary (check the mapfile to ensure that the kernel function region is 
+correctly occupying the first 8K region of flash). There does not seem to be any 
+way of dynamically determining the size of the vector table section at link time, 
+hence this direct definition. */
+define symbol __size_vectors__              = 0xE8;
+
+/*-- Memory and Regions: ----------------------------------------------------*/
+define memory mem with size = 4G;
+define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region RAM_region = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
+define region IRAM_region = mem:[from IRAM_start to IRAM_end];
+define region NORFlash_region = mem:[from NORFlash_start   to NORFlash_end];
+define region AHB0_region = mem:[from AHB0_start to AHB0_end];
+define region AHB1_region = mem:[from AHB1_start to AHB1_end];
+define region AHB_region = mem:[from AHB0_start to AHB1_end];$[endif]$[SkipNewLine]
+
+$[ifdef LPC4088]
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__ = 0x00000000;
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__ = 0x00000080;
+define symbol __ICFEDIT_region_ROM_end__   = 0x0007FFFF;
+define symbol __ICFEDIT_region_RAM_start__ = 0xA0000000;
+define symbol __ICFEDIT_region_RAM_end__   = 0xA07FFFFF; // Increase this for 16MB SDRAM units
+
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__   = 0x400;
+define symbol __ICFEDIT_size_svcstack__ = 0x10;
+define symbol __ICFEDIT_size_irqstack__ = 0x100;
+define symbol __ICFEDIT_size_fiqstack__ = 0x100;
+define symbol __ICFEDIT_size_undstack__ = 0x10;
+define symbol __ICFEDIT_size_abtstack__ = 0x10;
+define symbol __ICFEDIT_size_heap__     = 500000;
+/**** End of ICF editor section. ###ICF###*/
+/*-- uEZ Defines: -----------------------------------------------------------*/
+/* USe the SRAM for the system stack and the kernel data. */
+define symbol IRAM_start        = 0x10000000;
+define symbol IRAM_end          = 0x1000FFFF;
+define symbol SPIFI_start       = 0x28000000;
+define symbol SPIFI_end         = 0x28FFFFFF;
+define symbol AHB0_start        = 0x20000000;
+define symbol AHB0_end          = 0x20003FFF;
+define symbol AHB1_start        = 0x20004000;
+define symbol AHB1_end          = 0x20007FFF;
+
+/*-- Sizes: -----------------------------------------------------------------*/
+/* This must match the number of implemented vectors * 4 and be padded to an 8
+byte boundary (check the mapfile to ensure that the kernel function region is 
+correctly occupying the first 8K region of flash). There does not seem to be any 
+way of dynamically determining the size of the vector table section at link time, 
+hence this direct definition. */
+define symbol __size_vectors__              = 0xE8;
+
+/*-- Memory and Regions: ----------------------------------------------------*/
+define memory mem with size = 4G;
+define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region RAM_region = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
+define region IRAM_region = mem:[from IRAM_start to IRAM_end];
+define region SPIFI_region = mem:[from SPIFI_start   to SPIFI_end];
+define region AHB0_region = mem:[from AHB0_start to AHB0_end];
+define region AHB1_region = mem:[from AHB1_start to AHB1_end];
+define region AHB_region = mem:[from AHB0_start to AHB1_end];$[endif]$[SkipNewLine]
+
+$[ifdef LPC546X]
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__ = 0x00000000;
+define symbol __ICFEDIT_intvec_end__   = 0x000003FF;
+
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__ = 0x00000400;
+define symbol __ICFEDIT_region_ROM_end__   = 0x0007FFFF;
+define symbol __ICFEDIT_region_RAM_start__ = 0xA0700000;
+define symbol __ICFEDIT_region_RAM_end__   = 0xA07FFFFF;
+
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__   = 0x400;
+define symbol __ICFEDIT_size_svcstack__ = 0x10;
+define symbol __ICFEDIT_size_irqstack__ = 0x100;
+define symbol __ICFEDIT_size_fiqstack__ = 0x100;
+define symbol __ICFEDIT_size_undstack__ = 0x10;
+define symbol __ICFEDIT_size_abtstack__ = 0x10;
+define symbol __ICFEDIT_size_heap__     = 500000;
+/**** End of ICF editor section. ###ICF###*/
+
+/*-- uEZ Defines: -----------------------------------------------------------*/
+/* USe the SRAM for the system stack and the kernel data. */
+define symbol IRAM_start        = 0x20020000;//32kB
+define symbol IRAM_end          = 0x20027FFF;
+//define symbol IRAM_start      = 0x20000000;//Full IRam Range, 160kB
+//define symbol IRAM_end        = 0x20027FFF;
+define symbol SPIFI_start       = 0x10000000;
+define symbol SPIFI_end         = 0x10FFFFFF;
+define symbol SRAMX_start       = 0x40000000;//32KB
+define symbol SRAMX_end         = 0x4000FFFF;
+define symbol USB_start         = 0x40100000; //8kB
+define symbol USB_end           = 0x40101FFF;
+
+/*-- Sizes: -----------------------------------------------------------------*/
+/* This must match the number of implemented vectors * 4 and be padded to an 8
+byte boundary (check the mapfile to ensure that the kernel function region is 
+correctly occupying the first 8K region of flash). There does not seem to be any 
+way of dynamically determining the size of the vector table section at link time, 
+hence this direct definition. */
+define symbol __size_vectors__              = 0xE8;
+
+/*-- Memory and Regions: ----------------------------------------------------*/
+define memory mem with size = 4G;
+define region ROM_region        = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region RAM_region        = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
+define region IRAM_region       = mem:[from IRAM_start to IRAM_end];
+define region SPIFI_region      = mem:[from SPIFI_start   to SPIFI_end];
+define region SRAMX_region      = mem:[from SRAMX_start to SRAMX_end];
+define region USB_region        = mem:[from USB_start to USB_end];$[endif]$[SkipNewLine]
+
+$[ifdef LPC4357]
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__ = 0x1A000000;
+
+/*-Memory Regions-*/
+define symbol __ICFEDIT_region_ROM_start__ = 0x1A000114;
+define symbol __ICFEDIT_region_ROM_end__   = 0x1A07FFFF;
+define symbol __ICFEDIT_region_RAM_start__ = 0x28000000;
+define symbol __ICFEDIT_region_RAM_end__   = 0x28FFFFFF;
+
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__   = 0x400;
+define symbol __ICFEDIT_size_svcstack__ = 0x10;
+define symbol __ICFEDIT_size_irqstack__ = 0x100;
+define symbol __ICFEDIT_size_fiqstack__ = 0x100;
+define symbol __ICFEDIT_size_undstack__ = 0x10;
+define symbol __ICFEDIT_size_abtstack__ = 0x10;
+define symbol __ICFEDIT_size_heap__     = 5000000;
+/**** End of ICF editor section. ###ICF###*/
+
+define symbol __size_vectors__              = 0xE8;
+
+/*-- uEZ Defines: -----------------------------------------------------------*/
+/* USe the SRAM for the system stack and the kernel data. */
+define symbol IRAM_start        = 0x10000000;
+define symbol IRAM_end          = 0x10007FFF;
+
+/********** Flash BankB Region **********/
+define symbol __ICFEDIT_region_ROM_BANKB_start__ = 0x1B000000;
+define symbol __ICFEDIT_region_ROM_BANKB_end__   = 0x1B07FFFF;
+
+/********** Local SRAM Region **********/
+define symbol LOCAL_SRAM_start__    = 0x10080000;
+define symbol LOCAL_SRAM_end__      = 0x10089FFF;
+
+/********** AHB SRAM Region 1 **********/
+define symbol AHB_SRAM1_start__     = 0x20000000;
+define symbol AHB_SRAM1_end__       = 0x20007FFF;
+
+/********** AHB SRAM Region 2 **********/
+define symbol AHB_SRAM2_start__     = 0x20008000;
+define symbol AHB_SRAM2_end__       = 0x2000BFFF;
+
+/********* ETB/AHB SRAM Region *********/
+define symbol ETB_SRAM_start__      = 0x2000C000;
+define symbol ETB_SRAM_end__        = 0x2000FFFF;
+
+/********* CRP (Code Read Protection) REGION *********/
+define symbol __CRP1_start__   = 0x1A0002FC;
+define symbol __CRP1_end__     = 0x1A0002FF;
+define symbol __CRP2_start__   = 0x1B0002FC;
+define symbol __CRP2_end__     = 0x1B0002FF;
+
+define symbol __SPIFI_start   = 0x14000000; 
+define symbol __SPIFI_end     = 0x177FFFFF;
+
+/********* EEPROM REGION *********/
+define symbol __EE_start__   = 0x20040000;
+define symbol __EE_end__     = 0x20044000;
+
+define memory mem with size = 4G;
+define region ROM_region           = mem:[from __ICFEDIT_region_ROM_start__   to __ICFEDIT_region_ROM_end__] - mem:[from  __CRP1_start__ to __CRP1_end__]|
+                                     mem:[from __ICFEDIT_region_ROM_BANKB_start__ to __ICFEDIT_region_ROM_BANKB_end__] - mem:[from  __CRP1_start__ to __CRP1_end__];
+define region ROM_BANKB_region     = mem:[from __ICFEDIT_region_ROM_BANKB_start__ to __ICFEDIT_region_ROM_BANKB_end__] - mem:[from  __CRP2_start__ to __CRP2_end__];
+define region IRAM_region          = mem:[from IRAM_start to IRAM_end];
+define region RAM_region           = mem:[from __ICFEDIT_region_RAM_start__   to __ICFEDIT_region_RAM_end__];
+define region LOCAL_SRAM_region    = mem:[from LOCAL_SRAM_start__             to LOCAL_SRAM_end__];
+define region AHB_SRAM1_region     = mem:[from AHB_SRAM1_start__              to AHB_SRAM1_end__];
+define region AHB_SRAM2_region     = mem:[from AHB_SRAM2_start__              to AHB_SRAM2_end__];
+define region AHB_SRAM1_2_region   = mem:[from AHB_SRAM1_start__              to AHB_SRAM2_end__];
+define region ETB_SRAM_region      = mem:[from ETB_SRAM_start__               to ETB_SRAM_end__];
+define region CRP1_region          = mem:[from  __CRP1_start__ to __CRP1_end__];
+define region CRP2_region          = mem:[from  __CRP2_start__ to __CRP2_end__];
+define region SPIFI_region         = mem:[from  __SPIFI_start to __SPIFI_end];
+define region EEPROM_region        = mem:[from  __EE_start__ to __EE_end__];$[endif]$[SkipNewLine]
+
+/*-- Blocks: ----------------------------------------------------------------*/
+define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+define block SVC_STACK with alignment = 8, size = __ICFEDIT_size_svcstack__ { };
+define block IRQ_STACK with alignment = 8, size = __ICFEDIT_size_irqstack__ { };
+define block FIQ_STACK with alignment = 8, size = __ICFEDIT_size_fiqstack__ { };
+define block UND_STACK with alignment = 8, size = __ICFEDIT_size_undstack__ { };
+define block ABT_STACK with alignment = 8, size = __ICFEDIT_size_abtstack__ { };
+define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
+
+/*-- Placment Commands (General): -------------------------------------------*/
+initialize by copy { readwrite };
+do not initialize  { section .noinit, section .non_init };
+
+/* Define a block for the kernel's functions.  - __size_vectors__ because the 
+first part of the 8K is taken by the interrupt vectors. */
+define block __kernel_functions_block__ with alignment = 8, 
+    size = 0x2000 - __size_vectors__ { section __kernel_functions__ };
+
+/* Place the interrupt vectors at the required address, followed by the kernel's
+functions. */
+place at address mem:__ICFEDIT_intvec_start__ { 
+    readonly section .intvec, 
+    block __kernel_functions_block__ 
+};
+
+/* Define a block for the kernel's data. */
+define block __kernel_data_block__ with alignment = 0x400, size = 0x400 { section __kernel_data__ };
+
+/* Place the main stack at the start of IRAM, followed by the kernel's data. */
+$[ifdef LPC1788]place at address mem:IRAM_start {
+    readwrite section ".noinit", /*noinit section*/
+    readwrite section ".non_init", /*non_init section*/    
+    readwrite section ".rtt", /*SEGGER_RTT_SECTION*/
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
+    block CSTACK, 
+    block __kernel_data_block__, 
+    rw object LPC17xx_40xx_PLL.o 
+};$[endif]$[SkipNewLine]
+$[ifdef LPC4088]place at address mem:IRAM_start {
+    readwrite section ".noinit", /*noinit section*/
+    readwrite section ".non_init", /*non_init section*/    
+    readwrite section ".rtt", /*SEGGER_RTT_SECTION*/
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
+    block CSTACK, 
+    block __kernel_data_block__, 
+    rw object LPC17xx_40xx_PLL.o 
+};$[endif]$[SkipNewLine]
+$[ifdef LPC546X]place at address mem:IRAM_start {
+    readwrite section ".noinit", /*noinit section*/
+    readwrite section ".non_init", /*non_init section*/    
+    readwrite section ".rtt", /*SEGGER_RTT_SECTION*/
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
+    block CSTACK, 
+    block __kernel_data_block__, 
+    rw object LPC546xx_PLL.o,
+    rw object LPC546xx_SDRAM.o,
+    rw object LPC546xx_HALInit.o
+};$[endif]$[SkipNewLine]
+$[ifdef LPC4357]place at address mem:IRAM_start {
+    readwrite section ".noinit", /*noinit section*/
+    readwrite section ".non_init", /*non_init section*/    
+    readwrite section ".rtt", /*SEGGER_RTT_SECTION*/ 
+    readwrite section ".rttbuf", /*SEGGER_RTT_BUFFER_SECTION*/
+    block CSTACK, 
+    block __kernel_data_block__, 
+    rw object LPC43xx_PLL.o,
+    rw object LPC43xx_SDRAM.o,
+    rw object LPC43xx_IAP.o
+};$[endif]$[SkipNewLine]
+place in ROM_region   { readonly };
+
+/* Place these sections in order at the very beginning of SDRAM */
+/* Currently in uEZ it is important that frames is first. */
+define block GUI_ARRAYS with fixed order {
+    readwrite section ".frames", /*Frames section*/
+    readwrite section ".video",
+    readwrite section ".emWin", /*emWin section*/
+    /*Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. */
+    readwrite section ".network" /*Network section*/
+};
+
+place in RAM_region { 
+    first block GUI_ARRAYS,
+    readwrite,
+    block SVC_STACK, 
+    block IRQ_STACK, 
+    block FIQ_STACK,
+    block UND_STACK, 
+    block ABT_STACK, 
+    block HEAP
+};
+
+$[ifdef LPC1788]place in NORFlash_region { 
+    readonly section ExternalFlashText,
+    readonly section ExternalFlashRodata,
+    readonly section ExternalFlash,
+    //ro object background.o
+};$[endif]$[SkipNewLine]
+$[ifdef LPC4088]place in SPIFI_region { 
+    readonly section ExternalFlashText,
+    readonly section ExternalFlashRodata,
+    readonly section ExternalFlash,
+    //ro object background.o
+};$[endif]$[SkipNewLine]
+$[ifdef LPC546X]place in SPIFI_region { 
+    readonly section ExternalFlashText,
+    readonly section ExternalFlashRodata,
+    readonly section ExternalFlash,
+    //ro object background.o
+};$[endif]$[SkipNewLine]
+$[ifdef LPC4357]place in SPIFI_region { 
+    readonly section ExternalFlashText,
+    readonly section ExternalFlashRodata,
+    readonly section ExternalFlash,
+    //ro object background.o
+};$[endif]$[SkipNewLine]
+
+$[ifdef LPC1788]place in AHB0_region {
+    //readwrite section .emacmem,
+};
+
+place in AHB1_region {
+    //readwrite section .usbhostmem,
+    //readwrite section .mcimem,
+};
+
+define block AHB_ARRAYS with fixed order {
+    readwrite section .usbhostmem,
+    readwrite section .mcimem,
+    readwrite section .emacmem,
+};
+
+place in AHB_region {
+    first block AHB_ARRAYS,
+};$[endif]$[SkipNewLine]
+$[ifdef LPC4088]place in AHB0_region {
+    //readwrite section .emacmem,
+};
+
+place in AHB1_region {
+    //readwrite section .usbhostmem,
+    //readwrite section .mcimem,
+};
+
+define block AHB_ARRAYS with fixed order {
+    readwrite section .usbhostmem,
+    readwrite section .mcimem,
+    readwrite section .emacmem,
+};
+
+place in AHB_region {
+    first block AHB_ARRAYS,
+};$[endif]$[SkipNewLine]
+$[ifdef LPC546X]place in SRAMX_region {
+    readwrite section .emacmem,
+    readwrite section .mcimem,
+};
+
+place in USB_region {
+    readwrite section .usbhostmem,
+};$[endif]$[SkipNewLine]
+$[ifdef LPC4357]place in AHB_SRAM1_region {
+    readwrite section .usbhostmem,
+    readwrite section .emacmem,
+    readwrite section .mcimem,
+};
+
+place in AHB_SRAM2_region {
+    // leave empty
+};
+
+/*place at start of ROM_BANKB_region  { section .M0_CODE };*/
+
+place in CRP1_region              { section .crp,  section .crp1 };
+place in CRP2_region              { section .crp2 };$[endif]$[SkipNewLine]
+
+/*-- Exports: ---------------------------------------------------------------*/
+/* Export symbols required by c code. */
+export symbol __ICFEDIT_intvec_start__;
+export symbol __ICFEDIT_size_cstack__;
+export symbol __ICFEDIT_region_ROM_start__;
+export symbol __ICFEDIT_region_ROM_end__;

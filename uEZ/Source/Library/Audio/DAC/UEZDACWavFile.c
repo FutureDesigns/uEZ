@@ -41,14 +41,15 @@
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#ifndef DAC_AUDIO_BUFFER_SIZE
-    #define DAC_AUDIO_BUFFER_SIZE           1024*12  // 8k buffers
-#endif
-
 #ifdef UEZ_DAC_WAV_FILE_SAMPLE_RATE
     #define SAMPLE_RATE                     UEZ_DAC_WAV_FILE_SAMPLE_RATE
 #else
     #define SAMPLE_RATE                     11025
+#endif
+
+
+#ifndef DAC_AUDIO_BUFFER_SIZE
+    #define DAC_AUDIO_BUFFER_SIZE           SAMPLE_RATE*24  // 8k buffers
 #endif
 
 #ifndef DAC_AUDIO_TASK_STACK_SIZE
@@ -94,7 +95,7 @@ typedef struct{
  * Globals:
  *-------------------------------------------------------------------------*/
 static T_UEZDACWAVFile_Workspace G_DACFileWorkspace;
-static T_uezTask G_DACAudioTask=0;
+T_uezTask G_DACAudioTask=0;
 static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams);
 
 /*-------------------------------------------------------------------------*
@@ -522,7 +523,7 @@ T_uezError UEZDACWAVConfig(const char* aTimer)
                                   DAC_AUDIO_TASK_STACK_SIZE, 0, UEZ_PRIORITY_HIGH,
                                   &G_DACAudioTask);
 
-            UEZTaskCreate(MuteTask, "MuteTask", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+            UEZTaskCreate(MuteTask, "MuteTask", 128, (void *)0, UEZ_PRIORITY_LOW, 0);
         }
         if(error == UEZ_ERROR_NONE){
             G_DACFileWorkspace.iConfigured = ETrue;
@@ -604,6 +605,7 @@ static T_HALTimer_Callback playDACAudio(void * workspace)
                         G_DACFileWorkspace.iUseBuffer1 = EFalse;
                         G_DACFileWorkspace.iCount = 0;
                         G_DACFileWorkspace.iBytesBuffer1 = 0;
+                        //DEBUG_SV_Printf("A1");
                         _isr_UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
                     }
                 }
@@ -630,6 +632,7 @@ static T_HALTimer_Callback playDACAudio(void * workspace)
                         G_DACFileWorkspace.iUseBuffer1 = ETrue;
                         G_DACFileWorkspace.iCount = 0;
                         G_DACFileWorkspace.iBytesBuffer2 = 0;
+                        //DEBUG_SV_Printf("A2");
                         _isr_UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
                     }
                 }

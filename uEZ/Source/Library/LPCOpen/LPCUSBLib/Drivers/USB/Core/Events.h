@@ -323,7 +323,9 @@
 	#if !defined(__DOXYGEN__)
 		/* Function Prototypes: */
 			#if defined(__INCLUDE_FROM_EVENTS_C)
-				void USB_Event_Stub(void) ATTR_CONST;
+				void USB_Event_Stub(void);// ATTR_CONST;
+				void USB_Event_Stub_param(const uint8_t ErrorCode);// ATTR_CONST;
+				void USB_Event_Stub_param_2(const uint8_t ErrorCode, const uint8_t SubErrorCode);// ATTR_CONST;
                                 #if defined(__ICCARM__)
                                 void USB_Host_HostError_Event_Stub(const uint8_t ErrorCode);
                                 void USB_Host_DeviceEnumerationFailed_Event_Stub(const uint8_t ErrorCode,
@@ -337,7 +339,7 @@ PRAGMA_WEAK(EVENT_USB_UIDChange,USB_Event_Stub)
 				#if defined(USB_CAN_BE_HOST)
 PRAGMA_WEAK(EVENT_USB_Host_HostError,USB_Event_Stub)		
                                         #if !defined(__ICCARM__)
-					void EVENT_USB_Host_HostError(const uint8_t ErrorCode) ATTR_WEAK ATTR_ALIAS(USB_Event_Stub);
+					void EVENT_USB_Host_HostError(const uint8_t ErrorCode) ATTR_WEAK ATTR_ALIAS(USB_Event_Stub_param);
                                         #endif
 PRAGMA_WEAK(EVENT_USB_Host_DeviceAttached,USB_Event_Stub)				
 					void EVENT_USB_Host_DeviceAttached(void) ATTR_WEAK ATTR_ALIAS(USB_Event_Stub);
@@ -349,7 +351,7 @@ PRAGMA_WEAK(EVENT_USB_Host_DeviceEnumerationFailed,USB_Event_Stub)
                                     #if !defined(__ICCARM__)
 					void EVENT_USB_Host_DeviceEnumerationFailed(const uint8_t ErrorCode,
                                                                 const uint8_t SubErrorCode)
-					                                            ATTR_WEAK ATTR_ALIAS(USB_Event_Stub);
+					                                            ATTR_WEAK ATTR_ALIAS(USB_Event_Stub_param_2);
                                     #endif
 PRAGMA_WEAK(EVENT_USB_Host_StartOfFrame,USB_Event_Stub)				
 					void EVENT_USB_Host_StartOfFrame(void) ATTR_WEAK ATTR_ALIAS(USB_Event_Stub);

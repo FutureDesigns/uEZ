@@ -82,7 +82,7 @@
 
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
 
-#define MAIN_TASK_STACK_SIZE                UEZ_TASK_STACK_BYTES(4096)
+#define MAIN_TASK_STACK_SIZE                UEZ_TASK_STACK_BYTES(6*1024)
 #define BASICWEB_SERVER_STACK_SIZE          UEZ_TASK_STACK_BYTES(1400)
 #define WEBSERVER_PRIORITY                  UEZ_PRIORITY_NORMAL
 
@@ -123,31 +123,47 @@
 #define emacMACADDR4    0x68
 #define emacMACADDR5    0x22
 
-#if UEZ_ENABLE_LCD
-  #if (UEZ_DEFAULT_LCD_RES_VGA || UEZ_DEFAULT_LCD_RES_WVGA)
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+
+#include <uEZPlatform.h> // To get SDRAM size, but currently we don't use that here.
+
+#if ((UEZ_DEFAULT_LCD_RES_VGA == 1) || (UEZ_DEFAULT_LCD_RES_WVGA == 1))
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
-    #define APP_DEMO_DEFAULT_FONT   font_winfreesys14x16
-  #else
+#define APP_DEMO_DEFAULT_FONT   font_winfreesys14x16
+#define APP_DEMO_DEFAULT_FONT_W 14 // largest char width in font
+#define APP_DEMO_DEFAULT_FONT_H 16
+#else
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
-    #define APP_DEMO_DEFAULT_FONT   font_helvr10
-  #endif
+#define APP_DEMO_DEFAULT_FONT   font_helvr10
+#define APP_DEMO_DEFAULT_FONT_W 11
+#define APP_DEMO_DEFAULT_FONT_H 10
 #endif
+
+//#define FAST_STARTUP                0
+
+//#define APP_ENABLE_HEARTBEAT_LED_ON 1
 
 #define ConsoleIsExpansionBoardConnected()   	1
 #define ConsoleIsPoeExpansionBoardConnected()   1
 
-// Display and frames section
-#define MAX_NUM_FRAMES          2
+/*-------------------------------------------------------------------------*
+ * Display and frames section:
+ *-------------------------------------------------------------------------*/
+#define MAX_NUM_FRAMES          5 // for largest screen uezgui frames memory = (800*480**2*5)/1024/1024 = 3.662MB
+// It is important not to lower this or slideshow will break.
+// Slideshow memory can't use the first 2 frames partially as they are used by the SWIM GUI.
+// We set 5 frames, but slideshow needs an extra 3*UEZ_LCD_DISPLAY_WIDTH to load a picture, so only cache up to 3 max.
+
 #define DISPLAY_WIDTH           UEZ_LCD_DISPLAY_WIDTH
 #define DISPLAY_HEIGHT          UEZ_LCD_DISPLAY_HEIGHT
 #define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
-#define LCD_FRAMES_END          ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS + (FRAME_SIZE*MAX_NUM_FRAMES))
-#define LCD_FRAMES_SIZE         (FRAME_SIZE*MAX_NUM_FRAMES)
-#define FRAME(n)                ((char *)(LCD_FRAMES_START+FRAME_SIZE*(n)))
+#define LCD_FRAMES_END          (((TUInt8 *)LCD_FRAMES_START + (FRAME_SIZE*MAX_NUM_FRAMES))-1)
+#define LCD_FRAMES_SIZE         (FRAME_SIZE*MAX_NUM_FRAMES+(UEZ_LCD_DISPLAY_WIDTH*3))
+#define FRAME(n)                ((TUInt8 *)(LCD_FRAMES_START + (FRAME_SIZE*(n))))
 #define LCD_FRAME_BUFFER        LCD_FRAMES_START
 
-// emWin settings section
+// emWin settings section (for these old demo projects, this RAM will be allocated even with emWin demos turned off)
 // TODO: Note define this size close to the actual amount needed by the application.
 // It appears that about 100 KB for GUI elements 
 // (depending on the GUI design and num GUI widgets total)
@@ -158,7 +174,8 @@
 // 16+16+14+32+20+32+16+52+44+56+32+48+12+28+52+52+40+16+(17+38+7+5)*1024+80+20
 // +2*800*480*2 = 1,605,286 bytes
 //#define EMWIN_RAM_SIZE          0x00200000
-#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*576) // 2 frames plus 576KB
+#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*1536) // 2 frames plus 1.5MB
+// Note video player adds 1 more frame memory
 
 // Network Settings for future implementation
 #define NETWORK_STACK_RAM_SIZE  4 // This is the number for the section allocation
@@ -173,6 +190,16 @@
 #define SOCKET_BUFFERS_SIZE      (SOCKET_BUFFER_SIZE*MAX_NUM_SOCKETs)
 #define SOCKET(n)                ((char *)(SOCKET_BUFFER_START+SOCKET_BUFFER_SIZE*(n)))
 */
+
+#ifndef SLIDESHOW_NUM_CACHED_SLIDES
+#define SLIDESHOW_NUM_CACHED_SLIDES (MAX_NUM_FRAMES-3)
+#endif   
+#ifndef SLIDESHOW_PREFETCH_AHEAD
+#define SLIDESHOW_PREFETCH_AHEAD (SLIDESHOW_NUM_CACHED_SLIDES-1)
+#endif
+#ifndef SLIDESHOW_PREFETCH_BEHIND
+#define SLIDESHOW_PREFETCH_BEHIND 1
+#endif
 
 #define APP_ENABLE_HEARTBEAT_LED_ON       1
 #ifndef SIMPLEUI_DOUBLE_SIZED_ICONS

@@ -40,11 +40,13 @@
 *
 *-------------------------------------------------------------------------*/
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+	/*
 #ifndef TUInt32
     typedef unsigned char TUInt8;
     typedef unsigned short TUInt16;
@@ -56,6 +58,7 @@ extern "C" {
 
 #define EFalse 0
 #define ETrue ~0
+	*/
 
     typedef enum {
     UEZ_ERROR_NONE=0,
@@ -96,7 +99,7 @@ extern "C" {
 } T_uezError;
 
 
-#endif
+//#endif
 
 #ifdef __cplusplus
 }

@@ -36,6 +36,20 @@
 #define configMAX_TASK_NAME_LEN   16
 #endif
 
+#ifdef __GNUC__
+#define USED __attribute__((used))
+#else
+#define USED
+#endif
+
+#ifdef NDEBUG
+#else
+#if (COMPILER_TYPE==RowleyARM)
+//const int USED uxTopUsedPriority = configMAX_PRIORITIES - 1; // TODO this may be part of what is need to restart threads.js functionality in crossworks
+#else
+#endif
+#endif
+
 typedef struct {
         char iName[configMAX_TASK_NAME_LEN+1];
         T_uezPriority iPriority;
@@ -67,7 +81,7 @@ void UEZTaskRegister(const char * const aName, T_uezPriority aPriority, TUInt32 
     UEZSemaphoreRelease(G_TaskListSem);
 }
 
-#define MAX_TASK_LINE   75
+#define MAX_TASK_LINE   500
 void UEZGetTaskList(char* aBuffer)
 {
     TUInt8 i = 0;

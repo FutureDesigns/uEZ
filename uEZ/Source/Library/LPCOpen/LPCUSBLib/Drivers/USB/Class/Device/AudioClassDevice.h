@@ -375,7 +375,7 @@ PRAGMA_ALWAYS_INLINE
 	#if !defined(__DOXYGEN__)
 		/* Function Prototypes: */
 			#if defined(__INCLUDE_FROM_AUDIO_DEVICE_C)
-				void Audio_Device_Event_Stub(USB_ClassInfo_Audio_Device_t* const AudioInterfaceInfo) ATTR_CONST;
+				void Audio_Device_Event_Stub(USB_ClassInfo_Audio_Device_t* const AudioInterfaceInfo);// ATTR_CONST;
 PRAGMA_WEAK(EVENT_Audio_Device_StreamStartStop,Audio_Device_Event_Stub)				
 				void EVENT_Audio_Device_StreamStartStop(USB_ClassInfo_Audio_Device_t* const AudioInterfaceInfo)
 				                                        ATTR_WEAK ATTR_NON_NULL_PTR_ARG(1) ATTR_ALIAS(Audio_Device_Event_Stub);

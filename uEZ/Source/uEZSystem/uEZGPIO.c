@@ -666,7 +666,6 @@ void UEZGPIOLock(T_uezGPIOPortPin aPortPin)
  *
  *  @param [in]    aPortPin 	Port pin to control
  *
- *  @return        TBool 		ETrue if pin is HIGH, or EFalse if pin is LOW.
  *  @par Example Code:
  *  @code
  *  #include <uEZ.h>
@@ -684,6 +683,36 @@ void UEZGPIOUnlock(T_uezGPIOPortPin aPortPin)
 
     if (aPortPin != GPIO_NONE)
         (*p)->Unlock(p, 1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin));
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZGPIOGetlock
+ *---------------------------------------------------------------------------*/
+/**
+ *  Returns true if the given pin is locked.
+ *
+ *  @param [in]    aPortPin 	Port pin to control
+ *
+ *  @return        TBool ETrue if pin is Locled, or EFalse if pin is available.
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZGPIO.h>
+ *
+ *  TBool isPinLocked = UEZGPIOGetLock(GPIO_P0_12);
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+TBool UEZGPIOGetLock(T_uezGPIOPortPin aPortPin)
+{
+    HAL_GPIOPort **p = UEZGPIOGetPort(
+            UEZ_GPIO_PORT_FROM_PORT_PIN(aPortPin));
+
+    if (aPortPin != GPIO_NONE) {
+        return (*p)->GetLock(p, 1 << UEZ_GPIO_PIN_FROM_PORT_PIN(aPortPin));
+    } else {
+        return ETrue;
+    }
 }
 
 /** @} */

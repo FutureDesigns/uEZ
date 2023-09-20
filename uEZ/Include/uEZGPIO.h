@@ -122,6 +122,7 @@ TBool UEZGPIORead(T_uezGPIOPortPin aPortPin);
 T_uezError UEZGPIOReadPort(T_uezGPIOPort aPort, TUInt32 *aReadValue);
 void UEZGPIOLock(T_uezGPIOPortPin aPortPin);
 void UEZGPIOUnlock(T_uezGPIOPortPin aPortPin);
+TBool UEZGPIOGetLock(T_uezGPIOPortPin aPortPin);
 
 #define GPIO_TO_HAL_PORT(portpin)  \
     UEZGPIOGetPort(UEZ_GPIO_PORT_FROM_PORT_PIN(portpin))

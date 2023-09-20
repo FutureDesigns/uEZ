@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_FlexColor.h
@@ -92,6 +92,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #define GUIDRV_FLEXCOLOR_F66722   GUIDRV_FlexColor_SetFunc66722
 #define GUIDRV_FLEXCOLOR_F66723   GUIDRV_FlexColor_SetFunc66723
 #define GUIDRV_FLEXCOLOR_F66724   GUIDRV_FlexColor_SetFunc66724
+#define GUIDRV_FLEXCOLOR_F66725   GUIDRV_FlexColor_SetFunc66725
 #define GUIDRV_FLEXCOLOR_F66772   GUIDRV_FlexColor_SetFunc66772
 
 //
@@ -115,11 +116,11 @@ typedef struct {
   //
   // Driver specific configuration items
   //
-  int32_t FirstSEG;
-  int32_t FirstCOM;
-  int32_t Orientation;
+  int FirstSEG;
+  int FirstCOM;
+  int Orientation;
   U16 RegEntryMode;
-  int32_t NumDummyReads;
+  int NumDummyReads;
 } CONFIG_FLEXCOLOR;
 
 /*********************************************************************
@@ -168,6 +169,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   void GUIDRV_FlexColor_SetFunc66722     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66723     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66724     (GUI_DEVICE * pDevice);
+  void GUIDRV_FlexColor_SetFunc66725     (GUI_DEVICE * pDevice);
   void GUIDRV_FlexColor_SetFunc66772     (GUI_DEVICE * pDevice);
 
   //
@@ -194,7 +196,7 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   //
   // Change orientation at runtime
   //
-  int32_t GUIDRV_FlexColor_SetOrientation(int32_t Orientation, int32_t LayerIndex);
+  int GUIDRV_FlexColor_SetOrientation(int Orientation, int LayerIndex);
 
   //
   // User interface
@@ -205,22 +207,22 @@ extern const GUI_DEVICE_API GUIDRV_FlexColor_API;
   //
   // Setting up hardware interface to be used
   //
-  void GUIDRV_FlexColor_SetInterface66712_B9 (GUI_DEVICE * pDevice, int32_t Type);
-  void GUIDRV_FlexColor_SetInterface66712_B18(GUI_DEVICE * pDevice, int32_t Type);
+  void GUIDRV_FlexColor_SetInterface66712_B9 (GUI_DEVICE * pDevice, int Type);
+  void GUIDRV_FlexColor_SetInterface66712_B18(GUI_DEVICE * pDevice, int Type);
   #define GUIDRV_FlexColor_SetInterface66715_B9(pDevice, Type)  GUIDRV_FlexColor_SetInterface66712_B9(pDevice, Type)
   #define GUIDRV_FlexColor_SetInterface66715_B18(pDevice, Type) GUIDRV_FlexColor_SetInterface66712_B18(pDevice, Type)
 
   //
   // Setting up interface for reading back data
   //
-  void GUIDRV_FlexColor_SetReadFunc66709_B16(GUI_DEVICE * pDevice, int32_t Func);
-  void GUIDRV_FlexColor_SetReadFunc66712_B9 (GUI_DEVICE * pDevice, int32_t Func);
-  void GUIDRV_FlexColor_SetReadFunc66712_B16(GUI_DEVICE * pDevice, int32_t Func);
+  void GUIDRV_FlexColor_SetReadFunc66709_B16(GUI_DEVICE * pDevice, int Func);
+  void GUIDRV_FlexColor_SetReadFunc66712_B9 (GUI_DEVICE * pDevice, int Func);
+  void GUIDRV_FlexColor_SetReadFunc66712_B16(GUI_DEVICE * pDevice, int Func);
   #define GUIDRV_FlexColor_SetReadFunc66715_B9(pDevice, Func)  GUIDRV_FlexColor_SetReadFunc66712_B9(pDevice, Func)
   #define GUIDRV_FlexColor_SetReadFunc66715_B16(pDevice, Func) GUIDRV_FlexColor_SetReadFunc66712_B16(pDevice, Func)
-  void GUIDRV_FlexColor_SetReadFunc66720_B16(GUI_DEVICE * pDevice, int32_t Func);
-  void GUIDRV_FlexColor_SetReadFunc66772_B8 (GUI_DEVICE * pDevice, int32_t Func);
-  void GUIDRV_FlexColor_SetReadFunc66772_B16(GUI_DEVICE * pDevice, int32_t Func);
+  void GUIDRV_FlexColor_SetReadFunc66720_B16(GUI_DEVICE * pDevice, int Func);
+  void GUIDRV_FlexColor_SetReadFunc66772_B8 (GUI_DEVICE * pDevice, int Func);
+  void GUIDRV_FlexColor_SetReadFunc66772_B16(GUI_DEVICE * pDevice, int Func);
 
 #else
 

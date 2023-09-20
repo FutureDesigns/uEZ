@@ -1,0 +1,27 @@
+
+OpenDocument="uEZHandles.c", FilePath="/home/bill/Software/FDI/uEZ/TrunkOnly/uEZ/Source/uEZSystem/uEZHandles.c", Line=270
+OpenDocument="LPC17xx40xx_Startup.s", FilePath="/home/bill/Software/FDI/uEZ/TrunkOnly/uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Startup.s", Line=105
+OpenDocument="tasks.c", FilePath="/home/bill/Software/FDI/uEZ/TrunkOnly/uEZ/Source/RTOS/FreeRTOS/tasks.c", Line=3153
+OpenDocument="uEZGUI_4088_43WQN.c", FilePath="/home/bill/Software/FDI/uEZ/TrunkOnly/uEZ/Source/Platform/FDI/uEZGUI_4088_43WQN/uEZGUI_4088_43WQN.c", Line=2757
+OpenToolbar="Debug", Floating=0, x=0, y=0
+OpenWindow="Call Stack", DockArea=RIGHT, x=0, y=1, w=1142, h=311, TabPos=0, TopOfStack=1, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Registers 1", DockArea=RIGHT, x=0, y=1, w=1142, h=311, TabPos=1, TopOfStack=0, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, FilteredItems=[], RefreshRate=1
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=1142, h=476, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Memory 1", DockArea=BOTTOM, x=2, y=0, w=369, h=633, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, EditorAddress=0x40005400
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=1, w=578, h=452, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Functions", DockArea=LEFT, x=0, y=3, w=578, h=223, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Call Graph", DockArea=LEFT, x=0, y=0, w=578, h=257, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Instruction Trace", DockArea=LEFT, x=0, y=2, w=578, h=131, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Data Sampling", DockArea=BOTTOM, x=0, y=0, w=812, h=633, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
+OpenWindow="Console", DockArea=BOTTOM, x=1, y=0, w=1524, h=633, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="FreeRTOS", DockArea=RIGHT, x=0, y=2, w=1142, h=265, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, Showing="Task List"
+TableHeader="Registers 1", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Description"], ColWidths=[177;126;824]
+TableHeader="Functions", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Address";"Size";"#Insts";"Source"], ColWidths=[52;64;44;57;346]
+TableHeader="Call Graph", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Stack Total";"Stack Local";"Code Total";"Code Local";"Depth";"Called From"], ColWidths=[1211;100;100;100;100;119;100]
+TableHeader="Data Sampling Table", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time"], ColWidths=[100;100]
+TableHeader="Data Sampling Setup", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Type";"Value";"Min";"Max";"Average";"# Changes";"Min. Change";"Max. Change"], ColWidths=[118;100;100;100;100;100;100;100;100]
+TableHeader="Power Sampling", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
+TableHeader="Task List", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Name";"Run Count";"Priority";"Status";"Timeout";"Stack Info (Free / Size)";"ID";"Mutex Count";"Notified Value";"Notify State"], ColWidths=[110;110;110;110;110;110;110;110;110;152]
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[119;330;100;100]
+TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
+TableHeader="Call Stack", SortCol="Function", SortOrder="ASCENDING", VisibleCols=["Function";"Stack Frame";"Source";"PC";"Return Address";"Stack Used"], ColWidths=[279;112;158;100;168;325]

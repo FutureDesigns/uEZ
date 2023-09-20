@@ -420,7 +420,7 @@ T_uezError Flash_S29GL064N90_16Bit_Write(
         TUInt32 numWordsInPage;
         TUInt32 i;
         TUInt32 count;
-        TUInt32 lastAddr;
+        TUInt32 lastAddr = 0;
 
         error = IEnsureChipInfo(aWorkspace);
         if (error)

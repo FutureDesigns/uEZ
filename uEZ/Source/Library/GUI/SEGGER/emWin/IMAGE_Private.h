@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : IMAGE_Private.h
@@ -45,8 +45,9 @@ Purpose     : Private IMAGE include
 #ifndef IMAGE_PRIVATE_H
 #define IMAGE_PRIVATE_H
 
-#include "IMAGE.h"
 #include "GUI_Private.h"
+#include "WM_Intern.h"
+#include "IMAGE.h"
 
 #if GUI_WINSUPPORT
 
@@ -74,16 +75,16 @@ typedef struct {
   WIDGET              Widget;
   IMAGE_PROPS         Props;
   const void        * pData;                                                          // Data pointer of the object to be drawn (Bitmap, BMP, GIF, JPEG, PNG)
-  void             (* pfDrawImageAt) (IMAGE_Handle hObj, int32_t xPos, int32_t yPos);         // Object specific (Bitmap, BMP, GIF, JPEG, PNG) code
+  void             (* pfDrawImageAt) (IMAGE_Handle hObj, int xPos, int yPos);         // Object specific (Bitmap, BMP, GIF, JPEG, PNG) code
   void             (* pfPaint)       (IMAGE_Handle hObj);                             // Drawing method specific (Default, Tiled, Magnified) code
-  void             (* pfGetImageSize)(IMAGE_Handle hObj, int32_t * pxSize, int32_t * pySize); // Returns the image size of the attached item
+  void             (* pfGetImageSize)(IMAGE_Handle hObj, int * pxSize, int * pySize); // Returns the image size of the attached item
   void             (* pfOnTimer)     (IMAGE_Handle hObj);                             // Timer function for animated images (currently only animated GIFs are supported)
   U32                 FileSize;
   //
   // Data items used by IAMGE_GIF.c
   //
-  int32_t                 NumImages;    // Number of (sub)images
-  int32_t                 CurrentImage; // Image index used for animated images
+  int                 NumImages;    // Number of (sub)images
+  int                 CurrentImage; // Image index used for animated images
   GUI_TIMER_HANDLE    hTimer;       // Timer used for animated images
   //
   // Data items used by IAMGE_DTA.c
@@ -137,7 +138,8 @@ extern IMAGE_PROPS IMAGE__DefaultProps;
 **********************************************************************
 */
 void IMAGE__SetWindowSize(IMAGE_Handle hObj);
-void IMAGE__FreeAttached (IMAGE_Handle hObj, int32_t LeaveTimer);
+void IMAGE__FreeAttached (IMAGE_Handle hObj, int LeaveTimer);
+void IMAGE__SetVoid      (IMAGE_Handle hObj, const void * pData);
 
 #endif // GUI_WINSUPPORT
 #endif // IMAGE_PRIVATE_H

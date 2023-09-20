@@ -20,14 +20,13 @@
 //#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_TIANMA_TM047NBH01
 //#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_TIANMA_TM043NBH02
 
+#define USE_RESISTIVE_TOUCH                 1 // Set to 1 for resistive touch screen, 0 for PCAP. Affects some calibration/FCT code and startup routines.
+
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY            1
 #define configUSE_TIMERS                    1
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
-
-#define SEGGER_ENABLE_RTT                   0
-#define SEGGER_ENABLE_SYSTEM_VIEW           0
 
 #ifdef NDEBUG
 #define UEZ_REGISTER                        0
@@ -50,7 +49,7 @@
 
 #define UEZ_ENABLE_USB_HOST_STACK           1
 #define UEZ_ENABLE_USB_DEVICE_STACK         1
-#define UEZ_ENABLE_TCPIP_STACK              1
+#define UEZ_ENABLE_TCPIP_STACK              0
 #define UEZ_BASIC_WEB_SERVER                UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
 #define UEZ_HTTP_SERVER                     0
@@ -82,15 +81,22 @@
 #define APP_DEMO_COM                        1
 #endif
 
-#define INCLUDE_EMWIN                       0
+#define INCLUDE_EMWIN                       1
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
+
+// smaller demos
+#define SHOW_GUIDEMO_SPEED                  0
+#define SHOW_GUIDEMO_AATEXT                 1
+#define SHOW_GUIDEMO_BARGRAPH               1
+#define SHOW_GUIDEMO_COLORBAR               1
+#define SHOW_GUIDEMO_CURSOR                 0
+
+// large demos
 #define SHOW_GUIDEMO_AUTOMOTIVE             0
-#define SHOW_GUIDEMO_GRAPH                  1
-#define SHOW_GUIDEMO_LISTVIE                1
-#define SHOW_GUIDEMO_SPEED                  1
+#define SHOW_GUIDEMO_GRAPH                  0
+#define SHOW_GUIDEMO_LISTVIEW               0
 #define SHOW_GUIDEMO_TREEVIEW               0
+#define SHOW_GUIDEMO_ICONVIEW               0
+#define SHOW_GUIDEMO_TRANSPARENTDIALOG      0
 
 #define UEZ_SLIDESHOW_NAME                  "DK-LPC1788"
-#define SLIDESHOW_PREFETCH_AHEAD            5
-#define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         5

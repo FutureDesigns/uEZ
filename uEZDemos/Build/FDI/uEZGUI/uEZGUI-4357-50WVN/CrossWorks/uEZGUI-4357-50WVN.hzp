@@ -35,7 +35,7 @@
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;__THUMB;LWIP_2_0_x"
-      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN;../../../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Library/LPCOpen;../../../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
+      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN;../../../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Library/LPCOpen;../../../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
       debug_register_definition_file="$(TargetsDir)/LPC4300/LPC4300_Peripherals.xml"
       debug_startup_completion_point="main"
       gcc_c_language_standard="c11"
@@ -44,7 +44,7 @@
       gcc_wchar_size="32-Bit"
       link_include_startup_code="No"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-4357-50WVN_MemoryMap.xml"
-      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x1000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x1000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x1000;CS0_CM0_SIZE=0x200000"
+      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x0000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x1000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x00000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x0000;CS0_CM0_SIZE=0x200000"
       linker_output_format="hex"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
       linker_printf_fmt_level="long"
@@ -144,30 +144,21 @@
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c" />
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h" />
           <file file_name="../../../../../Source/App/uEZGUI/Config_App.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/FuncTestFramework.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest.h" />
           <file file_name="../../../../../Source/App/uEZGUI/main.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/TestCmds.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/TestCmds.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/TestMode.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.c">
+          <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c">
             <configuration
-              Name="THUMB Flash Debug"
-              build_exclude_from_build="Yes" />
-            <configuration
-              Name="THUMB Flash Debug-Trace"
-              build_exclude_from_build="Yes" />
-            <configuration
-              Name="THUMB Flash Release"
-              build_exclude_from_build="Yes" />
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
           </file>
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTestLoop.c" />
         </folder>
         <folder Name="uEZDemoCommon">
-          <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppMenu.c" />
@@ -175,22 +166,62 @@
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Audio.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/AudioPlayer.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/BrightnessControlMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/BrightnessControlMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/Calibration.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Calibration.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/ConsoleMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/DrawMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/MultiSlideshowMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/ConsoleMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/DrawMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/MultiSlideshowMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/NVSettings.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/SingleSlideshowMode.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/Slideshow.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/TempMode.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/TimeDateMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TempMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TimeDateMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
           <file file_name="../../../../../Source/App/uEZDemoCommon/UDCImages.c">
             <configuration
               Name="Common"
@@ -201,8 +232,38 @@
           <file file_name="../../../../../Source/App/uEZDemoCommon/uEZDemoCommon.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayer.h" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayerSelection.c" />
-          <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/VideoPlayerSelection.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/YourAppMode.c">
+            <configuration
+              Name="Common"
+              default_code_section=".ExternalFlashText"
+              default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FuncTestFramework.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.c">
+            <configuration
+              Name="THUMB Flash Debug"
+              build_exclude_from_build="Yes" />
+            <configuration
+              Name="THUMB Flash Debug-Trace"
+              build_exclude_from_build="Yes" />
+            <configuration
+              Name="THUMB Flash Release"
+              build_exclude_from_build="Yes" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTestLoop.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TestCmds.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TestCmds.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TestMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/App_RTOS.c" />
         </folder>
       </folder>
       <folder Name="Library">
@@ -212,8 +273,8 @@
               <folder Name="Libraries">
                 <folder Name="NXP">
                   <folder Name="CrossWorks">
-                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_548_GCC_M4F.a" />
-                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_548_GCC_M0.a">
+                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M4F.a" />
+                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M0.a">
                       <configuration
                         Name="Common"
                         build_exclude_from_build="Yes" />
@@ -241,6 +302,7 @@
           <folder Name="uEZGUI-4357-50WVN">
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN/uEZGUI_4357_50WVN.c" />
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN/uEZPlatform.h" />
+            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN/uEZPlatformTest.c" />
           </folder>
         </folder>
       </folder>

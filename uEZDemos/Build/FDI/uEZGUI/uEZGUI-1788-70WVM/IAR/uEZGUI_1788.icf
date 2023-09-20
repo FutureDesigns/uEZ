@@ -7,7 +7,7 @@ define symbol __ICFEDIT_intvec_start__ = 0x00000000;
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ROM_start__ = 0x00000080;
 define symbol __ICFEDIT_region_ROM_end__   = 0x0007FFFF;
-define symbol __ICFEDIT_region_RAM_start__ = 0xA0700000;
+define symbol __ICFEDIT_region_RAM_start__ = 0xA0000000;
 define symbol __ICFEDIT_region_RAM_end__   = 0xA07FFFFF;
 
 /*-Sizes-*/
@@ -17,7 +17,7 @@ define symbol __ICFEDIT_size_irqstack__ = 0x100;
 define symbol __ICFEDIT_size_fiqstack__ = 0x100;
 define symbol __ICFEDIT_size_undstack__ = 0x10;
 define symbol __ICFEDIT_size_abtstack__ = 0x10;
-define symbol __ICFEDIT_size_heap__     = 500000;
+define symbol __ICFEDIT_size_heap__     = 900000;
 /**** End of ICF editor section. ###ICF###*/
 
 
@@ -49,6 +49,7 @@ define region IRAM_region = mem:[from IRAM_start to IRAM_end];
 define region NORFlash_region = mem:[from NORFlash_start   to NORFlash_end];
 define region AHB0_region = mem:[from AHB0_start to AHB0_end];
 define region AHB1_region = mem:[from AHB1_start to AHB1_end];
+define region AHB_region = mem:[from AHB0_start to AHB1_end];
 
 /*-- Blocks: ----------------------------------------------------------------*/
 define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
@@ -89,9 +90,25 @@ place at address mem:IRAM_start  {
 
 place in ROM_region   { readonly };
 
-/*place in NORFlash_region   { readonly object UDCImages.o};*/
+/*place in NORFlash_region   { 
+    readonly section .ExternalFlashText,
+    readonly section .ExternalFlashRodata,
+    readonly section .ExternalFlash,
+    ro object UDCImages.o,
+    ro object GUIDEMO_Resource.o,};*/
+
+/* Place these sections in order at the very beginning of SDRAM */
+/* Currently in uEZ it is important that frames is first. */
+define block GUI_ARRAYS with fixed order {
+    readwrite section ".frames", /*Frames section*/
+    readwrite section ".video",
+    readwrite section ".emWin", /*emWin section*/
+    /*Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. */
+    readwrite section ".network" /*Network section*/
+};
 
 place in RAM_region { 
+    first block GUI_ARRAYS,
     readwrite,
     block SVC_STACK, 
     block IRQ_STACK, 
@@ -102,12 +119,22 @@ place in RAM_region {
 };
 
 place in AHB0_region {
-    readwrite section .emacmem,
+    //readwrite section .emacmem,
 };
 
 place in AHB1_region {
+    //readwrite section .mcimem,
+    //readwrite section .usbhostmem,
+};
+
+define block AHB_ARRAYS with fixed order {
     readwrite section .usbhostmem,
     readwrite section .mcimem,
+    readwrite section .emacmem,
+};
+
+place in AHB_region {
+    first block AHB_ARRAYS,
 };
 
 /*-- Exports: ---------------------------------------------------------------*/

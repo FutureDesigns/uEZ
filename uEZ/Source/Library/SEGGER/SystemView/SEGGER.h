@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.10                                    *
+*       SystemView version: 3.32                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -69,10 +69,8 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 *
 **********************************************************************
 */
-// Note that I redefined Rowley and GCC inline in MCU.h files to match below.
-// KEIL already matched. IAR inline isn't changing today.
-// So this will stay commented out but included for reference.
-/*#ifndef INLINE
+
+#ifndef INLINE // this may need to be commented out on some toolchains
   #if (defined(__ICCARM__) || defined(__RX) || defined(__ICCRX__))
     //
     // Other known compilers.
@@ -102,7 +100,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
       #define INLINE
     #endif
   #endif
-#endif*/
+#endif
 
 /*********************************************************************
 *
@@ -147,12 +145,12 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 
 typedef struct {
   char* pBuffer;
-  int32_t   BufferSize;
-  int32_t   Cnt;
+  int   BufferSize;
+  int   Cnt;
 } SEGGER_BUFFER_DESC;
 
 typedef struct {
-  uint32_t CacheLineSize;                             // 0: No Cache. Most Systems such as ARM9 use a 32 bytes cache line size.
+  unsigned int CacheLineSize;                             // 0: No Cache. Most Systems such as ARM9 use a 32 bytes cache line size.
   void (*pfDMB)       (void);                             // Optional DMB function for Data Memory Barrier to make sure all memory operations are completed.
   void (*pfClean)     (void *p, unsigned long NumBytes);  // Optional clean function for cached memory.
   void (*pfInvalidate)(void *p, unsigned long NumBytes);  // Optional invalidate function for cached memory.
@@ -168,11 +166,11 @@ struct SEGGER_SNPRINTF_CONTEXT_struct {
 
 typedef struct {
   void (*pfStoreChar)       (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, char c);
-  int32_t  (*pfPrintUnsigned)   (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, U32 v, unsigned Base, char Flags, int32_t Width, int32_t Precision);
-  int32_t  (*pfPrintInt)        (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, I32 v, unsigned Base, char Flags, int32_t Width, int32_t Precision);
+  int  (*pfPrintUnsigned)   (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, U32 v, unsigned Base, char Flags, int Width, int Precision);
+  int  (*pfPrintInt)        (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, I32 v, unsigned Base, char Flags, int Width, int Precision);
 } SEGGER_PRINTF_API;
 
-typedef void (*SEGGER_pFormatter)(SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, const SEGGER_PRINTF_API* pApi, va_list* pParamList, char Lead, int32_t Width, int32_t Precision);
+typedef void (*SEGGER_pFormatter)(SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, const SEGGER_PRINTF_API* pApi, va_list* pParamList, char Lead, int Width, int Precision);
 
 typedef struct SEGGER_PRINTF_FORMATTER {
   struct SEGGER_PRINTF_FORMATTER* pNext;              // Pointer to next formatter.
@@ -182,7 +180,7 @@ typedef struct SEGGER_PRINTF_FORMATTER {
 
 typedef struct {
   U32 (*pfGetHPTimestamp)(void);          // Mandatory, pfGetHPTimestamp
-  int32_t (*pfGetUID)        (U8 abUID[16]);  // Optional,  pfGetUID
+  int (*pfGetUID)        (U8 abUID[16]);  // Optional,  pfGetUID
 } SEGGER_BSP_API;
 
 /*********************************************************************
@@ -195,32 +193,32 @@ typedef struct {
 //
 // Memory operations.
 //
-void SEGGER_ARM_memcpy(void* pDest, const void* pSrc, int32_t NumBytes);
-void SEGGER_memcpy    (void* pDest, const void* pSrc, uint32_t NumBytes);
+void SEGGER_ARM_memcpy(void* pDest, const void* pSrc, int NumBytes);
+void SEGGER_memcpy    (void* pDest, const void* pSrc, unsigned NumBytes);
 void SEGGER_memxor    (void* pDest, const void* pSrc, unsigned NumBytes);
 
 //
 // String functions.
 //
-int32_t      SEGGER_atoi      (const char* s);
-int32_t      SEGGER_isalnum   (int32_t c);
-int32_t      SEGGER_isalpha   (int32_t c);
-unsigned SEGGER_strlen    (const char* s);
-int32_t      SEGGER_tolower   (int32_t c);
-int32_t      SEGGER_strcasecmp(const char* sText1, const char* sText2);
-int32_t      SEGGER_strncasecmp(const char *sText1, const char *sText2, unsigned Count);
+int      SEGGER_atoi       (const char* s);
+int      SEGGER_isalnum    (int c);
+int      SEGGER_isalpha    (int c);
+unsigned SEGGER_strlen     (const char* s);
+int      SEGGER_tolower    (int c);
+int      SEGGER_strcasecmp (const char* sText1, const char* sText2);
+int      SEGGER_strncasecmp(const char *sText1, const char *sText2, unsigned Count);
 
 //
 // Buffer/printf related.
 //
 void SEGGER_StoreChar    (SEGGER_BUFFER_DESC* pBufferDesc, char c);
-void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC* pBufferDesc, U32 v, unsigned Base, int32_t Precision);
-void SEGGER_PrintInt     (SEGGER_BUFFER_DESC* pBufferDesc, I32 v, unsigned Base, int32_t Precision);
-int32_t  SEGGER_snprintf     (char* pBuffer, int32_t BufferSize, const char* sFormat, ...);
-int32_t  SEGGER_vsnprintf    (char* pBuffer, int32_t BufferSize, const char* sFormat, va_list ParamList);
-int32_t  SEGGER_vsnprintfEx  (SEGGER_SNPRINTF_CONTEXT* pContext, const char* sFormat, va_list ParamList);
+void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC* pBufferDesc, U32 v, unsigned Base, int Precision);
+void SEGGER_PrintInt     (SEGGER_BUFFER_DESC* pBufferDesc, I32 v, unsigned Base, int Precision);
+int  SEGGER_snprintf     (char* pBuffer, int BufferSize, const char* sFormat, ...);
+int  SEGGER_vsnprintf    (char* pBuffer, int BufferSize, const char* sFormat, va_list ParamList);
+int  SEGGER_vsnprintfEx  (SEGGER_SNPRINTF_CONTEXT* pContext, const char* sFormat, va_list ParamList);
 
-int32_t  SEGGER_PRINTF_AddFormatter       (SEGGER_PRINTF_FORMATTER* pFormatter, SEGGER_pFormatter pfFormatter, char c);
+int  SEGGER_PRINTF_AddFormatter       (SEGGER_PRINTF_FORMATTER* pFormatter, SEGGER_pFormatter pfFormatter, char c);
 void SEGGER_PRINTF_AddDoubleFormatter (void);
 void SEGGER_PRINTF_AddIPFormatter     (void);
 void SEGGER_PRINTF_AddBLUEFormatter   (void);
@@ -232,8 +230,8 @@ void SEGGER_PRINTF_AddHTMLFormatter   (void);
 //
 // BSP abstraction API.
 //
-int32_t  SEGGER_BSP_GetUID  (U8 abUID[16]);
-int32_t  SEGGER_BSP_GetUID32(U32* pUID);
+int  SEGGER_BSP_GetUID  (U8 abUID[16]);
+int  SEGGER_BSP_GetUID32(U32* pUID);
 void SEGGER_BSP_SetAPI  (const SEGGER_BSP_API* pAPI);
 void SEGGER_BSP_SeedUID (void);
 

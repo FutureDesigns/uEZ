@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SPINBOX_Private.h
@@ -45,9 +45,9 @@ Purpose     : Private SPINBOX include
 #ifndef SPINBOX_PRIVATE_H
 #define SPINBOX_PRIVATE_H
 
+#include "WM_Intern.h"
 #include "SPINBOX.h"
 #include "EDIT.h"
-#include "GUI_Private.h"
 
 #if GUI_WINSUPPORT
 
@@ -81,6 +81,8 @@ typedef struct {
   U16                  Step;                 // Value will be increased/decreased by this amount when a button is clicked.
   U16                  ButtonSize;           // Size of the button depending on the orientation.
   U8                   Edge;                 // Buttons reside on the left or right edge of the widget.
+  U32                  PeriodStart;          // Period after auto increment starts (holding button)
+  U32                  PeriodTimer;          // Period between two increments after auto increment starts (holding button)
   SPINBOX_SKIN_PRIVATE SkinPrivate;          // Structure containing a pointer to the used DrawSkin-function.
 } SPINBOX_PROPS;
 
@@ -131,8 +133,8 @@ void SPINBOX__ApplyProps     (SPINBOX_Handle hObj, SPINBOX_SKINFLEX_PROPS * cons
 void SPINBOX__DrawBk         (SPINBOX_Handle hObj, GUI_COLOR   Color);
 void SPINBOX__GetButtonRect  (SPINBOX_Handle hObj, GUI_RECT  * pButtonRect, U8  ButtonIndex);
 void SPINBOX__GetButtonRectEx(SPINBOX_Handle hObj, WIDGET_ITEM_DRAW_INFO * ItemInfo);
-int32_t  SPINBOX__GetDefaultMax  (void);
-int32_t  SPINBOX__GetDefaultMin  (void);
+int  SPINBOX__GetDefaultMax  (void);
+int  SPINBOX__GetDefaultMin  (void);
 
 /*********************************************************************
 *

@@ -45,7 +45,7 @@
 #define USBRAM_SECTION  RAM2
 
 #if defined(__ICCARM__)
-	#define __BSS(x)       @ ".ahb_sram1"
+	#define __BSS(x)       @ ".usbhostmem"
 #elif defined(__CC_ARM)
 	#define __BSS(x)
 #else

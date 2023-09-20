@@ -41,6 +41,10 @@
 
 #include "netif/ppp/pppcrypt.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MPPE_PAD		4	/* MPPE growth per frame */
 #define MPPE_MAX_KEY_LEN	16	/* largest key length (128-bit) */
 
@@ -158,8 +162,8 @@ typedef struct ppp_mppe_state {
 	u8_t bits;                  /* MPPE control bits */
 	u16_t ccount;               /* 12-bit coherency count (seqno)  */
 	u16_t sanity_errors;        /* take down LCP if too many */
-	uint32_t stateful  :1;  /* stateful mode flag */
-	uint32_t discard   :1;  /* stateful mode packet loss flag */
+	unsigned int stateful  :1;  /* stateful mode flag */
+	unsigned int discard   :1;  /* stateful mode packet loss flag */
 } ppp_mppe_state;
 
 void mppe_set_key(ppp_pcb *pcb, ppp_mppe_state *state, u8_t *key);
@@ -168,6 +172,10 @@ void mppe_comp_reset(ppp_pcb *pcb, ppp_mppe_state *state);
 err_t mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, u16_t protocol);
 void mppe_decomp_reset(ppp_pcb *pcb, ppp_mppe_state *state);
 err_t mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MPPE_H */
 #endif /* PPP_SUPPORT && MPPE_SUPPORT */

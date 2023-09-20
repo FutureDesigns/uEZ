@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SWIPELIST.h
@@ -45,8 +45,8 @@ Purpose     : SWIPELIST include
 #ifndef SWIPELIST_PRIVATE_H
 #define SWIPELIST_PRIVATE_H
 
+#include "WM_Intern.h"
 #include "SWIPELIST.h"
-#include "GUI_Private.h"
 #include "GUI_ARRAY.h"
 
 #if GUI_WINSUPPORT
@@ -59,21 +59,21 @@ Purpose     : SWIPELIST include
 */
 typedef struct {
   WM_HWIN hWin;
-  int32_t     xPos;
-  int32_t     yPos;
+  int     xPos;
+  int     yPos;
 } SWIPELIST_WIN;
 
 typedef struct {
   GUI_ARRAY      WinArray;
   GUI_ARRAY      TextArray;
-  int32_t            TextSize;
+  int            TextSize;
   WM_HMEM        hDrawObj;
   GUI_COLOR      SepColor;
-  int32_t            SepSize;
-  int32_t            Pos;
-  int32_t            Size;
-  int32_t            BitmapAlign;
-  int32_t            TextAlign;
+  int            SepSize;
+  int            Pos;
+  int            Size;
+  int            BitmapAlign;
+  int            TextAlign;
   U8             Flags;
   U32            UserData;
 } SWIPELIST_ITEM;
@@ -84,10 +84,11 @@ typedef struct {
   const GUI_FONT * pTextFont;
   GUI_COLOR        aTextColor[5];
   GUI_COLOR        aBkColor[3];
-  int32_t              BitmapSpace;
-  int32_t              aBorderSize[4];
+  int              BitmapSpace;
+  int              aBorderSize[4];
   U8               Flags;
-  int32_t              Threshold;
+  int              Threshold;
+  unsigned         Overlap;
 } SWIPELIST_PROPS;
 
 typedef struct {
@@ -95,12 +96,12 @@ typedef struct {
   SWIPELIST_PROPS         Props;
   WIDGET_DRAW_ITEM_FUNC * pfDrawItem;
   GUI_ARRAY               ItemArray;
-  int32_t                     Pos;
-  int32_t                     Size;
-  int32_t                     FirstVisible;
-  int32_t                     LastVisible;
-  int32_t                     Sel;
-  int32_t                     ReleasedItem;
+  int                     Pos;
+  int                     Size;
+  int                     FirstVisible;
+  int                     LastVisible;
+  int                     Sel;
+  int                     ReleasedItem;
 } SWIPELIST_OBJ;
 
 /*********************************************************************
@@ -130,8 +131,8 @@ typedef struct {
 */
 extern SWIPELIST_PROPS SWIPELIST__DefaultProps;
 extern GUI_COLOR       SWIPELIST__DefaultSepColor;
-extern int32_t             SWIPELIST__DefaultSepSize;
-extern int32_t             SWIPELIST__DefaultTextAlign;
+extern int             SWIPELIST__DefaultSepSize;
+extern int             SWIPELIST__DefaultTextAlign;
 
 /*********************************************************************
 *
@@ -139,9 +140,9 @@ extern int32_t             SWIPELIST__DefaultTextAlign;
 *
 **********************************************************************
 */
-void SWIPELIST__SetDrawObj   (SWIPELIST_Handle hObj, int32_t Index, int32_t Align, GUI_DRAW_HANDLE hDrawObj);
-void SWIPELIST__CalcItemPos  (GUI_ARRAY ItemArray, int32_t StartIndex, int32_t EndIndex, int32_t AddSize);
-int32_t  SWIPELIST__CalcItemSize (SWIPELIST_Handle hObj, int32_t ItemIndex);
+void SWIPELIST__SetDrawObj   (SWIPELIST_Handle hObj, int Index, int Align, GUI_DRAW_HANDLE hDrawObj);
+void SWIPELIST__CalcItemPos  (GUI_ARRAY ItemArray, int StartIndex, int EndIndex, int AddSize);
+int  SWIPELIST__CalcItemSize (SWIPELIST_Handle hObj, int ItemIndex);
 
 #endif   /* if GUI_WINSUPPORT */
 #endif   /* SWIPELIST_PRIVATE_H */

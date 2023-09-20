@@ -63,10 +63,10 @@ extern TUInt32 UEZEmWinGetRAMAddr(void);
 extern TUInt32 UEZEmWinGetRAMSize(void);
 
 #ifndef EMWIN_RAM_BASE_ADDR
-#define EMWIN_RAM_BASE_ADDR  UEZEmWinGetRAMAddr() // 0xA0200000
+#define EMWIN_RAM_BASE_ADDR  UEZEmWinGetRAMAddr()
 #endif
 #ifndef EMWIN_RAM_SIZE
-#define EMWIN_RAM_SIZE       UEZEmWinGetRAMSize() // 0x00200000
+#define EMWIN_RAM_SIZE       UEZEmWinGetRAMSize()
 #endif
 
 #define GUI_VRAM_BASE_ADDR  EMWIN_RAM_BASE_ADDR

@@ -141,7 +141,7 @@
 				#define ATTR_ERROR(Message)			   //__attribute__ (( error(Message) ))
 #else
 #if (COMPILER_TYPE==RowleyARM)
-                                #define ATTR_ERROR(Message)			   //__attribute__ (( error(Message) )) // CLANG doesn't like this
+                                #define ATTR_ERROR(Message)			   __attribute__ (( error(Message) )) // CLANG doesn't like this
 #else
                                 #define ATTR_ERROR(Message)			   __attribute__ (( error(Message) ))
 #endif

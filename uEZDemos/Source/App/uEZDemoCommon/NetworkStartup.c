@@ -25,11 +25,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <uEZ.h>
-#include "Source/Library/Web/BasicWeb/BasicWEB.h"
 #include <uEZPlatform.h>
 #include <NVSettings.h>
-#include "AppHTTPServer.h"
-//#include "ModbusTCPIPTask.h"
+#include <Config_Build.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -39,6 +37,10 @@
  * Types:
  *-------------------------------------------------------------------------*/
 
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
+#include "Source/Library/Web/BasicWeb/BasicWEB.h"
+#include "AppHTTPServer.h"
+//#include "ModbusTCPIPTask.h"
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -261,36 +263,37 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
 #else
     // Use non-volatile settings
     // Wired network uses the settings in NVSettings
-    memcpy(&network_settings.iMACAddress, G_nonvolatileSettings.iMACAddr, 6);
-    memcpy(&network_settings.iIPAddress.v4, G_nonvolatileSettings.iIPAddr, 4);
-    memcpy(&network_settings.iGatewayAddress.v4, G_nonvolatileSettings.iIPGateway, 4);
-    memcpy(&network_settings.iSubnetMask.v4, G_nonvolatileSettings.iIPMask, 4);
+    memcpy(&network_settings.iMACAddress, &G_nonvolatileSettings.iMACAddr, 6);
+    memcpy(&network_settings.iIPAddress.v4, &G_nonvolatileSettings.iIPAddr, 4);
+    memcpy(&network_settings.iGatewayAddress.v4, &G_nonvolatileSettings.iIPGateway, 4);
+    memcpy(&network_settings.iSubnetMask.v4, &G_nonvolatileSettings.iIPMask, 4);
 #endif
     UEZNetworkInfrastructureConfigure(network, &network_settings);
 }
 
 TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
-{	
+{
+//    UEZTaskDelay(2000); // can delay here to for example wait for SD card to init first.
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1) || (UEZ_ENABLE_WIRED_NETWORK == 1)
 #if 1//LWIP_DHCP && UEZ_ENABLE_WIRELESS_NETWORK
     TBool wait = ETrue;
     T_uezNetworkStatus status;
 #endif
-#if UEZ_ENABLE_WIRELESS_NETWORK || UEZ_ENABLE_WIRED_NETWORK
     T_uezError error = UEZ_ERROR_NONE;
 #endif
 
-#if UEZ_ENABLE_WIRELESS_NETWORK
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
     int wirelessStarted = 0;
     T_uezDevice wireless_network;
     extern void UEZPlatform_WirelessNetwork0_Require(void);
 #endif
-#if UEZ_ENABLE_WIRED_NETWORK
+#if (UEZ_ENABLE_WIRED_NETWORK == 1)
     T_uezDevice wired_network;
     extern void INetworkConfigureWirelessConnection(T_uezDevice network);
     extern void INetworkConfigureWirelessAccessPoint(T_uezDevice network);
 #endif
 
-#if UEZ_ENABLE_WIRED_NETWORK
+#if (UEZ_ENABLE_WIRED_NETWORK == 1)
     // ----------------------------------------------------------------------
     // Bring up the Wired Network
     // ----------------------------------------------------------------------
@@ -318,12 +321,16 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     // Report the result
     if (error) {
         printf("Bringing up wired network: **FAILED** (error = %d)\n", error);
+        if(error == 4) {
+            printf("Increase Project Heap Memory\n");
+        }
+        return 1;
     } else {
         printf("Bringing up wired network: Done\n");
     }
 #endif
 
-#if UEZ_ENABLE_WIRELESS_NETWORK
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
     // ----------------------------------------------------------------------
     // Bring up the Wireless Network
     // ----------------------------------------------------------------------
@@ -384,7 +391,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 
 //ModbusTCPIPTask_Start();
 
-#if UEZ_BASIC_WEB_SERVER
+#if (UEZ_BASIC_WEB_SERVER == 1)
     printf("Webserver starting\n");
     error = BasicWebStart(wired_network);
     if (error) {
@@ -394,11 +401,11 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     }
 #endif
 
-#if UEZ_HTTP_SERVER
-    #if UEZ_ENABLE_WIRED_NETWORK
+#if (UEZ_HTTP_SERVER == 1)
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
       App_HTTPServerStart(wired_network);
     #endif
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
     if (wirelessStarted)
         App_HTTPServerStart(wireless_network);
     #endif
@@ -406,6 +413,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 
     return 0;
 }
+#endif
 /*-------------------------------------------------------------------------*
  * End of File:  NetworkStartup.c
  *-------------------------------------------------------------------------*/

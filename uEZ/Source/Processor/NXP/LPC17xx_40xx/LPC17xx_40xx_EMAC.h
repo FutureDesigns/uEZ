@@ -58,6 +58,11 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+#define ETH_MTU        1500   /* Max. Ethernet Frame Size (Used by LwIP) */
+  
+#define ETH_FRAG_SIZE  1536   /* Packet Fragment size 1536 Bytes   */
+#define ETH_MAX_FLEN   1536   /* Max. Ethernet Frame Size          */
+  
 typedef struct {
     T_uezGPIOPortPin iTX_EN;    // ENET_TX_ENn  (O)     Transmit data enable, active low
     T_uezGPIOPortPin iTXD3;     // ENET_TXD[3]  (O)     Transmit data, bit 3

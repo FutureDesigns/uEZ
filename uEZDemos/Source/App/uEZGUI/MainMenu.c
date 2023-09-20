@@ -197,6 +197,7 @@ void CalcChecksumTask(T_uezTask aMyTask, void *aParams)
     G_romChecksumCalculated = ETrue;
 }
 
+
 /*---------------------------------------------------------------------------*
  * Routine:  TitleScreen
  *---------------------------------------------------------------------------*
@@ -208,7 +209,7 @@ void TitleScreen(void)
     T_uezDevice lcd;
     T_pixelColor *pixels;
     TUInt16 i;
-    char buffer[15];
+    //char buffer[15];
 
     G_romChecksumCalculated = EFalse;
     UEZTaskCreate(
@@ -257,16 +258,15 @@ void TitleScreen(void)
 #else
         while (!G_romChecksumCalculated)
             UEZTaskDelay(10);
-        sprintf(buffer, "CS:%08X", G_romChecksum);
+        /*sprintf(buffer, "CS:%08X", G_romChecksum); // TODO you can't actually see this.
         swim_set_font_transparency(&G_mmWin, 1);
         swim_put_text_xy(
             &G_mmWin,
             buffer,
             5,
             DISPLAY_HEIGHT-15);
-        swim_set_font_transparency(&G_mmWin, 0);
+        swim_set_font_transparency(&G_mmWin, 0);*/
 #endif
-
     }
 }
 
@@ -304,7 +304,17 @@ void MainMenu(void)
 #if (SPEAKER_RELIABILITY_TEST == 0)
         Calibrate(CalibrateTestIfTouchscreenHeld());
 #endif
-        UEZTaskDelay(1000);
+
+        T_uezError error;
+
+        //Storage_PrintInfo('0', EFalse);
+        // Check SD card to force init, if SD card is present we return immediately.
+        // If SD card is not present it will delay for about 1 second waiting on timeout.
+        // We will delay below for 1 second timeout either way so that bootup will take the same amount of time.
+        error = Storage_PrintInfo('1', ETrue);
+        if (error == UEZ_ERROR_NONE) {
+            UEZTaskDelay(1000); // delay if card found
+        }        
 
 #else
         UEZLCDBacklight(lcd, 255);

@@ -53,6 +53,10 @@
 #include "ppp.h"
 #include "pppdebug.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Memory used for control packets.
  *
@@ -152,9 +156,9 @@ struct link_callbacks {
   /* Send a packet from lwIP core (IPv4 or IPv6) */
   err_t (*netif_output)(ppp_pcb *pcb, void *ctx, struct pbuf *p, u_short protocol);
   /* configure the transmit-side characteristics of the PPP interface */
-  void (*send_config)(ppp_pcb *pcb, void *ctx, u32_t accm, int32_t pcomp, int32_t accomp);
+  void (*send_config)(ppp_pcb *pcb, void *ctx, u32_t accm, int pcomp, int accomp);
   /* confire the receive-side characteristics of the PPP interface */
-  void (*recv_config)(ppp_pcb *pcb, void *ctx, u32_t accm, int32_t pcomp, int32_t accomp);
+  void (*recv_config)(ppp_pcb *pcb, void *ctx, u32_t accm, int pcomp, int accomp);
 };
 
 /*
@@ -172,24 +176,24 @@ enum NPmode {
  */
 #if PPP_STATS_SUPPORT
 struct pppstat	{
-    uint32_t ppp_ibytes;	/* bytes received */
-    uint32_t ppp_ipackets;	/* packets received */
-    uint32_t ppp_ierrors;	/* receive errors */
-    uint32_t ppp_obytes;	/* bytes sent */
-    uint32_t ppp_opackets;	/* packets sent */
-    uint32_t ppp_oerrors;	/* transmit errors */
+    unsigned int ppp_ibytes;	/* bytes received */
+    unsigned int ppp_ipackets;	/* packets received */
+    unsigned int ppp_ierrors;	/* receive errors */
+    unsigned int ppp_obytes;	/* bytes sent */
+    unsigned int ppp_opackets;	/* packets sent */
+    unsigned int ppp_oerrors;	/* transmit errors */
 };
 
 #if VJ_SUPPORT
 struct vjstat {
-    uint32_t vjs_packets;	/* outbound packets */
-    uint32_t vjs_compressed; /* outbound compressed packets */
-    uint32_t vjs_searches;	/* searches for connection state */
-    uint32_t vjs_misses;	/* times couldn't find conn. state */
-    uint32_t vjs_uncompressedin; /* inbound uncompressed packets */
-    uint32_t vjs_compressedin; /* inbound compressed packets */
-    uint32_t vjs_errorin;	/* inbound unknown type packets */
-    uint32_t vjs_tossed;	/* inbound packets tossed because of error */
+    unsigned int vjs_packets;	/* outbound packets */
+    unsigned int vjs_compressed; /* outbound compressed packets */
+    unsigned int vjs_searches;	/* searches for connection state */
+    unsigned int vjs_misses;	/* times couldn't find conn. state */
+    unsigned int vjs_uncompressedin; /* inbound uncompressed packets */
+    unsigned int vjs_compressedin; /* inbound compressed packets */
+    unsigned int vjs_errorin;	/* inbound unknown type packets */
+    unsigned int vjs_tossed;	/* inbound packets tossed because of error */
 };
 #endif /* VJ_SUPPORT */
 
@@ -202,13 +206,13 @@ struct ppp_stats {
 
 #if CCP_SUPPORT
 struct compstat {
-    uint32_t unc_bytes;	/* total uncompressed bytes */
-    uint32_t unc_packets;	/* total uncompressed packets */
-    uint32_t comp_bytes;	/* compressed bytes */
-    uint32_t comp_packets;	/* compressed packets */
-    uint32_t inc_bytes;	/* incompressible bytes */
-    uint32_t inc_packets;	/* incompressible packets */
-    uint32_t ratio;		/* recent compression ratio << 8 */
+    unsigned int unc_bytes;	/* total uncompressed bytes */
+    unsigned int unc_packets;	/* total uncompressed packets */
+    unsigned int comp_bytes;	/* compressed bytes */
+    unsigned int comp_packets;	/* compressed packets */
+    unsigned int inc_bytes;	/* incompressible bytes */
+    unsigned int inc_packets;	/* incompressible packets */
+    unsigned int ratio;		/* recent compression ratio << 8 */
 };
 
 struct ppp_comp_stats {
@@ -250,13 +254,13 @@ extern u8_t	bundle_terminating;
 #endif
 
 #ifdef MAXOCTETS
-extern uint32_t maxoctets;	     /* Maximum octetes per session (in bytes) */
-extern int32_t       maxoctets_dir;      /* Direction :
+extern unsigned int maxoctets;	     /* Maximum octetes per session (in bytes) */
+extern int       maxoctets_dir;      /* Direction :
 				      0 - in+out (default)
 				      1 - in
 				      2 - out
 				      3 - max(in,out) */
-extern int32_t       maxoctets_timeout;  /* Timeout for check of octets limit */
+extern int       maxoctets_timeout;  /* Timeout for check of octets limit */
 #define PPP_OCTETS_DIRECTION_SUM        0
 #define PPP_OCTETS_DIRECTION_IN         1
 #define PPP_OCTETS_DIRECTION_OUT        2
@@ -279,7 +283,7 @@ struct protent {
     /* Initialization procedure */
     void (*init) (ppp_pcb *pcb);
     /* Process a received packet */
-    void (*input) (ppp_pcb *pcb, u_char *pkt, int32_t len);
+    void (*input) (ppp_pcb *pcb, u_char *pkt, int len);
     /* Process a received protocol-reject */
     void (*protrej) (ppp_pcb *pcb);
     /* Lower layer has come up */
@@ -292,13 +296,13 @@ struct protent {
     void (*close) (ppp_pcb *pcb, const char *reason);
 #if PRINTPKT_SUPPORT
     /* Print a packet in readable form */
-    int32_t  (*printpkt) (const u_char *pkt, int32_t len,
+    int  (*printpkt) (const u_char *pkt, int len,
 			  void (*printer) (void *, const char *, ...),
 			  void *arg);
 #endif /* PRINTPKT_SUPPORT */
 #if PPP_DATAINPUT
     /* Process a received data packet */
-    void (*datainput) (ppp_pcb *pcb, u_char *pkt, int32_t len);
+    void (*datainput) (ppp_pcb *pcb, u_char *pkt, int len);
 #endif /* PPP_DATAINPUT */
 #if PRINTPKT_SUPPORT
     const char *name;		/* Text name of protocol */
@@ -311,9 +315,9 @@ struct protent {
 #endif /* PPP_OPTIONS */
 #if DEMAND_SUPPORT
     /* Configure interface for demand-dial */
-    int32_t  (*demand_conf) (int32_t unit);
+    int  (*demand_conf) (int unit);
     /* Say whether to bring up link for this pkt */
-    int32_t  (*active_pkt) (u_char *pkt, int32_t len);
+    int  (*active_pkt) (u_char *pkt, int len);
 #endif /* DEMAND_SUPPORT */
 };
 
@@ -366,10 +370,10 @@ extern const struct protent* const protocols[];
  * PPP statistics structure
  */
 struct pppd_stats {
-    uint32_t	bytes_in;
-    uint32_t	bytes_out;
-    uint32_t	pkts_in;
-    uint32_t	pkts_out;
+    unsigned int	bytes_in;
+    unsigned int	bytes_out;
+    unsigned int	pkts_in;
+    unsigned int	pkts_out;
 };
 #endif /* PPP_STATS_SUPPORT */
 
@@ -384,7 +388,7 @@ struct pppd_stats {
  */
 
 /* initialize the PPP subsystem */
-int32_t ppp_init(void);
+int ppp_init(void);
 
 /*
  * Functions called from PPP link protocols.
@@ -406,9 +410,6 @@ void ppp_link_end(ppp_pcb *pcb);
 /* function called to process input packet */
 void ppp_input(ppp_pcb *pcb, struct pbuf *pb);
 
-/* helper function, merge a pbuf chain into one pbuf */
-struct pbuf *ppp_singlebuf(struct pbuf *p);
-
 
 /*
  * Functions called by PPP protocols.
@@ -420,74 +421,74 @@ err_t ppp_write(ppp_pcb *pcb, struct pbuf *p);
 /* functions called by auth.c link_terminated() */
 void ppp_link_terminated(ppp_pcb *pcb);
 
-void new_phase(ppp_pcb *pcb, int32_t p);
+void new_phase(ppp_pcb *pcb, int p);
 
-int32_t ppp_send_config(ppp_pcb *pcb, int32_t mtu, u32_t accm, int32_t pcomp, int32_t accomp);
-int32_t ppp_recv_config(ppp_pcb *pcb, int32_t mru, u32_t accm, int32_t pcomp, int32_t accomp);
+int ppp_send_config(ppp_pcb *pcb, int mtu, u32_t accm, int pcomp, int accomp);
+int ppp_recv_config(ppp_pcb *pcb, int mru, u32_t accm, int pcomp, int accomp);
 
 #if PPP_IPV4_SUPPORT
-int32_t sifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr, u32_t netmask);
-int32_t cifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr);
+int sifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr, u32_t netmask);
+int cifaddr(ppp_pcb *pcb, u32_t our_adr, u32_t his_adr);
 #if 0 /* UNUSED - PROXY ARP */
-int32_t sifproxyarp(ppp_pcb *pcb, u32_t his_adr);
-int32_t cifproxyarp(ppp_pcb *pcb, u32_t his_adr);
+int sifproxyarp(ppp_pcb *pcb, u32_t his_adr);
+int cifproxyarp(ppp_pcb *pcb, u32_t his_adr);
 #endif /* UNUSED - PROXY ARP */
 #if LWIP_DNS
-int32_t sdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2);
-int32_t cdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2);
+int sdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2);
+int cdns(ppp_pcb *pcb, u32_t ns1, u32_t ns2);
 #endif /* LWIP_DNS */
 #if VJ_SUPPORT
-int32_t sifvjcomp(ppp_pcb *pcb, int32_t vjcomp, int32_t cidcomp, int32_t maxcid);
+int sifvjcomp(ppp_pcb *pcb, int vjcomp, int cidcomp, int maxcid);
 #endif /* VJ_SUPPORT */
-int32_t sifup(ppp_pcb *pcb);
-int32_t sifdown (ppp_pcb *pcb);
+int sifup(ppp_pcb *pcb);
+int sifdown (ppp_pcb *pcb);
 u32_t get_mask(u32_t addr);
 #endif /* PPP_IPV4_SUPPORT */
 
 #if PPP_IPV6_SUPPORT
-int32_t sif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
-int32_t cif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
-int32_t sif6up(ppp_pcb *pcb);
-int32_t sif6down (ppp_pcb *pcb);
+int sif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
+int cif6addr(ppp_pcb *pcb, eui64_t our_eui64, eui64_t his_eui64);
+int sif6up(ppp_pcb *pcb);
+int sif6down (ppp_pcb *pcb);
 #endif /* PPP_IPV6_SUPPORT */
 
 #if DEMAND_SUPPORT
-int32_t sifnpmode(ppp_pcb *pcb, int32_t proto, enum NPmode mode);
+int sifnpmode(ppp_pcb *pcb, int proto, enum NPmode mode);
 #endif /* DEMAND_SUPPORt */
 
-void netif_set_mtu(ppp_pcb *pcb, int32_t mtu);
-int32_t netif_get_mtu(ppp_pcb *pcb);
+void netif_set_mtu(ppp_pcb *pcb, int mtu);
+int netif_get_mtu(ppp_pcb *pcb);
 
 #if CCP_SUPPORT
 #if 0 /* unused */
-int32_t ccp_test(ppp_pcb *pcb, u_char *opt_ptr, int32_t opt_len, int32_t for_transmit);
+int ccp_test(ppp_pcb *pcb, u_char *opt_ptr, int opt_len, int for_transmit);
 #endif /* unused */
 void ccp_set(ppp_pcb *pcb, u8_t isopen, u8_t isup, u8_t receive_method, u8_t transmit_method);
 void ccp_reset_comp(ppp_pcb *pcb);
 void ccp_reset_decomp(ppp_pcb *pcb);
 #if 0 /* unused */
-int32_t ccp_fatal_error(ppp_pcb *pcb);
+int ccp_fatal_error(ppp_pcb *pcb);
 #endif /* unused */
 #endif /* CCP_SUPPORT */
 
 #if PPP_IDLETIMELIMIT
-int32_t get_idle_time(ppp_pcb *pcb, struct ppp_idle *ip);
+int get_idle_time(ppp_pcb *pcb, struct ppp_idle *ip);
 #endif /* PPP_IDLETIMELIMIT */
 
 #if DEMAND_SUPPORT
-int32_t get_loop_output(void);
+int get_loop_output(void);
 #endif /* DEMAND_SUPPORT */
 
 /* Optional protocol names list, to make our messages a little more informative. */
 #if PPP_PROTOCOLNAME
-const char * protocol_name(int32_t proto);
+const char * protocol_name(int proto);
 #endif /* PPP_PROTOCOLNAME  */
 
 /* Optional stats support, to get some statistics on the PPP interface */
 #if PPP_STATS_SUPPORT
 void print_link_stats(void); /* Print stats, if available */
-void reset_link_stats(int32_t u); /* Reset (init) stats when link goes up */
-void update_link_stats(int32_t u); /* Get stats at link termination */
+void reset_link_stats(int u); /* Reset (init) stats when link goes up */
+void update_link_stats(int u); /* Get stats at link termination */
 #endif /* PPP_STATS_SUPPORT */
 
 
@@ -558,28 +559,28 @@ void start_networks(ppp_pcb *pcb);    /* start all the network control protos */
 void continue_networks(ppp_pcb *pcb); /* start network [ip, etc] control protos */
 #if PPP_AUTH_SUPPORT
 #if PPP_SERVER
-int32_t auth_check_passwd(ppp_pcb *pcb, char *auser, int32_t userlen, char *apasswd, int32_t passwdlen, const char **msg, int32_t *msglen);
+int auth_check_passwd(ppp_pcb *pcb, char *auser, int userlen, char *apasswd, int passwdlen, const char **msg, int *msglen);
                                 /* check the user name and passwd against configuration */
-void auth_peer_fail(ppp_pcb *pcb, int32_t protocol);
+void auth_peer_fail(ppp_pcb *pcb, int protocol);
 				/* peer failed to authenticate itself */
-void auth_peer_success(ppp_pcb *pcb, int32_t protocol, int32_t prot_flavor, const char *name, int32_t namelen);
+void auth_peer_success(ppp_pcb *pcb, int protocol, int prot_flavor, const char *name, int namelen);
 				/* peer successfully authenticated itself */
 #endif /* PPP_SERVER */
-void auth_withpeer_fail(ppp_pcb *pcb, int32_t protocol);
+void auth_withpeer_fail(ppp_pcb *pcb, int protocol);
 				/* we failed to authenticate ourselves */
-void auth_withpeer_success(ppp_pcb *pcb, int32_t protocol, int32_t prot_flavor);
+void auth_withpeer_success(ppp_pcb *pcb, int protocol, int prot_flavor);
 				/* we successfully authenticated ourselves */
 #endif /* PPP_AUTH_SUPPORT */
-void np_up(ppp_pcb *pcb, int32_t proto);    /* a network protocol has come up */
-void np_down(ppp_pcb *pcb, int32_t proto);  /* a network protocol has gone down */
-void np_finished(ppp_pcb *pcb, int32_t proto); /* a network protocol no longer needs link */
+void np_up(ppp_pcb *pcb, int proto);    /* a network protocol has come up */
+void np_down(ppp_pcb *pcb, int proto);  /* a network protocol has gone down */
+void np_finished(ppp_pcb *pcb, int proto); /* a network protocol no longer needs link */
 #if PPP_AUTH_SUPPORT
-int32_t get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secret, int32_t *secret_len, int32_t am_server);
+int get_secret(ppp_pcb *pcb, const char *client, const char *server, char *secret, int *secret_len, int am_server);
 				/* get "secret" for chap */
 #endif /* PPP_AUTH_SUPPORT */
 
 /* Procedures exported from ipcp.c */
-/* int32_t parse_dotted_ip (char *, u32_t *); */
+/* int parse_dotted_ip (char *, u32_t *); */
 
 /* Procedures exported from demand.c */
 #if DEMAND_SUPPORT
@@ -587,19 +588,19 @@ void demand_conf (void);	/* config interface(s) for demand-dial */
 void demand_block (void);	/* set all NPs to queue up packets */
 void demand_unblock (void); /* set all NPs to pass packets */
 void demand_discard (void); /* set all NPs to discard packets */
-void demand_rexmit (int32_t, u32_t); /* retransmit saved frames for an NP*/
-int32_t  loop_chars (unsigned char *, int32_t); /* process chars from loopback */
-int32_t  loop_frame (unsigned char *, int32_t); /* should we bring link up? */
+void demand_rexmit (int, u32_t); /* retransmit saved frames for an NP*/
+int  loop_chars (unsigned char *, int); /* process chars from loopback */
+int  loop_frame (unsigned char *, int); /* should we bring link up? */
 #endif /* DEMAND_SUPPORT */
 
 /* Procedures exported from multilink.c */
 #ifdef HAVE_MULTILINK
 void mp_check_options (void); /* Check multilink-related options */
-int32_t  mp_join_bundle (void);  /* join our link to an appropriate bundle */
+int  mp_join_bundle (void);  /* join our link to an appropriate bundle */
 void mp_exit_bundle (void);  /* have disconnected our link from bundle */
 void mp_bundle_terminated (void);
 char *epdisc_to_str (struct epdisc *); /* string from endpoint discrim. */
-int32_t  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
+int  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #else
 #define mp_bundle_terminated()	/* nothing */
 #define mp_exit_bundle()	/* nothing */
@@ -608,9 +609,9 @@ int32_t  str_to_epdisc (struct epdisc *, char *); /* endpt disc. from str */
 #endif
 
 /* Procedures exported from utils.c. */
-void ppp_print_string(const u_char *p, int32_t len, void (*printer) (void *, const char *, ...), void *arg);   /* Format a string for output */
-int32_t ppp_slprintf(char *buf, int32_t buflen, const char *fmt, ...);            /* sprintf++ */
-int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args);  /* vsprintf++ */
+void ppp_print_string(const u_char *p, int len, void (*printer) (void *, const char *, ...), void *arg);   /* Format a string for output */
+int ppp_slprintf(char *buf, int buflen, const char *fmt, ...);            /* sprintf++ */
+int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args);  /* vsprintf++ */
 size_t ppp_strlcpy(char *dest, const char *src, size_t len);        /* safe strcpy */
 size_t ppp_strlcat(char *dest, const char *src, size_t len);        /* safe strncpy */
 void ppp_dbglog(const char *fmt, ...);    /* log a debug message */
@@ -620,10 +621,102 @@ void ppp_warn(const char *fmt, ...);      /* log a warning message */
 void ppp_error(const char *fmt, ...);     /* log an error message */
 void ppp_fatal(const char *fmt, ...);     /* log an error message and die(1) */
 #if PRINTPKT_SUPPORT
-void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int32_t len);
+void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int len);
                                 /* dump packet to debug log if interesting */
 #endif /* PRINTPKT_SUPPORT */
 
+/*
+ * Number of necessary timers analysis.
+ *
+ * PPP use at least one timer per each of its protocol, but not all protocols are
+ * active at the same time, thus the number of necessary timeouts is actually
+ * lower than enabled protocols. Here is the actual necessary timeouts based
+ * on code analysis.
+ *
+ * Note that many features analysed here are not working at all and are only
+ * there for a comprehensive analysis of necessary timers in order to prevent
+ * having to redo that each time we add a feature.
+ *
+ * Timer list
+ *
+ * | holdoff timeout
+ *  | low level protocol timeout (PPPoE or PPPoL2P)
+ *   | LCP delayed UP
+ *    | LCP retransmit (FSM)
+ *     | LCP Echo timer
+ *     .| PAP or CHAP or EAP authentication
+ *     . | ECP retransmit (FSM)
+ *     .  | CCP retransmit (FSM) when MPPE is enabled
+ *     .   | CCP retransmit (FSM) when MPPE is NOT enabled
+ *     .    | IPCP retransmit (FSM)
+ *     .    .| IP6CP retransmit (FSM)
+ *     .    . | Idle time limit
+ *     .    .  | Max connect time
+ *     .    .   | Max octets
+ *     .    .    | CCP RACK timeout
+ *     .    .    .
+ * PPP_PHASE_DEAD
+ * PPP_PHASE_HOLDOFF
+ * |   .    .    .
+ * PPP_PHASE_INITIALIZE
+ *  |  .    .    .
+ * PPP_PHASE_ESTABLISH
+ *   | .    .    .
+ *    |.    .    .
+ *     |    .    .
+ * PPP_PHASE_AUTHENTICATE
+ *     |    .    .
+ *     ||   .    .
+ * PPP_PHASE_NETWORK
+ *     | || .    .
+ *     |   |||   .
+ * PPP_PHASE_RUNNING
+ *     |    .|||||
+ *     |    . ||||
+ * PPP_PHASE_TERMINATE
+ *     |    . ||||
+ * PPP_PHASE_NETWORK
+ *    |.         .
+ * PPP_PHASE_ESTABLISH
+ * PPP_PHASE_DISCONNECT
+ * PPP_PHASE_DEAD
+ *
+ * Alright, PPP basic retransmission and LCP Echo consume one timer.
+ *  1
+ *
+ * If authentication is enabled one timer is necessary during authentication.
+ *  1 + PPP_AUTH_SUPPORT
+ *
+ * If ECP is enabled one timer is necessary before IPCP and/or IP6CP, one more
+ * is necessary if CCP is enabled (only with MPPE support but we don't care much
+ * up to this detail level).
+ *  1 + ECP_SUPPORT + CCP_SUPPORT
+ *
+ * If CCP is enabled it might consume a timer during IPCP or IP6CP, thus
+ * we might use IPCP, IP6CP and CCP timers simultaneously.
+ *  1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT
+ *
+ * When entering running phase, IPCP or IP6CP is still running. If idle time limit
+ * is enabled one more timer is necessary. Same for max connect time and max
+ * octets features. Furthermore CCP RACK might be used past this point.
+ *  1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT -1 + PPP_IDLETIMELIMIT + PPP_MAXCONNECT + MAXOCTETS + CCP_SUPPORT
+ *
+ * IPv4 or IPv6 must be enabled, therefore we don't need to take care the authentication
+ * and the CCP + ECP case, thus reducing overall complexity.
+ * 1 + LWIP_MAX(PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT, PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT -1 + PPP_IDLETIMELIMIT + PPP_MAXCONNECT + MAXOCTETS + CCP_SUPPORT)
+ *
+ * We don't support PPP_IDLETIMELIMIT + PPP_MAXCONNECT + MAXOCTETS features
+ * and adding those defines to ppp_opts.h just for having the value always
+ * defined to 0 isn't worth it.
+ * 1 + LWIP_MAX(PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT, PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT -1 + CCP_SUPPORT)
+ *
+ * Thus, the following is enough for now.
+ * 1 + PPP_IPV4_SUPPORT + PPP_IPV6_SUPPORT + CCP_SUPPORT
+ */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PPP_SUPPORT */
 #endif /* LWIP_HDR_PPP_IMPL_H */

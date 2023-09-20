@@ -7,7 +7,7 @@ speed 4000
 rx 200
 h
 
-erase
+erase 0x0, 0x7FFFF
 loadfile "LPC54608.hex"
 
 rx 200

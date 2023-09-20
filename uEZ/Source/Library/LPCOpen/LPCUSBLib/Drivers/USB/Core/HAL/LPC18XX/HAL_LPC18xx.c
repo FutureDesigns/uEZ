@@ -71,62 +71,101 @@ void HAL_USBInit(uint8_t corenum)
 	if (!coreEnabled[corenum]) {
 		/* if other code is not enabled, the enable USB PLL */
 		if (!coreEnabled[1 - corenum]) {
-			/* Neither core is enabled, so enable USB PLL first */
+			// Neither core is enabled, so enable USB PLL first 
 			Chip_Clock_EnablePLL(CGU_USB_PLL);
 
-			/* Wait for PLL lock */
-			while (!(Chip_Clock_GetPLLStatus(CGU_USB_PLL) & CGU_PLL_LOCKED));
+			// Wait for PLL lock
+			while (!(Chip_Clock_GetPLLStatus(CGU_USB_PLL) & CGU_PLL_LOCKED)) {
+                ;
+            }
 		}
-
-		if (corenum == 0) {
-			/* For core 0, enable USB0 base clock */
+		if (corenum == 0) { // port 0
+			// For core 0, enable USB0 base clock 
 			Chip_Clock_EnableBaseClock(CLK_BASE_USB0);
 			Chip_Clock_EnableOpts(CLK_MX_USB0, true, true, 1);
 
-			/* Turn on the phy */
+			// Turn on the phy
 			Chip_CREG_EnableUSB0Phy();
-          LPC_CREG->CREG0 &= ~(1 << 5);
+            LPC_CREG->CREG0 &= ~(1 << 5); // TODO we are we calling this twice?
+#if defined(USB_CAN_BE_HOST)
+                // TODO set anything here?
+#endif
+#if defined(USB_CAN_BE_DEVICE)
+                // TODO set anything here?
+#endif
+
+			LPC_USB0->PORTSC1_D |= (1 << 24); // force full speed instead of high speed
+
 		}
-		else {
+		else { // port 1
 			/* For core 1, enable USB1 base clock */
 			Chip_Clock_EnableBaseClock(CLK_BASE_USB1);
 			Chip_Clock_EnableOpts(CLK_MX_USB1, true, true, 1);
 
 			/* Turn on the phy */
-			Chip_CREG_EnableUSB0Phy();
-            LPC_CREG->CREG0 &= ~(1 << 5);
+			Chip_CREG_EnableUSB0Phy(); // TODO why do we turn on the port0 phy for port 1? Should be able to remove
+            LPC_CREG->CREG0 &= ~(1 << 5); // TODO why are we calling this twice?
 #if defined(USB_CAN_BE_HOST)
 			/* enable USB1_DP and USB1_DN on chip FS phy */
-			if (corenum && USB_CurrentMode[corenum] == USB_MODE_Host)LPC_SCU->SFSUSB = 0x16;
+			if (corenum && USB_CurrentMode[corenum] == USB_MODE_Host)LPC_SCU->SFSUSB = 0x16; // Enables USB_VBUS HIGH Active and USB_ESEA single input, pull down connected
 #endif
 #if defined(USB_CAN_BE_DEVICE)
 			/* enable USB1_DP and USB1_DN on chip FS phy */
-			if (corenum && USB_CurrentMode[corenum] == USB_MODE_Device)LPC_SCU->SFSUSB = 0x12;
+			if (corenum && USB_CurrentMode[corenum] == USB_MODE_Device)LPC_SCU->SFSUSB = 0x12; // Enables USB_VBUS HIGH Active and USB_ESEA single input
 #endif
-			LPC_USB1->PORTSC1_D |= (1 << 24);
+			LPC_USB1->PORTSC1_D |= (1 << 24); // force full speed instead of high speed
 		}
 
 		coreEnabled[corenum] = true;
 	}
 
 #if defined(USB_CAN_BE_DEVICE) && (!defined(USB_DEVICE_ROM_DRIVER))
-	/* reset the controller */
-	USB_REG(corenum)->USBCMD_D = USBCMD_D_Reset;
-	/* wait for reset to complete */
-	while (USB_REG(corenum)->USBCMD_D & USBCMD_D_Reset) ;
 
-	/* Program the controller to be the USB device controller */
-	USB_REG(corenum)->USBMODE_D =   (0x2 << 0) /*| (1<<4)*//*| (1<<3)*/;
-	if (corenum == 0) {
-		/* set OTG transcever in proper state, device is present
-		   on the port(CCS=1), port enable/disable status change(PES=1). */
-//		LPC_USB0->OTGSC = (1 << 3) | (1 << 0) /*| (1<<16)| (1<<24)| (1<<25)| (1<<26)| (1<<27)| (1<<28)| (1<<29)| (1<<30)*/;
-	    LPC_USB0->OTGSC = (1 << 3) /* | (1 << 0)*/ /*| (1<<16)| (1<<24)| (1<<25)| (1<<26)| (1<<27)| (1<<28)| (1<<29)| (1<<30)*/;
-		#if (USB_FORCED_FULLSPEED)
-		LPC_USB0->PORTSC1_D |= (1 << 24);
-		#endif
-	}
-	HAL_Reset(corenum);
+        if (corenum == 0) { // OTG port
+          if (USB_CurrentMode[corenum] == USB_MODE_Host) {
+        
+          }
+          if (USB_CurrentMode[corenum] == USB_MODE_Device) {
+        	/* reset the controller */
+        	USB_REG(corenum)->USBCMD_D = USBCMD_D_Reset;
+        	/* wait for reset to complete */
+        	while (USB_REG(corenum)->USBCMD_D & USBCMD_D_Reset) {
+                  ;
+                }
+
+        	/* Program the controller to be the USB device controller */
+        	USB_REG(corenum)->USBMODE_D =   (0x2 << 0) /*| (1<<4)*//*| (1<<3)*/; // Must issue reset (above) to change modes
+        	if (corenum == 0) { // DO NOT SET THE OT bit to 1 in host mode!
+        		/* set OTG transcever in proper state, device is present
+        		   on the port(CCS=1), port enable/disable status change(PES=1). */
+         //		LPC_USB0->OTGSC = (1 << 3) | (1 << 0) /*| (1<<16)| (1<<24)| (1<<25)| (1<<26)| (1<<27)| (1<<28)| (1<<29)| (1<<30)*/;
+        	    LPC_USB0->OTGSC = (1 << 3) /* | (1 << 0)*/ /*| (1<<16)| (1<<24)| (1<<25)| (1<<26)| (1<<27)| (1<<28)| (1<<29)| (1<<30)*/;
+        		#if (USB_FORCED_FULLSPEED)
+        		LPC_USB0->PORTSC1_D |= (1 << 24);
+        		#endif
+        	}
+        	HAL_Reset(corenum);
+          }
+        }
+
+          if (corenum == 1) { // non-OTG port
+          if (USB_CurrentMode[corenum] == USB_MODE_Host) {
+        
+          }
+          if (USB_CurrentMode[corenum] == USB_MODE_Device) {
+        	/* reset the controller */
+        	USB_REG(corenum)->USBCMD_D = USBCMD_D_Reset;
+        	/* wait for reset to complete */
+        	while (USB_REG(corenum)->USBCMD_D & USBCMD_D_Reset) {
+                  ;
+                }
+
+        	/* Program the controller to be the USB device controller */
+        	USB_REG(corenum)->USBMODE_D =   (0x2 << 0) /*| (1<<4)*//*| (1<<3)*/; // Must issue reset (above) to change modes
+
+        	HAL_Reset(corenum);
+          }
+        }
 #endif
 }
 
@@ -137,6 +176,13 @@ void HAL_USBForceFullSpeed(uint8_t corenum, uint32_t onoff)
             LPC_USB0->PORTSC1_D |= (1 << 24);
         } else {
             LPC_USB0->PORTSC1_D &= ~(1 << 24);
+        }
+    }
+    if (corenum == 1) {
+        if (onoff) {
+            LPC_USB1->PORTSC1_D |= (1 << 24);
+        } else {
+            LPC_USB1->PORTSC1_D &= ~(1 << 24);
         }
     }
 }

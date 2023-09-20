@@ -1,6 +1,11 @@
 <!DOCTYPE Board_Memory_Definition_File>
 <Root name="LPC1778">
   <MemorySegment size="0x80000" access="ReadOnly" start="0x00000000" name="FLASH"/>
+  <MemorySegment size="0x00800000" access="Read/Write" start="0xA0000000" name="SDRAM"/>
+  <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM"/>
+  <MemorySegment size="0x4000" access="Read/Write" start="0x20000000" name="AHBSRAM0"/>
+  <MemorySegment size="0x4000" access="Read/Write" start="0x20004000" name="AHBSRAM1"/>
+  <MemorySegment size="0x8000" access="Read/Write" start="0x20000000" name="AHBSRAM"/>
   <MemorySegment size="0x1000" access="Read/Write" start="0x00200000" name="EEPROM">
     <RegisterGroup start="0x00200000" name="EEPROM">
       <Register start="0x00200000+0x080" size="0x4" name="EECMD">
@@ -49,9 +54,6 @@
       </Register>
     </RegisterGroup>
   </MemorySegment>
-  <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM"/>
-  <MemorySegment size="0x4000" access="Read/Write" start="0x20000000" name="AHBSRAM0"/>
-  <MemorySegment size="0x4000" access="Read/Write" start="0x20004000" name="AHBSRAM1"/>
   <MemorySegment size="0x80000" access="Read/Write" start="0x40000000" name="APB0 Peripherals">
     <RegisterGroup start="0x40000000" name="WWDT">
       <Register start="+0x00" size="0x4" name="WDMOD">
@@ -6097,7 +6099,6 @@
       </Register>
     </RegisterGroup>
   </MemorySegment>
-  <MemorySegment size="0x00800000" access="Read/Write" start="0xA0000000" name="SDRAM"/>
   <MemorySegment size="0x1000" access="Read/Write" start="0xE000E000" name="CM3_System_Control_Space">
     <RegisterGroup size="0x10" start="0xE000E000" name="InterruptType">
       <Register start="0xE000E004" name="InterruptType_ICTR" aka="Interrupt_Control_Type" access="ReadOnly">

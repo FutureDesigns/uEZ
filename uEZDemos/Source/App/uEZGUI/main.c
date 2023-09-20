@@ -22,6 +22,7 @@
  *
  *-------------------------------------------------------------------------*/
 #include <string.h>
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZPlatform.h>
@@ -80,8 +81,7 @@ int MainTask(void)
      
 #if (SEGGER_ENABLE_RTT ==1 )  // enable RTT
 #if (SEGGER_ENABLE_SYSTEM_VIEW != 1) //systemview will auto init RTT
-    #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
-    (void)_SEGGER_RTT; // Crossworks complains if we don't use this.
+    (void)_SEGGER_RTT; // GCC complains if we don't use this.
     SEGGER_RTT_Init();
     SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
 #endif  
@@ -97,9 +97,9 @@ int MainTask(void)
     // So you can leave them in the application for release builds.
     // Warnings and errors show different graphical icons and colors for debug.
     // Must add #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h> even when turned off
-    DEBUG_SV_Printf("SystemView Started"); // SystemView terminal
-    DEBUG_SV_PrintfW("Warn Test"); // example warning
-    DEBUG_SV_PrintfE("Error Test"); // example error
+    DEBUG_SV_Print("SystemView Started"); // SystemView terminal
+    DEBUG_SV_PrintW("Warn Test"); // example warning
+    DEBUG_SV_PrintE("Error Test"); // example error
 #endif
 #endif
      
@@ -137,15 +137,6 @@ int MainTask(void)
      UEZGUITestCmdsInit();
 #endif
    
-    T_uezError error;
-    T_uezFile file;
-
-    // Open file on SD card to force init
-    error=UEZFileOpen("1:/TESTSD.TXT", FILE_FLAG_READ_ONLY, &file);
-    if (error == UEZ_ERROR_NONE) {
-        UEZFileClose(file);
-    }
-
      // Pass control to the main menu
      MainMenu();
 
@@ -159,7 +150,7 @@ int MainTask(void)
 * Description:
 *
 *---------------------------------------------------------------------------*/
-#if UEZGUI_EXPANSION_DEVKIT
+#if (UEZGUI_EXPANSION_DEVKIT == 1)
 void uEZPlatformStartup_EXP_DK()
 {
     UEZPlatform_Timer2_Require();
@@ -178,7 +169,7 @@ void uEZPlatformStartup_EXP_DK()
     UEZGUI_EXP_DK_I2S_Require();
     UEZGUI_EXP_DK_AudioMixer_Require();
 
-    #if UEZ_ENABLE_WIRED_NETWORK
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZGUI_EXP_DK_EMAC_Require();
     #endif
 
@@ -187,11 +178,13 @@ void uEZPlatformStartup_EXP_DK()
     #endif
 
     #if UEZ_ENABLE_USB_HOST_STACK
+      #if (USB_PORT_A_HOST_ENABLED == 1)
         UEZPlatform_USBHost_PortA_Require();
         UEZPlatform_USBFlash_Drive_Require(0);
+      #endif
     #endif
 
-    #if UEZ_ENABLE_WIRED_NETWORK
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZPlatform_WiredNetwork0_Require();
     #endif
 
@@ -199,7 +192,7 @@ void uEZPlatformStartup_EXP_DK()
         UEZPlatform_WiFiProgramMode(EFalse);
     #endif
 
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         UEZPlatform_WirelessNetwork0_Require();
     #endif
 }
@@ -211,7 +204,7 @@ void uEZPlatformStartup_EXP_DK()
 * Description:
 *
 *---------------------------------------------------------------------------*/
-#if UEZGUI_EXP_BRK_OUT
+#if (UEZGUI_EXP_BRK_OUT == 1)
 void uEZPlatformStartup_EXP_BRKOUT()
 {
     TBool usbIsDevice = ETrue; //Default value
@@ -227,8 +220,10 @@ void uEZPlatformStartup_EXP_BRKOUT()
         #if UEZ_ENABLE_USB_DEVICE_STACK
             UEZPlatform_USBDevice_Require();
         #if UEZ_ENABLE_USB_HOST_STACK
+          #if (USB_PORT_A_HOST_ENABLED == 1)
             UEZPlatform_USBHost_PortA_Require();
             UEZPlatform_USBFlash_Drive_Require(0);
+          #endif
         #endif
         #endif
     } else {
@@ -241,7 +236,7 @@ void uEZPlatformStartup_EXP_BRKOUT()
         #endif
     }
 
-    #if UEZ_ENABLE_WIRED_NETWORK
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZPlatform_WiredNetwork0_Require();
     #endif
 
@@ -249,7 +244,7 @@ void uEZPlatformStartup_EXP_BRKOUT()
         UEZPlatform_WiFiProgramMode(EFalse);
     #endif
 
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         UEZPlatform_WirelessNetwork0_Require();
     #endif
 }
@@ -289,8 +284,10 @@ void uEZPlatformStartup_NO_EXP()
             #endif //(UEZ_PROCESSOR != NXP_LPC4357)
         #endif //UEZ_ENABLE_USB_DEVICE_STACK
         #if UEZ_ENABLE_USB_HOST_STACK
+          #if (USB_PORT_A_HOST_ENABLED == 1)
             UEZPlatform_USBHost_PortA_Require();
             UEZPlatform_USBFlash_Drive_Require(0);
+          #endif
         #endif //UEZ_ENABLE_USB_HOST_STACK
     } else {
         #if UEZ_ENABLE_USB_HOST_STACK
@@ -302,7 +299,7 @@ void uEZPlatformStartup_NO_EXP()
         #endif
     }
 
-    #if UEZ_ENABLE_WIRED_NETWORK
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZPlatform_WiredNetwork0_Require();
     #endif
 
@@ -310,7 +307,7 @@ void uEZPlatformStartup_NO_EXP()
         UEZPlatform_WiFiProgramMode(EFalse);
     #endif
 
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         UEZPlatform_WirelessNetwork0_Require();
     #endif
 
@@ -363,30 +360,6 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 
      // Done with this task, fall out
      return 0;
-}
-
-// TODO remove and cleanup like in project maker, need to setup EMWIN_BASE_ADDRESS and EMWIN_RAM_SIZE macros
-#if (UEZ_PROCESSOR != NXP_LPC4357)
-#define EMWIN_BASE_ADDRESS  0xA0200000
-#else
-#define EMWIN_BASE_ADDRESS  0x28200000
-#endif
-/*---------------------------------------------------------------------------*
-* Required by emWin: Need to find a better place for this
-*---------------------------------------------------------------------------*/
-TUInt32 UEZEmWinGetRAMAddr(void)
-{
-     static TBool init = EFalse;
-     if (!init) {
-          memset((void *)EMWIN_BASE_ADDRESS, 0x00, 0x00200000);
-          init = ETrue;
-     }
-     return EMWIN_BASE_ADDRESS;
-}
-
-TUInt32 UEZEmWinGetRAMSize(void)
-{
-     return 0x00200000;
 }
 
 // Is this required?

@@ -45,13 +45,8 @@
 #include "uEZFileSystem_FATFS.h"
 #include <string.h>
 
-#define _INTEGER
-typedef unsigned short	WORD;
-typedef unsigned long	DWORD;
-typedef unsigned char	BYTE;
-typedef uint32_t	UINT;
-typedef unsigned short  WCHAR;
 #include "ff.h"
+#include "diskio.h"
 
 typedef struct {
     DIR iDir;
@@ -539,6 +534,7 @@ T_uezError FS_FATFS_Write(
 
     IGrab(p);
     res = f_write(&p_file->iFile, aBuffer, aNumBytes, (UINT*)aNumWritten);
+    //res = f_sync(&p_file->iFile); // f_sync is called during close operation
     IRelease(p);
 
     return IFATFS_ConvertResultCodeToErrorCode(res);
@@ -1285,11 +1281,102 @@ T_uezError FileSystem_FATFS_GetVolumeInfo(
 
         // Report the sectors per cluster, and the bytes per sector
         aInfo->iSectorsPerCluster = p_fs->csize;
-        aInfo->iBytesPerSector = _MAX_SS;
+        aInfo->iBytesPerSector = FF_MAX_SS;
     }
     IRelease(p);
 
     return IFATFS_ConvertResultCodeToErrorCode(res);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  FileSystem_FATFS_GetStorageInfo
+ *---------------------------------------------------------------------------*/
+/*
+ *  GetStorageInfo returns information about the physical storage device
+ *
+ *  @param [in]    *aWorkspace      Workspace
+ *
+ *  @param [in]    aDriveNum        drive letter as char
+ *
+ *  @param [out]   *aInfo           Information retrieved
+ *
+ *  @return        T_uezError       Error code
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError FileSystem_FATFS_GetStorageInfo(
+        void *aWorkspace,
+        const char aDriveNum,
+        T_msSizeInfo *aInfo)
+{
+    T_FATFS_FileSystem_Workspace *p =
+        (T_FATFS_FileSystem_Workspace *)aWorkspace;
+    FRESULT res;
+
+    IGrab(p);
+    res = (FRESULT) disk_getInfo ((aDriveNum-0x30), // Physical drive number (0..) 
+	aInfo);
+    IRelease(p);
+
+    return IFATFS_ConvertResultCodeToErrorCode(res);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  FS_FATFS_MKFS
+ *---------------------------------------------------------------------------*/
+/*
+ *  Format the drive with a single new FAT volume.
+ *
+ *  @param [in]    *aWorkspace      Workspace
+ *
+ *  @param [in]    aPath            Path to volume to get info
+ *
+ *  @param [in]    opt              format options
+ *
+ *  @return        T_uezError       Error code
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError FS_FATFS_MKFS(
+        void *aWorkspace,
+        const TCHAR* path,
+        const MKFS_PARM* opt)
+{
+    T_FATFS_FileSystem_Workspace *p =
+        (T_FATFS_FileSystem_Workspace *)aWorkspace;
+      FRESULT res; // FatFs function common result code
+      uint8_t workBuffer[FF_MAX_SS]; // TODO larger buffer - faster format
+
+      IGrab(p);
+      res = f_mkfs(path, opt, workBuffer, sizeof(workBuffer));
+      IRelease(p);
+
+      if (res != FR_OK) {
+        return UEZ_ERROR_FAIL;
+      } else {
+        return UEZ_ERROR_NONE;
+      }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  FS_FATFS_MKFS_ReadOnly
+ *---------------------------------------------------------------------------*/
+/*
+ *  Return error since format not allowed in read only mode.
+ *
+ *  @param [in]    *aWorkspace      Workspace
+ *
+ *  @param [in]    aPath            Path to volume to get info
+ *
+ *  @param [in]    opt              format options
+ *
+ *  @return        UEZ_ERROR_FAIL
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError FS_FATFS_MKFS_ReadOnly(
+        void *aWorkspace,
+        const TCHAR* path,
+        const MKFS_PARM* opt)
+{
+        return UEZ_ERROR_FAIL;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1325,7 +1412,11 @@ const DEVICE_FileSystem FATFS_FileSystem_Interface = {
 
     // v2.04 Functions
     FileSystem_FATFS_Sync,
-    FileSystem_FATFS_GetVolumeInfo
+    FileSystem_FATFS_GetVolumeInfo,
+
+    // v2.12 Functions
+    FileSystem_FATFS_GetStorageInfo,
+    FS_FATFS_MKFS
 } ;
 
 const DEVICE_FileSystem FATFS_FileSystem_ReadOnly_Interface = {
@@ -1358,7 +1449,11 @@ const DEVICE_FileSystem FATFS_FileSystem_ReadOnly_Interface = {
 
     // v2.04 Functions
     FileSystem_FATFS_Sync,
-    FileSystem_FATFS_GetVolumeInfo
+    FileSystem_FATFS_GetVolumeInfo,
+
+    // v2.12 Functions
+    FileSystem_FATFS_GetStorageInfo,
+    FS_FATFS_MKFS_ReadOnly
 } ;
 /* @} */
 

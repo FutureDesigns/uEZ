@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : BUTTON_Private.h
@@ -45,7 +45,7 @@ Purpose     : BUTTON private header file
 #ifndef BUTTON_PRIVATE_H
 #define BUTTON_PRIVATE_H
 
-#include "WM.h"
+#include "WM_Intern.h"
 #include "BUTTON.h"
 
 #if GUI_WINSUPPORT
@@ -74,22 +74,22 @@ typedef struct {
 } BUTTON_SKIN_PRIVATE;
 
 typedef struct {
-  GUI_COLOR aBkColor[3];
-  GUI_COLOR aTextColor[3];
-  GUI_COLOR FocusColor;
-  GUI_COLOR FrameColor;
-  const GUI_FONT * pFont;
+  GUI_COLOR           aBkColor[3];
+  GUI_COLOR           aTextColor[3];
+  GUI_COLOR           FocusColor;
+  GUI_COLOR           FrameColor;
+  const GUI_FONT    * pFont;
   BUTTON_SKIN_PRIVATE SkinPrivate;
-  I16 Align;
-  I16 xPosText, yPosText;
+  I16                 Align;
+  I16                 xPosText, yPosText;
 } BUTTON_PROPS;
 
 typedef struct {
-  WIDGET Widget;
-  BUTTON_PROPS Props;
+  WIDGET              Widget;
+  BUTTON_PROPS        Props;
   WIDGET_SKIN const * pWidgetSkin;
-  WM_HMEM hpText;
-  WM_HMEM ahDrawObj[3];
+  WM_HMEM             hpText;
+  WM_HMEM             ahDrawObj[3];
 } BUTTON_Obj;
 
 /*********************************************************************
@@ -130,7 +130,7 @@ extern WIDGET_SKIN const * BUTTON__pSkinDefault;
 *
 **********************************************************************
 */
-void BUTTON__SetDrawObj(BUTTON_Handle hObj, int32_t Index, GUI_DRAW_HANDLE hDrawObj);
+void BUTTON__SetDrawObj(BUTTON_Handle hObj, int Index, GUI_DRAW_HANDLE hDrawObj);
 
 
 #endif   /* GUI_WINSUPPORT */

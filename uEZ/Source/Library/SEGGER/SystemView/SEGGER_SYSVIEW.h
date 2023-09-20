@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,14 +42,17 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.10                                    *
+*       SystemView version: 3.32                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 File    : SEGGER_SYSVIEW.h
 Purpose : System visualization API.
-Revision: $Rev: 17331 $
+Revision: $Rev: 26226 $
 */
+
+// Get latest version and pre-patched RTOS example here:
+// https://www.segger.com/downloads/jlink/systemview_target_src
 
 #ifndef SEGGER_SYSVIEW_H
 #define SEGGER_SYSVIEW_H
@@ -62,34 +65,40 @@ Revision: $Rev: 17331 $
 */
 
 #include "SEGGER.h"
+#include "SEGGER_SYSVIEW_ConfDefaults.h"
 #include <stdbool.h>
+#include <SEGGER_RTT_SYSVIEW_Config.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
-#define DEBUG_SV_Printf(...) do { if (true) SEGGER_SYSVIEW_Print(__VA_ARGS__); } while (0)
+// non-printf
+#define DEBUG_SV_Print(...) do { if (true) SEGGER_SYSVIEW_Print(__VA_ARGS__); } while (0)
+#define DEBUG_SV_PrintW(...) do { if (true) SEGGER_SYSVIEW_Warn(__VA_ARGS__); } while (0)
+#define DEBUG_SV_PrintE(...) do { if (true) SEGGER_SYSVIEW_Error(__VA_ARGS__); } while (0)
+// printf style
 #define DEBUG_SV_PrintfH(...) do { if (true) SEGGER_SYSVIEW_PrintfHost(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfHe(...) do { if (true) SEGGER_SYSVIEW_PrintfHostEx(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfT(...) do { if (true) SEGGER_SYSVIEW_PrintfTarget(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfTe(...) do { if (true) SEGGER_SYSVIEW_PrintfTargetEx(__VA_ARGS__); } while (0)
-#define DEBUG_SV_PrintfW(...) do { if (true) SEGGER_SYSVIEW_Warn(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfWh(...) do { if (true) SEGGER_SYSVIEW_WarnfHost(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfWt(...) do { if (true) SEGGER_SYSVIEW_WarnfTarget(__VA_ARGS__); } while (0)
-#define DEBUG_SV_PrintfE(...) do { if (true) SEGGER_SYSVIEW_Error(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfEh(...) do { if (true) SEGGER_SYSVIEW_ErrorfHost(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfEt(...) do { if (true) SEGGER_SYSVIEW_ErrorfTarget(__VA_ARGS__); } while (0)
 #else // when not enabled the functions are not called
-#define DEBUG_SV_Printf(...) do { if (false) SEGGER_SYSVIEW_Print(__VA_ARGS__); } while (0)
+// non-printf
+#define DEBUG_SV_Print(...) do { if (false) SEGGER_SYSVIEW_Print(__VA_ARGS__); } while (0)
+#define DEBUG_SV_PrintW(...) do { if (false) SEGGER_SYSVIEW_Warn(__VA_ARGS__); } while (0)
+#define DEBUG_SV_PrintE(...) do { if (false) SEGGER_SYSVIEW_Error(__VA_ARGS__); } while (0)
+// printf style
 #define DEBUG_SV_PrintfH(...) do { if (false) SEGGER_SYSVIEW_PrintfHost(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfHe(...) do { if (false) SEGGER_SYSVIEW_PrintfHostEx(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfT(...) do { if (false) SEGGER_SYSVIEW_PrintfTarget(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfTe(...) do { if (false) SEGGER_SYSVIEW_PrintfTargetEx(__VA_ARGS__); } while (0)
-#define DEBUG_SV_PrintfW(...) do { if (false) SEGGER_SYSVIEW_Warn(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfWh(...) do { if (false) SEGGER_SYSVIEW_WarnfHost(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfWt(...) do { if (false) SEGGER_SYSVIEW_WarnfTarget(__VA_ARGS__); } while (0)
-#define DEBUG_SV_PrintfE(...) do { if (false) SEGGER_SYSVIEW_Error(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfEh(...) do { if (false) SEGGER_SYSVIEW_ErrorfHost(__VA_ARGS__); } while (0)
 #define DEBUG_SV_PrintfEt(...) do { if (false) SEGGER_SYSVIEW_ErrorfTarget(__VA_ARGS__); } while (0)
 #endif
@@ -102,7 +111,7 @@ extern "C" {
 */
 
 #define SEGGER_SYSVIEW_MAJOR          3
-#define SEGGER_SYSVIEW_MINOR          10
+#define SEGGER_SYSVIEW_MINOR          32
 #define SEGGER_SYSVIEW_REV            0
 #define SEGGER_SYSVIEW_VERSION        ((SEGGER_SYSVIEW_MAJOR * 10000) + (SEGGER_SYSVIEW_MINOR * 100) + SEGGER_SYSVIEW_REV)
 
@@ -230,6 +239,31 @@ struct SEGGER_SYSVIEW_MODULE_STRUCT {
 
 typedef void (SEGGER_SYSVIEW_SEND_SYS_DESC_FUNC)(void);
 
+
+/*********************************************************************
+*
+*       Global data
+*
+**********************************************************************
+*/
+
+#ifdef   EXTERN
+  #undef EXTERN
+#endif
+
+#ifndef SEGGER_SYSVIEW_C       // Defined in SEGGER_SYSVIEW.c which includes this header beside other C-files
+  #define EXTERN extern
+#else
+  #define EXTERN
+#endif
+
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
+EXTERN unsigned int SEGGER_SYSVIEW_TickCnt;
+EXTERN unsigned int SEGGER_SYSVIEW_InterruptId;
+#endif
+
+#undef EXTERN
+
 /*********************************************************************
 *
 *       API functions
@@ -254,33 +288,33 @@ void SEGGER_SYSVIEW_GetSysDesc                    (void);
 void SEGGER_SYSVIEW_SendTaskList                  (void);
 void SEGGER_SYSVIEW_SendTaskInfo                  (const SEGGER_SYSVIEW_TASKINFO* pInfo);
 void SEGGER_SYSVIEW_SendSysDesc                   (const char* sSysDesc);
-int32_t  SEGGER_SYSVIEW_IsStarted                 (void);
-uint32_t  SEGGER_SYSVIEW_GetChannelID              (void);
+int  SEGGER_SYSVIEW_IsStarted                     (void);
+int  SEGGER_SYSVIEW_GetChannelID                  (void);
 
 /*********************************************************************
 *
 *       Event recording functions
 */
-void SEGGER_SYSVIEW_RecordVoid                    (uint32_t EventId);
-void SEGGER_SYSVIEW_RecordU32                     (uint32_t EventId, U32 Para0);
-void SEGGER_SYSVIEW_RecordU32x2                   (uint32_t EventId, U32 Para0, U32 Para1);
-void SEGGER_SYSVIEW_RecordU32x3                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2);
-void SEGGER_SYSVIEW_RecordU32x4                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3);
-void SEGGER_SYSVIEW_RecordU32x5                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4);
-void SEGGER_SYSVIEW_RecordU32x6                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5);
-void SEGGER_SYSVIEW_RecordU32x7                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6);
-void SEGGER_SYSVIEW_RecordU32x8                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7);
-void SEGGER_SYSVIEW_RecordU32x9                   (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8);
-void SEGGER_SYSVIEW_RecordU32x10                  (uint32_t EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8, U32 Para9);
-void SEGGER_SYSVIEW_RecordString                  (uint32_t EventId, const char* pString);
+void SEGGER_SYSVIEW_RecordVoid                    (unsigned int EventId);
+void SEGGER_SYSVIEW_RecordU32                     (unsigned int EventId, U32 Para0);
+void SEGGER_SYSVIEW_RecordU32x2                   (unsigned int EventId, U32 Para0, U32 Para1);
+void SEGGER_SYSVIEW_RecordU32x3                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2);
+void SEGGER_SYSVIEW_RecordU32x4                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3);
+void SEGGER_SYSVIEW_RecordU32x5                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4);
+void SEGGER_SYSVIEW_RecordU32x6                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5);
+void SEGGER_SYSVIEW_RecordU32x7                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6);
+void SEGGER_SYSVIEW_RecordU32x8                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7);
+void SEGGER_SYSVIEW_RecordU32x9                   (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8);
+void SEGGER_SYSVIEW_RecordU32x10                  (unsigned int EventId, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8, U32 Para9);
+void SEGGER_SYSVIEW_RecordString                  (unsigned int EventId, const char* pString);
 void SEGGER_SYSVIEW_RecordSystime                 (void);
 void SEGGER_SYSVIEW_RecordEnterISR                (void);
 void SEGGER_SYSVIEW_RecordExitISR                 (void);
 void SEGGER_SYSVIEW_RecordExitISRToScheduler      (void);
 void SEGGER_SYSVIEW_RecordEnterTimer              (U32 TimerId);
 void SEGGER_SYSVIEW_RecordExitTimer               (void);
-void SEGGER_SYSVIEW_RecordEndCall                 (uint32_t EventID);
-void SEGGER_SYSVIEW_RecordEndCallU32              (uint32_t EventID, U32 Para0);
+void SEGGER_SYSVIEW_RecordEndCall                 (unsigned int EventID);
+void SEGGER_SYSVIEW_RecordEndCallU32              (unsigned int EventID, U32 Para0);
 
 void SEGGER_SYSVIEW_OnIdle                        (void);
 void SEGGER_SYSVIEW_OnTaskCreate                  (U32 TaskId);
@@ -288,23 +322,23 @@ void SEGGER_SYSVIEW_OnTaskTerminate               (U32 TaskId);
 void SEGGER_SYSVIEW_OnTaskStartExec               (U32 TaskId);
 void SEGGER_SYSVIEW_OnTaskStopExec                (void);
 void SEGGER_SYSVIEW_OnTaskStartReady              (U32 TaskId);
-void SEGGER_SYSVIEW_OnTaskStopReady               (U32 TaskId, uint32_t Cause);
-void SEGGER_SYSVIEW_MarkStart                     (uint32_t MarkerId);
-void SEGGER_SYSVIEW_MarkStop                      (uint32_t MarkerId);
-void SEGGER_SYSVIEW_Mark                          (uint32_t MarkerId);
-void SEGGER_SYSVIEW_NameMarker                    (uint32_t MarkerId, const char* sName);
+void SEGGER_SYSVIEW_OnTaskStopReady               (U32 TaskId, unsigned int Cause);
+void SEGGER_SYSVIEW_MarkStart                     (unsigned int MarkerId);
+void SEGGER_SYSVIEW_MarkStop                      (unsigned int MarkerId);
+void SEGGER_SYSVIEW_Mark                          (unsigned int MarkerId);
+void SEGGER_SYSVIEW_NameMarker                    (unsigned int MarkerId, const char* sName);
 
 void SEGGER_SYSVIEW_NameResource                  (U32 ResourceId, const char* sName);
 
-int32_t  SEGGER_SYSVIEW_SendPacket                    (U8* pPacket, U8* pPayloadEnd, uint32_t EventId);
+int  SEGGER_SYSVIEW_SendPacket                    (U8* pPacket, U8* pPayloadEnd, unsigned int EventId);
 
 /*********************************************************************
 *
 *       Event parameter encoding functions
 */
 U8*  SEGGER_SYSVIEW_EncodeU32                     (U8* pPayload, U32 Value);
-U8*  SEGGER_SYSVIEW_EncodeData                    (U8* pPayload, const char* pSrc, uint32_t Len);
-U8*  SEGGER_SYSVIEW_EncodeString                  (U8* pPayload, const char* s, uint32_t MaxLen);
+U8*  SEGGER_SYSVIEW_EncodeData                    (U8* pPayload, const char* pSrc, unsigned int Len);
+U8*  SEGGER_SYSVIEW_EncodeString                  (U8* pPayload, const char* s, unsigned int MaxLen);
 U8*  SEGGER_SYSVIEW_EncodeId                      (U8* pPayload, U32 Id);
 U32  SEGGER_SYSVIEW_ShrinkId                      (U32 Id);
 

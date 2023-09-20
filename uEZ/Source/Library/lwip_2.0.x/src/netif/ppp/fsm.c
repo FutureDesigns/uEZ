@@ -60,13 +60,13 @@
 #include "netif/ppp/fsm.h"
 
 static void fsm_timeout (void *);
-static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, int32_t len);
-static void fsm_rconfack(fsm *f, int32_t id, u_char *inp, int32_t len);
-static void fsm_rconfnakrej(fsm *f, int32_t code, int32_t id, u_char *inp, int32_t len);
-static void fsm_rtermreq(fsm *f, int32_t id, u_char *p, int32_t len);
+static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, int len);
+static void fsm_rconfack(fsm *f, int id, u_char *inp, int len);
+static void fsm_rconfnakrej(fsm *f, int code, int id, u_char *inp, int len);
+static void fsm_rtermreq(fsm *f, int id, u_char *p, int len);
 static void fsm_rtermack(fsm *f);
-static void fsm_rcoderej(fsm *f, u_char *inp, int32_t len);
-static void fsm_sconfreq(fsm *f, int32_t retransmit);
+static void fsm_rcoderej(fsm *f, u_char *inp, int len);
+static void fsm_sconfreq(fsm *f, int retransmit);
 
 #define PROTO_NAME(f)	((f)->callbacks->proto_name)
 
@@ -197,7 +197,7 @@ void fsm_open(fsm *f) {
  * Cancel any timeout running, notify upper layers we're done, and
  * send a terminate-request message as configured.
  */
-static void terminate_layer(fsm *f, int32_t nextstate) {
+static void terminate_layer(fsm *f, int nextstate) {
     ppp_pcb *pcb = f->pcb;
 
     if( f->state != PPP_FSM_OPENED )
@@ -236,7 +236,7 @@ static void terminate_layer(fsm *f, int32_t nextstate) {
  */
 void fsm_close(fsm *f, const char *reason) {
     f->term_reason = reason;
-    f->term_reason_len = (reason == NULL? 0: LWIP_MIN(strlen(reason), 0xFF) );
+    f->term_reason_len = (reason == NULL? 0: (u8_t)LWIP_MIN(strlen(reason), 0xFF) );
     switch( f->state ){
     case PPP_FSM_STARTING:
 	f->state = PPP_FSM_INITIAL;
@@ -315,10 +315,10 @@ static void fsm_timeout(void *arg) {
 /*
  * fsm_input - Input packet.
  */
-void fsm_input(fsm *f, u_char *inpacket, int32_t l) {
+void fsm_input(fsm *f, u_char *inpacket, int l) {
     u_char *inp;
     u_char code, id;
-    int32_t len;
+    int len;
 
     /*
      * Parse header (code, id and length).
@@ -389,8 +389,8 @@ void fsm_input(fsm *f, u_char *inpacket, int32_t l) {
 /*
  * fsm_rconfreq - Receive Configure-Request.
  */
-static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, int32_t len) {
-    int32_t code, reject_if_disagree;
+static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, int len) {
+    int code, reject_if_disagree;
 
     switch( f->state ){
     case PPP_FSM_CLOSED:
@@ -456,7 +456,7 @@ static void fsm_rconfreq(fsm *f, u_char id, u_char *inp, int32_t len) {
 /*
  * fsm_rconfack - Receive Configure-Ack.
  */
-static void fsm_rconfack(fsm *f, int32_t id, u_char *inp, int32_t len) {
+static void fsm_rconfack(fsm *f, int id, u_char *inp, int len) {
     ppp_pcb *pcb = f->pcb;
 
     if (id != f->reqid || f->seen_ack)		/* Expected id? */
@@ -512,9 +512,9 @@ static void fsm_rconfack(fsm *f, int32_t id, u_char *inp, int32_t len) {
 /*
  * fsm_rconfnakrej - Receive Configure-Nak or Configure-Reject.
  */
-static void fsm_rconfnakrej(fsm *f, int32_t code, int32_t id, u_char *inp, int32_t len) {
-    int32_t ret;
-    int32_t treat_as_reject;
+static void fsm_rconfnakrej(fsm *f, int code, int id, u_char *inp, int len) {
+    int ret;
+    int treat_as_reject;
 
     if (id != f->reqid || f->seen_ack)	/* Expected id? */
 	return;				/* Nope, toss... */
@@ -577,7 +577,7 @@ static void fsm_rconfnakrej(fsm *f, int32_t code, int32_t id, u_char *inp, int32
 /*
  * fsm_rtermreq - Receive Terminate-Req.
  */
-static void fsm_rtermreq(fsm *f, int32_t id, u_char *p, int32_t len) {
+static void fsm_rtermreq(fsm *f, int id, u_char *p, int len) {
     ppp_pcb *pcb = f->pcb;
 
     switch (f->state) {
@@ -642,7 +642,7 @@ static void fsm_rtermack(fsm *f) {
 /*
  * fsm_rcoderej - Receive an Code-Reject.
  */
-static void fsm_rcoderej(fsm *f, u_char *inp, int32_t len) {
+static void fsm_rcoderej(fsm *f, u_char *inp, int len) {
     u_char code, id;
 
     if (len < HEADERLEN) {
@@ -703,11 +703,11 @@ void fsm_protreject(fsm *f) {
 /*
  * fsm_sconfreq - Send a Configure-Request.
  */
-static void fsm_sconfreq(fsm *f, int32_t retransmit) {
+static void fsm_sconfreq(fsm *f, int retransmit) {
     ppp_pcb *pcb = f->pcb;
     struct pbuf *p;
     u_char *outp;
-    int32_t cilen;
+    int cilen;
 
     if( f->state != PPP_FSM_REQSENT && f->state != PPP_FSM_ACKRCVD && f->state != PPP_FSM_ACKSENT ){
 	/* Not currently negotiating - reset options */
@@ -767,11 +767,11 @@ static void fsm_sconfreq(fsm *f, int32_t retransmit) {
  *
  * Used for all packets sent to our peer by this module.
  */
-void fsm_sdata(fsm *f, u_char code, u_char id, const u_char *data, int32_t datalen) {
+void fsm_sdata(fsm *f, u_char code, u_char id, const u_char *data, int datalen) {
     ppp_pcb *pcb = f->pcb;
     struct pbuf *p;
     u_char *outp;
-    int32_t outlen;
+    int outlen;
 
     /* Adjust length to be smaller than MTU */
     if (datalen > pcb->peer_mru - HEADERLEN)

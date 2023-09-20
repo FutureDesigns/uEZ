@@ -23,6 +23,7 @@
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
 #include <uEZGPIO.h>
+#include <uEZPlatformAPI.h>
 #include <Types/GPIO.h>
 #include <string.h>
 #include "SDCard_MS_driver_SPI.h"
@@ -420,7 +421,7 @@ void MassStorage_SDCard_ConfigureSPI(
     p->r.iDataMISO = p->iCmd;
     p->r.iNumTransfers = 0;
     p->r.iBitsPerTransfer = 8;
-    p->r.iRate = SDCARD_SPI_RATE;
+    p->r.iRate = UEZPlatform_MCI_DefaultFreq()/1000;
 
     p->r.iClockOutPolarity = EFalse;
     p->r.iClockOutPhase = EFalse;
@@ -928,11 +929,10 @@ static T_uezError SDCard_MS_Init(void *aWorkspace, TUInt32 aAddress)
     if (timeout == 0)
         error = UEZ_ERROR_NOT_FOUND;
 
-    error = ISDCard_MS_GetSizeInfo(aWorkspace, &si);
-
     if (ty) {
         /* Initialization succeded */
         p->iInitPerformed = ETrue;
+        error = ISDCard_MS_GetSizeInfo(aWorkspace, &si);
     } else {
         /* Initialization failed */
         p->iInitPerformed = EFalse;
@@ -1246,34 +1246,42 @@ static T_uezError ISDCard_MS_GetSizeInfo(void *aWorkspace, T_msSizeInfo *aInfo)
     TUInt8 *p_csd = (TUInt8 *)&p->G_csd;
     TUInt32 v;
     TUInt32 n;
+    T_uezError error = UEZ_ERROR_NONE;
 
-    // Get the number of sectors
-    // What SDC version?
-    if ((p_csd[0] >> 6) == 1) {
-        // SDC ver 2.00
-        v = p_csd[9] + ((TUInt16)p_csd[8] << 8) + 1;
-        aInfo->iNumSectors = v << 10;
+    if (!p->iInitPerformed) { // drive not initialized
+      aInfo->iSectorSize = 512;
+      aInfo->iNumSectors = 0;
+      aInfo->iBlockSize = 0;
+      error = UEZ_ERROR_NAK;
     } else {
-        // MMC or SDC ver 1.XX
-        n = (p_csd[5] & 15) + ((p_csd[10] & 128)>>7) + ((p_csd[9] & 3) << 1) + 2;
-        v = (p_csd[8] >> 6) + ((TUInt16)p_csd[7] << 2) + ((TUInt16)(p_csd[6] & 3) << 10) + 1;
-        aInfo->iNumSectors = (TUInt32)v << (n-9);
+        // Get the number of sectors
+        // What SDC version?
+        if ((p_csd[0] >> 6) == 1) {
+            // SDC ver 2.00
+            v = p_csd[9] + ((TUInt16)p_csd[8] << 8) + 1;
+            aInfo->iNumSectors = v << 10;
+        } else {
+            // MMC or SDC ver 1.XX
+            n = (p_csd[5] & 15) + ((p_csd[10] & 128)>>7) + ((p_csd[9] & 3) << 1) + 2;
+            v = (p_csd[8] >> 6) + ((TUInt16)p_csd[7] << 2) + ((TUInt16)(p_csd[6] & 3) << 10) + 1;
+            aInfo->iNumSectors = (TUInt32)v << (n-9);
+        }
+
+        // Get the size of the sectors (just hard code to 512)
+        aInfo->iSectorSize = 512;
+
+        // Determine the block size
+        // SDC or MMC?
+        if (p->iCardType & 2) {
+            // SDC
+            aInfo->iBlockSize = (((p_csd[10] & 63) << 1) + ((TUInt16)(p_csd[11] & 128) >> 7) + 1) << ((p_csd[13] >> 16) - 1);
+        } else {
+            // MMC
+            aInfo->iBlockSize = ((TUInt16)((p_csd[10] & 124) >> 2) + 1) * (((p_csd[11] & 3) << 3) + ((p_csd[11] & 224) >> 5) + 1);
+        }
     }
 
-    // Get the size of the sectors (just hard code to 512)
-    aInfo->iSectorSize = 512;
-
-    // Determine the block size
-    // SDC or MMC?
-    if (p->iCardType & 2) {
-        // SDC
-        aInfo->iBlockSize = (((p_csd[10] & 63) << 1) + ((TUInt16)(p_csd[11] & 128) >> 7) + 1) << ((p_csd[13] >> 16) - 1);
-    } else {
-        // MMC
-        aInfo->iBlockSize = ((TUInt16)((p_csd[10] & 124) >> 2) + 1) * (((p_csd[11] & 3) << 3) + ((p_csd[11] & 224) >> 5) + 1);
-    }
-
-    return UEZ_ERROR_NONE;
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1293,10 +1301,13 @@ static T_uezError SDCard_MS_GetSizeInfo(void *aWorkspace, T_msSizeInfo *aInfo)
     T_MassStorage_SDCard_Workspace *p =
         (T_MassStorage_SDCard_Workspace *)aWorkspace;
 
+    if (!p->iInitPerformed) { // drive not initialized
+        SDCard_MS_Init(aWorkspace, 0); // Force perform init here
+    }
+    
     IGrab();
     error = ISDCard_MS_GetSizeInfo(aWorkspace, aInfo);
     IRelease();
-
     return error;
 }
 

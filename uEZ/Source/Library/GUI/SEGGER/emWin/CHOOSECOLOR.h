@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : CHOOSECOLOR.h
@@ -61,8 +61,15 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 */
 #define CHOOSECOLOR_CF_MOVEABLE FRAMEWIN_CF_MOVEABLE
 
-#define CHOOSECOLOR_CI_FRAME 0
-#define CHOOSECOLOR_CI_FOCUS 1
+/*********************************************************************
+*
+*       CHOOSECOLOR color indexes
+*
+*  Description
+*    Color indexes used by the CHOOSECOLOR dialog.
+*/
+#define CHOOSECOLOR_CI_FRAME 0    // Color to be used to draw the frame surrounding each color. Default is GUI_GRAY.
+#define CHOOSECOLOR_CI_FOCUS 1    // Color to be used to draw the focus rectangle. Default is GUI_BLACK.
 
 /*********************************************************************
 *
@@ -90,8 +97,8 @@ typedef struct {
   const GUI_COLOR * pColor;
   unsigned          NumColors;
   unsigned          NumColorsPerLine;
-  int32_t               SelOld;
-  int32_t               Sel;
+  int               SelOld;
+  int               Sel;
   WM_HWIN           hParent;
   CHOOSECOLOR_PROPS Props;
 } CHOOSECOLOR_CONTEXT;
@@ -103,19 +110,19 @@ typedef struct {
 **********************************************************************
 */
 WM_HWIN CHOOSECOLOR_Create(WM_HWIN           hParent,
-                           int32_t               xPos,
-                           int32_t               yPos,
-                           int32_t               xSize,
-                           int32_t               ySize,
+                           int               xPos,
+                           int               yPos,
+                           int               xSize,
+                           int               ySize,
                            const GUI_COLOR * pColor,
                            unsigned          NumColors,
                            unsigned          NumColorsPerLine,
-                           int32_t               Sel,
+                           int               Sel,
                            const char      * sCaption,
-                           int32_t               Flags);
+                           int               Flags);
 
-int32_t  CHOOSECOLOR_GetSel(WM_HWIN hObj);
-void CHOOSECOLOR_SetSel(WM_HWIN hObj, int32_t Sel);
+int  CHOOSECOLOR_GetSel(WM_HWIN hObj);
+void CHOOSECOLOR_SetSel(WM_HWIN hObj, int Sel);
 
 void CHOOSECOLOR_SetDefaultColor     (unsigned Index, GUI_COLOR Color);
 void CHOOSECOLOR_SetDefaultSpace     (unsigned Index, unsigned Space);

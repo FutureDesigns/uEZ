@@ -95,6 +95,11 @@
 #define LCD_CONFIG_TIANMA_TM035NBH02_09             36
 #define LCD_CONFIG_ORIENT_AFY480272B0_43N12NTM      37
 #define LCD_CONFIG_KYOCERA_T55343GD035JU_3_5        38
+#define LCD_CONFIG_NEWHAVEN_NHD43800480CF           39
+#define LCD_CONFIG_NEWHAVEN_NHD70800480EF           40
+#define LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXP      41
+#define LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXV      42
+#define LCD_CONFIG_DLC0430BCP12RF                   43
 
 #define LCD_RES_VGA                                 1
 #define LCD_RES_QVGA                                2
@@ -218,6 +223,105 @@
 #if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_NEWHAVEN_NHD43480272MF)
     #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272MF_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           480
+    #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXP)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272EF_ASXP_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           480
+    #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXV)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272EF_ASXV_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           480
+    #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_DLC0430BCP12RF)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_DLC0430BCP12RF_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
@@ -899,6 +1003,88 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD50800480TF_InterfaceArray
 #elif (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2)
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD50800480TF_Rev2_InterfaceArray
+#endif
+    #define UEZ_LCD_DISPLAY_WIDTH           800
+    #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+
+#if ((UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD70800480EF) | (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD70800480EF))
+#if TOUCHGFX
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_16_BIT //TouchGFX
+#else
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+#endif
+        
+#if (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD70800480EF)
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD70800480EF_InterfaceArray
+#endif
+    #define UEZ_LCD_DISPLAY_WIDTH           800
+    #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+
+#if (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD43800480CF)
+#if TOUCHGFX
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_16_BIT //TouchGFX
+#else
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+#endif
+        
+#if (UEZ_DEFAULT_LCD_CONFIG == LCD_CONFIG_NEWHAVEN_NHD43800480CF)
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43800480CF_InterfaceArray
 #endif
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480

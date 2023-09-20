@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GRAPH_Private.h
@@ -45,6 +45,7 @@ Purpose     : GRAPH private header file
 #ifndef GRAPH_PRIVATE_H
 #define GRAPH_PRIVATE_H
 
+#include "WM_Intern.h"
 #include "GRAPH.h"
 #include "GUI_ARRAY.h"
 #include "WIDGET.h"
@@ -76,13 +77,13 @@ typedef struct {
 struct GRAPH_SCALE_OBJ {
   GRAPH_PAINT_OBJ   PaintObj;
   GRAPH_SCALE_PROPS Props;
-  int32_t               Pos;
-  int32_t               TextAlign;
+  int               Pos;
+  int               TextAlign;
   unsigned          TickDist;
-  int32_t               Off;
+  int               Off;
   U16               Flags;
   float             Factor;
-  int32_t               NumDecs;
+  int               NumDecs;
 };
 
 struct GRAPH_DATA_OBJ {
@@ -91,7 +92,7 @@ struct GRAPH_DATA_OBJ {
   unsigned        NumItems;
   unsigned        MaxNumItems;
   GUI_COLOR       Color;
-  int32_t             OffX, OffY;
+  int             OffX, OffY;
 };
 
 typedef struct {
@@ -118,7 +119,9 @@ struct GRAPH_OBJ {
   U8              LineStyleH;
   WM_SCROLL_STATE ScrollStateV;
   WM_SCROLL_STATE ScrollStateH;
-  void            (* pUserDraw)(WM_HWIN hObj, int32_t Stage);
+  U8              InvertScrollbarV;
+  U8              InvertScrollbarH;
+  void            (* pUserDraw)(WM_HWIN hObj, int Stage);
 };
 
 /*********************************************************************
@@ -154,8 +157,8 @@ extern GRAPH_PROPS GRAPH__DefaultProps;
 *
 **********************************************************************
 */
-void GRAPH__AddValue       (GRAPH_DATA_OBJ * pDataObj, void * pData, void * pValue, int32_t Size);
-int32_t  GRAPH__GetValue       (GRAPH_DATA_OBJ * pDataObj, void * pData, void * pValue, int32_t Size, U32 Index);
+void GRAPH__AddValue       (GRAPH_DATA_OBJ * pDataObj, void * pData, void * pValue, int Size);
+int  GRAPH__GetValue       (GRAPH_DATA_OBJ * pDataObj, void * pData, void * pValue, int Size, U32 Index);
 void GRAPH__InvalidateGraph(GRAPH_Handle hObj);
 
 #endif /* GUI_WINSUPPORT */

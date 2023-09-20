@@ -1,5 +1,5 @@
 @ECHO off
-"C:\Program Files (x86)\SEGGER\JLink\JLink.exe" -CommanderScript "uEZGUI-1788-56VI.jlink" > JLink.log.txt
+"C:\Program Files\SEGGER\JLink\JLink.exe" -CommanderScript "uEZGUI-1788-56VI.jlink" > JLink.log.txt
 REM JLink.exe only has two values for ERRORLEVEL: 0 and 1
 REM see https://wiki.segger.com/J-Link_Commander#JLink.exe_return_value
 

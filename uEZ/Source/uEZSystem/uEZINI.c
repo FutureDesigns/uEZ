@@ -468,7 +468,7 @@ T_uezError UEZINIOpen(const char *aFilename, T_uezINISession *aSession)
     p_session = (T_INISession *)UEZMemAlloc(sizeof(T_INISession));
     if (p_session) {
         memset(p_session, 0, sizeof(*p_session));
-        strcpy(p_session->iFilename, aFilename);
+        strncpy(p_session->iFilename, aFilename, MAX_INI_FILENAME_LENGTH);
 
         error = UEZFileOpen(aFilename, FILE_FLAG_READ_ONLY, &file);
         if (!error) {

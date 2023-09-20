@@ -3105,7 +3105,7 @@
                     <group>
                         <name>option</name>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ffunicode.c</name>
                         </file>
                     </group>
                     <file>
@@ -3119,9 +3119,6 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ff.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\integer.h</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\rtc.c</name>

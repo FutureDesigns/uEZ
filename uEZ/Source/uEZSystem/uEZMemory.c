@@ -189,10 +189,11 @@ void *UEZMemAlloc(TUInt32 aSize)
     T_checkMemTail *q;
 
     // Align to multiples of 4 bytes
-    if (aSize & 3)
+    if (aSize & 3) {
         aSize += 4-(aSize&3);
+    }
 
-	vTaskSuspendAll();
+    vTaskSuspendAll();
 
     ICheckAll();
     p = (T_checkMemHeader *)pvPortMalloc(aSize+sizeof(T_checkMemHeader)+sizeof(T_checkMemTail));

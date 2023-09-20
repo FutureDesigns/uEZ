@@ -22,7 +22,6 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZPlatform.h>
-#include <uEZNetwork.h>
 #include <uEZProcessor.h>
 #include <uEZDemoCommon.h>
 #include "Audio.h"
@@ -31,12 +30,18 @@
 #include "AppTasks.h"
 #include <NVSettings.h>
 #include <HAL/GPIO.h>
+#include <Config_Build.h>
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
+#include <uEZNetwork.h>
 #include "Source/Library/Web/BasicWeb/BasicWEB.h"
 #include <NetworkStartup.h>
 #include <AppHTTPServer.h>
-#include <Config_Build.h>
+#endif
 
 #define HEARTBEAT_BLINK_DELAY			 250
+
+T_uezTask G_heartBeatTask;
+
 /*---------------------------------------------------------------------------*
  * Task:  Heartbeat
  *---------------------------------------------------------------------------*
@@ -82,12 +87,13 @@ T_uezError SetupTasks(void)
 
 #if APP_ENABLE_HEARTBEAT_LED_ON
     // Start up the heart beat of the LED
-    UEZTaskCreate(Heartbeat, "Heart", 80, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+    UEZTaskCreate(Heartbeat, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, &G_heartBeatTask);
 #endif
 #if (UEZ_SPEAKER_TEST == 1)
     UEZTaskCreate(SpkrTestContinuous, "Tone", 256, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif
 
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
     error = UEZTaskCreate(
                 (T_uezTaskFunction)NetworkStartup,
                 "NetStart",
@@ -95,6 +101,7 @@ T_uezError SetupTasks(void)
                 (void *)0,
                 UEZ_PRIORITY_NORMAL,
                 0);
+#endif
 
     return error;
 }

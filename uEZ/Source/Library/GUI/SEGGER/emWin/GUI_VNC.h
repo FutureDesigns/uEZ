@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_VNC.h
@@ -49,7 +49,6 @@ Attention : Do not modify this file ! If you do, you will not
 #ifndef  GUI_VNC_H
 #define  GUI_VNC_H
 
-#include "GUI_Private.h"
 #include "GUI_Type.h"
 #include "IP_FS.h"
 
@@ -112,16 +111,16 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 */
 typedef struct {
   U8 * pBuffer;
-  int32_t  BufferSize;
-  int32_t  NumBytesInBuffer;
+  int  BufferSize;
+  int  NumBytesInBuffer;
 } BUFFER_CB;
 
 typedef struct GUI_VNC_CONTEXT {
   GUI_DEVICE * pDevice;
   struct GUI_VNC_CONTEXT * pNext;
-  int32_t LayerIndex;
-  int32_t BytesPerPixel;
-  int32_t BitsPerPixel;  // Note, that from within the VNC server the function LCD_GetBitsBerPixel() can not be used because the VNC server runs in a separate thread and the device chain can change during the function call
+  int LayerIndex;
+  int BytesPerPixel;
+  int BitsPerPixel;  // Note, that from within the VNC server the function LCD_GetBitsBerPixel() can not be used because the VNC server runs in a separate thread and the device chain can change during the function call
   //
   // Connection related data
   //
@@ -132,9 +131,9 @@ typedef struct GUI_VNC_CONTEXT {
   //
   // Display related info
   //
-  int32_t x0Dirty, y0Dirty, x1Dirty, y1Dirty;
-  int32_t xSize, ySize;
-  int32_t xOrg, yOrg, xOrgNew, yOrgNew;
+  int x0Dirty, y0Dirty, x1Dirty, y1Dirty;
+  int xSize, ySize;
+  int xOrg, yOrg, xOrgNew, yOrgNew;
   //
   // Status
   //
@@ -147,12 +146,12 @@ typedef struct GUI_VNC_CONTEXT {
   //
   U8 * pBuffer;
   unsigned SizeOfBuffer;
-  int32_t (* pfStoreU8)  (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, U8 Data);
-  int32_t (* pfStoreU16) (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, U16 Data);
-  int32_t (* pfStoreU32) (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, U32 Data);
-  int32_t (* pfStoreData)(struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, const U8 * pData, int32_t NumBytes);
-  int32_t (* pfFlush)    (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB);
-  int32_t (* pfRead)     (struct GUI_VNC_CONTEXT * pContext, U8 *, int32_t Len);
+  int (* pfStoreU8)  (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, U8 Data);
+  int (* pfStoreU16) (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, U16 Data);
+  int (* pfStoreU32) (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, U32 Data);
+  int (* pfStoreData)(struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB, const U8 * pData, int NumBytes);
+  int (* pfFlush)    (struct GUI_VNC_CONTEXT * pContext, BUFFER_CB * pBCB);
+  int (* pfRead)     (struct GUI_VNC_CONTEXT * pContext, U8 *, int Len);
 } GUI_VNC_CONTEXT;
 
 typedef struct {
@@ -166,7 +165,7 @@ typedef struct {
 *
 **********************************************************************
 */
-void GUI_VNC_SetDESKey(U8 * pKey, int32_t Mode);
+void GUI_VNC_SetDESKey(U8 * pKey, int Mode);
 void GUI_VNC_DoDES    (U8 * pInblock, U8 * pOutblock);
 
 /*********************************************************************
@@ -175,12 +174,12 @@ void GUI_VNC_DoDES    (U8 * pInblock, U8 * pOutblock);
 *
 **********************************************************************
 */
-void GUI_VNC_AttachToLayer      (GUI_VNC_CONTEXT * pContext, int32_t LayerIndex);
-void GUI_VNC_EnableKeyboardInput(int32_t OnOff);
-void GUI_VNC_EnableMouseInput   (int32_t OnOff);
+void GUI_VNC_AttachToLayer      (GUI_VNC_CONTEXT * pContext, int LayerIndex);
+void GUI_VNC_EnableKeyboardInput(int OnOff);
+void GUI_VNC_EnableMouseInput   (int OnOff);
 void GUI_VNC_EnableFileTransfer (unsigned OnOff);
-int32_t  GUI_VNC_GetNumConnections  (void);
-int32_t  GUI_VNC_Process            (GUI_VNC_CONTEXT * pContext, GUI_tSend pfSend, GUI_tRecv pfReceive, void * pConnectInfo);
+int  GUI_VNC_GetNumConnections  (void);
+int  GUI_VNC_Process            (GUI_VNC_CONTEXT * pContext, GUI_tSend pfSend, GUI_tRecv pfReceive, void * pConnectInfo);
 void GUI_VNC_RingBell           (void);
 void GUI_VNC_SetAuthentication  (GUI_VNC_AUTHENTICATION * pAuthentication);
 void GUI_VNC_SetPassword        (U8 * sPassword);
@@ -193,13 +192,13 @@ void GUI_VNC_SetFS_API          (const IP_FS_API * pFS_API);
 //
 // Private function for setting file transfer handler
 //
-void GUI_VNC__SetRFBExtensionHandler(int32_t (* pFunc)(U32, GUI_VNC_CONTEXT *, BUFFER_CB *));
+void GUI_VNC__SetRFBExtensionHandler(int (* pFunc)(U32, GUI_VNC_CONTEXT *, BUFFER_CB *));
 
 //
 // External routine to link the server to the system ... USER defined !
 //
-int32_t  GUI_VNC_X_StartServer  (int32_t LayerIndex, int32_t ServerIndex);
-int32_t  GUI_VNC_X_StartServerFT(int32_t LayerIndex, int32_t ServerIndex);
+int  GUI_VNC_X_StartServer  (int LayerIndex, int ServerIndex);
+int  GUI_VNC_X_StartServerFT(int LayerIndex, int ServerIndex);
 void GUI_VNC_X_getpeername  (U32 * Addr);
 
 #if defined(__cplusplus)

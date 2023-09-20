@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_BMP_Private.h
@@ -87,16 +87,16 @@ typedef struct {
 typedef struct {
   const U8            * pSrc;           // Pointer to data
   I32                   xSrc;           // Used to read data
-  int32_t                   ySrc;           // Used to read data
+  int                   ySrc;           // Used to read data
   I32                   xSize;
   U32                   BytesPerPixel;
   tLCDDEV_Color2Index * pfColor2Index;
   tLCDDEV_Index2Color * pfIndex2Color;  // Used to manage bitfield conversion
   LCD_API_NEXT_PIXEL  * pNextPixel_API;
-  int32_t                   x0;             // Used to draw data
-  int32_t                   y0;             // Used to draw data
-  int32_t                   x1;             // Used to draw data
-  int32_t                   y1;             // Used to draw data
+  int                   x0;             // Used to draw data
+  int                   y0;             // Used to draw data
+  int                   x1;             // Used to draw data
+  int                   y1;             // Used to draw data
 } GUI_DRAWLINE_INFO;
 
 /*********************************************************************
@@ -105,10 +105,10 @@ typedef struct {
 *
 **********************************************************************
 */
-int32_t GUI_BMP__GetData    (void * p, const U8 ** ppData, unsigned NumBytesReq, U32 Off);
-int32_t GUI_BMP__Init       (GUI_BMP_CONTEXT * pContext, I32 * pWidth, I32 * pHeight, U16 * pBitCount, int32_t * pNumColors, int32_t * pCompression);
-int32_t GUI_BMP__ReadData   (GUI_BMP_CONTEXT * pContext, int32_t NumBytes, const U8 ** ppData, unsigned StartOfFile);
-int32_t GUI_BMP__ReadPalette(GUI_BMP_CONTEXT * pContext, int32_t NumColors);
+int GUI_BMP__GetData    (void * p, const U8 ** ppData, unsigned NumBytesReq, U32 Off);
+int GUI_BMP__Init       (GUI_BMP_CONTEXT * pContext, I32 * pWidth, I32 * pHeight, U16 * pBitCount, int * pNumColors, int * pCompression);
+int GUI_BMP__ReadData   (GUI_BMP_CONTEXT * pContext, int NumBytes, const U8 ** ppData, unsigned StartOfFile);
+int GUI_BMP__ReadPalette(GUI_BMP_CONTEXT * pContext, int NumColors);
 
 #endif /* GUI_BMP_PRIVATE_H */
 

@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.10                                    *
+*       SystemView version: 3.30                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -58,6 +58,7 @@ Revision: $Rev: 7947 $
 #include "string.h" // Required for memset
 
 
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
 
 typedef struct SYSVIEW_FREERTOS_TASK_STATUS SYSVIEW_FREERTOS_TASK_STATUS;
 
@@ -105,6 +106,7 @@ static U64 _cbGetTime(void) {
   U64 Time;
 
   Time = xTaskGetTickCountFromISR();
+//  Time = xTaskGetTickCount();//xTaskGetTickCountFromISR(); // TODO on RX set vSetVarulMaxPRIGROUPValue to fix from ISR version
   Time *= portTICK_PERIOD_MS;
   Time *= 1000;
   return Time;
@@ -239,47 +241,6 @@ void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 Stac
 
 /*********************************************************************
 *
-*       SYSVIEW_RecordU32x4()
-*
-*  Function description
-*    Record an event with 4 parameters
-*/
-void SYSVIEW_RecordU32x4(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3) {
-      U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 4 * SEGGER_SYSVIEW_QUANTA_U32];
-      U8* pPayload;
-      //
-      pPayload = SEGGER_SYSVIEW_PREPARE_PACKET(aPacket);                // Prepare the packet for SystemView
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para0);             // Add the first parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para1);             // Add the second parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para2);             // Add the third parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para3);             // Add the fourth parameter to the packet
-      //
-      SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
-}
-
-/*********************************************************************
-*
-*       SYSVIEW_RecordU32x5()
-*
-*  Function description
-*    Record an event with 5 parameters
-*/
-void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) {
-      U8  aPacket[SEGGER_SYSVIEW_INFO_SIZE + 5 * SEGGER_SYSVIEW_QUANTA_U32];
-      U8* pPayload;
-      //
-      pPayload = SEGGER_SYSVIEW_PREPARE_PACKET(aPacket);                // Prepare the packet for SystemView
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para0);             // Add the first parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para1);             // Add the second parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para2);             // Add the third parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para3);             // Add the fourth parameter to the packet
-      pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para4);             // Add the fifth parameter to the packet
-      //
-      SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
-}
-
-/*********************************************************************
-*
 *       Public API structures
 *
 **********************************************************************
@@ -289,5 +250,71 @@ const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI = {
   _cbGetTime,
   _cbSendTaskList,
 };
+
+#include "SEGGER_SYSVIEW_Conf.h" // Bring in the name information here.
+
+/********************************************************************* 
+*
+*       _cbSendSystemDesc()
+*
+*  Function description
+*    Sends SystemView description strings.
+*/
+static void _cbSendSystemDesc(void) {
+  SEGGER_SYSVIEW_SendSysDesc("N="SEGGER_SYSVIEW_APP_NAME",D="SEGGER_SYSVIEW_DEVICE_NAME",O=FreeRTOS");
+  //SEGGER_SYSVIEW_SendSysDesc("N=FreeRTOS Application,D=undefined device,O=FreeRTOS"); // On Renesas Toolchains the defines don't seem to work here.
+  SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
+}
+
+/*********************************************************************
+*
+*       Global functions
+*
+**********************************************************************
+*/
+#include <uEZPlatform.h> // Below is platform specific things such as tick rate and any specific timestamp functions that are needed on some platforms.
+
+// Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_Conf.h
+#define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ)
+
+// System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
+#define SYSVIEW_CPU_FREQ        configCPU_CLOCK_HZ
+
+// The lowest RAM address used for IDs (pointers)
+#define SYSVIEW_RAM_BASE        (0x10000000) // TODO this may need to be changed for some platforms
+
+void SEGGER_SYSVIEW_Conf(void) {
+  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
+                      &SYSVIEW_X_OS_TraceAPI, _cbSendSystemDesc);
+  SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
+}
+
+/*
+// These functions are missing on RX, Cortex-M0 and must be defined!
+// So far only one of these port specific functions must be added.
+U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
+	return SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific();
+}
+U32 SEGGER_SYSVIEW_X_GetInterruptId(void) {
+  U32 IntId;
+#ifdef __RX  // Renesas CCRX
+  IntId = (get_psw() & 0x0F000000) >> 24u;
+#else // Cortex-M0 example, not tested in uEZ yet.
+ __asm volatile ("mvfc    PSW, %0           \t\n" // Load current PSW
+                 "and     #0x0F000000, %0   \t\n" // Clear all except IPL ([27:24])
+                 "shlr    #24, %0           \t\n" // Shift IPL to [3:0]
+                 : "=r" (IntId)                   // Output result
+                 :                                // Input
+                 :                                // Clobbered list
+                );
+#endif
+  return IntId;
+	// may have to manually assign interrupt numbers such as i2c = 0, touch = 1, etc to use this feature.
+	//return (INTC_SIR_IRQ & (0x7Fu)); // INTC_SIR_IRQ[6:0]: ActiveIRQ
+}
+*/
+#endif
+
+#include "FreeRTOSConfig.h"
 
 /*************************** End of file ****************************/

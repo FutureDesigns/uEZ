@@ -94,7 +94,7 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-#define netifINTERFACE_TASK_STACK_SIZE		(512)
+#define netifINTERFACE_TASK_STACK_SIZE		(512) // This may need to be changed and also is MCU specific and may need to be raised on CM4/CM33 vs older MCUs!
 #define netifINTERFACE_TASK_PRIORITY		UEZ_PRIORITY_VERY_HIGH // (configMAX_PRIORITIES - 1)
 #define netifGUARD_BLOCK_TIME				(250)
 
@@ -262,7 +262,7 @@ static void low_level_init(struct netif *netif)
 
 static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
-    static char packet[1514];
+    static char packet[PBUF_POOL_BUFSIZE];
 //    struct ethernetif *ethernetif = netif->state;
     static T_uezSemaphore xTxSemaphore = 0;
     struct pbuf *q;

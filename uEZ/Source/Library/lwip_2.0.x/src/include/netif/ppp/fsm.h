@@ -50,6 +50,10 @@
 
 #include "ppp.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Packet header = Code, id, length.
  */
@@ -94,18 +98,18 @@ typedef struct fsm {
 typedef struct fsm_callbacks {
     void (*resetci)		/* Reset our Configuration Information */
 		(fsm *);
-    int32_t  (*cilen)		/* Length of our Configuration Information */
+    int  (*cilen)		/* Length of our Configuration Information */
 		(fsm *);
     void (*addci) 		/* Add our Configuration Information */
-		(fsm *, u_char *, int32_t *);
-    int32_t  (*ackci)		/* ACK our Configuration Information */
-		(fsm *, u_char *, int32_t);
-    int32_t  (*nakci)		/* NAK our Configuration Information */
-		(fsm *, u_char *, int32_t, int32_t);
-    int32_t  (*rejci)		/* Reject our Configuration Information */
-		(fsm *, u_char *, int32_t);
-    int32_t  (*reqci)		/* Request peer's Configuration Information */
-		(fsm *, u_char *, int32_t *, int32_t);
+		(fsm *, u_char *, int *);
+    int  (*ackci)		/* ACK our Configuration Information */
+		(fsm *, u_char *, int);
+    int  (*nakci)		/* NAK our Configuration Information */
+		(fsm *, u_char *, int, int);
+    int  (*rejci)		/* Reject our Configuration Information */
+		(fsm *, u_char *, int);
+    int  (*reqci)		/* Request peer's Configuration Information */
+		(fsm *, u_char *, int *, int);
     void (*up)			/* Called when fsm reaches PPP_FSM_OPENED state */
 		(fsm *);
     void (*down)		/* Called when fsm leaves PPP_FSM_OPENED state */
@@ -115,11 +119,11 @@ typedef struct fsm_callbacks {
     void (*finished)		/* Called when we don't want the lower layer */
 		(fsm *);
     void (*protreject)		/* Called when Protocol-Reject received */
-		(int32_t);
+		(int);
     void (*retransmit)		/* Retransmission is necessary */
 		(fsm *);
-    int32_t  (*extcode)		/* Called when unknown code received */
-		(fsm *, int32_t, int32_t, u_char *, int32_t);
+    int  (*extcode)		/* Called when unknown code received */
+		(fsm *, int, int, u_char *, int);
     const char *proto_name;	/* String name for protocol (for messages) */
 } fsm_callbacks;
 
@@ -166,10 +170,13 @@ void fsm_lowerup(fsm *f);
 void fsm_lowerdown(fsm *f);
 void fsm_open(fsm *f);
 void fsm_close(fsm *f, const char *reason);
-void fsm_input(fsm *f, u_char *inpacket, int32_t l);
+void fsm_input(fsm *f, u_char *inpacket, int l);
 void fsm_protreject(fsm *f);
-void fsm_sdata(fsm *f, u_char code, u_char id, const u_char *data, int32_t datalen);
+void fsm_sdata(fsm *f, u_char code, u_char id, const u_char *data, int datalen);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FSM_H */
 #endif /* PPP_SUPPORT */

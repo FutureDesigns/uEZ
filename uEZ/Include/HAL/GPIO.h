@@ -160,6 +160,12 @@ typedef struct {
 
     // v2.04 Functions
     T_uezError (*GetMux)(void *aWorkspace, TUInt8 aPortPinIndex, T_gpioMux *aMux);
+
+    // V2.11 Functions
+    TBool   (*GetLock)(
+            void *aWorkspace,
+            TUInt32 aPortPins);
+
 } HAL_GPIOPort ;
 
 #define GPIO_SET(p, pins)       (((*(p))->Set)(p, pins))

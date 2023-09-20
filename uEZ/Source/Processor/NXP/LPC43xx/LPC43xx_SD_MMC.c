@@ -30,13 +30,19 @@
 #include "LPC43xx_SD_MMC.h"
 #include "LPC43xx_GPIO.h"
 #include "CMSIS/LPC43xx.h"
+#include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#ifndef NUM_MAX_BLOCKS
+#ifndef NUM_MAX_BLOCKS                   // Currently 32 seems to be minimum size
     #define NUM_MAX_BLOCKS               128         /* Block transfer FIFO depth (>= 2), 20+ recommended */
 #endif
+
+#define DEBUG_PRINTF_FUNCTION(...) 
+//#define DEBUG_PRINTF_FUNCTION(...) DEBUG_RTT_WriteString(0, __VA_ARGS__)
+//#define DEBUG_PRINTF_FUNCTION(...) DEBUG_SV_PrintfE(__VA_ARGS__)
 
 /** @brief SDIO FIFO threshold defines
  */
@@ -164,6 +170,8 @@ typedef struct {
 #define TRANSFER_STATUS_DONE                0x10
 #define TRANSFER_STATUS_ANY_ERROR   \
     (TRANSFER_STATUS_BUFFER_OVERRUN|TRANSFER_STATUS_SD_MMC_ERROR)
+      
+#define MCI_RINTSTS_ERROR_BITS_TO_IGNORE  (MCI_INT_CMD_DONE | MCI_INT_ACD | MCI_INT_CD | MCI_INT_SDIO)
 
 /*-------------------------------------------------------------------------*
  * Types:
@@ -192,6 +200,9 @@ typedef struct {
 
     T_SD_MMCTransmissionComplete iTransmissionCompleteCallback;
     void *iTransmissionCompleteCallbackWorkspace;
+    
+    T_SD_MMCError iErrorCallback;
+    void *iErrorCallbackWorkspace;
 
     TUInt32 iRCA;       // Relative Card Address
 
@@ -222,6 +233,19 @@ IRQ_ROUTINE(LPC43xx_SD_MMC_Interrupt)
     IRQ_END();
 }
 
+/* Function to clear interrupt & FIFOs */
+static void ISetClearIntFifo(void)
+{
+    /* reset all blocks */
+    LPC_SDMMC->CTRL |= MCI_CTRL_FIFO_RESET;
+
+    /* wait till resets clear */
+    while (LPC_SDMMC->CTRL & MCI_CTRL_FIFO_RESET) {}
+
+    /* Clear interrupt status */
+    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  LPC43xx_SD_MMC_ProcessInterrupt
  *---------------------------------------------------------------------------*
@@ -236,6 +260,10 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
 {
     InterruptDisable(SDIO_IRQn);
 
+    LPC_SDMMC->RINTSTS = MCI_INT_TXDR; // Don't use currently, clear it
+    LPC_SDMMC->RINTSTS = MCI_INT_RXDR; // Don't use currently, clear it
+    uint32_t temp = LPC_SDMMC->RINTSTS;
+        
     // Did we finish a DMA?
     if (LPC_SDMMC->RINTSTS & MCI_INT_DATA_OVER) {
         // Clear the data transfer complete flag
@@ -253,11 +281,75 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
         }
     }
     if (LPC_SDMMC->RINTSTS & MCI_INT_CMD_DONE) {
-        //LPC_SDMMC->RINTSTS = MCI_INT_CMD_DONE;
+        //LPC_SDMMC->RINTSTS = MCI_INT_CMD_DONE; // Don't clear the flag
         if (p->sdio_wait_exit != 0) {
             // Set this interrupt for SDIO commands
             p->sdio_wait_exit = 2;
         }
+    }
+    
+    temp &=  ~(MCI_RINTSTS_ERROR_BITS_TO_IGNORE);
+      
+    if(temp > 0x0) {
+      // errors
+      if (LPC_SDMMC->RINTSTS & MCI_INT_RESP_ERR) { // Command response error
+          DEBUG_PRINTF_FUNCTION("RSE");
+      }
+      
+      // 6-8 indicate that the received data may have errors. If there was a response time-out, then no data transfer occurred.
+      if (LPC_SDMMC->RINTSTS & MCI_INT_RCRC) { // Response CRC error
+          DEBUG_PRINTF_FUNCTION("RCR");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_DCRC) { // Data CRC error - CRC error occurred during data reception.
+          LPC_SDMMC->RINTSTS = MCI_INT_DCRC; // clear error
+          DEBUG_PRINTF_FUNCTION("DCR"); // We get this with wrong pin settings or too high frequency and it is a real CRC error and we fail file comparison read back.
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_RTO) { // Response timeout error
+          DEBUG_PRINTF_FUNCTION("RTO");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_DTO) { // Data timeout error - Card has not sent data within the time-out period.
+          DEBUG_PRINTF_FUNCTION("DTO");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_HTO) { // Host data starvation error
+          DEBUG_PRINTF_FUNCTION("HDS");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_FRUN) { //  FIFO overrun/underrun error
+          DEBUG_PRINTF_FUNCTION("FOV");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_HLE) { //  Hardware locked error
+          DEBUG_PRINTF_FUNCTION("HLE");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_SBE) { // Start bit error - Start bit was not received during data reception.
+          DEBUG_PRINTF_FUNCTION("SBE");
+      }
+      
+      if (LPC_SDMMC->RINTSTS & MCI_INT_EBE) { // End-bit error - End bit was not received during data reception or for a write operation; a CRC error is indicated by the card.
+          DEBUG_PRINTF_FUNCTION("EBE");
+      }
+      
+      if (LPC_SDMMC->IDSTS & (1 << 10)) { // 
+          DEBUG_PRINTF_FUNCTION("HOT");
+      }
+      if (LPC_SDMMC->IDSTS & (1 << 11)) { // 
+          DEBUG_PRINTF_FUNCTION("HOR");
+      }      
+      
+      if (temp & MCI_INT_DATA_OVER) { 
+          // This possibly indicates command finished as the bit is never set on a real timeout
+      } else {      
+        if (p->iErrorCallback) {
+            p->iErrorCallback(p->iErrorCallbackWorkspace);
+            // can't clear FIFO here using normal clear command, not sure yet if that helps
+            //p->iErrorCallback = 0;
+        }
+      }
     }
 }
 
@@ -282,8 +374,11 @@ T_uezError LPC43xx_SD_MMC_InitializeWorkspace(void *aWorkspace)
     p->iReceptionCompleteCallbackWorkspace = 0;
     p->iTransmissionCompleteCallback = 0;
     p->iTransmissionCompleteCallbackWorkspace = 0;
+    p->iErrorCallback = 0;
+    p->iErrorCallbackWorkspace = 0;
     p->iRCA = 0;
     p->sdio_wait_exit = 0;
+    //p->iSpeed = UEZPlatform_MCI_DefaultFreq();
 
     G_SD_MMCWorkspace = p;
 
@@ -432,7 +527,7 @@ void ISetupDMA(LPC43xx_SD_MMC_DMAArea *aDMAArea, TUInt32 addr, TUInt32 size)
         // Limit size of the transfer to maximum buffer size
         maxs = size;
         if (maxs > MCI_DMADES1_MAXTR) {
-            maxs = MCI_DMADES1_MAXTR;
+            maxs = MCI_DMADES1_MAXTR; // cannot lower by 1
         }
         size -= maxs;
 
@@ -463,19 +558,6 @@ void ISetupDMA(LPC43xx_SD_MMC_DMAArea *aDMAArea, TUInt32 addr, TUInt32 size)
 
     // Set DMA descriptor base address
     LPC_SDMMC->DBADDR = (uint32_t)&aDMAArea->mci_dma_dd[0];
-}
-
-/* Function to clear interrupt & FIFOs */
-static void ISetClearIntFifo(void)
-{
-    /* reset all blocks */
-    LPC_SDMMC->CTRL |= MCI_CTRL_FIFO_RESET;
-
-    /* wait till resets clear */
-    while (LPC_SDMMC->CTRL & MCI_CTRL_FIFO_RESET) {}
-
-    /* Clear interrupt status */
-    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
 }
 
 /*---------------------------------------------------------------------------*
@@ -636,11 +718,18 @@ static void IEventSetup(T_LPC43xx_SD_MMC_Workspace *p, void *bits)
 static uint32_t IIRQWait(T_LPC43xx_SD_MMC_Workspace *p)
 {
     uint32_t status;
+    TUInt32 start;
+
+    start = UEZTickCounterGet();
 
     /* Wait for event, would be nice to have a timeout, but keep it  simple */
-    while (p->sdio_wait_exit != 2) {
+    while (p->sdio_wait_exit != 2) {    
         // Very fast wait time?
         // Spinning....
+        if (UEZTickCounterGetDelta(start) >= 25) {
+            break; // from testing so far we basically never hit this
+        }
+        UEZTaskDelay(1);
     }
 
     /* Get status and clear interrupts */
@@ -757,7 +846,7 @@ TUInt32 LPC43xx_SD_MMC_ExecuteCommand(
 
         // wait for command response (does not use semaphores?)
         // Only used for fast interrupts
-        status = IIRQWait(p);
+        status = IIRQWait(p); // TODO wait earlier for interrupt as we might get it earlier
 
         /* We return an error if there is a timeout, even if we've fetched  a response */
         if (status & SD_INT_ERROR) {
@@ -859,6 +948,14 @@ T_uezError LPC43xx_SD_MMC_ReadyReception(
     return UEZ_ERROR_NONE;
 }
 
+void LPC43xx_SD_MMC_SetupErrorCallback (void *aWorkspace, T_SD_MMCError aErrorCallback,
+     void *aErrorCallbackWorkspace)
+{
+    T_LPC43xx_SD_MMC_Workspace *p = (T_LPC43xx_SD_MMC_Workspace *)aWorkspace;  
+    p->iErrorCallback = aErrorCallback;
+    p->iErrorCallbackWorkspace = aErrorCallbackWorkspace;
+}
+
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -879,7 +976,8 @@ const HAL_SD_MMC LPC43xx_SD_MMC_Interface = { {
     LPC43xx_SD_MMC_ReadyTransmission,
     LPC43xx_SD_MMC_SetCardType,
     LPC43xx_SD_MMC_SetBlockSize,
-    LPC43xx_SD_MMC_PrepreExtCSDTransfer
+    LPC43xx_SD_MMC_PrepreExtCSDTransfer,
+    LPC43xx_SD_MMC_SetupErrorCallback
 };
 
 /*---------------------------------------------------------------------------*
@@ -891,33 +989,33 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     T_LPC43xx_SD_MMC_Workspace *p;
 
     static const T_LPC43xx_SCU_ConfigList sd_cd[] = {
-            {GPIO_P1_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
-            {GPIO_P6_7     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
+            {GPIO_P1_6     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CD    SD/MMC card detect input.
+            {GPIO_P6_7     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CD    SD/MMC card detect input.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_cmd[] = {
-            {GPIO_P1_9     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CMD   SD/MMC command signal.
-            {GPIO_P6_9     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P1_9     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P6_9     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_CMD   SD/MMC command signal.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_dat0[] = {
-            {GPIO_P1_2     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT0  SD/MMC data bus line 0.
-            {GPIO_P6_3     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT0  SD/MMC data bus line 0.
+            {GPIO_P1_2     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT0  SD/MMC data bus line 0.
+            {GPIO_P6_3     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT0  SD/MMC data bus line 0.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_dat1[] = {
-            {GPIO_P1_3     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT1  SD/MMC data bus line 1.
-            {GPIO_P6_4     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT1  SD/MMC data bus line 1.
+            {GPIO_P1_3     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT1  SD/MMC data bus line 1.
+            {GPIO_P6_4     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT1  SD/MMC data bus line 1.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_dat2[] = {
-            {GPIO_P1_4     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT2  SD/MMC data bus line 2.
-            {GPIO_P6_5     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT2  SD/MMC data bus line 2.
+            {GPIO_P1_4     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT2  SD/MMC data bus line 2.
+            {GPIO_P6_5     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT2  SD/MMC data bus line 2.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_dat3[] = {
-            {GPIO_P1_5     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT3  SD/MMC data bus line 3.
-            {GPIO_P6_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_DAT3  SD/MMC data bus line 3.
+            {GPIO_P1_5     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT3  SD/MMC data bus line 3.
+            {GPIO_P6_6     , SCU_NORMAL_DRIVE_HIGH_FREQ(7)}, //SD_DAT3  SD/MMC data bus line 3.
     };
 
     static const T_LPC43xx_SCU_ConfigList sd_pow[] = {
@@ -963,7 +1061,7 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
 
     // Setup interrupt for the SD_MMC
     InterruptRegister(SDIO_IRQn, LPC43xx_SD_MMC_Interrupt,
-        INTERRUPT_PRIORITY_NORMAL, "SD_MMC");
+        INTERRUPT_PRIORITY_HIGH, "SD_MMC");
     InterruptEnable(SDIO_IRQn);
 }
 

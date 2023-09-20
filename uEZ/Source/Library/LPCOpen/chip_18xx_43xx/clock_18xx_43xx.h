@@ -236,6 +236,13 @@ bool Chip_Clock_IsBaseClockEnabled(CHIP_CGU_BASE_CLK_T BaseClock);
 void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int32_t div);
 
 /**
+ * @brief	Disables a peripheral clock and sets clock states to 0
+ * @param	clk			: CHIP_CCU_CLK_T value indicating which clock to enable
+ * @return	Nothing
+ */
+void Chip_Clock_DisableOpts(CHIP_CCU_CLK_T clk);
+
+/**
  * @brief	Enables a peripheral clock
  * @param	clk	: CHIP_CCU_CLK_T value indicating which clock to enable
  * @return	Nothing

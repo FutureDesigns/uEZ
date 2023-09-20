@@ -43,6 +43,7 @@
 #include "uEZErrors.h"
 #include "uEZRTOS.h"
 #include <Types/File.h>
+#include <Device/MassStorage.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -249,6 +250,29 @@ T_uezError UEZFileSystemSync(const char *const aDrivePath);
 T_uezError UEZFileSystemGetVolumeInfo(
         const char * const aDrivePath,
         T_uezFileSystemVolumeInfo *aInfo);
+
+/**
+ * GetStorageInfo returns information about the physical storage device.
+ *
+ * @param[in]   *aDrivePath         Directory to drive to get info
+ * @param[out]  *aInfo              Structure to receive volume information
+ *
+ * @return T_uezError               Error code, if any. UEZ_ERROR_OK if
+ *                                  successful.
+ */
+T_uezError UEZFileSystemGetStorageInfo(
+        const char * const aDrivePath,
+        T_msSizeInfo *aInfo);
+
+/**
+ * Format the file system
+ *
+ * @param[in]   aDriveNum           Drive number '0', '1', etc.
+ *
+ * @return T_uezError               Error code, if any. UEZ_ERROR_OK if
+ *                                  successful.
+ */
+T_uezError UEZFileMKFS(const char aDriveNum);
 
 #ifdef __cplusplus
 }

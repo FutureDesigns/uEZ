@@ -61,14 +61,14 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 typedef struct {
         // Parsed internal state
-        TUInt32 iSegment;
-        TUInt32 iExtendedAddress;
+        uint32_t iSegment;
+        uint32_t iExtendedAddress;
 
         // Parsed output
-        TUInt32 iDataAddress;
-        TUInt16 iDataLength;
-        TUInt8 iData[INTEL_HEX_PARSER_MAX_DATA_LENGTH];
-        TBool iIsEnd;
+        uint32_t iDataAddress;
+        uint16_t iDataLength;
+        uint8_t iData[INTEL_HEX_PARSER_MAX_DATA_LENGTH];
+        bool iIsEnd;
 } T_IntexHexParserWorkspace;
 
 /*-------------------------------------------------------------------------*

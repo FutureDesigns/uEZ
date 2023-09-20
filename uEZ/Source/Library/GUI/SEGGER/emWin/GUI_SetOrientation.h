@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_SetOrientation.h
@@ -45,7 +45,7 @@ Purpose     : Private include file for GUI_SetOrientation_xxx
 #ifndef GUI_SETORIENTATION_H
 #define GUI_SETORIENTATION_H
 
-#include "GUI_Private.h"
+#include "GUI.h"
 
 /*********************************************************************
 *
@@ -71,14 +71,14 @@ Purpose     : Private include file for GUI_SetOrientation_xxx
 typedef struct DRIVER_CONTEXT DRIVER_CONTEXT;
 
 struct DRIVER_CONTEXT {
-  void (* pfLog2Phys)(DRIVER_CONTEXT * pContext, int32_t x, int32_t y, int32_t * px_phys, int32_t * py_phys);
+  void (* pfLog2Phys)(DRIVER_CONTEXT * pContext, int x, int y, int * px_phys, int * py_phys);
   U8 * pData;
-  int32_t BytesPerPixel;
-  int32_t BytesPerLine;
-  int32_t Orientation;
-  int32_t xSize, ySize;
-  int32_t vxSize, vySize;
-  int32_t PixelOffset;
+  int BytesPerPixel;
+  int BytesPerLine;
+  int Orientation;
+  int xSize, ySize;
+  int vxSize, vySize;
+  int PixelOffset;
   const GUI_ORIENTATION_API * pDrawingAPI;
 };
 
@@ -88,7 +88,7 @@ struct DRIVER_CONTEXT {
 *
 **********************************************************************
 */
-void GUI__Sort(int32_t * p0, int32_t * p1);
+void GUI__Sort(int * p0, int * p1);
 
 #endif /* GUI_SETORIENTATION_H */
 

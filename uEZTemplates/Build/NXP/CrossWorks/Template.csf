@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<CustomSymbols xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Micrium\uC-Probe\Util\csf.xsd" >
+  <!-- XML-based Custom Symbol File (CSF) Example. -->
+  <GroupOfSymbols>
+    <GroupName>AppTasks.c</GroupName>
+    <!-- Name of the Group of Symbols (i.e. Name of the C file where they are declared). -->
+    <Symbols>
+      <Symbol>
+        <!-- First symbol declared in App.c -->
+        <Name>HeartBeatLED</Name>
+        <DisplayName>HeartBeatLED</DisplayName>
+        <DataType Size="4">unsigned long</DataType>
+        <MemoryAddress>0x20098038</MemoryAddress>
+      </Symbol>
+      <Symbol>
+        <!-- Th symbol declared in App.c -->
+        <Name>HeartBeatLEDbit</Name>
+        <DisplayName>HeartBeatLEDbit</DisplayName>
+        <DataType Size="1">byte</DataType>
+        <MemoryAddress>0x20098039</MemoryAddress>
+      </Symbol>
+      <Symbol>
+        <!-- Second symbol declared in App.c -->
+        <Name>MyStruct</Name>
+        <DataType Size="50">struct</DataType>
+        <MemoryAddress>0x50AC</MemoryAddress>
+        <DataMembers>
+          <!-- Struct elements -->
+          <Symbol>
+            <Name>MyArray</Name>
+            <DataType Size="16" IsArray="true" ArrayLength="4">int</DataType>
+            <MemoryAddress>0x50AC</MemoryAddress>
+          </Symbol>
+          <Symbol>
+            <Name>MyCharPointer</Name>
+            <DataType Size="4" IsPointer="true">char</DataType>
+            <MemoryAddress>1025</MemoryAddress>
+          </Symbol>
+        </DataMembers>
+      </Symbol>
+    </Symbols>
+  </GroupOfSymbols>
+</CustomSymbols>

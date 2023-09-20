@@ -29,6 +29,7 @@
 #include "uEZDemoCommon.h"
 #include <uEZLCD.h>
 #include <uEZKeypad.h>
+#include <build_time.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -117,7 +118,7 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
     TUInt32 x, y;
     TUInt32 h, v;
     TUInt32 fontHeight;
-    char title[60]; // DK-TS needs more than 50 for title and CS
+    char title[90]; // DK-TS needs more than 50 for title and CS
 
     UEZLCDGetFrame(aWS->iLCD, 0, (void **)&pixels);
        
@@ -136,9 +137,17 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
             2,      
 #endif
             YELLOW, RGB(0, 0, 0), RED);
+
     swim_set_font(&aWS->iWin, &APP_DEMO_DEFAULT_FONT);
     if(G_romChecksumCalculated){
-        sprintf(title, "%s CS: 0x%08X", aWS->iMenu->iTitle, G_romChecksum);
+
+#if (defined __ICCARM__) || (defined __ICCRX__)
+        sprintf(title, "%s CS: 0x%08X - IAR Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, BUILD_MONTH,BUILD_DAY,BUILD_YEAR);
+#elif (defined __GNUC__)
+        sprintf(title, "%s CS: 0x%08X - GCC Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, BUILD_MONTH,BUILD_DAY,BUILD_YEAR);
+#else
+        sprintf(title, "%s CS: 0x%08X - Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, BUILD_MONTH,BUILD_DAY,BUILD_YEAR);
+#endif
         swim_set_title(&aWS->iWin, title, BLUE);
     } else {
         swim_set_title(&aWS->iWin, aWS->iMenu->iTitle, BLUE);

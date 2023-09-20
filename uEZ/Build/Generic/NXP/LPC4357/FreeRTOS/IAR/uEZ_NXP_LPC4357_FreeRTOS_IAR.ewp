@@ -11,9 +11,13 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>31</version>
+                <version>35</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
+                <option>
+                    <name>BrowseInfoPath</name>
+                    <state>Debug\BrowseInfo</state>
+                </option>
                 <option>
                     <name>ExePath</name>
                     <state>Debug\Exe</state>
@@ -58,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>To be used with the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+                    <state>To be used with a compact configuration of the C/C++14 runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -66,15 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.1.24770</state>
-                </option>
-                <option>
-                    <name>GeneralEnableMisra</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVerbose</name>
-                    <state>0</state>
+                    <state>9.30.1.50052</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -97,26 +93,12 @@
                     <state>0</state>
                 </option>
                 <option>
-                    <name>GeneralMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
-                </option>
-                <option>
                     <name>RTConfigPath2</name>
                     <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -133,7 +115,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -156,7 +138,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -209,21 +191,42 @@
                     <version>0</version>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>OGAarch64Abi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>OG_32_64Device</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>BuildFilesPath</name>
+                    <state>Debug</state>
+                </option>
+                <option>
+                    <name>PointerAuthentication</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>FPU64</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
                     <name>CCDefines</name>
                     <state>LWIP_PROVIDE_ERRNO</state>
                     <state>UEZ_LIBRARY</state>
-                    <state>CORE_M4</state>
                     <state>LWIP_2_0_x</state>
+                    <state>CORE_M4</state>
+                    <state>DEBUG</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -239,23 +242,23 @@
                 </option>
                 <option>
                     <name>CCListCFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCMnemonics</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCMessages</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssSource</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCEnableRemarks</name>
@@ -324,7 +327,7 @@
                 </option>
                 <option>
                     <name>CCCompilerRuntimeInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IFpuProcessor</name>
@@ -343,25 +346,19 @@
                     <state></state>
                 </option>
                 <option>
-                    <name>CompilerMisraOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/.</state>
                     <state>$PROJ_DIR$/../.</state>
                     <state>$PROJ_DIR$/../../../../../../.</state>
                     <state>$PROJ_DIR$/../../../../../../Include</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx/IAR/</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx/Common/</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/Library/SEGGER/SystemView/</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/Library/SEGGER/RTT/</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/Include</state>
@@ -371,6 +368,8 @@
                     <state>$PROJ_DIR$/../../../../../../Source/Platform/emWin/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Platform/emWin/Config</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/GUI/SEGGER/emWin</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/Library/SEGGER/SystemView/</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/Library/SEGGER/RTT/</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/LPCOpen</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/LPCOpen/chip_18xx_43xx</state>
                 </option>
@@ -388,7 +387,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -397,17 +396,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -504,7 +493,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -555,6 +544,7 @@
                 <option>
                     <name>ADefines</name>
                     <state>CORE_M4</state>
+                    <state>DEBUG</state>
                 </option>
                 <option>
                     <name>AList</name>
@@ -646,7 +636,6 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state>$PROJ_DIR$\</state>
                     <state>$PROJ_DIR$/.</state>
                     <state>$PROJ_DIR$/../.</state>
                     <state>$PROJ_DIR$/../../../../../../.</state>
@@ -657,7 +646,7 @@
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/src</state>
@@ -665,9 +654,10 @@
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/src/include/ipv4</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/system</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Library/lwIP_2.0.x/system/arch</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/Platform/emWin/Inc</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/Platform/emWin/Config</state>
-                    <state>$PROJ_DIR$/../../../../../../Source/Library/GUI/SEGGER/emWin</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/Library/Encryption/CyaSSL</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/Library/Encryption/CyaSSL/cyassl</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/Library/Encryption/CyaSSL/cyassl/ctaocrypt</state>
+                    <state>$PROJ_DIR$/../../../../../../Source/Library/Encryption/CyaSSL/cyassl/openssl</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>
@@ -680,6 +670,10 @@
                 <option>
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -719,13 +713,9 @@
             <data>
                 <extensions></extensions>
                 <cmdline></cmdline>
-                <hasPrio>0</hasPrio>
+                <hasPrio>1</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
             </data>
-        </settings>
-        <settings>
-            <name>BICOMP</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
         <settings>
             <name>BUILDACTION</name>
@@ -739,16 +729,12 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>23</version>
+                <version>27</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>XLinkMisraHandler</name>
-                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkInputFileSlave</name>
@@ -1075,6 +1061,42 @@
                     <name>IlinkRawBinaryAlign2</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state></state>
+                </option>
+                <option>
+                    <name>IlinkProcessor</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkFpuProcessor</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1098,11 +1120,6 @@
                 </option>
             </data>
         </settings>
-        <settings>
-            <name>BILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
-        </settings>
     </configuration>
     <configuration>
         <name>Debug-TouchGFX</name>
@@ -1114,9 +1131,13 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>31</version>
+                <version>35</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
+                <option>
+                    <name>BrowseInfoPath</name>
+                    <state>Debug-TouchGFX\BrowseInfo</state>
+                </option>
                 <option>
                     <name>ExePath</name>
                     <state>Debug-TouchGFX\Exe</state>
@@ -1172,14 +1193,6 @@
                     <state>8.22.2.15993</state>
                 </option>
                 <option>
-                    <name>GeneralEnableMisra</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVerbose</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>OGChipSelectEditMenu</name>
                     <state>LPC4357_M4	NXP LPC4357_M4</state>
                 </option>
@@ -1200,26 +1213,12 @@
                     <state>0</state>
                 </option>
                 <option>
-                    <name>GeneralMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
-                </option>
-                <option>
                     <name>RTConfigPath2</name>
                     <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -1236,7 +1235,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -1259,7 +1258,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -1312,13 +1311,33 @@
                     <version>0</version>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>OGAarch64Abi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>OG_32_64Device</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>BuildFilesPath</name>
+                    <state>Debug-TouchGFX</state>
+                </option>
+                <option>
+                    <name>PointerAuthentication</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>FPU64</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1448,10 +1467,6 @@
                     <state></state>
                 </option>
                 <option>
-                    <name>CompilerMisraOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/.</state>
                     <state>$PROJ_DIR$/../.</state>
@@ -1501,16 +1516,6 @@
                 <option>
                     <name>CCOptLevelSlave</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -1607,7 +1612,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1783,6 +1788,10 @@
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1822,12 +1831,8 @@
                 <extensions></extensions>
                 <cmdline></cmdline>
                 <hasPrio>0</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
             </data>
-        </settings>
-        <settings>
-            <name>BICOMP</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
         <settings>
             <name>BUILDACTION</name>
@@ -1841,16 +1846,12 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>23</version>
+                <version>27</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>XLinkMisraHandler</name>
-                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkInputFileSlave</name>
@@ -2177,6 +2178,42 @@
                     <name>IlinkRawBinaryAlign2</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state></state>
+                </option>
+                <option>
+                    <name>IlinkProcessor</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkFpuProcessor</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2200,11 +2237,6 @@
                 </option>
             </data>
         </settings>
-        <settings>
-            <name>BILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
-        </settings>
     </configuration>
     <configuration>
         <name>Release</name>
@@ -2216,9 +2248,13 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>31</version>
+                <version>35</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
+                <option>
+                    <name>BrowseInfoPath</name>
+                    <state>Release\BrowseInfo</state>
+                </option>
                 <option>
                     <name>ExePath</name>
                     <state>Release\Exe</state>
@@ -2271,15 +2307,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.1.24770</state>
-                </option>
-                <option>
-                    <name>GeneralEnableMisra</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVerbose</name>
-                    <state>0</state>
+                    <state>9.10.2.39304</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -2302,26 +2330,12 @@
                     <state>0</state>
                 </option>
                 <option>
-                    <name>GeneralMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
-                </option>
-                <option>
                     <name>RTConfigPath2</name>
                     <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -2338,7 +2352,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -2361,7 +2375,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -2414,13 +2428,33 @@
                     <version>0</version>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>OGAarch64Abi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>OG_32_64Device</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>BuildFilesPath</name>
+                    <state>Release</state>
+                </option>
+                <option>
+                    <name>PointerAuthentication</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>FPU64</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -2549,10 +2583,6 @@
                     <state></state>
                 </option>
                 <option>
-                    <name>CompilerMisraOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/.</state>
                     <state>$PROJ_DIR$/../.</state>
@@ -2604,16 +2634,6 @@
                 <option>
                     <name>CCOptLevelSlave</name>
                     <state>0</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -2710,7 +2730,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -2887,6 +2907,10 @@
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2926,12 +2950,8 @@
                 <extensions></extensions>
                 <cmdline></cmdline>
                 <hasPrio>0</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
             </data>
-        </settings>
-        <settings>
-            <name>BICOMP</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
         <settings>
             <name>BUILDACTION</name>
@@ -2945,16 +2965,12 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>23</version>
+                <version>27</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>XLinkMisraHandler</name>
-                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkInputFileSlave</name>
@@ -3281,6 +3297,42 @@
                     <name>IlinkRawBinaryAlign2</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state></state>
+                </option>
+                <option>
+                    <name>IlinkProcessor</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkFpuProcessor</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -3304,11 +3356,6 @@
                 </option>
             </data>
         </settings>
-        <settings>
-            <name>BILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
-        </settings>
     </configuration>
     <configuration>
         <name>Debug-Trace</name>
@@ -3320,9 +3367,13 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>31</version>
+                <version>35</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
+                <option>
+                    <name>BrowseInfoPath</name>
+                    <state>Debug-Trace\BrowseInfo</state>
+                </option>
                 <option>
                     <name>ExePath</name>
                     <state>Debug-Trace\Exe</state>
@@ -3378,14 +3429,6 @@
                     <state>8.50.1.24770</state>
                 </option>
                 <option>
-                    <name>GeneralEnableMisra</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVerbose</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>OGChipSelectEditMenu</name>
                     <state>LPC4357_M4	NXP LPC4357_M4</state>
                 </option>
@@ -3406,26 +3449,12 @@
                     <state>0</state>
                 </option>
                 <option>
-                    <name>GeneralMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
-                </option>
-                <option>
                     <name>RTConfigPath2</name>
                     <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -3442,7 +3471,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -3465,7 +3494,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>28</version>
+                    <version>32</version>
                     <state>39</state>
                 </option>
                 <option>
@@ -3518,13 +3547,33 @@
                     <version>0</version>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>OGAarch64Abi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>OG_32_64Device</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>BuildFilesPath</name>
+                    <state>Debug-Trace</state>
+                </option>
+                <option>
+                    <name>PointerAuthentication</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>FPU64</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -3654,10 +3703,6 @@
                     <state></state>
                 </option>
                 <option>
-                    <name>CompilerMisraOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/.</state>
                     <state>$PROJ_DIR$/../.</state>
@@ -3711,16 +3756,6 @@
                 <option>
                     <name>CCOptLevelSlave</name>
                     <state>0</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -3817,7 +3852,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -3959,7 +3994,6 @@
                 </option>
                 <option>
                     <name>AUserIncludes</name>
-                    <state>$PROJ_DIR$\</state>
                     <state>$PROJ_DIR$/.</state>
                     <state>$PROJ_DIR$/../.</state>
                     <state>$PROJ_DIR$/../../../../../../.</state>
@@ -3993,6 +4027,10 @@
                 <option>
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -4033,12 +4071,8 @@
                 <extensions></extensions>
                 <cmdline></cmdline>
                 <hasPrio>0</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
             </data>
-        </settings>
-        <settings>
-            <name>BICOMP</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
         <settings>
             <name>BUILDACTION</name>
@@ -4052,16 +4086,12 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>23</version>
+                <version>27</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>XLinkMisraHandler</name>
-                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkInputFileSlave</name>
@@ -4388,6 +4418,42 @@
                     <name>IlinkRawBinaryAlign2</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state></state>
+                </option>
+                <option>
+                    <name>IlinkProcessor</name>
+                    <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkFpuProcessor</name>
+                    <state>1</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -4410,11 +4476,6 @@
                     <state>$PROJ_DIR$\Debug\Exe\uEZ_NXP_LPC4357_FreeRTOS_IAR_Debug.a</state>
                 </option>
             </data>
-        </settings>
-        <settings>
-            <name>BILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
     </configuration>
     <group>
@@ -4696,6 +4757,9 @@
             </file>
         </group>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\build_time.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\Config.h</name>
         </file>
         <file>
@@ -4703,6 +4767,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\Global.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\lwipopts.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\lwippools.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\netdb.h</name>
@@ -4723,13 +4793,22 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZAudioAmp.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZAudioMixer.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZBSP.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZButton.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZCAN.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZCharDisplay.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZCRC.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDAC.h</name>
@@ -4739,6 +4818,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZDeviceTable.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZEEPROM.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZEINT.h</name>
@@ -4802,6 +4884,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZRTOS.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZSPI.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Include\uEZStream.h</name>
@@ -5223,6 +5308,15 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\NewHaven\NHD50800480TF\NewHaven_NHD50800480TF_Rev2.c</name>
                         </file>
                     </group>
+                    <group>
+                        <name>NHD70800480EF</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\NewHaven\NHD70800480EF\NewHaven_NHD70800480EF.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\LCD\NewHaven\NHD70800480EF\NewHaven_NHD70800480EF.h</name>
+                        </file>
+                    </group>
                 </group>
             </group>
             <group>
@@ -5601,12 +5695,6 @@
                 <name>FileSystem</name>
                 <group>
                     <name>FATFS</name>
-                    <group>
-                        <name>option</name>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\option\unicode.c</name>
-                        </file>
-                    </group>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\diskio.c</name>
                     </file>
@@ -5620,7 +5708,13 @@
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ff.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\integer.h</name>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ffconf.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ffsystem.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ffunicode.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\rtc.c</name>
@@ -5630,6 +5724,9 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\uEZFileSystem_FATFS.h</name>
                     </file>
                 </group>
             </group>
@@ -5778,10 +5875,16 @@
                     <group>
                         <name>emWin</name>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\AppWizard.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\BUTTON.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\BUTTON_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\CALENDAR.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\CHECKBOX.h</name>
@@ -5790,10 +5893,16 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\CHECKBOX_Private.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\CHOOSECOLOR.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\CHOOSEFILE.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\DIALOG.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\DIALOG_Intern.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\DIALOG_Type.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\DROPDOWN.h</name>
@@ -5814,6 +5923,12 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\FRAMEWIN_Private.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GAUGE.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GAUGE_Private.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GRAPH.h</name>
                         </file>
                         <file>
@@ -5821,6 +5936,12 @@
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI__BiDi2_Brackets_800.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI__BiDi2_Types_800.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_ARRAY.h</name>
@@ -5841,6 +5962,9 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_FontIntern.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_GCache_Private.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_GIF_Private.h</name>
                         </file>
                         <file>
@@ -5859,6 +5983,12 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_SetOrientationCX.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_SPRITE_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_SPY_Private.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_Type.h</name>
                         </file>
                         <file>
@@ -5868,37 +5998,22 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUI_VNC.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_07X1.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_13700.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_13748.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_1611.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_6331.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_7529.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_BitPlains.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_CompactColor_16.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_DCache.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Fujitsu_16.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_DCache_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Generic.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Dist.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_GW7630_1.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_FlexColor.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_FlexColor_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_IST3088.h</name>
@@ -5907,10 +6022,19 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_IST3088_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_L5F30919.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin_Opt_16.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin_Opt_24.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin_Opt_32.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin_Opt_8.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin_Private.h</name>
@@ -5919,25 +6043,37 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_NoOpt_1_8.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_Page1bpp.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13748.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13748_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13U11.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13781.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13781_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D15G00.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SH_MEM.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SH_MEM_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SLin.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SLin_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SPage.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SPage_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_SSD1926.h</name>
@@ -5955,7 +6091,7 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_TemplateI_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUIDRV_UC1698G4.h</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\GUITDRV_ADS7846.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\HEADER.h</name>
@@ -5968,6 +6104,27 @@
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\ICONVIEW_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\IMAGE.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\IMAGE_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\IP_FS.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\KEYBOARD.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\KEYBOARD_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\KNOB.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\KNOB_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\LCD.h</name>
@@ -6015,6 +6172,9 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\MULTIEDIT.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\MULTIEDIT_Private.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\MULTIPAGE.h</name>
                         </file>
                         <file>
@@ -6027,10 +6187,22 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\PROGBAR_Private.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\QRCODE.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\QRCODE_Private.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\RADIO.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\RADIO_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\ROTARY.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\ROTARY_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SCROLLBAR.h</name>
@@ -6039,10 +6211,31 @@
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SCROLLBAR_Private.h</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SEGGER.h</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SLIDER.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SLIDER_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SPINBOX.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SPINBOX_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SWIPELIST.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SWIPELIST_Private.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SWITCH.h</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\SWITCH_Private.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\TEXT.h</name>
@@ -6070,9 +6263,6 @@
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\WM_Intern.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\GUI\SEGGER\emWin\WM_Intern_ConfDep.h</name>
                         </file>
                     </group>
                 </group>
@@ -6824,6 +7014,9 @@
             <group>
                 <name>lwip_2.0.x</name>
                 <group>
+                    <name>contrib</name>
+                </group>
+                <group>
                     <name>src</name>
                     <group>
                         <name>api</name>
@@ -6835,6 +7028,9 @@
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\api\err.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\api\if_api.c</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\api\netbuf.c</name>
@@ -6914,6 +7110,12 @@
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmp_scalar.c</name>
                             </file>
                             <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmp_snmpv2_framework.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmp_snmpv2_usm.c</name>
+                            </file>
+                            <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmp_table.c</name>
                             </file>
                             <file>
@@ -6924,9 +7126,6 @@
                             </file>
                             <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmpv3.c</name>
-                            </file>
-                            <file>
-                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmpv3_dummy.c</name>
                             </file>
                             <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\apps\snmp\snmpv3_mbedtls.c</name>
@@ -6965,6 +7164,45 @@
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv4\ip4_frag.c</name>
                             </file>
                         </group>
+                        <group>
+                            <name>ipv6</name>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\dhcp6.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\ethip6.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\icmp6.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\inet6.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\ip6.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\ip6_addr.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\ip6_frag.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\mld6.c</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\ipv6\nd6.c</name>
+                            </file>
+                        </group>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\altcp.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\altcp_alloc.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\altcp_tcp.c</name>
+                        </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\core\def.c</name>
                         </file>
@@ -7163,6 +7401,15 @@
                                 </file>
                             </group>
                             <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\altcp.h</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\altcp_tcp.h</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\altcp_tls.h</name>
+                            </file>
+                            <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\api.h</name>
                             </file>
                             <file>
@@ -7205,6 +7452,9 @@
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\icmp6.h</name>
                             </file>
                             <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\if_api.h</name>
+                            </file>
+                            <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\igmp.h</name>
                             </file>
                             <file>
@@ -7236,6 +7486,9 @@
                             </file>
                             <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\ip6_frag.h</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\ip6_zone.h</name>
                             </file>
                             <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\ip_addr.h</name>
@@ -7290,6 +7543,9 @@
                             </file>
                             <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\tcp.h</name>
+                            </file>
+                            <file>
+                                <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\tcpbase.h</name>
                             </file>
                             <file>
                                 <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\include\lwip\tcpip.h</name>
@@ -7491,16 +7747,34 @@
                             </file>
                         </group>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\bridgeif.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\bridgeif_fdb.c</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\ethernet.c</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\ethernetif.c</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\ethernetif_org.c</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\lowpan6.c</name>
                         </file>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\lowpan6_ble.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\lowpan6_common.c</name>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\slipif.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\src\netif\zepif.c</name>
                         </file>
                     </group>
                 </group>
@@ -7537,6 +7811,18 @@
                         <name>OS</name>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\system\OS\sys_arch.c</name>
+                        </file>
+                    </group>
+                </group>
+                <group>
+                    <name>test</name>
+                    <group>
+                        <name>sockets</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\test\sockets\sockets_stresstest.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\lwip_2.0.x\test\sockets\sockets_stresstest.h</name>
                         </file>
                     </group>
                 </group>
@@ -7661,9 +7947,6 @@
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\SEGGER\SystemView\SEGGER_SYSVIEW_ConfDefaults.h</name>
-                    </file>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\SEGGER\SystemView\SEGGER_SYSVIEW_Config_FreeRTOS.c</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\SEGGER\SystemView\SEGGER_SYSVIEW_FreeRTOS.c</name>
@@ -7794,9 +8077,6 @@
                 </group>
                 <group>
                     <name>Inc</name>
-                    <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Platform\emWin\Inc\SEGGER.h</name>
-                    </file>
                 </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Platform\emWin\GUI_X_uEZ.c</name>
@@ -7984,16 +8264,25 @@
                 <group>
                     <name>include</name>
                     <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\atomic.h</name>
+                    </file>
+                    <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\croutine.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\event_groups.h</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\FreeRTOS.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h</name>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\list.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\list.h</name>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\message_buffer.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\mpu_prototypes.h</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\mpu_wrappers.h</name>
@@ -8011,10 +8300,16 @@
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\semphr.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\StackMacros.h</name>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\stack_macros.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\stream_buffer.h</name>
                     </file>
                     <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\task.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\timers.h</name>
                     </file>
                 </group>
                 <group>
@@ -8037,15 +8332,40 @@
                     <group>
                         <name>MemMang</name>
                         <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\MemMang\heap_2.c</name>
+                            <excluded>
+                                <configuration>Debug</configuration>
+                                <configuration>Release</configuration>
+                                <configuration>Debug-Trace</configuration>
+                            </excluded>
+                        </file>
+                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\MemMang\heap_3.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\portable\MemMang\heap_4.c</name>
+                            <excluded>
+                                <configuration>Debug</configuration>
+                                <configuration>Release</configuration>
+                                <configuration>Debug-Trace</configuration>
+                            </excluded>
                         </file>
                     </group>
                 </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\croutine.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\event_groups.c</name>
+                </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\list.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\queue.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\stream_buffer.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\tasks.c</name>
@@ -8235,5 +8555,14 @@
     </group>
     <file>
         <name>$PROJ_DIR$\..\Config_Build.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\RTOS\FreeRTOS\include\FreeRTOSConfig.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Include\SEGGER_RTT_SYSVIEW_Config.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\uEZPlatform.h</name>
     </file>
 </project>

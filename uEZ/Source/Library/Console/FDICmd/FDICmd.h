@@ -53,7 +53,7 @@ extern "C" {
  * Constants:
  *-------------------------------------------------------------------------*/
 #ifndef FDICMD_MAX_LINE_LENGTH
-    #define FDICMD_MAX_LINE_LENGTH 256//78
+    #define FDICMD_MAX_LINE_LENGTH 128//256//78 // Did we require 256 only for Uqibuious key?
 #endif
 #ifndef FDICMD_PRINTF_BUFFER_SIZE
     #define FDICMD_PRINTF_BUFFER_SIZE 512 // bytes in stack
@@ -71,6 +71,31 @@ typedef struct {
     char *iName;    // 0 = last entry in array
     T_consoleCmd iFunction;
 } T_consoleCmdEntry;
+
+typedef struct {
+    T_uezDevice iStream;
+    T_uezTask iTask;
+
+    // Current line being built by the console
+    char iCmd[FDICMD_MAX_LINE_LENGTH+1];
+    char iLastCmd[FDICMD_MAX_LINE_LENGTH+1];
+
+    // Current length of line being built by console
+    TUInt32 iCmdLen;
+
+    // Flag to note if prompt should be shown on the next call to ConsoleUpdate().
+    TBool iNeedPrompt;
+
+    // Semaphore to block single access to the console command processor
+    T_uezSemaphore iSemCmdProcess;
+
+    // Simple flags to determine if we are/have stopping/stopped
+    volatile TBool iStop;
+    volatile TBool iStopped;
+
+    // Pointer to a list of console commands
+    const T_consoleCmdEntry *iCommandTable;
+} T_FDICmdWorkspace;
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

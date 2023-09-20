@@ -48,9 +48,9 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           11
-#define UEZ_VERSION_STRING          "2.11"
-#define UEZ_VERSION_DATE            "06/05/2020" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           12
+#define UEZ_VERSION_STRING          "2.12.000"
+#define UEZ_VERSION_DATE            "10/05/2022" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler
@@ -59,8 +59,8 @@
 #define RowleyARM                   1
 #define IAR                         2
 #define CodeRed                     3
-#define HEW			    4
-#define Keil4			    5
+#define HEW                         4
+#define Keil4                       5
 #define RenesasRX                   6
 #define VisualC                     7
 #define GCC                         8

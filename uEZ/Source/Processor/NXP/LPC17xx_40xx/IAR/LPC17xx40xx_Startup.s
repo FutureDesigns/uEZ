@@ -201,10 +201,10 @@ Reset_Handler
         LDR     R0, =__vector_table
         LDR     R1, =0xE000ED08 ; VTOR
         STR     R0, [R1]
-;; Call uEZ SystemInit here
+;; Call uEZ SystemInit here and initialize PLL and SDRAM here.
         LDR     R0, =SystemInit
         BLX     R0
-        LDR     R0, =__iar_program_start
+        LDR     R0, =__iar_program_start ; Will call IAR zero init on SDRAM sections here.
         BX      R0
 
         PUBWEAK NMI_Handler

@@ -65,11 +65,13 @@
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
-TUInt32 G_OscillatorFrequency IN_INTERNAL_RAM;
-TUInt32 G_ProcessorFrequency IN_INTERNAL_RAM;
-TUInt32 G_PeripheralFrequency IN_INTERNAL_RAM;
-TUInt32 G_EMCFrequency IN_INTERNAL_RAM;
-TUInt32 G_USBFrequency IN_INTERNAL_RAM;
+/* Force the variables into internal RAM. The "IN_INTERNAL_RAM" isn't
+ * completely setup. So use out own placement macro instead. */
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_OscillatorFrequency);
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_ProcessorFrequency);
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_PeripheralFrequency);
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_EMCFrequency);
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_USBFrequency);
 
 /*-------------------------------------------------------------------------*
  * Types:

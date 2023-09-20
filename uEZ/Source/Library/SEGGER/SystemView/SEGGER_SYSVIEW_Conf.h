@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,73 +42,47 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.10                                    *
+*       SystemView version: 3.30                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : SEGGER_SYSVIEW_Conf.h
-Purpose : SEGGER SystemView configuration.
-Revision: $Rev: 17066 $
+Purpose : SEGGER SystemView configuration file.
+          Set defines which deviate from the defaults (see SEGGER_SYSVIEW_ConfDefaults.h) here.          
+Revision: $Rev: 21292 $
+
+Additional information:
+  Required defines which must be set are:
+    SEGGER_SYSVIEW_GET_TIMESTAMP
+    SEGGER_SYSVIEW_GET_INTERRUPT_ID
+  For known compilers and cores, these might be set to good defaults
+  in SEGGER_SYSVIEW_ConfDefaults.h.
+  
+  SystemView needs a (nestable) locking mechanism.
+  If not defined, the RTT locking mechanism is used,
+  which then needs to be properly configured.
 */
 
 #ifndef SEGGER_SYSVIEW_CONF_H
 #define SEGGER_SYSVIEW_CONF_H
 
-/*********************************************************************
-*
-*       Defines, fixed
-*
-**********************************************************************
-*/
-//
-// Constants for known core configuration
-//
-#define SEGGER_SYSVIEW_CORE_OTHER   0
-#define SEGGER_SYSVIEW_CORE_CM0     1 // Cortex-M0/M0+/M1
-#define SEGGER_SYSVIEW_CORE_CM3     2 // Cortex-M3/M4/M7
-#define SEGGER_SYSVIEW_CORE_RX      3 // Renesas RX
 
-#if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __GNUC__) || (defined __clang__)
-  #if (defined __ARM_ARCH_6M__) || (defined __ARM_ARCH_8M_BASE__)
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-  #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M_MAIN__))
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
-  #endif
-#elif defined(__ICCARM__)
-  #if (defined (__ARM6M__)          && (__CORE__ == __ARM6M__))          \
-   || (defined (__ARM8M_BASELINE__) && (__CORE__ == __ARM8M_BASELINE__))
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-  #elif (defined (__ARM7EM__)         && (__CORE__ == __ARM7EM__))         \
-     || (defined (__ARM7M__)          && (__CORE__ == __ARM7M__))          \
-     || (defined (__ARM8M_MAINLINE__) && (__CORE__ == __ARM8M_MAINLINE__)) \
-     || (defined (__ARM8M_MAINLINE__) && (__CORE__ == __ARM8M_MAINLINE__))
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
-  #endif
-#elif defined(__CC_ARM)
-  #if (defined(__TARGET_ARCH_6S_M))
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-  #elif (defined(__TARGET_ARCH_7_M) || defined(__TARGET_ARCH_7E_M))
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
-  #endif
-#elif defined(__TI_ARM__)
-  #ifdef __TI_ARM_V6M0__
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-  #elif (defined(__TI_ARM_V7M3__) || defined(__TI_ARM_V7M4__))
-    #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
-  #endif
-#elif defined(__ICCRX__)
-  #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_RX
-#elif defined(__RX)
-  #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_RX
-#endif
+// The application name to be displayed in SystemViewer
+#define SEGGER_SYSVIEW_APP_NAME        "uEZ FreeRTOS Application"
+//#define SEGGER_SYSVIEW_APP_NAME                 "Demo Application"
 
-#ifndef   SEGGER_SYSVIEW_CORE
-  #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_OTHER
-#endif
-
-#ifndef   SEGGER_SYSVIEW_ON_EVENT_RECORDED
-  #define SEGGER_SYSVIEW_ON_EVENT_RECORDED(NumBytes)                            // Needed for SystemView via non-J-Link Recorder. Macro to enable the UART or notify IP task.
+// The target device name
+#if (UEZ_PROCESSOR == NXP_LPC1788)
+#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC17XX"
+#elif (UEZ_PROCESSOR == NXP_LPC4088)
+#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC40XX"
+#elif (UEZ_PROCESSOR == NXP_LPC4357)
+#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC43XXX"
+#elif (UEZ_PROCESSOR == NXP_LPC546xx)
+#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC546XX"
+#else
+#define SEGGER_SYSVIEW_DEVICE_NAME     "Cortex-M4"
 #endif
 
 /*********************************************************************
@@ -122,11 +96,7 @@ Revision: $Rev: 17066 $
 *       SystemView buffer configuration
 */
 #ifndef   SEGGER_SYSVIEW_RTT_BUFFER_SIZE
-  #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE        1024                            // Number of bytes that SystemView uses for the buffer.
-#endif
-
-#ifndef   SEGGER_SYSVIEW_RTT_CHANNEL
-  #define SEGGER_SYSVIEW_RTT_CHANNEL            1                               // The RTT channel that SystemView will use. 0: Auto selection
+  #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE        8192                            // Number of bytes that SystemView uses for the buffer.
 #endif
 
 #ifndef   SEGGER_SYSVIEW_USE_STATIC_BUFFER
@@ -166,6 +136,8 @@ Revision: $Rev: 17066 $
 #ifndef   SEGGER_SYSVIEW_ID_SHIFT
   #define SEGGER_SYSVIEW_ID_SHIFT               2                               // Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
 #endif
+
+
 /*********************************************************************
 *
 *       SystemView interrupt configuration
@@ -187,6 +159,8 @@ Revision: $Rev: 17066 $
     #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()      SEGGER_SYSVIEW_X_GetInterruptId()  // Get the currently active interrupt Id from the user-provided function.
   #endif
 #endif
+
+//#define SEGGER_SYSVIEW_ENABLE_UART()       HIF_UART_EnableTXEInterrupt()       // Needed for SystemView via UART, only. Macro to enable the UART.
 
 #endif  // SEGGER_SYSVIEW_CONF_H
 

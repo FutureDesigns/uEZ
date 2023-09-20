@@ -325,7 +325,6 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
     extern void Chip_USB1_Init(void);
     extern void HAL_USBForceFullSpeed(uint8_t corenum, uint32_t onoff);
 
-
     error = UEZ_LPCUSBLib_Require();
 
     if (aUnitAddress == 0) {
@@ -346,18 +345,28 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
         G_hostCallbacks[aUnitAddress] = *aCallbacks;
     }
 
+    // Note that we probably call this function multiple times when it should be called only once so we shouldn't shut off clocks here.
     if (aUnitAddress == 0) {
+        //USB_Disable(0, USB_MODE_Host);
         Chip_USB0_Init();
         USB_Init(0, USB_MODE_Host);
     } else {
+        //USB_Disable(1, USB_MODE_Host);
         Chip_USB1_Init();
         USB_Init(1, USB_MODE_Host);
     }
-    // Force the full speed?
-    if (aForceFullspeed) {
-        HAL_USBForceFullSpeed(aUnitAddress, 1);
-    } else {
-        HAL_USBForceFullSpeed(aUnitAddress, 0);
+
+    if (aUnitAddress == 0) { // Other speed modes don't work on our HW.
+       HAL_USBForceFullSpeed(aUnitAddress, 1); // Force the full speed
+    }
+
+    if (aUnitAddress == 1) { // This port only goes to one spot. With ULPI HW could do high speed mode someday. (maybe)
+      // Force the full speed?
+      if (aForceFullspeed) {
+          HAL_USBForceFullSpeed(aUnitAddress, 1);
+      } else {
+          HAL_USBForceFullSpeed(aUnitAddress, 0);
+      }
     }
 
     // Start up the host monitoring task
@@ -386,7 +395,7 @@ T_uezError UEZ_LPCUSBLib_Require(void)
     // Successfully added
     isInit = ETrue;
 
-	return error;
+    return error;
 }
 
 void UEZ_LPCUSBLib_USBTask(uint8_t corenum, uint8_t mode)

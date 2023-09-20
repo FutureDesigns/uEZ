@@ -181,7 +181,7 @@ static T_USBMSDriveCallbacks G_callbacks;
 static void *G_callbackWorkspace;
 static DEVICE_USB_DEVICE **G_ghDevice;
 static T_uezDevice G_usbDev;
-static T_uezTask G_ghTask;
+T_uezTask G_usbHostTask;
 
 typedef TUInt32 TUIntDisk;
 
@@ -1091,7 +1091,7 @@ T_uezError USBMSDriveInitialize(
     if (error)
         return error;
     G_memorySize = G_msSizeInfo.iNumSectors;
-    G_memorySize *= G_msSizeInfo.iSectorSize;
+    G_memorySize *= G_msSizeInfo.iSectorSize; // TODO this looks wrong
     G_msBuffer = UEZMemAlloc(G_msSizeInfo.iSectorSize);
     G_msBufferBlock = (TUIntDisk)-1;
     G_msBufferNeedWrite = EFalse;
@@ -1127,10 +1127,10 @@ T_uezError USBMSDriveInitialize(
     error = UEZTaskCreate(
                 USBMSDriveMonitor,
                 "USBMSDrive",
-                UEZ_TASK_STACK_BYTES( 1024 ),
+                UEZ_TASK_STACK_BYTES( 1024 ), // TODO this is probably too small
                 0,
                 UEZ_PRIORITY_HIGH,
-                &G_ghTask);
+                &G_usbHostTask);
 
     return error;
 }

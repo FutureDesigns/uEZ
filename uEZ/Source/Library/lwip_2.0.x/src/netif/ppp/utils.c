@@ -58,8 +58,6 @@
 #endif
 #endif /* UNUSED */
 
-#include <ctype.h>  /* isdigit() */
-
 #include "netif/ppp/ppp_impl.h"
 
 #include "netif/ppp/fsm.h"
@@ -69,16 +67,16 @@
 extern char *strerror();
 #endif
 
-static void ppp_logit(int32_t level, const char *fmt, va_list args);
-static void ppp_log_write(int32_t level, char *buf);
+static void ppp_logit(int level, const char *fmt, va_list args);
+static void ppp_log_write(int level, char *buf);
 #if PRINTPKT_SUPPORT
 static void ppp_vslp_printer(void *arg, const char *fmt, ...);
-static void ppp_format_packet(const u_char *p, int32_t len,
+static void ppp_format_packet(const u_char *p, int len,
 		void (*printer) (void *, const char *, ...), void *arg);
 
 struct buffer_info {
     char *ptr;
-    int32_t len;
+    int len;
 };
 #endif /* PRINTPKT_SUPPORT */
 
@@ -119,9 +117,9 @@ size_t ppp_strlcat(char *dest, const char *src, size_t len) {
  * Doesn't do floating-point formats.
  * Returns the number of chars put into buf.
  */
-int32_t ppp_slprintf(char *buf, int32_t buflen, const char *fmt, ...) {
+int ppp_slprintf(char *buf, int buflen, const char *fmt, ...) {
     va_list args;
-    int32_t n;
+    int n;
 
     va_start(args, fmt);
     n = ppp_vslprintf(buf, buflen, fmt, args);
@@ -134,10 +132,10 @@ int32_t ppp_slprintf(char *buf, int32_t buflen, const char *fmt, ...) {
  */
 #define OUTCHAR(c)	(buflen > 0? (--buflen, *buf++ = (c)): 0)
 
-int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) {
-    int32_t c, i, n;
-    int32_t width, prec, fillch;
-    int32_t base, len, neg, quoted;
+int ppp_vslprintf(char *buf, int buflen, const char *fmt, va_list args) {
+    int c, i, n;
+    int width, prec, fillch;
+    int base, len, neg, quoted;
     unsigned long val = 0;
     const char *f;
     char *str, *buf0;
@@ -177,10 +175,10 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
 	    c = *++fmt;
 	}
 	if (c == '*') {
-	    width = va_arg(args, int32_t);
+	    width = va_arg(args, int);
 	    c = *++fmt;
 	} else {
-	    while (isdigit(c)) {
+	    while (lwip_isdigit(c)) {
 		width = width * 10 + c - '0';
 		c = *++fmt;
 	    }
@@ -188,11 +186,11 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
 	if (c == '.') {
 	    c = *++fmt;
 	    if (c == '*') {
-		prec = va_arg(args, int32_t);
+		prec = va_arg(args, int);
 		c = *++fmt;
 	    } else {
 		prec = 0;
-		while (isdigit(c)) {
+		while (lwip_isdigit(c)) {
 		    prec = prec * 10 + c - '0';
 		    c = *++fmt;
 		}
@@ -226,7 +224,7 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
 	    }
 	    break;
 	case 'd':
-	    i = va_arg(args, int32_t);
+	    i = va_arg(args, int);
 	    if (i < 0) {
 		neg = 1;
 		val = -i;
@@ -235,16 +233,16 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
 	    base = 10;
 	    break;
 	case 'u':
-	    val = va_arg(args, uint32_t);
+	    val = va_arg(args, unsigned int);
 	    base = 10;
 	    break;
 	case 'o':
-	    val = va_arg(args, uint32_t);
+	    val = va_arg(args, unsigned int);
 	    base = 8;
 	    break;
 	case 'x':
 	case 'X':
-	    val = va_arg(args, uint32_t);
+	    val = va_arg(args, unsigned int);
 	    base = 16;
 	    break;
 #if 0 /* unused (and wrong on LLP64 systems) */
@@ -258,7 +256,7 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
 	    str = va_arg(args, char *);
 	    break;
 	case 'c':
-	    num[0] = va_arg(args, int32_t);
+	    num[0] = va_arg(args, int);
 	    num[1] = 0;
 	    str = num;
 	    break;
@@ -335,7 +333,7 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
 	    bufinfo.ptr = buf;
 	    bufinfo.len = buflen + 1;
 	    p = va_arg(args, unsigned char *);
-	    n = va_arg(args, int32_t);
+	    n = va_arg(args, int);
 	    ppp_format_packet(p, n, ppp_vslp_printer, &bufinfo);
 	    buf = bufinfo.ptr;
 	    buflen = bufinfo.len - 1;
@@ -408,7 +406,7 @@ int32_t ppp_vslprintf(char *buf, int32_t buflen, const char *fmt, va_list args) 
  * vslp_printer - used in processing a %P format
  */
 static void ppp_vslp_printer(void *arg, const char *fmt, ...) {
-    int32_t n;
+    int n;
     va_list pvar;
     struct buffer_info *bi;
 
@@ -430,9 +428,9 @@ static void ppp_vslp_printer(void *arg, const char *fmt, ...) {
 void
 log_packet(p, len, prefix, level)
     u_char *p;
-    int32_t len;
+    int len;
     char *prefix;
-    int32_t level;
+    int level;
 {
 	init_pr_log(prefix, level);
 	ppp_format_packet(p, len, pr_log, &level);
@@ -445,9 +443,9 @@ log_packet(p, len, prefix, level)
  * ppp_format_packet - make a readable representation of a packet,
  * calling `printer(arg, format, ...)' to output it.
  */
-static void ppp_format_packet(const u_char *p, int32_t len,
+static void ppp_format_packet(const u_char *p, int len,
 		void (*printer) (void *, const char *, ...), void *arg) {
-    int32_t i, n;
+    int i, n;
     u_short proto;
     const struct protent *protp;
 
@@ -493,12 +491,12 @@ static void ppp_format_packet(const u_char *p, int32_t len,
 
 static char line[256];		/* line to be logged accumulated here */
 static char *linep;		/* current pointer within line */
-static int32_t llevel;		/* level for logging */
+static int llevel;		/* level for logging */
 
 void
 init_pr_log(prefix, level)
      const char *prefix;
-     int32_t level;
+     int level;
 {
 	linep = line;
 	if (prefix != NULL) {
@@ -523,7 +521,7 @@ end_pr_log()
 void
 pr_log (void *arg, const char *fmt, ...)
 {
-	int32_t l, n;
+	int l, n;
 	va_list pvar;
 	char *p, *eol;
 	char buf[256];
@@ -571,8 +569,8 @@ pr_log (void *arg, const char *fmt, ...)
  * ppp_print_string - print a readable representation of a string using
  * printer.
  */
-void ppp_print_string(const u_char *p, int32_t len, void (*printer) (void *, const char *, ...), void *arg) {
-    int32_t c;
+void ppp_print_string(const u_char *p, int len, void (*printer) (void *, const char *, ...), void *arg) {
+    int c;
 
     printer(arg, "\"");
     for (; len > 0; --len) {
@@ -604,20 +602,20 @@ void ppp_print_string(const u_char *p, int32_t len, void (*printer) (void *, con
 /*
  * ppp_logit - does the hard work for fatal et al.
  */
-static void ppp_logit(int32_t level, const char *fmt, va_list args) {
+static void ppp_logit(int level, const char *fmt, va_list args) {
     char buf[1024];
 
     ppp_vslprintf(buf, sizeof(buf), fmt, args);
     ppp_log_write(level, buf);
 }
 
-static void ppp_log_write(int32_t level, char *buf) {
+static void ppp_log_write(int level, char *buf) {
     LWIP_UNUSED_ARG(level); /* necessary if PPPDEBUG is defined to an empty function */
     LWIP_UNUSED_ARG(buf);
     PPPDEBUG(level, ("%s\n", buf) );
 #if 0
     if (log_to_fd >= 0 && (level != LOG_DEBUG || debug)) {
-	int32_t n = strlen(buf);
+	int n = strlen(buf);
 
 	if (n > 0 && buf[n-1] == '\n')
 	    --n;
@@ -704,8 +702,8 @@ void ppp_dbglog(const char *fmt, ...) {
  * ppp_dump_packet - print out a packet in readable form if it is interesting.
  * Assumes len >= PPP_HDRLEN.
  */
-void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int32_t len) {
-    int32_t proto;
+void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int len) {
+    int proto;
 
     /*
      * don't print data packets, i.e. IPv4, IPv6, VJ, and compressed packets.
@@ -719,7 +717,7 @@ void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int32_t le
      */
     if (proto == PPP_LCP && pcb->phase == PPP_PHASE_RUNNING && len >= 2 + HEADERLEN) {
 	unsigned char *lcp = p + 2;
-	int32_t l = (lcp[2] << 8) + lcp[3];
+	int l = (lcp[2] << 8) + lcp[3];
 
 	if ((lcp[0] == ECHOREQ || lcp[0] == ECHOREP)
 	    && l >= HEADERLEN && l <= len - 2)
@@ -737,7 +735,7 @@ void ppp_dump_packet(ppp_pcb *pcb, const char *tag, unsigned char *p, int32_t le
  * unless end-of-file or an error other than EINTR is encountered.
  */
 ssize_t
-complete_read(int32_t fd, void *buf, size_t count)
+complete_read(int fd, void *buf, size_t count)
 {
 	size_t done;
 	ssize_t nb;
@@ -776,12 +774,12 @@ static char lock_file[MAXPATHLEN];
 /*
  * lock - create a lock file for the named device
  */
-int32_t
+int
 lock(dev)
     char *dev;
 {
 #ifdef LOCKLIB
-    int32_t result;
+    int result;
 
     result = mklock (dev, (void *) 0);
     if (result == 0) {
@@ -798,7 +796,7 @@ lock(dev)
 #else /* LOCKLIB */
 
     char lock_buffer[12];
-    int32_t fd, pid, n;
+    int fd, pid, n;
 
 #ifdef SVR4
     struct stat sbuf;
@@ -905,16 +903,16 @@ lock(dev)
  * and another process could think the lock was stale if it checked
  * between when the parent died and the child rewrote the lockfile).
  */
-int32_t
+int
 relock(pid)
-    int32_t pid;
+    int pid;
 {
 #ifdef LOCKLIB
     /* XXX is there a way to do this? */
     return -1;
 #else /* LOCKLIB */
 
-    int32_t fd;
+    int fd;
     char lock_buffer[12];
 
     if (lock_file[0] == 0)

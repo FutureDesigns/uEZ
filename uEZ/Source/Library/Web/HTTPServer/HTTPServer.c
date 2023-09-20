@@ -555,25 +555,34 @@ static void IHTTPParameter(
 static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
 {
     T_uezError error;
-    uint32_t start;
     int32_t sent;
-    DEBUG_SV_Printf("FS");
+    DEBUG_SV_Print("FS");
+    
+#if DEBUG_HTTP_SERVER
+    uint32_t start;
     start = UEZTickCounterGet();
     dprintf("FlushStart: %d (%d)\n", start, aState->iWriteLen);
+#endif
+#if LWIP_NETCONN_SEM_PER_THREAD // It appears that per thread semaphore fixes this crashing issue and a 1ms delay is not needed, but call 0 delay to allow a switch.
+    UEZTaskDelay(0); // Will crash if flushstart debug code is not running, testing delay fix
+#else
     UEZTaskDelay(1); // Will crash if flushstart debug code is not running, testing delay fix
+#endif
     sent = send(aState->iSocket, aState->iWriteBuffer, aState->iWriteLen, 0);
-
     aState->iWriteLen = 0;
+    
+#if DEBUG_HTTP_SERVER
     dprintf("FlushEnd: %d\n", UEZTickCounterGet()-start);
-    UEZTaskDelay(2); // Will crash if flushend debug code is not running, testing delay fix
     start--;
-    DEBUG_SV_Printf("FE");
-    if(sent < 0)
-    {
+#endif
+
+    // TODO check a flag here and UEZTaskDelay(0) until ready.
+    DEBUG_SV_Print("FE");
+    if(sent < 0) {
+        UEZTaskDelay(1); // Will crash if flushend debug code is not running, testing delay fix
         error = UEZ_ERROR_TIMEOUT;
-    }
-    else
-    {
+    } else {
+        UEZTaskDelay(0); // Will crash if flushend debug code is not running, testing delay fix
         error = UEZ_ERROR_NONE;
     }
 
@@ -612,7 +621,7 @@ static T_uezError IHTTPWrite(
     if ((!error) && (!aMoreToCome))
         error = IHTTPWriteFlush(aState, EFalse);
 
-    DEBUG_SV_Printf("WE");    
+    DEBUG_SV_Print("WE");    
     if(writesTillDelay == 0) {
       //UEZTaskDelay(1);
       writesTillDelay = 5;
@@ -1150,7 +1159,33 @@ static T_uezError IHTTPGet(T_httpState *aState)
 #endif
               do {
                 // Read a section
-                if (VFileRead(file, block, MAX_LINE_LENGTH, &len)!= UEZ_ERROR_NONE){
+                TUInt32 currentFilePosition = 0;
+                UEZFileTellPosition(file, &currentFilePosition);
+                for (uint8_t tries = 0; tries < 10; tries++) {
+                  error = VFileRead(file, block, MAX_LINE_LENGTH, &len);
+                  if (error != UEZ_ERROR_NONE) {
+                    if (error == UEZ_ERROR_UNKNOWN) {
+                      printf("\r\nUnknown file reading error");
+                      error = UEZ_ERROR_TIMEOUT;
+                    }
+                    if (error == UEZ_ERROR_TIMEOUT) {                  
+                      printf("\r\nTimeout reading file: %s size %d (size read: %d)\r\n", aState->iLine, MAX_LINE_LENGTH, len);
+                      printf("Retry attempt %u", tries);
+                      
+                    }
+                    UEZTaskDelay(500);
+                    VFileClose(file);
+                    UEZTaskDelay(100);
+                    VFileOpen((char *)aState->iLine, FILE_FLAG_READ_ONLY, &file);
+                    UEZTaskDelay(100);
+                    UEZFileSeekPosition(file, currentFilePosition);
+                    UEZTaskDelay(100);
+                  } else { // no error
+                    break;
+                  }
+                }
+                if (error == UEZ_ERROR_TIMEOUT) {
+                  printf("\r\nTimeout reading file: %s size %d (size read: %d)\r\n", aState->iLine, MAX_LINE_LENGTH, len);
                   break;
                 }
                 if(totalLengthLeft <= MAX_LINE_LENGTH){
@@ -1793,9 +1828,9 @@ static void vProcessConnection(int32_t aSocket,
         p_parse->iDrivePrefix = aDrivePrefix;
         while (!done) {
             do {
-                DEBUG_SV_Printf("RS");
+                DEBUG_SV_Print("RS");
                 recved = recv(aSocket, p_parse->iReceiveBuffer, sizeof(p_parse->iReceiveBuffer), 0);
-                DEBUG_SV_Printf("RC");
+                DEBUG_SV_Print("RC");
                 if (recved > 0) {
                     // Got data, process it.
                     error = IParseHeaderLine(p_parse);
@@ -1812,7 +1847,7 @@ static void vProcessConnection(int32_t aSocket,
         IHTTPStateFree(p_parse);
     }
     close(p_parse->iSocket);
-    DEBUG_SV_Printf("RE");
+    DEBUG_SV_Print("RE");
     p_parse->iSocket = -1;
 }
 
@@ -1851,6 +1886,9 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
     (void)&IHTTPParseFileForVars;
     (void)&IHTTPOutputParsedFile;
 
+
+    //sockets_stresstest_init_client("192.168.25.158",80);
+
     dprintf("HTTPServer: Starting\n");
 
     socket_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -1875,7 +1913,7 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
                     if (accept_fd >= 0) {
 
                         dprintf("HTTPServer: Socket accepted\n");
-                        DEBUG_SV_Printf("SA");
+                        DEBUG_SV_Print("SA");
                         /* Service connection. */
                         vProcessConnection(accept_fd,
                                 (p_params) ? p_params->iGet : 0,
@@ -1892,7 +1930,7 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
         // Sit here doing nothing
         // TODO: Need better response/handling
         dprintf("HTTPServer: Task failed!\n");        
-        DEBUG_SV_PrintfE("HTTPServer: Task failed!"); // example error
+        DEBUG_SV_PrintE("HTTPServer: Task failed!"); // example error
         UEZTaskDelay(5000);
     }
 #if ((COMPILER_TYPE!=Keil4) && (COMPILER_TYPE != IAR))

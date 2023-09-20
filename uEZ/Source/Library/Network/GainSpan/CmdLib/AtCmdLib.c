@@ -2224,7 +2224,7 @@ ATLIBGS_MSG_ID_E AtLibGs_BulkDataTransfer(uint8_t cid, const void *pData, uint16
 	ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_OK;
 
     /*[Esc] [Z] [Cid] [Data Length xxxx 4 ascii char] [data] */
-    char digits[5];
+    char digits[7];
     char cmd[20];
 
     App_EnsureFlow();
@@ -4360,7 +4360,7 @@ ATLIBGS_MSG_ID_E AtLibGs_WebLogoAdd(uint16_t size,
 /*--------------------------------------------------------------------------*/
 ATLIBGS_MSG_ID_E AtLibGs_RFAsyncFrameRX(uint16_t channel)
 {
-    char cmd[20];
+    char cmd[22];
 
     sprintf(cmd, "AT+RFRXSTART=" _F16_ "\r\n", channel);
 
@@ -4620,7 +4620,7 @@ ATLIBGS_MSG_ID_E AtLibGs_GetCIDInfo(void)
 /*---------------------------------------------------------------------------*
  * Routine:  AtLibGs_BatterySetWarnLevel
  *--------------------------------------------------------------------------*/
-/**   Set the battery warning/standby level to enable the adaptor’s
+/**   Set the battery warning/standby level to enable the adaptors
  *      internal battery measuring logic
  *    Sends the command:
  *     AT+BATTLVLSET=
@@ -4635,7 +4635,7 @@ ATLIBGS_MSG_ID_E AtLibGs_BatterySetWarnLevel(
         uint16_t freq,
         uint16_t standby)
 {
-    char cmd[30];
+    char cmd[36];
 
     sprintf(cmd, "AT+BATTLVLSET=" _F16_ "," _F16_ "," _F16_ "\r\n", level,
             freq, standby);

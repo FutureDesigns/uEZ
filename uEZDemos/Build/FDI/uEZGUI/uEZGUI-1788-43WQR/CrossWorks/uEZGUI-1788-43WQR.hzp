@@ -9,7 +9,7 @@
       arm_core_type="Cortex-M3"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
-      arm_linker_heap_size="500000"
+      arm_linker_heap_size="700000"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
       arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC1000/LPC1000SimulatorMemory.dll"
@@ -22,7 +22,7 @@
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;CORE_M3;STARTUP_FROM_RESET;__THUMB;LWIP_2_0_x"
-      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQR;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
+      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM3;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQR;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
       gcc_c_language_standard="c11"
       gcc_cplusplus_language_standard="c++11"
       gcc_short_enum="Minimal Container Size"
@@ -95,27 +95,8 @@
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.c" />
           <file file_name="../../../../../Source/App/uEZGUI/AppTasks.h" />
           <file file_name="../../../../../Source/App/uEZGUI/Config_App.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/FuncTestFramework.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest.h" />
           <file file_name="../../../../../Source/App/uEZGUI/main.c" />
           <file file_name="../../../../../Source/App/uEZGUI/MainMenu.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/TestCmds.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/TestCmds.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/TestMode.c" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.c">
-            <configuration
-              Name="THUMB Flash Debug"
-              build_exclude_from_build="No" />
-            <configuration
-              Name="THUMB Flash Debug-Trace"
-              build_exclude_from_build="No" />
-            <configuration
-              Name="THUMB Flash Release"
-              build_exclude_from_build="No" />
-          </file>
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTest_EXP_DK.h" />
-          <file file_name="../../../../../Source/App/uEZGUI/FunctionalTestLoop.c" />
         </folder>
         <folder Name="uEZDemoCommon">
           <file file_name="../../../../../Source/App/uEZDemoCommon/AccelDemoMode.c" />
@@ -147,6 +128,26 @@
           <file file_name="../../../../../Source/App/uEZDemoCommon/AppHTTPServer.h" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/NetworkStartup.c" />
           <file file_name="../../../../../Source/App/uEZDemoCommon/CANTest.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FuncTestFramework.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.c">
+            <configuration
+              Name="THUMB Flash Debug"
+              build_exclude_from_build="No" />
+            <configuration
+              Name="THUMB Flash Debug-Trace"
+              build_exclude_from_build="No" />
+            <configuration
+              Name="THUMB Flash Release"
+              build_exclude_from_build="No" />
+          </file>
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest_EXP_DK.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTest.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/FunctionalTestLoop.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TestCmds.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TestCmds.h" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/TestMode.c" />
+          <file file_name="../../../../../Source/App/uEZDemoCommon/App_RTOS.c" />
         </folder>
       </folder>
       <folder Name="Library">
@@ -156,7 +157,7 @@
               <folder Name="Libraries">
                 <folder Name="NXP">
                   <folder Name="CrossWorks">
-                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_548_GCC_M3.a" />
+                    <file file_name="../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M3.a" />
                   </folder>
                 </folder>
               </folder>
@@ -181,6 +182,7 @@
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQR/lwipopts.h" />
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQR/uEZGUI_1788_43WQR.c" />
             <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQR/uEZPlatform.h" />
+            <file file_name="../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_43WQR/uEZPlatformTest.c" />
           </folder>
         </folder>
       </folder>

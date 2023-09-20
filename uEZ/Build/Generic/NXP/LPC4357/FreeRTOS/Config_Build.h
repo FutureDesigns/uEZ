@@ -31,17 +31,22 @@
 #define INTERRUPT_BASED_EMAC        1
 
 #ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY  1
+#define configUSE_TRACE_FACILITY  1 // enabled not working
 #define configUSE_TIMERS          1
 #define USE_PRIMASK_CS            1
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   0
-#define SEGGER_ENABLE_SYSTEM_VIEW           0
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              0
+
+#define configUSE_TRACE_FACILITY      0
+//#define configGENERATE_RUN_TIME_STATS 0
 #else
 #define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
+
+#define configUSE_TRACE_FACILITY      1
+//#define configGENERATE_RUN_TIME_STATS 0
 #endif
+
+#define NETWORK_LWIP_MAX_NUM_SOCKETS          16

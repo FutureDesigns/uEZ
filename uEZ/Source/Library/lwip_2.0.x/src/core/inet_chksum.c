@@ -1,6 +1,6 @@
 /**
  * @file
- * Incluse internet checksum functions.\n
+ * Internet checksum functions.\n
  *
  * These are some reference implementations of the checksum algorithm, with the
  * aim of being simple, correct and fully portable. Checksumming is the
@@ -8,7 +8,7 @@
  * your own version, link it in and in your cc.h put:
  *
  * \#define LWIP_CHKSUM your_checksum_routine
- * 
+ *
  * Or you can select from the implementations below by defining
  * LWIP_CHKSUM_ALGORITHM to 1, 2 or 3.
  */
@@ -58,7 +58,7 @@
 # ifndef LWIP_CHKSUM_ALGORITHM
 #  define LWIP_CHKSUM_ALGORITHM 2
 # endif
-u16_t lwip_standard_chksum(const void *dataptr, int32_t len);
+u16_t lwip_standard_chksum(const void *dataptr, int len);
 #endif
 /* If none set: */
 #ifndef LWIP_CHKSUM_ALGORITHM
@@ -77,7 +77,7 @@ u16_t lwip_standard_chksum(const void *dataptr, int32_t len);
  * @note host endianess is irrelevant (p3 RFC1071)
  */
 u16_t
-lwip_standard_chksum(const void *dataptr, int32_t len)
+lwip_standard_chksum(const void *dataptr, int len)
 {
   u32_t acc;
   u16_t src;
@@ -85,7 +85,7 @@ lwip_standard_chksum(const void *dataptr, int32_t len)
 
   acc = 0;
   /* dataptr may be at odd or even addresses */
-  octetptr = (const u8_t*)dataptr;
+  octetptr = (const u8_t *)dataptr;
   while (len > 1) {
     /* declare first octet as most significant
        thus assume network order, ignoring host order */
@@ -130,13 +130,13 @@ lwip_standard_chksum(const void *dataptr, int32_t len)
  * @return host order (!) lwip checksum (non-inverted Internet sum)
  */
 u16_t
-lwip_standard_chksum(const void *dataptr, int32_t len)
+lwip_standard_chksum(const void *dataptr, int len)
 {
   const u8_t *pb = (const u8_t *)dataptr;
   const u16_t *ps;
   u16_t t = 0;
   u32_t sum = 0;
-  int32_t odd = ((mem_ptr_t)pb & 1);
+  int odd = ((mem_ptr_t)pb & 1);
 
   /* Get aligned to u16_t */
   if (odd && len > 0) {
@@ -186,7 +186,7 @@ lwip_standard_chksum(const void *dataptr, int32_t len)
  * by Curt McDowell, Broadcom Corp. December 8th, 2005
  */
 u16_t
-lwip_standard_chksum(const void *dataptr, int32_t len)
+lwip_standard_chksum(const void *dataptr, int len)
 {
   const u8_t *pb = (const u8_t *)dataptr;
   const u16_t *ps;
@@ -194,27 +194,21 @@ lwip_standard_chksum(const void *dataptr, int32_t len)
   const u32_t *pl;
   u32_t sum = 0, tmp;
   /* starts at odd byte address? */
-  int32_t odd = ((mem_ptr_t)pb & 1);
-  
-  //TODO: Hack
-//  if((u32_t)pb < (u32_t)0x7FFFF || (u32_t)pb >0xB0000000){
-//      //net does not seem to be getting cleared or set properly
-//      return 0;
-//  }
+  int odd = ((mem_ptr_t)pb & 1);
 
   if (odd && len > 0) {
     ((u8_t *)&t)[1] = *pb++;
     len--;
   }
 
-  ps = (const u16_t *)(const void*)pb;
+  ps = (const u16_t *)(const void *)pb;
 
   if (((mem_ptr_t)ps & 3) && len > 1) {
     sum += *ps++;
     len -= 2;
   }
 
-  pl = (const u32_t *)(const void*)ps;
+  pl = (const u32_t *)(const void *)ps;
 
   while (len > 7)  {
     tmp = sum + *pl++;          /* ping */
@@ -266,19 +260,19 @@ static u16_t
 inet_cksum_pseudo_base(struct pbuf *p, u8_t proto, u16_t proto_len, u32_t acc)
 {
   struct pbuf *q;
-  u8_t swapped = 0;
+  int swapped = 0;
 
   /* iterate through all pbuf in chain */
   for (q = p; q != NULL; q = q->next) {
     LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): checksumming pbuf %p (has next %p) \n",
-      (void *)q, (void *)q->next));
+                             (void *)q, (void *)q->next));
     acc += LWIP_CHKSUM(q->payload, q->len);
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     /* just executing this next line is probably faster that the if statement needed
        to check whether we really need to execute it, and does no harm */
     acc = FOLD_U32T(acc);
     if (q->len % 2 != 0) {
-      swapped = 1 - swapped;
+      swapped = !swapped;
       acc = SWAP_BYTES_IN_WORD(acc);
     }
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));*/
@@ -314,17 +308,17 @@ inet_cksum_pseudo_base(struct pbuf *p, u8_t proto, u16_t proto_len, u32_t acc)
  */
 u16_t
 inet_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
-       const ip4_addr_t *src, const ip4_addr_t *dest)
+                   const ip4_addr_t *src, const ip4_addr_t *dest)
 {
   u32_t acc;
   u32_t addr;
 
   addr = ip4_addr_get_u32(src);
   acc = (addr & 0xffffUL);
-  acc += ((addr >> 16) & 0xffffUL);
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
   addr = ip4_addr_get_u32(dest);
-  acc += (addr & 0xffffUL);
-  acc += ((addr >> 16) & 0xffffUL);
+  acc = (u32_t)(acc + (addr & 0xffffUL));
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
@@ -347,7 +341,7 @@ inet_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
  */
 u16_t
 ip6_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
-       const ip6_addr_t *src, const ip6_addr_t *dest)
+                  const ip6_addr_t *src, const ip6_addr_t *dest)
 {
   u32_t acc = 0;
   u32_t addr;
@@ -355,11 +349,11 @@ ip6_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
 
   for (addr_part = 0; addr_part < 4; addr_part++) {
     addr = src->addr[addr_part];
-    acc += (addr & 0xffffUL);
-    acc += ((addr >> 16) & 0xffffUL);
+    acc = (u32_t)(acc + (addr & 0xffffUL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
     addr = dest->addr[addr_part];
-    acc += (addr & 0xffffUL);
-    acc += ((addr >> 16) & 0xffffUL);
+    acc = (u32_t)(acc + (addr & 0xffffUL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
   }
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
@@ -383,7 +377,7 @@ ip6_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
  */
 u16_t
 ip_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
-       const ip_addr_t *src, const ip_addr_t *dest)
+                 const ip_addr_t *src, const ip_addr_t *dest)
 {
 #if LWIP_IPV6
   if (IP_IS_V6(dest)) {
@@ -403,28 +397,28 @@ ip_chksum_pseudo(struct pbuf *p, u8_t proto, u16_t proto_len,
 /** Parts of the pseudo checksum which are common to IPv4 and IPv6 */
 static u16_t
 inet_cksum_pseudo_partial_base(struct pbuf *p, u8_t proto, u16_t proto_len,
-       u16_t chksum_len, u32_t acc)
+                               u16_t chksum_len, u32_t acc)
 {
   struct pbuf *q;
-  u8_t swapped = 0;
+  int swapped = 0;
   u16_t chklen;
 
   /* iterate through all pbuf in chain */
   for (q = p; (q != NULL) && (chksum_len > 0); q = q->next) {
     LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): checksumming pbuf %p (has next %p) \n",
-      (void *)q, (void *)q->next));
+                             (void *)q, (void *)q->next));
     chklen = q->len;
     if (chklen > chksum_len) {
       chklen = chksum_len;
     }
     acc += LWIP_CHKSUM(q->payload, chklen);
-    chksum_len -= chklen;
+    chksum_len = (u16_t)(chksum_len - chklen);
     LWIP_ASSERT("delete me", chksum_len < 0x7fff);
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): unwrapped lwip_chksum()=%"X32_F" \n", acc));*/
     /* fold the upper bit down */
     acc = FOLD_U32T(acc);
     if (q->len % 2 != 0) {
-      swapped = 1 - swapped;
+      swapped = !swapped;
       acc = SWAP_BYTES_IN_WORD(acc);
     }
     /*LWIP_DEBUGF(INET_DEBUG, ("inet_chksum_pseudo(): wrapped lwip_chksum()=%"X32_F" \n", acc));*/
@@ -460,17 +454,17 @@ inet_cksum_pseudo_partial_base(struct pbuf *p, u8_t proto, u16_t proto_len,
  */
 u16_t
 inet_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
-       u16_t chksum_len, const ip4_addr_t *src, const ip4_addr_t *dest)
+                           u16_t chksum_len, const ip4_addr_t *src, const ip4_addr_t *dest)
 {
   u32_t acc;
   u32_t addr;
 
   addr = ip4_addr_get_u32(src);
   acc = (addr & 0xffffUL);
-  acc += ((addr >> 16) & 0xffffUL);
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
   addr = ip4_addr_get_u32(dest);
-  acc += (addr & 0xffffUL);
-  acc += ((addr >> 16) & 0xffffUL);
+  acc = (u32_t)(acc + (addr & 0xffffUL));
+  acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
   acc = FOLD_U32T(acc);
@@ -495,7 +489,7 @@ inet_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
  */
 u16_t
 ip6_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
-       u16_t chksum_len, const ip6_addr_t *src, const ip6_addr_t *dest)
+                          u16_t chksum_len, const ip6_addr_t *src, const ip6_addr_t *dest)
 {
   u32_t acc = 0;
   u32_t addr;
@@ -503,11 +497,11 @@ ip6_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
 
   for (addr_part = 0; addr_part < 4; addr_part++) {
     addr = src->addr[addr_part];
-    acc += (addr & 0xffffUL);
-    acc += ((addr >> 16) & 0xffffUL);
+    acc = (u32_t)(acc + (addr & 0xffffUL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
     addr = dest->addr[addr_part];
-    acc += (addr & 0xffffUL);
-    acc += ((addr >> 16) & 0xffffUL);
+    acc = (u32_t)(acc + (addr & 0xffffUL));
+    acc = (u32_t)(acc + ((addr >> 16) & 0xffffUL));
   }
   /* fold down to 16 bits */
   acc = FOLD_U32T(acc);
@@ -530,7 +524,7 @@ ip6_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
  */
 u16_t
 ip_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
-       u16_t chksum_len, const ip_addr_t *src, const ip_addr_t *dest)
+                         u16_t chksum_len, const ip_addr_t *src, const ip_addr_t *dest)
 {
 #if LWIP_IPV6
   if (IP_IS_V6(dest)) {
@@ -560,7 +554,7 @@ ip_chksum_pseudo_partial(struct pbuf *p, u8_t proto, u16_t proto_len,
 u16_t
 inet_chksum(const void *dataptr, u16_t len)
 {
-  return (u16_t)~(uint32_t)LWIP_CHKSUM(dataptr, len);
+  return (u16_t)~(unsigned int)LWIP_CHKSUM(dataptr, len);
 }
 
 /**
@@ -575,15 +569,14 @@ inet_chksum_pbuf(struct pbuf *p)
 {
   u32_t acc;
   struct pbuf *q;
-  u8_t swapped;
+  int swapped = 0;
 
   acc = 0;
-  swapped = 0;
   for (q = p; q != NULL; q = q->next) {
     acc += LWIP_CHKSUM(q->payload, q->len);
     acc = FOLD_U32T(acc);
     if (q->len % 2 != 0) {
-      swapped = 1 - swapped;
+      swapped = !swapped;
       acc = SWAP_BYTES_IN_WORD(acc);
     }
   }

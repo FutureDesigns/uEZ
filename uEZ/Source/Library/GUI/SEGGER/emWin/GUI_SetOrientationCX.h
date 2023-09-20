@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_SetOrientationC0.c
@@ -73,8 +73,8 @@ Purpose     : Runtime display orientation without cache
 *   the same static function is also in GUI_SetOrientationC0.h
 *   to enable better compiler optimization.
 */
-static void _Sort(int32_t * p0, int32_t * p1) {
-  int32_t temp;
+static void _Sort(int * p0, int * p1) {
+  int temp;
 
   if (*p0 > *p1) {
     temp = *p0;
@@ -93,11 +93,11 @@ static void _Sort(int32_t * p0, int32_t * p1) {
 *
 *       Draw Bitmap 1 BPP
 */
-static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 const * p, int32_t Diff, int32_t xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX IndexMask, Index0, Index1, Pixel;
-  LCD_PIXELINDEX (* pfGetPixelIndex)(GUI_DEVICE *, int32_t, int32_t);
+  LCD_PIXELINDEX (* pfGetPixelIndex)(GUI_DEVICE *, int, int);
   PIXEL * pData;
-  int32_t x_phys, y_phys;
+  int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -154,11 +154,11 @@ static void _DrawBitLine1BPP(GUI_DEVICE * pDevice, unsigned x, unsigned y, U8 co
 *
 *       Draw Bitmap 2 BPP
 */
-static void _DrawBitLine2BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U8 const * p, int32_t Diff, int32_t xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine2BPP(GUI_DEVICE * pDevice, int x, int y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX Pixels, PixelIndex;
-  int32_t CurrentPixel, Shift, Index;
+  int CurrentPixel, Shift, Index;
   PIXEL * pData;
-  int32_t x_phys, y_phys;
+  int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -231,11 +231,11 @@ static void _DrawBitLine2BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U8 cons
 *
 *       Draw Bitmap 4 BPP
 */
-static void _DrawBitLine4BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U8 const * p, int32_t Diff, int32_t xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine4BPP(GUI_DEVICE * pDevice, int x, int y, U8 const * p, int Diff, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX Pixels, PixelIndex;
-  int32_t CurrentPixel, Shift, Index;
+  int CurrentPixel, Shift, Index;
   PIXEL * pData;
-  int32_t x_phys, y_phys;
+  int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -308,10 +308,10 @@ static void _DrawBitLine4BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U8 cons
 *
 *       Draw Bitmap 8 BPP
 */
-static void _DrawBitLine8BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U8 const * p, int32_t xsize, const LCD_PIXELINDEX * pTrans) {
+static void _DrawBitLine8BPP(GUI_DEVICE * pDevice, int x, int y, U8 const * p, int xsize, const LCD_PIXELINDEX * pTrans) {
   LCD_PIXELINDEX Pixel;
   PIXEL * pData;
-  int32_t x_phys, y_phys;
+  int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -358,9 +358,9 @@ static void _DrawBitLine8BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U8 cons
 *
 *       Draw Bitmap 16 BPP
 */
-static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U16 const * p, int32_t xsize) {
+static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int x, int y, U16 const * p, int xsize) {
   PIXEL * pData;
-  int32_t x_phys, y_phys, PixelOffset;
+  int x_phys, y_phys, PixelOffset;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -377,9 +377,9 @@ static void _DrawBitLine16BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U16 co
 *
 *       Draw Bitmap 32 BPP
 */
-static void _DrawBitLine32BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U32 const * p, int32_t xsize) {
+static void _DrawBitLine32BPP(GUI_DEVICE * pDevice, int x, int y, U32 const * p, int xsize) {
   PIXEL * pData;
-  int32_t x_phys, y_phys, PixelOffset;
+  int x_phys, y_phys, PixelOffset;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -402,14 +402,14 @@ static void _DrawBitLine32BPP(GUI_DEVICE * pDevice, int32_t x, int32_t y, U32 co
 *
 *       _DrawBitmap_CX
 */
-static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int32_t x0, int32_t y0,
-                       int32_t xSize, int32_t ySize,
-                       int32_t BitsPerPixel,
-                       int32_t BytesPerLine,
-                       const U8 * pData, int32_t Diff,
+static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int x0, int y0,
+                       int xSize, int ySize,
+                       int BitsPerPixel,
+                       int BytesPerLine,
+                       const U8 * pData, int Diff,
                        const LCD_PIXELINDEX * pTrans) {
-  int32_t x0_phys, y0_phys, x1_phys, y1_phys;
-  int32_t i;
+  int x0_phys, y0_phys, x1_phys, y1_phys;
+  int i;
   PIXEL * pDataBM;
   DRIVER_CONTEXT * pContext;
 
@@ -472,10 +472,10 @@ static void _DrawBitmap_CX(GUI_DEVICE * pDevice, int32_t x0, int32_t y0,
 *
 *       _GetPixelIndex_CX
 */
-static LCD_PIXELINDEX _GetPixelIndex_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y) {
+static LCD_PIXELINDEX _GetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y) {
   PIXEL * pData;
   PIXEL Pixel;
-  int32_t x_phys, y_phys;
+  int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -489,9 +489,9 @@ static LCD_PIXELINDEX _GetPixelIndex_CX(GUI_DEVICE * pDevice, int32_t x, int32_t
 *
 *       _SetPixelIndex_CX
 */
-static void _SetPixelIndex_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD_PIXELINDEX PixelIndex) {
+static void _SetPixelIndex_CX(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) {
   PIXEL * pData;
-  int32_t x_phys, y_phys;
+  int x_phys, y_phys;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
@@ -506,7 +506,7 @@ static void _SetPixelIndex_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD_PI
 *
 *       _XorPixel_CX
 */
-static void _XorPixel_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y) {
+static void _XorPixel_CX(GUI_DEVICE * pDevice, int x, int y) {
   PIXEL Pixel, IndexMask;
 
   IndexMask = (PIXEL)pDevice->pColorConvAPI->pfGetIndexMask();
@@ -519,7 +519,7 @@ static void _XorPixel_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y) {
 *
 *       _DrawHLine_CX
 */
-static void _DrawHLine_CX(GUI_DEVICE * pDevice, int32_t x0, int32_t y, int32_t x1) {
+static void _DrawHLine_CX(GUI_DEVICE * pDevice, int x0, int y, int x1) {
   pDevice->pDeviceAPI->pfFillRect(pDevice, x0, y, x1, y);
 }
 
@@ -527,7 +527,7 @@ static void _DrawHLine_CX(GUI_DEVICE * pDevice, int32_t x0, int32_t y, int32_t x
 *
 *       _DrawVLine_CX
 */
-static void _DrawVLine_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y0, int32_t y1) {
+static void _DrawVLine_CX(GUI_DEVICE * pDevice, int x, int y0, int y1) {
   pDevice->pDeviceAPI->pfFillRect(pDevice, x, y0, x, y1);
 }
 
@@ -535,13 +535,13 @@ static void _DrawVLine_CX(GUI_DEVICE * pDevice, int32_t x, int32_t y0, int32_t y
 *
 *       _FillRect_CX
 */
-static void _FillRect_CX(GUI_DEVICE * pDevice, int32_t x0, int32_t y0, int32_t x1, int32_t y1) {
+static void _FillRect_CX(GUI_DEVICE * pDevice, int x0, int y0, int x1, int y1) {
   PIXEL * pData;
   PIXEL * pLine;
   PIXEL * pPixel;
   PIXEL Pixel, IndexMask;
-  int32_t x0_phys, y0_phys, x1_phys, y1_phys;
-  int32_t NumPixels, NumLines;
+  int x0_phys, y0_phys, x1_phys, y1_phys;
+  int NumPixels, NumLines;
   DRIVER_CONTEXT * pContext;
 
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;

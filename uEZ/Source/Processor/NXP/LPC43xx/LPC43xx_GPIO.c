@@ -1319,6 +1319,16 @@ T_uezError LPC43xx_GPIO_Unlock(void *aWorkspace, TUInt32 aPortPins)
     return UEZ_ERROR_NONE;
 }
 
+TBool LPC43xx_GPIO_GetLock(void *aWorkspace, TUInt32 aPortPins)
+{
+    T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
+    if (p->iLocked & aPortPins) { // Any pins already locked?
+        return ETrue;
+    } else {
+        return EFalse;
+    }
+}
+
 /*---------------------------------------------------------------------------*
  * HAL Interface tables:
  *---------------------------------------------------------------------------*/
@@ -1347,7 +1357,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port0_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port1_Interface = {
         {
@@ -1374,7 +1385,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port1_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port2_Interface = {
         {
@@ -1401,7 +1413,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port2_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port3_Interface = {
         {
@@ -1428,7 +1441,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port3_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port4_Interface = {
         {
@@ -1455,7 +1469,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port4_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port5_Interface = {
         {
@@ -1482,7 +1497,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port5_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port6_Interface = {
         {
@@ -1509,7 +1525,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port6_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_Port7_Interface = {
         {
@@ -1536,7 +1553,8 @@ const HAL_GPIOPort GPIO_LPC43xx_Port7_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 const HAL_GPIOPort GPIO_LPC43xx_PortZ_Interface = {
         {
@@ -1563,7 +1581,8 @@ const HAL_GPIOPort GPIO_LPC43xx_PortZ_Interface = {
         LPC43xx_GPIO_Control,
         LPC43xx_GPIO_Lock,
         LPC43xx_GPIO_Unlock,
-        LPC43xx_GPIO_GetMux };
+        LPC43xx_GPIO_GetMux,
+        LPC43xx_GPIO_GetLock };
 
 /*---------------------------------------------------------------------------*
  * Requirement routines:

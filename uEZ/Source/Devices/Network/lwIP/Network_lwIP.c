@@ -20,7 +20,7 @@
  *-------------------------------------------------------------------------*/
 #include <string.h>
 #include <uEZ.h>
-#include <uEZDevice.h>	// This is needed for the RX compiler
+#include <uEZDevice.h>
 #include <lwip/netdb.h>
 #include <lwip/tcp.h>
 #include <uEZDeviceTable.h>
@@ -32,15 +32,17 @@
 #include "lwip/api.h"
 #include "lwip/tcpip.h"
 #include "lwip/memp.h"
+#include "lwip/dns.h"
 #include "lwip/stats.h"
 #include "lwip/dhcp.h"
 #include "lwip/ip_addr.h"
 
-#define          tcp_nagle_disable(pcb)   ((pcb)->flags |= TF_NODELAY)
 
 #if (!LWIP_SO_RCVTIMEO)
 #error "LWIP_SO_RCVTIMEO must be 1 to use device Network::lwIP"
 #endif
+
+T_uezTask G_lwipTask;
 
 /*---------------------------------------------------------------------------*
  * Macros:
@@ -214,7 +216,7 @@ static T_uezError IStartup(
     extern err_t ethernetif_init(struct netif *netif);
     T_uezError error = UEZ_ERROR_NONE;
 #if LWIP_2_0_x
-    ip_addr_t xIpAddr, xNetMast, xGateway;
+    ip_addr_t xIpAddr, xNetMast, xGateway;//, xPriDnsSrv, xSecDnsSrv;
 #else
     struct ip_addr xIpAddr, xNetMast, xGateway;
 #endif
@@ -223,7 +225,10 @@ static T_uezError IStartup(
     if (aSettings->iNetworkType != UEZ_NETWORK_TYPE_INFRASTRUCTURE)
         return UEZ_ERROR_INCORRECT_TYPE;
 
-    tcpip_init(NULL, NULL);
+G_lwipTask = tcpip_init(NULL, NULL);
+    if(G_lwipTask == 0) { // incresae your heap or lower TCPIP_THREAD_STACKSIZE
+      return UEZ_ERROR_OUT_OF_MEMORY;
+    }
     
 #if LWIP_DHCP
     /* Create and configure the EMAC interface. */
@@ -275,6 +280,17 @@ static T_uezError IStartup(
 #if LWIP_DHCP
     if(aSettings->iEnableDHCP){
         dhcp_start(&p->EMAC_if);
+    }
+    else { /* // TODO does this require more integration somewhere else?
+          IP4_ADDR(&xPriDnsSrv, aSettings->iPriDnsServer.v4[0],
+            aSettings->iPriDnsServer.v4[1], aSettings->iPriDnsServer.v4[2],
+            aSettings->iPriDnsServer.v4[3]);
+          IP4_ADDR(&xSecDnsSrv, aSettings->iSecDnsServer.v4[0],
+            aSettings->iSecDnsServer.v4[1], aSettings->iSecDnsServer.v4[2],
+            aSettings->iSecDnsServer.v4[3]);
+          // Added static DNS server 
+          dns_setserver(0, &xPriDnsSrv);
+          dns_setserver(1, &xSecDnsSrv); */
     }
 #endif
 
@@ -964,9 +980,10 @@ T_uezError Network_lwIP_SocketWrite(
         error = UEZ_ERROR_NOT_OPEN;
     } else {
         while (aNumBytes) {
-            // Send data up to a 16-bit value
-            if (aNumBytes > 0xFFFF)
-                numWrite = 0xFFFF;
+            //if (aNumBytes > 0xFFFF) // Send data up to a 16-bit value
+                //numWrite = 0xFFFF;
+            if (aNumBytes > 1440) // Send data up to MSS value
+                numWrite = 1440;
             else
                 numWrite = (TUInt16)aNumBytes;
             aNumBytes -= numWrite;
@@ -975,6 +992,7 @@ T_uezError Network_lwIP_SocketWrite(
             // Clean up any previous timeout errors
             if (p_socket->iNetconn->err == ERR_TIMEOUT)
                 p_socket->iNetconn->err = ERR_OK;
+#else       // Clean up any previous timeout errors // TODO clear ERR_INPROGRESS
 #endif
             // Write out this segment (noting if there is data past this one)
             error

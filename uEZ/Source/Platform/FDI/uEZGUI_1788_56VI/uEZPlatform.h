@@ -126,10 +126,6 @@ extern "C" {
     #define UEZ_CONSOLE_WRITE_BUFFER_SIZE       128 // bytes
 #endif
 
-#ifndef LCD_DISPLAY_BASE_ADDRESS
-    #define LCD_DISPLAY_BASE_ADDRESS            0xA0000000
-#endif
-
 #ifndef FATFS_MAX_MASS_STORAGE_DEVICES
     #define FATFS_MAX_MASS_STORAGE_DEVICES      2
 #endif
@@ -151,6 +147,20 @@ extern "C" {
  * Types:
  *-------------------------------------------------------------------------*/
 
+ typedef enum {
+  HARDWARE_TEST_NORMAL = 0,
+  HARDWARE_TEST_CRYSTAL = 1,
+  HARDWARE_TEST_SDRAM = 2,
+  HARDWARE_TEST_I2C = 3,
+  HARDWARE_TEST_AUDIO = 4
+} HARDWARE_TEST_Types;
+
+typedef struct {
+    uint8_t iTestMode;    
+    uint8_t iReserved;
+    uint16_t iTestIterations;
+} T_BootTestModeSetting;
+
 /*-------------------------------------------------------------------------*
  * General Purpose Pin Mappings to CPU:
  *-------------------------------------------------------------------------*/
@@ -161,6 +171,11 @@ extern "C" {
 #define GPIO_HEARTBEAT_LED  		GPIO_P1_13
 
 // TODO add GPIOs on ALT PWR COM, PMOD here
+
+// GPIO Loopback Test array for this uEZGUI
+#define LOOPBACK_TEST_NUM_PINS_A              (16)
+#define LOOPBACK_TEST_NUM_PINS_B              (1)
+#define LOOPBACK_TEST_NUM_PINS_C              (1)
 
 /*-------------------------------------------------------------------------*
  * Expansion Connector Header Pin Mappings to CPU:
@@ -379,6 +394,7 @@ void UEZPlatform_USBHost_PortB_Require(void);
 TBool UEZPlatform_Host_Port_B_Detect(void);
 void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
+void UEZPlatform_Minimal_Require(void);
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
 void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum);
@@ -389,6 +405,31 @@ void UEZPlatform_System_Reset(void);
 T_uezError UEZPlatform_WiredNetwork0_Connect(
         T_uezDevice *aNetwork,
         T_uezNetworkStatus *aStatus);
+
+// Information available about the connected wired network
+extern T_uezDevice G_network;
+extern T_uezNetworkStatus G_networkStatus;
+
+extern TUInt8 *_framesMemoryptr;
+#define LCD_DISPLAY_BASE_ADDRESS (TUInt32) _framesMemoryptr //Keep this define for now
+
+// test functions/externs
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+extern volatile T_BootTestModeSetting G_hardwareTest;
+#endif
+void UEZPlatform_INIT_LOW_LEVEL_UART_DEFAULT_CLOCK(void);
+void UEZPlatform_INIT_LOW_LEVEL_UART(void);
+void COM_Send(char * bytes, uint16_t numBytes);
+void UEZBSP_HEARTBEAT_TOGGLE(void);
+
+extern const T_uezGPIOPortPin g_loopback_pins_A[];
+extern const uint8_t g_loopback_connected_A[][LOOPBACK_TEST_NUM_PINS_A];
+
+extern const T_uezGPIOPortPin g_loopback_pins_B[];
+extern const uint8_t g_loopback_connected_B[][LOOPBACK_TEST_NUM_PINS_B];
+
+extern const T_uezGPIOPortPin g_loopback_pins_C[];
+extern const uint8_t g_loopback_connected_C[][LOOPBACK_TEST_NUM_PINS_C];
 
 #ifdef __cplusplus
 }
