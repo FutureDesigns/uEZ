@@ -3,13 +3,13 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*       SEGGER SystemView * Real-time application analysis           *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -17,7 +17,7 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
@@ -39,6 +39,10 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
 * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
 * DAMAGE.                                                            *
+*                                                                    *
+**********************************************************************
+*                                                                    *
+*       SystemView version: 3.30                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -71,7 +75,7 @@ Revision: $Rev: 17697 $
 *
 **********************************************************************
 */
-size_t __write(int32_t handle, const unsigned char * buffer, size_t size);
+size_t __write(int handle, const unsigned char * buffer, size_t size);
 
 /*********************************************************************
 *
@@ -89,7 +93,7 @@ size_t __write(int32_t handle, const unsigned char * buffer, size_t size);
 *   for output to all files, including stdout.
 *   Write data via RTT.
 */
-size_t __write(int32_t handle, const unsigned char * buffer, size_t size) {
+size_t __write(int handle, const unsigned char * buffer, size_t size) {
   (void) handle;  /* Not used, avoid warning */
   SEGGER_RTT_Write(0, (const char*)buffer, size);
   return size;
@@ -105,7 +109,7 @@ size_t __write(int32_t handle, const unsigned char * buffer, size_t size) {
 *   for output to all files, including stdout.
 *   Write data via RTT.
 */
-size_t __write_buffered(int32_t handle, const unsigned char * buffer, size_t size) {
+size_t __write_buffered(int handle, const unsigned char * buffer, size_t size) {
   (void) handle;  /* Not used, avoid warning */
   SEGGER_RTT_Write(0, (const char*)buffer, size);
   return size;

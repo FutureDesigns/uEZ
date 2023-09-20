@@ -56,6 +56,7 @@ void UEZBSP_Startup(void);
 void UEZBSP_Pre_PLL_SystemInit();
 void UEZBSP_PLLConfigure(void);
 void UEZBSP_CPU_PinConfigInit(void);
+void UEZBSP_Post_SystemInit(void);
 void UEZBSP_InterruptsReset(void);
 void UEZBSP_RAMInit(void);
 void UEZBSP_ROMInit(void);

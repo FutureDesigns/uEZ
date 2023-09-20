@@ -40,6 +40,10 @@
 #include "lwip/apps/mdns_opts.h"
 #include "lwip/pbuf.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if LWIP_MDNS_RESPONDER
 
 /* Domain struct and methods - visible for unit tests */
@@ -58,9 +62,13 @@ struct mdns_domain {
 
 err_t mdns_domain_add_label(struct mdns_domain *domain, const char *label, u8_t len);
 u16_t mdns_readname(struct pbuf *p, u16_t offset, struct mdns_domain *domain);
-int32_t mdns_domain_eq(struct mdns_domain *a, struct mdns_domain *b);
+int mdns_domain_eq(struct mdns_domain *a, struct mdns_domain *b);
 u16_t mdns_compress_domain(struct pbuf *pbuf, u16_t *offset, struct mdns_domain *domain);
 
 #endif /* LWIP_MDNS_RESPONDER */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LWIP_HDR_MDNS_PRIV_H */

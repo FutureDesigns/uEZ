@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SCROLLBAR.h
@@ -46,7 +46,7 @@ Purpose     : SCROLLBAR include
 #define SCROLLBAR_H
 
 #include "WM.h"
-#include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
+#include "DIALOG_Type.h"      /* Req. for Create indirect data structure */
 #include "WIDGET.h"
 
 #if GUI_WINSUPPORT
@@ -61,9 +61,16 @@ Purpose     : SCROLLBAR include
 *
 **********************************************************************
 */
-#define SCROLLBAR_CI_THUMB 0
-#define SCROLLBAR_CI_SHAFT 1
-#define SCROLLBAR_CI_ARROW 2
+/*********************************************************************
+*
+*       SCROLLBAR color indexes
+*
+*  Description
+*    Color indexes for SCROLLBAR widget.
+*/
+#define SCROLLBAR_CI_THUMB 0    // Color of thumb area.
+#define SCROLLBAR_CI_SHAFT 1    // Color of shaft.
+#define SCROLLBAR_CI_ARROW 2    // Color of arrows.
 
 /*********************************************************************
 *
@@ -105,8 +112,8 @@ typedef struct {
 } SCROLLBAR_SKINFLEX_PROPS;
 
 typedef struct {
-  int32_t IsVertical;
-  int32_t State;
+  int IsVertical;
+  int State;
 } SCROLLBAR_SKINFLEX_INFO;
 
 /*********************************************************************
@@ -115,11 +122,11 @@ typedef struct {
 *
 **********************************************************************
 */
-SCROLLBAR_Handle SCROLLBAR_Create        (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t Id, int32_t WinFlags, int32_t SpecialFlags);
-SCROLLBAR_Handle SCROLLBAR_CreateAttached(WM_HWIN hParent, int32_t SpecialFlags);
-SCROLLBAR_Handle SCROLLBAR_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id);
-SCROLLBAR_Handle SCROLLBAR_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t NumExtraBytes);
-SCROLLBAR_Handle SCROLLBAR_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
+SCROLLBAR_Handle SCROLLBAR_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int WinFlags, int SpecialFlags);
+SCROLLBAR_Handle SCROLLBAR_CreateAttached(WM_HWIN hParent, int SpecialFlags);
+SCROLLBAR_Handle SCROLLBAR_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+SCROLLBAR_Handle SCROLLBAR_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+SCROLLBAR_Handle SCROLLBAR_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -139,17 +146,17 @@ void SCROLLBAR_Callback(WM_MESSAGE * pMsg);
 
 /* Methods changing properties */
 
-void      SCROLLBAR_AddValue   (SCROLLBAR_Handle hObj, int32_t Add);
+void      SCROLLBAR_AddValue   (SCROLLBAR_Handle hObj, int Add);
 void      SCROLLBAR_Dec        (SCROLLBAR_Handle hObj);
 void      SCROLLBAR_Inc        (SCROLLBAR_Handle hObj);
-int32_t       SCROLLBAR_GetUserData(SCROLLBAR_Handle hObj, void * pDest, int32_t NumBytes);
-GUI_COLOR SCROLLBAR_SetColor   (SCROLLBAR_Handle hObj, int32_t Index, GUI_COLOR Color);
-void      SCROLLBAR_SetNumItems(SCROLLBAR_Handle hObj, int32_t NumItems);
-void      SCROLLBAR_SetPageSize(SCROLLBAR_Handle hObj, int32_t PageSize);
-void      SCROLLBAR_SetValue   (SCROLLBAR_Handle hObj, int32_t v);
-int32_t       SCROLLBAR_SetWidth   (SCROLLBAR_Handle hObj, int32_t Width);
+int       SCROLLBAR_GetUserData(SCROLLBAR_Handle hObj, void * pDest, int NumBytes);
+GUI_COLOR SCROLLBAR_SetColor   (SCROLLBAR_Handle hObj, int Index, GUI_COLOR Color);
+void      SCROLLBAR_SetNumItems(SCROLLBAR_Handle hObj, int NumItems);
+void      SCROLLBAR_SetPageSize(SCROLLBAR_Handle hObj, int PageSize);
+void      SCROLLBAR_SetValue   (SCROLLBAR_Handle hObj, int v);
+int       SCROLLBAR_SetWidth   (SCROLLBAR_Handle hObj, int Width);
 void      SCROLLBAR_SetState   (SCROLLBAR_Handle hObj, const WM_SCROLL_STATE* pState);
-int32_t       SCROLLBAR_SetUserData(SCROLLBAR_Handle hObj, const void * pSrc, int32_t NumBytes);
+int       SCROLLBAR_SetUserData(SCROLLBAR_Handle hObj, const void * pSrc, int NumBytes);
 
 /*********************************************************************
 *
@@ -157,11 +164,11 @@ int32_t       SCROLLBAR_SetUserData(SCROLLBAR_Handle hObj, const void * pSrc, in
 *
 **********************************************************************
 */
-void SCROLLBAR_GetSkinFlexProps     (SCROLLBAR_SKINFLEX_PROPS * pProps, int32_t Index);
+void SCROLLBAR_GetSkinFlexProps     (SCROLLBAR_SKINFLEX_PROPS * pProps, int Index);
 void SCROLLBAR_SetSkinClassic       (SCROLLBAR_Handle hObj);
 void SCROLLBAR_SetSkin              (SCROLLBAR_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
-int32_t  SCROLLBAR_DrawSkinFlex         (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
-void SCROLLBAR_SetSkinFlexProps     (const SCROLLBAR_SKINFLEX_PROPS * pProps, int32_t Index);
+int  SCROLLBAR_DrawSkinFlex         (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+void SCROLLBAR_SetSkinFlexProps     (const SCROLLBAR_SKINFLEX_PROPS * pProps, int Index);
 void SCROLLBAR_SetDefaultSkinClassic(void);
 WIDGET_DRAW_ITEM_FUNC * SCROLLBAR_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
 
@@ -173,9 +180,9 @@ WIDGET_DRAW_ITEM_FUNC * SCROLLBAR_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawS
 *
 **********************************************************************
 */
-int32_t       SCROLLBAR_GetDefaultWidth(void);
-GUI_COLOR SCROLLBAR_SetDefaultColor(GUI_COLOR Color, uint32_t Index); /* Not yet documented */
-int32_t       SCROLLBAR_SetDefaultWidth(int32_t DefaultWidth);
+int       SCROLLBAR_GetDefaultWidth(void);
+GUI_COLOR SCROLLBAR_SetDefaultColor(GUI_COLOR Color, unsigned int Index); /* Not yet documented */
+int       SCROLLBAR_SetDefaultWidth(int DefaultWidth);
 
 /*********************************************************************
 *
@@ -183,8 +190,8 @@ int32_t       SCROLLBAR_SetDefaultWidth(int32_t DefaultWidth);
 *
 **********************************************************************
 */
-int32_t       SCROLLBAR_GetThumbSizeMin(void);
-int32_t       SCROLLBAR_SetThumbSizeMin(int32_t ThumbSizeMin);
+int       SCROLLBAR_GetThumbSizeMin(void);
+int       SCROLLBAR_SetThumbSizeMin(int ThumbSizeMin);
 
 /*********************************************************************
 *
@@ -192,10 +199,10 @@ int32_t       SCROLLBAR_SetThumbSizeMin(int32_t ThumbSizeMin);
 *
 **********************************************************************
 */
-GUI_COLOR SCROLLBAR_GetColor   (SCROLLBAR_Handle hObj, int32_t Index);
-int32_t       SCROLLBAR_GetNumItems(SCROLLBAR_Handle hObj);
-int32_t       SCROLLBAR_GetPageSize(SCROLLBAR_Handle hObj);
-int32_t       SCROLLBAR_GetValue   (SCROLLBAR_Handle hObj);
+GUI_COLOR SCROLLBAR_GetColor   (SCROLLBAR_Handle hObj, int Index);
+int       SCROLLBAR_GetNumItems(SCROLLBAR_Handle hObj);
+int       SCROLLBAR_GetPageSize(SCROLLBAR_Handle hObj);
+int       SCROLLBAR_GetValue   (SCROLLBAR_Handle hObj);
 
 /*********************************************************************
 *

@@ -35,7 +35,17 @@
 #define  __INCLUDE_FROM_USB_DRIVER
 #include "Events.h"
 
+/* Because a const function cannot have any observable side effects it does not 
+ * make sense for it to return void. Declaring such a function is diagnosed.*/
 void USB_Event_Stub(void)
+{
+
+}
+void USB_Event_Stub_param(const uint8_t ErrorCode)
+{
+
+}
+void USB_Event_Stub_param_2(const uint8_t ErrorCode, const uint8_t SubErrorCode)
 {
 
 }

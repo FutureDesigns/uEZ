@@ -1,0 +1,1 @@
+#error You must run ConvertSlideShow_*.bat or LinuxConvertSlideShow_*.sh in this "Graphics" folder to generate the real graphics files. Pick the option that matches your LCD screen resolution.

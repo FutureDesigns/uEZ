@@ -42,6 +42,10 @@
 #include "ppp.h"
 #include "vj.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* PPP packet parser states.  Current state indicates operation yet to be
  * completed. */
 enum {
@@ -80,9 +84,9 @@ struct pppos_pcb_s {
   ext_accm out_accm;               /* Async-Ctl-Char-Map for output. */
 
   /* flags */
-  uint32_t open            :1; /* Set if PPPoS is open */
-  uint32_t pcomp           :1; /* Does peer accept protocol compression? */
-  uint32_t accomp          :1; /* Does peer accept addr/ctl compression? */
+  unsigned int open            :1; /* Set if PPPoS is open */
+  unsigned int pcomp           :1; /* Does peer accept protocol compression? */
+  unsigned int accomp          :1; /* Does peer accept addr/ctl compression? */
 
   /* PPPoS rx */
   ext_accm in_accm;                /* Async-Ctl-Char-Map for input. */
@@ -99,11 +103,11 @@ ppp_pcb *pppos_create(struct netif *pppif, pppos_output_cb_fn output_cb,
 
 #if !NO_SYS && !PPP_INPROC_IRQ_SAFE
 /* Pass received raw characters to PPPoS to be decoded through lwIP TCPIP thread. */
-err_t pppos_input_tcpip(ppp_pcb *ppp, u8_t *s, int32_t l);
+err_t pppos_input_tcpip(ppp_pcb *ppp, u8_t *s, int l);
 #endif /* !NO_SYS && !PPP_INPROC_IRQ_SAFE */
 
 /* PPP over Serial: this is the input function to be called for received data. */
-void pppos_input(ppp_pcb *ppp, u8_t* data, int32_t len);
+void pppos_input(ppp_pcb *ppp, u8_t* data, int len);
 
 
 /*
@@ -113,6 +117,10 @@ void pppos_input(ppp_pcb *ppp, u8_t* data, int32_t len);
 #if !NO_SYS && !PPP_INPROC_IRQ_SAFE
 err_t pppos_input_sys(struct pbuf *p, struct netif *inp);
 #endif /* !NO_SYS && !PPP_INPROC_IRQ_SAFE */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PPPOS_H */
 #endif /* PPP_SUPPORT && PPPOL2TP_SUPPORT */

@@ -35,6 +35,7 @@
 #include "cpu.h"
 #include <stdlib.h>
 #include <stdint.h> /* for int types */
+#include <uEZPacked.h>
 
 typedef unsigned   char    u8_t;
 typedef signed     char    s8_t;
@@ -60,12 +61,12 @@ typedef int32_t sys_prot_t;
 
 /* define compiler specific symbols */
 #if defined (__ICCARM__)
-
-#define PACK_STRUCT_BEGIN
+// use uEZPacked.h definitions
+//#define PACK_STRUCT_BEGIN
 #define PACK_STRUCT_STRUCT
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
-#define PACK_STRUCT_USE_INCLUDES
+//#define PACK_STRUCT_USE_INCLUDES
 
 #elif defined (__CC_ARM)
 
@@ -74,11 +75,10 @@ typedef int32_t sys_prot_t;
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
 
-
 #elif defined (__GNUC__)
 
 #define PACK_STRUCT_BEGIN
-#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
+//#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
 

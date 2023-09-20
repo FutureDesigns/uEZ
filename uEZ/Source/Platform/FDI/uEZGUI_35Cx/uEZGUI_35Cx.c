@@ -138,6 +138,13 @@ T_uezTask G_mainTask;
 //static TUInt32 G_USBHostDriveNumber = 0xFF;
 
 /*---------------------------------------------------------------------------*
+ * Memory placement section:
+ *---------------------------------------------------------------------------*/
+//Allocate general purpose frames memory
+UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]);
+TUInt8 *_framesMemoryptr = _framesMemory;
+
+/*---------------------------------------------------------------------------*
  * Macros:
  *---------------------------------------------------------------------------*/
 #if(COMPILER_TYPE==Keil4)
@@ -1664,7 +1671,9 @@ void UEZPlatform_WiredNetwork0_Require(void)
 
     // Create the network driver for talking to lwIP on a wired
     // network.
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
     Network_lwIP_Create("WiredNetwork0");
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -1776,6 +1785,29 @@ void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum)
 //    UEZDeviceTableFind("MS0", &ms0);
 //    UEZDeviceTableGetWorkspace(ms0, (T_uezDeviceWorkspace **)&p_ms0);
 //    FATFS_RegisterMassStorageDevice(aDriveNum, (DEVICE_MassStorage **)p_ms0);
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MCI_DefaultFreq
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Set the bootup max frequency for SD/MCI/SPI mode data transfer.
+ *      Existing drivers will divide down till <= this frequency.
+ *---------------------------------------------------------------------------*/
+TUInt32 UEZPlatform_MCI_DefaultFreq(void)
+{
+  return 52000000UL;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MCI_TransferMode
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      For SD/MCI mode select 1-bit or 4-bit mode data transfer.
+ *---------------------------------------------------------------------------*/
+TUInt32 UEZPlatform_MCI_TransferMode(void)
+{
+  return UEZ_MCI_BUS_4BIT_WIDE;
 }
 
 /*---------------------------------------------------------------------------*

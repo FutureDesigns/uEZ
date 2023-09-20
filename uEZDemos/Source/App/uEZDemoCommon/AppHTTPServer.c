@@ -21,11 +21,14 @@
 #include <uEZ.h>
 #include <string.h>
 #include <stdio.h>
-//#include <stdlib.h>
 #include <uEZTimeDate.h>
+//#include <stdlib.h>
+#include "AppDemo.h"
+#include <Config_Build.h>
+
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
 #include <Source/Library/Web/HTTPServer/HTTPServer.h>
 #include "AppHTTPServer.h"
-#include "AppDemo.h"
 
 extern int atoi(const char *__nptr);
 /*---------------------------------------------------------------------------*
@@ -42,7 +45,7 @@ static T_uezError IMainHTTPServerGetValue(
             const char *aVarName)
 {
     T_uezTimeDate TimeDate;
-    char line[16];
+    char line[18];
     // In a real application you should check the clock periodically then just 
     // retrieve the values here. Right now we call the timedate api twice per
     // page load which isn't ideal. The same would apply to other dyamic data.
@@ -132,7 +135,7 @@ T_uezError App_HTTPServerStart(T_uezDevice network)
     
     return error;
 }
-
+#endif
 /*-------------------------------------------------------------------------*
  * End of File:  AppHTTPServer.c
  *-------------------------------------------------------------------------*/

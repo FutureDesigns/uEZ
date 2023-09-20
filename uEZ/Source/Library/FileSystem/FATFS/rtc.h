@@ -1,4 +1,11 @@
-#include "integer.h"
+#include "ff.h"			// int types
+
+/* Boolean type */
+#ifndef FALSE
+    typedef enum { FALSE = 0, TRUE } BOOL;
+#else
+    typedef int32_t BOOL;
+#endif
 
 typedef struct {
 	WORD	year;	/* 1..4095 */

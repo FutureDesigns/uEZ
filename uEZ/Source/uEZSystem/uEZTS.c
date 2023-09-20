@@ -109,7 +109,7 @@ static T_tsDevice *G_tsDevices = 0;
 static T_uezSemaphore G_tsSem;
 
 // Task handle of touchscreen monitoring task
-static T_uezTask G_tsMonitorTask;
+T_uezTask G_tsMonitorTask; // want to be able to get task handle
 
 // Declare static TS queues when not using dynamic memory allocation. 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC

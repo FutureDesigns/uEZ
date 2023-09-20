@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : PROGBAR_Private.h
@@ -45,6 +45,8 @@ Purpose     : Internal header file
 #ifndef PROGBAR_PRIVATE_H
 #define PROGBAR_PRIVATE_H
 
+#include "GUI_Private.h"
+#include "WM_Intern.h"
 #include "PROGBAR.h"
 #include "WIDGET.h"
 
@@ -79,11 +81,11 @@ typedef struct {
 
 typedef struct {
   WIDGET Widget;
-  int32_t v;
+  int v;
   WM_HMEM hpText;
   I16 XOff, YOff;
   I16 TextAlign;
-  int32_t Min, Max;
+  int Min, Max;
   PROGBAR_PROPS Props;
   WIDGET_SKIN const * pWidgetSkin;
   U8 Flags;
@@ -129,7 +131,7 @@ extern WIDGET_SKIN const * PROGBAR__pSkinDefault;
 */
 char * PROGBAR__GetTextLocked(const PROGBAR_Obj * pObj);
 void   PROGBAR__GetTextRect  (const PROGBAR_Obj * pObj, GUI_RECT * pRect, const char * pText);
-int32_t    PROGBAR__Value2Pos    (const PROGBAR_Obj * pObj, int32_t v);
+int    PROGBAR__Value2Pos    (const PROGBAR_Obj * pObj, int v);
 
 #endif /* GUI_WINSUPPORT */
 #endif /* PROGBAR_PRIVATE_H */

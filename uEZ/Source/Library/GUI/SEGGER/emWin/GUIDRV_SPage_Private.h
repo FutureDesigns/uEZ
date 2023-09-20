@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_SPage_Private.h
@@ -81,27 +81,27 @@ struct DRIVER_CONTEXT {
   //
   // Common data
   //
-  int32_t xSize, ySize;
-  int32_t vxSize, vySize;
-  int32_t NumDummyReads;
-  int32_t BitsPerPixel;
-  int32_t NumPages;
+  int xSize, ySize;
+  int vxSize, vySize;
+  int NumDummyReads;
+  int BitsPerPixel;
+  int NumPages;
   //
   // Driver specific data
   //
-  int32_t FirstSEG;
-  int32_t FirstCOM;
+  int FirstSEG;
+  int FirstCOM;
   //
   // Accelerators for calculation
   //
-  int32_t BytesPerLine;
+  int BytesPerLine;
   //
   // Cache
   //
   U8 * pVRAM;
-  int32_t CacheLocked;
-  int32_t CacheStat;
-  int32_t xOff;
+  int CacheLocked;
+  int CacheStat;
+  int xOff;
   U16 * pDirtyMin;
   U16 * pDirtyMax;
   //
@@ -111,10 +111,10 @@ struct DRIVER_CONTEXT {
   //
   // Display controller specific functions
   //
-  void (* pfSetAddrW) (DRIVER_CONTEXT * pContext, int32_t Column, int32_t Page);
-  void (* pfSetAddrR) (DRIVER_CONTEXT * pContext, int32_t Column, int32_t Page);
-  U8   (* pfReadVMem) (DRIVER_CONTEXT * pContext, int32_t Column, int32_t Page);
-  void (* pfWriteVMem)(DRIVER_CONTEXT * pContext, int32_t Column, int32_t Page, U8 Data);
+  void (* pfSetAddrW) (DRIVER_CONTEXT * pContext, int Column, int Page);
+  void (* pfSetAddrR) (DRIVER_CONTEXT * pContext, int Column, int Page);
+  U8   (* pfReadVMem) (DRIVER_CONTEXT * pContext, int Column, int Page);
+  void (* pfWriteVMem)(DRIVER_CONTEXT * pContext, int Column, int Page, U8 Data);
   //
   // Writing and reading data, makes it possible to mirror pixels if required
   //
@@ -154,7 +154,7 @@ struct DRIVER_CONTEXT {
 *       _SetPixelIndex_##EXT
 */
 #define DEFINE_SETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                                 \
-static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD_PIXELINDEX PixelIndex) { \
+static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) { \
   DRIVER_CONTEXT * pContext;                                                                      \
                                                                                                   \
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                                               \
@@ -166,7 +166,7 @@ static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD
 *       _GetPixelIndex_##EXT
 */
 #define DEFINE_GETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                \
-static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y) { \
+static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y) { \
   DRIVER_CONTEXT * pContext;                                                     \
   LCD_PIXELINDEX PixelIndex;                                                     \
                                                                                  \
@@ -180,7 +180,7 @@ static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int3
 *       _GetDevProp_##EXT
 */
 #define DEFINE_GETDEVPROP(EXT, MX, MY, SWAP)                    \
-static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
+static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int Index) { \
   switch (Index) {                                              \
   case LCD_DEVCAP_MIRROR_X: return MX;                          \
   case LCD_DEVCAP_MIRROR_Y: return MY;                          \
@@ -205,11 +205,11 @@ static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
 *
 **********************************************************************
 */
-void (*GUIDRV__SPage_GetDevFunc(GUI_DEVICE ** ppDevice, int32_t Index))(void);
-void   GUIDRV__SPage_SetOrg    (GUI_DEVICE *  pDevice,  int32_t x, int32_t y);
-I32    GUIDRV__SPage_GetDevProp(GUI_DEVICE *  pDevice,  int32_t Index);
+void (*GUIDRV__SPage_GetDevFunc(GUI_DEVICE ** ppDevice, int Index))(void);
+void   GUIDRV__SPage_SetOrg    (GUI_DEVICE *  pDevice,  int x, int y);
+I32    GUIDRV__SPage_GetDevProp(GUI_DEVICE *  pDevice,  int Index);
 void   GUIDRV__SPage_GetRect   (GUI_DEVICE *  pDevice,  LCD_RECT * pRect);
-int32_t    GUIDRV__SPage_Init      (GUI_DEVICE * pDevice);
+int    GUIDRV__SPage_Init      (GUI_DEVICE * pDevice);
 
 /*********************************************************************
 *
@@ -217,11 +217,11 @@ int32_t    GUIDRV__SPage_Init      (GUI_DEVICE * pDevice);
 *
 **********************************************************************
 */
-void GUIDRV__SPage_WriteCache  (DRIVER_CONTEXT * pContext, int32_t x, int32_t Page, U8 Data);
-U8   GUIDRV__SPage_ReadCache   (DRIVER_CONTEXT * pContext, int32_t x, int32_t Page);
+void GUIDRV__SPage_WriteCache  (DRIVER_CONTEXT * pContext, int x, int Page, U8 Data);
+U8   GUIDRV__SPage_ReadCache   (DRIVER_CONTEXT * pContext, int x, int Page);
 void GUIDRV__SPage_FlushCache  (DRIVER_CONTEXT * pContext);
-void GUIDRV__SPage_AddDirtyRect(DRIVER_CONTEXT * pContext, int32_t Page0, int32_t Page1, int32_t x0, int32_t x1);
-int32_t  GUIDRV__SPage_ControlCache(GUI_DEVICE * pDevice, int32_t Cmd);
+void GUIDRV__SPage_AddDirtyRect(DRIVER_CONTEXT * pContext, int Page0, int Page1, int x0, int x1);
+int  GUIDRV__SPage_ControlCache(GUI_DEVICE * pDevice, int Cmd);
 
 /*********************************************************************
 *
@@ -243,7 +243,7 @@ int32_t  GUIDRV__SPage_ControlCache(GUI_DEVICE * pDevice, int32_t Cmd);
   void SIM_SPage_SetFunc75256(GUI_DEVICE * pDevice);
   void SIM_SPage_SetFunc75320(GUI_DEVICE * pDevice);
   void SIM_SPage_SetFunc7591 (GUI_DEVICE * pDevice);
-  void SIM_SPage_Config      (GUI_DEVICE * pDevice, int32_t xSize, int32_t ySize, int32_t FirstSEG, int32_t FirstCOM, int32_t BitsPerPixel, int32_t NumDummyReads);
+  void SIM_SPage_Config      (GUI_DEVICE * pDevice, int xSize, int ySize, int FirstSEG, int FirstCOM, int BitsPerPixel, int NumDummyReads);
 
 #endif
 

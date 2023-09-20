@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File    : SEGGER.h
@@ -125,12 +125,12 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 
 typedef struct {
   char* pBuffer;
-  int32_t   BufferSize;
-  int32_t   Cnt;
+  int   BufferSize;
+  int   Cnt;
 } SEGGER_BUFFER_DESC;
 
 typedef struct {
-  int32_t  CacheLineSize;                                 // 0: No Cache. Most Systems such as ARM9 use a 32 bytes cache line size.
+  int  CacheLineSize;                                 // 0: No Cache. Most Systems such as ARM9 use a 32 bytes cache line size.
   void (*pfDMB)       (void);                         // Optional DMB function for Data Memory Barrier to make sure all memory operations are completed.
   void (*pfClean)     (void *p, unsigned NumBytes);   // Optional clean function for cached memory.
   void (*pfInvalidate)(void *p, unsigned NumBytes);   // Optional invalidate function for cached memory.
@@ -146,11 +146,11 @@ struct SEGGER_SNPRINTF_CONTEXT_struct {
 
 typedef struct {
   void (*pfStoreChar)       (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, char c);
-  int32_t  (*pfPrintUnsigned)   (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, U32 v, unsigned Base, char Flags, int32_t Width, int32_t Precision);
-  int32_t  (*pfPrintInt)        (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, I32 v, unsigned Base, char Flags, int32_t Width, int32_t Precision);
+  int  (*pfPrintUnsigned)   (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, U32 v, unsigned Base, char Flags, int Width, int Precision);
+  int  (*pfPrintInt)        (SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, I32 v, unsigned Base, char Flags, int Width, int Precision);
 } SEGGER_PRINTF_API;
 
-typedef void (*SEGGER_pFormatter)(SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, const SEGGER_PRINTF_API* pApi, va_list* pParamList, char Lead, int32_t Width, int32_t Precision);
+typedef void (*SEGGER_pFormatter)(SEGGER_BUFFER_DESC* pBufferDesc, SEGGER_SNPRINTF_CONTEXT* pContext, const SEGGER_PRINTF_API* pApi, va_list* pParamList, char Lead, int Width, int Precision);
 
 typedef struct SEGGER_PRINTF_FORMATTER {
   struct SEGGER_PRINTF_FORMATTER* pNext;              // Pointer to next formatter.
@@ -165,18 +165,18 @@ typedef struct SEGGER_PRINTF_FORMATTER {
 **********************************************************************
 */
 
-void SEGGER_ARM_memcpy(void* pDest, const void* pSrc, int32_t NumBytes);
-void SEGGER_memcpy    (void* pDest, const void* pSrc, int32_t NumBytes);
+void SEGGER_ARM_memcpy(void* pDest, const void* pSrc, int NumBytes);
+void SEGGER_memcpy    (void* pDest, const void* pSrc, int NumBytes);
 void SEGGER_memxor    (void* pDest, const void* pSrc, unsigned NumBytes);
 
 void SEGGER_StoreChar    (SEGGER_BUFFER_DESC* pBufferDesc, char c);
-void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC* pBufferDesc, U32 v, unsigned Base, int32_t Precision);
-void SEGGER_PrintInt     (SEGGER_BUFFER_DESC* pBufferDesc, I32 v, unsigned Base, int32_t Precision);
-//int32_t  SEGGER_snprintf     (char* pBuffer, int32_t BufferSize, const char* sFormat, ...);
-int32_t  SEGGER_vsnprintf    (char* pBuffer, int32_t BufferSize, const char* sFormat, va_list ParamList);
-int32_t  SEGGER_vsnprintfEx  (SEGGER_SNPRINTF_CONTEXT* pContext, const char* sFormat, va_list ParamList);
+void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC* pBufferDesc, U32 v, unsigned Base, int Precision);
+void SEGGER_PrintInt     (SEGGER_BUFFER_DESC* pBufferDesc, I32 v, unsigned Base, int Precision);
+//int  SEGGER_snprintf     (char* pBuffer, int BufferSize, const char* sFormat, ...);
+int  SEGGER_vsnprintf    (char* pBuffer, int BufferSize, const char* sFormat, va_list ParamList);
+int  SEGGER_vsnprintfEx  (SEGGER_SNPRINTF_CONTEXT* pContext, const char* sFormat, va_list ParamList);
 
-int32_t  SEGGER_PRINTF_AddFormatter      (SEGGER_PRINTF_FORMATTER* pFormatter, SEGGER_pFormatter pfFormatter, char c);
+int  SEGGER_PRINTF_AddFormatter      (SEGGER_PRINTF_FORMATTER* pFormatter, SEGGER_pFormatter pfFormatter, char c);
 void SEGGER_PRINTF_AddDoubleFormatter(void);
 void SEGGER_PRINTF_AddIPFormatter    (void);
 void SEGGER_PRINTF_AddHTMLFormatter  (void);

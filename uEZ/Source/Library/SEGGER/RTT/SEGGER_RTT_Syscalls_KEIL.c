@@ -3,13 +3,13 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*       SEGGER SystemView * Real-time application analysis           *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -17,7 +17,7 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
@@ -41,14 +41,19 @@
 * DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
+*                                                                    *
+*       SystemView version: 3.30                                    *
+*                                                                    *
+**********************************************************************
 ---------------------------END-OF-HEADER------------------------------
 File    : RTT_Syscalls_KEIL.c
 Purpose : Retargeting module for KEIL MDK-CM3.
           Low-level functions for using printf() via RTT
-Revision: $Rev: 17697 $
+Revision: $Rev: 20754 $
+Notes   : (1) https://wiki.segger.com/Keil_MDK-ARM#RTT_in_uVision
 ----------------------------------------------------------------------
 */
-#ifdef __CC_ARM
+#if (defined __CC_ARM) || (defined __ARMCC_VERSION)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +68,9 @@ Revision: $Rev: 17697 $
 *
 **********************************************************************
 */
+#if __ARMCC_VERSION < 6000000
 #pragma import(__use_no_semihosting)
+#endif
 
 #ifdef _MICROLIB
   #pragma import(__use_full_stdio)
@@ -112,7 +119,7 @@ const char __stderr_name[] = "STDERR";
 *    c    - character to output
 *  
 */
-void _ttywrch(int32_t c) {
+void _ttywrch(int c) {
   fputc(c, stdout); // stdout
   fflush(stdout);
 }
@@ -133,7 +140,7 @@ void _ttywrch(int32_t c) {
 *    == 0     -"device" is not handled by this module
 *
 */
-FILEHANDLE _sys_open(const char * sName, int32_t OpenMode) {
+FILEHANDLE _sys_open(const char * sName, int OpenMode) {
   (void)OpenMode;
   // Register standard Input Output devices.
   if (strcmp(sName, __stdout_name) == 0) {
@@ -158,7 +165,7 @@ FILEHANDLE _sys_open(const char * sName, int32_t OpenMode) {
 *    0     - device/file closed
 *
 */
-int32_t _sys_close(FILEHANDLE hFile) {
+int _sys_close(FILEHANDLE hFile) {
   (void)hFile;
   return 0;  // Not implemented
 }
@@ -181,8 +188,8 @@ int32_t _sys_close(FILEHANDLE hFile) {
 *    Number of bytes *not* written to the file/device
 *
 */
-int32_t _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumBytes, int32_t Mode) {
-  int32_t r = 0;
+int _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumBytes, int Mode) {
+  int r = 0;
 
   (void)Mode;
   if (hFile == STDOUT) {
@@ -210,7 +217,7 @@ int32_t _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned Num
 *    Number of bytes read from the file/device
 *
 */
-int32_t _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, int32_t Mode) {
+int _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, int Mode) {
   (void)hFile;
   (void)pBuffer;
   (void)NumBytes;
@@ -234,7 +241,7 @@ int32_t _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, 
 *    0       - Device is not a console
 *
 */
-int32_t _sys_istty(FILEHANDLE hFile) {
+int _sys_istty(FILEHANDLE hFile) {
   if (hFile > 0x8000) {
     return (1);
   }
@@ -253,10 +260,10 @@ int32_t _sys_istty(FILEHANDLE hFile) {
 *    Pos    - 
 *  
 *  Return value:
-*    int32_t       - 
+*    int       - 
 *
 */
-int32_t _sys_seek(FILEHANDLE hFile, long Pos) {
+int _sys_seek(FILEHANDLE hFile, long Pos) {
   (void)hFile;
   (void)Pos;
   return (0);  // Not implemented
@@ -273,10 +280,10 @@ int32_t _sys_seek(FILEHANDLE hFile, long Pos) {
 *    hFile    - Handle to a file opened via _sys_open
 *  
 *  Return value:
-*    int32_t       - 
+*    int       - 
 *
 */
-int32_t _sys_ensure(FILEHANDLE hFile) {
+int _sys_ensure(FILEHANDLE hFile) {
   (void)hFile;
   return (-1);  // Not implemented
 }
@@ -318,7 +325,7 @@ long _sys_flen(FILEHANDLE hFile) {
 *     0 - Success  
 *
 */
-int32_t _sys_tmpnam(char * pBuffer, int32_t FileNum, unsigned MaxLen) {
+int _sys_tmpnam(char * pBuffer, int FileNum, unsigned MaxLen) {
   (void)pBuffer;
   (void)FileNum;
   (void)MaxLen;
@@ -341,7 +348,7 @@ int32_t _sys_tmpnam(char * pBuffer, int32_t FileNum, unsigned MaxLen) {
 *    == sCmd - Command was passed successfully
 *
 */
-char * _sys_command_string(char * cmd, int32_t len) {
+char * _sys_command_string(char * cmd, int len) {
   (void)len;
   return cmd;  // Not implemented
 }
@@ -358,7 +365,7 @@ char * _sys_command_string(char * cmd, int32_t len) {
 *  
 *
 */
-void _sys_exit(int32_t ReturnCode) {
+void _sys_exit(int ReturnCode) {
   (void)ReturnCode;
   while (1);  // Not implemented
 }

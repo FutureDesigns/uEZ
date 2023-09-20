@@ -50,6 +50,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZNetwork.h>
+#include <uEZRTOS.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,23 +73,50 @@ void uEZPlatformInit(void);
 /** Startup the platform (first main task).  Use this to require other parts */
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters);
 
+// Delays
+void UEZBSPDelay1MS(void);
+void UEZBSPDelayMS(TUInt32 aMilliseconds);
+void UEZBSPDelay1US(void);
+void UEZBSPDelayUS(TUInt32 aMicroseconds);
+
+// CPU
+TUInt32 UEZPlatform_ProcessorGetFrequency(void);
+TUInt32 UEZPlatform_GetPCLKFrequency(void);
+
+// LCD
 TUInt16 UEZPlatform_LCDGetHeight(void);
 TUInt16 UEZPlatform_LCDGetWidth(void);
 TUInt32 UEZPlatform_LCDGetFrame(TUInt16 aFrameNum);
 TUInt32 UEZPlatform_LCDGetFrameBuffer(void);
 TUInt32 UEZPlatform_LCDGetFrameSize(void);
-TUInt32 UEZPlatform_SerialGetDefaultBaud(void);
-TUInt32 UEZPlatform_ProcessorGetFrequency(void);
-TUInt32 UEZPlatform_GetPCLKFrequency(void);
 TUInt32 UEZPlatform_GetBaseAddress(void);
 const void* UEZPlatform_GUIColorConversion(void);
 const void* UEZPlatform_GUIDisplayDriver(void);
 
+// Serial
+TUInt32 UEZPlatform_SerialGetDefaultBaud(void);
+
+// MCI/SD card
+TUInt32 UEZPlatform_MCI_DefaultFreq(void);
+TUInt32 UEZPlatform_MCI_TransferMode(void);
+
+// Expansion
 TBool UEZPlatform_ExpansionBoardIsConnected(void);
-void UEZBSPDelay1MS(void);
-void UEZBSPDelayMS(TUInt32 aMilliseconds);
-void UEZBSPDelay1US(void);
-void UEZBSPDelayUS(TUInt32 aMicroseconds);
+
+// Memory Test step callbacks
+void UEZPlatform_MemTest_StepA(void);
+void UEZPlatform_MemTest_StepA_Pass(void);
+void UEZPlatform_MemTest_StepB(void);
+void UEZPlatform_MemTest_StepB_Pass(void);
+void UEZPlatform_MemTest_StepC(void);
+void UEZPlatform_MemTest_StepC_Pass(void);
+void UEZPlatform_MemTest_StepD(void);
+void UEZPlatform_MemTest_StepD_Pass(void);
+void UEZPlatform_MemTest_StepE(void);
+void UEZPlatform_MemTest_StepE_Pass(void);
+void UEZPlatform_MemTest_StepF(void);
+void UEZPlatform_MemTest_StepF_Pass(void);
+
 
 #ifdef __cplusplus
 }

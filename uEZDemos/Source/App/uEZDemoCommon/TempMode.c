@@ -258,7 +258,7 @@ static void TMUpdate(T_timeDateWorkspace *G_ws)
 {
     TInt32 t;
     TInt32 i, f;
-    char number[10];
+    char number[12];
 
     // Now do the RTC
     if (UEZTemperatureRead(G_ws->iTemperature, &t) == UEZ_ERROR_NONE) {

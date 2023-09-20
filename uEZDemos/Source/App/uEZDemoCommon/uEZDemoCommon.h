@@ -101,6 +101,9 @@ void AudioPlayerMode(const T_choice *aChoice);
 void TS_NoiseDetect(void);
 void FWTSTest(void);
 
+
+T_uezError Storage_PrintInfo(char driveLetter, TBool printToConsole);
+
 #ifdef __cplusplus
 }
 #endif

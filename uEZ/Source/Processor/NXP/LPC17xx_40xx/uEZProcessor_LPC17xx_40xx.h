@@ -48,6 +48,7 @@
 #endif
 #include <Types/GPIO.h>
 #include "LPC17xx_40xx_UtilityFuncs.h"
+#include "LPC17xx_40xx_EMAC.h"
 
 #ifdef __cplusplus
 extern "C" {

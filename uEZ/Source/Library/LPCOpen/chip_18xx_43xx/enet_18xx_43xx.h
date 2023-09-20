@@ -396,7 +396,7 @@ typedef struct {							/*!< ETHERNET Structure */
 /*
  * @brief Maximum size of an ethernet buffer
  */
-#define EMAC_ETH_MAX_FLEN (1536)
+//#define EMAC_ETH_MAX_FLEN 1536 // Use LPC43xx_EMAC.h
 
 /**
  * @brief Structure of a transmit descriptor (without timestamp)

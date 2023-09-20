@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_JPEG_Private.h
@@ -161,8 +161,8 @@ typedef struct {
 // Coefficient buffer used for progressive JPEGs
 //
 typedef struct {
-  int32_t NumBlocksX;
-  int32_t NumBlocksY;
+  int NumBlocksX;
+  int NumBlocksY;
   unsigned BlockSize;
   GUI_HMEM hData;
 } COEFF_BUFFER;
@@ -173,7 +173,7 @@ struct GUI_JPEG_DCONTEXT {
   //
   // Function pointer for reading one byte
   //
-  int32_t (* pfGetU8)(GUI_JPEG_DCONTEXT * pContext, U8 * pByte);
+  int (* pfGetU8)(GUI_JPEG_DCONTEXT * pContext, U8 * pByte);
 
   GUI_GET_DATA_FUNC * pfGetData; // 'GetData' Function pointer
   void * pParam;                 // Pointer passed to 'GetData' function
@@ -195,7 +195,7 @@ struct GUI_JPEG_DCONTEXT {
   // Bit buffer
   //
   U32 BitBuffer;
-  int32_t NumBitsLeft;
+  int NumBitsLeft;
   //
   // Huffman tables
   //
@@ -233,30 +233,30 @@ struct GUI_JPEG_DCONTEXT {
   U8 SuccessiveHigh;                       // Successive approximation high
   COEFF_BUFFER aDC_Coeffs[MAX_COMPONENTS]; // DC coefficient buffer for progressive scan
   COEFF_BUFFER aAC_Coeffs[MAX_COMPONENTS]; // AC coefficient buffer for progressive scan
-  int32_t aBlockY_MCU[MAX_COMPONENTS];         // 
+  int aBlockY_MCU[MAX_COMPONENTS];         // 
   //
   // Common
   //
   U8 TransformationRequired;
   U8 IsProgressive;             // Flag is set to 1 if JPEG is progressive
   U8 ScanType;                  // Gray, Yh1v1, Yh1v2, Yh2v1, Yh2v2
-  int32_t MaxMCUsPerRow;            // Maximum number of MCUs per row
-  int32_t MaxMCUsPerCol;            // Maximum number of MCUs per column
-  int32_t MaxBlocksPerMCU;          // Maximum number of blocks per MCU
-  int32_t MaxBlocksPerRow;          // Maximum number of blocks per row
-  int32_t MaxMCU_xSize;             // MCU's max. X size in pixels
-  int32_t MaxMCU_ySize;             // MCU's max. Y size in pixels
-  int32_t DestBytesPerPixel;        // 4 (RGB) or 1 (Y)
-  int32_t DestBytesPerScanline;     // Rounded up
-  int32_t RealDestBytesPerScanline; // Actual bytes
-  int32_t EOB_Run;                  // 'End Of Band' run
-  int32_t RestartInterval;
-  int32_t RestartsLeft;
-  int32_t NextRestartNum;
-  int32_t MCUsPerRow;
-  int32_t MCUsPerCol;
-  int32_t NumBlocksPerMCU;
-  int32_t aMCU_Org[MAX_BLOCKSPERMCU];
+  int MaxMCUsPerRow;            // Maximum number of MCUs per row
+  int MaxMCUsPerCol;            // Maximum number of MCUs per column
+  int MaxBlocksPerMCU;          // Maximum number of blocks per MCU
+  int MaxBlocksPerRow;          // Maximum number of blocks per row
+  int MaxMCU_xSize;             // MCU's max. X size in pixels
+  int MaxMCU_ySize;             // MCU's max. Y size in pixels
+  int DestBytesPerPixel;        // 4 (RGB) or 1 (Y)
+  int DestBytesPerScanline;     // Rounded up
+  int RealDestBytesPerScanline; // Actual bytes
+  int EOB_Run;                  // 'End Of Band' run
+  int RestartInterval;
+  int RestartsLeft;
+  int NextRestartNum;
+  int MCUsPerRow;
+  int MCUsPerCol;
+  int NumBlocksPerMCU;
+  int aMCU_Org[MAX_BLOCKSPERMCU];
   //
   // Block buffer
   //
@@ -270,8 +270,8 @@ struct GUI_JPEG_DCONTEXT {
   //
   // Status
   //
-  int32_t TotalLinesLeft; // Total number of lines left in image
-  int32_t MCULinesLeft;   // Total number of lines left in current MCU
+  int TotalLinesLeft; // Total number of lines left in image
+  int MCULinesLeft;   // Total number of lines left in current MCU
   //
   // Output buffer(s)
   //
@@ -281,8 +281,8 @@ struct GUI_JPEG_DCONTEXT {
   //
   // Arrays used for converting YCbCr to RGB
   //
-  int32_t aCRR[256];
-  int32_t aCBB[256];
+  int aCRR[256];
+  int aCBB[256];
   I32 aCRG[256];
   I32 aCBG[256];
 };
@@ -293,16 +293,16 @@ struct GUI_JPEG_DCONTEXT {
 *
 **********************************************************************
 */
-int32_t       GUI_JPEG__DecodeLine              (GUI_JPEG_DCONTEXT * pContext);
+int       GUI_JPEG__DecodeLine              (GUI_JPEG_DCONTEXT * pContext);
 void      GUI_JPEG__Free                    (GUI_JPEG_DCONTEXT * pContext);
 GUI_COLOR GUI_JPEG__GetColorGray            (const U8 ** ppData, unsigned SkipCnt);
 GUI_COLOR GUI_JPEG__GetColorRGB             (const U8 ** ppData, unsigned SkipCnt);
-int32_t       GUI_JPEG__GetData                 (void * p, const U8 ** ppData, unsigned NumBytesReq, U32 Off);
-int32_t       GUI_JPEG__InitDraw                (GUI_HMEM hContext);
-int32_t       GUI_JPEG__ReadUntilSOF            (GUI_HMEM hContext);
+int       GUI_JPEG__GetData                 (void * p, const U8 ** ppData, unsigned NumBytesReq, U32 Off);
+int       GUI_JPEG__InitDraw                (GUI_HMEM hContext);
+int       GUI_JPEG__ReadUntilSOF            (GUI_HMEM hContext);
 void      GUI_JPEG__SetNextBand             (GUI_JPEG_DCONTEXT * pContext);
-int32_t       GUI_JPEG__SkipLine                (GUI_JPEG_DCONTEXT * pContext);
-int32_t       GUI_JPEG__GetInfoEx               (GUI_HMEM hContext, GUI_JPEG_INFO * pInfo);
+int       GUI_JPEG__SkipLine                (GUI_JPEG_DCONTEXT * pContext);
+int       GUI_JPEG__GetInfoEx               (GUI_HMEM hContext, GUI_JPEG_INFO * pInfo);
 
 #endif
 

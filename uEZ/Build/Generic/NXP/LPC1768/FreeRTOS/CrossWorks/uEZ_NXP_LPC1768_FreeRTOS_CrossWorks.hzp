@@ -333,15 +333,12 @@
           <folder Name="FATFS">
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.h" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.h" />
-            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/integer.h" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.h" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.c" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.c" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.c" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.c" />
-            <folder Name="option">
-              <file file_name="../../../../../../Source/Library/FileSystem/FATFS/option/unicode.c" />
-            </folder>
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ffunicode.c" />
           </folder>
         </folder>
         <folder Name="Graphics">

@@ -1687,6 +1687,68 @@ void FuncTestPageHit(void)
     G_webPageHit = ETrue;
 }
 
+#define STORAGE_DIVIDER     1024
+
+T_uezError Storage_PrintInfo(char driveLetter, TBool printToConsole)
+{
+    char drivePath[4] = {driveLetter,':','/',0};
+    uint64_t totalBytes = 0;
+    float sizeDecimal = 0.0;
+
+    if(printToConsole == ETrue){
+      printf("\nDrive %c information:\n", driveLetter);
+    }
+
+    T_msSizeInfo aDeviceInfo;
+    T_uezFileSystemVolumeInfo aFSInfo;
+    if (UEZFileSystemGetStorageInfo(drivePath, &aDeviceInfo) == UEZ_ERROR_NONE) {
+        if(printToConsole == ETrue){
+          totalBytes = ((uint64_t) aDeviceInfo.iNumSectors) * aDeviceInfo.iSectorSize;
+          sizeDecimal = totalBytes/STORAGE_DIVIDER/STORAGE_DIVIDER; // MB
+          printf("Storage Medium Report:\n  Sectors: %u\n", aDeviceInfo.iNumSectors);
+          printf("  Sector Size: %u\n  Block Size: %u\n",
+              aDeviceInfo.iSectorSize, aDeviceInfo.iBlockSize);
+
+          if(sizeDecimal > STORAGE_DIVIDER) {
+            sizeDecimal = sizeDecimal/STORAGE_DIVIDER; // GB 
+            if(sizeDecimal > STORAGE_DIVIDER) {
+              sizeDecimal = sizeDecimal/STORAGE_DIVIDER; // TB 
+              if(sizeDecimal > STORAGE_DIVIDER) {
+                sizeDecimal = sizeDecimal/STORAGE_DIVIDER; // PB
+                printf("  Total Size: %f PB\n", (double) sizeDecimal); // In a real project you probably want to force printf into normal float.
+              } else {          
+                printf("  Total Size: %f TB\n", (double) sizeDecimal);
+              }
+            } else {          
+              printf("  Total Size: %f GB\n", (double) sizeDecimal);
+            }
+          } else {
+            printf("  Total Size: %f MB\n", (double) sizeDecimal);
+          }
+        }
+            
+        if (UEZFileSystemGetVolumeInfo(drivePath, &aFSInfo) == UEZ_ERROR_NONE) {
+            if(printToConsole == ETrue){
+                printf("File System Report:\n");
+                printf("  Bytes Per Sector: %u\n  Sectors Per Cluster: %u\n",
+                    aFSInfo.iBytesPerSector, aFSInfo.iSectorsPerCluster);
+                printf("  Num Clusters Total: %u\n  Num Clusters Free: %u\n",
+                    aFSInfo.iNumClustersTotal, aFSInfo.iNumClustersFree);                
+            }
+                return UEZ_ERROR_NONE; // SD card found with filesystem
+        } else {
+           if(printToConsole == ETrue){         
+              printf("  Could not read file system\n");
+           }
+        }
+    } else {
+       if(printToConsole == ETrue){
+            printf("  Not initialized yet\n");
+       }
+    }
+    return UEZ_ERROR_NOT_FOUND; // didn't find an SD card/flash drive and/or file system.
+}
+
 /*-------------------------------------------------------------------------*
  * File:  FunctionalTest.c
  *-------------------------------------------------------------------------*/

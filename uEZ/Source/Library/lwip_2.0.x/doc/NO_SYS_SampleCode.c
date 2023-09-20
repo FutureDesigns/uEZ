@@ -25,7 +25,7 @@ netif_output(struct netif *netif, struct pbuf *p)
 
   /* Update SNMP stats (only if you use SNMP) */
   MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
-  int32_t unicast = ((p->payload[0] & 0x01) == 0);
+  int unicast = ((p->payload[0] & 0x01) == 0);
   if (unicast) {
     MIB2_STATS_NETIF_INC(netif, ifoutucastpkts);
   } else {
@@ -56,8 +56,8 @@ netif_init(struct netif *netif)
   netif->flags      = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6;
   MIB2_INIT_NETIF(netif, snmp_ifType_ethernet_csmacd, 100000000);
 
-  SMEMCPY(netif->hwaddr, your_mac_address_goes_here, sizeof(netif->hwaddr));
-  netif->hwaddr_len = sizeof(netif->hwaddr);
+  SMEMCPY(netif->hwaddr, your_mac_address_goes_here, ETH_HWADDR_LEN);
+  netif->hwaddr_len = ETH_HWADDR_LEN;
 
   return ERR_OK;
 }
@@ -102,7 +102,7 @@ main(void)
  
       /* Update SNMP stats (only if you use SNMP) */
       MIB2_STATS_NETIF_ADD(netif, ifinoctets, p->tot_len);
-      int32_t unicast = ((p->payload[0] & 0x01) == 0);
+      int unicast = ((p->payload[0] & 0x01) == 0);
       if (unicast) {
         MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
       } else {

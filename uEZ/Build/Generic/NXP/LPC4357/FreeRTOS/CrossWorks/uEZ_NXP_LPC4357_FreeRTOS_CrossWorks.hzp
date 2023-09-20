@@ -31,7 +31,7 @@
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;__FLASH_BUILD;__THUMB;UEZ_LIBRARY;LWIP_2_0_x"
-      c_user_include_directories=".;../;../../../../../../.;../../../../../../Include;../../../../../../Source/RTOS/FreeRTOS/include;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../Source/Processor/NXP/LPC43xx;../../../../../../Source/Processor/NXP/LPC43xx/GCC;../../../../../../Source/Processor/NXP/LPC43xx/Common/include;../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS;../../../../../../Source/Library/lwip_2.0.x/src/include;../../../../../../Source/Library/lwip_2.0.x/src;../../../../../../Source/Library/lwip_2.0.x/Include;../../../../../../Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../Source/Library/lwip_2.0.x/system;../../../../../../Source/Library/lwip_2.0.x/system/arch;../../../../../../Source/Library/GUI/SEGGER/emWin;../../../../../../Source/Library/LPCOpen;../../../../../../Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../Source/Platform/emWin/Inc;../../../../../../Source/Platform/emWin/Config;../../../../../../Source/Library/Encryption/CyaSSL;../../../../../../Source/Library/Encryption/CyaSSL/cyassl;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/ctaocrypt;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/openssl"
+      c_user_include_directories=".;../;../../../../../../.;../../../../../../Include;../../../../../../Source/RTOS/FreeRTOS/include;../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../Source/Processor/NXP/LPC43xx;../../../../../../Source/Processor/NXP/LPC43xx/GCC;../../../../../../Source/Processor/NXP/LPC43xx/Common/include;../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS;../../../../../../Source/Library/lwip_2.0.x/src/include;../../../../../../Source/Library/lwip_2.0.x/src;../../../../../../Source/Library/lwip_2.0.x/Include;../../../../../../Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../Source/Library/lwip_2.0.x/system;../../../../../../Source/Library/lwip_2.0.x/system/arch;../../../../../../Source/Library/GUI/SEGGER/emWin;../../../../../../Source/Library/LPCOpen;../../../../../../Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../Source/Platform/emWin/Inc;../../../../../../Source/Platform/emWin/Config;../../../../../../Source/Library/Encryption/CyaSSL;../../../../../../Source/Library/Encryption/CyaSSL/cyassl;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/ctaocrypt;../../../../../../Source/Library/Encryption/CyaSSL/cyassl/openssl"
       debug_register_definition_file="$(TargetsDir)/LPC4300/LPC4300_Peripherals.xml"
       debug_startup_completion_point="main"
       gcc_c_language_standard="c11"
@@ -56,6 +56,8 @@
     <configuration Name="Flash" Placement="Flash" />
     <configuration Name="RAM" Placement="RAM" />
     <file file_name="../Config_Build.h" />
+    <file file_name="../../../../../../Include/SEGGER_RTT_SYSVIEW_Config.h" />
+    <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/FreeRTOSConfig.h" />
     <file file_name="uEZPlatform.h" />
     <folder Name="Source">
       <folder Name="Devices">
@@ -84,6 +86,7 @@
             </folder>
             <folder Name="LIS3DH">
               <file file_name="../../../../../../Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C_driver.c" />
+              <file file_name="../../../../../../Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h" />
             </folder>
           </folder>
         </folder>
@@ -190,6 +193,7 @@
             </folder>
             <folder Name="LQ043T1DG28">
               <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T1DG28/Sharp_LQ043T1DG28.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/Sharp/LQ043T1DG28/Sharp_LQ043T1DG28.h" />
             </folder>
           </folder>
           <folder Name="DigitalImage">
@@ -267,11 +271,19 @@
           <folder Name="Newhaven">
             <folder Name="NHD43480272MF">
               <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD43480272MF/NewHaven_NHD43480272MF.c" />
-              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD43480272MF/NewHaven_NHD43480272MF.h" />
             </folder>
-            <folder Name="NHD43480272MF">
+            <folder Name="NHD50800480TF">
               <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF.c" />
               <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF.h" />
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF_Rev2.c" />
+            </folder>
+            <folder Name="NHD43800480CF">
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD43800480CF/NewHaven_NHD43800480CF.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD43800480CF/NewHaven_NHD43800480CF.h" />
+            </folder>
+            <folder Name="NHD70800480EF">
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD70800480EF/NewHaven_NHD70800480EF.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD70800480EF/NewHaven_NHD70800480EF.h" />
             </folder>
           </folder>
         </folder>
@@ -454,21 +466,41 @@
             <file file_name="../../../../../../Source/Devices/CRC/Generic/CRC_Generic.h" />
           </folder>
         </folder>
+        <folder Name="CAN">
+          <folder Name="Generic">
+            <file file_name="../../../../../../Source/Devices/CAN/Generic/Generic_CAN.h" />
+            <file file_name="../../../../../../Source/Devices/CAN/Generic/uEZCANGeneric.c" />
+          </folder>
+        </folder>
+        <folder Name="GPIO">
+          <folder Name="I2C">
+            <folder Name="PCF8574T">
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.c" />
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h" />
+            </folder>
+            <folder Name="PCF8575">
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8575/GPIO_PCF8575.c" />
+              <file file_name="../../../../../../Source/Devices/GPIO/I2C/PCF8575/GPIO_PCF8575.h" />
+            </folder>
+          </folder>
+        </folder>
       </folder>
       <folder Name="Library">
         <folder Name="FileSystem">
           <folder Name="FATFS">
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.h" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.h" />
-            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/integer.h" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.h" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/diskio.c" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ff.c" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/rtc.c" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.c" />
-            <folder Name="option">
-              <file file_name="../../../../../../Source/Library/FileSystem/FATFS/option/unicode.c" />
-            </folder>
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ffunicode.c" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/00history.txt" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/00readme.txt" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/LICENSE.txt" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/ffconf.h" />
+            <file file_name="../../../../../../Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h" />
           </folder>
         </folder>
         <folder Name="Graphics">
@@ -535,7 +567,6 @@
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/DROPDOWN.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/EDIT.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/FRAMEWIN.h" />
-              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/Global.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GRAPH.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_ARRAY.h" />
@@ -596,6 +627,52 @@
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WM.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WM_GUI.h" />
               <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WM_Intern.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI__BiDi2_Brackets_800.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/BUTTON_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/CHECKBOX_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/DROPDOWN_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/EDIT_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/FRAMEWIN_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GRAPH_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI__BiDi2_Brackets_800.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI__BiDi2_Types_800.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_ARRAY_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_BMP_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_GCache_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_GIF_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_JPEG_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUI_SPRITE_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_DCache_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_FlexColor_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_IST3088_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_S1D13748_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_S1D13781_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_SLin_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_SPage_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_SSD1926_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/GUIDRV_TemplateI_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/HEADER_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/ICONVIEW_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/IP_FS.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/KNOB_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LCD_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LISTBOX_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LISTVIEW_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/LISTWHEEL_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/MENU_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/MULTIPAGE_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/PROGBAR_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/RADIO_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SCROLLBAR_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SEGGER.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SLIDER_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SPINBOX_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SWIPELIST.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/SWIPELIST_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/TEXT_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/TREEVIEW_Private.h" />
+              <file file_name="../../../../../../Source/Library/GUI/SEGGER/emWin/WINDOW_Private.h" />
             </folder>
           </folder>
         </folder>
@@ -609,11 +686,12 @@
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/api/netbuf.c" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/api/netdb.c" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/api/netifapi.c" />
-              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/api/sockets.c">
-                <configuration Name="Common" c_only_additional_options="-w" />
-              </file>
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/api/sockets.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/api/if_api.c" />
+              <configuration Name="Common" gcc_optimization_level="Level 1" />
             </folder>
             <folder Name="core">
+              <configuration Name="Common" gcc_optimization_level="Level 1" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/udp.c" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/dns.c" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/init.c" />
@@ -641,6 +719,20 @@
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/inet_chksum.c" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ip.c" />
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/timeouts.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/altcp_alloc.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/altcp.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/altcp_tcp.c" />
+              <folder Name="ipv6">
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/dhcp6.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/ethip6.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/icmp6.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/inet6.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/ip6_addr.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/ip6.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/ip6_frag.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/mld6.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/core/ipv6/nd6.c" />
+              </folder>
             </folder>
             <folder Name="include">
               <folder Name="lwip">
@@ -674,13 +766,49 @@
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/sys.h" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/tcp.h" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/tcpip.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/altcp.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/altcp_tcp.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/altcp_tls.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/autoip.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/dhcp6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/errno.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/etharp.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ethip6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/icmp6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/icmp.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/if_api.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/igmp.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/inet_chksum.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/inet.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/init.h.cmake.in" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip4_addr.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip4_frag.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip4.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip6_addr.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip6_frag.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip6_zone.h" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip_addr.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/ip.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/mld6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/nd6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/tcpbase.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/lwip/timeouts.h" />
               </folder>
               <folder Name="netif">
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/etharp.h" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/loopif.h" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/ppp_oe.h" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/slipif.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/bridgeif.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/bridgeif_opts.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/ethernet.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/ieee802154.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/lowpan6_ble.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/lowpan6_common.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/lowpan6.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/lowpan6_opts.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/include/netif/zepif.h" />
               </folder>
             </folder>
             <folder Name="netif">
@@ -741,9 +869,10 @@
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_threadsync.c" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_traps.c" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3.c" />
-                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3_dummy.c" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3_mbedtls.c" />
                 <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmpv3_priv.h" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_snmpv2_framework.c" />
+                <file file_name="../../../../../../Source/Library/lwip_2.0.x/src/apps/snmp/snmp_snmpv2_usm.c" />
               </folder>
             </folder>
           </folder>
@@ -763,6 +892,14 @@
               <file file_name="../../../../../../Source/Library/lwip_2.0.x/system/OS/sys_arch.c" />
             </folder>
           </folder>
+          <folder Name="test">
+            <folder Name="sockets">
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/test/sockets/sockets_stresstest.c" />
+              <file file_name="../../../../../../Source/Library/lwip_2.0.x/test/sockets/sockets_stresstest.h" />
+            </folder>
+            <folder Name="unit" />
+          </folder>
+          <folder Name="contrib" />
         </folder>
         <folder Name="USBDevice">
           <folder Name="LPCUSBLib">
@@ -884,7 +1021,6 @@
             <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h" />
             <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_Conf.h" />
             <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_ConfDefaults.h" />
-            <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_Config_FreeRTOS.c" />
             <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.c" />
             <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h" />
             <file file_name="../../../../../../Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_Int.h" />
@@ -905,6 +1041,7 @@
         <folder Name="Encryption">
           <folder Name="CyaSSL">
             <folder Name="craocrypt">
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/wc_port.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/aes.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/arc4.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/coding.c" />
@@ -928,14 +1065,13 @@
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/sha256.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/sha512.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/tfm.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/ctaocrypt/src/wc_port.c" />
             </folder>
             <folder Name="src">
+              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/tls.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/internal.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/io.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/keys.c" />
               <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/ssl.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/CyaSSL/src/tls.c" />
             </folder>
           </folder>
         </folder>
@@ -1118,12 +1254,18 @@
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/semphr.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/StackMacros.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/task.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/atomic.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/event_groups.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/message_buffer.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/mpu_prototypes.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/stack_macros.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/stdint.readme" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/stream_buffer.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/timers.h" />
           </folder>
           <folder Name="portable">
             <folder Name="MemMang">
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/MemMang/heap_3.c">
-                <configuration Name="Debug" build_exclude_from_build="No" />
-              </file>
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/MemMang/heap_3.c" />
             </folder>
             <folder Name="GCC">
               <folder Name="ARM_CM4F">
@@ -1137,6 +1279,9 @@
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/list.c" />
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/queue.c" />
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/timers.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/event_groups.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/readme.txt" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/stream_buffer.c" />
         </folder>
         <file file_name="../../../../../../Source/RTOS/uEZRTOS.c" />
         <folder Name="FreeRTOS-Plus">
@@ -1205,12 +1350,11 @@
         <file file_name="../../../../../../Source/uEZSystem/uEZEEPROM.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZCRC.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZAudioMixer.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZCAN.c" />
       </folder>
       <folder Name="Platform">
         <folder Name="emWin">
-          <folder Name="Inc">
-            <file file_name="../../../../../../Source/Platform/emWin/Inc/SEGGER.h" />
-          </folder>
+          <folder Name="Inc" />
           <folder Name="Config">
             <file file_name="../../../../../../Source/Platform/emWin/Config/GUIConf.c" />
             <file file_name="../../../../../../Source/Platform/emWin/Config/GUIConf.h" />
@@ -1347,6 +1491,23 @@
       <file file_name="../../../../../../Include/uEZWatchdog.h" />
       <file file_name="../../../../../../Include/uEZGPIO.h" />
       <file file_name="../../../../../../Include/uEZPlatformAPI.h" />
+      <file file_name="../../../../../../Include/build_time.h" />
+      <file file_name="../../../../../../Include/Global.h" />
+      <file file_name="../../../../../../Include/lwipopts.h" />
+      <file file_name="../../../../../../Include/lwippools.h" />
+      <file file_name="../../../../../../Include/uEZAccelerometer.h" />
+      <file file_name="../../../../../../Include/uEZAudioMixer.h" />
+      <file file_name="../../../../../../Include/uEZBSP.h" />
+      <file file_name="../../../../../../Include/uEZButton.h" />
+      <file file_name="../../../../../../Include/uEZCAN.h" />
+      <file file_name="../../../../../../Include/uEZCRC.h" />
+      <file file_name="../../../../../../Include/uEZEEPROM.h" />
+      <file file_name="../../../../../../Include/uEZHID.h" />
+      <file file_name="../../../../../../Include/uEZINI.h" />
+      <file file_name="../../../../../../Include/uEZRandom.h" />
+      <file file_name="../../../../../../Include/uEZResourceCache.h" />
+      <file file_name="../../../../../../Include/uEZTimer.h" />
+      <file file_name="../../../../../../Include/uEZWAVFile.h" />
     </folder>
     <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes" />
     <configuration
@@ -1354,7 +1515,7 @@
       build_debug_information="Yes"
       c_preprocessor_definitions="DEBUG"
       gcc_debugging_level="Level 3"
-      gcc_optimization_level="None" />
+      gcc_optimization_level="Level 1" />
     <configuration
       Name="Release"
       c_preprocessor_definitions="NDEBUG"

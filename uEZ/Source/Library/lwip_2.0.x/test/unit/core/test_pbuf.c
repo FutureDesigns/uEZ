@@ -18,11 +18,13 @@
 static void
 pbuf_setup(void)
 {
+  lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
 pbuf_teardown(void)
 {
+  lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 
@@ -37,6 +39,36 @@ static u8_t testbuf_3[TESTBUFSIZE_3];
 static u8_t testbuf_3a[TESTBUFSIZE_3];
 
 /* Test functions */
+START_TEST(test_pbuf_alloc_zero_pbufs)
+{
+  struct pbuf *p;
+  LWIP_UNUSED_ARG(_i);
+
+  p = pbuf_alloc(PBUF_RAW, 0, PBUF_ROM);
+  fail_unless(p != NULL);
+  if (p != NULL) {
+    pbuf_free(p);
+  }
+
+  p = pbuf_alloc(PBUF_RAW, 0, PBUF_RAM);
+  fail_unless(p != NULL);
+  if (p != NULL) {
+    pbuf_free(p);
+  }
+
+  p = pbuf_alloc(PBUF_RAW, 0, PBUF_REF);
+  fail_unless(p != NULL);
+  if (p != NULL) {
+    pbuf_free(p);
+  }
+
+  p = pbuf_alloc(PBUF_RAW, 0, PBUF_POOL);
+  fail_unless(p != NULL);
+  if (p != NULL) {
+    pbuf_free(p);
+  }
+}
+END_TEST
 
 /** Call pbuf_copy on a pbuf with zero length */
 START_TEST(test_pbuf_copy_zero_pbuf)
@@ -88,7 +120,7 @@ END_TEST
 
 START_TEST(test_pbuf_queueing_bigger_than_64k)
 {
-  int32_t i;
+  int i;
   err_t err;
   struct pbuf *p1, *p2, *p3, *rest2=NULL, *rest3=NULL;
   LWIP_UNUSED_ARG(_i);
@@ -129,12 +161,9 @@ START_TEST(test_pbuf_queueing_bigger_than_64k)
   pbuf_copy_partial(p1, testbuf_1a, TESTBUFSIZE_1, 0);
   pbuf_copy_partial(rest2, testbuf_2a, TESTBUFSIZE_2, 0);
   pbuf_copy_partial(rest3, testbuf_3a, TESTBUFSIZE_3, 0);
-  for(i = 0; i < TESTBUFSIZE_1; i++)
-    fail_unless(testbuf_1[i] == testbuf_1a[i]);
-  for(i = 0; i < TESTBUFSIZE_2; i++)
-    fail_unless(testbuf_2[i] == testbuf_2a[i]);
-  for(i = 0; i < TESTBUFSIZE_3; i++)
-    fail_unless(testbuf_3[i] == testbuf_3a[i]);
+  fail_if(memcmp(testbuf_1, testbuf_1a, TESTBUFSIZE_1));
+  fail_if(memcmp(testbuf_2, testbuf_2a, TESTBUFSIZE_2));
+  fail_if(memcmp(testbuf_3, testbuf_3a, TESTBUFSIZE_3));
 
   pbuf_free(p1);
   pbuf_free(rest2);
@@ -150,7 +179,7 @@ START_TEST(test_pbuf_take_at_edge)
 {
   err_t res;
   u8_t *out;
-  int32_t i;
+  int i;
   u8_t testdata[] = { 0x01, 0x08, 0x82, 0x02 };
   struct pbuf *p = pbuf_alloc(PBUF_RAW, 1024, PBUF_POOL);
   struct pbuf *q = p->next;
@@ -165,7 +194,7 @@ START_TEST(test_pbuf_take_at_edge)
   fail_unless(res == ERR_OK);
 
   out = (u8_t*)p->payload;
-  for (i = 0; i < (int32_t)sizeof(testdata); i++) {
+  for (i = 0; i < (int)sizeof(testdata); i++) {
     fail_unless(out[i] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", i, out[i], testdata[i]);
   }
@@ -178,7 +207,7 @@ START_TEST(test_pbuf_take_at_edge)
   fail_unless(out[p->len - 1] == testdata[0],
     "Bad data at pos %d, was %02X, expected %02X", p->len - 1, out[p->len - 1], testdata[0]);
   out = (u8_t*)q->payload;
-  for (i = 1; i < (int32_t)sizeof(testdata); i++) {
+  for (i = 1; i < (int)sizeof(testdata); i++) {
     fail_unless(out[i-1] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", p->len - 1 + i, out[i-1], testdata[i]);
   }
@@ -188,10 +217,11 @@ START_TEST(test_pbuf_take_at_edge)
   fail_unless(res == ERR_OK);
 
   out = (u8_t*)p->payload;
-  for (i = 0; i < (int32_t)sizeof(testdata); i++) {
+  for (i = 0; i < (int)sizeof(testdata); i++) {
     fail_unless(out[i] == testdata[i],
       "Bad data at pos %d, was %02X, expected %02X", p->len+i, out[i], testdata[i]);
   }
+  pbuf_free(p);
 }
 END_TEST
 
@@ -221,6 +251,7 @@ START_TEST(test_pbuf_get_put_at_edge)
   getdata = pbuf_get_at(p, p->len);
   fail_unless(*out == getdata,
     "pbuf_get_at() returned bad data at pos %d, was %02X, expected %02X", p->len, getdata, *out);
+  pbuf_free(p);
 }
 END_TEST
 
@@ -229,6 +260,7 @@ Suite *
 pbuf_suite(void)
 {
   testfunc tests[] = {
+    TESTFUNC(test_pbuf_alloc_zero_pbufs),
     TESTFUNC(test_pbuf_copy_zero_pbuf),
     TESTFUNC(test_pbuf_split_64k_on_small_pbufs),
     TESTFUNC(test_pbuf_queueing_bigger_than_64k),

@@ -48,6 +48,10 @@
 #ifndef IPCP_H
 #define	IPCP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Options.
  */
@@ -80,26 +84,26 @@
 #endif /* VJ_SUPPORT */
 
 typedef struct ipcp_options {
-    uint32_t neg_addr               :1; /* Negotiate IP Address? */
-    uint32_t old_addrs              :1; /* Use old (IP-Addresses) option? */
-    uint32_t req_addr               :1; /* Ask peer to send IP address? */
+    unsigned int neg_addr               :1; /* Negotiate IP Address? */
+    unsigned int old_addrs              :1; /* Use old (IP-Addresses) option? */
+    unsigned int req_addr               :1; /* Ask peer to send IP address? */
 #if 0 /* UNUSED */
-    uint32_t default_route          :1; /* Assign default route through interface? */
-    uint32_t replace_default_route  :1; /* Replace default route through interface? */
+    unsigned int default_route          :1; /* Assign default route through interface? */
+    unsigned int replace_default_route  :1; /* Replace default route through interface? */
 #endif /* UNUSED */
 #if 0 /* UNUSED - PROXY ARP */
-    uint32_t proxy_arp              :1; /* Make proxy ARP entry for peer? */
+    unsigned int proxy_arp              :1; /* Make proxy ARP entry for peer? */
 #endif /* UNUSED - PROXY ARP */
 #if VJ_SUPPORT
-    uint32_t neg_vj                 :1; /* Van Jacobson Compression? */
-    uint32_t old_vj                 :1; /* use old (short) form of VJ option? */
-    uint32_t cflag                  :1;
+    unsigned int neg_vj                 :1; /* Van Jacobson Compression? */
+    unsigned int old_vj                 :1; /* use old (short) form of VJ option? */
+    unsigned int cflag                  :1;
 #endif /* VJ_SUPPORT */
-    uint32_t accept_local           :1; /* accept peer's value for ouraddr */
-    uint32_t accept_remote          :1; /* accept peer's value for hisaddr */
+    unsigned int accept_local           :1; /* accept peer's value for ouraddr */
+    unsigned int accept_remote          :1; /* accept peer's value for hisaddr */
 #if LWIP_DNS
-    uint32_t req_dns1               :1; /* Ask peer to send primary DNS address? */
-    uint32_t req_dns2               :1; /* Ask peer to send secondary DNS address? */
+    unsigned int req_dns1               :1; /* Ask peer to send primary DNS address? */
+    unsigned int req_dns2               :1; /* Ask peer to send secondary DNS address? */
 #endif /* LWIP_DNS */
 
     u32_t ouraddr, hisaddr;	/* Addresses in NETWORK BYTE ORDER */
@@ -121,6 +125,10 @@ char *ip_ntoa (u32_t);
 #endif /* UNUSED, already defined by lwIP */
 
 extern const struct protent ipcp_protent;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* IPCP_H */
 #endif /* PPP_SUPPORT && PPP_IPV4_SUPPORT */

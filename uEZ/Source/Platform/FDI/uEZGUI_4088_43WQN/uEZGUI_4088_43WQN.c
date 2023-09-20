@@ -119,6 +119,7 @@
 #include <uEZStream.h>
 #include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
 #include <Source/Devices/Flash/NXP/LPC_SPIFI_M4/Flash_NXP_LPC_SPIFI_M4.h>
     
@@ -130,6 +131,7 @@ extern int32_t MainTask(void);
 #define NOR_FLASH_BASE_ADDR             0x80000000
 #define PLATFORM_USES_NOR_FLASH         (0)//off for standard product
 #define CONFIG_MEMORY_TEST_ON_SDRAM     0
+
 #define USING_43WQN_BA_REV1             1 // set to 1 for 1.X revisions for I2C power fix
 
 #ifndef UEZGUI_EXP_BRK_OUT
@@ -141,6 +143,28 @@ extern int32_t MainTask(void);
 static T_uezDevice G_stdout = 0;
 static T_uezDevice G_stdin = 0;
 T_uezTask G_mainTask;
+
+/*---------------------------------------------------------------------------*
+ * Memory placement section:
+ *---------------------------------------------------------------------------*/
+//Allocate general purpose frames memory
+#if (MAX_NUM_FRAMES > 0)
+UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]);
+TUInt8 *_framesMemoryptr = _framesMemory;
+#else
+UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]);
+TUInt8 *_framesMemoryptr = _framesMemory;
+#endif
+
+/* On LPC1788 we want to keep the same tested AHB memory map even if 
+ * MCI card or USB host isn't used. So create dummy memory in AHB for it.
+ * It isn't a problem if Ethernet is turned off, so no array for it. */
+#if (UEZ_ENABLE_USB_HOST_STACK != 1)
+UEZ_PUT_SECTION(".usbhostmem", static TUInt8 G_usbHostMemory[8*1024]);
+volatile TUInt8 *_usbMemoryptr = G_usbHostMemory;
+#else // memory should already exist
+#endif
+// On-board MCI card should always be enabled on this uEZGUI.
 
 /*---------------------------------------------------------------------------*
  * Macros:
@@ -200,6 +224,14 @@ void UEZBSPDelayMS(uint32_t aMilliseconds)
     }
 }
 
+#if (defined __GNUC__) // GCC
+extern unsigned char __heap_start__[];
+extern unsigned char __HEAPSIZE__[];
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+// Must declare these pragmas before below section placement if IAR (or to use section macro)
+#pragma section = "RAM_region"
+#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPSDRAMInit
  *---------------------------------------------------------------------------*
@@ -229,10 +261,27 @@ void UEZBSP_RAMInit(void)
             SDRAM_CYCLES(12),
             SDRAM_CLOCKS(2) };
     LPC17xx_40xx_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P);
-
+    
 #if CONFIG_MEMORY_TEST_ON_SDRAM
     MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
 #endif
+
+// We shouldn't do the toolchain auto memory clear in SDRAM until after it is intialized.
+// Currently in IAR/Crossworks projects we do it correctly after SDRAM init.
+// Leave this here as example in case ASM memory clear isn't used or additional SDRAM memory clear needs to be performed.
+#if (defined __GNUC__) // GCC
+// In Crossworks we clear bss and heap in thumb_crt0.s after this function is called, so no need to do it here.
+//memset((uint32_t*)__heap_start__, 0, // clear section by name example
+//       (uint32_t )__HEAPSIZE__);
+// We can also clear bss memory in RTOS mem clear function. We don't need to clear frames or emWin as that is handled in later routines.
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+// In IAR we currently clear SDRAM using __iar_program_start AFTER PLL and SDRAM intialized.
+//memset((uint32_t*)__section_begin("RAM_region"), 0, // clear section by name example
+//       (uint32_t )__section_size("RAM_region"));
+#endif
+//UEZBSP_CLEAR_RTOS_RAM();
+//memset((uint32_t*)UEZBSP_SDRAM_BASE_ADDR, 0, // clear whole SDRAM using platform defines example
+//     (uint32_t )UEZBSP_SDRAM_SIZE);
 }
 
 /*---------------------------------------------------------------------------*
@@ -365,15 +414,98 @@ void UEZBSP_PLLConfigure(void)
 #endif
 }
 
+void UEZBSP_HEARTBEAT_TOGGLE(void)
+{ // Per manual can read set register to determine the set state.
+    if((LPC_GPIO1->SET & (1 << 13)) == (1 << 13)){ // if on
+      LPC_GPIO1->CLR |= (1 << 13); // set off
+    } else {
+      LPC_GPIO1->SET |= (1 << 13); // set on
+    }
+}
+
+void UEZBSP_CLEAR_RTOS_RAM(void)
+{
+#if (defined __GNUC__) // GCC
+extern unsigned char __bss_start__[];
+extern unsigned char __bss_end__[];
+  // clear BSS so RTOS stuff is actualy 0.
+//  memset((void *)".bss", 0x0,
+  memset((void *)__bss_start__, 0x0,
+   __bss_end__-__bss_start__);
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+// TODO create new section for test variable that is outside kernel block
+#pragma section = "__kernel_functions_block__"
+//#pragma section = "_END"
+// TODO test and verify on IAR
+memset((void *)__section_begin("__kernel_functions_block__"), 0x0,
+   __section_size("__kernel_functions_block__"));
+#elif (defined __CC_ARM) // ARM RealView Compiler
+#else
+  #error "Early memory clear not implemented yet for this compiler."
+#endif
+
+}
+
 /*---------------------------------------------------------------------------*
- * Routine:  UEZBSP_InterruptsReset
+ * Routine:  UEZBSP_Pre_PLL_SystemInit
  *---------------------------------------------------------------------------*
  * Description:
- *      Do the first initialization of the interrupts.
+ *      Earliest platform init function
+ *      Can call before PLL comes on. For example to set LED initial state.
  *---------------------------------------------------------------------------*/
-void UEZBSP_InterruptsReset(void)
-{
-    InterruptsReset();
+void UEZBSP_Pre_PLL_SystemInit(void) {
+  // PIO1_13 initial state is pull up mode.
+  // Turn off LED before init clocks. 
+  // Then it will only start blinking after RTOS
+
+  // Configure status led to be fully in our control
+  // Make P1.13 be a GPIO pin
+  LPC_GPIO1->PIN &= ~(3 << 3);
+  LPC_GPIO1->CLR |= (1 << 13); // off
+  // and an output pin
+  LPC_GPIO1->DIR |= (1 << 13);
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+    switch(G_hardwareTest.iTestMode){
+    case HARDWARE_TEST_CRYSTAL:
+    
+    /*
+    for(uint8_t i = 0; i < 10; i++){
+      UEZBSP_HEARTBEAT_TOGGLE();
+      UEZBSPDelayMS(100);
+      UEZBSP_HEARTBEAT_TOGGLE();
+      UEZBSPDelayMS(100);
+     }*/
+
+      UEZPlatform_INIT_LOW_LEVEL_UART_DEFAULT_CLOCK();
+      COM_Send("\r\n\n", 3);
+      COM_Send("CRYSTAL Mode\n", 13);
+      COM_Send("Turning On Oscillators...\n", 26);
+    break;
+    case HARDWARE_TEST_SDRAM:
+      UEZBSP_CLEAR_RTOS_RAM();
+      UEZPlatform_INIT_LOW_LEVEL_UART_DEFAULT_CLOCK();
+      COM_Send("\r\n\n", 3);
+      COM_Send("SDRAM Mode\n", 11);
+      COM_Send("Turning On Oscillators...\n", 26);
+    break;
+    case HARDWARE_TEST_I2C:
+    
+
+      UEZPlatform_INIT_LOW_LEVEL_UART_DEFAULT_CLOCK();
+      COM_Send("\r\n\n", 3);
+      COM_Send("I2C Mode\n", 9);
+      COM_Send("Turning On Oscillators...\n", 26);
+    break;
+    case HARDWARE_TEST_AUDIO:
+    
+
+    break;
+    case HARDWARE_TEST_NORMAL:
+    default:
+    
+    break;
+  }
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -388,6 +520,173 @@ void UEZBSP_CPU_PinConfigInit(void)
     // Place any pin configuration that MUST be initially here (at power up
     // but before even SDRAM is initialized)
     // Can chage LED state here if troubleshooting SDRAM or want CLK OK signal 
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+  switch(G_hardwareTest.iTestMode){
+    case HARDWARE_TEST_CRYSTAL:    
+      UEZPlatform_INIT_LOW_LEVEL_UART();
+      COM_Send("Oscillators Enabled...\n", 23);
+/*    for(uint8_t i = 0; i < 10; i++) {
+      UEZBSP_HEARTBEAT_TOGGLE();
+        UEZBSPDelayMS(100);
+        
+      UEZBSP_HEARTBEAT_TOGGLE();
+        UEZBSPDelayMS(100);
+      }*/
+      // TODO output clock on a pin somewhere?
+      // TODO try to measure clocks using timer to verify accuracy?
+    
+      COM_Send("...OK\n", 6);
+    
+    break;
+    case HARDWARE_TEST_SDRAM:
+      UEZPlatform_INIT_LOW_LEVEL_UART();
+      COM_Send("Oscillators Enabled...\n", 23);
+      COM_Send("Turning on SDRAM...\n", 20);
+
+    // TODO print serial port that RAM test is about to begin
+      //COM_Send("TEST BEGING\n", 12);
+    
+    break;
+    case HARDWARE_TEST_I2C:
+      UEZPlatform_INIT_LOW_LEVEL_UART();
+      COM_Send("Oscillators Enabled...\n", 23);
+      COM_Send("Turning on SDRAM...\n", 20);
+    
+    break;
+    case HARDWARE_TEST_AUDIO:
+    
+    break;
+    case HARDWARE_TEST_NORMAL:
+    default:
+    
+    break;
+  }
+#endif
+}
+
+#if (defined __GNUC__) // GCC
+//(uint32_t*)&.frames)));
+
+#define RAMTEST_START_ADDRESS ((const uint32_t) &".frames")
+#define RAMTEST_LENGTH (const uint32_t)(((uint32_t)UEZBSP_SDRAM_SIZE) - RAMTEST_START_ADDRESS)
+
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+// Must declare these pragmas before below section placement if IAR
+#pragma section = ".frames"
+#define RAMTEST_START_ADDRESS &".frames"
+#define RAMTEST_LENGTH (UEZBSP_SDRAM_SIZE-RAMTEST_START_ADDRESS)
+
+#endif
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_Post_SystemInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Perform any tests before things such as zero mem are performed.
+ *      Called after external RAM and ROM are setup. (end of SystemInit)
+ *---------------------------------------------------------------------------*/
+void UEZBSP_Post_SystemInit(void)
+{
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+  switch(G_hardwareTest.iTestMode){
+    case HARDWARE_TEST_CRYSTAL:
+    
+    break;
+    case HARDWARE_TEST_SDRAM:
+      COM_Send("SDRAM RUNNING\n", 14);
+      for(uint16_t i = 0; i < G_hardwareTest.iTestIterations; i++) {// perform RAM test X times    
+        COM_Send("SDRAM TESTING...\n", 17);
+        
+        UEZBSP_HEARTBEAT_TOGGLE();
+        MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
+        
+        UEZBSP_HEARTBEAT_TOGGLE();
+        COM_Send("SDRAM PASS\n", 11);
+        UEZBSPDelayMS(100);
+      }
+
+    break;
+    case HARDWARE_TEST_I2C:
+    
+    break;
+    case HARDWARE_TEST_AUDIO:
+    
+    break;
+    case HARDWARE_TEST_NORMAL:
+    default:
+    
+    break;
+  }
+#endif
+
+#if (UEZ_ENABLE_USB_HOST_STACK != 1)
+  // Keep various memory location declarations from optimizing out
+  _usbMemoryptr = _usbMemoryptr;
+#else // memory should already exist
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSP_InterruptsReset
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Do the first initialization of the interrupts.
+ *---------------------------------------------------------------------------*/
+void UEZBSP_InterruptsReset(void)
+{
+    InterruptsReset();
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+  switch(G_hardwareTest.iTestMode){
+    case HARDWARE_TEST_CRYSTAL:
+    
+    break;
+    case HARDWARE_TEST_SDRAM:
+    
+    break;
+    case HARDWARE_TEST_I2C:
+    
+    break;
+    case HARDWARE_TEST_AUDIO:
+    
+    break;
+    case HARDWARE_TEST_NORMAL:
+    default:
+    
+    break;
+  }
+#endif
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  uEZPlatformInit
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Initialize the board with all the proper settings.
+ *      Registers all peripherals specific to this board.
+ *---------------------------------------------------------------------------*/
+void uEZPlatformInit(void)
+{
+    // Do any initialiation necessary before the RTOS is started
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+  switch(G_hardwareTest.iTestMode){
+    case HARDWARE_TEST_CRYSTAL:
+    
+    break;
+    case HARDWARE_TEST_SDRAM:
+    
+    break;
+    case HARDWARE_TEST_I2C:
+    
+    break;
+    case HARDWARE_TEST_AUDIO:
+    
+    break;
+    case HARDWARE_TEST_NORMAL:
+    default:
+    
+    break;
+  }
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -405,6 +704,10 @@ void UEZBSP_FatalError(int32_t aErrorCode)
 {
     register TUInt32 i;
     register TUInt32 count;
+    
+//#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+    COM_Send("BSP_FATAL_ERROR!\n", 17);
+//#endif
     // Ensure interrupts are turned off
     portDISABLE_INTERRUPTS();
 
@@ -1581,6 +1884,34 @@ void UEZPlatform_MS0_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MCI_DefaultFreq
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Set the bootup max frequency for SD/MCI/SPI mode data transfer.
+ *      Existing drivers will divide down till <= this frequency.
+ *---------------------------------------------------------------------------*/
+TUInt32 UEZPlatform_MCI_DefaultFreq(void)
+{
+  return 15000000UL;
+  //return 7500000UL;
+  //return 3750000UL;
+  //return 1875000UL;
+  //return 937500UL;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_MCI_TransferMode
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      For SD/MCI mode select 1-bit or 4-bit mode data transfer.
+ *---------------------------------------------------------------------------*/
+TUInt32 UEZPlatform_MCI_TransferMode(void)
+{
+  //return UEZ_MCI_BUS_1BIT_WIDE; // 1-bit mode
+  return UEZ_MCI_BUS_4BIT_WIDE; // 4-bit mode
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_MCI_Require
  *---------------------------------------------------------------------------*
  * Description:
@@ -1615,7 +1946,6 @@ void UEZPlatform_MS1_MCI_Require(void)
     DEVICE_CREATE_ONCE();
 
     UEZPlatform_MCI_Require();
-    UEZPlatform_GPDMA1_Require();
     MassStorage_SDCard_MCI_Create("MS1", "MCI", "GPDMA1");
 }
 
@@ -2087,7 +2417,9 @@ void UEZPlatform_WiredNetwork0_Require(void)
 
     // Create the network driver for talking to lwIP on a wired
     // network.
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
     Network_lwIP_Create("WiredNetwork0");
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -2250,26 +2582,6 @@ void UEZPlatform_ButtonBoard_I2C1_Require(void) {
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZBSP_Pre_PLL_SystemInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Earliest platform init function
- *      Can call before PLL comes on. For example to set LED initial state.
- *---------------------------------------------------------------------------*/
-void UEZBSP_Pre_PLL_SystemInit(void) {
-  // PIO1_13 initial state is pull up mode.
-  // Turn off LED before init clocks. 
-  // Then it will only start blinking after RTOS
-
-  // Configure status led to be fully in our control
-  // Make P1.13 be a GPIO pin
-  LPC_GPIO1->PIN &= ~(3 << 3);
-  LPC_GPIO1->CLR |= (1 << 13); // off
-  // and an output pin    
-  LPC_GPIO1->DIR |= (1 << 13);
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_System_Reset
  *---------------------------------------------------------------------------*
  * Description:
@@ -2285,26 +2597,19 @@ void UEZPlatform_System_Reset(void) {
   NVIC_SystemReset();
 }
 
-/*---------------------------------------------------------------------------*
- * Routine:  uEZPlatformInit
- *---------------------------------------------------------------------------*
- * Description:
- *      Initialize the board with all the proper settings.
- *      Registers all peripherals specific to this board.
- *---------------------------------------------------------------------------*/
-void uEZPlatformInit(void)
-{
-    // Do any initialiation necessary before the RTOS is started
-}
-
-void UEZPlatform_Standard_Require(void)
+void UEZPlatform_Minimal_Require(void)
 {
 #if USING_43WQN_BA_REV1 // Make sure that power to I2C devices cannot be turned off on this revision
-    LPC17xx_40xx_GPIO2_Require();
-    UEZGPIOSetMux(GPIO_P2_0, 0);
-    UEZGPIOClear(GPIO_P2_0);    
-    UEZGPIOOutput(GPIO_P2_0);
-    UEZGPIOLock(GPIO_P2_0); 
+    // TODO set this pin state on earlier during boot
+    static TBool init = EFalse;
+    if (!init) {
+      LPC17xx_40xx_GPIO2_Require();
+      UEZGPIOSetMux(GPIO_P2_0, 0);
+      UEZGPIOClear(GPIO_P2_0);    
+      UEZGPIOOutput(GPIO_P2_0);
+      UEZGPIOLock(GPIO_P2_0); 
+      init = ETrue;
+    }
 #endif
     
     // Setup console immediately
@@ -2317,6 +2622,18 @@ void UEZPlatform_Standard_Require(void)
         UEZ_CONSOLE_WRITE_BUFFER_SIZE,
         UEZ_CONSOLE_READ_BUFFER_SIZE);
 #endif
+
+    LPC17xx_40xx_GPIO0_Require();
+    LPC17xx_40xx_GPIO1_Require();
+    LPC17xx_40xx_GPIO2_Require();
+    LPC17xx_40xx_GPIO3_Require();
+    LPC17xx_40xx_GPIO4_Require();
+    LPC17xx_40xx_GPIO5_Require();
+}
+
+void UEZPlatform_Standard_Require(void)
+{
+    UEZPlatform_Minimal_Require();
         
 // Example for console on UART 1 RS485 half duplex
 // UEZPlatform_Console_HalfDuplex_RS485_Require("UART1",
@@ -2324,9 +2641,9 @@ void UEZPlatform_Standard_Require(void)
 
     UEZPlatform_LCD_Require();
 
-    UEZPlatform_I2C0_Require();
+    //UEZPlatform_I2C0_Require(); // not used on this board, will interfer with loopback test
     UEZPlatform_I2C1_Require();    
-    UEZPlatform_I2C2_Require();
+    //UEZPlatform_I2C2_Require(); // Cannot turn this on and run loopback test
     UEZPlatform_Temp0_Require();
     UEZPlatform_GPDMA0_Require();
     UEZPlatform_GPDMA1_Require();
@@ -2378,7 +2695,15 @@ TUInt16 UEZPlatform_LCDGetWidth(void)
 {
     return UEZ_LCD_DISPLAY_WIDTH;
 }
-#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+
+//#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+TUInt32 UEZPlatform_GetBaseAddress(void)
+{
+    // Keep various memory location declarations from optimizing out
+    ((TUInt8 volatile *)_framesMemoryptr)[0] = _framesMemoryptr[0];
+    return LCD_DISPLAY_BASE_ADDRESS;
+}
+
 TUInt32 UEZPlatform_LCDGetFrame(TUInt16 aFrameNum)
 {
     return (TUInt32)FRAME(aFrameNum);
@@ -2406,10 +2731,6 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
 #else
     return 60000000;
 #endif
-}
-TUInt32 UEZPlatform_GetBaseAddress(void)
-{
-    return LCD_DISPLAY_BASE_ADDRESS;
 }
 #if INCLUDE_EMWIN
 #include <Source/Library/GUI/SEGGER/emWin/LCD.h>
@@ -2512,6 +2833,33 @@ unsigned long ulStacked_pc = 0UL;
  *---------------------------------------------------------------------------*/
 int32_t main(void)
 {
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+    switch(G_hardwareTest.iTestMode){
+      case HARDWARE_TEST_CRYSTAL:
+        COM_Send("Starting uEZ System and Tasks\n", 30);
+      
+      break;
+      case HARDWARE_TEST_SDRAM:
+        COM_Send("Starting uEZ System and Tasks\n", 30);
+     /*for(uint16_t i = 0; i < 255; i++) {
+        COM_Send("SDRAM TESTING...\n", 17);
+        MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
+        COM_Send("SDRAM PASS\n", 11);
+      }*/
+      break;
+      case HARDWARE_TEST_I2C:
+        COM_Send("Starting uEZ System and Tasks\n", 30);
+      
+      break;
+      case HARDWARE_TEST_AUDIO:
+    
+      break;
+      case HARDWARE_TEST_NORMAL:
+      default:
+    
+      break;
+    }
+#endif
     UEZBSP_Startup();
     while (1) {
     } // never should get here

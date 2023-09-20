@@ -146,6 +146,10 @@
 
 #include "eui64.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Options.
  */
@@ -158,17 +162,17 @@
  *#define IPV6CP_COMP	0x004f
  */
 typedef struct ipv6cp_options {
-    uint32_t neg_ifaceid    :1;  /* Negotiate interface identifier? */
-    uint32_t req_ifaceid    :1;  /* Ask peer to send interface identifier? */
-    uint32_t accept_local   :1;  /* accept peer's value for iface id? */
-    uint32_t opt_local      :1;  /* ourtoken set by option */
-    uint32_t opt_remote     :1;  /* histoken set by option */
-    uint32_t use_ip         :1;  /* use IP as interface identifier */
+    unsigned int neg_ifaceid    :1;  /* Negotiate interface identifier? */
+    unsigned int req_ifaceid    :1;  /* Ask peer to send interface identifier? */
+    unsigned int accept_local   :1;  /* accept peer's value for iface id? */
+    unsigned int opt_local      :1;  /* ourtoken set by option */
+    unsigned int opt_remote     :1;  /* histoken set by option */
+    unsigned int use_ip         :1;  /* use IP as interface identifier */
 #if 0
-    uint32_t use_persistent :1;  /* use uniquely persistent value for address */
+    unsigned int use_persistent :1;  /* use uniquely persistent value for address */
 #endif
 #ifdef IPV6CP_COMP
-    uint32_t neg_vj         :1;  /* Van Jacobson Compression? */
+    unsigned int neg_vj         :1;  /* Van Jacobson Compression? */
 #endif /* IPV6CP_COMP */
 
 #ifdef IPV6CP_COMP
@@ -178,6 +182,10 @@ typedef struct ipv6cp_options {
 } ipv6cp_options;
 
 extern const struct protent ipv6cp_protent;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* IPV6CP_H */
 #endif /* PPP_SUPPORT && PPP_IPV6_SUPPORT */

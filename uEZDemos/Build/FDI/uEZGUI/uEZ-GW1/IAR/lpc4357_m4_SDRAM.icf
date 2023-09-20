@@ -116,7 +116,18 @@ place in LOCAL_SRAM_region {
 
 place in ROM_region   { readonly };
 
+/* Place these sections in order at the very beginning of SDRAM */
+/* Currently in uEZ it is important that frames is first. */
+define block GUI_ARRAYS with fixed order {
+    readwrite section ".frames", /*Frames section*/
+    readwrite section ".video",
+    readwrite section ".emWin", /*emWin section*/
+    /*Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. */
+    readwrite section ".network" /*Network section*/
+};
+
 place in RAM_region { 
+    first block GUI_ARRAYS,
     readwrite,
     block SVC_STACK, 
     block IRQ_STACK, 

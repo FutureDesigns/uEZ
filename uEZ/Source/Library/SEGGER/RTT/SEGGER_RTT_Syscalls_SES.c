@@ -3,13 +3,13 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2019 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*       SEGGER SystemView * Real-time application analysis           *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -17,7 +17,7 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
@@ -39,6 +39,10 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
 * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
 * DAMAGE.                                                            *
+*                                                                    *
+**********************************************************************
+*                                                                    *
+*       SystemView version: 3.30                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -101,7 +105,7 @@ Revision: $Rev: 18539 $
 *
 **********************************************************************
 */
-int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
+int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
 
 /*********************************************************************
 *
@@ -116,8 +120,8 @@ int32_t SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list *
 *  Function description
 *    print a formatted string using RTT and SEGGER RTT formatting.
 */
-int32_t printf(const char *fmt,...) {
-  int32_t     n;
+int printf(const char *fmt,...) {
+  int     n;
   va_list args;
 
   va_start (args, fmt);
@@ -134,7 +138,7 @@ int32_t printf(const char *fmt,...) {
 *
 **********************************************************************
 */
-static int32_t _putchar(int32_t x, __printf_tag_ptr ctx) {
+static int _putchar(int x, __printf_tag_ptr ctx) {
   (void)ctx;
   SEGGER_RTT_Write(0, (char *)&x, 1);
   return x;
@@ -154,8 +158,8 @@ static int32_t _putchar(int32_t x, __printf_tag_ptr ctx) {
 *    print a formatted string character-wise, using RTT and standard
 *    library formatting.
 */
-int32_t printf(const char *fmt, ...) {
-  int32_t         n;
+int printf(const char *fmt, ...) {
+  int         n;
   va_list     args;
   __printf_t  iod;
 
@@ -185,14 +189,14 @@ int32_t printf(const char *fmt, ...) {
 *  Function description
 *    print a formatted string using RTT and standard library formatting.
 */
-int32_t printf(const char *fmt,...) {
-  int32_t     n;
+int printf(const char *fmt,...) {
+  int     n;
   char    aBuffer[PRINTF_BUFFER_SIZE];
   va_list args;
 
   va_start (args, fmt);
   n = vsnprintf(aBuffer, sizeof(aBuffer), fmt, args);
-  if (n > (int32_t)sizeof(aBuffer)) {
+  if (n > (int)sizeof(aBuffer)) {
     SEGGER_RTT_Write(0, aBuffer, sizeof(aBuffer));
   } else if (n > 0) {
     SEGGER_RTT_Write(0, aBuffer, n);
@@ -215,7 +219,7 @@ int32_t printf(const char *fmt,...) {
 *  Function description
 *    print a string using RTT.
 */
-int32_t puts(const char *s) {
+int puts(const char *s) {
   return SEGGER_RTT_WriteString(0, s);
 }
 
@@ -226,7 +230,7 @@ int32_t puts(const char *s) {
 *  Function description
 *    Write one character via RTT.
 */
-int32_t __putchar(int32_t x, __printf_tag_ptr ctx) {
+int __putchar(int x, __printf_tag_ptr ctx) {
   (void)ctx;
   SEGGER_RTT_Write(0, (char *)&x, 1);
   return x;
@@ -239,7 +243,7 @@ int32_t __putchar(int32_t x, __printf_tag_ptr ctx) {
 *  Function description
 *    Wait for and get a character via RTT.
 */
-int32_t __getchar() {
+int __getchar() {
   return SEGGER_RTT_WaitKey();
 }
 

@@ -21,13 +21,20 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   0
-#define SEGGER_ENABLE_SYSTEM_VIEW           0
-
 #ifdef NDEBUG
 #define UEZ_REGISTER                        0
 #else
 #define UEZ_REGISTER                        1  //Used for registering Queues and Semaphores in the RTOS
+#endif
+
+#define UEZ_ENABLE_LOOPBACK_TEST            0 // set to 1 to allow loopback test to run
+
+#if (UEZ_ENABLE_LOOPBACK_TEST == 1)
+#define UEZ_ENABLE_TCPIP_STACK              0
+#define USB_PORT_A_HOST_ENABLED             0
+#else
+#define UEZ_ENABLE_TCPIP_STACK              0
+#define USB_PORT_A_HOST_ENABLED             1
 #endif
 
 #define UEZ_ENABLE_AUDIO_AMP                1
@@ -36,11 +43,10 @@
 #define UEZ_ENABLE_USB_HOST_STACK           1
 #define USB_PORT_B_HOST_DETECT_ENABLED      1
 
-#define UEZ_ENABLE_USB_DEVICE_STACK         1
+#define UEZ_ENABLE_USB_DEVICE_STACK         0 // must turn this off to use USB host on separate port from VCOM
 #define COMPILE_OPTION_USB_SDCARD_DISK      0//UEZ_ENABLE_USB_DEVICE_STACK // not working yet
 #define UEZ_ENABLE_VIRTUAL_COM_PORT         UEZ_ENABLE_USB_DEVICE_STACK // use ? driver for VCOM
 
-#define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
@@ -71,16 +77,28 @@
 #define INCLUDE_EMWIN                       1
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
 #ifndef FREERTOS_PLUS_TRACE
-#define APP_DEMO_COM                        1
+#define APP_DEMO_COM                        0
 #endif
-#define SHOW_GUIDEMO_AUTOMOTIVE             0
-#define SHOW_GUIDEMO_GRAPH                  0
-#define SHOW_GUIDEMO_LISTVIEW               1
+
+// smaller demos
 #define SHOW_GUIDEMO_SPEED                  1
+#define SHOW_GUIDEMO_AATEXT                 1
+#define SHOW_GUIDEMO_BARGRAPH               1
+#define SHOW_GUIDEMO_COLORBAR               1
+#define SHOW_GUIDEMO_CURSOR                 1
+
+// large demos
+#define SHOW_GUIDEMO_AUTOMOTIVE             1
+#define SHOW_GUIDEMO_GRAPH                  1
+#define SHOW_GUIDEMO_LISTVIEW               1
 #define SHOW_GUIDEMO_TREEVIEW               1
+#define SHOW_GUIDEMO_ICONVIEW               1
+#define SHOW_GUIDEMO_TRANSPARENTDIALOG      1
+
+#define SHOW_GUIDEMO_SKINNING               1
+#define SHOW_GUIDEMO_RADIALMENU             1
+#define SHOW_GUIDEMO_TRANSPARENTDIALOG      1
+#define SHOW_GUIDEMO_WASHINGMACHINE         1
+#define SHOW_GUIDEMO_BITMAP                 1
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-4357-50WVN"
-#define SLIDESHOW_PREFETCH_AHEAD            5
-#define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         5
-

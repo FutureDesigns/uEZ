@@ -59,6 +59,7 @@ typedef struct {
     volatile TBool iInitPerformed;
     TUInt8 *descBuf;
     TUInt32 iBlockSize;
+    TUInt32 iNumSect;
     TUInt8 *blockBuf;
     TBool iSWWriteProtect;
     TUInt8 iEpBulkIn;
@@ -329,6 +330,7 @@ static T_uezError IReadCapacity(T_MSUSB_Workspace *p)
                     8,
                     10000);
         if (error == UEZ_ERROR_NONE) {
+            p->iNumSect = ReadBE32U(&p->descBuf[0]);
             p->iBlockSize = ReadBE32U(&p->descBuf[4]);
             error = (*p_usbHost)->BulkIn(
                         p_usbHost,
@@ -560,9 +562,6 @@ static T_uezError MassStorage_USB_Status(void *aWorkspace, T_msStatus *aStatus)
 
     status = 0;
 
-    if (!p->iIsConnected)
-        status |= MASS_STORAGE_STATUS_NO_MEDIUM;
-
     // Note if we need to init
     if (!p->iInitPerformed)
         status |= MASS_STORAGE_STATUS_NEED_INIT;
@@ -572,6 +571,9 @@ static T_uezError MassStorage_USB_Status(void *aWorkspace, T_msStatus *aStatus)
     // But can detect software write protect
     if (p->iSWWriteProtect)
         status |= MASS_STORAGE_STATUS_WRITE_PROTECTED;
+        
+    if (!p->iIsConnected)
+        status = MASS_STORAGE_STATUS_NO_MEDIUM; // if not connected ignore other states at higher level
 
     // Return status
     *aStatus = status;
@@ -758,6 +760,12 @@ static T_uezError MassStorage_USB_GetSizeInfo(
     #define BPB_BytsPerSec		11
     T_uezError error;
 
+    T_msStatus status;
+    MassStorage_USB_Status(aWorkspace,&status);
+    if(status == 2) { // no drive connected, other states of init or no init it is ok to get size info.
+      return UEZ_ERROR_NAK;
+    }
+
     IGrab();
 
     // Get the number of sectors
@@ -783,7 +791,7 @@ static T_uezError MassStorage_USB_GetSizeInfo(
     aInfo->iNumSectors = numSec;
 
     // Get the sector size (usually 512)
-    aInfo->iSectorSize = ReadBE16U(&p->blockBuf[BPB_BytsPerSec]);
+    //aInfo->iSectorSize = ReadBE16U(&p->blockBuf[BPB_BytsPerSec]); // TODO we read 2 isntead fo 512, what number is this?
 
     // Get the size of the blocks
     error = IReadCapacity(p);
@@ -792,7 +800,10 @@ static T_uezError MassStorage_USB_GetSizeInfo(
         return error;
     }
     aInfo->iBlockSize = p->iBlockSize;
+    aInfo->iNumSectors = p->iNumSect;
+    aInfo->iSectorSize = p->iBlockSize;
 
+    IRelease();
     // Determine block size
     return UEZ_ERROR_NONE;
 }

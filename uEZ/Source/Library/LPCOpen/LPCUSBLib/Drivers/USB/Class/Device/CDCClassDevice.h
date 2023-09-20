@@ -346,8 +346,8 @@
 				static int32_t CDC_Device_getchar_Blocking(FILE* Stream) ATTR_NON_NULL_PTR_ARG(1);
 				#endif
 
-				void CDC_Device_Event_Stub(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo) ATTR_CONST;
-				void CDC_Device_Event_Stub2(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo, const uint8_t Duration) ATTR_CONST;
+				void CDC_Device_Event_Stub(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo);// ATTR_CONST;
+				void CDC_Device_Event_Stub2(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo, const uint8_t Duration);// ATTR_CONST;
 
 PRAGMA_WEAK(EVENT_CDC_Device_LineEncodingChanged,CDC_Device_Event_Stub)				
 				void EVENT_CDC_Device_LineEncodingChanged(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo)

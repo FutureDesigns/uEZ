@@ -123,7 +123,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
   #define SHOW_GUIDEMO_ICONVIEW          (1) // large demo, works on uEZGUI // 5.48 fixed
 #endif
 #ifndef   SHOW_GUIDEMO_RADIALMENU
-  #define SHOW_GUIDEMO_RADIALMENU        (0) // large demo, works on uEZGUI // TODO improve the speed of demo and the look of seleciton box
+  #define SHOW_GUIDEMO_RADIALMENU        (0) // large demo, works on uEZGUI // TODO improve the speed of demo and the look of selection box
 #endif    
 #ifndef   SHOW_GUIDEMO_TRANSPARENTDIALOG
   #define SHOW_GUIDEMO_TRANSPARENTDIALOG (1) // large demo, works on uEZGUI // Works ok on 5.48
@@ -139,11 +139,11 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
 
 // These 4 demos have issues!
-#ifndef   SHOW_GUIDEMO_SPEEDOMETER       // When this demo enables the memory device it screws up the colors in other demos!
-  #define SHOW_GUIDEMO_SPEEDOMETER       (0) // Partially works on LPC54608 at least, but some colors are messed up with memdevice. SLOW startup
+#ifndef   SHOW_GUIDEMO_SPEEDOMETER       // When this demo enables the memory device it screws up the colors in other demos, but seesm to be mostly fixed now.
+  #define SHOW_GUIDEMO_SPEEDOMETER       (0) // Currently the rotation isn't setup correctly with task delay timing.
 #endif
 #ifndef   SHOW_GUIDEMO_SKINNING
-  #define SHOW_GUIDEMO_SKINNING          (0) // Works on 5.48 but there is graphical corruption.
+  #define SHOW_GUIDEMO_SKINNING          (0) // works ok now
 #endif
 #ifndef   SHOW_GUIDEMO_VSCREEN
   #define SHOW_GUIDEMO_VSCREEN           (0) // QVGA screens only

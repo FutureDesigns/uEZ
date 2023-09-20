@@ -1324,6 +1324,110 @@ T_uezError UEZFileSystemGetVolumeInfo(
     return error;
 }
 
+/*---------------------------------------------------------------------------*
+* Routine:  UEZFileSystemGetStorageInfo
+*---------------------------------------------------------------------------*
+* Description:
+*      Get information about the physical storage device.
+* Inputs:
+  *      const char * const aDrivePath -- Directory to drive to sync
+  *      T_msSizeInfo *aInfo -- Structure to receive storage information
+* Outputs:
+*      T_uezError               -- Error code, if any. UEZ_ERROR_OK if
+ *                                  successful.
+*---------------------------------------------------------------------------*/
+T_uezError UEZFileSystemGetStorageInfo(
+        const char * const aDrivePath,
+        T_msSizeInfo *aInfo)
+{
+    T_mountedFS *p_fs;
+    DEVICE_FileSystem **dfs;
+    T_uezError error;
+
+    IGrab();
+
+    // Convert the filename to a filesystem
+    error = IFindMountFS(aDrivePath, &p_fs);
+    if (error != UEZ_ERROR_NONE) {
+        IRelease();
+        return UEZ_ERROR_NOT_AVAILABLE;
+    }
+    dfs = (DEVICE_FileSystem **)p_fs->iFSDeviceWorkspace;
+
+    // Now do the get command
+    error = (*dfs)->GetStorageInfo(p_fs->iFSDeviceWorkspace,
+      aDrivePath[0],
+      aInfo);
+
+    IRelease();
+
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZFileMKFS
+ *---------------------------------------------------------------------------*/
+/**
+ * Format the file system
+ *
+ * @param[in]   aDriveNum           Drive number '0', '1', etc.
+ *
+ * @return T_uezError               Error code, if any. UEZ_ERROR_OK if
+ *                                  successful.
+
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZFile.h>
+ *
+ *  T_uezFile file;
+ *
+ *  if (UEZFileMKFS('1') == UEZ_ERROR_NONE) {
+ *      // the file opened properly
+ *  } else {
+ *      // an error occurred opening the file
+ *  }
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZFileMKFS(const char aDriveNum)
+{
+    T_mountedFS *p_fs;
+    DEVICE_FileSystem **dfs;
+    T_uezError error;    
+    char drivePath[4] = {aDriveNum,':','/',0}; // logical drive path
+
+    IGrab();
+
+    // Convert the filename to a filesystem
+    error = IFindMountFS(drivePath, &p_fs);
+    if (error != UEZ_ERROR_NONE) {
+        IRelease();
+        return UEZ_ERROR_NOT_AVAILABLE;
+    }
+    dfs = (DEVICE_FileSystem **)p_fs->iFSDeviceWorkspace;
+
+    MKFS_PARM param = {0};  // default most values
+
+#if (FF_FS_EXFAT == 1)
+    param.fmt = FM_EXFAT; // only format EXFAT if EXFAT enabled
+#else
+    param.fmt = FM_ANY;	/* Format option (FM_FAT, FM_FAT32, FM_EXFAT and FM_SFD) */
+#endif
+    param.n_fat = 1; 	/* Number of FATs */
+    // Hopefully we never have to manually set any of these numbers. 
+    // It should pick automaticlly the supported values.
+    param.align = 0; 	/* Data area alignment (sector) */
+    param.n_root = 0;	/* Number of root directory entries */
+    param.au_size = 0;	/* Cluster size (byte) */
+
+    error = (*dfs)->MKFS(p_fs->iFSDeviceWorkspace, drivePath, &param);
+
+    IRelease();
+
+    return error;
+}
+
 /** @} */
 
 /*-------------------------------------------------------------------------*

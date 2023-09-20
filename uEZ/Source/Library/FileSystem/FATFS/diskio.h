@@ -1,26 +1,14 @@
-/*-----------------------------------------------------------------------
-/  Low level disk interface modlue include file  R0.12b   (C)ChaN, 2014
+/*-----------------------------------------------------------------------/
+/  Low level disk interface modlue include file   (C)ChaN, 2020          /
 /-----------------------------------------------------------------------*/
 
-#ifndef _DISKIO
+#ifndef _DISKIO_DEFINED
+#define _DISKIO_DEFINED
 
+#include <Device/MassStorage.h> // for T_msSizeInfo
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define _READONLY	0	/* 1: Read-only mode */
-#define _USE_IOCTL	1
-
-#include "integer.h"
-
-/*-----------------------------------------------------------------------*/
-/* Correspondence between physical drive number and physical drive.      */
-/* Note that Tiny-FatFs supports only single drive and always            */
-/* accesses drive number 0.                                              */
-
-#define MMC		0
-#define USB		1
-#define ATA		2
 
 /* Status of Disk Functions */
 typedef BYTE	DSTATUS;
@@ -34,18 +22,21 @@ typedef enum {
 	RES_PARERR		/* 4: Invalid Parameter */
 } DRESULT;
 
+
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
 
-DSTATUS disk_initialize (BYTE);
-DSTATUS disk_status (BYTE);
-DRESULT disk_read (BYTE, BYTE*, DWORD, BYTE);
-#if	_READONLY == 0
-DRESULT disk_write (BYTE, const BYTE*, DWORD, BYTE);
-#endif
-DRESULT disk_ioctl (BYTE, BYTE, void*);
-void MMC_TimerProc (void);
-BYTE VerifyActiveDisk(BYTE rRequestedDisk);
+
+DSTATUS disk_initialize (BYTE pdrv);
+DSTATUS disk_status (BYTE pdrv);
+DRESULT disk_read (BYTE pdrv, BYTE* buff, LBA_t sector, UINT count);
+DRESULT disk_write (BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count);
+DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
+/********************************************************************
+ *                 FDI Modifications Here
+ *******************************************************************/
+DRESULT disk_getInfo (BYTE pdrv, T_msSizeInfo *aInfo);
+
 
 /* Disk Status Bits (DSTATUS) */
 
@@ -53,21 +44,23 @@ BYTE VerifyActiveDisk(BYTE rRequestedDisk);
 #define STA_NODISK		0x02	/* No medium in the drive */
 #define STA_PROTECT		0x04	/* Write protected */
 
-/* Command code for disk_ioctrl() */
+
+/* Command code for disk_ioctrl fucntion */
 
 /* Generic command (Used by FatFs) */
-#define CTRL_SYNC			0	/* Complete pending write process (needed at _FS_READONLY == 0) */
-#define GET_SECTOR_COUNT	1	/* Get media size (needed at _USE_MKFS == 1) */
-#define GET_SECTOR_SIZE		2	/* Get sector size (needed at _MAX_SS != _MIN_SS) */
-#define GET_BLOCK_SIZE		3	/* Get erase block size (needed at _USE_MKFS == 1) */
-#define CTRL_TRIM			4	/* Inform device that the data on the block of sectors is no longer used (needed at _USE_TRIM == 1) */
+#define CTRL_SYNC			0	/* Complete pending write process (needed at FF_FS_READONLY == 0) */
+#define GET_SECTOR_COUNT	1	/* Get media size (needed at FF_USE_MKFS == 1) */
+#define GET_SECTOR_SIZE		2	/* Get sector size (needed at FF_MAX_SS != FF_MIN_SS) */
+#define GET_BLOCK_SIZE		3	/* Get erase block size (needed at FF_USE_MKFS == 1) */
+#define CTRL_TRIM			4	/* Inform device that the data on the block of sectors is no longer used (needed at FF_USE_TRIM == 1) */
 
 /* Generic command (Not used by FatFs) */
 #define CTRL_POWER			5	/* Get/Set power status */
 #define CTRL_LOCK			6	/* Lock/Unlock media removal */
 #define CTRL_EJECT			7	/* Eject media */
 #define CTRL_FORMAT			8	/* Create physical format on the media */
-/* MMC/SDC command ioctl command */
+
+/* MMC/SDC specific ioctl command */
 #define MMC_GET_TYPE		10	/* Get card type */
 #define MMC_GET_CSD			11	/* Get CSD */
 #define MMC_GET_CID			12	/* Get CID */
@@ -86,5 +79,4 @@ BYTE VerifyActiveDisk(BYTE rRequestedDisk);
 }
 #endif
 
-#define _DISKIO
 #endif

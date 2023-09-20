@@ -82,6 +82,13 @@ typedef enum {
 #define RTOS_ENTER_CRITICAL()   portENTER_CRITICAL();
 #define RTOS_EXIT_CRITICAL()    portEXIT_CRITICAL();
 
+// Our own defines for whether RTOS is actually running or not.
+typedef enum {
+    RTOS_SCHEDULER_SUSPENDED=0,
+    RTOS_SCHEDULER_NOT_STARTED=1,
+    RTOS_SCHEDULER_RUNNING=2,
+} T_uezRtosSchedulerState;
+
 /*-------------------------------------------------------------------------*
  * SafeRTOS specific definitions.
  *-------------------------------------------------------------------------*/
@@ -140,6 +147,8 @@ T_uezTask UEZTaskGetCurrent(void);
 T_uezError UEZTaskSchedulerSuspend(void);
 
 T_uezError UEZTaskSchedulerResume(void);
+
+T_uezRtosSchedulerState UEZIsRtosRunning(void); // uEZ 2.11.1
 
 void UEZGetTaskList(char* aBuffer);
 void UEZTaskRegister(const char * const aName, T_uezPriority aPriority, TUInt32 aStackSize);

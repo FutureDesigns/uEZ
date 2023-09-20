@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : CHECKBOX.h
@@ -46,7 +46,7 @@ Purpose     : CHECKBOX include
 #define CHECKBOX_H
 
 #include "WM.h"
-#include "DIALOG_Intern.h"      /* Req. for Create indirect data structure */
+#include "DIALOG_Type.h"      /* Req. for Create indirect data structure */
 #include "WIDGET.h"
 
 #if GUI_WINSUPPORT
@@ -64,21 +64,27 @@ Purpose     : CHECKBOX include
 
 /*********************************************************************
 *
-*       Color indices
+*       CHECKBOX color indexes
+*
+*  Description
+*    Color indexes for CHECKBOX widget.
 */
-#define CHECKBOX_CI_DISABLED 0
-#define CHECKBOX_CI_ENABLED  1
+#define CHECKBOX_CI_DISABLED 0            // Color used for disabled state.
+#define CHECKBOX_CI_ENABLED  1            // Color used for enabled state.
 
 /*********************************************************************
 *
-*       Bitmap indices
+*       CHECKBOX bitmap indexes
+*
+*  Description
+*    Bitmap indexes for CHECKBOX widget.
 */
-#define CHECKBOX_BI_INACTIV_UNCHECKED 0
-#define CHECKBOX_BI_ACTIV_UNCHECKED   1
-#define CHECKBOX_BI_INACTIV_CHECKED   2
-#define CHECKBOX_BI_ACTIV_CHECKED     3
-#define CHECKBOX_BI_INACTIV_3STATE    4
-#define CHECKBOX_BI_ACTIV_3STATE      5
+#define CHECKBOX_BI_INACTIV_UNCHECKED 0   // Bitmap displayed when the CHECKBOX is unchecked and disabled.
+#define CHECKBOX_BI_ACTIV_UNCHECKED   1   // Bitmap displayed when the CHECKBOX is unchecked and enabled.
+#define CHECKBOX_BI_INACTIV_CHECKED   2   // Bitmap displayed when the CHECKBOX is checked and disabled.
+#define CHECKBOX_BI_ACTIV_CHECKED     3   // Bitmap displayed when the CHECKBOX is checked and enabled.
+#define CHECKBOX_BI_INACTIV_3STATE    4   // Bitmap displayed when the CHECKBOX is in the third state and disabled.
+#define CHECKBOX_BI_ACTIV_3STATE      5   // Bitmap displayed when the CHECKBOX is in the third state and enabled.
 
 /*********************************************************************
 *
@@ -99,7 +105,7 @@ typedef struct {
   GUI_COLOR aColorFrame[3];
   GUI_COLOR aColorInner[2];
   GUI_COLOR ColorCheck;
-  int32_t       ButtonSize;
+  int       ButtonSize;
 } CHECKBOX_SKINFLEX_PROPS;
 
 /*********************************************************************
@@ -108,10 +114,10 @@ typedef struct {
 *
 **********************************************************************
 */
-CHECKBOX_Handle CHECKBOX_Create        (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t Id, int32_t Flags);
-CHECKBOX_Handle CHECKBOX_CreateEx      (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id);
-CHECKBOX_Handle CHECKBOX_CreateUser    (int32_t x0, int32_t y0, int32_t xSize, int32_t ySize, WM_HWIN hParent, int32_t WinFlags, int32_t ExFlags, int32_t Id, int32_t NumExtraBytes);
-CHECKBOX_Handle CHECKBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int32_t x0, int32_t y0, WM_CALLBACK * cb);
+CHECKBOX_Handle CHECKBOX_Create        (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int Id, int Flags);
+CHECKBOX_Handle CHECKBOX_CreateEx      (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id);
+CHECKBOX_Handle CHECKBOX_CreateUser    (int x0, int y0, int xSize, int ySize, WM_HWIN hParent, int WinFlags, int ExFlags, int Id, int NumExtraBytes);
+CHECKBOX_Handle CHECKBOX_CreateIndirect(const GUI_WIDGET_CREATE_INFO * pCreateInfo, WM_HWIN hWinParent, int x0, int y0, WM_CALLBACK * cb);
 
 /*********************************************************************
 *
@@ -129,21 +135,22 @@ void CHECKBOX_Callback(WM_MESSAGE * pMsg);
 **********************************************************************
 */
 
-int32_t              CHECKBOX_GetDefaultAlign     (void);
+int              CHECKBOX_GetDefaultAlign     (void);
 GUI_COLOR        CHECKBOX_GetDefaultBkColor   (void);
 const GUI_FONT * CHECKBOX_GetDefaultFont      (void);
-int32_t              CHECKBOX_GetDefaultSpacing   (void);
-int32_t              CHECKBOX_GetDefaultTextAlign (void);
+int              CHECKBOX_GetDefaultSpacing   (void);
 GUI_COLOR        CHECKBOX_GetDefaultTextColor (void);
-int32_t              CHECKBOX_GetUserData         (CHECKBOX_Handle hObj, void * pDest, int32_t NumBytes);
-void             CHECKBOX_SetDefaultAlign     (int32_t Align);
+int              CHECKBOX_GetUserData         (CHECKBOX_Handle hObj, void * pDest, int NumBytes);
+void             CHECKBOX_SetDefaultAlign     (int Align);
 void             CHECKBOX_SetDefaultBkColor   (GUI_COLOR Color);
 GUI_COLOR        CHECKBOX_SetDefaultFocusColor(GUI_COLOR Color);
 void             CHECKBOX_SetDefaultFont      (const GUI_FONT * pFont);
-void             CHECKBOX_SetDefaultImage     (const GUI_BITMAP * pBitmap, uint32_t Index);
-void             CHECKBOX_SetDefaultSpacing   (int32_t Spacing);
-void             CHECKBOX_SetDefaultTextAlign (int32_t Align);
+void             CHECKBOX_SetDefaultImage     (const GUI_BITMAP * pBitmap, unsigned int Index);
+void             CHECKBOX_SetDefaultSpacing   (int Spacing);
 void             CHECKBOX_SetDefaultTextColor (GUI_COLOR Color);
+
+#define          CHECKBOX_GetDefaultTextAlign CHECKBOX_GetDefaultAlign
+#define          CHECKBOX_SetDefaultTextAlign CHECKBOX_SetDefaultAlign
 
 /*********************************************************************
 *
@@ -152,27 +159,27 @@ void             CHECKBOX_SetDefaultTextColor (GUI_COLOR Color);
 **********************************************************************
 */
 GUI_COLOR          CHECKBOX_GetBkColor   (CHECKBOX_Handle hObj);
-GUI_COLOR          CHECKBOX_GetBoxBkColor(CHECKBOX_Handle hObj, int32_t Index);
+GUI_COLOR          CHECKBOX_GetBoxBkColor(CHECKBOX_Handle hObj, int Index);
 GUI_COLOR          CHECKBOX_GetFocusColor(CHECKBOX_Handle hObj);
 const GUI_FONT   * CHECKBOX_GetFont      (CHECKBOX_Handle hObj);
-const GUI_BITMAP * CHECKBOX_GetImage     (CHECKBOX_Handle hObj, uint32_t Index);
-int32_t                CHECKBOX_GetState     (CHECKBOX_Handle hObj);
-int32_t                CHECKBOX_GetText      (CHECKBOX_Handle hObj, char * pBuffer, int32_t MaxLen);
-int32_t                CHECKBOX_GetTextAlign (CHECKBOX_Handle hObj);
+const GUI_BITMAP * CHECKBOX_GetImage     (CHECKBOX_Handle hObj, unsigned int Index);
+int                CHECKBOX_GetState     (CHECKBOX_Handle hObj);
+int                CHECKBOX_GetText      (CHECKBOX_Handle hObj, char * pBuffer, int MaxLen);
+int                CHECKBOX_GetTextAlign (CHECKBOX_Handle hObj);
 GUI_COLOR          CHECKBOX_GetTextColor (CHECKBOX_Handle hObj);
-int32_t                CHECKBOX_IsChecked    (CHECKBOX_Handle hObj);
+int                CHECKBOX_IsChecked    (CHECKBOX_Handle hObj);
 void               CHECKBOX_SetBkColor   (CHECKBOX_Handle hObj, GUI_COLOR Color);
-GUI_COLOR          CHECKBOX_SetBoxBkColor(CHECKBOX_Handle hObj, GUI_COLOR Color, int32_t Index);
+GUI_COLOR          CHECKBOX_SetBoxBkColor(CHECKBOX_Handle hObj, GUI_COLOR Color, int Index);
 GUI_COLOR          CHECKBOX_SetFocusColor(CHECKBOX_Handle hObj, GUI_COLOR Color);
 void               CHECKBOX_SetFont      (CHECKBOX_Handle hObj, const GUI_FONT * pFont);
-void               CHECKBOX_SetImage     (CHECKBOX_Handle hObj, const GUI_BITMAP * pBitmap, uint32_t Index);
+void               CHECKBOX_SetImage     (CHECKBOX_Handle hObj, const GUI_BITMAP * pBitmap, unsigned int Index);
 void               CHECKBOX_SetNumStates (CHECKBOX_Handle hObj, unsigned NumStates);
 void               CHECKBOX_SetSpacing   (CHECKBOX_Handle hObj, unsigned Spacing);
 void               CHECKBOX_SetState     (CHECKBOX_Handle hObj, unsigned State);
 void               CHECKBOX_SetText      (CHECKBOX_Handle hObj, const char * pText);
-void               CHECKBOX_SetTextAlign (CHECKBOX_Handle hObj, int32_t Align);
+void               CHECKBOX_SetTextAlign (CHECKBOX_Handle hObj, int Align);
 void               CHECKBOX_SetTextColor (CHECKBOX_Handle hObj, GUI_COLOR Color);
-int32_t                CHECKBOX_SetUserData  (CHECKBOX_Handle hObj, const void * pSrc, int32_t NumBytes);
+int                CHECKBOX_SetUserData  (CHECKBOX_Handle hObj, const void * pSrc, int NumBytes);
 
 /*********************************************************************
 *
@@ -180,14 +187,14 @@ int32_t                CHECKBOX_SetUserData  (CHECKBOX_Handle hObj, const void *
 *
 **********************************************************************
 */
-void CHECKBOX_GetSkinFlexProps      (CHECKBOX_SKINFLEX_PROPS * pProps, int32_t Index);
+void CHECKBOX_GetSkinFlexProps      (CHECKBOX_SKINFLEX_PROPS * pProps, int Index);
 void CHECKBOX_SetSkinClassic        (CHECKBOX_Handle hObj);
 void CHECKBOX_SetSkin               (CHECKBOX_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
-int32_t  CHECKBOX_DrawSkinFlex          (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
-void CHECKBOX_SetSkinFlexProps      (const CHECKBOX_SKINFLEX_PROPS * pProps, int32_t Index);
+int  CHECKBOX_DrawSkinFlex          (const WIDGET_ITEM_DRAW_INFO * pDrawItemInfo);
+void CHECKBOX_SetSkinFlexProps      (const CHECKBOX_SKINFLEX_PROPS * pProps, int Index);
 void CHECKBOX_SetDefaultSkinClassic (void);
-int32_t  CHECKBOX_GetSkinFlexButtonSize (CHECKBOX_Handle hObj);
-void CHECKBOX_SetSkinFlexButtonSize (CHECKBOX_Handle hObj, int32_t ButtonSize);
+int  CHECKBOX_GetSkinFlexButtonSize (CHECKBOX_Handle hObj);
+void CHECKBOX_SetSkinFlexButtonSize (CHECKBOX_Handle hObj, int ButtonSize);
 WIDGET_DRAW_ITEM_FUNC * CHECKBOX_SetDefaultSkin(WIDGET_DRAW_ITEM_FUNC * pfDrawSkin);
 
 #define CHECKBOX_SKIN_FLEX    CHECKBOX_DrawSkinFlex

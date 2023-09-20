@@ -57,6 +57,7 @@
 #include <uEZTypes.h>
 #include <uEZDevice.h>
 #include <Types/File.h>
+#include <Source/Library/FileSystem/FATFS/ff.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -134,9 +135,9 @@ typedef struct {
         const char * const aDirectoryName);
 
 
-	/**
-	 * v1.13 Functions
-	 */
+    /**
+      * v1.13 Functions
+      */
     /** Sync ensures any blocks waiting to be written are stored on the volume */
     T_uezError (*Sync)(void *aWorkspace, const char * const aPath);
 
@@ -146,6 +147,22 @@ typedef struct {
             void *aWorkspace,
             const char * const aPath,
             T_uezFileSystemVolumeInfo *aInfo);
+
+   /**
+     * v2.12 Functions
+     */
+    // GetStorageInfo returns information about the physical storage device 
+    T_uezError (*GetStorageInfo)(
+            void *aWorkspace,
+            const char aDriveNum,
+            T_msSizeInfo *aInfo);
+
+    // format the drive
+    T_uezError (*MKFS)(
+        void *aWorkspace,
+        const TCHAR* path,
+        const MKFS_PARM* opt);
+
 } DEVICE_FileSystem;
 
 #ifdef __cplusplus

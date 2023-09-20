@@ -3088,9 +3088,6 @@
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\ff.h</name>
                     </file>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\integer.h</name>
-                    </file>
-                    <file>
                         <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Library\FileSystem\FATFS\rtc.c</name>
                     </file>
                     <file>

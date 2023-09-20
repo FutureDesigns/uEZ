@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_SSD1926_Private.h
@@ -96,20 +96,20 @@ struct DRIVER_CONTEXT {
   //
   // Common data
   //
-  int32_t xSize, ySize;
-  int32_t vxSize, vySize;
-  int32_t UseCache;
-  int32_t MemSize;
+  int xSize, ySize;
+  int vxSize, vySize;
+  int UseCache;
+  int MemSize;
   //
   // Driver specific data
   //
-  int32_t FirstSEG;
-  int32_t FirstCOM;
+  int FirstSEG;
+  int FirstCOM;
   //
   // Accelerators for calculation
   //
-  int32_t BytesPerLine;
-  int32_t BitsPerPixel;
+  int BytesPerLine;
+  int BitsPerPixel;
   //
   // VRAM
   //
@@ -123,9 +123,9 @@ struct DRIVER_CONTEXT {
   //
   U16 * aBuffer;        // Allocated buffer
   U16 * pBuffer;        // Pointer for writing operations
-  int32_t NumBytesInBuffer; // Number of bytes in buffer
+  int NumBytesInBuffer; // Number of bytes in buffer
   U32 Addr;             // Destination address of buffer
-  int32_t Odd;              // 1 if the next address to be written is odd
+  int Odd;              // 1 if the next address to be written is odd
   //
   // Pointer to driver internal initialization routine
   //
@@ -175,7 +175,7 @@ struct DRIVER_CONTEXT {
 *       _SetPixelIndex_##EXT
 */
 #define DEFINE_SETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                                 \
-static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD_PIXELINDEX PixelIndex) { \
+static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) { \
   DRIVER_CONTEXT * pContext;                                                                      \
                                                                                                   \
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                                               \
@@ -187,7 +187,7 @@ static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD
 *       _GetPixelIndex_##EXT
 */
 #define DEFINE_GETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                \
-static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y) { \
+static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y) { \
   DRIVER_CONTEXT * pContext;                                                     \
   LCD_PIXELINDEX PixelIndex;                                                     \
                                                                                  \
@@ -201,7 +201,7 @@ static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int3
 *       _GetDevProp_##EXT
 */
 #define DEFINE_GETDEVPROP(EXT, MX, MY, SWAP)                    \
-static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
+static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int Index) { \
   switch (Index) {                                              \
   case LCD_DEVCAP_MIRROR_X: return MX;                          \
   case LCD_DEVCAP_MIRROR_Y: return MY;                          \
@@ -226,9 +226,9 @@ static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
 *
 **********************************************************************
 */
-void (*GUIDRV__SSD1926_GetDevFunc(GUI_DEVICE ** ppDevice, int32_t Index))(void);
-void   GUIDRV__SSD1926_SetOrg    (GUI_DEVICE *  pDevice,  int32_t x, int32_t y);
-I32    GUIDRV__SSD1926_GetDevProp(GUI_DEVICE *  pDevice,  int32_t Index);
+void (*GUIDRV__SSD1926_GetDevFunc(GUI_DEVICE ** ppDevice, int Index))(void);
+void   GUIDRV__SSD1926_SetOrg    (GUI_DEVICE *  pDevice,  int x, int y);
+I32    GUIDRV__SSD1926_GetDevProp(GUI_DEVICE *  pDevice,  int Index);
 void   GUIDRV__SSD1926_GetRect   (GUI_DEVICE *  pDevice,  LCD_RECT * pRect);
 
 #if defined(__cplusplus)

@@ -1,14 +1,14 @@
 Important - Read carefully:
 
-This license is a legal agreement between YOU (either an individual or a single entity) and SEGGER Microcontroller GmbH & Co. KG (called SEGGER).
+This license is a legal agreement between YOU (either an individual or a single entity) and SEGGER Microcontroller GmbH (called SEGGER).
 By downloading and/or using the evaluation software, you agree to be bound by the terms of this agreement.
 
 1. Content of contract
-The evaluation software (hereinafter referred to as “software”) governed by this contract, which includes computer software and printed material is protected by copyright laws.
+The evaluation software (hereinafter referred to as "software") governed by this contract, which includes computer software and printed material is protected by copyright laws.
 Solely with respect to electronic documents included with the software product, YOU may make an unlimited number of copies (either in hardcopy or electronic form), provided that such copies shall be used only for internal purposes and are not republished or distributed to any third party without agreement of SEGGER. 
 
 2. Software Components
-These terms apply to following software components, developed by SEGGER Microcontroller GmbH & Co. KG:
+These terms apply to following software components, developed by SEGGER Microcontroller GmbH:
 - emWin    (Graphics software and GUI)
 
 3. License Grant
@@ -56,6 +56,6 @@ The product is not fault-tolerant and is not designed, manufactured or intended 
 (e) This agreement shall be binding upon and shall inure to the benefit of the parties, their successors and permitted assigns.
 (f) Neither party shall be in default or be liable for any delay, failure in performance (excepting the obligation to pay) or interruption of service resulting directly or indirectly from any cause beyond its reasonable control.
 (g) The relationship between Licensor and Licensee is that of independent contractors and neither Licensee nor its agents shall have any authority to bind Licensor in any way.
-(h) If any SEGGER Microcontroller  GmbH& Co. KG professional services are being provided, then such professional services are provided pursuant to the terms of a separate professional services agreement between the parties. The parties acknowledge that such services are acquired independently of the product licensed hereunder, and that provision of such services is not essential to the functionality of such product.
+(h) If any SEGGER Microcontroller  GmbH professional services are being provided, then such professional services are provided pursuant to the terms of a separate professional services agreement between the parties. The parties acknowledge that such services are acquired independently of the product licensed hereunder, and that provision of such services is not essential to the functionality of such product.
 
-© 2004-2017 SEGGER Microcontroller GmbH & Co. KG
+© 2004-2019 SEGGER Microcontroller GmbH

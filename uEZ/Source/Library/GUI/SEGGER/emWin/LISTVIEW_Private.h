@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LISTVIEW_Private.h
@@ -45,7 +45,8 @@ Purpose     : Private LISTVIEW include
 #ifndef LISTVIEW_PRIVATE_H
 #define LISTVIEW_PRIVATE_H
 
-#include "WM.h"
+#include "GUI_Private.h"
+#include "WM_Intern.h"
 
 #if GUI_WINSUPPORT
 
@@ -79,7 +80,7 @@ typedef struct {
   const GUI_FONT             * pFont;
   U16                          ScrollStepH;
   GUI_WRAPMODE                 WrapMode;
-  int32_t                          DefaultAlign;
+  int                          DefaultAlign;
 } LISTVIEW_PROPS;
 
 typedef struct {
@@ -104,7 +105,7 @@ typedef struct {
 
 typedef struct {
   U8                           Align;
-  int32_t                       (* fpCompare)    (const void * p0, const void * p1);  // User function to be called to compare the contents of 2 cells
+  int                       (* fpCompare)    (const void * p0, const void * p1);  // User function to be called to compare the contents of 2 cells
 } LISTVIEW_COLUMN;
 
 typedef struct LISTVIEW_Obj LISTVIEW_Obj;
@@ -112,7 +113,7 @@ typedef struct LISTVIEW_Obj LISTVIEW_Obj;
 typedef struct {
   WM_HMEM                      hSortArray;
   SORT_TYPE                    SortArrayNumItems;
-  int32_t                       (* fpSort)(LISTVIEW_Handle hObj);                     // Function to be called to get a sorted array
+  int                       (* fpSort)(LISTVIEW_Handle hObj);                     // Function to be called to get a sorted array
   void                      (* fpFree)(WM_HMEM hObj);                             // Function to be called to free the sort object
   U8                           Reverse;
 } LISTVIEW_SORT;
@@ -124,10 +125,13 @@ struct LISTVIEW_Obj {
   GUI_ARRAY                    hRowArray;                                         // Each entry is a handle of LISTVIEW_ROW structure.
   GUI_ARRAY                    hColumnArray;                                      // Each entry is a handle of LISTVIEW_COLUMN structure.
   LISTVIEW_PROPS               Props;
-  int32_t                          Sel;
-  int32_t                          SelCol;
-  int32_t                          ShowGrid;
-  int32_t                          SortIndex;                                         // Column for sorting
+  int                          Sel;
+  int                          SelCol;
+  int                          ShowGrid;
+  int                          SortIndex;                                         // Column for sorting
+  int                          MotionPosX;
+  int                          MotionPosY;
+  int                          MotionPosOldY;
   unsigned                     RowDistY;
   unsigned                     LBorder;
   unsigned                     RBorder;
@@ -178,15 +182,15 @@ LISTVIEW_CELL_INFO * LISTVIEW__CreateCellInfoLocked (LISTVIEW_Handle   hObj, uns
 unsigned             LISTVIEW__GetNumColumns        (LISTVIEW_Obj    * pObj);
 unsigned             LISTVIEW__GetNumRows           (LISTVIEW_Obj    * pObj);
 LISTVIEW_CELL_INFO * LISTVIEW__GetpCellInfo         (LISTVIEW_Handle   hObj, unsigned Column, unsigned Row);
-LISTVIEW_ROW       * LISTVIEW__GetpRow              (LISTVIEW_Handle   hObj, int32_t Row);
+LISTVIEW_ROW       * LISTVIEW__GetpRow              (LISTVIEW_Handle   hObj, int Row);
 unsigned             LISTVIEW__GetRowDistY          (LISTVIEW_Obj    * pObj);
-unsigned             LISTVIEW__GetRowSorted         (LISTVIEW_Handle   hObj, int32_t Row);
+unsigned             LISTVIEW__GetRowSorted         (LISTVIEW_Handle   hObj, int Row);
 void                 LISTVIEW__InvalidateInsideArea (LISTVIEW_Handle   hObj);
-void                 LISTVIEW__InvalidateRow        (LISTVIEW_Handle   hObj, int32_t Sel);
-void                 LISTVIEW__InvalidateRowAndBelow(LISTVIEW_Handle   hObj, int32_t Sel);
-void                 LISTVIEW__SetSel               (LISTVIEW_Handle   hObj, int32_t NewSel);
-void                 LISTVIEW__SetSelCol            (LISTVIEW_Handle   hObj, int32_t NewSelCol);
-int32_t                  LISTVIEW__UpdateScrollParas    (LISTVIEW_Handle   hObj);
+void                 LISTVIEW__InvalidateRow        (LISTVIEW_Handle   hObj, int Sel);
+void                 LISTVIEW__InvalidateRowAndBelow(LISTVIEW_Handle   hObj, int Sel);
+void                 LISTVIEW__SetSel               (LISTVIEW_Handle   hObj, int NewSel, int CheckPos);
+void                 LISTVIEW__SetSelCol            (LISTVIEW_Handle   hObj, int NewSelCol);
+int                  LISTVIEW__UpdateScrollParas    (LISTVIEW_Handle   hObj);
 
 #endif // GUI_WINSUPPORT
 #endif // LISTVIEW_PRIVATE_H

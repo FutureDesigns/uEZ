@@ -79,22 +79,21 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-/* EMAC Memory Buffer configuration for 16K Ethernet RAM. */
-#define NUM_RX_FRAG         8           /* Num.of RX Fragments 4*1536= 6.0kB */
+/* EMAC Memory Buffer configuration for 15.1K Ethernet RAM. */
+#define NUM_RX_FRAG         8           /* Num.of RX Fragments 8*1536= 12.0kB */
 #define NUM_TX_FRAG         2           /* Num.of TX Fragments 2*1536= 3.0kB */
-#define ETH_FRAG_SIZE       1536        /* Packet Fragment size 1536 Bytes   */
-
-#define ETH_MAX_FLEN        1536        /* Max. Ethernet Frame Size          */
 
 /* EMAC variables located in 16K Ethernet SRAM */
-#define RX_DESC_BASE        ((TUInt32)G_emacMemory) //AHBSRAM0_BASE
+#define RX_DESC_BASE        ((TUInt32)&G_emacMemory) //.emacmem RAM to be placed in AHBSRAM0 or 1
 #define RX_STAT_BASE        (RX_DESC_BASE + NUM_RX_FRAG*8)
 #define TX_DESC_BASE        (RX_STAT_BASE + NUM_RX_FRAG*8)
 #define TX_STAT_BASE        (TX_DESC_BASE + NUM_TX_FRAG*8)
 #define RX_BUF_BASE         (TX_STAT_BASE + NUM_TX_FRAG*4)
 #define TX_BUF_BASE         (RX_BUF_BASE  + NUM_RX_FRAG*ETH_FRAG_SIZE)
+#define TX_BUF_END          (TX_BUF_BASE  + NUM_TX_FRAG*ETH_FRAG_SIZE)
 #define EMAC_MEMORY_SIZE    (NUM_RX_FRAG*8 + NUM_RX_FRAG*8 + NUM_TX_FRAG*8 + \
-                              NUM_TX_FRAG*4 + NUM_RX_FRAG*ETH_FRAG_SIZE)
+                              NUM_TX_FRAG*4 + NUM_RX_FRAG*ETH_FRAG_SIZE + \
+                              NUM_TX_FRAG*ETH_FRAG_SIZE)
 
 /* RX and TX descriptor and status definitions. */
 #define RX_DESC_PACKET(i)   (*(uint32_t *)(RX_DESC_BASE   + 8*i))

@@ -278,7 +278,7 @@ static void MultiSlideshowScreen(T_uezDevice lcd)
  *---------------------------------------------------------------------------*/
 T_uezError OldSlideshowCheckAvailable(TUInt32 aDrive)
 {
-    char filename[40];
+    char filename[60]; // allow up to 20 extra char for filename on top of directory path.
     char directory[40];
     T_uezError error;
     T_uezFile file;
@@ -354,8 +354,8 @@ T_uezError IMSLoadDirectoryINI(TUInt32 aDrive)
     T_uezINISession ini;
     TInt32 numShows = 0;
     char filename[40];
-    char title[7];
-    char dir[5];
+    char title[9];
+    char dir[7];
     TUInt8 i;
     T_slideshowDefinition *p_list = G_ws->iSlideshowList.iList;
 
@@ -493,6 +493,7 @@ void MultiSlideshowMode(const T_choice *aChoice)
         if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
             if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
                 G_ws->iLCD = lcd;
+                Storage_PrintInfo('0', ETrue);
 
                 // Is there old slideshows available?
                 driveError[SLIDESHOW_FLASH_DRIVE] = OldSlideshowCheckAvailable(SLIDESHOW_FLASH_DRIVE);

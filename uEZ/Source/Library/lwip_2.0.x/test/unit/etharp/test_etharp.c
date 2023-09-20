@@ -4,6 +4,7 @@
 #include "lwip/etharp.h"
 #include "netif/ethernet.h"
 #include "lwip/stats.h"
+#include "lwip/prot/iana.h"
 
 #if !LWIP_STATS || !UDP_STATS || !MEMP_STATS || !ETHARP_STATS
 #error "This tests needs UDP-, MEMP- and ETHARP-statistics enabled"
@@ -18,13 +19,13 @@ struct eth_addr test_ethaddr =  {{1,1,1,1,1,1}};
 struct eth_addr test_ethaddr2 = {{1,1,1,1,1,2}};
 struct eth_addr test_ethaddr3 = {{1,1,1,1,1,3}};
 struct eth_addr test_ethaddr4 = {{1,1,1,1,1,4}};
-static int32_t linkoutput_ctr;
+static int linkoutput_ctr;
 
 /* Helper functions */
 static void
 etharp_remove_all(void)
 {
-  int32_t i;
+  int i;
   /* call etharp_tmr often enough to have all entries cleaned */
   for(i = 0; i < 0xff; i++) {
     etharp_tmr();
@@ -75,7 +76,7 @@ default_netif_remove(void)
 static void
 create_arp_response(ip4_addr_t *adr)
 {
-  int32_t k;
+  int k;
   struct eth_hdr *ethhdr;
   struct etharp_hdr *etharphdr;
   struct pbuf *p = pbuf_alloc(PBUF_RAW, sizeof(struct eth_hdr) + sizeof(struct etharp_hdr), PBUF_RAM);
@@ -89,7 +90,7 @@ create_arp_response(ip4_addr_t *adr)
   ethhdr->src = test_ethaddr2;
   ethhdr->type = htons(ETHTYPE_ARP);
 
-  etharphdr->hwtype = htons(/*HWTYPE_ETHERNET*/ 1);
+  etharphdr->hwtype = htons(LWIP_IANA_HWTYPE_ETHERNET);
   etharphdr->proto = htons(ETHTYPE_IP);
   etharphdr->hwlen = ETHARP_HWADDR_LEN;
   etharphdr->protolen = sizeof(ip4_addr_t);
@@ -119,6 +120,7 @@ etharp_setup(void)
 {
   etharp_remove_all();
   default_netif_add();
+  lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 static void
@@ -126,6 +128,7 @@ etharp_teardown(void)
 {
   etharp_remove_all();
   default_netif_remove();
+  lwip_check_ensure_no_alloc(SKIP_POOL(MEMP_SYS_TIMEOUT));
 }
 
 
@@ -136,7 +139,7 @@ START_TEST(test_etharp_table)
 #if ETHARP_SUPPORT_STATIC_ENTRIES
   err_t err;
 #endif /* ETHARP_SUPPORT_STATIC_ENTRIES */
-  s8_t idx;
+  ssize_t idx;
   const ip4_addr_t *unused_ipaddr;
   struct eth_addr *unused_ethaddr;
   struct udp_pcb* pcb;
@@ -152,7 +155,7 @@ START_TEST(test_etharp_table)
   fail_unless(pcb != NULL);
   if (pcb != NULL) {
     ip4_addr_t adrs[ARP_TABLE_SIZE + 2];
-    int32_t i;
+    int i;
     for(i = 0; i < ARP_TABLE_SIZE + 2; i++) {
       IP4_ADDR(&adrs[i], 192,168,0,i+2);
     }

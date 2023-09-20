@@ -57,8 +57,8 @@
  * Command-line options.
  */
 #if PPP_OPTIONS
-static int32_t setbsdcomp (char **);
-static int32_t setdeflate (char **);
+static int setbsdcomp (char **);
+static int setdeflate (char **);
 static char bsd_value[8];
 static char deflate_value[8];
 
@@ -170,13 +170,13 @@ static void ccp_open(ppp_pcb *pcb);
 static void ccp_close(ppp_pcb *pcb, const char *reason);
 static void ccp_lowerup(ppp_pcb *pcb);
 static void ccp_lowerdown(ppp_pcb *pcb);
-static void ccp_input(ppp_pcb *pcb, u_char *pkt, int32_t len);
+static void ccp_input(ppp_pcb *pcb, u_char *pkt, int len);
 static void ccp_protrej(ppp_pcb *pcb);
 #if PRINTPKT_SUPPORT
-static int32_t ccp_printpkt(const u_char *p, int32_t plen, void (*printer) (void *, const char *, ...), void *arg);
+static int ccp_printpkt(const u_char *p, int plen, void (*printer) (void *, const char *, ...), void *arg);
 #endif /* PRINTPKT_SUPPORT */
 #if PPP_DATAINPUT
-static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, int32_t len);
+static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, int len);
 #endif /* PPP_DATAINPUT */
 
 const struct protent ccp_protent = {
@@ -212,15 +212,15 @@ const struct protent ccp_protent = {
  * Callbacks for fsm code.
  */
 static void ccp_resetci (fsm *);
-static int32_t  ccp_cilen (fsm *);
-static void ccp_addci (fsm *, u_char *, int32_t *);
-static int32_t  ccp_ackci (fsm *, u_char *, int32_t);
-static int32_t  ccp_nakci (fsm *, u_char *, int32_t, int32_t);
-static int32_t  ccp_rejci (fsm *, u_char *, int32_t);
-static int32_t  ccp_reqci (fsm *, u_char *, int32_t *, int32_t);
+static int  ccp_cilen (fsm *);
+static void ccp_addci (fsm *, u_char *, int *);
+static int  ccp_ackci (fsm *, u_char *, int);
+static int  ccp_nakci (fsm *, u_char *, int, int);
+static int  ccp_rejci (fsm *, u_char *, int);
+static int  ccp_reqci (fsm *, u_char *, int *, int);
 static void ccp_up (fsm *);
 static void ccp_down (fsm *);
-static int32_t  ccp_extcode (fsm *, int32_t, int32_t, u_char *, int32_t);
+static int  ccp_extcode (fsm *, int, int, u_char *, int);
 static void ccp_rack_timeout (void *);
 static const char *method_name (ccp_options *, ccp_options *);
 
@@ -245,7 +245,7 @@ static const fsm_callbacks ccp_callbacks = {
 /*
  * Do we want / did we get any compression?
  */
-static int32_t ccp_anycompress(ccp_options *opt) {
+static int ccp_anycompress(ccp_options *opt) {
     return (0
 #if DEFLATE_SUPPORT
 	|| (opt)->deflate
@@ -274,11 +274,11 @@ static int32_t ccp_anycompress(ccp_options *opt) {
 /*
  * Option parsing
  */
-static int32_t
+static int
 setbsdcomp(argv)
     char **argv;
 {
-    int32_t rbits, abits;
+    int rbits, abits;
     char *str, *endp;
 
     str = *argv;
@@ -313,11 +313,11 @@ setbsdcomp(argv)
     return 1;
 }
 
-static int32_t
+static int
 setdeflate(argv)
     char **argv;
 {
-    int32_t rbits, abits;
+    int rbits, abits;
     char *str, *endp;
 
     str = *argv;
@@ -452,10 +452,10 @@ static void ccp_lowerdown(ppp_pcb *pcb) {
 /*
  * ccp_input - process a received CCP packet.
  */
-static void ccp_input(ppp_pcb *pcb, u_char *p, int32_t len) {
+static void ccp_input(ppp_pcb *pcb, u_char *p, int len) {
     fsm *f = &pcb->ccp_fsm;
     ccp_options *go = &pcb->ccp_gotoptions;
-    int32_t oldstate;
+    int oldstate;
 
     /*
      * Check for a terminate-request so we can print a message.
@@ -484,7 +484,7 @@ static void ccp_input(ppp_pcb *pcb, u_char *p, int32_t len) {
 /*
  * Handle a CCP-specific code.
  */
-static int32_t ccp_extcode(fsm *f, int32_t code, int32_t id, u_char *p, int32_t len) {
+static int ccp_extcode(fsm *f, int code, int id, u_char *p, int len) {
     ppp_pcb *pcb = f->pcb;
     LWIP_UNUSED_ARG(p);
     LWIP_UNUSED_ARG(len);
@@ -549,7 +549,7 @@ static void ccp_resetci(fsm *f) {
     u_char opt_buf[CCP_MAX_OPTION_LENGTH];
 #endif /* DEFLATE_SUPPORT || BSDCOMPRESS_SUPPORT || PREDICTOR_SUPPORT */
 #if DEFLATE_SUPPORT || BSDCOMPRESS_SUPPORT
-    int32_t res;
+    int res;
 #endif /* DEFLATE_SUPPORT || BSDCOMPRESS_SUPPORT */
 
 #if MPPE_SUPPORT
@@ -565,8 +565,8 @@ static void ccp_resetci(fsm *f) {
 
 #if MPPE_SUPPORT
     if (go->mppe) {
-	int32_t auth_mschap_bits = pcb->auth_done;
-	int32_t numbits;
+	int auth_mschap_bits = pcb->auth_done;
+	int numbits;
 
 	/*
 	 * Start with a basic sanity check: mschap[v2] auth must be in
@@ -740,7 +740,7 @@ static void ccp_resetci(fsm *f) {
 /*
  * ccp_cilen - Return total length of our configuration info.
  */
-static int32_t ccp_cilen(fsm *f) {
+static int ccp_cilen(fsm *f) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
 
@@ -765,7 +765,7 @@ static int32_t ccp_cilen(fsm *f) {
 /*
  * ccp_addci - put our requests in a packet.
  */
-static void ccp_addci(fsm *f, u_char *p, int32_t *lenp) {
+static void ccp_addci(fsm *f, u_char *p, int *lenp) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
     u_char *p0 = p;
@@ -832,7 +832,7 @@ static void ccp_addci(fsm *f, u_char *p, int32_t *lenp) {
  * ccp_ackci - process a received configure-ack, and return
  * 1 iff the packet was OK.
  */
-static int32_t ccp_ackci(fsm *f, u_char *p, int32_t len) {
+static int ccp_ackci(fsm *f, u_char *p, int len) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
 #if BSDCOMPRESS_SUPPORT || PREDICTOR_SUPPORT
@@ -925,7 +925,7 @@ static int32_t ccp_ackci(fsm *f, u_char *p, int32_t len) {
  * ccp_nakci - process received configure-nak.
  * Returns 1 iff the nak was OK.
  */
-static int32_t ccp_nakci(fsm *f, u_char *p, int32_t len, int32_t treat_as_reject) {
+static int ccp_nakci(fsm *f, u_char *p, int len, int treat_as_reject) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
     ccp_options no;		/* options we've seen already */
@@ -1018,7 +1018,7 @@ static int32_t ccp_nakci(fsm *f, u_char *p, int32_t len, int32_t treat_as_reject
 /*
  * ccp_rejci - reject some of our suggested compression methods.
  */
-static int32_t ccp_rejci(fsm *f, u_char *p, int32_t len) {
+static int ccp_rejci(fsm *f, u_char *p, int len) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *go = &pcb->ccp_gotoptions;
     ccp_options try_;		/* options to request next time */
@@ -1102,17 +1102,17 @@ static int32_t ccp_rejci(fsm *f, u_char *p, int32_t len) {
  * Returns CONFACK, CONFNAK or CONFREJ and the packet modified
  * appropriately.
  */
-static int32_t ccp_reqci(fsm *f, u_char *p, int32_t *lenp, int32_t dont_nak) {
+static int ccp_reqci(fsm *f, u_char *p, int *lenp, int dont_nak) {
     ppp_pcb *pcb = f->pcb;
     ccp_options *ho = &pcb->ccp_hisoptions;
     ccp_options *ao = &pcb->ccp_allowoptions;
-    int32_t ret, newret;
+    int ret, newret;
 #if DEFLATE_SUPPORT || BSDCOMPRESS_SUPPORT
-    int32_t res;
-    int32_t nb;
+    int res;
+    int nb;
 #endif /* DEFLATE_SUPPORT || BSDCOMPRESS_SUPPORT */
     u_char *p0, *retp;
-    int32_t len, clen, type;
+    int len, clen, type;
 #if MPPE_SUPPORT
     u8_t rej_for_ci_mppe = 1;	/* Are we rejecting based on a bad/missing */
 				/* CI_MPPE, or due to other options?       */
@@ -1205,7 +1205,7 @@ static int32_t ccp_reqci(fsm *f, u_char *p, int32_t *lenp, int32_t dont_nak) {
 		/* rebuild the opts */
 		MPPE_OPTS_TO_CI(ho->mppe, &p[2]);
 		if (newret == CONFACK) {
-		    int32_t mtu;
+		    int mtu;
 
 		    mppe_init(pcb, &pcb->mppe_comp, ho->mppe);
 		    /*
@@ -1519,10 +1519,10 @@ static const char* const ccp_codenames[] = {
     "ResetReq", "ResetAck",
 };
 
-static int32_t ccp_printpkt(const u_char *p, int32_t plen, void (*printer) (void *, const char *, ...), void *arg) {
+static int ccp_printpkt(const u_char *p, int plen, void (*printer) (void *, const char *, ...), void *arg) {
     const u_char *p0, *optend;
-    int32_t code, id, len;
-    int32_t optlen;
+    int code, id, len;
+    int optlen;
 
     p0 = p;
     if (plen < HEADERLEN)
@@ -1533,7 +1533,7 @@ static int32_t ccp_printpkt(const u_char *p, int32_t plen, void (*printer) (void
     if (len < HEADERLEN || len > plen)
 	return 0;
 
-    if (code >= 1 && code <= (int32_t)LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != NULL)
+    if (code >= 1 && code <= (int)LWIP_ARRAYSIZE(ccp_codenames) && ccp_codenames[code-1] != NULL)
 	printer(arg, " %s", ccp_codenames[code-1]);
     else
 	printer(arg, " code=0x%x", code);
@@ -1657,7 +1657,7 @@ static int32_t ccp_printpkt(const u_char *p, int32_t plen, void (*printer) (void
  * decompression; if it was, we take CCP down, thus disabling
  * compression :-(, otherwise we issue the reset-request.
  */
-static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, int32_t len) {
+static void ccp_datainput(ppp_pcb *pcb, u_char *pkt, int len) {
     fsm *f;
 #if MPPE_SUPPORT
     ccp_options *go = &pcb->ccp_gotoptions;

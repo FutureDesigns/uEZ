@@ -22,12 +22,14 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZPlatformAPI.h>
 #include <string.h>
 #include "SDCard_MS_driver_MCI.h"
 //#include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_GPIO.h>
 #include <HAL/MCI.h>
 #include <stdio.h>
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 
 /*---------------------------------------------------------------------------*
  * Options:
@@ -51,7 +53,7 @@
 #define SDCARD_MCI_RATE_FOR_ID_STATE            200000UL   // 400kHz (100-400kHz)
 #endif
 #ifndef SDCARD_MCI_RATE_FOR_RW_STATE
-#define SDCARD_MCI_RATE_FOR_RW_STATE            20000000UL // 0000UL // 18000000UL // 18 MHz
+#define SDCARD_MCI_RATE_FOR_RW_STATE            25000000UL // 0000UL // 18000000UL // 18 MHz
 #endif
 
 #define SDCARD_FAILED_READ_RETRY_COUNT              5
@@ -63,7 +65,7 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-#define IGrab()         UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE)
+#define IGrab()         UEZSemaphoreGrab(p->iSem, 10000)
 #define IRelease()      UEZSemaphoreRelease(p->iSem)
 
 #if SDCARD_DEBUG_OUTPUT
@@ -98,6 +100,8 @@ typedef struct {
     TUInt8 iStat;
     T_uezSemaphore iIsComplete;
     HAL_MCI **iMCI;
+    TBool i4bitModeEnabled;
+    TUInt32 iError;
 } T_MassStorage_SDCard_MCI_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -110,6 +114,9 @@ typedef struct {
 static T_uezError ISDCard_MS_MCI_GetSizeInfo(
     void *aWorkspace,
     T_msSizeInfo *aInfo);
+
+static void IMCIComplete(void *aWorkspace);
+static void IMCIError(void *aWorkspace);
 
 /*---------------------------------------------------------------------------*
  * Routine:  MassStorage_SDCard_MCI_InitializeWorkspace
@@ -130,6 +137,11 @@ static T_uezError MassStorage_SDCard_MCI_InitializeWorkspace(void *aWorkspace)
     p->iCardType = 1;
     p->iInitPerformed = EFalse;
     p->iStat = STA_NOINIT;
+    if(UEZPlatform_MCI_TransferMode() == UEZ_MCI_BUS_4BIT_WIDE) {
+      p->i4bitModeEnabled = ETrue;
+    } else {
+      p->i4bitModeEnabled = EFalse;
+    }
 
     error = UEZSemaphoreCreateBinary(&p->iSem);
     if (error)
@@ -269,25 +281,29 @@ static T_uezError SDCard_MS_MCI_Init(void *aWorkspace, TUInt32 aAddress)
             goto di_fail;
     }
 
-    /* Set wide bus mode (for SDCs) */
-    if (type & CT_SDC) {
-        /* Set wide bus mode of SDC */
-        if (!(*p->iMCI)->SendCommand(p->iMCI, MCI_ACMD6, 2, 1, response)
-            || (response[0] & 0xFDF90000))
-            goto di_fail;
+    // Now we are ready to increase clock, switch to 4-bit mode or start data transfer
+    if(p->i4bitModeEnabled == ETrue) {
+      /* Set wide bus mode (for SDCs) */
+      if (type & CT_SDC) {
+          /* Set wide bus mode of SDC */
+          if (!(*p->iMCI)->SendCommand(p->iMCI, MCI_ACMD6, 2, 1, response)
+              || (response[0] & 0xFDF90000))
+              goto di_fail;
 
-        /* Set wide bus mode of MCI */
-        (*p->iMCI)->SetDataBus(p->iMCI, UEZ_MCI_BUS_4BIT_WIDE);
+          /* Set wide bus mode of MCI */
+          (*p->iMCI)->SetDataBus(p->iMCI, UEZ_MCI_BUS_4BIT_WIDE);
+      }
     }
 
-    (*p->iMCI)->SetClockRate(p->iMCI, SDCARD_MCI_RATE_FOR_RW_STATE, ETrue);
+    (*p->iMCI)->SetClockRate(p->iMCI, UEZPlatform_MCI_DefaultFreq(), ETrue);
+
+    p->iInitPerformed = ETrue;
 
     error = ISDCard_MS_MCI_GetSizeInfo(aWorkspace, &si);
     if (error)
         goto di_fail;
 
     /* Initialization succeeded */
-    p->iInitPerformed = ETrue;
     p->iStat &= ~STA_NOINIT; /* Clear STA_NOINIT */
     return UEZ_ERROR_NONE;
 
@@ -348,8 +364,9 @@ static T_uezError IWaitReady(T_MassStorage_SDCard_MCI_Workspace *p, TUInt32 tmr)
             && ((responseCode & 0x01E00) == 0x00800)) {
             break;
         }
-
-        UEZTaskDelay(5);
+        
+        UEZTaskDelay(1); // TODO shorten this someday for video player. We probaly have 1 task delay per frame at this point since we read per frame.
+        // It seems that doing BSP blocking US delay here is bad here as we need to process other tasks such as audio. So the easiest speedup would be to increase the tick rate.
     }
 
     return UEZ_ERROR_NONE;
@@ -360,6 +377,13 @@ static void IMCIComplete(void *aWorkspace)
     T_MassStorage_SDCard_MCI_Workspace *p =
         (T_MassStorage_SDCard_MCI_Workspace *)aWorkspace;
     _isr_UEZSemaphoreRelease(p->iIsComplete);
+}
+
+static void IMCIError(void *aWorkspace)
+{
+    T_MassStorage_SDCard_MCI_Workspace *p =
+        (T_MassStorage_SDCard_MCI_Workspace *)aWorkspace;
+        p->iError = 1;
 }
 
 /*---------------------------------------------------------------------------*
@@ -394,6 +418,7 @@ static T_uezError SDCard_MS_MCI_Read(
     TUInt8 *buff = aBuffer;
     TUInt8 *buffStart = aBuffer;
     TUInt8 retry = SDCARD_FAILED_READ_RETRY_COUNT;
+    TUInt8 OODretry = 3;
     TUInt32 numTransferring;
     TUInt32 countLeft = 0;
 
@@ -430,6 +455,7 @@ static T_uezError SDCard_MS_MCI_Read(
 
         do {
             while (retry) {
+                p->iError = 0;
                 /* Ready to receive data blocks up to count in size */
                 /* numTransferring tells how many the MCI driver can handle in
                  * one stream. */
@@ -452,14 +478,36 @@ static T_uezError SDCard_MS_MCI_Read(
                         while (1) {
                             // Wait for a block or timeout
                             dprintf("?");
-                            UEZSemaphoreGrab(p->iIsComplete, 500);
+                            if(UEZSemaphoreGrab(p->iIsComplete, 500) == UEZ_ERROR_TIMEOUT) {
+                                dprintf("!"); // we don't ever trigger a timeout so far in current testing
+                                error = UEZ_ERROR_READ_WRITE_ERROR;
+                                break;
+                            }                            
                             error = (*p->iMCI)->Read(p->iMCI, buff, 512);
+                            
                             if (error == UEZ_ERROR_OUT_OF_DATA) {
+                                dprintf("-"); // when we are reading and writing large files we sometimes need to wait for buffers to clear out or wait on SD card
+                                OODretry--;
+                                if(OODretry > 0) {
+                                  continue;
+                                } else {
+                                  UEZTaskDelay(1);
+                                  break;
+                                }
+                            }
+                            
+                            if(p->iError == 1) { // got callback error
                                 dprintf("-");
-                                continue;
+                                error = UEZ_ERROR_READ_WRITE_ERROR;
+                                break;
+                            }
+                            
+                            if (error == UEZ_ERROR_READ_WRITE_ERROR) {
+                                dprintf("!");//printf("!");
+                                break;
                             }
                             if (error) {
-                                dprintf("!");
+                                dprintf("!");//printf("!");
                                 error = UEZ_ERROR_READ_WRITE_ERROR;
                                 break;
                             }
@@ -480,15 +528,22 @@ static T_uezError SDCard_MS_MCI_Read(
                 (*p->iMCI)->StopTransfer(p->iMCI); /* Close data path */
                 if (countLeft || cmd == MCI_CMD18) /* Terminate to read if needed */
                     (*p->iMCI)->SendCommand(p->iMCI, MCI_CMD12, 0, 1, &response);
-
+                
+                if(p->iError == 1){
+                    UEZTaskDelay(1);
+                }
+                // It appears that we fixed all buffer problems on LPCXX88 so delays aren't required.
+                //UEZTaskDelay(1);// allow time for buffers to prepare for next transfer
+                                
                 if (error) {
-                    dprintf("Retry\n");
+                    //dprintf("Retry\n");
+                    //DEBUG_RTT_WriteString(0, "Retry\n");
                     retry--;
                 } else {
                     dprintf("Done\n");
                     break;
                 }
-            }
+            } // end retry loop
             if (error)
                 break;
 
@@ -505,7 +560,9 @@ static T_uezError SDCard_MS_MCI_Read(
             buffStart += numTransferring * 512;
         } while (1);
 
-        error = count ? UEZ_ERROR_READ_WRITE_ERROR : UEZ_ERROR_NONE;
+        if(error != UEZ_ERROR_READ_WRITE_ERROR) {
+            error = count ? UEZ_ERROR_READ_WRITE_ERROR : UEZ_ERROR_NONE;
+        }
         break;
     }
 
@@ -544,6 +601,7 @@ static T_uezError SDCard_MS_MCI_Write(
     TUInt32 numWriting;
     TUInt32 sector = aStart;
     const TUInt8 *buffStart = aBuffer;
+    TUInt8 retry = SDCARD_FAILED_READ_RETRY_COUNT;
 
     IGrab();
 
@@ -571,64 +629,94 @@ static T_uezError SDCard_MS_MCI_Write(
         // Write in multiple runs
         while (aNumBlocks) {
             /* Make sure that card is tran state */
-            if (IWaitReady(p, 500) != UEZ_ERROR_NONE) {
-                error = UEZ_ERROR_TIMEOUT;
+            if (IWaitReady(p, 1000) != UEZ_ERROR_NONE) {
+                error = UEZ_ERROR_TIMEOUT;//printf("!");
                 break;
             }
 
-            // Prepare the number of blocks we are going to transfer
-// TODO: Multi-block writes are not working dependably yet! -- LES 3/15/2013
-            (*p->iMCI)->ReadyTransmission(p->iMCI, 1 /* aNumBlocks */, 512, &numWriting);
+            while (retry) {
+                p->iError = 0;
+				// Prepare the number of blocks we are going to transfer
+				// TODO: Multi-block writes are not working dependably yet! -- LES 3/15/2013
+				// As of 7/8/22 it is still not reliable. Managed to write garbage using draw program
+				(*p->iMCI)->ReadyTransmission(p->iMCI, 1 /* aNumBlocks */, 512, &numWriting);
 
-            /* Single or multiple block write? */
-            if (numWriting == 1) {
-                /* Single block write */
-                command = MCI_CMD24;
-            } else {
-                /* Multiple block write */
-                command = (p->iCardType & CT_SDC) ? MCI_ACMD23 : MCI_CMD23;
+				/* Single or multiple block write? */
+				if (numWriting == 1) {
+					/* Single block write */
+					command = MCI_CMD24;
+				} else {
+					/* Multiple block write */
+					command = (p->iCardType & CT_SDC) ? MCI_ACMD23 : MCI_CMD23;
 
-                /* Preset number of blocks to write */
-                if (!(*p->iMCI)->SendCommand(p->iMCI, command, numWriting, 1, &response)
-                    || (response & 0xC0580000)) {
-                    error = UEZ_ERROR_READ_WRITE_ERROR;
-                    break;
-                }
-                command = MCI_CMD25;
-            }
+					/* Preset number of blocks to write */
+					if (!(*p->iMCI)->SendCommand(p->iMCI, command, numWriting, 1, &response)
+						|| (response & 0xC0580000)) {
+						error = UEZ_ERROR_READ_WRITE_ERROR;
+						break;
+					}
+					command = MCI_CMD25;
+				}
+				
+				// Prepare a number of blocks for writing
+				num = numWriting;
+				while (num && ((*p->iMCI)->IsWriteAvailable(p->iMCI))) {
+					// Write out a block into the waiting MCI commands
+					error = (*p->iMCI)->Write(p->iMCI, buffStart, 512);
+					if(error) {
+					  break;
+					}
+					buffStart += 512;
+					num--;
+				};
 
-            /* Send a write command */
-            if (!(*p->iMCI)->SendCommand(p->iMCI, command, sector, 1, &response)
-                || (response & 0xC0580000)) {
-                error = UEZ_ERROR_READ_WRITE_ERROR;
-                break;
-            }
+				// It appears that we fixed all buffer problems on LPCXX88 so delays aren't required.
+				//UEZTaskDelay(1);// allow time for buffers to prepare for next transfer
 
-            // Prepare a number of blocks for writing
-            num = numWriting;
-            while (num && ((*p->iMCI)->IsWriteAvailable(p->iMCI))) {
-                // Write out a block into the waiting MCI commands
-                (*p->iMCI)->Write(p->iMCI, buffStart, 512);
-                buffStart += 512;
-                num--;
-            };
+				/* Send a write command */
+				if (!(*p->iMCI)->SendCommand(p->iMCI, command, sector, 1, &response)
+					|| (response & 0xC0580000)) {
+					error = UEZ_ERROR_READ_WRITE_ERROR;
+					break;
+				}
+				// Start transmitting immediately after sending command, but report when we get a transmission complete
+				(*p->iMCI)->StartTransmission(p->iMCI, IMCIComplete, p);
 
-            // Start transmitting, but report when we get a transmission complete
-            (*p->iMCI)->StartTransmission(p->iMCI, IMCIComplete, p);
+				// Wait for all blocks to be transferred
+				if(UEZSemaphoreGrab(p->iIsComplete, 1000 * numWriting) == UEZ_ERROR_TIMEOUT) {
+				  //printf("!"); // we don't ever trigger a timeout so far
+				   error = UEZ_ERROR_READ_WRITE_ERROR;
+				}
+		  
+				/* Close data path */
+				(*p->iMCI)->StopTransfer(p->iMCI);
 
-            // Wait for all blocks to be transferred
-            UEZSemaphoreGrab(p->iIsComplete, 500 * numWriting);
+				/* Terminate to write if needed */
+				if ((command == MCI_CMD25) && (p->iCardType & CT_SDC)) {
+					(*p->iMCI)->SendCommand(p->iMCI, MCI_CMD12, 0, 1, &response);
+				}
 
-            /* Close data path */
-            (*p->iMCI)->StopTransfer(p->iMCI);
+				if(p->iError == 1){
+					//dprintf("+"); // when writing files we occasionally trigger TX underrun (with wrong DMA setting only)
+					// But now we can properly retry and not corrupt data.
+					// Change the DMA setting to be source flow control to get write errors to test retry.
+					error = UEZ_ERROR_READ_WRITE_ERROR;
+					//UEZTaskDelay(1);
+				}
+			
+				if (error) {
+					dprintf("RetryW\n");
+					retry--;
+				} else {
+					dprintf("Done\n");
+					break;
+				}
 
-            /* Terminate to write if needed */
-            if ((command == MCI_CMD25) && (p->iCardType & CT_SDC))
-                (*p->iMCI)->SendCommand(p->iMCI, MCI_CMD12, 0, 1, &response);
-
+            } // end retry loop
+            
             // We have a few less blocks to transfer
             aNumBlocks -= numWriting;
-
+            
             // Determine next sector
             if (!(p->iCardType & CT_BLOCK))
                 sector += 512*numWriting;
@@ -665,7 +753,7 @@ static T_uezError SDCard_MS_MCI_Sync(void *aWorkspace)
     IGrab();
 
     // Just wait until we are ready or timeout
-    error = IWaitReady(p, 500);
+    error = IWaitReady(p, 1000);
 
     IRelease();
 
@@ -692,38 +780,54 @@ static T_uezError ISDCard_MS_MCI_GetSizeInfo(
     TUInt8 *p_csd = (TUInt8 *)p->iCardInfo;
     TUInt32 v;
     TUInt32 n;
+    T_uezError error = UEZ_ERROR_NONE;
 
-    // Get the number of sectors
-    // What SDC version?
-    if ((p_csd[0] >> 6) == 1) {
-        // SDC ver 2.00
-        v = p_csd[9] + ((TUInt16)p_csd[8] << 8) + 1;
-        aInfo->iNumSectors = v << 10;
-    } else {
-        // MMC or SDC ver 1.XX
-        n = (p_csd[5] & 15) + ((p_csd[10] & 128) >> 7) + ((p_csd[9] & 3) << 1)
-            + 2;
-        v = (p_csd[8] >> 6) + ((TUInt16)p_csd[7] << 2)
-            + ((TUInt16)(p_csd[6] & 3) << 10) + 1;
-        aInfo->iNumSectors = (TUInt32)v << (n - 9);
+
+    if (!p->iInitPerformed) { // drive not initialized
+        SDCard_MS_MCI_Init(aWorkspace, 0); // Force perform init here
     }
 
-    // Get the size of the sectors (just hard code to 512)
-    aInfo->iSectorSize = 512;
-
-    // Determine the block size
-    // SDC or MMC?
-    if (p->iCardType & 2) {
-        // SDC
-        aInfo->iBlockSize = (((p_csd[10] & 63) << 1)
-            + ((TUInt16)(p_csd[11] & 128) >> 7) + 1) << ((p_csd[13] >> 16) - 1);
+    IGrab();
+    if (!p->iInitPerformed) { // drive not initialized
+      aInfo->iSectorSize = 512;
+      aInfo->iNumSectors = 0;
+      aInfo->iBlockSize = 0;
+      error = UEZ_ERROR_NAK;
     } else {
-        // MMC
-        aInfo->iBlockSize = ((TUInt16)((p_csd[10] & 124) >> 2) + 1)
-            * (((p_csd[11] & 3) << 3) + ((p_csd[11] & 224) >> 5) + 1);
+        // Get the number of sectors
+        // What SDC version?
+        if ((p_csd[0] >> 6) == 1) {
+            // SDC ver 2.00
+            v = p_csd[9] + ((TUInt16)p_csd[8] << 8) + 1;
+            aInfo->iNumSectors = v << 10;
+        } else {
+            // MMC or SDC ver 1.XX
+            n = (p_csd[5] & 15) + ((p_csd[10] & 128) >> 7) + ((p_csd[9] & 3) << 1)
+                + 2;
+            v = (p_csd[8] >> 6) + ((TUInt16)p_csd[7] << 2)
+                + ((TUInt16)(p_csd[6] & 3) << 10) + 1;
+            aInfo->iNumSectors = (TUInt32)v << (n - 9);
+        }
+
+        // Get the size of the sectors (just hard code to 512)
+        aInfo->iSectorSize = 512;
+
+        // Determine the block size
+        // SDC or MMC?
+        if (p->iCardType & 2) {
+            // SDC
+            aInfo->iBlockSize = (((p_csd[10] & 63) << 1)
+                + ((TUInt16)(p_csd[11] & 128) >> 7) + 1) << ((p_csd[13] >> 16) - 1);
+        } else {
+            // MMC
+            aInfo->iBlockSize = ((TUInt16)((p_csd[10] & 124) >> 2) + 1)
+                * (((p_csd[11] & 3) << 3) + ((p_csd[11] & 224) >> 5) + 1);
+        }
     }
 
-    return UEZ_ERROR_NONE;
+    IRelease();
+
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -742,13 +846,11 @@ static T_uezError SDCard_MS_MCI_GetSizeInfo(
     T_msSizeInfo *aInfo)
 {
     T_uezError error;
-    T_MassStorage_SDCard_MCI_Workspace *p =
-        (T_MassStorage_SDCard_MCI_Workspace *)aWorkspace;
-
-    IGrab();
-    error = ISDCard_MS_MCI_GetSizeInfo(aWorkspace, aInfo);
-    IRelease();
-
+    //T_MassStorage_SDCard_MCI_Workspace *p =
+        //(T_MassStorage_SDCard_MCI_Workspace *)aWorkspace;
+    
+    error = ISDCard_MS_MCI_GetSizeInfo(aWorkspace, aInfo); // We do the semaphore grab in the internal funct.
+    
     return error;
 }
 
@@ -860,6 +962,7 @@ void MassStorage_SDCard_MCI_Create(const char *aName, const char *aHALMCI, const
 
 
     HALInterfaceFind(aHALMCI, (T_halWorkspace **)&p->iMCI);
+    (*p->iMCI)->SetErrorCallback(p->iMCI, IMCIError, p);
 }
 
 /*---------------------------------------------------------------------------*

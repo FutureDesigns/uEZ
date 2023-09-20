@@ -45,36 +45,14 @@ extern "C" {
 #endif
 
 #include "lwip/mem.h"
+#include "lwip/priv/mem_priv.h"
 
 #if MEMP_OVERFLOW_CHECK
-/* if MEMP_OVERFLOW_CHECK is turned on, we reserve some bytes at the beginning
- * and at the end of each element, initialize them as 0xcd and check
- * them later. */
-/* If MEMP_OVERFLOW_CHECK is >= 2, on every call to memp_malloc or memp_free,
- * every single element in each pool is checked!
- * This is VERY SLOW but also very helpful. */
-/* MEMP_SANITY_REGION_BEFORE and MEMP_SANITY_REGION_AFTER can be overridden in
- * lwipopts.h to change the amount reserved for checking. */
-#ifndef MEMP_SANITY_REGION_BEFORE
-#define MEMP_SANITY_REGION_BEFORE  16
-#endif /* MEMP_SANITY_REGION_BEFORE*/
-#if MEMP_SANITY_REGION_BEFORE > 0
-#define MEMP_SANITY_REGION_BEFORE_ALIGNED    LWIP_MEM_ALIGN_SIZE(MEMP_SANITY_REGION_BEFORE)
-#else
-#define MEMP_SANITY_REGION_BEFORE_ALIGNED    0
-#endif /* MEMP_SANITY_REGION_BEFORE*/
-#ifndef MEMP_SANITY_REGION_AFTER
-#define MEMP_SANITY_REGION_AFTER   16
-#endif /* MEMP_SANITY_REGION_AFTER*/
-#if MEMP_SANITY_REGION_AFTER > 0
-#define MEMP_SANITY_REGION_AFTER_ALIGNED     LWIP_MEM_ALIGN_SIZE(MEMP_SANITY_REGION_AFTER)
-#else
-#define MEMP_SANITY_REGION_AFTER_ALIGNED     0
-#endif /* MEMP_SANITY_REGION_AFTER*/
+
 
 /* MEMP_SIZE: save space for struct memp and for sanity check */
-#define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(struct memp)) + MEMP_SANITY_REGION_BEFORE_ALIGNED)
-#define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEMP_SANITY_REGION_AFTER_ALIGNED)
+#define MEMP_SIZE          (LWIP_MEM_ALIGN_SIZE(sizeof(struct memp)) + MEM_SANITY_REGION_BEFORE_ALIGNED)
+#define MEMP_ALIGN_SIZE(x) (LWIP_MEM_ALIGN_SIZE(x) + MEM_SANITY_REGION_AFTER_ALIGNED)
 
 #else /* MEMP_OVERFLOW_CHECK */
 
@@ -92,7 +70,7 @@ struct memp {
   struct memp *next;
 #if MEMP_OVERFLOW_CHECK
   const char *file;
-  int32_t line;
+  int line;
 #endif /* MEMP_OVERFLOW_CHECK */
 };
 #endif /* !MEMP_MEM_MALLOC || MEMP_OVERFLOW_CHECK */
@@ -169,7 +147,7 @@ struct memp_desc {
 void memp_init_pool(const struct memp_desc *desc);
 
 #if MEMP_OVERFLOW_CHECK
-void *memp_malloc_pool_fn(const struct memp_desc* desc, const char* file, const int32_t line);
+void *memp_malloc_pool_fn(const struct memp_desc* desc, const char* file, const int line);
 #define memp_malloc_pool(d) memp_malloc_pool_fn((d), __FILE__, __LINE__)
 #else
 void *memp_malloc_pool(const struct memp_desc *desc);

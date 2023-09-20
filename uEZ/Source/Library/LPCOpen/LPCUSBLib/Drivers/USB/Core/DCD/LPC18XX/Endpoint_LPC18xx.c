@@ -525,13 +525,15 @@ void DcdIrqHandler(uint8_t corenum)
 
 	if (USBSTS_D & USBSTS_D_PortChangeDetect) {					/* Resume */
 	    unsigned char portSpeed = ((USB_Reg->PORTSC1_D & PORTSC_D_PortSpeed) >> 26) & 3;
-	    extern void USB_Event_Stub(void) ATTR_CONST;
+	    extern void USB_Event_Stub(void);// ATTR_CONST;
+	    extern void USB_Event_Stub_param(const uint8_t ErrorCode);// ATTR_CONST;
+	    extern void USB_Event_Stub_param_2(const uint8_t ErrorCode, const uint8_t SubErrorCode);// ATTR_CONST;
 	    if (portSpeed == 2) {
 	        // High speed
-            USB_DeviceSpeed[corenum] = portSpeed;
+                USB_DeviceSpeed[corenum] = portSpeed;
 	    } else {
 	        // Full speed
-            USB_DeviceSpeed[corenum] = portSpeed;
+                USB_DeviceSpeed[corenum] = portSpeed;
 	    }
 	    // Indicate connection by activating IND1
         // TODO: Currently turns OFF the indicator

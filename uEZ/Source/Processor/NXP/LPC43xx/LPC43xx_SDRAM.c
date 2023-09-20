@@ -40,8 +40,10 @@
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
-TUInt32 G_SDRAMAddress = 0;
-TUInt32 G_SDRAMSize = 0;
+/* Note that we don't access these variables here, but we can't set them
+ * here in SDRAM until after SDRAM is on. So force them into internal RAM.*/
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_SDRAMAddress = 0);
+UEZ_PUT_SECTION(".IRAM", TUInt32 G_SDRAMSize = 0);
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

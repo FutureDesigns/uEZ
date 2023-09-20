@@ -68,7 +68,7 @@ void md4_starts( md4_context *ctx );
  * \param input    buffer holding the  data
  * \param ilen     length of the input data
  */
-void md4_update( md4_context *ctx, const unsigned char *input, int32_t ilen );
+void md4_update( md4_context *ctx, const unsigned char *input, int ilen );
 
 /**
  * \brief          MD4 final digest
@@ -85,7 +85,7 @@ void md4_finish( md4_context *ctx, unsigned char output[16] );
  * \param ilen     length of the input data
  * \param output   MD4 checksum result
  */
-void md4( unsigned char *input, int32_t ilen, unsigned char output[16] );
+void md4( unsigned char *input, int ilen, unsigned char output[16] );
 
 
 #ifdef __cplusplus

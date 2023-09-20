@@ -513,7 +513,7 @@ CHIP_CGU_CLKIN_T Chip_Clock_GetBaseClock(CHIP_CGU_BASE_CLK_T BaseClock)
 /* Enables a peripheral clock and sets clock states */
 void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int32_t div)
 {
-	uint32_t reg = 1;
+	uint32_t reg = 1; // enables clock (Note this is reset value)
 
 	if (autoen) {
 		reg |= (1 << 1);
@@ -527,6 +527,20 @@ void Chip_Clock_EnableOpts(CHIP_CCU_CLK_T clk, bool autoen, bool wakeupen, int32
 	if (div == 2) {
 		reg |= (1 << 5);
 	}
+
+	/* Setup peripheral clock and start running */
+	if (clk >= CLK_CCU2_START) {
+		LPC_CCU2->CLKCCU[clk - CLK_CCU2_START].CFG = reg;
+	}
+	else {
+		LPC_CCU1->CLKCCU[clk].CFG = reg;
+	}
+}
+
+/* Disables a peripheral clock and sets clock states to 0 */
+void Chip_Clock_DisableOpts(CHIP_CCU_CLK_T clk)
+{
+	uint32_t reg = 0; // disable clock and all options
 
 	/* Setup peripheral clock and start running */
 	if (clk >= CLK_CCU2_START) {

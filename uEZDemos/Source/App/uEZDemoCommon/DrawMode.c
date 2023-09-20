@@ -32,6 +32,7 @@
 #include <uEZKeypad.h>
 #include <uEZPlatform.h>
 #include <Types/InputEvent.h>
+#include <uEZDemoCommon.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -603,6 +604,7 @@ void DrawMode(const T_choice *aChoice)
                 // Put the draw screen up
                 DR_Screen(lcd);
                 DR_DrawColor();
+                Storage_PrintInfo('0', ETrue);
 
                 while (!G_drExit) {
                     // Wait forever until we receive a touchscreen event

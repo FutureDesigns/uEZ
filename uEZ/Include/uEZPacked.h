@@ -75,6 +75,13 @@ extern "C" {
 #define PACK_STRUCT_FIELD(x) x
 #endif
 
+#if (COMPILER_TYPE==GCC)
+#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
+#endif
+  
 #if (COMPILER_TYPE==IAR)
 #define PACK_STRUCT_USE_INCLUDES 1
 #define PACK_STRUCT_BEGIN __packed
@@ -90,12 +97,6 @@ extern "C" {
 #define PACK_STRUCT_FIELD(x) x
 #endif
 
-#if (COMPILER_TYPE==GCC)
-#define PACK_STRUCT_BEGIN
-#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
-#define PACK_STRUCT_END
-#define PACK_STRUCT_FIELD(x) x
-#endif
 
 #if (COMPILER_TYPE==RenesasRX)
 #define PACK_STRUCT_USE_INCLUDES 1

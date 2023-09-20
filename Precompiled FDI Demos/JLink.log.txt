@@ -1,0 +1,105 @@
+SEGGER J-Link Commander V7.70e (Compiled Aug 31 2022 17:13:04)
+DLL version V7.70e, compiled Aug 31 2022 17:11:40
+
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>ExitOnError 1
+J-Link Commander will now exit on Error
+J-Link>usb 0
+Connecting to J-Link via USB...O.K.
+Firmware: J-Link Ultra V4 compiled Sep 24 2021 16:41:09
+Hardware version: V4.00
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 504403724
+License(s): RDI, FlashBP, FlashDL, JFlash, GDB
+VTref=3.316V
+J-Link>device LPC1788
+J-Link>si SWD
+Selecting SWD as current target interface.
+J-Link>speed 1000
+Selecting 1000 kHz as target interface speed
+J-Link>rx 200
+Target connection not established yet but required for command.
+Device "LPC1788" selected.
+
+
+Connecting to target via SWD
+Found SW-DP with ID 0x2BA01477
+DPIDR: 0x2BA01477
+CoreSight SoC-400 or earlier
+Scanning AP map to find all available APs
+AP[1]: Stopped AP scan as end of AP map has been reached
+AP[0]: AHB-AP (IDR: 0x24770011)
+Iterating through AP map to find AHB-AP to use
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x412FC230. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r2p0, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 002BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 002BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 002BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 002BB001 ITM
+[0][4]: E0040000 CID B105900D PID 002BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 002BB924 ETM-M3
+Cortex-M3 identified.
+Reset delay: 200 ms
+Reset type NORMAL: Resets core & peripherals via SYSRESETREQ & VECTRESET bit.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+J-Link>h
+PC = 000001FC, CycleCnt = 00000000
+R0 = 00000000, R1 = 000001FD, R2 = 00000000, R3 = 00000000
+R4 = 3456ABCD, R5 = 3456ABCD, R6 = 12345678, R7 = A5A5A5A5
+R8 = A5A5A5A5, R9 = A5A5A5A5, R10= A5A5A5A5, R11= A5A5A5A5
+R12= 00000460
+SP(R13)= 10000DA4, MSP= 10000DA4, PSP= A038CD68, R14(LR) = 1FFF0EA5
+XPSR = 61000000: APSR = nZCvq, EPSR = 01000000, IPSR = 000 (NoException)
+CFBP = 00000000, CONTROL = 00, FAULTMASK = 00, BASEPRI = 00, PRIMASK = 00
+FPU regs: FPU not enabled / not implemented on connected CPU.
+J-Link>w4 0x400FC1A0 0x20
+Writing 00000020 -> 400FC1A0
+J-Link>w4 0x400FC104 0x01
+Writing 00000001 -> 400FC104
+J-Link>w4 0x400FC080 0x00
+Writing 00000000 -> 400FC080
+J-Link>w4 0x400FC08C 0xAA
+Writing 000000AA -> 400FC08C
+J-Link>w4 0x400FC08C 0x55
+Writing 00000055 -> 400FC08C
+J-Link>w4 0x400FC10C 0x01
+Writing 00000001 -> 400FC10C
+J-Link>w4 0x400FC000 0x3A
+Writing 0000003A -> 400FC000
+J-Link>w4 0x400FC040 0x01
+Writing 00000001 -> 400FC040
+J-Link>erase
+No address range specified, 'Erase Chip' will be executed
+'erase': Performing implicit reset & halt of MCU.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+Erasing device...
+J-Link: Flash download: Total time needed: 3.806s (Prepare: 0.312s, Compare: 0.000s, Erase: 3.356s, Program: 0.000s, Verify: 0.000s, Restore: 0.137s)
+Erasing done.
+J-Link>loadfile "uEZGUI-1788-43WQR.hex"
+'loadfile': Performing implicit reset & halt of MCU.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+Downloading file [uEZGUI-1788-43WQR.hex]...
+J-Link: Flash download: Bank 0 @ 0x00000000: 2 ranges affected (524288 bytes)
+J-Link: Flash download: Total: 7.225s (Prepare: 0.272s, Compare: 0.136s, Erase: 0.000s, Program & Verify: 6.678s, Restore: 0.138s)
+J-Link: Flash download: Program & Verify speed: 76 KB/s
+O.K.
+J-Link>rx 200
+Reset delay: 200 ms
+Reset type NORMAL: Resets core & peripherals via SYSRESETREQ & VECTRESET bit.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+J-Link>g
+J-Link>q
+
+Script processing completed.
+

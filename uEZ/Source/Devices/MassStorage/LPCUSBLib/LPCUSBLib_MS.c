@@ -76,7 +76,11 @@ static T_LPCUSBLib_MS_Workspace *MS_Workspaces[2];
 /*---------------------------------------------------------------------------*
  * Prototypes:
  *---------------------------------------------------------------------------*/
+static void IEVENT_USB_Host_Error(const uint8_t corenum, const uint8_t ErrorCode);
 static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum);
+static void IEVENT_USB_Enum_Failed(const uint8_t corenum, const uint8_t ErrorCode, const uint8_t SubErrorCode);
+static void IEVENT_USB_Unattached(const uint8_t corenum);
+static void IEVENT_USB_Attached(const uint8_t corenum);
 static int32_t IUpdate(int32_t aUnitAddress);
 
 /*---------------------------------------------------------------------------*
@@ -420,17 +424,30 @@ static T_uezError MassStorage_LPCUSBLib_GetSizeInfo(
             T_msSizeInfo *aInfo)
 {
     T_LPCUSBLib_MS_Workspace *p = (T_LPCUSBLib_MS_Workspace *)aWorkspace;
+    T_uezError error = UEZ_ERROR_NONE;
+
+    if (!p->iInitPerformed) { // drive not initialized
+        // Force perform init here if we didn't read any files yet.
+        MassStorage_LPCUSBLib_Init(aWorkspace, 0);
+    }
 
     IGrab();
 
-    aInfo->iNumSectors = p->iDiskCapacity.Blocks;
-    aInfo->iBlockSize = p->iDiskCapacity.BlockSize;
-    aInfo->iSectorSize = 512; // always
+    if (!p->iInitPerformed) { // drive not initialized
+      aInfo->iSectorSize = 512;
+      aInfo->iNumSectors = 0;
+      aInfo->iBlockSize = 0;
+      error = UEZ_ERROR_NAK;
+    } else {
+    // Determine block size
+      aInfo->iNumSectors = p->iDiskCapacity.Blocks;
+      aInfo->iBlockSize = p->iDiskCapacity.BlockSize;
+      aInfo->iSectorSize = 512; // always
+    }
 
     IRelease();
 
-    // Determine block size
-    return UEZ_ERROR_NONE;
+    return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -525,11 +542,11 @@ static T_uezError MassStorage_LPCUSBLib_MiscControl(
 }
 
 static T_LPCUSBLib_Host_Callbacks G_HostCallbacks = {
-        0, // HostError
+        IEVENT_USB_Host_Error, // HostError
         IEVENT_USB_Host_DeviceEnumerationComplete, // DeviceEnumerationComplete
-        0, // DeviceEnumerationFailed
-        0, // DeviceUnattached
-        0, // DeviceAttached
+        IEVENT_USB_Enum_Failed, // DeviceEnumerationFailed
+        IEVENT_USB_Unattached, // DeviceUnattached
+        IEVENT_USB_Attached, // DeviceAttached
         IUpdate, // Update
 };
 /*---------------------------------------------------------------------------*
@@ -550,7 +567,7 @@ void MassStorage_LPCUSBLib_Create(
 {
     DEVICE_MassStorage **ms;
 
-    UEZ_LPCUSBLib_Host_Require(aUnitAddress, &G_HostCallbacks, 0);
+    UEZ_LPCUSBLib_Host_Require(aUnitAddress, &G_HostCallbacks, 1); // set to 1 to force full speed mode
 
     // Register USB Mass Storage device
     UEZDeviceTableRegister(
@@ -558,6 +575,7 @@ void MassStorage_LPCUSBLib_Create(
             (T_uezDeviceInterface *)&MassStorage_LPCUSBLib_Interface,
             0,
             (T_uezDeviceWorkspace **)&ms);
+        
     MassStorage_LPCUSBLib_Configure((void *)ms, aUnitAddress, aCallbacks, aCallbackWorkspace);
 }
 
@@ -628,6 +646,22 @@ static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
     //printf("Mass Storage Device Enumerated.\r\n");
 }
 
+static void IEVENT_USB_Host_Error(const uint8_t corenum, const uint8_t ErrorCode)
+{
+  //printf("Host Error\r\n");
+}
+static void IEVENT_USB_Enum_Failed(const uint8_t corenum, const uint8_t ErrorCode, const uint8_t SubErrorCode)
+{
+  //printf("Enum Failed\r\n");
+}
+static void IEVENT_USB_Unattached(const uint8_t corenum)
+{
+  //printf("USB Unattached\r\n");
+}
+static void IEVENT_USB_Attached(const uint8_t corenum)
+{
+  //printf("USB Attached\r\n");
+}
 
 /*---------------------------------------------------------------------------*
  * Device Interface table:

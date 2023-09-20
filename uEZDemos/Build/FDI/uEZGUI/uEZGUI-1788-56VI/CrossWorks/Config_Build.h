@@ -6,6 +6,7 @@
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 #define USB_PORT_B_HOST_DETECT_ENABLED      1
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_INTELTRONIC_LMIX0560NTN53V1
+#define USE_RESISTIVE_TOUCH                 1 // Set to 1 for resistive touch screen, 0 for PCAP. Affects some calibration/FCT code and startup routines.
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
 #ifdef FREERTOS_PLUS_TRACE
@@ -14,19 +15,25 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   0
-#define SEGGER_ENABLE_SYSTEM_VIEW           0
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              			0
 #else
 #define UEZ_REGISTER              			1  //Used for registering Queues and Semaphores in the RTOS
 #endif
 
+#define UEZ_ENABLE_LOOPBACK_TEST            0 // set to 1 to allow loopback test to run
+
+#if (UEZ_ENABLE_LOOPBACK_TEST == 1)
+#define UEZ_ENABLE_TCPIP_STACK              0
+#define USB_PORT_A_HOST_ENABLED             0
+#else
+#define UEZ_ENABLE_TCPIP_STACK              0
+#define USB_PORT_A_HOST_ENABLED             1
+#endif
+
 #define UEZ_ENABLE_AUDIO_AMP                1
 #define UEZ_ENABLE_USB_HOST_STACK           1
 #define UEZ_ENABLE_USB_DEVICE_STACK         1
-#define UEZ_ENABLE_TCPIP_STACK              1
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
@@ -55,19 +62,26 @@
 #define APP_DEMO_SLIDESHOW             		1
 #define APP_DEMO_VIDEO_PLAYER               0
 
-#define INCLUDE_EMWIN                       0
+#define INCLUDE_EMWIN                       1
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        1
 #endif
 #define APP_DEMO_YOUR_APP                   0
-#define SHOW_GUIDEMO_AUTOMOTIVE             1
-#define SHOW_GUIDEMO_GRAPH                  1
-#define SHOW_GUIDEMO_LISTVIE                1
-#define SHOW_GUIDEMO_SPEED                  1
-#define SHOW_GUIDEMO_TREEVIEW               1
+
+// smaller demos
+#define SHOW_GUIDEMO_SPEED                  0
+#define SHOW_GUIDEMO_AATEXT                 1
+#define SHOW_GUIDEMO_BARGRAPH               1
+#define SHOW_GUIDEMO_COLORBAR               1
+#define SHOW_GUIDEMO_CURSOR                 0
+
+// large demos
+#define SHOW_GUIDEMO_AUTOMOTIVE             0
+#define SHOW_GUIDEMO_GRAPH                  0
+#define SHOW_GUIDEMO_LISTVIEW               0
+#define SHOW_GUIDEMO_TREEVIEW               0
+#define SHOW_GUIDEMO_ICONVIEW               0
+#define SHOW_GUIDEMO_TRANSPARENTDIALOG      0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-1788-56VI"
-#define SLIDESHOW_PREFETCH_AHEAD            5
-#define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         5

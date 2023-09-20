@@ -24,9 +24,6 @@
 #define SELECTED_PORT PORT_ARM_CortexM
 #endif
 
-#define SEGGER_ENABLE_RTT                   0
-#define SEGGER_ENABLE_SYSTEM_VIEW           0
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              	        0
 #else
@@ -84,6 +81,3 @@
 #define SHOW_GUIDEMO_TREEVIEW               0
 
 #define UEZ_SLIDESHOW_NAME                  "uEZ-GW1"
-#define SLIDESHOW_PREFETCH_AHEAD            5
-#define SLIDESHOW_PREFETCH_BEHIND           1
-#define SLIDESHOW_NUM_CACHED_SLIDES         5

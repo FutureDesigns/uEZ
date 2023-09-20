@@ -126,11 +126,14 @@ _start:
   bl memory_copy
 #endif /* #ifdef INITIALIZE_SECONDARY_SECTIONS */
 
-  /* Zero the bss. */
+  /* Zero the bss, AFTER we have called RAM init */
+#if 1
   ldr r0, =__bss_start__
   ldr r1, =__bss_end__
   mov r2, #0
   bl memory_set
+#endif
+
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__bss2_start__
   ldr r1, =__bss2_end__
@@ -138,7 +141,8 @@ _start:
   bl memory_set
 #endif /* #ifdef INITIALIZE_SECONDARY_SECTIONS */
 
-  /* Initialise the heap */
+  /* Initialise the heap, AFTER we have called RAM init*/
+#if 1
   ldr r0, = __heap_start__
   ldr r1, = __heap_end__
   sub r1, r1, r0
@@ -146,6 +150,7 @@ _start:
   str r2, [r0]
   add r0, r0, #4
   str r1, [r0]
+#endif
 
   /* Call constructors */
   ldr r0, =__ctors_start__

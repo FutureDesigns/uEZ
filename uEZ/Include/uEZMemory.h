@@ -150,11 +150,12 @@ TUInt32 UEZMemGetNumBlocks(void);
 
 // Macros for memory placement and alignment. Tested on GCC/IAR
 #ifndef   UEZ_BUFFER_ALIGNMENT
-  #define UEZ_BUFFER_ALIGNMENT                     0
+  #define UEZ_BUFFER_ALIGNMENT         0 // will disable alignment for placement macro
 #endif
 
 #if (defined __ICCARM__) || (defined __ICCRX__)
   #define UEZ_PRAGMA(P) _Pragma(#P)
+  #define PRAGMA(A) _Pragma(#A)
 #endif
 
 #if UEZ_BUFFER_ALIGNMENT
@@ -167,7 +168,6 @@ TUInt32 UEZMemGetNumBlocks(void);
   #if (defined __GNUC__)
     #define UEZ_ALIGN(Alignment, ...) __attribute__ ((aligned (Alignment))) __VA_ARGS__
   #elif (defined __ICCARM__) || (defined __ICCRX__)
-    #define PRAGMA(A) _Pragma(#A)
 #define UEZ_ALIGN(Alignment, ...) UEZ_PRAGMA(data_alignment=Alignment) \
                                   __VA_ARGS__
   #elif (defined __CC_ARM)
@@ -189,6 +189,50 @@ TUInt32 UEZMemGetNumBlocks(void);
   #else
     #error "Section placement not supported for this compiler."
   #endif
+
+/***************************************************************************************
+ * Macro for general purpose variable alignment. This macro is always available.
+ ***************************************************************************************/
+#if (defined __GNUC__)
+  #define UEZ_ALIGN_VAR(Alignment, ...) __attribute__ ((aligned (Alignment))) __VA_ARGS__
+#elif (defined __ICCARM__) || (defined __ICCRX__)
+#define UEZ_ALIGN_VAR(Alignment, ...) UEZ_PRAGMA(data_alignment=Alignment) \
+                                  __VA_ARGS__
+#elif (defined __CC_ARM)
+  #define UEZ_ALIGN_VAR(Alignment, ...) __attribute__ ((aligned (Alignment))) __VA_ARGS__
+#else
+  #error "Alignment macro not supported for this compiler."
+#endif
+                                    
+/***************************************************************************************
+ * Macro for optimization settings. Mainly to turn it off for certain functions.
+ ***************************************************************************************/
+#if (defined __GNUC__)
+  #define UEZ_OPT_LEVEL_NONE  -0
+  #define UEZ_OPT_LEVEL_LOW   -1
+  #define UEZ_OPT_LEVEL_MED   -2
+  #define UEZ_OPT_LEVEL_HIGH  -3
+  #define UEZ_FUNC_OPT(Optimization, ...) __attribute__ ((optimize(Optimization))) __VA_ARGS__
+#elif (defined __ICCARM__) || (defined __ICCRX__)
+/* http://ftp.iar.se/WWWfiles/arm/webic/doc/EWARM_DevelopmentGuide.ENU.pdf
+ * Use this pragma directive to decrease the optimization level, or to turn 
+ * off some specific optimizations. This pragma directive only affects the
+ * function that follows immediately after the directive. */
+  #define UEZ_OPT_LEVEL_NONE  none
+  #define UEZ_OPT_LEVEL_LOW   low
+  #define UEZ_OPT_LEVEL_MED   medium
+  #define UEZ_OPT_LEVEL_HIGH  high
+  #define UEZ_FUNC_OPT(Optimization, ...) UEZ_PRAGMA(optimize=Optimization) \
+                                  __VA_ARGS__
+#elif (defined __CC_ARM)
+  #define UEZ_OPT_LEVEL_NONE  -0
+  #define UEZ_OPT_LEVEL_LOW   -1
+  #define UEZ_OPT_LEVEL_MED   -2
+  #define UEZ_OPT_LEVEL_HIGH  -3
+  #define UEZ_FUNC_OPT(Optimization, ...) __attribute__ ((optimize(Optimization))) __VA_ARGS__
+#else
+  #error "Optimization macro not supported for this compiler."
+#endif
 
 #ifdef __cplusplus
 }

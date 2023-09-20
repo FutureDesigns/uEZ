@@ -90,10 +90,10 @@ extern const struct memp_desc* const memp_pools[MEMP_MAX];
  *   - free: LWIP_MEMPOOL_FREE(my_private_pool, my_new_mem);
  *
  * To relocate a pool, declare it as extern in cc.h. Example for GCC:
- *   extern u8_t __attribute__((section(".onchip_mem"))) memp_memory_my_private_pool[];
+ *   extern u8_t \_\_attribute\_\_((section(".onchip_mem"))) memp_memory_my_private_pool_base[];
  */
 #define LWIP_MEMPOOL_DECLARE(name,num,size,desc) \
-  LWIP_DECLARE_MEMORY_ALIGNED(memp_memory_ ## name ## _base, ((num) * (MEMP_SIZE + MEMP_ALIGN_SIZE(size)))); \
+  UEZ_PUT_SECTION(".network", LWIP_DECLARE_MEMORY_ALIGNED(memp_memory_ ## name ## _base, ((num) * (MEMP_SIZE + MEMP_ALIGN_SIZE(size))))); \
     \
   LWIP_MEMPOOL_DECLARE_STATS_INSTANCE(memp_stats_ ## name) \
     \
@@ -141,7 +141,7 @@ struct memp_malloc_helper
 void  memp_init(void);
 
 #if MEMP_OVERFLOW_CHECK
-void *memp_malloc_fn(memp_t type, const char* file, const int32_t line);
+void *memp_malloc_fn(memp_t type, const char* file, const int line);
 #define memp_malloc(t) memp_malloc_fn((t), __FILE__, __LINE__)
 #else
 void *memp_malloc(memp_t type);

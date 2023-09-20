@@ -40,10 +40,9 @@ volatile bool Mem_IsInitialized = false;
 void USB_Init(uint8_t corenum, uint8_t mode)
 {
 #if defined(USB_CAN_BE_HOST)	
-	if (mode == USB_MODE_Host && Mem_IsInitialized == false)
-	{
-	USB_Memory_Init(USBRAM_BUFFER_SIZE);
-		Mem_IsInitialized = true;
+	if (mode == USB_MODE_Host && Mem_IsInitialized == false) {
+        USB_Memory_Init(USBRAM_BUFFER_SIZE);
+        Mem_IsInitialized = true;
 	}
 #endif
 	USB_CurrentMode[corenum] = mode;
@@ -125,7 +124,7 @@ static void USB_Init_Host(uint8_t corenum)
 {
 	// uint8_t i;
 
-	// for(i=0;i<PIPE_TOTAL_PIPES;i++) PipeInfo[i].PipeHandle=0;
+	// for(i=0;i<PIPE_TOTAL_PIPES;i++) PipeInfo[i].PipeHandle=0; // todo
 
 	pipeselected[corenum] = PIPE_CONTROLPIPE;
 

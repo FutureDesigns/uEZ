@@ -50,7 +50,7 @@
 
 #if PPP_SERVER
 static void chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
-	int32_t clen;
+	int clen;
 	LWIP_UNUSED_ARG(pcb);
 
 	clen = MD5_MIN_CHALLENGE + magic_pow(MD5_MIN_MAX_POWER_OF_TWO_CHALLENGE);
@@ -58,14 +58,14 @@ static void chap_md5_generate_challenge(ppp_pcb *pcb, unsigned char *cp) {
 	magic_random_bytes(cp, clen);
 }
 
-static int32_t chap_md5_verify_response(ppp_pcb *pcb, int32_t id, const char *name,
-			 const unsigned char *secret, int32_t secret_len,
+static int chap_md5_verify_response(ppp_pcb *pcb, int id, const char *name,
+			 const unsigned char *secret, int secret_len,
 			 const unsigned char *challenge, const unsigned char *response,
-			 char *message, int32_t message_space) {
+			 char *message, int message_space) {
 	lwip_md5_context ctx;
 	unsigned char idbyte = id;
 	unsigned char hash[MD5_HASH_SIZE];
-	int32_t challenge_len, response_len;
+	int challenge_len, response_len;
 	LWIP_UNUSED_ARG(name);
 	LWIP_UNUSED_ARG(pcb);
 
@@ -92,12 +92,12 @@ static int32_t chap_md5_verify_response(ppp_pcb *pcb, int32_t id, const char *na
 }
 #endif /* PPP_SERVER */
 
-static void chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, int32_t id, const char *our_name,
-		       const unsigned char *challenge, const char *secret, int32_t secret_len,
+static void chap_md5_make_response(ppp_pcb *pcb, unsigned char *response, int id, const char *our_name,
+		       const unsigned char *challenge, const char *secret, int secret_len,
 		       unsigned char *private_) {
 	lwip_md5_context ctx;
 	unsigned char idbyte = id;
-	int32_t challenge_len = *challenge++;
+	int challenge_len = *challenge++;
 	LWIP_UNUSED_ARG(our_name);
 	LWIP_UNUSED_ARG(private_);
 	LWIP_UNUSED_ARG(pcb);

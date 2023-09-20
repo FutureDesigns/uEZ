@@ -33,7 +33,7 @@ Purpose     : Draws color bars
 #define TIME_PAUSE  500
 #define TIME_STEP   500
 #define TIME_RUN    ((TIME_PAUSE + TIME_STEP) * 6)
-#define NUM_COLORS  8
+#define NUM_DEMO_COLORS  8
 
 /*********************************************************************
 *
@@ -62,7 +62,7 @@ void GUIDEMO_ColorBar(void) {
   ySize    = LCD_GetYSize();
   ScreenX0 = 60;
   ScreenY0 = 60;
-  yStep    = (ySize - ScreenY0  * 2) / (NUM_COLORS * 2);
+  yStep    = (ySize - ScreenY0  * 2) / (NUM_DEMO_COLORS * 2);
   if (yStep < 10) {
     yStep = 10;
   }

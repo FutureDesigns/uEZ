@@ -25,11 +25,13 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZProcessor.h>
+#include <uEZMemory.h>
 #include <uEZPlatformAPI.h>
 #include <HAL/Interrupt.h>
 #include <HAL/GPDMA.h>
 #include "LPC17xx_40xx_MCI.h"
 #include "LPC17xx_40xx_GPIO.h"
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -43,26 +45,33 @@
 #endif
 
 #ifndef NUM_MAX_BLOCKS
-    #define NUM_MAX_BLOCKS               18         /* Block transfer FIFO depth (>= 2), 20+ recommended */
+/* Block transfer FIFO depth (>= 2), 20+ recommended */
+#if (UEZ_PROCESSOR==NXP_LPC1788)
+#define NUM_MAX_BLOCKS  16 // Set a new permanent setting on this LPC to ensure enough size for USB/Eth and correct placement on AHB
+#elif (UEZ_PROCESSOR==NXP_LPC4088)
+#define NUM_MAX_BLOCKS  16 // Set a new permanent setting on this LPC to ensure enough size for USB/Eth and correct placement on AHB
+#else
+#define NUM_MAX_BLOCKS  32 // ideal size
+#endif
 #endif
 
 #ifndef SDCARD_MCI_RATE_FOR_RW_STATE
-    #define SDCARD_MCI_RATE_FOR_RW_STATE       20000000UL // 18000000UL // 18 MHz  // TODO: Need to remove!
+    #define SDCARD_MCI_RATE_FOR_RW_STATE       25000000UL // 18000000UL // 18 MHz  // TODO: Need to remove!
 #endif
 
 // Easy remap of registers:
-#define MCI_POWER       LPC_MCI->POWER
-#define MCI_CLOCK       LPC_MCI->CLOCK
+#define MCI_POWER       LPC_MCI->POWER      // requires AHB delay
+#define MCI_CLOCK       LPC_MCI->CLOCK      // requires AHB delay
+#define MCI_ARGUMENT    LPC_MCI->ARGUMENT   // requires AHB delay
 #define MCI_COMMAND     LPC_MCI->COMMAND
 #define MCI_CLEAR       LPC_MCI->CLEAR
-#define MCI_ARGUMENT    LPC_MCI->ARGUMENT
 #define MCI_STATUS      LPC_MCI->STATUS
 #define MCI_RESP0       LPC_MCI->RESP0
 #define MCI_RESP1       LPC_MCI->RESP1
 #define MCI_RESP2       LPC_MCI->RESP2
 #define MCI_RESP3       LPC_MCI->RESP3
 #define MCI_MASK0       LPC_MCI->MASK0
-#define MCI_DATA_CTRL   LPC_MCI->DATACTRL
+#define MCI_DATA_CTRL   LPC_MCI->DATACTRL   // requires AHB delay
 #define MCI_DATA_LEN    LPC_MCI->DATALEN
 #define MCI_DATA_TMR    LPC_MCI->DATATMR
 #define MCI_FIFO        LPC_MCI->FIFO
@@ -95,6 +104,12 @@
     (MCI_STATUS_DATA_CRC_FAIL|MCI_STATUS_DATA_TIME_OUT|MCI_STATUS_RX_OVERRUN| \
         MCI_STATUS_TX_UNDERRUN | MCI_STATUS_DATA_END|MCI_STATUS_START_BIT_ERR| \
             MCI_STATUS_DATA_BLOCK_END)
+      
+/*#define MCI_STATUS_ERRORS \
+    (MCI_STATUS_CMD_CRC_FAIL|MCI_STATUS_CMD_TIME_OUT| \
+      MCI_STATUS_DATA_CRC_FAIL|MCI_STATUS_DATA_TIME_OUT|MCI_STATUS_RX_OVERRUN| \
+        MCI_STATUS_TX_UNDERRUN | MCI_STATUS_DATA_END|MCI_STATUS_START_BIT_ERR| \
+            MCI_STATUS_DATA_BLOCK_END)*/
 
 /*-------------------------------------------------------------------------*
  * Types:
@@ -111,6 +126,9 @@ typedef struct {
     T_mciTransmissionComplete iTransmissionCompleteCallback;
     void *iTransmissionCompleteCallbackWorkspace;
 
+    T_mciError iErrorCallback;
+    void *iErrorCallbackWorkspace;
+    
     TUInt32 iRCA;       // Relative Card Address
 
     HAL_GPDMA **iGPDMA;
@@ -142,19 +160,33 @@ typedef struct {
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
+
+
+
 /* Block transfer FIFO -- MUST be placed in AHB memory */
-static TUInt32 G_dmaBlocks[NUM_MAX_BLOCKS][128] MCI_MEMORY;
-/* DMA link list -- MUST be placed in AHB memory */
-static TUInt32 G_linkListRead[NUM_MAX_BLOCKS][4] MCI_MEMORY;
-static TUInt32 G_linkListWrite[NUM_MAX_BLOCKS][4] MCI_MEMORY;
+UEZ_ALIGN_VAR(32,static TUInt32 G_dmaBlocks[NUM_MAX_BLOCKS][128] MCI_MEMORY);
+/* DMA link lists -- MUST be placed in AHB memory */
+UEZ_ALIGN_VAR(32,static TUInt32 G_linkListRead[NUM_MAX_BLOCKS][4] MCI_MEMORY);
+UEZ_ALIGN_VAR(32,static TUInt32 G_linkListWrite[NUM_MAX_BLOCKS][4] MCI_MEMORY);
 T_LPC17xx_40xx_MCI_Workspace *G_mciWorkspace;
 
-#define Copy_al2un          memcpy // TODO: Is this alright?
+#define Copy_al2un memcpy // This is ok if our buffers above and application buffer are 32 aligned.
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
 void LPC17xx_40xx_MCI_ProcessInterrupt(T_LPC17xx_40xx_MCI_Workspace *p);
+
+/* Note: After a data write, data cannot be written to this register for three
+ * MCLK clock periods plus two PCLK clock periods. Applies to these registers:
+ * LPC_MCI->POWER LPC_MCI->CLOCK LPC_MCI->ARGUMENT LPC_MCI->DATACTRL
+*/
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_NONE,static void writeDelay(void))
+{
+	volatile uint8_t i;
+	for ( i = 0; i < 0x10; i++ ) {	/* delay 3MCLK + 2PCLK  */
+	}
+}
 
 /*---------------------------------------------------------------------------*
  * Interrupt:  LPC17xx_40xx_MCI_Interrupt
@@ -169,6 +201,8 @@ IRQ_ROUTINE(LPC17xx_40xx_MCI_Interrupt)
     LPC17xx_40xx_MCI_ProcessInterrupt(G_mciWorkspace);
     IRQ_END();
 }
+
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  LPC17xx_40xx_MCI_ProcessInterrupt
@@ -194,11 +228,24 @@ void LPC17xx_40xx_MCI_ProcessInterrupt(
 
     xs = p->iTransferStatus;
 
-    if (ms & MCI_STATUS_DATA_BLOCK_END) {
+    if ((ms & MCI_STATUS_TX_UNDERRUN) == MCI_STATUS_TX_UNDERRUN) {
+      p->iLastMCIError = ms;
+      if (p->iErrorCallback) {
+         p->iErrorCallback(p->iErrorCallbackWorkspace);
+      }
+    }
+    if ((ms & MCI_STATUS_RX_OVERRUN) == MCI_STATUS_RX_OVERRUN) {
+      p->iLastMCIError = ms;
+      if (p->iErrorCallback) {
+         p->iErrorCallback(p->iErrorCallbackWorkspace);
+      }
+    }
+    
+    if ((ms & MCI_STATUS_DATA_BLOCK_END) == MCI_STATUS_DATA_BLOCK_END) {
         /* A block transfer completed (DataBlockEnd) */
         if (xs & TRANSFER_STATUS_READING) {
             /* In card read operation */
-            if (ms & MCI_STATUS_DATA_END) {
+            if ((ms & MCI_STATUS_DATA_END) == MCI_STATUS_DATA_END) {
                 /* When last block is received (DataEnd), */
                 /* Pop off remaining data in the MCIFIFO */
                 (*(p->iGPDMA))->BurstRequest(p->iGPDMA,
@@ -224,22 +271,27 @@ void LPC17xx_40xx_MCI_ProcessInterrupt(
             }
         }
     } else {
-        /* An MCI error occured (not DataBlockEnd) */
-        xs |= TRANSFER_STATUS_MCI_ERROR;
-
-        // Record the error
-        p->iLastMCIError = ms;
-
-        if (p->iTransferStatus & TRANSFER_STATUS_READING) {
-            // Error during reading
-            if (p->iReceptionCompleteCallback)
-                p->iReceptionCompleteCallback(
-                    p->iReceptionCompleteCallbackWorkspace);
+        if ((ms & MCI_STATUS_CMD_RESP_END) == MCI_STATUS_CMD_RESP_END) {
+          
         } else {
-            // Error in writing
-            if (p->iTransmissionCompleteCallback)
-                p->iTransmissionCompleteCallback(
-                    p->iTransmissionCompleteCallbackWorkspace);
+			          
+            /* An MCI error occured (not DataBlockEnd) */
+            xs |= TRANSFER_STATUS_MCI_ERROR;
+
+            // Record the error
+            p->iLastMCIError = ms;
+            // Keep these so that we don't have to wait on timeout even when there is an error.
+            if (p->iTransferStatus & TRANSFER_STATUS_READING) {
+                // Error during reading
+                if (p->iReceptionCompleteCallback)
+                    p->iReceptionCompleteCallback(
+                        p->iReceptionCompleteCallbackWorkspace);
+            } else {
+                // Error in writing
+                if (p->iTransmissionCompleteCallback)
+                    p->iTransmissionCompleteCallback(
+                        p->iTransmissionCompleteCallbackWorkspace);
+            }
         }
     }
 
@@ -269,7 +321,7 @@ T_uezError LPC17xx_40xx_MCI_InitializeWorkspace(void *aWorkspace)
     p->iReceptionCompleteCallback = 0;
     p->iReceptionCompleteCallbackWorkspace = 0;
     p->iRCA = 0;
-    p->iGPDMA = 0;
+    p->iGPDMA = 0; // DMA channel prio is fixed. DMA0=highest prio, DMA7=lowest prio.
     p->iIRQActive = EFalse;
 
     // Setup the GPDMA channel for reads
@@ -308,6 +360,8 @@ T_uezError LPC17xx_40xx_MCI_InitializeWorkspace(void *aWorkspace)
 
     G_mciWorkspace = p;
 
+
+
     return UEZ_ERROR_NONE;
 }
 
@@ -326,8 +380,10 @@ T_uezError LPC17xx_40xx_MCI_PowerOn(void *aWorkspace)
     // Turn on the power (if not already on), wait 10 ms minimum,
     // and then enable the signals
     LPC_MCI->POWER = 0x01;
+    writeDelay();
     UEZTaskDelay(10);
     LPC_MCI->POWER = 0x03;
+    writeDelay();
 
     return UEZ_ERROR_NONE;
 }
@@ -347,9 +403,12 @@ T_uezError LPC17xx_40xx_MCI_PowerOff(void *aWorkspace)
     MCI_MASK0 = 0;
     MCI_COMMAND = 0;
     MCI_DATA_CTRL = 0;
+    writeDelay();
 
     MCI_POWER = 0; /* Power-off */
+    writeDelay();
     MCI_CLOCK = 0;
+    writeDelay();
 
     return UEZ_ERROR_NONE;
 }
@@ -370,6 +429,7 @@ T_uezError LPC17xx_40xx_MCI_Reset(void *aWorkspace)
     LPC_MCI->MASK0 = 0;
     LPC_MCI->COMMAND = 0;
     LPC_MCI->DATACTRL = 0;
+    writeDelay();
 
     return UEZ_ERROR_NONE;
 }
@@ -419,6 +479,7 @@ TBool LPC17xx_40xx_MCI_SendCommand(
     } while (MCI_STATUS & 0x00800);
 
     MCI_ARGUMENT = aArgument; /* Set the argument into argument register */
+    writeDelay();
     command = 0x400 | aCommand; /* Enable bit + aCommand */
     if (aResponseType == 1)
         command |= 0x040; /* Set Response bit to reveice short resp */
@@ -524,9 +585,11 @@ T_uezError LPC17xx_40xx_MCI_ReadyReception(
     r.iDestinationAddr = G_linkListRead[0][1];
     r.iLinkedList = (void *)G_linkListRead[0][2];
     r.iNumTransferItems = GPDMA_TRANSFER_SIZE(aBlockSize / 4);
-    r.iFlowControl = GPDMA_FLOW_CONTROL_DMA;
+    //r.iFlowControl = GPDMA_FLOW_CONTROL_SOURCE_PERIPHERAL; // Will cause read failure!
+    r.iFlowControl = GPDMA_FLOW_CONTROL_DMA; // Receiver should always be flow controller!
 
     (*p->iGPDMA)->PrepareRequest(p->iGPDMA, &r, 0, 0);
+
     (*p->iGPDMA)->Start(p->iGPDMA);
 
     /* --------- Setting up MCI ---------- */
@@ -534,7 +597,7 @@ T_uezError LPC17xx_40xx_MCI_ReadyReception(
     MCI_DATA_LEN = 512 * aNumBlocks;
     // Data timer: 0.2sec
 //    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 0.2);
-    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 2.0);
+    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 2.0); // TODO do we need to increase this timeout?
     // Clear status flags for errors
     MCI_CLEAR = MCI_STATUS_ERRORS;
     MCI_MASK0 = MCI_STATUS_ERRORS;
@@ -542,6 +605,7 @@ T_uezError LPC17xx_40xx_MCI_ReadyReception(
 //        ;
     /* Start to receive data blocks */
     MCI_DATA_CTRL = (9<<4) /*n*/ | 0xB;
+    writeDelay();
 
     return UEZ_ERROR_NONE;
 }
@@ -622,7 +686,7 @@ T_uezError LPC17xx_40xx_MCI_StartTransmission(
     r.iDestinationAddr = G_linkListWrite[0][1];
     r.iLinkedList = (void *)G_linkListWrite[0][2];
     r.iNumTransferItems = GPDMA_TRANSFER_SIZE(512 / 4);
-    r.iFlowControl = GPDMA_FLOW_CONTROL_DMA;
+    r.iFlowControl = GPDMA_FLOW_CONTROL_DESTINATION_PERIPHERAL; // Receiver should always be flow controller!
     r.iControl = /*GPDMA_INT_ENABLE | */GPDMA_SI | GPDMA_DBWIDTH_32
         | GPDMA_SBWIDTH_32 | GPDMA_SBSIZE_8 | GPDMA_DBSIZE_8;
 
@@ -633,7 +697,7 @@ T_uezError LPC17xx_40xx_MCI_StartTransmission(
     // Set total data length
     MCI_DATA_LEN = 512 * (p->iNumWriting+1);
     // Data timer: 0.2sec
-    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 2.0);
+    MCI_DATA_TMR = (TUInt32)(SDCARD_MCI_RATE_FOR_RW_STATE * 3.0); // TODO verify the new timeout, but we need to support multiple brands of cards
     // Clear status flags
     MCI_CLEAR = 0x51A;
     // DataBlockEnd StartBitErr DataEnd RxOverrun DataTimeOut DataCrcFail
@@ -641,10 +705,10 @@ T_uezError LPC17xx_40xx_MCI_StartTransmission(
 
     // Start to transmit data blocks (enable for DMA)
     MCI_DATA_CTRL = (9<<4) | 0x9;
+    writeDelay();
 
     return UEZ_ERROR_NONE;
 }
-
 
 /*---------------------------------------------------------------------------*
  * Routine:  LPC17xx_40xx_MCI_StopTransfer
@@ -665,6 +729,7 @@ T_uezError LPC17xx_40xx_MCI_StopTransfer(void *aWorkspace)
 
     /* Stop MCI data transfer */
     MCI_DATA_CTRL = 0;
+    writeDelay();
 
     /* Disable DMA ch-0 */
     (*p->iGPDMA)->Stop(p->iGPDMA);
@@ -701,6 +766,11 @@ T_uezError LPC17xx_40xx_MCI_Read(void *aWorkspace, void *aBuffer, TUInt32 aReadS
     // If there is no data (yet), report this
     if (p->iBufferPosOut == p->iBufferPosIn)
         return UEZ_ERROR_OUT_OF_DATA;
+    
+    if (( p->iLastMCIError & MCI_STATUS_TX_UNDERRUN) == MCI_STATUS_TX_UNDERRUN) {
+        //SEGGER_RTT_WriteString(0, "RXUNDER!\n");
+        //return UEZ_ERROR_READ_WRITE_ERROR; // Note that if we report error here it is for the last read not the current read!
+    }
 
     // Copy over a block of data
     Copy_al2un(aBuffer, G_dmaBlocks[p->iBufferPosOut], aReadSize);
@@ -741,6 +811,11 @@ T_uezError LPC17xx_40xx_MCI_Write(
     // If an error has occurred, report this
     if (p->iTransferStatus & TRANSFER_STATUS_ANY_ERROR) {
         return UEZ_ERROR_READ_WRITE_ERROR;
+    }
+    
+    if (( p->iLastMCIError & MCI_STATUS_TX_UNDERRUN) == MCI_STATUS_TX_UNDERRUN) {
+        //SEGGER_RTT_WriteString(0, "TXUNDER!\n");
+        //return UEZ_ERROR_READ_WRITE_ERROR; // Note that this is the last error, so we need to handle it somewhere else
     }
 
     // There is a block, write it
@@ -800,15 +875,17 @@ T_uezError LPC17xx_40xx_MCI_SetClockRate(
     // runs continously.
     if (aHz == 0) {
         LPC_MCI->CLOCK &= ~0x100;
+        writeDelay();
     } else {
         clock = PCLK_FREQUENCY/2;
         div = 0;
         while ((clock / (div+1)) > aHz)
             div++;
 
-        LPC_MCI->CLOCK = (LPC_MCI->CLOCK & 0x00000C00) | (1<<8)
-            | (div)
-            | (aPowerSave ? (1<<9) : 0);
+          LPC_MCI->CLOCK = (LPC_MCI->CLOCK & 0x00000C00) | (1<<8)
+              | (div)
+              | (aPowerSave ? (1<<9) : 0);
+          writeDelay();
     }
 
     return UEZ_ERROR_NONE;
@@ -831,9 +908,11 @@ T_uezError LPC17xx_40xx_MCI_SetDataBus(void *aWorkspace, T_uezMCIBus aBus)
     switch (aBus) {
         case UEZ_MCI_BUS_4BIT_WIDE:
             LPC_MCI->CLOCK |= 0x800;
+            writeDelay();
             break;
         case UEZ_MCI_BUS_1BIT_WIDE:
             LPC_MCI->CLOCK &= ~0x800;
+            writeDelay();
             break;
         default:
             return UEZ_ERROR_INVALID_PARAMETER;
@@ -863,6 +942,31 @@ TBool LPC17xx_40xx_MCI_IsWriteEmpty(void *aWorkspace)
     return ETrue;
 }
 
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC17xx_40xx_MCI_SetErrorCallback
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Start error callback
+ * Inputs:
+ *      void *aWorkspace          -- MCI Workspace
+ *      T_mciError aErrorCallback -- Routine to call when error encountered.
+ *      void *aErrorCallbackWorkspace -- Workspace for callback.
+ * Outputs:
+ *      T_uezError              -- Error code
+ *---------------------------------------------------------------------------*/
+T_uezError LPC17xx_40xx_MCI_SetErrorCallback(
+    void *aWorkspace,
+    T_mciError aErrorCallback,
+    void *aErrorCallbackWorkspace)
+{
+    T_LPC17xx_40xx_MCI_Workspace *p = (T_LPC17xx_40xx_MCI_Workspace *)aWorkspace;
+
+    // Set the callback routine (if any)
+    p->iErrorCallback = aErrorCallback;
+    p->iErrorCallbackWorkspace = aErrorCallbackWorkspace;
+
+    return UEZ_ERROR_NONE;
+}
 
 /*---------------------------------------------------------------------------*
  * Device Interface table:
@@ -889,6 +993,9 @@ const HAL_MCI LPC17xx_40xx_MCI_Interface = { {
     LPC17xx_40xx_MCI_Write,
     LPC17xx_40xx_MCI_IsWriteAvailable,
     LPC17xx_40xx_MCI_IsWriteEmpty,
+
+    // uEZ 2.11.1
+    LPC17xx_40xx_MCI_SetErrorCallback,
 };
 
 /*---------------------------------------------------------------------------*
@@ -900,36 +1007,36 @@ void LPC17xx_40xx_MCI_Require(const T_LPC17xx_40xx_MCI_Pins *aPins, const char *
     T_LPC17xx_40xx_MCI_Workspace *p;
 
     static const T_LPC17xx_40xx_IOCON_ConfigList pinsDAT0[] = {
-            {GPIO_P0_22, IOCON_D_DEFAULT(2)},
+            {GPIO_P0_22, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
 #if (UEZ_PROCESSOR == NXP_LPC1788)
-            {GPIO_P1_6,  IOCON_D_DEFAULT(2)},
+            {GPIO_P1_6,  IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
 #elif (UEZ_PROCESSOR == NXP_LPC4088)
-            {GPIO_P1_6,  IOCON_W_DEFAULT(2)},
+            {GPIO_P1_6,  IOCON_W(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_DIGITAL, IOCON_FILTER_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
 #endif
     };
     static const T_LPC17xx_40xx_IOCON_ConfigList pinsDAT1[] = {
 #if (UEZ_PROCESSOR == NXP_LPC1788)
-            {GPIO_P1_7,  IOCON_D_DEFAULT(2)},
+            {GPIO_P1_7,  IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
 #elif (UEZ_PROCESSOR == NXP_LPC4088)
-            {GPIO_P1_7,  IOCON_W_DEFAULT(2)},
+            {GPIO_P1_7,  IOCON_W(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_DIGITAL, IOCON_FILTER_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
 #endif
-            {GPIO_P2_11, IOCON_D_DEFAULT(2)},
+            {GPIO_P2_11, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
     };
     static const T_LPC17xx_40xx_IOCON_ConfigList pinsDAT2[] = {
-            {GPIO_P1_11, IOCON_D_DEFAULT(2)},
-            {GPIO_P2_12, IOCON_D_DEFAULT(2)},
+            {GPIO_P1_11, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
+            {GPIO_P2_12, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
     };
     static const T_LPC17xx_40xx_IOCON_ConfigList pinsDAT3[] = {
-            {GPIO_P1_12, IOCON_D_DEFAULT(2)},
-            {GPIO_P2_13, IOCON_D_DEFAULT(2)},
+            {GPIO_P1_12, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
+            {GPIO_P2_13, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
     };
     static const T_LPC17xx_40xx_IOCON_ConfigList pinsCLK[] = {
-            {GPIO_P0_19, IOCON_D_DEFAULT(2)},
-            {GPIO_P1_2,  IOCON_D_DEFAULT(2)},
+            {GPIO_P0_19, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
+            {GPIO_P1_2,  IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
     };
     static const T_LPC17xx_40xx_IOCON_ConfigList pinsCMD[] = {
-            {GPIO_P0_20, IOCON_D_DEFAULT(2)},
-            {GPIO_P1_3,  IOCON_D_DEFAULT(2)},
+            {GPIO_P0_20, IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
+            {GPIO_P1_3,  IOCON_D(2, IOCON_NO_PULL, IOCON_HYS_ENABLE, IOCON_INVERT_OFF, IOCON_SLEW_FAST, IOCON_PUSH_PULL)},
     };
 
     HAL_DEVICE_REQUIRE_ONCE();
@@ -965,11 +1072,14 @@ void LPC17xx_40xx_MCI_Require(const T_LPC17xx_40xx_MCI_Pins *aPins, const char *
     LPC_MCI->MASK0 = 0;
     LPC_MCI->COMMAND = 0;
     LPC_MCI->DATACTRL = 0;
+    writeDelay();
 
     // Setup interrupt for the MCI
     InterruptRegister(MCI_IRQn, LPC17xx_40xx_MCI_Interrupt,
-        INTERRUPT_PRIORITY_NORMAL, "MCI");
+        INTERRUPT_PRIORITY_HIGHEST, "MCI");
     InterruptEnable(MCI_IRQn);
+
+
 
     // Find the GPDMA HAL driver
     HALInterfaceFind(aGPDMA, (T_halWorkspace **)&p->iGPDMA);

@@ -5,8 +5,8 @@
 *         The uEZ platform file definitions
 *-------------------------------------------------------------------------*/
 /**
- *	@file 	Platform\FDI\uEZGUI_4088_43WQN\uEZPlatform.h
- *  @brief 	uEZ Platform File Definitions
+ *  @file   Platform\FDI\uEZGUI_4088_43WQN\uEZPlatform.h
+ *  @brief  uEZ Platform File Definitions
  *
  * The uEZ platform file definitions
  */
@@ -110,7 +110,7 @@ extern "C" {
 
 // Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level // will lower OB speaker level
+    #define UEZ_DEFAULT_AUDIO_LEVEL  144 // default master volume level // will lower OB speaker level
 #endif
 
 #ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
@@ -140,10 +140,6 @@ extern "C" {
     #define UEZ_CONSOLE_WRITE_BUFFER_SIZE       128 // bytes
 #endif
 
-#ifndef LCD_DISPLAY_BASE_ADDRESS
-    #define LCD_DISPLAY_BASE_ADDRESS            0xA0000000
-#endif
-
 #ifndef FATFS_MAX_MASS_STORAGE_DEVICES
     #define FATFS_MAX_MASS_STORAGE_DEVICES      2
 #endif
@@ -161,14 +157,33 @@ extern "C" {
  * Types:
  *-------------------------------------------------------------------------*/
 
+ typedef enum {
+  HARDWARE_TEST_NORMAL = 0,
+  HARDWARE_TEST_CRYSTAL = 1,
+  HARDWARE_TEST_SDRAM = 2,
+  HARDWARE_TEST_I2C = 3,
+  HARDWARE_TEST_AUDIO = 4
+} HARDWARE_TEST_Types;
+
+typedef struct {
+    uint8_t iTestMode;    
+    uint8_t iReserved;
+    uint16_t iTestIterations;
+} T_BootTestModeSetting;
+
 /*-------------------------------------------------------------------------*
  * General Purpose Pin Mappings to CPU:
  *-------------------------------------------------------------------------*/
 // HW Reset pin in Rev X PCB
-#define PIN_HW_RESET  				 GPIO_NONE 
+#define PIN_HW_RESET                 GPIO_NONE 
 
 // LED pin(s)
 #define GPIO_HEARTBEAT_LED                       GPIO_P1_13
+
+// GPIO Loopback Test array for this uEZGUI
+#define LOOPBACK_TEST_NUM_PINS_A              (24)
+#define LOOPBACK_TEST_NUM_PINS_B              (5)
+#define LOOPBACK_TEST_NUM_PINS_C              (1)
 
 // TODO add GPIOs on ALT PWR COM, PMOD here 
  
@@ -272,7 +287,7 @@ extern "C" {
 #define UEZPlatform_ExpansionPrimary_I2C_B_Require              UEZPlatform_I2C1_Require
 #define UEZPlatform_ExpansionPrimary_EMAC_Require               UEZPlatform_EMAC_Require
 #define UEZPlatform_ExpansionPrimary_UART_A_Require             UEZPlatform_UART1_Require
-#define UEZPlatform_ExpansionPrimary_SPI_A_Require				UEZPlatform_SSP1_Require
+#define UEZPlatform_ExpansionPrimary_SPI_A_Require              UEZPlatform_SSP1_Require
 #define UEZPlatform_ExpansionPrimary_UART_B_Require(w, r)       UEZPlatform_FullDuplex_UART0_Require(w, r)
 #define UEZPlatform_ExpansionPrimary_USBHost_Require            UEZPlatform_USBHost_PortA_Require
 #define UEZPlatform_ExpansionPrimary_USBDevice_Require          UEZPlatform_USBDevice_Require
@@ -383,6 +398,15 @@ void UEZPlatform_Touchscreen_Require(void);
 void UEZPlatform_FullDuplex_UART0_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART1_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART2_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART3_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
 void UEZPlatform_UART1_Require(void);
 void UEZPlatform_USBDevice_Require(void);
 void UEZPlatform_USBFlash_Drive_Require(TUInt8 aDriveNum);
@@ -410,6 +434,27 @@ T_uezError UEZPlatform_WiredNetwork0_Connect(
 // Information available about the connected wired network
 extern T_uezDevice G_network;
 extern T_uezNetworkStatus G_networkStatus;
+
+extern TUInt8 *_framesMemoryptr;
+#define LCD_DISPLAY_BASE_ADDRESS (TUInt32) _framesMemoryptr //Keep this define for now
+
+// test functions/externs
+#if (CONFIG_LOW_LEVEL_TEST_CODE == 1)
+extern volatile T_BootTestModeSetting G_hardwareTest;
+#endif
+void UEZPlatform_INIT_LOW_LEVEL_UART_DEFAULT_CLOCK(void);
+void UEZPlatform_INIT_LOW_LEVEL_UART(void);
+void COM_Send(char * bytes, uint16_t numBytes);
+void UEZBSP_HEARTBEAT_TOGGLE(void);
+
+extern const T_uezGPIOPortPin g_loopback_pins_A[];
+extern const uint8_t g_loopback_connected_A[][LOOPBACK_TEST_NUM_PINS_A];
+
+extern const T_uezGPIOPortPin g_loopback_pins_B[];
+extern const uint8_t g_loopback_connected_B[][LOOPBACK_TEST_NUM_PINS_B];
+
+extern const T_uezGPIOPortPin g_loopback_pins_C[];
+extern const uint8_t g_loopback_connected_C[][LOOPBACK_TEST_NUM_PINS_C];
 
 #ifdef __cplusplus
 }

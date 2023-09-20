@@ -275,8 +275,22 @@
  * @brief Max MMC clock rate
  */
 #if(UEZ_PROCESSOR == NXP_LPC4357)
+/* // This combination (single block writes) still fails with multiple CRC errors on read on rev 1.4+ board.
 #define MMC_MAX_READ_CLOCK           51000000
-#define MMC_MAX_WRITE_CLOCK          34000000
+#define MMC_MAX_WRITE_CLOCK          25500000 */
+
+// This combination passes (single block writes) on rev 1.4+ board. If the resistors on SD card are wrong we will fail to run this speed properly.
+#define MMC_MAX_READ_CLOCK           34000000
+#define MMC_MAX_WRITE_CLOCK          25500000
+
+/* // This combination at passes file write test using single block writes, but only if input glitch filter is disabled on the 6 signal pins.
+#define MMC_MAX_READ_CLOCK           25500000
+#define MMC_MAX_WRITE_CLOCK          25500000 */
+
+/* // This combination passes file write test using single block writes.
+#define MMC_MAX_READ_CLOCK           25500000
+#define MMC_MAX_WRITE_CLOCK          12750000*/
+
 #else
 #define MMC_MAX_READ_CLOCK           20000000
 #define MMC_MAX_WRITE_CLOCK          20000000

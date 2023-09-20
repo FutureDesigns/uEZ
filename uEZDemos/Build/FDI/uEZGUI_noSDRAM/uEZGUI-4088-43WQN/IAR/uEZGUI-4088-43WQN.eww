@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\noSDRAM-4088-43WQN.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>all</name>
+      <member>
+        <project>noSDRAM-4088-43WQM</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>noSDRAM-4088-43WQM</project>
+        <configuration>Debug-Trace</configuration>
+      </member>
+      <member>
+        <project>noSDRAM-4088-43WQM</project>
+        <configuration>Release</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>
+
+

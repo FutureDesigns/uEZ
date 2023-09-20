@@ -440,6 +440,8 @@ T_uezError LPC17xx_40xx_Serial_Configure(
     T_Serial_LPC17xx_40xx_Workspace *p = (T_Serial_LPC17xx_40xx_Workspace *)aWorkspace;
     const T_Serial_LPC17xx_40xx_SerialInfo *p_info = p->iInfo;
     TUInt32 divider;
+    TUInt8 divAddVal = 0; // default values for now to disable fractional
+    TUInt8 mulVal = 1;
 
     InterruptDisable(p->iInfo->iInterruptChannel);
 
@@ -458,9 +460,10 @@ T_uezError LPC17xx_40xx_Serial_Configure(
     p_info->iUART->reg08.FCR = 7; // FCRFE|RFR|TFR
 
     // Set baudrate
-    p_info->iUART->LCR |= 0x80;
+    p_info->iUART->LCR |= 0x80; //DLAB enable access
     p_info->iUART->reg00.DLL = divider & 0x00ff;
     p_info->iUART->reg04.DLM = (divider >> 8) & 0x00ff;
+    p_info->iUART->FDR = ((mulVal<<4) & 0x00f0) | (divAddVal & 0x000f); // fractional dividers set back to default
     p_info->iUART->LCR &= ~0x80;
 
     // Set default mode (8 bits, 1 stop bit, no parity)
@@ -473,7 +476,7 @@ T_uezError LPC17xx_40xx_Serial_Configure(
             p_info->iPriority, p->iHAL->iInterface.iName);
 
     //TBD: For now, leave serial port deactivated
-    //    InterruptEnable(p_info->iInterruptChannel);
+      //  InterruptEnable(p_info->iInterruptChannel);
     return UEZ_ERROR_NONE;
 }
 
@@ -558,11 +561,12 @@ T_uezError LPC17xx_40xx_Serial_SetSerialSettings(
             return UEZ_ERROR_NOT_SUPPORTED;
     }
 	
+        // MCR and flow control pins not present on UART 0, 2, or 3!
 	switch (aSettings->iFlowControl) {
         case SERIAL_FLOW_CONTROL_NONE:
-            // default register settings are for none, need to figure out how to set it back
-            //p_info->iUART->MCR |= (0 << 6); // Disable auto RTS
-            //p_info->iUART->MCR |= (0 << 7); // Disable auto CTS
+            // default register settings are for none, need to test setting it back
+            //p_info->iUART->MCR |= ~(1 << 6); // Disable auto RTS
+            //p_info->iUART->MCR |= ~(1 << 7); // Disable auto CTS
             break;
         case SERIAL_FLOW_CONTROL_XON_XOFF:
             return UEZ_ERROR_NOT_SUPPORTED; // TODO

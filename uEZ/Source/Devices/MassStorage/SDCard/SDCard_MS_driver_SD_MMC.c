@@ -24,9 +24,12 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZPlatformAPI.h>
 #include "SDCard_MS_driver_SD_MMC.h"
 #include <HAL/Interrupt.h>
 #include <HAL/SD_MMC.h>
+#include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 
 /*---------------------------------------------------------------------------*
  * Options:
@@ -43,9 +46,16 @@
 #define SET_OP_RETRIES        1000          /*!< set OP_COND retries */
 #define SDIO_BUS_WIDTH        4             /*!< Max bus width supported */
 
-#define SDCARD_FAILED_READ_RETRY_COUNT              5
+#define SDCARD_FAILED_READ_RETRY_COUNT              3
+#define SDCARD_FAILED_WRITE_RETRY_COUNT             3
 
 #define MULTIBLOCK_READ_SUPPORTED                   1 // set to 0 to turn off multiblock reads
+#define MULTIBLOCK_WRITE_SUPPORTED                  0 // set to 0 to turn off multiblock writes
+
+#ifndef SDCARD_DEBUG_OUTPUT
+    #define SDCARD_DEBUG_OUTPUT 0
+#endif
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -53,7 +63,9 @@
 #define IRelease()      UEZSemaphoreRelease(p->iSem)
 
 #if SDCARD_DEBUG_OUTPUT
-#define dprintf printf
+//#define dprintf printf
+#define dprintf(...) DEBUG_RTT_WriteString(0, __VA_ARGS__)
+//#define dprintf(...) DEBUG_SV_PrintfE(__VA_ARGS__)
 #else
 #define dprintf(...)
 #endif
@@ -122,9 +134,14 @@ typedef struct {
         #define STA_NODISK      0x02    /* No medium in the drive */
         #define STA_PROTECT     0x04    /* Write protected */
 
-    T_uezSemaphore iIsCompleteRead;
-    T_uezSemaphore iIsCompleteWrite;
+    //T_uezSemaphore iIsCompleteRead;
+    //T_uezSemaphore iIsCompleteWrite;
+    TBool iIsCompleteReadFlag;
+    TBool iIsCompleteWriteFlag;
+    
     HAL_SD_MMC **iSD_MMC;
+    TBool i4bitModeEnabled;
+    TUInt32 iError;
 } T_MassStorage_SDCard_SD_MMC_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -149,6 +166,18 @@ static TInt32 ISDMMC_GetState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 	return (TInt32) R1_CURRENT_STATE(response[0]);
 }
 
+/*---------------------------------------------------------------------------*
+ * Routine:  ISD_MMCerror
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Callback routine for errors
+ *---------------------------------------------------------------------------*/
+static void ISD_MMCError(void *aWorkspace)
+{
+    T_MassStorage_SDCard_SD_MMC_Workspace *p =
+        (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
+    p->iError = 1;
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  MassStorage_SDCard_SD_MMC_InitializeWorkspace
@@ -170,18 +199,25 @@ static T_uezError MassStorage_SDCard_SD_MMC_InitializeWorkspace(void *aWorkspace
     p->iInitPerformed = EFalse;
     p->iStat = STA_NOINIT;
     p->iSWWriteProtect = 0;
-
+    p->iCardType = 0;
+    p->iError = 0;
+    if(UEZPlatform_MCI_TransferMode() == UEZ_MCI_BUS_4BIT_WIDE) {
+      p->i4bitModeEnabled = ETrue;
+    } else {
+      p->i4bitModeEnabled = EFalse;
+    }
+    
     error = UEZSemaphoreCreateBinary(&p->iSem);
     if (error)
         return error;
-
-    error = UEZSemaphoreCreateCounting(&p->iIsCompleteRead, 255, 0);
+/*
+    error = UEZSemaphoreCreateCounting(&p->iIsCompleteRead, 255, 0;
     if (error)
         return error;
 
     error = UEZSemaphoreCreateCounting(&p->iIsCompleteWrite, 255, 0);
     if (error)
-        return error;
+        return error;*/
 
     return error;
 }
@@ -289,7 +325,7 @@ static void IProcessCSD(T_MassStorage_SDCard_SD_MMC_Workspace *p)
                 /* switch to 52MHz clock if card type is set to 1 or else set to 26MHz */
                 if ((p->iExtCSD[49] & 0xFF) == 1) {
                     /* for type 1 MMC cards high speed is 52MHz */
-                    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_HIGH_BUS_MAX_CLOCK);
+                    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_HIGH_BUS_MAX_CLOCK);//UEZPlatform_MCI_DefaultFreq());
                 }
                 else {
                     /* for type 0 MMC cards high speed is 26MHz */
@@ -362,13 +398,15 @@ static int32_t ISetCardParams(T_MassStorage_SDCard_SD_MMC_Workspace *p)
     TUInt32 response[4];
 
 #if SDIO_BUS_WIDTH > 1
-    if (p->iCardType & CARD_TYPE_SD) {
-        status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SD_SET_WIDTH, 2, 0, response);
-        if (status != 0)
-            return -1;
+    if(p->i4bitModeEnabled == ETrue) {
+      if (p->iCardType & CARD_TYPE_SD) {
+          status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SD_SET_WIDTH, 2, 0, response);
+          if (status != 0)
+              return -1;
 
-        /* if positive response */
-        (*p->iSD_MMC)->SetCardType(p->iSD_MMC, MCI_CTYPE_4BIT);
+          /* if positive response */
+          (*p->iSD_MMC)->SetCardType(p->iSD_MMC, MCI_CTYPE_4BIT);
+      }    
     }
 #elif SDIO_BUS_WIDTH > 4
 #error 8-bit mode not supported yet!
@@ -399,6 +437,8 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
     // If already initialized, we are done!
     if (p->iInitPerformed)
         return UEZ_ERROR_NONE;
+    
+    (*p->iSD_MMC)->SetupErrorCallback(p->iSD_MMC, ISD_MMCError, p);
 
     (*p->iSD_MMC)->PowerOn(p->iSD_MMC); /* Force socket power on */
     (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, SDCARD_SD_MMC_RATE_FOR_ID_STATE);
@@ -412,7 +452,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
         return UEZ_ERROR_DEVICE_NOT_FOUND;
 
     /* set high speed for the card as 20MHz */
-    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);
+    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);//UEZPlatform_MCI_DefaultFreq());
     status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_IDLE, 0, MCI_INT_CMD_DONE, response);
 
     while (state < 100) {
@@ -433,7 +473,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
 
                 /* assume SD card */
                 p->iCardType |= CARD_TYPE_SD;
-                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, SD_MAX_CLOCK);
+                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, SD_MAX_CLOCK);//UEZPlatform_MCI_DefaultFreq());
                 break;
 
             case 10: /* Setup for MMC */
@@ -446,7 +486,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
                 ++state;
 
                 /* for MMC cards high speed is 20MHz */
-                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);
+                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);//UEZPlatform_MCI_DefaultFreq());
                 break;
 
             case 1:
@@ -614,13 +654,14 @@ static T_uezError IWaitReady(T_MassStorage_SDCard_SD_MMC_Workspace *p, TUInt32 a
     start = UEZTickCounterGet();
     responseCode[0] = 0;
     while (1) {
-        if (UEZTickCounterGetDelta(start) >= aTimeout)
+        if (UEZTickCounterGetDelta(start) >= aTimeout) {
             return UEZ_ERROR_TIMEOUT;
+        }
         if ((*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SEND_STATUS, (TUInt32)p->iRCA << 16UL, 1, responseCode)
             && ((responseCode[0] & 0x01E00) == 0x00800)) {
             break;
         }
-        UEZTaskDelay(5);
+        UEZTaskDelay(1);
     }
 
     return UEZ_ERROR_NONE;
@@ -634,9 +675,13 @@ static T_uezError IWaitReady(T_MassStorage_SDCard_SD_MMC_Workspace *p, TUInt32 a
  *---------------------------------------------------------------------------*/
 static void ISD_MMCCompleteRead(void *aWorkspace)
 {
+    /*T_MassStorage_SDCard_SD_MMC_Workspace *p =
+        (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
+    _isr_UEZSemaphoreRelease(p->iIsCompleteRead);*/  
+  
     T_MassStorage_SDCard_SD_MMC_Workspace *p =
         (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
-    _isr_UEZSemaphoreRelease(p->iIsCompleteRead);
+    p->iIsCompleteReadFlag = ETrue;
 }
 
 /*---------------------------------------------------------------------------*
@@ -647,9 +692,13 @@ static void ISD_MMCCompleteRead(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 static void ISD_MMCCompleteWrite(void *aWorkspace)
 {
+    /*T_MassStorage_SDCard_SD_MMC_Workspace *p =
+        (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
+    _isr_UEZSemaphoreRelease(p->iIsCompleteWrite);*/
+    
     T_MassStorage_SDCard_SD_MMC_Workspace *p =
         (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
-    _isr_UEZSemaphoreRelease(p->iIsCompleteWrite);
+    p->iIsCompleteWriteFlag = ETrue;
 }
 
 /*---------------------------------------------------------------------------*
@@ -669,112 +718,201 @@ static void ISD_MMCCompleteWrite(void *aWorkspace)
  *                                  indicate failure.
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SD_MMC_Read(
-                        void *aWorkspace,
-                        const TUInt32 aStart,
-                        const TUInt32 aNumBlocks,
-                        void *aBuffer)
+                                        void *aWorkspace,
+                                        const TUInt32 aStart,
+                                        const TUInt32 aNumBlocks,
+                                        void *aBuffer)
 {
-    T_MassStorage_SDCard_SD_MMC_Workspace *p = (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
-    TUInt32 index;
-    TUInt32 response[4];
-    TUInt32 numTransferring;
-    T_uezError error = UEZ_ERROR_NONE;
-
-    IGrab();
-
-    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);
-
-    while (1) {
-        /* Check parameter, count must be 1-127 */
-        /* TODO: We should make this routine do sets of 127 blocks when larger */
-        if ((aNumBlocks < 1) || (aNumBlocks > 127)) {
-            error = UEZ_ERROR_INVALID_PARAMETER;
-            break;
-        }
-
-        // Has this been init?
-        if (!p->iInitPerformed) {
-            error = UEZ_ERROR_NOT_READY;
-            break;
-        }
-        /* Check drive status */
-        if (p->iStat & STA_NOINIT) {
-            error = UEZ_ERROR_NOT_READY;
-            break;
-        }
-
-        // Is this in range?
-        if ((aNumBlocks < 1) || ((aNumBlocks + aNumBlocks) > p->iBlockNum)) {
-            error = UEZ_ERROR_OUT_OF_RANGE;
-            break;
-        }
-
-        // put card in trans state
-        if (ISetTransState(p) != 0) {
-            error = UEZ_ERROR_INTERNAL_ERROR;
-            break;
-        }
-        
-        if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
-            index = aStart; 
-        } else {            
-            index = aStart << 9; // Currently fixed at 512 bytes per block
-        }       
-       
-#if (MULTIBLOCK_READ_SUPPORTED==1)
-        // set number of bytes to read
-        error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, aNumBlocks, 512,
-            ISD_MMCCompleteRead, p, &numTransferring);
-        if (numTransferring < aNumBlocks) {
-          // TODO: Maybe come back and do multiple read/writes
-            UEZFailureMsg("Transfer too big!");
-        }
-
-        // Select single or multiple read based on number of blocks 
-        if (aNumBlocks == 1) {
-            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
-        } else {
-            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
-        }
-#else
-/* // Disabled till further testing or if needed.
-        // set number of bytes to read
-        error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, 1, 512,
-            ISD_MMCCompleteRead, p, &numTransferring);
-        
-        // Select single or multiple read based on number of blocks 
-        if (aNumBlocks == 1) {
-            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
-        } else {
-          numTransferring = aNumBlocks;
-          while(numTransferring > 0) {
-            numTransferring--;
-            TUInt32 dum = 0;
-            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);             
-            if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
-                index++;
-            } else { // Currently fixed at 512 bytes per block
-                index += 512;
-            }
-            aBuffer = (TUInt8 *) aBuffer +512;
-            error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, 1, 512,
-            ISD_MMCCompleteRead, p, &dum);
-          }
-           // (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
-        }*/
-#endif
-
-        /* Wait for card program to finish or timeout (5 seconds is more than enough!) */
-        error = UEZSemaphoreGrab(p->iIsCompleteRead, 500 * numTransferring);
-        while (ISDMMC_GetState(p) != SDMMC_TRAN_ST)
-            UEZTaskDelay(0);
-
+  T_MassStorage_SDCard_SD_MMC_Workspace *p = (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
+  TUInt32 index;
+  TUInt32 response[4];
+  TUInt32 numTransferring;
+  TUInt32 start;
+  T_uezError error = UEZ_ERROR_NONE;
+  
+  IGrab();
+  
+  (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);//UEZPlatform_MCI_DefaultFreq());
+  
+  while (1) {
+    for (uint8_t i = 0; i < SDCARD_FAILED_READ_RETRY_COUNT; i++) {
+      error = UEZ_ERROR_NONE;
+      /* Check parameter, count must be 1-127 */
+      /* TODO: We should make this routine do sets of 127 blocks when larger */
+      if ((aNumBlocks < 1) || (aNumBlocks > 127)) {
+        error = UEZ_ERROR_INVALID_PARAMETER;
         break;
+      }
+      
+      // Has this been init?
+      if (!p->iInitPerformed) {
+        error = UEZ_ERROR_NOT_READY;
+        break;
+      }
+      /* Check drive status */
+      if (p->iStat & STA_NOINIT) {
+        error = UEZ_ERROR_NOT_READY;
+        break;
+      }
+      
+      // Is this in range?
+      if ((aNumBlocks < 1) || ((aNumBlocks + aNumBlocks) > p->iBlockNum)) {
+        error = UEZ_ERROR_OUT_OF_RANGE;
+        break;
+      }
+
+      
+      // put card in trans state
+      if (ISetTransState(p) != 0) {
+        start = UEZTickCounterGet();
+        while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {        
+          UEZTaskDelay(0);
+          if (UEZTickCounterGetDelta(start) >= aNumBlocks) {
+            UEZTaskDelay(2);
+          }
+          if (UEZTickCounterGetDelta(start) >= 5 * aNumBlocks) {
+            error = UEZ_ERROR_TIMEOUT;
+            dprintf("RST");
+            break; // 
+          }
+        }
+        if (ISetTransState(p) != 0) {          
+          error = UEZ_ERROR_INTERNAL_ERROR;
+          dprintf("RSS");
+          break;
+        }
+      }
+      
+/*      
+      start = UEZTickCounterGet();
+      while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {        
+        UEZTaskDelay(0);
+        if (UEZTickCounterGetDelta(start) >= 5 * aNumBlocks) {
+          error = UEZ_ERROR_TIMEOUT;
+          dprintf("RST");
+          break; // 
+        }
+      }
+      
+      // put card in trans state
+      if (ISetTransState(p) != 0) {
+        error = UEZ_ERROR_INTERNAL_ERROR;
+                dprintf("RSS");
+        break;
+      }*/
+      
+      if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
+        index = aStart; 
+      } else {            
+        index = aStart << 9; // Currently fixed at 512 bytes per block
+      }       
+      
+      p->iError = 0;
+      
+#if (MULTIBLOCK_READ_SUPPORTED==1)
+      // set number of bytes to read
+      //dprintf("R");
+      error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, aNumBlocks, 512,
+                                            ISD_MMCCompleteRead, p, &numTransferring);
+      if (numTransferring < aNumBlocks) {
+        // TODO: Maybe come back and do multiple read/writes
+        UEZFailureMsg("Transfer too big!");
+      }
+      
+      p->iIsCompleteReadFlag = EFalse;
+      
+      //dprintf("E");
+      // Select single or multiple read based on number of blocks 
+      if (aNumBlocks == 1) {
+        (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
+      } else {
+        (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
+        // Don't do an actual task delay here. Only delay below if we start to stall. Always doing a delay will kill video player performance.
+      }
+#else
+      /* // Disabled till further testing or if needed.
+      // set number of bytes to read
+      error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, 1, 512,
+      ISD_MMCCompleteRead, p, &numTransferring);
+      
+      // Select single or multiple read based on number of blocks 
+      if (aNumBlocks == 1) {
+      (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
+    } else {
+      numTransferring = aNumBlocks;
+      while(numTransferring > 0) {
+      numTransferring--;
+      TUInt32 dum = 0;
+      (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);             
+      if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
+      index++;
+    } else { // Currently fixed at 512 bytes per block
+      index += 512;
     }
-
-    IRelease();
-
-    return error;
+      aBuffer = (TUInt8 *) aBuffer +512;
+      error = (*p->iSD_MMC)->ReadyReception(p->iSD_MMC, aBuffer, 1, 512,
+      ISD_MMCCompleteRead, p, &dum);
+    }
+      // (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
+    }*/
+#endif
+      
+      /* // TODO this isn't working correctly, but we check timeout on card state below which is sufficient.
+      // Wait for card program to finish or timeout (5 seconds is more than enough!)
+      error = UEZSemaphoreGrab(p->iIsCompleteRead, 10*numTransferring);
+      
+      if(error == UEZ_ERROR_TIMEOUT) {
+      break;
+    }*/
+      
+      start = UEZTickCounterGet();
+      /*Wait for card program to finish*/
+      while (p->iIsCompleteReadFlag == EFalse) {
+        UEZTaskDelay(0);
+        if (UEZTickCounterGetDelta(start) >= 25) { // numTransferring
+          UEZTaskDelay(2);
+        }
+        if (UEZTickCounterGetDelta(start) >= 5000 * numTransferring) {  // TODO this may need to be higher? we freq timeout after doing write....
+          error = UEZ_ERROR_TIMEOUT;
+          dprintf("RTO");
+          break; // 
+        }
+        if(p->iError != 0) {
+          error = UEZ_ERROR_TIMEOUT; // force retry
+          //dprintf("RE");
+          break; // don't wait on timeout
+        }
+      }
+      
+      start = UEZTickCounterGet();
+      while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {
+        UEZTaskDelay(0);
+        if (UEZTickCounterGetDelta(start) >= 25) { // numTransferring
+          UEZTaskDelay(2);
+        }
+        if (UEZTickCounterGetDelta(start) >= 500 * numTransferring) {
+          error = UEZ_ERROR_TIMEOUT;
+          dprintf("RTE");
+          break; // from testing so far we basically never hit this
+        }
+      }
+      
+      if(error == UEZ_ERROR_NONE) {
+        break;
+      }
+      
+      if(error == UEZ_ERROR_TIMEOUT) {
+        ISetTransState(p);
+        //dprintf("RRT");
+      }
+    }
+    
+    break;
+  }
+  
+  IRelease();
+  
+  return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -804,11 +942,14 @@ static T_uezError SDCard_MS_SD_MMC_Write(
     TUInt32 index;
     TUInt32 numWriting;
     TUInt32 response[4];
+    TUInt32 start;
 
     IGrab();
 
-    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_WRITE_CLOCK);
+    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_WRITE_CLOCK);//UEZPlatform_MCI_DefaultFreq());
     while (1) {
+    for (uint8_t i = 0; i < SDCARD_FAILED_WRITE_RETRY_COUNT; i++) {
+      error = UEZ_ERROR_NONE;
         /* Check parameter */
         if (aNumBlocks < 1 || aNumBlocks > 127) {
             error = UEZ_ERROR_INVALID_PARAMETER;
@@ -826,18 +967,30 @@ static T_uezError SDCard_MS_SD_MMC_Write(
         }
 
         /* if card is not acquired return immediately */
-        if ((aStart < 1) || ((aStart + aNumBlocks) > p->iBlockNum)) {
+        if ((aStart + aNumBlocks) > p->iBlockNum) {
             error = UEZ_ERROR_INVALID_PARAMETER;
             break;
         }
 
         /*Wait for card program to finish*/
-        while (ISDMMC_GetState(p) != SDMMC_TRAN_ST)
+        //volatile TInt32 state = ISDMMC_GetState(p);
+        start = UEZTickCounterGet();
+        while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {        
             UEZTaskDelay(0);
-
+            if (UEZTickCounterGetDelta(start) >= aNumBlocks) { // aNumBlocks
+              UEZTaskDelay(2);
+            }
+            if (UEZTickCounterGetDelta(start) >= 50 * aNumBlocks) {
+                error = UEZ_ERROR_TIMEOUT;
+                dprintf("WST");
+                break; // 
+            }
+        }
+        
         /* put card in trans state */
         if (ISetTransState(p) != 0) {
             error = UEZ_ERROR_INVALID_PARAMETER;
+                dprintf("WSS");
             break;
         }
 
@@ -846,28 +999,175 @@ static T_uezError SDCard_MS_SD_MMC_Write(
             index = aStart;
         } else {
             // fixed at 512 bytes
-            index = aStart << 9;   // * p->iBlockLen;
+            index = aStart << 9;   // * p->iBlockLen; // same as x512
         }
+        
+        p->iError = 0;
 
+#if (MULTIBLOCK_WRITE_SUPPORTED==1)
         /* set number of bytes to write */
         (*p->iSD_MMC)->ReadyTransmission(p->iSD_MMC, aBuffer, aNumBlocks, 512, &numWriting, ISD_MMCCompleteWrite, p);
 
+        p->iIsCompleteWriteFlag = EFalse;
+        
         // Single or multiple block write?
         if (aNumBlocks == 1) {
             (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_WRITE_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
         } else {
             (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_WRITE_MULTIPLE, index, 0 | MCI_INT_DATA_OVER, response);
         }
+        
+        start = UEZTickCounterGet();
+        /*Wait for card program to finish*/
+        while (p->iIsCompleteWriteFlag == EFalse) {
+            UEZTaskDelay(0);
+            if (UEZTickCounterGetDelta(start) >= 6000 * numWriting) { // TODO this may need to be higher?
+                error = UEZ_ERROR_TIMEOUT;
+                dprintf("WTO");
+                break; // 
+            }
+            if(p->iError != 0) {
+                dprintf("WE");
+              error = UEZ_ERROR_TIMEOUT; // force retry
+              break; // don't wait on timeout
+            }
+        }
 
         // Wait for all blocks to be transferred
-        UEZSemaphoreGrab(p->iIsCompleteWrite, 500 * numWriting);
+        /* //error = UEZSemaphoreGrab(p->iIsCompleteWrite, 1000 * numWriting); // for 32 blocks wait up to 960 ms
+
+        if(error == UEZ_ERROR_TIMEOUT) {
+            error = UEZ_ERROR_TIMEOUT;
+            //break;
+        }*/
         
+        start = UEZTickCounterGet();
         /*Wait for card program to finish*/
-        while (ISDMMC_GetState(p) != SDMMC_TRAN_ST)
+        while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {
             UEZTaskDelay(0);
+            if (UEZTickCounterGetDelta(start) >= 6000 * numWriting) {
+                error = UEZ_ERROR_TIMEOUT;
+                dprintf("WTE");
+                break; // from testing so far we basically never hit this
+            }
+        }
+
+#else
+        TUInt32 dum = 0;
+        /* set number of bytes to write */
+        (*p->iSD_MMC)->ReadyTransmission(p->iSD_MMC, aBuffer, 1, 512, &dum, ISD_MMCCompleteWrite, p);
+        p->iIsCompleteWriteFlag = EFalse;
+    
+        // Select single or multiple read based on number of blocks 
+        if (aNumBlocks == 1) {
+          (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_WRITE_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
+
+          start = UEZTickCounterGet();
+          /*Wait for card program to finish*/
+          while (p->iIsCompleteWriteFlag == EFalse) {
+              UEZTaskDelay(0);
+              if (UEZTickCounterGetDelta(start) >= 25) {
+                UEZTaskDelay(4);
+              }
+              if (UEZTickCounterGetDelta(start) >= 6000 * 1) { // TODO this may need to be higher?
+                  error = UEZ_ERROR_TIMEOUT;
+                  dprintf("WTO");
+                  break; // 
+              }
+              if(p->iError != 0) {
+                  dprintf("WE");
+                error = UEZ_ERROR_TIMEOUT; // force retry
+                break; // don't wait on timeout
+              }
+          }
+        
+          start = UEZTickCounterGet();
+          /*Wait for card program to finish*/
+          while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {
+              UEZTaskDelay(0);
+              if (UEZTickCounterGetDelta(start) >= 25) {
+                UEZTaskDelay(4);
+              }
+              if (UEZTickCounterGetDelta(start) >= 6000 * 1) {
+                  error = UEZ_ERROR_TIMEOUT;
+                  dprintf("WTE");
+                  break; // from testing so far we basically never hit this
+              }
+          }
+
+        } else {
+          numWriting = aNumBlocks;
+          while(numWriting > 0) {
+            numWriting--;
+            (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_WRITE_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
+            if (p->iCardType & CARD_TYPE_HC) { // if high capacity card use block indexing
+              index++;
+            } else { // Currently fixed at 512 bytes per block
+              index += 512;
+            }
+            aBuffer = (TUInt8 *) aBuffer +512;
+
+            start = UEZTickCounterGet();
+            /*Wait for card program to finish*/
+            while (p->iIsCompleteWriteFlag == EFalse) {
+                UEZTaskDelay(0);
+                if (UEZTickCounterGetDelta(start) >= 10) {
+                  UEZTaskDelay(2);
+                }
+                if (UEZTickCounterGetDelta(start) >= 6000 * 1) { // TODO this may need to be higher?
+                    error = UEZ_ERROR_TIMEOUT;
+                    dprintf("WTO");
+                    break; // 
+                }
+                if(p->iError != 0) {
+                    dprintf("WE");
+                  error = UEZ_ERROR_TIMEOUT; // force retry
+                  break; // don't wait on timeout
+                }
+            }            
+        
+            start = UEZTickCounterGet();
+            /*Wait for card program to finish*/
+            while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {
+                UEZTaskDelay(0);
+                if (UEZTickCounterGetDelta(start) >= 25) {
+                  UEZTaskDelay(4);
+                }
+                if (UEZTickCounterGetDelta(start) >= 6000 * 1) {
+                    error = UEZ_ERROR_TIMEOUT;
+                    dprintf("WTE");
+                    break; // from testing so far we basically never hit this
+                }
+            }
+            
+            if(error == UEZ_ERROR_TIMEOUT) { // reset state and try again up to X times
+              ISetTransState(p);
+            }
+
+            p->iError = 0;
+            (*p->iSD_MMC)->ReadyTransmission(p->iSD_MMC, aBuffer, 1, 512, &dum, ISD_MMCCompleteWrite, p);
+            p->iIsCompleteWriteFlag = EFalse;
+          }     
+        }
+#endif
+      if(error == UEZ_ERROR_NONE) {
+        break;
+      }
+      
+      if(error == UEZ_ERROR_TIMEOUT) { // reset state and try again up to X times
+        ISetTransState(p);
+        //dprintf("WRT");
+      }
+    }
+        
 
         break;
     }
+    
+    if(error == UEZ_ERROR_TIMEOUT) {
+       ISetTransState(p);
+    }
+    
     IRelease();
 
     return error;
@@ -894,7 +1194,7 @@ static T_uezError SDCard_MS_SD_MMC_Sync(void *aWorkspace)
     IGrab();
 
     // Just wait until we are ready or timeout
-    error = IWaitReady(p, 500);
+    error = IWaitReady(p, 1000); // same as LPC4088
 
     IRelease();
 
@@ -910,7 +1210,7 @@ static T_uezError SDCard_MS_SD_MMC_Sync(void *aWorkspace)
  *      void *aWorkspace      -- Workspace for this instance.
  *      T_msSizeInfo *aInfo   -- Pointer to a structure to receive info.
  * Outputs:
- *      T_uezError            -- always returns UEZ_ERROR_NONE.
+ *      T_uezError            -- Error code
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SD_MMC_GetSizeInfo(
     void *aWorkspace,
@@ -923,20 +1223,33 @@ static T_uezError SDCard_MS_SD_MMC_GetSizeInfo(
 
     IGrab();
 
-    // Get the size of the sectors (just hard code to 512)
-    aInfo->iSectorSize = 512;
-    aInfo->iNumSectors = p->iBlockNum;
+    if (!p->iInitPerformed) { // drive not initialized
+        // TODO force perform init here, but it seems we don't need to on this driver
+    }
 
-    // Determine the block size
-    // SDC or MMC?
-    if (p->iCardType & 2) {
-        // SDC
-        aInfo->iBlockSize = (((p_csd[10] & 63) << 1)
-            + ((TUInt16)(p_csd[11] & 128) >> 7) + 1) << ((p_csd[13] >> 16) - 1);
+    if (!p->iInitPerformed) { // card not initialized
+      aInfo->iSectorSize = 512;
+      aInfo->iNumSectors = 0;
+      aInfo->iBlockSize = 0;
+      error = UEZ_ERROR_NAK;
     } else {
-        // MMC
-        aInfo->iBlockSize = ((TUInt16)((p_csd[10] & 124) >> 2) + 1)
-            * (((p_csd[11] & 3) << 3) + ((p_csd[11] & 224) >> 5) + 1);
+      // Get the size of the sectors (just hard code to 512)
+      aInfo->iSectorSize = 512;
+      aInfo->iNumSectors = p->iBlockNum;
+
+      // Determine the block size
+      // SDC or MMC?
+      
+      if ((p->iCardType & CARD_TYPE_SD) == CARD_TYPE_SD) {//(p->iCardType & 2) {
+          // SDC // TODO Currently wrong so report 512
+          /*aInfo->iBlockSize = (((p_csd[10] & 63) << 1)
+              + ((TUInt16)(p_csd[11] & 128) >> 7) + 1) << ((p_csd[13] >> 16) - 1); */          
+          aInfo->iBlockSize = 512;
+      } else {
+          // MMC
+          aInfo->iBlockSize = ((TUInt16)((p_csd[10] & 124) >> 2) + 1)
+              * (((p_csd[11] & 3) << 3) + ((p_csd[11] & 224) >> 5) + 1);
+      }
     }
 
     IRelease();
@@ -1051,6 +1364,7 @@ void MassStorage_SDCard_SD_MMC_Create(const char *aName, const char *aHALSD_MMC)
     p = (T_MassStorage_SDCard_SD_MMC_Workspace *)p_ms;
 
     HALInterfaceFind(aHALSD_MMC, (T_halWorkspace **)&p->iSD_MMC);
+    //(*p->iMCI)->SetErrorCallback(p->iMCI, IMCIError, p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -1080,4 +1394,5 @@ const DEVICE_MassStorage MassStorage_SDCard_SD_MMC_Interface = { {
 /*-------------------------------------------------------------------------*
  * End of File:  SDCard_MS_SD_MMC_driver_SPI.c
  *-------------------------------------------------------------------------*/
+
 

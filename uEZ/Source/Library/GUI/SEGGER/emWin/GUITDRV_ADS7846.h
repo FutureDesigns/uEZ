@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUITDRV_ADS7846.h
@@ -120,14 +120,14 @@ typedef struct {
   // Configuration (2)
   //
   unsigned Orientation;
-  int32_t      xLog0;
-  int32_t      xLog1;
-  int32_t      xPhys0;
-  int32_t      xPhys1;
-  int32_t      yLog0;
-  int32_t      yLog1;
-  int32_t      yPhys0;
-  int32_t      yPhys1;
+  int      xLog0;
+  int      xLog1;
+  int      xPhys0;
+  int      xPhys1;
+  int      yLog0;
+  int      yLog1;
+  int      yPhys0;
+  int      yPhys1;
   //
   // Optional, touch recognition via PENIRQ line (3)
   //
@@ -135,18 +135,18 @@ typedef struct {
   //
   // Optional, touch recognition via touch pressure measurement (4)
   //
-  int32_t      PressureMin;                   // Minimum pressure threshold. A measured pressure below this value means we do not have a valid touch event.
-  int32_t      PressureMax;                   // Maximum pressure threshold. A measured pressure above this value means we do not have a valid touch event.
-  int32_t      PlateResistanceX;              // Resistance of the X-plate of the touch screen. This value is needed for calculation of the touch pressure.
+  int      PressureMin;                   // Minimum pressure threshold. A measured pressure below this value means we do not have a valid touch event.
+  int      PressureMax;                   // Maximum pressure threshold. A measured pressure above this value means we do not have a valid touch event.
+  int      PlateResistanceX;              // Resistance of the X-plate of the touch screen. This value is needed for calculation of the touch pressure.
 } GUITDRV_ADS7846_CONFIG;
 
 typedef struct {
-  int32_t      xPhys;     // Last measured x value
-  int32_t      yPhys;     // Last measured y value
-  int32_t      z1Phys;    // Last measured z1 value
-  int32_t      z2Phys;    // Last measured z2 value
-  int32_t      PENIRQ;    // Last sampled PENIRQ state if PENIRQ callback has been set
-  int32_t      Pressure;  // Last measured touch pressure if touch pressure measurement is enabled
+  int      xPhys;     // Last measured x value
+  int      yPhys;     // Last measured y value
+  int      z1Phys;    // Last measured z1 value
+  int      z2Phys;    // Last measured z2 value
+  int      PENIRQ;    // Last sampled PENIRQ state if PENIRQ callback has been set
+  int      Pressure;  // Last measured touch pressure if touch pressure measurement is enabled
 } GUITDRV_ADS7846_LAST_VAL;
 
 /*********************************************************************

@@ -58,7 +58,7 @@
  * Perform the MPPE rekey algorithm, from RFC 3078, sec. 7.3.
  * Well, not what's written there, but rather what they meant.
  */
-static void mppe_rekey(ppp_mppe_state * state, int32_t initial_key)
+static void mppe_rekey(ppp_mppe_state * state, int initial_key)
 {
 	lwip_sha1_context sha1_ctx;
 	u8_t sha1_digest[SHA1_SIGNATURE_SIZE];
@@ -136,7 +136,7 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, u8_t options)
 
 #if PPP_DEBUG
 	{
-		int32_t i;
+		int i;
 		char mkey[sizeof(state->master_key) * 2 + 1];
 		char skey[sizeof(state->session_key) * 2 + 1];
 
@@ -144,9 +144,9 @@ mppe_init(ppp_pcb *pcb, ppp_mppe_state *state, u8_t options)
 		       debugstr, pcb->netif->num, (state->keylen == 16) ? 128 : 40,
 		       (state->stateful) ? "stateful" : "stateless"));
 
-		for (i = 0; i < (int32_t)sizeof(state->master_key); i++)
+		for (i = 0; i < (int)sizeof(state->master_key); i++)
 			sprintf(mkey + i * 2, "%02x", state->master_key[i]);
-		for (i = 0; i < (int32_t)sizeof(state->session_key); i++)
+		for (i = 0; i < (int)sizeof(state->session_key); i++)
 			sprintf(skey + i * 2, "%02x", state->session_key[i]);
 		PPPDEBUG(LOG_DEBUG,
 		       ("%s[%d]: keys: master: %s initial session: %s\n",
@@ -201,13 +201,13 @@ mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, u16_t proto
 	/* TCP stack requires that we don't change the packet payload, therefore we copy
 	 * the whole packet before encryption.
 	 */
-	np = pbuf_alloc(PBUF_RAW, MPPE_OVHD + sizeof(protocol) + (*pb)->tot_len, PBUF_POOL);
+	np = pbuf_alloc(PBUF_RAW, MPPE_OVHD + sizeof(protocol) + (*pb)->tot_len, PBUF_RAM);
 	if (!np) {
 		return ERR_MEM;
 	}
 
 	/* Hide MPPE header + protocol */
-	pbuf_header(np, -(s16_t)(MPPE_OVHD + sizeof(protocol)));
+	pbuf_remove_header(np, MPPE_OVHD + sizeof(protocol));
 
 	if ((err = pbuf_copy(np, *pb)) != ERR_OK) {
 		pbuf_free(np);
@@ -215,7 +215,7 @@ mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, u16_t proto
 	}
 
 	/* Reveal MPPE header + protocol */
-	pbuf_header(np, (s16_t)(MPPE_OVHD + sizeof(protocol)));
+	pbuf_add_header(np, MPPE_OVHD + sizeof(protocol));
 
 	*pb = np;
 	pl = (u8_t*)np->payload;
@@ -246,7 +246,7 @@ mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, u16_t proto
 	pl[1] = protocol;
 
 	/* Hide MPPE header */
-	pbuf_header(np, -(s16_t)MPPE_OVHD);
+	pbuf_remove_header(np, MPPE_OVHD);
 
 	/* Encrypt packet */
 	for (n = np; n != NULL; n = n->next) {
@@ -257,7 +257,7 @@ mppe_compress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb, u16_t proto
 	}
 
 	/* Reveal MPPE header */
-	pbuf_header(np, (s16_t)MPPE_OVHD);
+	pbuf_add_header(np, MPPE_OVHD);
 
 	return ERR_OK;
 }
@@ -382,7 +382,7 @@ mppe_decompress(ppp_pcb *pcb, ppp_mppe_state *state, struct pbuf **pb)
 	}
 
 	/* Hide MPPE header */
-	pbuf_header(n0, -(s16_t)(MPPE_OVHD));
+	pbuf_remove_header(n0, MPPE_OVHD);
 
 	/* Decrypt the packet. */
 	for (n = n0; n != NULL; n = n->next) {

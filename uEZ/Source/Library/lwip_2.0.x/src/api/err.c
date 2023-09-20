@@ -45,7 +45,7 @@
 #if !NO_SYS
 /** Table to quickly map an lwIP error (err_t) to a socket error
   * by using -err as an index */
-static const int32_t err_to_errno_table[] = {
+static const int err_to_errno_table[] = {
   0,             /* ERR_OK          0      No error, everything OK. */
   ENOMEM,        /* ERR_MEM        -1      Out of memory error.     */
   ENOBUFS,       /* ERR_BUF        -2      Buffer error.            */
@@ -65,7 +65,7 @@ static const int32_t err_to_errno_table[] = {
   EIO            /* ERR_ARG        -16     Illegal argument.        */
 };
 
-int32_t
+int
 err_to_errno(err_t err)
 {
   if ((err > 0) || (-err >= (err_t)LWIP_ARRAYSIZE(err_to_errno_table))) {
@@ -78,23 +78,23 @@ err_to_errno(err_t err)
 #ifdef LWIP_DEBUG
 
 static const char *err_strerr[] = {
-           "Ok.",                    /* ERR_OK          0  */
-           "Out of memory error.",   /* ERR_MEM        -1  */
-           "Buffer error.",          /* ERR_BUF        -2  */
-           "Timeout.",               /* ERR_TIMEOUT    -3  */
-           "Routing problem.",       /* ERR_RTE        -4  */
-           "Operation in progress.", /* ERR_INPROGRESS -5  */
-           "Illegal value.",         /* ERR_VAL        -6  */
-           "Operation would block.", /* ERR_WOULDBLOCK -7  */
-           "Address in use.",        /* ERR_USE        -8  */
-           "Already connecting.",    /* ERR_ALREADY    -9  */
-           "Already connected.",     /* ERR_ISCONN     -10 */
-           "Not connected.",         /* ERR_CONN       -11 */
-           "Low-level netif error.", /* ERR_IF         -12 */
-           "Connection aborted.",    /* ERR_ABRT       -13 */
-           "Connection reset.",      /* ERR_RST        -14 */
-           "Connection closed.",     /* ERR_CLSD       -15 */
-           "Illegal argument."       /* ERR_ARG        -16 */
+  "Ok.",                    /* ERR_OK          0  */
+  "Out of memory error.",   /* ERR_MEM        -1  */
+  "Buffer error.",          /* ERR_BUF        -2  */
+  "Timeout.",               /* ERR_TIMEOUT    -3  */
+  "Routing problem.",       /* ERR_RTE        -4  */
+  "Operation in progress.", /* ERR_INPROGRESS -5  */
+  "Illegal value.",         /* ERR_VAL        -6  */
+  "Operation would block.", /* ERR_WOULDBLOCK -7  */
+  "Address in use.",        /* ERR_USE        -8  */
+  "Already connecting.",    /* ERR_ALREADY    -9  */
+  "Already connected.",     /* ERR_ISCONN     -10 */
+  "Not connected.",         /* ERR_CONN       -11 */
+  "Low-level netif error.", /* ERR_IF         -12 */
+  "Connection aborted.",    /* ERR_ABRT       -13 */
+  "Connection reset.",      /* ERR_RST        -14 */
+  "Connection closed.",     /* ERR_CLSD       -15 */
+  "Illegal argument."       /* ERR_ARG        -16 */
 };
 
 /**

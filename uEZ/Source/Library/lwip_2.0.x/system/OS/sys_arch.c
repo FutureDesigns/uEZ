@@ -43,6 +43,7 @@
 #include "lwip/sys.h"
 #include "lwip/mem.h"
 #include "lwip/stats.h"
+#include "lwip/tcpip.h"
 
 #if (RTOS == FreeRTOS)
 #include <Source/RTOS/FreeRTOS/include/task.h>
@@ -62,6 +63,62 @@
  *---------------------------------------------------------------------------*/
 /* This is the number of threads that can be started with sys_thread_new() */
 #define SYS_THREAD_MAX 4
+
+/** Set this to 1 if you want the stack size passed to sys_thread_new() to be
+ * interpreted as number of stack words (FreeRTOS-like).
+ * Default is that they are interpreted as byte count (lwIP-like).
+ */
+#ifndef LWIP_FREERTOS_THREAD_STACKSIZE_IS_STACKWORDS
+#define LWIP_FREERTOS_THREAD_STACKSIZE_IS_STACKWORDS  0
+#endif
+
+/** Set this to 1 to use a mutex for SYS_ARCH_PROTECT() critical regions.
+ * Default is 0 and locks interrupts/scheduler for SYS_ARCH_PROTECT().
+ */
+#ifndef LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX
+#define LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX     0
+#endif
+
+/** Set this to 1 to include a sanity check that SYS_ARCH_PROTECT() and
+ * SYS_ARCH_UNPROTECT() are called matching.
+ */
+#ifndef LWIP_FREERTOS_SYS_ARCH_PROTECT_SANITY_CHECK
+#define LWIP_FREERTOS_SYS_ARCH_PROTECT_SANITY_CHECK   0
+#endif
+
+/** Set this to 1 to let sys_mbox_free check that queues are empty when freed */
+#ifndef LWIP_FREERTOS_CHECK_QUEUE_EMPTY_ON_FREE
+#define LWIP_FREERTOS_CHECK_QUEUE_EMPTY_ON_FREE       0
+#endif
+
+/** Set this to 1 to enable core locking check functions in this port.
+ * For this to work, you'll have to define LWIP_ASSERT_CORE_LOCKED()
+ * and LWIP_MARK_TCPIP_THREAD() correctly in your lwipopts.h! */
+#ifndef LWIP_FREERTOS_CHECK_CORE_LOCKING
+#define LWIP_FREERTOS_CHECK_CORE_LOCKING              0
+#endif
+
+/** Set this to 0 to implement sys_now() yourself, e.g. using a hw timer.
+ * Default is 1, where FreeRTOS ticks are used to calculate back to ms.
+ */
+#ifndef LWIP_FREERTOS_SYS_NOW_FROM_FREERTOS
+#define LWIP_FREERTOS_SYS_NOW_FROM_FREERTOS           1
+#endif
+
+#if !configSUPPORT_DYNAMIC_ALLOCATION
+# error "lwIP FreeRTOS port requires configSUPPORT_DYNAMIC_ALLOCATION"
+#endif
+#if !INCLUDE_vTaskDelay
+# error "lwIP FreeRTOS port requires INCLUDE_vTaskDelay"
+#endif
+#if !INCLUDE_vTaskSuspend
+# error "lwIP FreeRTOS port requires INCLUDE_vTaskSuspend"
+#endif
+#if LWIP_FREERTOS_SYS_ARCH_PROTECT_USES_MUTEX || !LWIP_COMPAT_MUTEX
+#if !configUSE_MUTEXES
+# error "lwIP FreeRTOS port requires configUSE_MUTEXES"
+#endif
+#endif
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -575,6 +632,7 @@ void sys_sem_set_invalid(sys_sem_t *sem) {
     *sem = SYS_SEM_NULL;
 }
 
+
 /*---------------------------------------------------------------------------*
  * Routine:  sys_init
  *---------------------------------------------------------------------------*
@@ -641,6 +699,134 @@ void sys_mutex_unlock(sys_mutex_t *mutex){
     sys_sem_signal(mutex);
 }
 #endif /*LWIP_COMPAT_MUTEX*/
+
+
+#if LWIP_NETCONN_SEM_PER_THREAD
+#if configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0
+
+sys_sem_t *
+sys_arch_netconn_sem_get(void)
+{
+  void* ret;
+  TaskHandle_t task = xTaskGetCurrentTaskHandle();
+  LWIP_ASSERT("task != NULL", task != NULL);
+
+  ret = pvTaskGetThreadLocalStoragePointer(task, 0);
+  return ret;
+}
+
+void
+sys_arch_netconn_sem_alloc(void)
+{
+  void *ret;
+  TaskHandle_t task = xTaskGetCurrentTaskHandle();
+  LWIP_ASSERT("task != NULL", task != NULL);
+
+  ret = pvTaskGetThreadLocalStoragePointer(task, 0);
+  if(ret == NULL) {
+    sys_sem_t *sem;
+    err_t err;
+    (void) ((err));
+    /* need to allocate the memory for this semaphore */
+    sem = mem_malloc(sizeof(sys_sem_t));
+    LWIP_ASSERT("sem != NULL", sem != NULL);
+    err = sys_sem_new(sem, 0);
+    LWIP_ASSERT("err == ERR_OK", err == ERR_OK);
+    LWIP_ASSERT("sem invalid", sys_sem_valid(sem));
+    vTaskSetThreadLocalStoragePointer(task, 0, sem);
+  }
+}
+
+void sys_arch_netconn_sem_free(void)
+{
+  void* ret;
+  TaskHandle_t task = xTaskGetCurrentTaskHandle();
+  LWIP_ASSERT("task != NULL", task != NULL);
+
+  ret = pvTaskGetThreadLocalStoragePointer(task, 0);
+  if(ret != NULL) {
+    sys_sem_t *sem = ret;
+    sys_sem_free(sem);
+    mem_free(sem);
+    vTaskSetThreadLocalStoragePointer(task, 0, NULL);
+  }
+}
+
+#else /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
+#error LWIP_NETCONN_SEM_PER_THREAD needs configNUM_THREAD_LOCAL_STORAGE_POINTERS
+#endif /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
+
+#endif /* LWIP_NETCONN_SEM_PER_THREAD */
+
+#if LWIP_FREERTOS_CHECK_CORE_LOCKING
+#if LWIP_TCPIP_CORE_LOCKING
+
+/** Flag the core lock held. A counter for recursive locks. */
+static u8_t lwip_core_lock_count;
+static TaskHandle_t lwip_core_lock_holder_thread;
+
+void
+sys_lock_tcpip_core(void)
+{
+  (void) ((lwip_core_lock_holder_thread));
+   sys_mutex_lock(&lock_tcpip_core);
+   if (lwip_core_lock_count == 0) {
+     lwip_core_lock_holder_thread = xTaskGetCurrentTaskHandle();
+   }
+   lwip_core_lock_count++;
+}
+
+void
+sys_unlock_tcpip_core(void)
+{
+   lwip_core_lock_count--;
+   if (lwip_core_lock_count == 0) {
+       lwip_core_lock_holder_thread = 0;
+   }
+   sys_mutex_unlock(&lock_tcpip_core);
+}
+
+#endif /* LWIP_TCPIP_CORE_LOCKING */
+
+#if !NO_SYS
+static TaskHandle_t lwip_tcpip_thread;
+#endif
+
+void
+sys_mark_tcpip_thread(void)
+{
+#if !NO_SYS
+  lwip_tcpip_thread = xTaskGetCurrentTaskHandle();
+#endif
+}
+
+void
+sys_check_core_locking(void)
+{
+  /* Embedded systems should check we are NOT in an interrupt context here */
+  /* E.g. core Cortex-M3/M4 ports:
+         configASSERT( ( portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK ) == 0 );
+
+     Instead, we use more generic FreeRTOS functions here, which should fail from ISR: */
+  taskENTER_CRITICAL();
+  taskEXIT_CRITICAL();
+
+#if !NO_SYS
+  if (lwip_tcpip_thread != 0) {
+    TaskHandle_t current_thread = xTaskGetCurrentTaskHandle();
+
+#if LWIP_TCPIP_CORE_LOCKING
+    LWIP_ASSERT("Function called without core lock",
+                current_thread == lwip_core_lock_holder_thread && lwip_core_lock_count > 0);
+#else /* LWIP_TCPIP_CORE_LOCKING */
+    LWIP_ASSERT("Function called from wrong thread", current_thread == lwip_tcpip_thread);
+#endif /* LWIP_TCPIP_CORE_LOCKING */
+  }
+#endif /* !NO_SYS */
+}
+
+#endif /* LWIP_FREERTOS_CHECK_CORE_LOCKING*/
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  sys_thread_new

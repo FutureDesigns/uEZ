@@ -1,4 +1,4 @@
-/****************************************************************//**
+/**
  *
  * @file tftp_server.h
  *
@@ -9,7 +9,7 @@
  * Copyright (c) Deltatee Enterprises Ltd. 2013
  * All rights reserved.
  *
- ********************************************************************/
+ */
 
 /* 
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ struct tftp_context {
    * @param bytes Number of bytes to copy to buf
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int32_t (*read)(void* handle, void* buf, int32_t bytes);
+  int (*read)(void* handle, void* buf, int bytes);
   /**
    * Write to file
    * @param handle File handle returned by open()
@@ -82,10 +82,11 @@ struct tftp_context {
    *             TFTP headers are stripped off.
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-  int32_t (*write)(void* handle, struct pbuf* p);
+  int (*write)(void* handle, struct pbuf* p);
 };
 
 err_t tftp_init(const struct tftp_context* ctx);
+void tftp_cleanup(void);
 
 #ifdef __cplusplus
 }

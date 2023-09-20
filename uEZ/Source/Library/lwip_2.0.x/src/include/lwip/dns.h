@@ -44,6 +44,7 @@
 #if LWIP_DNS
 
 #include "lwip/ip_addr.h"
+#include "lwip/err.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,7 +117,7 @@ err_t            dns_gethostbyname_addrtype(const char *hostname, ip_addr_t *add
 size_t         dns_local_iterate(dns_found_callback iterator_fn, void *iterator_arg);
 err_t          dns_local_lookup(const char *hostname, ip_addr_t *addr, u8_t dns_addrtype);
 #if DNS_LOCAL_HOSTLIST_IS_DYNAMIC
-int32_t            dns_local_removehost(const char *hostname, const ip_addr_t *addr);
+int            dns_local_removehost(const char *hostname, const ip_addr_t *addr);
 err_t          dns_local_addhost(const char *hostname, const ip_addr_t *addr);
 #endif /* DNS_LOCAL_HOSTLIST_IS_DYNAMIC */
 #endif /* DNS_LOCAL_HOSTLIST */

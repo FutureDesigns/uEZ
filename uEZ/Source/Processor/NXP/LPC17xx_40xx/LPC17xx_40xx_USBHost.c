@@ -196,7 +196,7 @@ static volatile  TUInt8  *TDBuffer;                  /* Current Buffer Pointer o
 static T_LPC17xx_40xx_USBHost_Workspace *G_usbHostWorkspacePortA = 0;
 static T_LPC17xx_40xx_USBHost_Workspace *G_usbHostWorkspacePortB = 0;
 
-static TUInt8 G_usbHostMemory[6*1024] USBHOST_MEMORY;
+static TUInt8 G_usbHostMemory[8*1024] USBHOST_MEMORY;
 
 /*
 **************************************************************************************************************

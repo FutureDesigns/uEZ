@@ -6,39 +6,44 @@
 #include "uEZCompat.h"
 #include "IntelHexParser.h"
 
-#define LPC17xx_40xx_SPIFI_ADDRESS		(0x28000000)
+#define LPC17xx_40xx_QSPI_ADDRESS		(0x28000000)
 #define LPC17xx_40xx_NOR_ADDRESS		(0x80000000)
-#define LPC43xx_SPIFI_ADDRESS			(0x14000000)
+#define LPC43xx_QSPI_ADDRESS			(0x14000000)
 #define LPC43xx_FLASHA_ADDRESS			(0x1A000000)
 #define LPC43xx_FLASHB_ADDRESS			(0x1B000000)
 //#define LPC546xx_FLASH_ADDRESS		(0x00000000)
-#define LPC546xx_SPIFI_ADDRESS			(0x10000000)
+#define LPC546xx_QSPI_ADDRESS			(0x10000000)
+#define STM32Uxxx_FLASH_ADDRESS	    	(0x08000000)
+#define STM32Uxxx_SPI_ADDRESS			(0x90000000) // QSPI/OSPI can share same address (or use both at once with different addresses)
 
-TUInt8 G_appMemory[512*1024];
-TUInt8 G_appMemory2[512*1024];//LPC4357 has two flash banks
-TUInt8 G_flashMemory[2*16*1024*1024]; // support 32MB QSPI now
-TUInt32 G_appLow = 0xFFFFFFFF;
-TUInt32 G_appLow2 = 0xFFFFFFFF;
-TUInt32 G_flashLow = 0xFFFFFFFF;
-TUInt32 G_appHigh = 0;
-TUInt32 G_appHigh2 = 0;
-TUInt32 G_flashHigh = 0;
-TUInt32 G_FlashAddress = 0;
-TUInt32 G_AppMemoryAddress = 0;
-TUInt32 G_AppMemoryAddress2 = 0;
+uint8_t G_appMemory[8*1024*1024];    // support future MCUs with 8MB flash banks (they ship 4MB models today)
+uint8_t G_appMemory2[8*1024*1024];   // LPC4357 has two flash banks
+uint8_t G_flashMemory[64*1024*1024]; // support up to 64MB QSPI now or entry level OSPI
+uint32_t G_appLow = 0xFFFFFFFF;
+uint32_t G_appLow2 = 0xFFFFFFFF;
+uint32_t G_flashLow = 0xFFFFFFFF;
+uint32_t G_appHigh = 0;
+uint32_t G_appHigh2 = 0;
+uint32_t G_flashHigh = 0;
+uint32_t G_FlashAddress = 0;
+uint32_t G_AppMemoryAddress = 0;
+uint32_t G_AppMemoryAddress2 = 0;
+
+// TODO add generic option to specify address of where QSPI or OSPI starts
+// TODO dynamic memory alloc for external flash since many OSPI chips are much larger (512MB)
 
 int _tmain(int argc, char* argv[])
 {
     FILE *fp;
     char line[1000];
     T_IntexHexParserWorkspace parser;
-    TUInt32 end;
-    TUInt32 start;
+    uint32_t end;
+    uint32_t start;
 	bool flashBFound = false;
 
     if (argc < 4 || argc > 5) {
         printf("USAGE: SplitHexIntoBins <hex file> <application .bin file> <data .bin file>\n");
-		printf("Supports LPC1788, LPC4088, LPC546XX, and LPC4357 hex files\n");
+		printf("Supports STM32UX, LPC1788, LPC4088, LPC546XX, and LPC4357 hex files\n");
 		printf("LPC4357 supports and optional 5th argument for the second flash bank\n");
         return -1;
     }
@@ -75,9 +80,9 @@ int _tmain(int argc, char* argv[])
                     if (end > G_flashHigh)
                         G_flashHigh = end;
 					break;
-				case LPC17xx_40xx_SPIFI_ADDRESS:
-					G_FlashAddress = LPC17xx_40xx_SPIFI_ADDRESS;
-				    memcpy(G_flashMemory+start-LPC17xx_40xx_SPIFI_ADDRESS, parser.iData, parser.iDataLength);
+				case LPC17xx_40xx_QSPI_ADDRESS:
+					G_FlashAddress = LPC17xx_40xx_QSPI_ADDRESS;
+				    memcpy(G_flashMemory+start-LPC17xx_40xx_QSPI_ADDRESS, parser.iData, parser.iDataLength);
                     if (start < G_flashLow)
                         G_flashLow = start;
                     if (end > G_flashHigh)
@@ -102,17 +107,34 @@ int _tmain(int argc, char* argv[])
 					flashBFound = true;
 					G_AppMemoryAddress2 = LPC43xx_FLASHB_ADDRESS;
 					break;
-				case LPC43xx_SPIFI_ADDRESS:
-					G_FlashAddress = LPC43xx_SPIFI_ADDRESS;
-				    memcpy(G_flashMemory+start-LPC43xx_SPIFI_ADDRESS, parser.iData, parser.iDataLength);
+				case LPC43xx_QSPI_ADDRESS:
+					G_FlashAddress = LPC43xx_QSPI_ADDRESS;
+				    memcpy(G_flashMemory+start-LPC43xx_QSPI_ADDRESS, parser.iData, parser.iDataLength);
                     if (start < G_flashLow)
                         G_flashLow = start;
                     if (end > G_flashHigh)
                         G_flashHigh = end;
 					break;
-				case LPC546xx_SPIFI_ADDRESS:
-					G_FlashAddress = LPC546xx_SPIFI_ADDRESS;
-					memcpy(G_flashMemory + start - LPC546xx_SPIFI_ADDRESS, parser.iData, parser.iDataLength);
+				case LPC546xx_QSPI_ADDRESS:
+					G_FlashAddress = LPC546xx_QSPI_ADDRESS;
+					memcpy(G_flashMemory + start - LPC546xx_QSPI_ADDRESS, parser.iData, parser.iDataLength);
+					if (start < G_flashLow)
+						G_flashLow = start;
+					if (end > G_flashHigh)
+						G_flashHigh = end;
+					break;
+				case STM32Uxxx_FLASH_ADDRESS:
+					// Must be an app memory area
+					memcpy(G_appMemory + start- STM32Uxxx_FLASH_ADDRESS, parser.iData, parser.iDataLength);
+					if (start < G_appLow)
+						G_appLow = start;
+					if (end > G_appHigh)
+						G_appHigh = end;
+					G_AppMemoryAddress = STM32Uxxx_FLASH_ADDRESS;
+					break;
+				case STM32Uxxx_SPI_ADDRESS:
+					G_FlashAddress = STM32Uxxx_SPI_ADDRESS;
+					memcpy(G_flashMemory + start - STM32Uxxx_SPI_ADDRESS, parser.iData, parser.iDataLength);
 					if (start < G_flashLow)
 						G_flashLow = start;
 					if (end > G_flashHigh)

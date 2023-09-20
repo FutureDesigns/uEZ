@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : MULTIPAGE_Private.h
@@ -45,6 +45,7 @@ Purpose     : Private MULTIPAGE include
 #ifndef MULTIPAGE_PRIVATE_H
 #define MULTIPAGE_PRIVATE_H
 
+#include "WM_Intern.h"
 #include "GUI_Debug.h"
 #include "GUI_ARRAY.h"
 #include "MULTIPAGE.h"
@@ -74,7 +75,7 @@ Purpose     : Private MULTIPAGE include
 typedef struct {
   WM_HWIN hWin;
   U8      Status;
-  int32_t     ItemWidth;
+  int     ItemWidth;
   WM_HMEM hDrawObj[3];
   char    acText;
 } MULTIPAGE_PAGE;
@@ -95,12 +96,12 @@ typedef struct {
   GUI_COLOR                 aBkColor[MULTIPAGE_NUMCOLORS];
   GUI_COLOR                 aTextColor[MULTIPAGE_NUMCOLORS];
   MULTIPAGE_SKIN_PRIVATE    SkinPrivate;
-  int32_t                       BorderSize0;
-  int32_t                       BorderSize1;
+  int                       BorderSize0;
+  int                       BorderSize1;
   unsigned                  TextAlign;
   unsigned                  Scrollbar;
-  int32_t                    (* pfGetTouchedPage)(MULTIPAGE_Handle hObj, int32_t x, int32_t y);
-  int32_t                    (* pfGetTabBarWidth)(MULTIPAGE_Handle hObj);
+  int                    (* pfGetTouchedPage)(MULTIPAGE_Handle hObj, int x, int y);
+  int                    (* pfGetTabBarWidth)(MULTIPAGE_Handle hObj);
 } MULTIPAGE_PROPS;
 
 //
@@ -110,16 +111,16 @@ typedef struct MULTIPAGE_Obj MULTIPAGE_Obj;
 
 struct MULTIPAGE_Obj {
   WIDGET                 Widget;
-  void                (* pfDrawTextItem)(MULTIPAGE_Obj * pObj, const char * pText, unsigned Index, const GUI_RECT * pRect, int32_t x0, int32_t xSize, int32_t ColorIndex);
+  void                (* pfDrawTextItem)(MULTIPAGE_Obj * pObj, const char * pText, unsigned Index, const GUI_RECT * pRect, int x0, int xSize, int ColorIndex);
   WM_HWIN                hClient;
   GUI_ARRAY              hPageArray;
   unsigned               Selection;
-  int32_t                    ScrollState;
+  int                    ScrollState;
   MULTIPAGE_PROPS        Props;
   WIDGET_SKIN const    * pWidgetSkin;
   MULTIPAGE_SKIN_PROPS   SkinProps;
-  int32_t                    ItemHeight;
-  int32_t                    MaxHeight;
+  int                    ItemHeight;
+  int                    MaxHeight;
 };
 
 /*********************************************************************
@@ -164,9 +165,9 @@ extern WIDGET_SKIN const * MULTIPAGE__pSkinDefault;
 void MULTIPAGE__CalcBorderRect (MULTIPAGE_Obj * pObj, GUI_RECT * pRect);
 void MULTIPAGE__CalcClientRect (MULTIPAGE_Handle hObj, GUI_RECT * pRect);
 void MULTIPAGE__DeleteScrollbar(MULTIPAGE_Handle hObj);
-void MULTIPAGE__DrawTextItemH  (MULTIPAGE_Obj * pObj, const char * pText, unsigned Index, const GUI_RECT * pRect, int32_t x0, int32_t w, int32_t ColorIndex);
-int32_t  MULTIPAGE__GetPagePos     (MULTIPAGE_Handle hObj, unsigned Index);
-int32_t  MULTIPAGE__GetPageWidth   (MULTIPAGE_Handle hObj, unsigned Index);
+void MULTIPAGE__DrawTextItemH  (MULTIPAGE_Obj * pObj, const char * pText, unsigned Index, const GUI_RECT * pRect, int x0, int w, int ColorIndex);
+int  MULTIPAGE__GetPagePos     (MULTIPAGE_Handle hObj, unsigned Index);
+int  MULTIPAGE__GetPageWidth   (MULTIPAGE_Handle hObj, unsigned Index);
 void MULTIPAGE__GetTabBarRect  (MULTIPAGE_Handle hObj, GUI_RECT * pRect);
 void MULTIPAGE__UpdatePositions(MULTIPAGE_Handle hObj);
 
@@ -176,9 +177,9 @@ void MULTIPAGE__UpdatePositions(MULTIPAGE_Handle hObj);
 *
 **********************************************************************
 */
-int32_t  MULTIPAGE_SKIN__GetPagePos    (MULTIPAGE_Handle hObj, unsigned Index);
-int32_t  MULTIPAGE_SKIN__GetTabBarWidth(MULTIPAGE_Handle hObj);
-int32_t  MULTIPAGE_SKIN__GetTouchedPage(MULTIPAGE_Handle hObj, int32_t TouchX, int32_t TouchY);
+int  MULTIPAGE_SKIN__GetPagePos    (MULTIPAGE_Handle hObj, unsigned Index);
+int  MULTIPAGE_SKIN__GetTabBarWidth(MULTIPAGE_Handle hObj);
+int  MULTIPAGE_SKIN__GetTouchedPage(MULTIPAGE_Handle hObj, int TouchX, int TouchY);
 
 #endif  // GUI_WINSUPPORT
 #endif  // MULTIPAGE_PRIVATE_H

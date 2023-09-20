@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_IST3088_Private.h
@@ -73,18 +73,18 @@ typedef struct {
   //
   // Function pointers for writing to display controller
   //
-  void           (* pfManagePixel)      (DRIVER_CONTEXT * pContext, int32_t * px, int32_t * py);
-  void           (* pfManageRect)       (DRIVER_CONTEXT * pContext, int32_t * px0, int32_t * py0, int32_t * px1, int32_t * py1);
-  void           (* pfAddDirtyPixelPhys)(DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
-  void           (* pfAddDirtyRectPhys) (DRIVER_CONTEXT * pContext, int32_t x0, int32_t y0, int32_t x1, int32_t y1);
-  void           (* pfAddDirtyPixel)    (DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
-  void           (* pfAddDirtyRect)     (DRIVER_CONTEXT * pContext, int32_t x0, int32_t y0, int32_t x1, int32_t y1);
-  LCD_PIXELINDEX (* pfGetPixelIndexPhys)(DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
-  void           (* pfSetPixelIndexPhys)(DRIVER_CONTEXT * pContext, int32_t x, int32_t y, LCD_PIXELINDEX ColorIndex);
-  void           (* pfXorPixelIndexPhys)(DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
-  LCD_PIXELINDEX (* pfGetPixelIndex)    (DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
-  void           (* pfSetPixelIndex)    (DRIVER_CONTEXT * pContext, int32_t x, int32_t y, LCD_PIXELINDEX ColorIndex);
-  void           (* pfXorPixelIndex)    (DRIVER_CONTEXT * pContext, int32_t x, int32_t y);
+  void           (* pfManagePixel)      (DRIVER_CONTEXT * pContext, int * px, int * py);
+  void           (* pfManageRect)       (DRIVER_CONTEXT * pContext, int * px0, int * py0, int * px1, int * py1);
+  void           (* pfAddDirtyPixelPhys)(DRIVER_CONTEXT * pContext, int x, int y);
+  void           (* pfAddDirtyRectPhys) (DRIVER_CONTEXT * pContext, int x0, int y0, int x1, int y1);
+  void           (* pfAddDirtyPixel)    (DRIVER_CONTEXT * pContext, int x, int y);
+  void           (* pfAddDirtyRect)     (DRIVER_CONTEXT * pContext, int x0, int y0, int x1, int y1);
+  LCD_PIXELINDEX (* pfGetPixelIndexPhys)(DRIVER_CONTEXT * pContext, int x, int y);
+  void           (* pfSetPixelIndexPhys)(DRIVER_CONTEXT * pContext, int x, int y, LCD_PIXELINDEX ColorIndex);
+  void           (* pfXorPixelIndexPhys)(DRIVER_CONTEXT * pContext, int x, int y);
+  LCD_PIXELINDEX (* pfGetPixelIndex)    (DRIVER_CONTEXT * pContext, int x, int y);
+  void           (* pfSetPixelIndex)    (DRIVER_CONTEXT * pContext, int x, int y, LCD_PIXELINDEX ColorIndex);
+  void           (* pfXorPixelIndex)    (DRIVER_CONTEXT * pContext, int x, int y);
   void           (* pfFlush)            (DRIVER_CONTEXT * pContext);
 } MANAGE_VMEM_API;
 
@@ -96,9 +96,9 @@ struct DRIVER_CONTEXT {
   //
   // Common data
   //
-  int32_t xSize, ySize;
-  int32_t vxSize, vySize;
-  int32_t Orientation;
+  int xSize, ySize;
+  int vxSize, vySize;
+  int Orientation;
   //
   // Cache management
   //
@@ -106,8 +106,8 @@ struct DRIVER_CONTEXT {
   //
   // Accelerators for calculation
   //
-  int32_t ShortsPerLine;
-  int32_t BitsPerPixel;
+  int ShortsPerLine;
+  int BitsPerPixel;
   //
   // VRAM
   //
@@ -151,7 +151,7 @@ struct DRIVER_CONTEXT {
 *       _SetPixelIndex_##EXT
 */
 #define DEFINE_SETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                                 \
-static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD_PIXELINDEX PixelIndex) { \
+static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y, LCD_PIXELINDEX PixelIndex) { \
   DRIVER_CONTEXT * pContext;                                                                      \
                                                                                                   \
   pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;                                               \
@@ -163,7 +163,7 @@ static void _SetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y, LCD
 *       _GetPixelIndex_##EXT
 */
 #define DEFINE_GETPIXELINDEX(EXT, X_PHYS, Y_PHYS)                                \
-static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int32_t y) { \
+static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int x, int y) { \
   DRIVER_CONTEXT * pContext;                                                     \
   LCD_PIXELINDEX PixelIndex;                                                     \
                                                                                  \
@@ -177,7 +177,7 @@ static LCD_PIXELINDEX _GetPixelIndex_##EXT(GUI_DEVICE * pDevice, int32_t x, int3
 *       _GetDevProp_##EXT
 */
 #define DEFINE_GETDEVPROP(EXT, MX, MY, SWAP)                    \
-static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
+static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int Index) { \
   switch (Index) {                                              \
   case LCD_DEVCAP_MIRROR_X: return MX;                          \
   case LCD_DEVCAP_MIRROR_Y: return MY;                          \
@@ -202,9 +202,9 @@ static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int32_t Index) { \
 *
 **********************************************************************
 */
-void (*GUIDRV__IST3088_GetDevFunc(GUI_DEVICE ** ppDevice, int32_t Index))(void);
-void   GUIDRV__IST3088_SetOrg    (GUI_DEVICE *  pDevice,  int32_t x, int32_t y);
-I32    GUIDRV__IST3088_GetDevProp(GUI_DEVICE *  pDevice,  int32_t Index);
+void (*GUIDRV__IST3088_GetDevFunc(GUI_DEVICE ** ppDevice, int Index))(void);
+void   GUIDRV__IST3088_SetOrg    (GUI_DEVICE *  pDevice,  int x, int y);
+I32    GUIDRV__IST3088_GetDevProp(GUI_DEVICE *  pDevice,  int Index);
 void   GUIDRV__IST3088_GetRect   (GUI_DEVICE *  pDevice,  LCD_RECT * pRect);
 
 #if defined(__cplusplus)

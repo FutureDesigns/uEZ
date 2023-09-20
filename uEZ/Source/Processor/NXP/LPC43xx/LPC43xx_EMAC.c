@@ -73,12 +73,6 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
-/* EMAC Memory Buffer configuration for 16K Ethernet RAM. */
-#define NUM_RX_FRAG         8           /* Num.of RX Fragments 4*1536= 6.0kB */
-#define NUM_TX_FRAG         2           /* Num.of TX Fragments 2*1536= 3.0kB */
-#define ETH_FRAG_SIZE       1536        /* Packet Fragment size 1536 Bytes   */
-#define ETH_MAX_FLEN        1536        /* Max. Ethernet Frame Size          */
-
 /* MAC Configuration Register 1 */
 #define MAC1_REC_EN         0x00000001  /* Receive Enable                    */
 #define MAC1_PASS_ALL       0x00000002  /* Pass All Receive Frames           */
@@ -465,11 +459,10 @@ typedef struct {
 extern const HAL_EMAC EMAC_LPC43xx_Interface;
 static T_LPC43xx_EMAC_Workspace *G_LPC43xx_EMAC;
 
+/* EMAC Memory Buffer configuration for 16K Ethernet RAM. */
 // Memory EMAC packet memory
-#define ENET_NUM_TX_DESC 4
-#define ENET_NUM_RX_DESC 4
-
-#define EMAC_ETH_MAX_FLEN   1536
+#define ENET_NUM_TX_DESC 2//4         /* Num.of TX Fragments 2*1536= 3.0kB */
+#define ENET_NUM_RX_DESC 8//4         /* Num.of RX Fragments 4*1536= 6.0kB */
 
 static ENET_ENHTXDESC_T TXDescs[ENET_NUM_TX_DESC]EMAC_MEMORY;
 static ENET_ENHRXDESC_T RXDescs[ENET_NUM_RX_DESC]EMAC_MEMORY;
@@ -914,7 +907,7 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
 
     LPC_RGU->RESET_CTRL0 = (1 << 22);
 
-    while((LPC_RGU->RESET_ACTIVE_STATUS0 & (1<<22)) == 1);
+    while((LPC_RGU->RESET_ACTIVE_STATUS0 & (1<<22)) == (1<<22));
 
     LPC_ETHERNET->DMA_BUS_MODE |= (1<<0);
 

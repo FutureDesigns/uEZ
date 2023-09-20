@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : HEADER_Private.h
@@ -45,10 +45,9 @@ Purpose     : Private HEADER include
 #ifndef HEADER_PRIVATE_H
 #define HEADER_PRIVATE_H
 
-
+#include "WM_Intern.h"
 #include "HEADER.h"
 #include "WIDGET.h"
-#include "WM.h"
 #include "GUI_ARRAY.h"
 
 #if GUI_WINSUPPORT
@@ -60,7 +59,7 @@ Purpose     : Private HEADER include
 **********************************************************************
 */
 typedef struct {
-  int32_t     Width;
+  int     Width;
   I16     Align;
   WM_HMEM hDrawObj;
   char    acText[1];
@@ -83,14 +82,15 @@ typedef struct {
   HEADER_PROPS        Props;
   WIDGET_SKIN const * pWidgetSkin;
   GUI_ARRAY           Columns;
-  int32_t                 CapturePosX;
-  int32_t                 CaptureItem;
-  int32_t                 ScrollPos;
-  int32_t                 Sel;
-  int32_t                 DirIndicatorColumn;
-  int32_t                 DirIndicatorReverse;
+  int                 CapturePosX;
+  int                 CaptureItem;
+  int                 ScrollPos;
+  int                 Sel;
+  int                 DirIndicatorColumn;
+  int                 DirIndicatorReverse;
   unsigned            Fixed;
   U8                  DragLimit;
+  U8                  ResizeableColumns;
 } HEADER_Obj;
 
 /*********************************************************************
@@ -102,8 +102,8 @@ typedef struct {
 
 extern HEADER_PROPS        HEADER__DefaultProps;
 extern const GUI_CURSOR  * HEADER__pDefaultCursor;
-extern int32_t                 HEADER__DefaultBorderH;
-extern int32_t                 HEADER__DefaultBorderV;
+extern int                 HEADER__DefaultBorderH;
+extern int                 HEADER__DefaultBorderV;
 
 extern const WIDGET_SKIN   HEADER__SkinClassic;
 extern       WIDGET_SKIN   HEADER__Skin;

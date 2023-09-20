@@ -105,21 +105,6 @@ int MainTask(void)
 }
 
 #include <string.h>
-TUInt32 UEZEmWinGetRAMAddr(void)
-{
-    static TBool init = EFalse;
-    if (!init) {
-        memset((void *)0xA0200000, 0x00, 0x00200000);
-        init = ETrue;
-    }
-    return 0xA0200000;
-}
-
-TUInt32 UEZEmWinGetRAMSize(void)
-{
-    return 0x00200000;
-}
-
 /*---------------------------------------------------------------------------*
  * Routine:  uEZPlatformStartup
  *---------------------------------------------------------------------------*

@@ -114,11 +114,12 @@ void UEZBSP_Startup(void)
 /*---------------------------------------------------------------------------*/
 void SystemInit(void)
 {  
-    UEZBSP_Pre_PLL_SystemInit();
+    UEZBSP_Pre_PLL_SystemInit(); // uEZ 2.11
     UEZBSP_PLLConfigure();
-    UEZBSP_CPU_PinConfigInit();
+    UEZBSP_CPU_PinConfigInit(); // uEZ 2.11
     UEZBSP_RAMInit();
     UEZBSP_ROMInit();
+    UEZBSP_Post_SystemInit(); // uEZ 2.11.1
 }
 /** @} */
 /*-------------------------------------------------------------------------*

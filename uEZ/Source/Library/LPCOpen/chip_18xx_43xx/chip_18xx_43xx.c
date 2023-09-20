@@ -56,8 +56,11 @@ uint32_t SystemCoreClock;
 static void Chip_USB_PllSetup(void)
 {
 	/* No need to setup anything if PLL is already setup for the frequency */
-	if (Chip_Clock_GetClockInputHz(CLKIN_USBPLL) == usbPLLSetup.freq)
-		return ;
+	if (Chip_Clock_GetClockInputHz(CLKIN_USBPLL) == usbPLLSetup.freq) {
+		return;
+    }
+        
+    //Chip_Clock_DisablePLL(CGU_USB_PLL); // So far don't need to disable here.
 
 	/* Setup default USB PLL state for a 480MHz output and attach */
 	Chip_Clock_SetupPLL(CLKIN_CRYSTAL, CGU_USB_PLL, &usbPLLSetup);
@@ -75,6 +78,10 @@ static void Chip_USB_PllSetup(void)
 
 void Chip_USB0_Init(void)
 {
+    //Chip_CREG_DisableUSB0Phy(); // Seems we don't need to disable existing clocks, but could if coming from some unknown state in bootloader.
+    //Chip_Clock_DisableOpts(CLK_MX_USB0);
+	//Chip_Clock_DisableBaseClock(CLK_BASE_USB0);
+
 	/* Set up USB PLL */
 	Chip_USB_PllSetup();
 
@@ -96,6 +103,8 @@ void Chip_USB1_Init(void)
 	/* USB1 needs a 60MHz clock. To get it, a divider of 4 and then 2 are
 	   chained to make a divide by 8 function. Connect the output of
 	   divider D to the USB1 base clock. */
+	
+    //Chip_Clock_DisableBaseClock(CLK_BASE_USB0);
 
 #if 0
 	Chip_Clock_SetDivider(CLK_IDIV_A, CLKIN_USBPLL, 4);

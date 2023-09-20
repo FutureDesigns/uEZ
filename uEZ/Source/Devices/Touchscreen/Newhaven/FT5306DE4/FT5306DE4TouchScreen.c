@@ -285,15 +285,22 @@ T_uezError TS_FT5306DE4_Configure(T_uezDeviceWorkspace *aW)
     UEZI2CRead(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataIn, 0xA,50);
   
   } else { // if we see any other IDs we get here
-    /*//Program only touch detect threshold
+    //Program only touch detect threshold 
     TUInt8 ConfigTD[0x02] = {0x80, // address
       0x28, // Valid touch detect
-    };    
-    UEZI2CWrite(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,ConfigTD,0x2,50); */
+    }; 
+    
+    dataOut[0] = 0x80; // address 80 mutual cap touch threshold
+    UEZI2CWrite(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataOut,1,50);
+    UEZI2CRead(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataIn, 0xA,50);
+    if(dataIn[0] < 40) { // raise threshold to 40 if less
+      UEZI2CWrite(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,ConfigTD,0x2,50); 
 
-    dataOut[0] = 0x80; // read settings back to confirm
-    UEZI2CWrite(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataOut,1,50);    
-    UEZI2CRead(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataIn, 0xA,50);    
+      dataOut[0] = 0x80; // read settings back to confirm
+    
+      UEZI2CWrite(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataOut,1,50);
+      UEZI2CRead(i2c,FT5306DE4_I2C_ADDRESS,FT5306DE4_I2C_SPEED,dataIn, 0xA,50);
+    }
   }
   
   UEZI2CClose(i2c);

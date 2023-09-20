@@ -37,11 +37,17 @@
  *-------------------------------------------------------------------------*/
 typedef void (*T_SD_MMCReceptionComplete)(void *aCallbackWorkspace);
 typedef void (*T_SD_MMCTransmissionComplete)(void *aCallbackWorkspace);
+typedef void (*T_SD_MMCError)(void *aCallbackWorkspace);
+
+/*typedef enum {
+    UEZ_SD_MMC_BUS_1BIT_WIDE = 0,
+    UEZ_SD_MMC_BUS_4BIT_WIDE
+} T_uezSD_MMCBus;*/
 
 typedef enum {
-    UEZ_SD_MMC_BUS_1BIT_WIDE,
-    UEZ_SD_MMC_BUS_4BIT_WIDE
-} T_uezSD_MMCBus;
+    UEZ_MCI_BUS_1BIT_WIDE = 0,
+    UEZ_MCI_BUS_4BIT_WIDE
+} T_uezMCIBus;
 
 // TODO: Comment this API!
 
@@ -84,6 +90,11 @@ typedef struct {
     void (*SetCardType)(void *aWorkspace, TUInt32 aType);
     void (*SetBlockSize)(void *aWorkspace, TUInt32 aBytesPerBlock);
     void (*PrepreExtCSDTransfer)(void *aWorkspace, TUInt8 *aAddress, TUInt32 aTransferSize);
+    
+    // 2.12
+    void (*SetupErrorCallback) (void *aWorkspace,
+         T_SD_MMCError aErrorCallback,
+         void *aErrorCallbackWorkspace);
 } HAL_SD_MMC;
 
 #endif // SD_MMC_H_

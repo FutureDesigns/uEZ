@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 -------------------------- END-OF-HEADER -----------------------------
 
@@ -57,14 +57,20 @@ Purpose : Header file for file system abstraction layer.
 *
 **********************************************************************
 */
-
+/*********************************************************************
+*
+*       IP_FS_API
+*
+*  Description
+*    Table containing the function pointers for file access.
+*/
 typedef struct {
   //
   // Read only file operations. These have to be present on ANY file system, even the simplest one.
   //
   void* (*pfOpenFile)             (const char* sFilename);
-  int32_t   (*pfCloseFile)            (void* hFile);
-  int32_t   (*pfReadAt)               (void* hFile, void* pBuffer, U32 Pos, U32 NumBytes);
+  int   (*pfCloseFile)            (void* hFile);
+  int   (*pfReadAt)               (void* hFile, void* pBuffer, U32 Pos, U32 NumBytes);
   long  (*pfGetLen)               (void* hFile);
   //
   // Directory query operations.
@@ -73,30 +79,30 @@ typedef struct {
   void  (*pfGetDirEntryFileName)  (void* pFileEntry, char* sFileName, U32 SizeOfBuffer);
   U32   (*pfGetDirEntryFileSize)  (void* pFileEntry, U32* pFileSizeHigh);
   U32   (*pfGetDirEntryFileTime)  (void* pFileEntry);
-  int32_t   (*pfGetDirEntryAttributes)(void* pFileEntry);
+  int   (*pfGetDirEntryAttributes)(void* pFileEntry);
   //
   // Write file operations.
   //
   void* (*pfCreate)               (const char* sFileName);
   void* (*pfDeleteFile)           (const char* sFilename);
-  int32_t   (*pfRenameFile)           (const char* sOldFilename, const char* sNewFilename);
-  int32_t   (*pfWriteAt)              (void* hFile, void* pBuffer, U32 Pos, U32 NumBytes);
+  int   (*pfRenameFile)           (const char* sOldFilename, const char* sNewFilename);
+  int   (*pfWriteAt)              (void* hFile, void* pBuffer, U32 Pos, U32 NumBytes);
   //
   // Additional directory operations
   //
-  int32_t   (*pfMKDir)                (const char* sDirName);
-  int32_t   (*pfRMDir)                (const char* sDirName);
+  int   (*pfMKDir)                (const char* sDirName);
+  int   (*pfRMDir)                (const char* sDirName);
   //
   // Additional operations
   //
-  int32_t   (*pfIsFolder)             (const char* sPath);
-  int32_t   (*pfMove)                 (const char* sOldFilename, const char* sNewFilename);
+  int   (*pfIsFolder)             (const char* sPath);
+  int   (*pfMove)                 (const char* sOldFilename, const char* sNewFilename);
 } IP_FS_API;
 
 typedef struct {
   const          char* sPath;
   const unsigned char* pData;
-        uint32_t   FileSize;
+        unsigned int   FileSize;
 } IP_FS_READ_ONLY_FILE_ENTRY;
 
 typedef struct IP_FS_READ_ONLY_FILE_HOOK_STRUCT IP_FS_READ_ONLY_FILE_HOOK;
@@ -127,7 +133,7 @@ extern const IP_FS_API IP_FS_emFile_DenyHiddenAccess;   // Target file system (e
 // Helper functions for Read Only file system layer.
 //
 void IP_FS_READ_ONLY_ClrFileHooks(void);
-void IP_FS_READ_ONLY_AddFileHook (IP_FS_READ_ONLY_FILE_HOOK* pHook, const char* sPath, const unsigned char* pData, uint32_t FileSize);
+void IP_FS_READ_ONLY_AddFileHook (IP_FS_READ_ONLY_FILE_HOOK* pHook, const char* sPath, const unsigned char* pData, unsigned int FileSize);
 
 //
 // Helper functions for Win32 file system layer.

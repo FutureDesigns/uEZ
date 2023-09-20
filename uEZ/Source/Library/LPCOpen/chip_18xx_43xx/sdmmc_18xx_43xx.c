@@ -74,7 +74,7 @@ static int32_t sdmmc_execute_command(LPC_SDMMC_T *pSDMMC, uint32_t cmd, uint32_t
 		wait_status |= MCI_INT_FRUN | MCI_INT_HTO | MCI_INT_DTO | MCI_INT_DCRC;
 	}
 
-	while (step) {
+	while (step) { // Note that we don't actually use this function in real code, so no point in updating the clock setup here.
 		Chip_SDIF_SetClock(pSDMMC, /*Chip_Clock_GetBaseClocktHz(CLK_BASE_SDIO)*/ 204000000, g_card_info->card_info.speed);
 
 		/* Clear the interrupts */

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : WM_Intern.h
@@ -45,9 +45,8 @@ Purpose     : Windows manager internal include
 #ifndef WM_INTERN_H            /* Make sure we only include it once */
 #define WM_INTERN_H            /* Make sure we only include it once */
 
-#include "WM.h"
 #include "GUI_Private.h"
-
+#include "WM.h"
 
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */
@@ -127,7 +126,7 @@ extern U8             WM__PaintCallbackCnt;      /* Public for assertions only *
 extern WM_HWIN        WM__hCreateStatic;
 
 #if WM_SUPPORT_TRANSPARENCY
-  extern int32_t     WM__TransWindowCnt;
+  extern int     WM__TransWindowCnt;
   extern WM_HWIN WM__hATransWindow;
 #endif
 
@@ -137,7 +136,7 @@ extern WM_HWIN        WM__hCreateStatic;
 
 extern WM_CRITICAL_HANDLE     WM__aCHWinModal[GUI_NUM_LAYERS];
 extern WM_CRITICAL_HANDLE     WM__aCHWinLast[GUI_NUM_LAYERS];
-extern int32_t                    WM__ModalLayer;
+extern int                    WM__ModalLayer;
 
 #if GUI_SUPPORT_MOUSE
   extern WM_CRITICAL_HANDLE   WM__aCHWinMouseOver[GUI_NUM_LAYERS];
@@ -165,6 +164,8 @@ GUI_EXTERN WM_CRITICAL_HANDLE * WM__pFirstCriticalHandle;
 GUI_EXTERN WM_HWIN   WM__ahDesktopWin[GUI_NUM_LAYERS];
 GUI_EXTERN GUI_COLOR WM__aBkColor[GUI_NUM_LAYERS];
 
+GUI_EXTERN U32 WM__DrawSprite;  // Required when using sprites in combination with the WM.
+
 #undef GUI_EXTERN
 
 /*********************************************************************
@@ -174,8 +175,9 @@ GUI_EXTERN GUI_COLOR WM__aBkColor[GUI_NUM_LAYERS];
 **********************************************************************
 */
 void    WM__ActivateClipRect        (void);
-int32_t     WM__ClipAtParentBorders     (GUI_RECT * pRect, WM_HWIN hWin);
+int     WM__ClipAtParentBorders     (GUI_RECT * pRect, WM_HWIN hWin);
 void    WM__Client2Screen           (const WM_Obj * pWin, GUI_RECT * pRect);
+void    WM__DeactivateEx            (void);
 void    WM__DeleteAssocTimer        (WM_HWIN hWin);
 void    WM__DeleteSecure            (WM_HWIN hWin);
 void    WM__DetachWindow            (WM_HWIN hChild);
@@ -184,47 +186,47 @@ void    WM__GetClientRectWin        (const WM_Obj * pWin, GUI_RECT * pRect);
 void    WM__GetClientRectEx         (WM_HWIN hWin, GUI_RECT * pRect);
 WM_HWIN WM__GetFirstSibling         (WM_HWIN hWin);
 WM_HWIN WM__GetFocusedChild         (WM_HWIN hWin);
-int32_t     WM__GetHasFocus             (WM_HWIN hWin);
+int     WM__GetHasFocus             (WM_HWIN hWin);
 WM_HWIN WM__GetLastSibling          (WM_HWIN hWin);
 WM_HWIN WM__GetPrevSibling          (WM_HWIN hWin);
-int32_t     WM__GetTopLevelLayer        (WM_HWIN hWin);
-int32_t     WM__GetWindowSizeX          (const WM_Obj * pWin);
-int32_t     WM__GetWindowSizeY          (const WM_Obj * pWin);
+int     WM__GetTopLevelLayer        (WM_HWIN hWin);
+int     WM__GetWindowSizeX          (const WM_Obj * pWin);
+int     WM__GetWindowSizeY          (const WM_Obj * pWin);
 void    WM__InsertWindowIntoList    (WM_HWIN hWin, WM_HWIN hParent);
 void    WM__Invalidate1Abs          (WM_HWIN hWin, const GUI_RECT * pRect);
 void    WM__InvalidateAreaBelow     (const GUI_RECT * pRect, WM_HWIN StopWin);
 void    WM__InvalidateRectEx        (const GUI_RECT * pInvalidRect, WM_HWIN hParent, WM_HWIN hStop);
 void    WM__InvalidateTransAreaAbove(const GUI_RECT * pRect, WM_HWIN StopWin);
-int32_t     WM__IntersectRect           (GUI_RECT * pDest, const GUI_RECT * pr0, const GUI_RECT * pr1);
-int32_t     WM__IsAncestor              (WM_HWIN hChild, WM_HWIN hParent);
-int32_t     WM__IsAncestorOrSelf        (WM_HWIN hChild, WM_HWIN hParent);
-int32_t     WM__IsChild                 (WM_HWIN hWin, WM_HWIN hParent);
-int32_t     WM__IsEnabled               (WM_HWIN hWin);
-int32_t     WM__IsInModalArea           (WM_HWIN hWin);
-int32_t     WM__IsInWindow              (WM_Obj * pWin, int32_t x, int32_t y);
-int32_t     WM__IsWindow                (WM_HWIN hWin);
+int     WM__IntersectRect           (GUI_RECT * pDest, const GUI_RECT * pr0, const GUI_RECT * pr1);
+int     WM__IsAncestor              (WM_HWIN hChild, WM_HWIN hParent);
+int     WM__IsAncestorOrSelf        (WM_HWIN hChild, WM_HWIN hParent);
+int     WM__IsChild                 (WM_HWIN hWin, WM_HWIN hParent);
+int     WM__IsEnabled               (WM_HWIN hWin);
+int     WM__IsInModalArea           (WM_HWIN hWin);
+int     WM__IsInWindow              (WM_Obj * pWin, int x, int y);
+int     WM__IsWindow                (WM_HWIN hWin);
 void    WM__LeaveIVRSearch          (void);
-void    WM__MoveTo                  (WM_HWIN hWin, int32_t x, int32_t y);
-void    WM__MoveWindow              (WM_HWIN hWin, int32_t dx, int32_t dy);
+void    WM__MoveTo                  (WM_HWIN hWin, int x, int y);
+void    WM__MoveWindow              (WM_HWIN hWin, int dx, int dy);
 void    WM__NotifyVisChanged        (WM_HWIN hWin, GUI_RECT * pRect);
-int32_t     WM__RectIsNZ                (const GUI_RECT * pr);
+int     WM__RectIsNZ                (const GUI_RECT * pr);
 void    WM__RemoveWindowFromList    (WM_HWIN hWin);
 void    WM__Screen2Client           (const WM_Obj * pWin, GUI_RECT * pRect);
 void    WM__SelectTopLevelLayer     (WM_HWIN  hWin);
 void    WM__SendMsgNoData           (WM_HWIN hWin, U8 MsgId);
 void    WM__SendMessage             (WM_HWIN hWin, WM_MESSAGE * pm);
 void    WM__SendMessageIfEnabled    (WM_HWIN hWin, WM_MESSAGE * pm);
-void    WM__SendMessageNoPara       (WM_HWIN hWin, int32_t MsgId);
+void    WM__SendMessageNoPara       (WM_HWIN hWin, int MsgId);
 void    WM__SendPIDMessage          (WM_HWIN hWin, WM_MESSAGE * pMsg);
-int32_t     WM__SetScrollbarH           (WM_HWIN hWin, int32_t OnOff);
-int32_t     WM__SetScrollbarV           (WM_HWIN hWin, int32_t OnOff);
-void    WM__UpdateChildPositions    (WM_Obj * pObj, int32_t dx0, int32_t dy0, int32_t dx1, int32_t dy1);
-void    WM_PID__GetPrevState        (GUI_PID_STATE * pPrevState, int32_t Layer);
-void    WM_PID__SetPrevState        (GUI_PID_STATE * pPrevState, int32_t Layer);
+int     WM__SetScrollbarH           (WM_HWIN hWin, int OnOff);
+int     WM__SetScrollbarV           (WM_HWIN hWin, int OnOff);
+void    WM__UpdateChildPositions    (WM_Obj * pObj, int dx0, int dy0, int dx1, int dy1);
+void    WM_PID__GetPrevState        (GUI_PID_STATE * pPrevState, int Layer);
+void    WM_PID__SetPrevState        (GUI_PID_STATE * pPrevState, int Layer);
 void    WM__SendTouchMessage        (WM_HWIN hWin, WM_MESSAGE * pMsg);
 
 U16     WM_GetFlags                 (WM_HWIN hWin);
-int32_t     WM__Paint                   (WM_HWIN hWin);
+int     WM__Paint                   (WM_HWIN hWin);
 void    WM__Paint1                  (WM_HWIN hWin);
 void    WM__AddCriticalHandle       (WM_CRITICAL_HANDLE * pCH);
 void    WM__RemoveCriticalHandle    (WM_CRITICAL_HANDLE * pCH);
@@ -239,10 +241,10 @@ void    WM__SetLastTouched          (WM_HWIN hWin);
 /* Static memory devices */
 #if (GUI_SUPPORT_MEMDEV)
   typedef struct {
-    int32_t xSize, ySize; // Size of bk window
+    int xSize, ySize; // Size of bk window
   } EFFECT_CONTEXT;
 
-  int32_t  GUI_MEMDEV__CalcParaFadeIn    (int32_t Period, int32_t TimeUsed);
+  int  GUI_MEMDEV__CalcParaFadeIn    (int Period, int TimeUsed);
   void GUI_MEMDEV__ClipBK            (EFFECT_CONTEXT * pContext);
   void GUI_MEMDEV__RemoveStaticDevice(WM_HWIN hWin);
   void GUI_MEMDEV__UndoClipBK        (EFFECT_CONTEXT * pContext);

@@ -60,9 +60,10 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 typedef void (*T_mciReceptionComplete)(void *aCallbackWorkspace);
 typedef void (*T_mciTransmissionComplete)(void *aCallbackWorkspace);
+typedef void (*T_mciError)(void *aCallbackWorkspace);
 
 typedef enum {
-    UEZ_MCI_BUS_1BIT_WIDE,
+    UEZ_MCI_BUS_1BIT_WIDE = 0,
     UEZ_MCI_BUS_4BIT_WIDE
 } T_uezMCIBus;
 
@@ -113,6 +114,12 @@ typedef struct {
         TUInt32 aNumBytes);
     TBool (*IsWriteAvailable)(void *aWorkspace);
     TBool (*IsWriteEmpty)(void *aWorkspace);
+
+    // uEZ 2.11.1
+    T_uezError (*SetErrorCallback)(
+        void *aWorkspace,
+        T_mciError aErrorCallback,
+        void *aCallbackWorkspace);
 } HAL_MCI;
 
 #ifdef __cplusplus

@@ -159,17 +159,18 @@ _vectors_end:
   reset_handler:
 
 #ifndef __NO_SYSTEM_INIT
-  ldr sp, =__SRAM2_segment_end__
-  bl SystemInit
-#endif
-
-#if defined(__FPU_PRESENT) && !defined(__SOFTFP__)
+#if defined(__FPU_PRESENT) && !defined(__SOFTFP__) // This is the equi of calling Lpc43xxSystemInit()->fpu_init().
   // Enable CP11 and CP10 with CPACR |= (0xf<<20)
   movw r0, 0xED88
   movt r0, 0xE000
   ldr r1, [r0]
   orrs r1, r1, #(0xf << 20)
   str r1, [r0]
+#endif
+  ldr sp, =__SRAM2_segment_end__
+  bl SystemInit
+#endif
+
 #ifndef __NO_RUNFAST_MODE
   nop
   nop
@@ -186,7 +187,6 @@ _vectors_end:
   ldr r0, [r1]
   orrs r0, r0, #(0x3 << 24) // FZ and DN
   str r0, [r1]
-#endif
 #endif
 
 #ifdef VECTORS_IN_RAM

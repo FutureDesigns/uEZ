@@ -45,6 +45,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <Device/Network.h>
+#include "arch/sys_arch.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,12 +55,13 @@ extern "C" {
  * Constants:
  *-------------------------------------------------------------------------*/
 #ifndef NETWORK_LWIP_RECV_QUEUE_SIZE
-#define NETWORK_LWIP_RECV_QUEUE_SIZE          1024 // bytes
+// Whatever this was it is no longer used.
+//#define NETWORK_LWIP_RECV_QUEUE_SIZE          1024 // bytes
 #endif
 
 #ifndef NETWORK_LWIP_MAX_NUM_SOCKETS
-//Reduce for RX builds, or define in Config_Build.h
-#define NETWORK_LWIP_MAX_NUM_SOCKETS          6
+//Can define in Config_Build.h
+#define NETWORK_LWIP_MAX_NUM_SOCKETS          16
 #endif
 
 // Aux Commands:
@@ -76,7 +78,7 @@ void Network_lwIP_Configure(void *aWorkspace);
 void Network_lwIP_Create(const char *aName);
 
 extern const DEVICE_Network lwIP_Network_Interface;
-void tcpip_init(void (* initfunc)(void *), void *arg);
+sys_thread_t tcpip_init(void (* initfunc)(void *), void *arg);
 
 #ifdef __cplusplus
 }

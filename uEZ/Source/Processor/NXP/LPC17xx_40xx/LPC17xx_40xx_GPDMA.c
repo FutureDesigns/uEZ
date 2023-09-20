@@ -391,7 +391,7 @@ static void LPC17xx_40xx_GPDMA_Enable(void *aWorkspace)
     if (EFalse == InterruptIsRegistered(INTERRUPT_CHANNEL_GP_DMA)) {
         // Enable interrupt.
         InterruptRegister(INTERRUPT_CHANNEL_GP_DMA, (TISRFPtr)IGPDMA,
-            INTERRUPT_PRIORITY_NORMAL, "GPDMA");
+            INTERRUPT_PRIORITY_HIGHEST, "GPDMA");
         InterruptEnable(INTERRUPT_CHANNEL_GP_DMA);
     }
 
@@ -688,7 +688,8 @@ static void IGPDMAProcessInterrupt(T_LPC17xx_40xx_GPDMA_Workspace *p)
  *---------------------------------------------------------------------------*
  * Description:
  *      Capture the GPDMA interrupt and forward to IGPDMAProcessInterrupt.
- *---------------------------------------------------------------------------*/IRQ_ROUTINE(IGPDMA)
+ *---------------------------------------------------------------------------*/
+ IRQ_ROUTINE(IGPDMA)
 {
     IRQ_START();
     // Determine interrupt source.

@@ -54,10 +54,10 @@
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-static TUInt32 IHexValue(char *aString, TUInt8 aLength)
+static uint32_t IHexValue(char *aString, uint8_t aLength)
 {
     char c;
-    TUInt32 value = 0;
+    uint32_t value = 0;
     while (aLength--) {
         c = *(aString++);
         value = (value << 4) |
@@ -82,7 +82,7 @@ void IntelHexParserInit(T_IntexHexParserWorkspace *aWorkspace)
     p->iSegment = 0;
     p->iExtendedAddress = 0;
     p->iDataLength = 0;
-    p->iIsEnd = EFalse;
+    p->iIsEnd = false;
 }
 
 /*---------------------------------------------------------------------------*
@@ -100,12 +100,12 @@ T_uezError IntelHexParserString(
                 T_IntexHexParserWorkspace *aWorkspace,
                 char *aString)
 {
-    TUInt16 address;
-    TUInt8 record;
-    TUInt16 i;
-    TUInt8 checksum;
+    uint16_t address;
+    uint8_t record;
+    uint16_t i;
+    uint8_t checksum;
     char *pc;
-    TUInt16 dataLength;
+    uint16_t dataLength;
 
     T_IntexHexParserWorkspace *p = aWorkspace;
     p->iDataLength = 0;
@@ -116,9 +116,9 @@ T_uezError IntelHexParserString(
 
     // We have no data until we get a data record
     p->iDataLength = 0;
-    dataLength = (TUInt16)IHexValue(aString+1, 2);
-    address = (TUInt16)IHexValue(aString+3, 4);
-    record = (TUInt8)IHexValue(aString+7, 2);
+    dataLength = (uint16_t)IHexValue(aString+1, 2);
+    address = (uint16_t)IHexValue(aString+3, 4);
+    record = (uint8_t)IHexValue(aString+7, 2);
     checksum = dataLength + (address & 0xFF) + (address >> 8) + record;
     pc = aString+9;
 
@@ -134,20 +134,20 @@ T_uezError IntelHexParserString(
                     return UEZ_ERROR_OUT_OF_DATA;
 
                 // Store the byte for that entry
-                checksum += (p->iData[i] = (TUInt8)IHexValue(pc, 2));
+                checksum += (p->iData[i] = (uint8_t)IHexValue(pc, 2));
             }
 
             // Get last byte, the 2's compliment checksum that should make the
             // total be zero.
             if ((pc[0] == '\0') || (pc[1] == '\0'))
                 return UEZ_ERROR_OUT_OF_DATA;
-            checksum += (TUInt8)IHexValue(pc, 2);
+            checksum += (uint8_t)IHexValue(pc, 2);
             if (checksum != 0)
                 return UEZ_ERROR_CHECKSUM_BAD;
             break;
         case 1:
             // End of hex file
-            p->iIsEnd = ETrue;
+            p->iIsEnd = true;
             break;
         case 2:
             // Change the current segment

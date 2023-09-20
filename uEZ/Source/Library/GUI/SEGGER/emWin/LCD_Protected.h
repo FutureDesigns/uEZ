@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2018  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2020  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.48 - Graphical user interface for embedded applications **
+** emWin V6.16 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -30,11 +30,11 @@ Licensor:                 SEGGER Microcontroller Systems LLC
 Licensed to:              NXP Semiconductors, 1109 McKay Dr, M/S 76, San Jose, CA 95131, USA
 Licensed SEGGER software: emWin
 License number:           GUI-00186
-License model:            emWin License Agreement, dated August 20th 2011 and Amendment, dated October 19th 2017
-Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7
+License model:            emWin License Agreement, dated August 20th 2011 and Amendment No. 1, dated October 17th 2017 and Amendment No. 2, dated December 18th 2018
+Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2018-09-02
+SUA period:               2011-08-19 - 2021-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LCD_Protected.h
@@ -50,6 +50,10 @@ Purpose     : LCD level - To be used only internally by the GUI
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #endif
+
+//#ifndef NULL
+//  #define NULL ((void *)0)
+//#endif
 
 /*********************************************************************
 *
@@ -80,26 +84,26 @@ extern LCD_PIXELINDEX * LCD__aConvTable;
 *       Misc functions
 */
 void LCD_UpdateColorIndices   (void);
-int32_t  LCD_PassingBitmapsAllowed(void);
-void LCD_EnableCursor         (int32_t OnOff);
+int  LCD_PassingBitmapsAllowed(void);
+void LCD_EnableCursor         (int OnOff);
 void LCD_SelectLCD            (void);
 
-void LCD_DrawBitmap(int32_t x0,    int32_t y0,
-                    int32_t xsize, int32_t ysize,
-                    int32_t xMul,  int32_t yMul,
-                    int32_t BitsPerPixel,
-                    int32_t BytesPerLine,
+void LCD_DrawBitmap(int x0,    int y0,
+                    int xsize, int ysize,
+                    int xMul,  int yMul,
+                    int BitsPerPixel,
+                    int BytesPerLine,
                     const U8 * pPixel,
                     const LCD_PIXELINDEX * pTrans);
 
-void LCD__DrawBitmap_1bpp(int32_t x0,    int32_t y0,
-                          int32_t xsize, int32_t ysize,
-                          int32_t xMul,  int32_t yMul,
-                          int32_t BitsPerPixel,
-                          int32_t BytesPerLine,
+void LCD__DrawBitmap_1bpp(int x0,    int y0,
+                          int xsize, int ysize,
+                          int xMul,  int yMul,
+                          int BitsPerPixel,
+                          int BytesPerLine,
                           const U8 * pPixel,
                           const LCD_PIXELINDEX * pTrans,
-                          int32_t OffData);
+                          int OffData);
 
 /*********************************************************************
 *

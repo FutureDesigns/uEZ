@@ -396,7 +396,7 @@ void SingleSlideshowScreen(T_uezDevice lcd)
 
 void SSMDetermineNumSlides(void)
 {
-    char filename[80];
+    char filename[100]; // allow up to 20 extra char for filename on top of directory path.
     char directory[80];
     T_uezFile file;
 
@@ -433,7 +433,7 @@ void SSMDetermineNumSlides(void)
 
 static T_uezError IDoLoad(TUInt32 aSlideNum, TUInt32 aFrame, TBool *aAbortFlag)
 {
-    char filename[80];
+    char filename[100]; // allow up to 20 extra char for filename on top of directory path.
     char directory[80];
     T_uezFile file;
 
@@ -829,7 +829,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
         G_ws->iOldFormat = EFalse;
 
     G_ws->iLoadTask = 0;
-    if (UEZTaskCreate(SSMLoadTask, "SSMLoad", UEZ_TASK_STACK_BYTES(2048), 0,
+    if (UEZTaskCreate(SSMLoadTask, "SSMLoad", UEZ_TASK_STACK_BYTES(2560), 0,
             UEZ_PRIORITY_LOW, &G_ws->iLoadTask) != UEZ_ERROR_NONE)
         goto abortSlideshow;
 

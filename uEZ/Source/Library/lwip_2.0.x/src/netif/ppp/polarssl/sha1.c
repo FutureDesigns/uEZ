@@ -242,9 +242,9 @@ static void sha1_process( sha1_context *ctx, const unsigned char data[64] )
 /*
  * SHA-1 process buffer
  */
-void sha1_update( sha1_context *ctx, const unsigned char *input, int32_t ilen )
+void sha1_update( sha1_context *ctx, const unsigned char *input, int ilen )
 {
-    int32_t fill;
+    int fill;
     unsigned long left;
 
     if( ilen <= 0 )
@@ -323,7 +323,7 @@ void sha1_finish( sha1_context *ctx, unsigned char output[20] )
 /*
  * output = SHA-1( input buffer )
  */
-void sha1( unsigned char *input, int32_t ilen, unsigned char output[20] )
+void sha1( unsigned char *input, int ilen, unsigned char output[20] )
 {
     sha1_context ctx;
 
