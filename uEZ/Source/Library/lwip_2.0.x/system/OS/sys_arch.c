@@ -814,7 +814,7 @@ sys_check_core_locking(void)
 #if !NO_SYS
   if (lwip_tcpip_thread != 0) {
     TaskHandle_t current_thread = xTaskGetCurrentTaskHandle();
-
+    UNUSED(current_thread);
 #if LWIP_TCPIP_CORE_LOCKING
     LWIP_ASSERT("Function called without core lock",
                 current_thread == lwip_core_lock_holder_thread && lwip_core_lock_count > 0);

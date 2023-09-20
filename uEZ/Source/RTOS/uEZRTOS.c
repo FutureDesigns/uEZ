@@ -44,12 +44,23 @@
 
 #ifdef NDEBUG
 #else
-#if (COMPILER_TYPE==RowleyARM)
-//const int USED uxTopUsedPriority = configMAX_PRIORITIES - 1; // TODO this may be part of what is need to restart threads.js functionality in crossworks
-#else
-#endif
 #endif
 
+
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+void UEZTaskRegister(const char * const aName, T_uezPriority aPriority, TUInt32 aStackSize)
+{
+  (void) aName;
+  (void) aPriority;
+  (void) aStackSize;
+}
+
+void UEZGetTaskList(char* aBuffer)
+{
+  (void) aBuffer;
+}
+
+#else
 typedef struct {
         char iName[configMAX_TASK_NAME_LEN+1];
         T_uezPriority iPriority;
@@ -92,7 +103,7 @@ void UEZGetTaskList(char* aBuffer)
         if ( G_uezTaskList[i].iPriority == 0){
             break;
         }
-        sprintf(task, "   %01d        %07d       %s\n",
+        sprintf(task, "   %01d        %07u       %s\n",
                 G_uezTaskList[i].iPriority,
                 G_uezTaskList[i].iStackSize,
                 G_uezTaskList[i].iName );
@@ -100,6 +111,7 @@ void UEZGetTaskList(char* aBuffer)
     }
     UEZSemaphoreRelease(G_TaskListSem);
 }
+#endif
 /*-------------------------------------------------------------------------*
  * End of File:  uEZRTOS.c
  *-------------------------------------------------------------------------*/

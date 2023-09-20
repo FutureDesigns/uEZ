@@ -29,6 +29,14 @@
 #include <uEZBSP.h>
 #include <HAL/Interrupt.h>
 
+/* For using 120MHz main CPU clock the following are available in this driver:
+ * Divider (X) 0-16, clock (Y) in MHz: 120000000/(X+2)/1000/1000=Y
+ * Possible Y value clocks in MHz:
+ * 6.67,7.0588,7.5,8,8.5714,9.2307,10,10.9090,12,13.33,15,17.1428,20,24,30,40
+ * This has a noticeable impact on panel selection for higher clock rates.
+ * If a weird clock was needed, an external clock could be supplied to a pin.
+ */
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/

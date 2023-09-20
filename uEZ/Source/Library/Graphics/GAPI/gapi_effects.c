@@ -45,7 +45,7 @@ DD.MM.YYYY OSO-UID Description
 02.04.2008 RTA-JMB Split from GAPI_BMP
 07.15.2008 RTA-JMB Addition to GAPI
 ***********************************************************************************/
-#include "GAPI.H"
+#include "gapi.h"
 
 /**********************************************************************************
 Function Name:   LCDBMPScroll

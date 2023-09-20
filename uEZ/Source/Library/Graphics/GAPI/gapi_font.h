@@ -10,7 +10,7 @@
 #define EFNT_4BPP 0x0040
 
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(unsigned long char_code);
         PACK_STRUCT_FIELD(signed long raster_offset);
@@ -25,7 +25,7 @@ typedef struct
 PACK_STRUCT_END
 
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(signed short xMin);
         PACK_STRUCT_FIELD(signed short yMin);
@@ -35,7 +35,7 @@ typedef struct
 PACK_STRUCT_END
 
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(unsigned long signature);
         PACK_STRUCT_FIELD(char family_name[32]);

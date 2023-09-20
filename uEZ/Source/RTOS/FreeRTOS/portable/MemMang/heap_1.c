@@ -87,6 +87,9 @@ task.h is included from an application file. */
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
+#if (FREERTOS_HEAP_SELECTION==1)
+#pragma message("    FreeRTOS Heap 1 Selected.")
+
 #if( configSUPPORT_DYNAMIC_ALLOCATION == 0 )
 	#error This file must not be used if configSUPPORT_DYNAMIC_ALLOCATION is 0
 #endif
@@ -184,5 +187,4 @@ size_t xPortGetFreeHeapSize( void )
 	return ( configADJUSTED_HEAP_SIZE - xNextFreeByte );
 }
 
-
-
+#endif

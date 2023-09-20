@@ -443,19 +443,19 @@ T_uezError TS_SN2780MQ_CalibrateEnd(void *aWorkspace)
 
         for (i = 0; i < p->iNumCalibratePoints; i++) {
             // Find range of inputs
-            if (p->iCalibrateReadingsTaken[i].iX < minIX) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX < minIX) {
                 minIX = p->iCalibrateReadingsTaken[i].iX;
                 minOX = p->iCalibrateReadingsExpected[i].iX;
             }
-            if (p->iCalibrateReadingsTaken[i].iX > maxIX) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX > maxIX) {
                 maxIX = p->iCalibrateReadingsTaken[i].iX;
                 maxOX = p->iCalibrateReadingsExpected[i].iX;
             }
-            if (p->iCalibrateReadingsTaken[i].iY < minIY) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY < minIY) {
                 minIY = p->iCalibrateReadingsTaken[i].iY;
                 minOY = p->iCalibrateReadingsExpected[i].iY;
             }
-            if (p->iCalibrateReadingsTaken[i].iY > maxIY) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY > maxIY) {
                 maxIY = p->iCalibrateReadingsTaken[i].iY;
                 maxOY = p->iCalibrateReadingsExpected[i].iY;
             }

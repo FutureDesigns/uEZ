@@ -856,7 +856,7 @@ T_uezError Network_lwIP_SocketRead(
     T_lwIPSocket *p_socket = p->iSockets + aSocket;
     TUInt16 numCopy;
 #if LWIP_2_0_x
-    err_t err;
+    err_t err = ERR_OK;
 #endif
     //    TUInt32 timeStart = UEZTickCounterGet();
 

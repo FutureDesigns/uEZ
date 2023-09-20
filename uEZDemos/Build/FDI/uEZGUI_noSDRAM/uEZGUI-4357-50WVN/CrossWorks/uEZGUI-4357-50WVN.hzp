@@ -12,6 +12,8 @@
       arm_fpu_type="FPv4-SP-D16"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
+      arm_debugIO_Implementation="None"
+      arm_link_debugio_type="None"
       arm_linker_heap_size="40960"
       arm_linker_jtag_pad_post_dr="0"
       arm_linker_jtag_pad_post_ir="0"
@@ -44,7 +46,7 @@
       gcc_wchar_size="32-Bit"
       link_include_startup_code="No"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-4357-50WVN_MemoryMap.xml"
-      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x1000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x0000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x0000;CS0_CM0_SIZE=0x000000"
+      linker_memory_map_macros="CS0_NAME=EMC;DYCS0_NAME=SDRAM;DYCS0_SIZE=0x1000000;CS0_SIZE=0x400000;CS0_ACCESS=ReadOnly;FLASHA0_START=0x1A000300;FLASHA_CM0_SIZE=0x0;FLASHB_CM0_SIZE=0x1000;SRAM1_CM0_SIZE=0x0;SRAM2_CM0_SIZE=0x0000;SDRAM_CM0_SIZE=0x0;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;AHBSRAM1_CM0_SIZE=0x0;AHBSRAM2_CM0_SIZE=0x0000;CS0_CM0_SIZE=0x000000"
       linker_output_format="hex"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
       linker_printf_fmt_level="long"
@@ -136,13 +138,20 @@
         <folder Name="Compilers">
           <folder Name="CrossWorks">
             <folder Name="FreeRTOS">
-              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
                 <configuration Name="Common" file_type="Threads Script" />
               </file>
             </folder>
           </folder>
         </folder>
       </folder>
+          <folder Name="StreamIO">
+      <folder Name="StdInOut">
+        <folder Name="CrossWorks">
+          <file file_name="../../../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+        </folder>
+      </folder>
+    </folder>
       <folder Name="Platform">
         <folder Name="FDI">
           <folder Name="uEZGUI-4357-50WVN">

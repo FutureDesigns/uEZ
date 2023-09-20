@@ -3,13 +3,13 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*       SEGGER SystemView * Real-time application analysis           *
 *                                                                    *
 **********************************************************************
 *                                                                    *
@@ -17,7 +17,7 @@
 *                                                                    *
 * SEGGER strongly recommends to not make any changes                 *
 * to or modify the source code of this software in order to stay     *
-* compatible with the RTT protocol and J-Link.                       *
+* compatible with the SystemView and RTT protocol, and J-Link.       *
 *                                                                    *
 * Redistribution and use in source and binary forms, with or         *
 * without modification, are permitted provided that the following    *
@@ -42,16 +42,15 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       RTT version: 7.20                                           *
+*       SystemView version: 3.50a                                    *
 *                                                                    *
 **********************************************************************
-
 ---------------------------END-OF-HEADER------------------------------
 File    : SEGGER_RTT_Conf.h
 Purpose : Implementation of SEGGER real-time transfer (RTT) which
           allows real-time communication on targets which support
           debugger memory accesses while the CPU is running.
-Revision: $Rev: 21386 $
+Revision: $Rev: 24316 $
 
 */
 
@@ -76,7 +75,8 @@ Revision: $Rev: 21386 $
 //#define SEGGER_RTT_CPU_CACHE_LINE_SIZE            (32)          // Largest cache line size (in bytes) in the current system
 //#define SEGGER_RTT_UNCACHED_OFF                   (0xFB000000)  // Address alias where RTT CB and buffers can be accessed uncached
 
-// Define the number of buffers in SEGGER_RTT.h since for some reason it can' read it from here correctly.
+
+// Define the number of buffers in SEGGER_RTT.h since for some reason it can't read it from here correctly.
 
 #ifndef   BUFFER_SIZE_UP // Need to set one more byte than needed.
   #define BUFFER_SIZE_UP                            (1024)  // Size of the buffer for terminal output of target, up to host (Default: 1k)
@@ -89,7 +89,6 @@ Revision: $Rev: 21386 $
 #ifndef   SEGGER_RTT_PRINTF_BUFFER_SIZE
   #define SEGGER_RTT_PRINTF_BUFFER_SIZE             (16u)    // Size of buffer for RTT printf to bulk-send chars via RTT     (Default: 64)
 #endif
-
 // Sizes of second and 3rd buffer.
 
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
@@ -193,7 +192,7 @@ Revision: $Rev: 21386 $
                                                   );                                                \
                                 }
 
-  #elif defined(__ARM_ARCH_7A__)
+  #elif (defined(__ARM_ARCH_7A__) || defined(__ARM_ARCH_7R__))
     #define SEGGER_RTT_LOCK() {                                                \
                                  unsigned int _SEGGER_RTT__LockState;                       \
                                  __asm volatile ("mrs r1, CPSR \n\t"           \
@@ -391,13 +390,11 @@ Revision: $Rev: 21386 $
 *       RTT lock configuration for CCRX
 */
 #ifdef __RX
-
 #if ((defined(__GNUC__) || defined(__clang__) ))
   //#include <machine.h> // TODO do we have something different on gcc?
 #else
   #include <machine.h>
 #endif
-
   #define SEGGER_RTT_LOCK()   {                                                                     \
                                 unsigned long _SEGGER_RTT__LockState;                                            \
                                 _SEGGER_RTT__LockState = get_psw() & 0x010000;                                   \

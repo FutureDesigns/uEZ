@@ -24,6 +24,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZPlatform.h>
+#include <uEZBSP.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -38,14 +39,19 @@
  *-------------------------------------------------------------------------*/
 extern void BSODPrint(const char *aLine);
 extern void BSODStart(const char *aLine);
-extern void UEZBSP_FatalError(int32_t aNumBlinks);
+//extern void UEZBSP_FatalError(int32_t aNumBlinks);
 
 void FatalError(const char *aLine)
 {
+#ifdef DISABLE_UEZ_FATAL_ERROR
+    (void) aLine;
+    UEZPlatform_System_Reset();
+#else
     //BSODStart("UEZ Failure!\n");
     //BSODPrint(aLine);
     while (1)
         UEZBSP_FatalError(10);
+#endif
 }
 
 /*-------------------------------------------------------------------------*

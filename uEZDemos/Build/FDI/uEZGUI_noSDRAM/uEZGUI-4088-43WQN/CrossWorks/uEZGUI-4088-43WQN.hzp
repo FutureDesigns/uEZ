@@ -11,6 +11,8 @@
       arm_fpu_type="FPv4-SP-D16"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
+      arm_debugIO_Implementation="None"
+      arm_link_debugio_type="None"
       arm_linker_heap_size="40960"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="1536"
@@ -31,11 +33,12 @@
       link_include_startup_code="No"
       linker_additional_files="$(TargetsDir)/LPC1000/lib/liblpc1000$(LibExt)$(LIB)"
       linker_memory_map_file="$(ProjectDir)/uEZGUI-4088-43WQN_MemoryMap.xml"
-      linker_memory_map_macros="FLASH_START=0x00000000;FLASH_START_BOOTLOADER=0x00010100;QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
+      linker_memory_map_macros="QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASHA0_START=0x00000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x00000300;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
       linker_output_format="hex"
       linker_printf_fmt_level="long"
       linker_printf_fp_enabled="Float"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-4088-43WQN_placement.xml"
+      linker_section_placement_macros="CRP1_KEEP=Yes"
       macros="LPC1000_Series=LPC407x_8x"
       oscillator_frequency="12MHz"
       package_dependencies="LPC1000"
@@ -113,13 +116,20 @@
         <folder Name="Compilers">
           <folder Name="CrossWorks">
             <folder Name="FreeRTOS">
-              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads.js">
+              <file file_name="../../../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
                 <configuration Name="Common" file_type="Threads Script" />
               </file>
             </folder>
           </folder>
         </folder>
       </folder>
+          <folder Name="StreamIO">
+      <folder Name="StdInOut">
+        <folder Name="CrossWorks">
+          <file file_name="../../../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+        </folder>
+      </folder>
+    </folder>
       <folder Name="Platform">
         <folder Name="FDI">
           <folder Name="uEZGUI-4088-43WQN">
@@ -236,7 +246,9 @@
       arm_compiler_variant="clang" />
     <configuration
       Name="THUMB Flash Debug-Bootloader"
-      linker_memory_map_macros="FLASH_START=0x00010100;FLASH_START_BOOTLOADER=0x00000000;QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000" />
+      c_preprocessor_definitions="RENAME_INI=1;DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1"
+      linker_memory_map_macros="QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
+      linker_section_placement_macros="CRP1_KEEP=No" />
   </project>
   <configuration
     Name="THUMB Flash Debug"

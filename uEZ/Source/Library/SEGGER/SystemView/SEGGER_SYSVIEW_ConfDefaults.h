@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.32                                    *
+*       SystemView version: 3.50a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -360,7 +360,7 @@ extern "C" {
 *    128
 */
 #ifndef   SEGGER_SYSVIEW_MAX_STRING_LEN
-  #define SEGGER_SYSVIEW_MAX_STRING_LEN           64
+  #define SEGGER_SYSVIEW_MAX_STRING_LEN           128
 #endif
 
 /*********************************************************************
@@ -569,7 +569,6 @@ extern "C" {
 #ifndef   SEGGER_SYSVIEW_UNLOCK
   #define SEGGER_SYSVIEW_UNLOCK()                 SEGGER_RTT_UNLOCK()
 #endif
-
 #include "SEGGER_SYSVIEW_Conf.h"
 
 #ifdef __cplusplus

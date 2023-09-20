@@ -67,7 +67,7 @@
  * Types:
  *-------------------------------------------------------------------------*/
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt32 iBaudRate);
         PACK_STRUCT_FIELD(TUInt8 iCharFormat);
         PACK_STRUCT_FIELD(TUInt8 iParity);

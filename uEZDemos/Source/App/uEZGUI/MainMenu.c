@@ -34,6 +34,7 @@
 #include <uEZPlatform.h>
 #include <uEZLCD.h>
 #include <uEZAudioMixer.h>
+#include <uEZWatchdog.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -71,6 +72,8 @@ TBool G_romChecksumCalculated;
 #if TS_TEST_DEMO
 extern void TS_Test_Demo(const T_choice *aChoice);
 #endif
+void ResetDevice(const T_choice *p_choice);
+
 /*---------------------------------------------------------------------------*
  * Globals: Main Menu
  *---------------------------------------------------------------------------*/
@@ -102,6 +105,7 @@ static const T_appMenuEntry settings_menu_entries[] = {
     { "EXP-DK Test", FunctionalTest_EXP_DK, G_funcTestIcon, 0 },
     { "EXP-DK Loopback", FunctionalTest_EXP_DK_Loopback, G_funcTestIcon, 0 },
 #endif
+    { "Exit/Reset", ResetDevice, G_downExit, 0 },
     { 0 },
 };
 
@@ -371,6 +375,32 @@ void MainMenu(void)
         AppMenu(&mainmenu);
         UEZLCDClose(lcd);
     }
+}
+
+/*---------------------------------------------------------------------------*
+ * Task:  ResetDevice
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Trigger Reset. If we are using bootloader and ini is present, 
+ *      we can return to menu.
+ * Inputs:
+ *      const T_choice *p_choice    -- Choice activated for this mode
+ *---------------------------------------------------------------------------*/
+void ResetDevice(const T_choice *p_choice)
+{
+    UEZPlatform_Watchdog_Require();
+    T_uezDevice watchdog;
+
+    // Force a restart by tripping the watchdog
+    UEZWatchdogOpen("Watchdog", &watchdog);
+    if (!UEZIsResetFromWatchdog(watchdog)) {
+        //G_clearWatchdogBit = 1;
+        }
+    UEZWatchdogSetMaxTime(watchdog, 100);
+    UEZWatchdogStart(watchdog);
+    UEZWatchdogTrip(watchdog);
+
+    //UEZPlatform_System_Reset();
 }
 
 /*-------------------------------------------------------------------------*

@@ -232,7 +232,7 @@ T_uezError GainSpan_CmdLib_ConfigureForSPI(
     const T_GainSpan_CmdLib_SPISettings *aSettings)
 {
     T_uezError error;
-    ATLIBGS_MSG_ID_E r;
+    ATLIBGS_MSG_ID_E r = ATLIBGS_MSG_ID_NONE;
     int32_t i;
 
     G_GSCmdLibSettings = *aSettings;

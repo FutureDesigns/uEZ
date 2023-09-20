@@ -149,7 +149,7 @@
 #endif
 
 #ifndef INCLUDE_xTaskDelayUntil
-    #define INCLUDE_xTaskDelayUntil    0
+    #define INCLUDE_xTaskDelayUntil    1
 #endif
 
 #ifndef INCLUDE_vTaskDelay

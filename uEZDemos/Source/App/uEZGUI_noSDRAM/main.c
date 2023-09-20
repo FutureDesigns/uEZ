@@ -252,7 +252,7 @@ void uEZPlatformStartup_NO_EXP()
     TBool usbIsDevice = ETrue; //Default value
 
     UEZPlatform_Timer2_Require();
-    UEZPlatform_DAC0_Require();
+    UEZPlatform_DAC0_Require(); // this and audio may conflict with loopback on some units
 
 #if USB_PORT_B_HOST_DETECT_ENABLED
     usbIsDevice = UEZPlatform_Host_Port_B_Detect();

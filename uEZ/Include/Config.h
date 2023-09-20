@@ -48,9 +48,9 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           12
-#define UEZ_VERSION_STRING          "2.12.000"
-#define UEZ_VERSION_DATE            "10/05/2022" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           13
+#define UEZ_VERSION_STRING          "2.13.000"
+#define UEZ_VERSION_DATE            "12/05/2022" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler

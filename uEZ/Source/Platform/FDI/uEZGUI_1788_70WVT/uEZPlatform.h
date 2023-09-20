@@ -146,6 +146,10 @@ extern "C" {
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
 #define UEZBSP_NOR_FLASH_BASE_ADDRESS       0x80000000
 
+#ifndef UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS
+    #define UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS  UEZBSP_NOR_FLASH_BASE_ADDRESS
+#endif
+
 #include <lwipopts.h>
 
 #if (COMPILER_TYPE==IAR)
@@ -381,6 +385,7 @@ void UEZPlatform_MS1_Require(void);
 void UEZPlatform_PWM0_Require(void);
 void UEZPlatform_PWM1_Require(void);
 void UEZPlatform_RTC_Require(void);
+void UEZPlatform_IAP_Require(void);
 void UEZPlatform_SDCard_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_SDCard_MCI_Drive_Require(TUInt8 aDriveNum);
 void UEZPlatform_Speaker_Require(void);
@@ -390,6 +395,7 @@ void UEZPlatform_Timer1_Require();
 void UEZPlatform_Timer2_Require();
 void UEZPlatform_Timer3_Require();
 void UEZPlatform_Touchscreen_Require(void);
+void UEZPlatform_TouchscreenRT_Require(void);
 void UEZPlatform_UART0_FullDuplex_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);

@@ -27,6 +27,7 @@
 #include <uEZTimeDate.h>
 #include "Graphics/Graphics.h"
 #include <DIALOG.h>
+#include "TimeDateSettingsDLG.h"
 
 // USER END
 
@@ -146,7 +147,7 @@ int Id, NCode;//Assign them as global?
 T_uezTimeDate TimeDate;
 
 extern TBool G_AM_PM_Flag;      //Code added by IMM - Used to manage AM/PM and 24 hour Checkbox activation
-extern TBool FIRST_EXEC_Flag = ETrue;   //Code added by IMM - Used to set the Low and High Temperature defaults upon first execution of the window.
+TBool FIRST_EXEC_Flag = ETrue;   //Code added by IMM - Used to set the Low and High Temperature defaults upon first execution of the window.
 
 // USER START (Optionally insert additional defines)
 extern T_TemperatureGraphSetting G_AppSettings;
@@ -209,22 +210,21 @@ static void IUpdateTeps(WM_MESSAGE * pMsg)
 {
     char text[10];
     
-    if(G_AppSettings.iTempIsFahrenheit==ETrue){
-      if(G_AppSettings.iLowAlarmTemp <= -20){ //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
-          G_AppSettings.iLowAlarmTemp =  -20;  //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
+      if(G_AppSettings.iTempIsFahrenheit){
+        if(G_AppSettings.iHighAlarmTemp >= 185){ //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
+            G_AppSettings.iHighAlarmTemp =  185;        //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
+        }
+        if(G_AppSettings.iLowAlarmTemp <= -5){ //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
+          G_AppSettings.iLowAlarmTemp =  -5;  //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
+        }
+      } else {
+        if(G_AppSettings.iHighAlarmTemp >= 85){ //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
+            G_AppSettings.iHighAlarmTemp =  85;        //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
+        }
+        if(G_AppSettings.iLowAlarmTemp <= -25){ //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
+            G_AppSettings.iLowAlarmTemp =  -25;  //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
+        }
       }
-      if(G_AppSettings.iHighAlarmTemp >= 120){ //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
-          G_AppSettings.iHighAlarmTemp =  120;        //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
-      }
-    }
-    if(G_AppSettings.iTempIsFahrenheit==EFalse){
-      if(G_AppSettings.iLowAlarmTemp <= -28){ //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
-          G_AppSettings.iLowAlarmTemp =  -28;  //Code added by IMM - Set a Minimum temperature for which the iLowAlarmTemp can be set
-      }
-      if(G_AppSettings.iHighAlarmTemp >= 48){ //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
-          G_AppSettings.iHighAlarmTemp =  48;        //Code added by IMM - Set a Maximum temperature for which the iHighAlarmTemp can be set
-      }
-    }
     
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
     sprintf(text, "%02d", G_AppSettings.iLowAlarmTemp);

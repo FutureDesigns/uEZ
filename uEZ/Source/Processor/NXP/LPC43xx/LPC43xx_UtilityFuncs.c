@@ -211,6 +211,7 @@ void LPC43xxPowerOn(TUInt32 bits)
 {
     extern uint32_t G_LPC43xx_powerSetting;
     G_LPC43xx_powerSetting |= (bits);
+    // Note: this LPC doesn't have a PCONP type register, but older and newer LPCs do!
     //LPC_SC->PCONP = G_LPC43xx_powerSetting;
 }
 
@@ -218,6 +219,7 @@ void LPC43xxPowerOff(TUInt32 bits)
 {
     extern uint32_t G_LPC43xx_powerSetting;
     G_LPC43xx_powerSetting &= ~(bits);
+    // Note: this LPC doesn't have a PCONP type register, but older and newer LPCs do!
     //LPC_SC->PCONP = G_LPC43xx_powerSetting;
 }
 

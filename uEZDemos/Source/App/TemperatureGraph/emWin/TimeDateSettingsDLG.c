@@ -37,7 +37,7 @@
 //#include "Fonts/Fonts.h"
 
 #include "TimeDateSettingsDLG.h"
-#include <UEZTimeDate.h>
+#include <uEZTimeDate.h>
 #include "TemperatureGraph.h"
 
 
@@ -115,8 +115,8 @@
 #define UPDATE_TIMER_MS         (1000)
 #define SHOW_FOR_TIME_MS        (2000)  
 
-static WM_HWIN hItem;//Assign this as global as well?
-static int Id, NCode;//Assign them as global?
+//static WM_HWIN hItem;//Assign this as global as well?
+//static int Id, NCode;//Assign them as global?
 
 TBool G_AM_PM_Flag;
 TBool G_IsPM_Flag = EFalse;
@@ -186,7 +186,7 @@ static T_LAFMapping TimeDateSettingsDLGMapping[] = {
 /** Active Flag, tell the dialog when it receives messages that the screen is in the foreground*/
 static TBool G_Active = EFalse;
 static WM_HTIMER G_UpdateTimer;
-static T_uezTimeDate G_TimeDate;
+//static T_uezTimeDate G_TimeDate;
 static WM_HTIMER G_ShowForTimer;
 static TUInt32 G_SelectedButton=0;
 
@@ -335,7 +335,7 @@ static TBool IHandleUP(WM_MESSAGE * pMsg, int aNCode, int aID)
 			break;
 		default:
 			break;
-			}
+		}
       //***************************************************************************************          
       //Code by IMM - This switch statement allows the program to keep track of the last day of
       //              a given month so that when the user goes past it, the day will reset to 1
@@ -358,13 +358,13 @@ static TBool IHandleUP(WM_MESSAGE * pMsg, int aNCode, int aID)
                           monthMax = 31;
                                   break;
                           case 2:
-                          if (atoi(aDate.iYear)%400 == 0){
+                          if (aDate.iYear%400 == 0){
                                monthMax=29;
                             }
-                            else if (atoi(aDate.iYear)%100 == 0){
+                            else if (aDate.iYear%100 == 0){
                                monthMax=28;
                             }
-                            else if (atoi(aDate.iYear)%4 == 0){
+                            else if (aDate.iYear%4 == 0){
                                monthMax=29;
                             }
                             else{
@@ -372,6 +372,7 @@ static TBool IHandleUP(WM_MESSAGE * pMsg, int aNCode, int aID)
                             }
                                   break;
                           default:  
+                               monthMax=28;
                                   break;
                   }
                 
@@ -534,13 +535,13 @@ static TBool IHandleDOWN(WM_MESSAGE * pMsg, int aNCode, int aID)
                                   break;
                           
                           case 2:
-                            if (atoi(aDate.iYear)%400 == 0){
+                            if (aDate.iYear%400 == 0){
                                monthMax=29;
                             }
-                            else if (atoi(aDate.iYear)%100 == 0){
+                            else if (aDate.iYear%100 == 0){
                                monthMax=28;
                             }
-                            else if (atoi(aDate.iYear)%4 == 0){
+                            else if (aDate.iYear%4 == 0){
                                monthMax=29;
                             }
                             else{
@@ -548,10 +549,10 @@ static TBool IHandleDOWN(WM_MESSAGE * pMsg, int aNCode, int aID)
                             }
                                   break;
                    
-                          default:
-                                  
+                          default:                                  
+                               monthMax=28;
                                   break;
-                                  }
+                  }
                   aDate.iDay = monthMax;
              }
                 
@@ -808,7 +809,7 @@ static void _TimeDateSettingsDLGDialog(WM_MESSAGE *pMsg)
  *  @return					The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-void TimeDateSettingsDLG()
+void TimeDateSettingsDLG(void)
 {
 	G_Active=ETrue;
     GUI_ExecDialogBox(_iTimeDateSettingsDLGDialog, GUI_COUNTOF(_iTimeDateSettingsDLGDialog), &_TimeDateSettingsDLGDialog, 0,0,0);

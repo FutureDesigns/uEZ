@@ -24,7 +24,7 @@ void BouncingLogoSS_Setup(
     G_displayHeight = aDisplayHeight;
 }
 
-void BouncingLogoSS_Start() {
+void BouncingLogoSS_Start(void) {
     T_pixelColor *pixels;
     T_uezDevice lcd;
     SWIM_WINDOW_T lastWin;
@@ -50,7 +50,7 @@ void BouncingLogoSS_Start() {
 }
 
 
-void BouncingLogoSS_Update() {
+void BouncingLogoSS_Update(void) {
 
     TUInt32 previousXPos = G_SS_X_pos;
     TUInt32 previousYPos = G_SS_Y_pos;
@@ -113,7 +113,7 @@ void BouncingLogoSS_Update() {
     UEZTaskSchedulerResume();
 }
 // fill screen with black to turn picture off.
-void BouncingLogoSS_Sleep() {
+void BouncingLogoSS_Sleep(void) {
     T_uezDevice lcd;
     SWIM_WINDOW_T lastWin;
     UEZTaskSchedulerSuspend();
@@ -132,7 +132,7 @@ void BouncingLogoSS_Sleep() {
     UEZTaskSchedulerResume();
 }
 
-void BouncingLogoSS_End() {
+void BouncingLogoSS_End(void) {
     T_uezDevice lcd;
     
     if (UEZLCDOpen("LCD", &lcd) != UEZ_ERROR_NONE) {

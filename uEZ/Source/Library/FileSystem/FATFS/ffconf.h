@@ -8,7 +8,12 @@
 / Function Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_FS_READONLY	0
+#if (DISABLE_FILESYSTEM_WRITE_SUPPORT == 1) // Not implemented in uEZ, uEZ BL requires write support.
+#define FF_FS_READONLY	1 // force read only mode
+#pragma message("    FileSystem Write Support Disabled")
+#else
+#define FF_FS_READONLY	0 // include write support
+#endif
 /* This option switches read-only configuration. (0:Read/Write or 1:Read-only)
 /  Read-only configuration removes writing API functions, f_write(), f_sync(),
 /  f_unlink(), f_mkdir(), f_chmod(), f_rename(), f_truncate(), f_getfree()
@@ -30,9 +35,13 @@
 /  f_findnext(). (0:Disable, 1:Enable 2:Enable with matching altname[] too) */
 
 
-#define FF_USE_MKFS		1
+#if (DISABLE_FILESYSTEM_FORMAT_SUPPORT == 1) // This will save code space on a typical bootloader
+#define FF_USE_MKFS		0 // disable MKFS
+#pragma message("    FileSystem Format Support Disabled")
+#else
+#define FF_USE_MKFS		1 // enable MKFS
 /* This option switches f_mkfs() function. (0:Disable or 1:Enable) */
-
+#endif
 
 #define FF_USE_FASTSEEK	0
 /* This option switches fast seek function. (0:Disable or 1:Enable) */
@@ -243,10 +252,16 @@
 /  Note that enabling exFAT discards ANSI C (C89) compatibility. */
 
 
+#if (DISABLE_FILESYSTEM_FORMAT_SUPPORT == 1) // This will save code space on a typical bootloader
+#define FF_FS_NORTC		1
+#pragma message("    FileSystem TimeStamp Disabled")
+#else
 #define FF_FS_NORTC		0
-#define FF_NORTC_MON	1
+#endif
+
+#define FF_NORTC_MON	05
 #define FF_NORTC_MDAY	1
-#define FF_NORTC_YEAR	2020
+#define FF_NORTC_YEAR	2023
 /* The option FF_FS_NORTC switches timestamp functiton. If the system does not have
 /  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable
 /  the timestamp function. Every object modified by FatFs will have a fixed timestamp

@@ -100,6 +100,7 @@
 #define LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXP      41
 #define LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXV      42
 #define LCD_CONFIG_DLC0430BCP12RF                   43
+#define LCD_CONFIG_GENERIC_480X272                  44
 
 #define LCD_RES_VGA                                 1
 #define LCD_RES_QVGA                                2
@@ -183,6 +184,40 @@
         { 0,    0x0C04,                     0x204C,                     1 }, \
         { 0,    0x6F2A,                     0x2134,                     1 }, \
         { 0,    0x0C58,                     0x6012,                     1 }, \
+        { 0,    0x6F2C,                     0x5DBA,                     1 }, \
+        { 0,    0x3C6A,                     0x4098,                     1 },
+#endif
+
+
+#if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_GENERIC_480X272)
+    #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
+    #define UEZ_LCD_INTERFACE_ARRAY         LCD_Generic_480x272_InterfaceArray
+    #define UEZ_LCD_DISPLAY_WIDTH           480
+    #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
+    #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
+/**
+ * Configure PWM of backlight settings (fast control)
+ */
+    //#define UEZ_LCD_BACKLIGHT_FULL_PERIOD   50000
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_ON    0
+    //#define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF  50000
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_ON     0
+    //#define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF   50000
+    #define UEZ_LCD_BACKLIGHT_PERIOD_COUNT  (PROCESSOR_OSCILLATOR_FREQUENCY/40000)
+    #define UEZ_LCD_BACKLIGHT_FULL_PERIOD  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //6000
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_ON  0x00  //40000//
+    #define UEZ_LCD_BACKLIGHT_FULL_PWR_OFF UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x5000  //2000
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_ON   (UEZ_LCD_BACKLIGHT_PERIOD_COUNT/4)//0x3000  //???
+    #define UEZ_LCD_BACKLIGHT_LOW_PWR_OFF  UEZ_LCD_BACKLIGHT_PERIOD_COUNT//0x2400  //???
+
+    #define DEFAULT_TOUCHSCREEN_HIGH_LEVEL        0x4000
+    #define DEFAULT_TOUCHSCREEN_LOW_LEVEL         0x6000
+
+    #define UEZ_LCD_TOUCHSCREEN_DEFAULT_CALIBRATION \
+        { 0,    0x1328,                     0x5b35,                     1 }, \
+        { 0,    0x683a,                     0x5A44,                     1 }, \
+        { 0,    0x135d,                     0x2d4a,                     1 }, \
         { 0,    0x6F2C,                     0x5DBA,                     1 }, \
         { 0,    0x3C6A,                     0x4098,                     1 },
 #endif

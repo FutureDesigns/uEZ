@@ -396,7 +396,7 @@ static void LPC43xx_GPDMA_Enable(void *aWorkspace)
     G_opened++;
 
     // Enable peripheral power (PCGPDMA)
-    LPC43xxPowerOn(1 << 29);
+    LPC43xxPowerOn(1 << 29); // TODO remove, but do we track this anywhere?
 
     // Was registered already?
     if (EFalse == InterruptIsRegistered(INTERRUPT_CHANNEL_GP_DMA)) {

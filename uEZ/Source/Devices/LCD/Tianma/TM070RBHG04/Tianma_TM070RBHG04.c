@@ -316,6 +316,8 @@ static T_uezError LCD_TM070RBHG04_SetBacklightLevel(void *aW, TUInt32 aLevel)
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_TM070RBHG04_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -339,7 +341,10 @@ static T_uezError LCD_TM070RBHG04_MSTimerStart(void *aW, float milliseconds){
   }  
   return error;
 }
+#endif
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_TM070RBHG04_TimerCallback
  *---------------------------------------------------------------------------*
@@ -354,6 +359,7 @@ static void LCD_TM070RBHG04_TimerCallback(T_uezTimerCallback *aCallbackWorkspace
   UEZTimerClose(p->itimer);    
   p->itimerDone = ETrue;
 }
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_TM070RBHG04_On
@@ -370,12 +376,17 @@ static T_uezError LCD_TM070RBHG04_On(void *aW) {
   
     (*p->iLCDController)->On(p->iLCDController); // turn on LCD
     if (p->iBacklight){
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(200);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
          LCD_TM070RBHG04_MSTimerStart(p, 200.0); // minimum 200ms timer           
          while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
-         (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
-         LCD_TM070RBHG04_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
       }
+#endif
+      (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+      LCD_TM070RBHG04_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
+      
     }
     return UEZ_ERROR_NONE;
 }
@@ -395,11 +406,15 @@ static T_uezError LCD_TM070RBHG04_Off(void *aW) {
         
     if (p->iBacklight){ // Turn off backlight
       (*p->iBacklight)->Off(p->iBacklight);
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(200);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         LCD_TM070RBHG04_MSTimerStart(p, 200.0); // minimum 200ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
-      }   
-    }    
+      }
+#endif
+    }
     (*p->iLCDController)->Off(p->iLCDController); // turn off LCD
     return UEZ_ERROR_NONE;
 }
@@ -422,12 +437,16 @@ static T_uezError LCD_TM070RBHG04_Open(void *aW)
   HAL_LCDController **plcdc;
   T_uezError error = UEZ_ERROR_NONE;
   TUInt32 i;
-    
+
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  
+#else
   p->icallback.iTimer = p->itimer; // Setup callback information for timer
   p->icallback.iMatchRegister = 1;
   p->icallback.iTriggerSem = 0;
   p->icallback.iCallback = LCD_TM070RBHG04_TimerCallback;
   p->icallback.iData = p;
+#endif
 
   p->aNumOpen++;
   if (p->aNumOpen == 1) {    

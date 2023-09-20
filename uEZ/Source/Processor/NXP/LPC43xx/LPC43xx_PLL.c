@@ -251,23 +251,37 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
     LPC_CGU->BASE_PERIPH_CLK = (9<<24) | (1<<11);
     G_PeripheralFrequency = G_ProcessorFrequency;
 
-    if(aFreq->iPLL1Frequency > 102000000){
-        LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (1<<2); //Divide by 2
-    } else {
-        LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (0<<2);
-    }
-
-    //Divder A is set to use USB PLL
+    //Divider A is set to use USB PLL (480MHz) to produce 120MHz. Only IDIVA can use this clock, IDIVB-IDIVE can't.
     LPC_CGU->IDIVA_CTRL = (7<<24) | (1<<11) | (3<<2); //Produce a 120MHz clock on DIVA
+    // TODO where all do we use this divider? USB should use source clock, not this one.
+
+    if(aFreq->iPLL1Frequency > 102000000){
+      LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (1<<2); //Divide by 2 // PLL 1, autoblock enabled (102MHz)
+      //LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (2<<2); //Divide by 3 // PLL 1, autoblock enabled (68MHz)
+      //LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (3<<2); //Divide by 4 // PLL 1, autoblock enabled (51MHz)
+      //LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (4<<2); //Divide by 5 // PLL 1, autoblock enabled (40.8MHz)
+    } else {
+        LPC_CGU->IDIVC_CTRL = (9<<24) | (1<<11) | (0<<2); // div 1
+    }
 
     //LPC_CGU->IDIVB_CTRL = (0x0C<<24) | (1<<11) | (2<<2);//Produce a 40MHZ clock on DIVB
     LPC_CGU->IDIVB_CTRL = 1;//Power down
 
-    LPC_CGU->IDIVD_CTRL = (1<<24); //DIV D setup for USB 1 60MHz if needed.
-    LPC_CGU->IDIVE_CTRL = 1;//Power down
+    LPC_CGU->IDIVD_CTRL = (1<<24); //DIV D setup for USB 1 12MHz if needed.
+    // TODO if we need 60MHz DIVD, can use DIVA/2 to get it for DIVD
 
-    //SPIFI clock to use Divider C
-    LPC_CGU->BASE_SPIFI_CLK = (0xE<<24) | (1<<11);
+    if(aFreq->iPLL1Frequency > 102000000){
+        LPC_CGU->IDIVE_CTRL = (0x9<<24) | (1<<11) | (2<<2); //Divide by 3 // PLL 1, autoblock enabled (68MHz)
+    } else {
+          LPC_CGU->IDIVE_CTRL = (0x9<<24) | (1<<11) | (1<<2);
+       // LPC_CGU->IDIVE_CTRL = 1;//Power down
+    }
+
+    //QSPI/SPIFI clock pick which divider source to use
+    //LPC_CGU->BASE_SPIFI_CLK = (0xD<<24) | (1<<11); // divider B
+    //LPC_CGU->BASE_SPIFI_CLK = (0xE<<24) | (1<<11); // divider C
+    //LPC_CGU->BASE_SPIFI_CLK = (0xF<<24) | (1<<11); // divider D
+    LPC_CGU->BASE_SPIFI_CLK = (0x10<<24) | (1<<11); // divider E
 
     //Ethernet.
     LPC_CGU->BASE_PHY_RX_CLK = (3<<24) | (1<<11);
@@ -285,7 +299,7 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
     LPC_CREG->CREG0 = (0<<3) | (1<<0);
 
     //Setup USB Clock
-    LPC_CGU->PLL0USB_CTRL = (6<<24) | (1<<4) | (1<<3) | (1<<2) | (0<<1) | 1;
+    LPC_CGU->PLL0USB_CTRL = (6<<24) | (1<<11) | (1<<4) | (1<<3) | (1<<2) | (0<<1) | 1 ; // autoblock , direct, crystal, cc0 clock bypass
 
     LPC_CGU->PLL0USB_MDIV =  (0<<28) | (24<<22) |(11<<17)| (0x7FFA<<0);
     LPC_CGU->PLL0USB_NP_DIV = (0<<12) | (0<<0);
@@ -294,12 +308,20 @@ void LPC43xx_PLL_SetFrequencies(const T_LPC43xx_PLL_Frequencies *aFreq)
 
     while((LPC_CGU->PLL0USB_STAT & 0x1) == 0);
 
-    LPC_CGU->PLL0USB_CTRL |= (1<<4);
+    LPC_CGU->PLL0USB_CTRL |= (1<<4); // enable clock
 
     LPC_CCU1->CLK_M4_USB0_CFG = 3;
     LPC_CCU1->CLK_M4_USB1_CFG = 3;
 
     G_USBFrequency = 48000000;
+
+    if(aFreq->iClockOutEnable == EFalse){ // DIsable all 3 clock out signals. Note that pins shouldn't be enabled.
+      LPC_CGU->BASE_OUT_CLK = 1;      // Power down output pin, 32KHz crystal, no autoblock
+      LPC_CGU->BASE_CGU_OUT0_CLK = 1; // Power down output pin, 32KHz crystal, no autoblock
+      LPC_CGU->BASE_CGU_OUT1_CLK = 1; // Power down output pin, 32KHz crystal, no autoblock
+    } else {
+      // TODO enable a clcok out pin here, but which pin?
+    }
 }
 
 /*-------------------------------------------------------------------------*

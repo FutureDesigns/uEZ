@@ -1,12 +1,12 @@
 /*-------------------------------------------------------------------------*
-* File:  main.c
-*-------------------------------------------------------------------------*
-* Description:
-*      Example program that tests the LCD, Queue, Semaphore, and
-*      touchscreen features.
-*
-* Implementation:
-*-------------------------------------------------------------------------*/
+ * File:  main.c
+ *-------------------------------------------------------------------------*
+ * Description:
+ *      Example program that tests the LCD, Queue, Semaphore, and
+ *      touchscreen features.
+ *
+ * Implementation:
+ *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
@@ -21,30 +21,49 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
+
 #include <string.h>
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include <UEZPlatform.h>
+#include <uEZPlatform.h>
+#include <uEZProcessor.h>
 #include <uEZDeviceTable.h>
-#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
+#include <uEZDemoCommon.h>
+#include <uEZToneGenerator.h>
+#include <uEZAudioMixer.h>
+#include <Config_Build.h>
+#include "NVSettings.h"
+//#include "AppTasks.h"
+#//include "AppDemo.h"
+#include "TestCmds.h"
 #include "NVSettings.h"
 #include "Audio.h"
+#include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
+#include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
+#include "DIALOG.h"
 #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
-#include <Source/ExpansionBoard/FDI/UEZGUI_EXP_DK/UEZGUI_EXP_DK.h>
-#include <Source/Library/Audio/DAC/uEZDACWavFile.h>
-#include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
-#include "emWin/TemperatureGraph.h"
-#include "Calibration.h"
-#include <UEZFile.h>
-
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.h>
 #include "emWin/WindowManager.h"
+#include "emWin/TemperatureGraph.h"
+#include <uEZWatchdog.h>
 
+#include <HAL/GPIO.h>
+
+#define HEARTBEAT_BLINK_DELAY			 250
+
+TBool G_usbIsDevice;
+
+/*---------------------------------------------------------------------------*
+ * Options:
+ *---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*
+ * Additional Includes:
+ *---------------------------------------------------------------------------*/
 #if COMPILE_OPTION_USB_SDCARD_DISK
-    #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
-#endif
-
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
-    #include <trcUser.h>
+#include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
 #endif
 
 /*---------------------------------------------------------------------------*
@@ -52,78 +71,112 @@
 *---------------------------------------------------------------------------*/
 extern T_uezTask G_mainTask;
 
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+static TBool G_OnBoardUSBIsHost = EFalse;
+#endif
+
+/*---------------------------------------------------------------------------*
+ * Globals:
+ *---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*
+ * Prototypes:
+ *---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*
+ * Task:  Heartbeat
+ *---------------------------------------------------------------------------*/
+/**
+ *      Task to blink the heartbeat LED. Indicates the board is still alive.
+ * @param [in] aMyTask -- not used
+ * @param [in] aParams -- not used
+ * @return     never returns
+ */
+ /*---------------------------------------------------------------------------*/
 static TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
-    HAL_GPIOPort **p_gpio;
-    const TUInt32 pin = 13;
-    TBool run = ETrue;
-    TBool capture = EFalse;
-    TUInt32 i = 1;
-    char File[50] = "1:File1.bmp";
+    UEZGPIOOutput(GPIO_HEARTBEAT_LED);
+    UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);
 
-    HALInterfaceFind("GPIO1", (T_halWorkspace **)&p_gpio);
+    // initial quick blink at bootup
+    for (int i = 0; i < 20; i++) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY/5);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY/5);
+    }
 
-    (*p_gpio)->SetOutputMode(p_gpio, 1<<pin);
-    (*p_gpio)->SetMux(p_gpio, pin, 0); // set to GPIO
     // Blink
-    while (run) {
-        (*p_gpio)->Set(p_gpio, 1<<pin);
-        UEZTaskDelay(250);
-        (*p_gpio)->Clear(p_gpio, 1<<pin);
-        UEZTaskDelay(250);
-        
-        if(capture){
-          sprintf(File, "1:\File%d.bmp", i);
-          portENTER_CRITICAL();
-            BMPSaveScreen(File, (void *)SUICallbackGetLCDBase());
-            portEXIT_CRITICAL();
-            i++;
-        }
+    while(1) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(HEARTBEAT_BLINK_DELAY);
     }
     return 0;
 }
 
 /*---------------------------------------------------------------------------*
-* Task:  main
-*---------------------------------------------------------------------------*
-* Description:
-*      In the uEZ system, main() is a task.  Do not exit this task
-*      unless you want to the board to reset.  This function should
-*      setup the system and then run the main loop of the program.
-* Outputs:
-*      int                     -- Output error code
-*---------------------------------------------------------------------------*/
+ * Task:  main
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      In the uEZ system, main() is a task.  Do not exit this task
+ *      unless you want to the board to reset.  This function should
+ *      setup the system and then run the main loop of the program.
+ * Outputs:
+ *      int                     -- Output error code
+ *---------------------------------------------------------------------------*/
 void MainTask(void)
 {
 #if COMPILE_OPTION_USB_SDCARD_DISK
-     T_USBMSDriveCallbacks usbMSDiskCallbacks = {0};
+    T_USBMSDriveCallbacks usbMSDiskCallbacks = {0};
 #endif
 #if RENAME_INI
     UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
-#endif 
-     printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
-     
-     // Load the settings from non-volatile memory
-     if (NVSettingsLoad() != UEZ_ERROR_NONE) {
-          printf("EEPROM Settings\n");
-          NVSettingsInit();
-          NVSettingsSave();
-     }
-
-#if COMPILE_OPTION_USB_SDCARD_DISK
-    // Setup the USB MassStorage device to connect to MS1 (the SD Card)
-    if (UEZDeviceTableIsRegistered("USBDevice"))
-        USBMSDriveInitialize(&usbMSDiskCallbacks, 0, "MS1");
 #endif
-     
-     UEZTaskCreate(Heartbeat, "Heart", 2048, (void *)0, UEZ_PRIORITY_NORMAL, 0);
-     
-     Calibrate(CalibrateTestIfTouchscreenHeld());
-     
+
+    printf("\fuEZ v" UEZ_VERSION_STRING "\n"); // clear serial screen and put up banner
+    printf(PROJECT_NAME " v" VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
+
+    // Load the settings from non-volatile memory
+    if (NVSettingsLoad() != UEZ_ERROR_NONE) {
+        printf("EEPROM Settings\n");
+        NVSettingsInit();
+        NVSettingsSave();
+    }
+
+    // Start up the heart beat of the LED
+    UEZTaskCreate(Heartbeat, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+
+#if UEZ_ENABLE_USB_DEVICE_STACK
+    if (G_usbIsDevice) {
+        // Setup the USB MassStorage device to connect to MS1 (the SD Card)
+        USBMSDriveInitialize(
+                &usbMSDiskCallbacks,
+                0,
+                "MS1");
+    }
+#endif
+
+    //AudioStart(); // Used to call tonegenerator open
+	
+    PlayAudio(523, 100); // play audio will automatically unmute speaker
+    PlayAudio(659, 100);
+    PlayAudio(783, 100);
+    PlayAudio(1046, 100);
+    PlayAudio(783, 100);
+    PlayAudio(659, 100);
+    PlayAudio(523, 100);
+    
+    // Force calibration?
+#if (USE_RESISTIVE_TOUCH == 1)
+    Calibrate(CalibrateTestIfTouchscreenHeld());
+#endif
+
      // Setup DAC audio if available - ignore error
      UEZDACWAVConfig("Timer2");
-     
-         if(!WindowManager_Start_emWin()){
+
+    if(!WindowManager_Start_emWin()){
         WindowManager_Create_All_Active_Windows();
         //start the main window.
         if(G_SystemWindows[HOME_SCREEN]){
@@ -135,142 +188,114 @@ void MainTask(void)
     } else {
         UEZFailureMsg("emWin Failed to Start!");
     }
-     
-     
-     // We should not exit main unless we want to reset the board
-     return;
+
+    UEZPlatform_Watchdog_Require();
+    T_uezDevice watchdog;
+
+    // Force a restart by tripping the watchdog
+    UEZWatchdogOpen("Watchdog", &watchdog);
+    if (!UEZIsResetFromWatchdog(watchdog)) {
+        //G_clearWatchdogBit = 1;
+        }
+    UEZWatchdogSetMaxTime(watchdog, 100);
+    UEZWatchdogStart(watchdog);
+    UEZWatchdogTrip(watchdog);
+
+    //UEZPlatform_System_Reset();
+
+    // We should not exit main unless we want to reset the board
 }
 
 /*---------------------------------------------------------------------------*
-* Function:  uEZPlatformStartup_EXP_DK
-*---------------------------------------------------------------------------*
-* Description:
-*      
-*---------------------------------------------------------------------------*/
-void uEZPlatformStartup_EXP_DK()
+ * Routine:  UEZPlatform_Network_Connect
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      When a system needs the network to be running, this routine is
+ *      called.  Most of the work is already done in the UEZPlatform.
+ *      This routine calls the correct connect routine and gets the
+ *      network information.
+ *---------------------------------------------------------------------------*/
+T_uezDevice G_network;
+T_uezNetworkStatus G_networkStatus;
+T_uezError UEZPlatform_Network_Connect(void)
 {
-    UEZPlatform_Timer2_Require();
-    UEZPlatform_DAC0_Require();
-    
-    UEZGUI_EXP_DK_I2CMux_Require();
-    UEZGUI_EXP_DK_Button_Require();
-    UEZGUI_EXP_DK_LED_Require();
-    UEZGUI_EXP_DK_LightSensor_Require();
-    UEZGUI_EXP_DK_ProximitySensor_Require();        
-    UEZGUI_EXP_DK_SDCard_MCI_Require(1);
-    UEZGUI_EXP_DK_FullDuplex_RS485_Require(
-        UEZ_CONSOLE_WRITE_BUFFER_SIZE,
-        UEZ_CONSOLE_READ_BUFFER_SIZE);
-    UEZGUI_EXP_DK_CAN_Require();
-    UEZGUI_EXP_DK_I2S_Require();
-    UEZGUI_EXP_DK_AudioMixer_Require();
-    
-    #if UEZ_ENABLE_WIRED_NETWORK
-        UEZGUI_EXP_DK_EMAC_Require();
-    #endif
+    static TBool connected = EFalse;
+    T_uezError error = UEZ_ERROR_NOT_AVAILABLE;
 
-    #if UEZ_ENABLE_USB_DEVICE_STACK
-        UEZPlatform_USBDevice_Require();
-    #endif
-    
-    #if UEZ_ENABLE_USB_HOST_STACK
-        UEZPlatform_USBHost_PortA_Require();
-        UEZPlatform_USBFlash_Drive_Require(0);
-    #endif
-
-    #if UEZ_ENABLE_WIRED_NETWORK
-        UEZPlatform_WiredNetwork0_Require();
-    #endif
-
-    #if UEZ_WIRELESS_PROGRAM_MODE
-        UEZPlatform_WiFiProgramMode(EFalse);
-    #endif
-
-    #if UEZ_ENABLE_WIRELESS_NETWORK
-        UEZPlatform_WirelessNetwork0_Require();
-    #endif
-}
-
-/*---------------------------------------------------------------------------*
-* Function:  uEZPlatformStartup_EXP_BRKOUT
-*---------------------------------------------------------------------------*
-* Description:
-*      
-*---------------------------------------------------------------------------*/
-void uEZPlatformStartup_EXP_BRKOUT()
-{
-    TBool usbIsDevice = ETrue; //Default value
-    
-    UEZPlatform_Timer2_Require();
-    UEZPlatform_DAC0_Require();
-    UEZGUI_EXP_DK_SDCard_MCI_Require(1);
-
-#if USB_PORT_B_HOST_DETECT_ENABLED
-    usbIsDevice = UEZPlatform_Host_Port_B_Detect();
-#endif
-    if (usbIsDevice) {
-        #if UEZ_ENABLE_USB_DEVICE_STACK
-            UEZPlatform_USBDevice_Require();
-        #if UEZ_ENABLE_USB_HOST_STACK
-            UEZPlatform_USBHost_PortA_Require();
-            UEZPlatform_USBFlash_Drive_Require(0);
-        #endif
-        #endif
-    } else {
-        #if UEZ_ENABLE_USB_HOST_STACK
-            UEZPlatform_USBHost_PortB_Require();
-            UEZPlatform_USBFlash_Drive_Require(0);
-        #endif
+    if (!connected) {
+        connected = ETrue;
+        error = UEZPlatform_WiredNetwork0_Connect(&G_network, &G_networkStatus);
     }
-    
-    #if UEZ_ENABLE_WIRED_NETWORK
-        UEZPlatform_WiredNetwork0_Require();
-    #endif
-
-    #if UEZ_WIRELESS_PROGRAM_MODE
-        UEZPlatform_WiFiProgramMode(EFalse);
-    #endif
-
-    #if UEZ_ENABLE_WIRELESS_NETWORK
-        UEZPlatform_WirelessNetwork0_Require();
-    #endif
+    return error;
 }
 
+
+T_uezError UEZPlatform_WiredNetwork0_Connect(
+        T_uezDevice *aNetwork,
+        T_uezNetworkStatus *aStatus)
+{
+    UEZPlatform_WiredNetwork0_Require();
+    return UEZNetworkConnect(
+            "WiredNetwork0",
+            "lwIP",
+            (const T_uezNetworkAddr *)G_nonvolatileSettings.iIPAddr,
+            (const T_uezNetworkAddr *)G_nonvolatileSettings.iIPMask,
+            (const T_uezNetworkAddr *)G_nonvolatileSettings.iIPGateway,
+            ETrue,
+            aNetwork,
+            aStatus);
+}
 
 /*---------------------------------------------------------------------------*
 * Function:  uEZPlatformStartup_NO_EXP
 *---------------------------------------------------------------------------*
 * Description:
-*      
+*
 *---------------------------------------------------------------------------*/
 void uEZPlatformStartup_NO_EXP()
 {
+#if UEZ_ENABLE_VIRTUAL_COM_PORT && (UEZ_PROCESSOR == NXP_LPC4357)
+    static T_vcommCallbacks vcommCallbacks = {
+            0, // SpeedChange
+            0, // LineState
+            0, // EmptyOutput
+    };
+#endif
     TBool usbIsDevice = ETrue; //Default value
-    
+
     UEZPlatform_Timer2_Require();
     UEZPlatform_DAC0_Require();
-    UEZPlatform_SDCard_Drive_Require(1);
-    //UEZPlatform_SDCard_MCI_Drive_Require(1);
 
 #if USB_PORT_B_HOST_DETECT_ENABLED
     usbIsDevice = UEZPlatform_Host_Port_B_Detect();
 #endif
     if (usbIsDevice) {
         #if UEZ_ENABLE_USB_DEVICE_STACK
+            #if (UEZ_PROCESSOR != NXP_LPC4357)
             UEZPlatform_USBDevice_Require();
+            #else
+            #if UEZ_ENABLE_VIRTUAL_COM_PORT && (UEZ_PROCESSOR == NXP_LPC4357)
+            VirtualCommInitialize(&vcommCallbacks, 0, 1); // USB0, force full speed for best integrity
+            #endif //UEZ_ENABLE_VIRTUAL_COM_PORT && (UEZ_PROCESSOR == NXP_LPC4357)
+            #endif //(UEZ_PROCESSOR != NXP_LPC4357)
+        #endif //UEZ_ENABLE_USB_DEVICE_STACK
         #if UEZ_ENABLE_USB_HOST_STACK
+          #if (USB_PORT_A_HOST_ENABLED == 1)
             UEZPlatform_USBHost_PortA_Require();
             UEZPlatform_USBFlash_Drive_Require(0);
-        #endif
-        #endif
+          #endif
+        #endif //UEZ_ENABLE_USB_HOST_STACK
     } else {
         #if UEZ_ENABLE_USB_HOST_STACK
             UEZPlatform_USBHost_PortB_Require();
+        #if(UEZ_PROCESSOR == NXP_LPC4357)
+            G_OnBoardUSBIsHost = ETrue;
+        #endif
             UEZPlatform_USBFlash_Drive_Require(0);
         #endif
     }
-    
-    #if UEZ_ENABLE_WIRED_NETWORK
+
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZPlatform_WiredNetwork0_Require();
     #endif
 
@@ -278,76 +303,51 @@ void uEZPlatformStartup_NO_EXP()
         UEZPlatform_WiFiProgramMode(EFalse);
     #endif
 
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         UEZPlatform_WirelessNetwork0_Require();
     #endif
+
+    UEZPlatform_SDCard_Drive_Require(1);
 }
 
 /*---------------------------------------------------------------------------*
-* Routine:  uEZPlatformStartup
-*---------------------------------------------------------------------------*
-* Description:
-*      When uEZ starts, a special Startup task is created and called.
-*      This task brings up the all the hardware, reports any problems,
-*      starts the main task, and then exits.
-*---------------------------------------------------------------------------*/
+ * Routine:  uEZPlatformStartup
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      When uEZ starts, a special Startup task is created and called.
+ *      This task brings up the all the hardware, reports any problems,
+ *      starts the main task, and then exits.
+ *---------------------------------------------------------------------------*/
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
-    #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
-        TUInt32 traceAddressInMemory = 0;
-    #endif
-    
+    extern T_uezTask G_mainTask;
+
     UEZPlatform_Standard_Require();
-        
+    UEZPlatform_Timer0_Require();
+
     // Startup the desired platform configuration
     #if UEZGUI_EXPANSION_DEVKIT
         uEZPlatformStartup_EXP_DK();
-    #elif UEZGUI_EXP_BRK_OUT 
+    #elif UEZGUI_EXP_BRK_OUT
         uEZPlatformStartup_EXP_BRKOUT();
     #else
         uEZPlatformStartup_NO_EXP();
     #endif
-    
-    SUIInitialize(EFalse, EFalse, EFalse); // SWIM not flipped
 
-    #if FREERTOS_PLUS_TRACE //LPC1788/4088 only as of uEZ v2.06     
-         uiTraceStart();
-         //vTraceStartStatusMonitor(); //Removed on new version of Trace
-         traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();
-         printf("%x", traceAddressInMemory);     
-    #endif
-         
-     UEZPlatform_Watchdog_Require();
+    #if UEZ_ENABLE_BUTTON_BOARD
+        UEZPlatform_ButtonBoard_Require();
+	#endif
 
-     // Create a main task (not running yet)
-     UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
-                   UEZ_PRIORITY_NORMAL, &G_mainTask);
-     
-     // Done with this task, fall out
-     return 0;
+    SUIInitialize(SIMPLEUI_DOUBLE_SIZED_ICONS, EFalse, EFalse); // SWIM not flipped
+
+    // Create a main task (not running yet)
+    UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
+            UEZ_PRIORITY_NORMAL, &G_mainTask);
+
+    // Done with this task, fall out
+    return 0;
 }
 
-
-/*---------------------------------------------------------------------------*
-* Required by emWin: Need to find a better place for this
-*---------------------------------------------------------------------------*/
-TUInt32 UEZEmWinGetRAMAddr(void)
-{
-     static TBool init = EFalse;
-     if (!init) {
-          memset((void *)0xA0200000, 0x00, 0x00200000);
-          init = ETrue;
-     }
-     return 0xA0200000;
-}
-
-TUInt32 UEZEmWinGetRAMSize(void)
-{
-     return 0x00200000;
-}
-
-// Is this required?
-void UEZBSP_VectorTableInit(){ /* No Implementation */ }
 /*-------------------------------------------------------------------------*
-* File:  main.c
-*-------------------------------------------------------------------------*/
+ * File:  main.c
+ *-------------------------------------------------------------------------*/

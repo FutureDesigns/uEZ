@@ -40,9 +40,6 @@
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
 #include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
 #include <Source/Devices/Button/NXP/PCA9551/Button_PCA9551.h>
 #include <Source/Devices/CRC/Generic/CRC_Generic.h>
@@ -56,14 +53,10 @@
 #include <Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
-#include <Source/Devices/I2S/Generic/Generic_I2S.h>
-#include <Source/Devices/LCD/Sharp/LQ043T1DG28/Sharp_LQ043T1DG28.h>
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SPI.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.h>
 #include <Source/Devices/MassStorage/USB_MS/USB_MS.h>
-#include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
-#include <Source/Devices/Network/lwIP/Network_lwIP.h>
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
@@ -77,15 +70,7 @@
 #include <Source/Devices/Touchscreen/Newhaven/FT5306DE4/FT5306DE4TouchScreen.h>
 #include <Source/Devices/USBDevice/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDevice.h>
 #include <Source/Devices/USBHost/Generic/Generic_USBHost.h>
-#include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
 #include <Source/Devices/Keypad/GPIO/Keypad_Generic_GPIO.h>
-#include <Source/Devices/GPIO/I2C/PCF8574T/GPIO_PCF8574T.h>
-#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_RTC.h>
-#include <Source/Library/Web/BasicWeb/BasicWEB.h>
-#include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
-#include <Source/Library/Graphics/SWIM/lpc_swim.h>
-#include <Source/Library/Memory/MemoryTest/MemoryTest.h>
-#include <Source/Library/StreamIO/StdInOut/StdInOut.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/uEZProcessor_LPC17xx_40xx.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_ADCBank.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CRC.h>
@@ -113,15 +98,12 @@
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
 #include <uEZI2C.h>
-#include <uEZNetwork.h>
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
 #include <uEZPlatform.h>
 #include <uEZAudioMixer.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
-
-#include <Source/Devices/Flash/NXP/LPC_SPIFI_M4/Flash_NXP_LPC_SPIFI_M4.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -135,43 +117,44 @@
 // Also any pin combination with an extra long length cable (over 10") should use a different test with a longer timeout.
 // Any signal with long unterminated branches will also require a longer time for pins to settle than typical.
 
-/* Test pins. See P:\uEZGUI\uEZGUI-4088-43WQN\FCT\V2.07\DOC\uEZGUI-4088-43WQN FCT Loopback Test Debugging Reference.xlsx */
+/* Test pins. See P:\uEZGUI\uEZGUI-4088-43WQN\FCT\V2.09\DOC\uEZGUI-4088-43WQN FCT Loopback Test Debugging Reference.xlsx */
 const T_uezGPIOPortPin g_loopback_pins_A[LOOPBACK_TEST_NUM_PINS_A] =
 {
     /* J2 Pins */
-    // GPIO_P0_11,  // Pin 2            // Not connected to anything when using EXPTest
-    // GPIO_P0_10,  // Pin 3            // Connected to DNL R172 (Disconnected from MCU)
-    GPIO_P2_21,     // Pin 4    (0)
-    GPIO_P0_21,     // Pin 5    (1)        
-    GPIO_P4_21,     // Pin 6    (2)     // Connected to U4 SDRAM A21
-    // GPIO_P4_20,  // Pin 7            // Connected to U4 SDRAM A20
-    GPIO_P4_23,     // Pin 8    (3)     // Connected to U4 SDRAM A23
-    // GPIO_P4_22,  // Pin 9            // Connected to U4 SDRAM A22
-    // GPIO_P0_30,  // Pin 11           // Shared with USB_D+ and USB_D- pins and shares the same direction as P0_29
-    // GPIO_P0_29,  // Pin 12           // Shared with USB_D+ and USB_D- pins and shares the same direction as P0_30
-    GPIO_P4_26,     // Pin 13   (4)
-    GPIO_P4_27,     // Pin 14   (5)
-    GPIO_P1_19,     // Pin 15   (6)
-    GPIO_P0_9,      // Pin 16   (7)
-    GPIO_P0_8,      // Pin 17   (8)
-    GPIO_P0_7,      // Pin 18   (9)
-    GPIO_P0_6,      // Pin 19   (10)
-    GPIO_P0_5,      // Pin 20   (11)
-    GPIO_P0_4,      // Pin 21   (12)
-    // GPIO_P0_26,  // Pin 25           // Connected to U17 Amplifer IN1 through capacitor
-    GPIO_P1_31,     // Pin 26   (13)
-    GPIO_P1_17,     // Pin 27   (14)        
-    GPIO_P1_16,     // Pin 28   (15)      
-    // GPIO_P1_15,  // Pin 30           // This pin loops back and connects to P0.30
-    // GPIO_P1_14,  // Pin 31           // This pin loops back and connects to P0.29
-    // GPIO_P1_10,  // Pin 33           // Not connected to anything when using EXPTest
-    // GPIO_P1_9,   // Pin 34           // Not connected to anything when using EXPTest
-    // GPIO_P1_8,   // Pin 35           // Not connected to anything when using EXPTest
-    // GPIO_P1_4,   // Pin 36           // Not connected to anything when using EXPTest
-    GPIO_P1_1,      // Pin 37   (16)
-    GPIO_P1_0,      // Pin 38   (17)
-    // GPIO_P0_2,   // Pin 42           // Used by serial port
-                                
+    //GPIO_P0_11,  // Pin 2           // Connected to UART when using EXPTest, Must keep pin as input!
+    //GPIO_P0_10,  // Pin 3           // Connected to DNL R172 (Disconnected from MCU)
+    //GPIO_P2_21,   // Pin 4          // Only to Expansion connector
+    //GPIO_P0_21,   // Pin 5            
+    //GPIO_P4_21,   // Pin 6          // Connected to U5 NOR Flash A21 only if NOR Flash loaded instead of QSPI
+    GPIO_P4_20,     // Pin 7    (0)   // Connected to U5 NOR Flash A20 only if NOR Flash loaded instead of QSPI
+    GPIO_P4_23,     // Pin 8    (1)   // Connected to U5 NOR Flash A23 only if NOR Flash loaded instead of QSPI
+    GPIO_P4_22,     // Pin 9    (2)   // Connected to U5 NOR Flash A22 only if NOR Flash loaded instead of QSPI
+    //GPIO_P0_30,   // Pin 11         // Shared with USB_D+ and USB_D- pins and shares the same direction as P0_29
+    //GPIO_P0_29,   // Pin 12         // Shared with USB_D+ and USB_D- pins and shares the same direction as P0_30
+    GPIO_P4_26,     // Pin 13   (3)
+    GPIO_P4_27,     // Pin 14   (4)
+    GPIO_P1_19,     // Pin 15   (5)
+    //GPIO_P0_9,    // Pin 16         // Can't teste P0_26 so skip this
+    GPIO_P0_8,      // Pin 17   (6)
+    GPIO_P0_7,      // Pin 18   (7)
+    //GPIO_P0_6,    // Pin 19         // Can't test P0_26 so skip this
+    GPIO_P0_5,      // Pin 20   (8)
+    GPIO_P0_4,      // Pin 21   (9)
+    //GPIO_P0_26,   // Pin 25         // Connected to U17 Amplifer IN1 through capacitor
+    GPIO_P1_31,     // Pin 26   (10)
+    GPIO_P1_17,     // Pin 27   (11)        
+    GPIO_P1_16,     // Pin 28   (12)      
+    //GPIO_P1_15,   // Pin 30         // This pin loops back and connects to P0.30
+    //GPIO_P1_14,   // Pin 31         // This pin loops back and connects to P0.29
+    GPIO_P1_10,     // Pin 33   (13)  // Not connected to anything when using EXPTest
+    GPIO_P1_9,      // Pin 34   (14)  // Not connected to anything when using EXPTest
+    GPIO_P1_8,      // Pin 35   (15)  // Not connected to anything when using EXPTest
+    //GPIO_P1_4,    // Pin 36         // Not connected to anything when using EXPTest
+    //GPIO_P1_1,    // Pin 37         // Line cut on loopback board
+    //GPIO_P1_0,    // Pin 38         // Line cut on loopback board
+    //GPIO_P0_2,    // Pin 42         // Used by serial port
+
+#if 0 // Nothing we can test on J6 unless missing GPIOs are added or USB signals become testable.                                
     /* J6 Pins */               
     //GPIO_P5_4,    // Pin 2    
     GPIO_P5_3,      // Pin 3    (18)    // Not connected to anything when using EXPTest
@@ -187,105 +170,76 @@ const T_uezGPIOPortPin g_loopback_pins_A[LOOPBACK_TEST_NUM_PINS_A] =
     // GPIO_P0_13,  // Pin 15           // Connected to D2 cathode
     // GPIO_P0_12,  // Pin 16           // Connected to U18 USB Host MOSFET switches EN pin w/ pull up resistor
     // GPIO_P0_25,  // Pin 17           // Connected to 5V_MONITOR (2.5 ideal)
+#endif
 };
 
 /* Test pin connectivity (1 = Pins are connected)*/
 const uint8_t g_loopback_connected_A[LOOPBACK_TEST_NUM_PINS_A][LOOPBACK_TEST_NUM_PINS_A] =
 {
-    /* J2 Pins */                                                                                                                     /* J6 Pins */
-  //{  1, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,   1,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 1,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 1,   0, 0, 0, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-    {/*0, 0,*/ 1, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 1, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 1, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 1, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0,   1, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 1,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-  //{  0, 0,   0, 0,   0,   1,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 1, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 1, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 1, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-  //{  0, 0,   0, 0,   0,   0,   0,   1, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 1, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 1, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 1, 0, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   1, 0, 0, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 1, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 1, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 1, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 1, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 1, 0, 0, 0, 0, 0, 0, /*0,*/ 1, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 1, 0, 0, 1, 0, 0, /*1,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 1, 0, 0, 0, 1, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 1, 0, 1, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 1, 0, 0, 1, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 1, 0, 1, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 1, 0, 0, 0, 1, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 1, 0, 0, 0, 0, 0,   1,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 1, 0, 0, 0, 0, 0, 0, /*0,*/ 1, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 1, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 1, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 1,*/ 0, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 1, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 1, /*0, 0, 0, 0, 0, 0,*/ 0, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 1,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   1, 0, 0, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 1, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 1, 0, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   1, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 1, 0, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   1,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 1, 0, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   1,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 1, 0,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   1,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 1,   0, 0,   0,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-    {/*0, 0,*/ 0, 1, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 1, 0, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 1, 0, /*0,   0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 1, /*0,*/        /*0,*/ 0, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 0, 0*/},
-  //{  1, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,   1,            0,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 0  },
-
-                      
-   /*  J6 Pins */             
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           1,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 1  },
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0,  /*0,*/       /*0,*/ 1, 0, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*0, 1, 0*/},
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0,  /*0,*/       /*0,*/ 0, 1, /*0, 0, 0, 0,*/ 0, 0, 0, 0, /*1, 0, 0*/},
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           0,   0, 0,   1, 0, 0, 0,   0, 0, 0, 1,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           0,   0, 0,   0, 1, 0, 0,   0, 0, 1, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           0,   0, 0,   0, 0, 1, 0,   0, 1, 0, 0,   0, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           0,   0, 0,   0, 0, 0, 1,   1, 0, 0, 0,   0, 0, 0  },
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0,  /*0,*/       /*0,*/ 0, 0, /*0, 0, 0, 1,*/ 1, 0, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0,  /*0,*/       /*0,*/ 0, 0, /*0, 0, 1, 0,*/ 0, 1, 0, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0,  /*0,*/       /*0,*/ 0, 0, /*0, 1, 0, 0,*/ 0, 0, 1, 0, /*0, 0, 0*/},
-    {/*0, 0,*/ 0, 0,   0, /*0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, 0, 0, 0, 0, 0, 0, /*0,*/ 0, 0, 0, /*0, 0, 0, 0, 0, 0,*/ 0, 0,  /*0,*/       /*0,*/ 0, 0, /*1, 0, 0, 0,*/ 0, 0, 0, 1, /*0, 0, 0*/},
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           0,   0, 1,   0, 0, 0, 0,   0, 0, 0, 0,   1, 0, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           0,   1, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 1, 0  },
-  //{  0, 0,   0, 0,   0,   0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0,   0, 0, 0, 0, 0, 0,   0, 0,    0,           1,   0, 0,   0, 0, 0, 0,   0, 0, 0, 0,   0, 0, 1  },
+    /* J2 Pins */
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+    {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 }; 
 
 const T_uezGPIOPortPin g_loopback_pins_B[LOOPBACK_TEST_NUM_PINS_B] =
-{   
-    /* J19 Pins */
-    GPIO_P2_23,     // Pin 1    (0)
-    GPIO_P2_27,     // Pin 2    (1)
-    GPIO_P2_26,     // Pin 3    (2)
-    GPIO_P2_22,     // Pin 4    (3)
-    GPIO_P2_11,     // Pin 7    (4)
-    // GPIO_NONE,   // Pin 8            // Not a GPIO, controlled by output of reset circuit, connects to other peripherals
-    // GPIO_NONE,   // Pin 9            // Connected to DNL resistors
-    // GPIO_NONE,   // Pin 10           // Connected to DNL resistors
+{
+    /* Pmod (J15/J19) Pins */
+    GPIO_P2_23,	// Pin 1	(0)
+    GPIO_P2_27,	// Pin 2	(1)
 };
 
 /* Test pin connectivity (1 = Pins are connected)*/
 const uint8_t g_loopback_connected_B[LOOPBACK_TEST_NUM_PINS_B][LOOPBACK_TEST_NUM_PINS_B] =
 {
-    /* J15 Pins */
-    {1, 1, 0, 0, 0 /*, 0, 0, 0*/},
-    {1, 1, 0, 0, 0 /*, 0, 0, 0*/},
-    {0, 0, 1, 1, 1 /*, 0, 0, 0*/},
-    {0, 0, 1, 1, 1 /*, 0, 0, 0*/},
-    {0, 0, 1, 1, 1 /*, 0, 0, 0*/},
-  /*{0, 0, 0, 0, 0   , 1, 0, 0  },*/
-  /*{0, 0, 0, 0, 0   , 0, 1, 0  },*/
-  /*{0, 0, 0, 0, 0   , 0, 0, 1  },*/
+    /* Pmod (J15/J19) Pins */
+    {1, 1},
+    {1, 1},
 };
 
 const T_uezGPIOPortPin g_loopback_pins_C[LOOPBACK_TEST_NUM_PINS_C] =
+{
+    /* Pmod (J15/J19) Pins */
+    GPIO_P2_26,	// Pin 3	(0)
+    GPIO_P2_22,	// Pin 4	(1)
+    GPIO_P2_11,	// Pin 7	(2)
+};
+
+/* Test pin connectivity (1 = Pins are connected)*/
+const uint8_t g_loopback_connected_C[LOOPBACK_TEST_NUM_PINS_C][LOOPBACK_TEST_NUM_PINS_C] =
+{
+    /* Pmod (J15/J19) Pins */
+    {1, 1, 1},
+    {1, 1, 1},
+    {1, 1, 1},
+};
+
+const T_uezGPIOPortPin g_loopback_pins_D[LOOPBACK_TEST_NUM_PINS_D] =
 {   
     // Pins 
     GPIO_NONE,  // Pin X    (0)
 };
 
 /* Test pin connectivity (1 = Pins are connected)*/
-const uint8_t g_loopback_connected_C[LOOPBACK_TEST_NUM_PINS_C][LOOPBACK_TEST_NUM_PINS_C] =
+const uint8_t g_loopback_connected_D[LOOPBACK_TEST_NUM_PINS_D][LOOPBACK_TEST_NUM_PINS_D] =
 {
     // Pins
     {0},
 };
 #endif
-
-// TODO We should be able to loopback some pins on J6 connector now.
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -425,97 +379,77 @@ void COM_Send(char * bytes, uint16_t numBytes) {
 void UEZPlatform_MemTest_StepA(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
+  UEZBSPDelay1MS();
+  // Currently we can't run this check before we reach main().
+  /*if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
     UEZTaskDelay(1);
-  }
+  }*/
 }
 
 void UEZPlatform_MemTest_StepA_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepB(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepB_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepC(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepC_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepD(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepD_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepE(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepE_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepF(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepF_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 /** @} */

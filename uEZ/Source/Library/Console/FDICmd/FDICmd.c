@@ -91,7 +91,7 @@ TUInt32 FDICmdUValue(const char *aArg)
     if (isHex)
         sscanf(aArg, "%x", &v);
     else
-        sscanf(aArg, "%d", &v);
+        sscanf(aArg, "%u", &v);
 
     return v;
 }

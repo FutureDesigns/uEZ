@@ -35,8 +35,8 @@
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
-static T_uezDevice G_stdin;
-static T_uezDevice G_stdout;
+static T_uezDevice G_stdin = NULL;
+static T_uezDevice G_stdout = NULL;
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

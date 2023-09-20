@@ -102,7 +102,7 @@ typedef enum {
 } T_usbHostSpeed;
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     //! Length of this HID descriptor (should be 9 bytes)
     PACK_STRUCT_FIELD(TUInt8 iLength);
 
@@ -127,7 +127,7 @@ typedef struct {
 PACK_STRUCT_END
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     //! Length of this Endpoint descriptor (should be 7 bytes)
     PACK_STRUCT_FIELD(TUInt8 iLength);
 

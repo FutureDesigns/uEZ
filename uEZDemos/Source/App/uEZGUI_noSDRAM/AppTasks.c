@@ -36,7 +36,7 @@
 //#include <AppHTTPServer.h>
 #include <Config_Build.h>
 
-
+T_uezTask G_heartBeatTask = 0; // dummy task handle for any code that tries to act on task handle
 
 /*-------------------------------------------------------------------------*
  * End of File:  AppTasks.c

@@ -659,7 +659,6 @@
         <folder Name="StreamIO">
           <folder Name="StdInOut">
             <folder Name="CrossWorks">
-              <file file_name="../../../../../../Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
             </folder>
             <file file_name="../../../../../../Source/Library/StreamIO/StdInOut/StdInOut.c" />
             <file file_name="../../../../../../Source/Library/StreamIO/StdInOut/StdInOut.h" />
@@ -862,6 +861,9 @@
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/timers.c" />
         </folder>
         <file file_name="../../../../../../Source/RTOS/uEZRTOS.c" />
+        <file file_name="../../../../../../Source/RTOS/uEZRTOS_FreeRTOS.c">
+          <configuration Name="Common" build_exclude_from_build="Yes" />
+        </file>
         <folder Name="FreeRTOS-Plus">
           <folder Name="FreeRTOS-Plus-Trace">
             <folder Name="Include">

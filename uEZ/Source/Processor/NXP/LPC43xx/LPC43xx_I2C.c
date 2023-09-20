@@ -661,7 +661,7 @@ const HAL_I2CBus I2C_LPC43xx_Bus1_Interface = { {
 /*---------------------------------------------------------------------------*
  * Requirement routines:
  *---------------------------------------------------------------------------*/
-void LPC43xx_I2C0_Require()
+void LPC43xx_I2C0_Require(void)
 {
     T_LPC43xx_I2C_Workspace *p;
 

@@ -41,6 +41,9 @@
 #include "uEZ.h"
 #include "uEZHandles.h"
 #include <uEZGPIO.h>
+#ifdef FREERTOS_PLUS_TRACE
+#include <trcUser.h>
+#endif
 
 extern void UEZTaskInit(void);
 
@@ -72,7 +75,7 @@ T_uezError UEZSystemInit(void)
     UEZGPIOReset();
 
     // Start FreeRTOS plus trace if enabled
-#if FREERTOS_PLUS_TRACE
+#ifdef FREERTOS_PLUS_TRACE
     vTraceInitTraceData();
     #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
       #error "Cannot use SystemView with FreeRTOS+Trace!"

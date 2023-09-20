@@ -31,6 +31,10 @@ define symbol AHB0_end          = 0x20003FFF;
 define symbol AHB1_start        = 0x20004000;
 define symbol AHB1_end          = 0x20007FFF;
 
+/********* CRP (Code Read Protection) REGION *********/
+define symbol __CRP1_start__   = 0x000002FC;
+define symbol __CRP1_end__     = 0x000002FF;
+
 /*-- Sizes: -----------------------------------------------------------------*/
 /* This must match the number of implemented vectors * 4 and be padded to an 8
 byte boundary (check the mapfile to ensure that the kernel function region is 
@@ -41,7 +45,8 @@ define symbol __size_vectors__              = 0xE8;
 
 /*-- Memory and Regions: ----------------------------------------------------*/
 define memory mem with size = 4G;
-define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__] - mem:[from __CRP1_start__ to __CRP1_end__];
+define region CRP1_region = mem:[from  __CRP1_start__ to __CRP1_end__];
 define region RAM_region = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
 define region IRAM_region = mem:[from IRAM_start to IRAM_end];
 define region NORFlash_region = mem:[from NORFlash_start   to NORFlash_end];
@@ -79,6 +84,10 @@ define symbol AHB0_end          = 0x20003FFF;
 define symbol AHB1_start        = 0x20004000;
 define symbol AHB1_end          = 0x20007FFF;
 
+/********* CRP (Code Read Protection) REGION *********/
+define symbol __CRP1_start__   = 0x000002FC;
+define symbol __CRP1_end__     = 0x000002FF;
+
 /*-- Sizes: -----------------------------------------------------------------*/
 /* This must match the number of implemented vectors * 4 and be padded to an 8
 byte boundary (check the mapfile to ensure that the kernel function region is 
@@ -89,7 +98,8 @@ define symbol __size_vectors__              = 0xE8;
 
 /*-- Memory and Regions: ----------------------------------------------------*/
 define memory mem with size = 4G;
-define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__];
+define region ROM_region = mem:[from __ICFEDIT_region_ROM_start__ to __ICFEDIT_region_ROM_end__] - mem:[from __CRP1_start__ to __CRP1_end__];
+define region CRP1_region = mem:[from  __CRP1_start__ to __CRP1_end__];
 define region RAM_region = mem:[from __ICFEDIT_region_RAM_start__ to __ICFEDIT_region_RAM_end__];
 define region IRAM_region = mem:[from IRAM_start to IRAM_end];
 define region SPIFI_region = mem:[from SPIFI_start   to SPIFI_end];
@@ -378,7 +388,9 @@ define block AHB_ARRAYS with fixed order {
 
 place in AHB_region {
     first block AHB_ARRAYS,
-};$[endif]$[SkipNewLine]
+};
+
+place in CRP1_region              { section .crp,  section .crp1 };$[endif]$[SkipNewLine]
 $[ifdef LPC4088]place in AHB0_region {
     //readwrite section .emacmem,
 };
@@ -396,7 +408,9 @@ define block AHB_ARRAYS with fixed order {
 
 place in AHB_region {
     first block AHB_ARRAYS,
-};$[endif]$[SkipNewLine]
+};
+
+place in CRP1_region              { section .crp,  section .crp1 };$[endif]$[SkipNewLine]
 $[ifdef LPC546X]place in SRAMX_region {
     readwrite section .emacmem,
     readwrite section .mcimem,

@@ -46,44 +46,42 @@
 // Platform specific
 
 // Set USING_TICK_SUPRESSION to 1 to run with tickless idle mode for lower power.
-#define USING_TICK_SUPRESSION			1 // TODO not supported in any included ports yet
+#define USING_TICK_SUPRESSION		1 // TODO not tested in any included ports yet
 
-#define configUSE_PREEMPTION			1
-#define configUSE_TICKLESS_IDLE			USING_TICK_SUPRESSION
-#define configCPU_CLOCK_HZ				( BSP_ICLK_HZ )  */
+#define configUSE_PREEMPTION		1
+#define configUSE_TICKLESS_IDLE		USING_TICK_SUPRESSION*/
 
 #ifndef configCPU_CLOCK_HZ
     #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) PROCESSOR_OSCILLATOR_FREQUENCY )
 #endif
 
-#define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
-//#define configTICK_RATE_HZ              ( ( portTickType ) 1000 )
+#define configTICK_RATE_HZ		( ( TickType_t ) 1000 )
 #ifndef configTOTAL_HEAP_SIZE
-    #define configTOTAL_HEAP_SIZE		( ( size_t ) (( 23 * 1024 ) - 64)) // was 32 K
-    //#define configTOTAL_HEAP_SIZE		( ( size_t ) (( 33 * 1024 ) - 64)) // was 32 K
+ // Default size, should be overriden in application project. Many GUI projects require larger heap.
+   #define configTOTAL_HEAP_SIZE        ( ( size_t ) (( 3000 * 1024 ) - 64))
 #endif
 #ifndef configMAX_TASK_NAME_LEN
-    #define configMAX_TASK_NAME_LEN		( 16 )
+    #define configMAX_TASK_NAME_LEN     ( 16 )
 #endif
-#define configUSE_16_BIT_TICKS			0
-#define configIDLE_SHOULD_YIELD			1
-#define configUSE_MUTEXES				1
-#define configUSE_RECURSIVE_MUTEXES		1
+#define configUSE_16_BIT_TICKS		0
+#define configIDLE_SHOULD_YIELD		1
+#define configUSE_MUTEXES		1
+#define configUSE_RECURSIVE_MUTEXES	1
 #define configUSE_COUNTING_SEMAPHORES   1
-#define configQUEUE_REGISTRY_SIZE		30 // Allow a few named queue entries
+#define configQUEUE_REGISTRY_SIZE	30 // Allow a few named queue entries
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_PREEMPTION		1
 
-#define configMAX_PRIORITIES			( 7 )
+#define configMAX_PRIORITIES		( 7 )
 
 /* Co-routine definitions. */
-#define configUSE_CO_ROUTINES 			0
+#define configUSE_CO_ROUTINES 		0
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 #ifdef DEBUG // Debug Build Unique Settings
 
-#define configUSE_IDLE_HOOK					0
-#define configUSE_TICK_HOOK					0
+#define configUSE_IDLE_HOOK			0
+#define configUSE_TICK_HOOK			0
 #ifndef configUSE_TRACE_FACILITY
   #define configUSE_TRACE_FACILITY	        1 // needed for vTaskList
 #endif
@@ -102,9 +100,11 @@
 
 #else // Release Build Unique Settings
    
-#define configUSE_IDLE_HOOK					0
-#define configUSE_TICK_HOOK					0
-#define configUSE_TRACE_FACILITY			0
+#define configUSE_IDLE_HOOK			0
+#define configUSE_TICK_HOOK			0
+#ifndef configUSE_TRACE_FACILITY
+  #define configUSE_TRACE_FACILITY		0
+#endif
 #define configGENERATE_RUN_TIME_STATS		0
 #define configUSE_MALLOC_FAILED_HOOK		0 // For release build we should know that we aren't overflowing at boot-up.
 #define configCHECK_FOR_STACK_OVERFLOW		0
@@ -112,22 +112,48 @@
 #endif /* #ifdef DEBUG */
 
 /* Software timer definitions - only included when timer module is enabled. */
-#if USING_TICK_SUPRESSION == 1
-	#define configUSE_TIMERS				0
+#if (USING_TICK_SUPRESSION == 1)
+	#define configUSE_TIMERS		0
 #else
-	#define configUSE_TIMERS				0 // uEZ never used this in FreeRTOS
-    #define configTIMER_INDEX               1    // 0=Timer0 or 1=Timer1
-	#define configTIMER_TASK_PRIORITY		( 3 )
-	#define configTIMER_QUEUE_LENGTH		5
-	#define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
+
+#ifdef FREERTOS_PLUS_TRACE
+  #define configUSE_TRACE_FACILITY            1
+  #define configUSE_TIMERS                    1
+  #define SELECTED_PORT PORT_ARM_CortexM
+  #define configTIMER_INDEX                   1    // 0=Timer0 or 1=Timer1
+  #define configTIMER_TASK_PRIORITY	( 3 )
+  #define configTIMER_QUEUE_LENGTH	5
+  #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
+#else
+    #define configUSE_TIMERS		0 // uEZ never used this in FreeRTOS
+    #define configTIMER_INDEX                   1    // 0=Timer0 or 1=Timer1
+    #define configTIMER_TASK_PRIORITY	( 3 )
+    #define configTIMER_QUEUE_LENGTH	5
+    #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
+#endif
 #endif /* USING_TICK_SUPRESSION */
 
-#if FREERTOS_PLUS_TRACE//configUSE_TRACE_FACILITY
+
+#ifdef FREERTOS_PLUS_TRACE
 //#include <Include/trcKernelPort.h> // TODO need to update FreeRTOS-Plus-Trace to be able to use this again, but we don't have license.
 #endif
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
+
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1) // Disable some features for smaller bootloader projects.
+    #define INCLUDE_vTaskDelete                 1
+    #define INCLUDE_xTaskDelayUntil             0
+    #define INCLUDE_xTaskGetSchedulerState      1
+
+    #define INCLUDE_vTaskPrioritySet            0
+    #define INCLUDE_xTaskGetIdleTaskHandle      0
+    #define INCLUDE_vTaskSuspend                0
+    #define INCLUDE_pxTaskGetStackStart         0
+    #define INCLUDE_uxTaskPriorityGet           0
+    #define INCLUDE_xTaskGetCurrentTaskHandle	0
+    #define INCLUDE_xTaskGetHandle              0
+#endif
 
 #ifndef INCLUDE_pxTaskGetStackStart 
     #define INCLUDE_pxTaskGetStackStart         1
@@ -147,8 +173,8 @@ to exclude the API function. */
 #ifndef INCLUDE_vTaskSuspend
     #define INCLUDE_vTaskSuspend                1
 #endif
-#ifndef INCLUDE_vTaskDelayUntil
-    #define INCLUDE_vTaskDelayUntil             1
+#ifndef INCLUDE_xTaskDelayUntil
+    #define INCLUDE_xTaskDelayUntil             1
 #endif
 #ifndef INCLUDE_vTaskDelay
     #define INCLUDE_vTaskDelay                  1
@@ -302,10 +328,14 @@ kernel is doing. */
 
 #include "SEGGER_RTT_SYSVIEW_Config.h"
 
-#if FREERTOS_PLUS_TRACE
+#ifdef FREERTOS_PLUS_TRACE
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
+
+#define INCLUDE_eTaskGetState			                        1
+#define INCLUDE_xTaskGetIdleTaskHandle                          1
+#define INCLUDE_pxTaskGetStackStart                             1
 
 #if (COMPILER_TYPE == IAR)
 #ifdef __ICCARM__  

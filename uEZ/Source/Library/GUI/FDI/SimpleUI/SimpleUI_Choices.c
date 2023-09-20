@@ -20,8 +20,9 @@
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
-#include "SimpleUI.h"
+#include <Types/LCD.h>
 #include <Source/Library/Graphics/SWIM/lpc_swim.h>
+#include "SimpleUI.h"
 #include <uEZPlatform.h>
 
 #if HAPTIC_FEEDBACK              

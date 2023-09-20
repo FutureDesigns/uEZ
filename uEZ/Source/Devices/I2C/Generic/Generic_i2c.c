@@ -220,28 +220,39 @@ T_uezError I2C_Generic_ProcessRequest(void *aWorkspace, I2C_Request *aRequest)
 
 TBool I2C_Generic_SlaveIsLastReceiveByte(void *aCallbackWorkspace)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  return EFalse;
+#else
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aCallbackWorkspace;
     p->iIsSending = EFalse;
     if (p->iSlaveReceiveIndex >= p->iSlaveSetup.iMaxReceiveLength)
         return ETrue;
     return EFalse;
+#endif
 }
 
 void I2C_Generic_SlaveReceiveByte(void *aCallbackWorkspace, TUInt8 aByte)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else    
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aCallbackWorkspace;
 
     // Only store if there is room
     if (p->iSlaveReceiveIndex < p->iSlaveSetup.iMaxReceiveLength)
         p->iSlaveSetup.iReceiveBuffer[p->iSlaveReceiveIndex++] = aByte;
+#endif
 }
 TBool I2C_Generic_SlaveIsLastTransmitByte(void *aCallbackWorkspace)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  return EFalse;
+#else    
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aCallbackWorkspace;
     p->iIsSending = ETrue;
     if (p->iSlaveSendIndex >= p->iSlaveSetup.iMaxSendLength)
         return ETrue;
     return EFalse;
+#endif
 }
 
 TUInt8 I2C_Generic_GetTransmitByte(void *aCallbackWorkspace)
@@ -276,6 +287,9 @@ T_uezError I2C_Generic_SlaveStart(
     void *aWorkspace,
     const T_I2CSlaveSetup *aSetup)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  return UEZ_ERROR_NONE;
+#else
     T_uezError error = UEZ_ERROR_NONE;
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
     static const T_I2CSlaveCallbacks callbacks = {
@@ -297,6 +311,7 @@ T_uezError I2C_Generic_SlaveStart(
     UEZSemaphoreRelease(p->iSem);
 
     return error;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -371,6 +386,9 @@ T_uezError I2C_Generic_SlaveWaitForEvent(
     TUInt32 *aLength,
     TUInt32 aTimeout)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  return UEZ_ERROR_NONE;
+#else
     T_uezError error = UEZ_ERROR_UNKNOWN;
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
 
@@ -404,6 +422,7 @@ T_uezError I2C_Generic_SlaveWaitForEvent(
     UEZSemaphoreRelease(p->iSem);
 
     return error;
+#endif
 }
 
 /*---------------------------------------------------------------------------*

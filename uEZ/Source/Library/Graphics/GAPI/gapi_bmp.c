@@ -44,7 +44,7 @@ DD.MM.YYYY OSO-UID Description
 07.02.2007 RT!-MEV Rev 1.0
 02.04.2008 RTA-JMB Split from GAPI_BMP
 ***********************************************************************************/
-#include "GAPI.H"
+#include "gapi.h"
 
 /**********************************************************************************
 Function Name:   LCDInitFrame

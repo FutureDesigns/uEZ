@@ -1,26 +1,23 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <workspace>
-  <project>
-    <path>$WS_DIR$\uEZ_NXP_LPC4357_FreeRTOS_IAR.ewp</path>
-  </project>
-  <batchBuild>
-    <batchDefinition>
-      <name>all</name>
-      <member>
-        <project>uEZ_NXP_LPC4357_FreeRTOS_IAR</project>
-        <configuration>Debug</configuration>
-      </member>
-      <member>
-        <project>uEZ_NXP_LPC4357_FreeRTOS_IAR</project>
-        <configuration>Debug-Trace</configuration>
-      </member>
-      <member>
-        <project>uEZ_NXP_LPC4357_FreeRTOS_IAR</project>
-        <configuration>Release</configuration>
-      </member>
-    </batchDefinition>
-  </batchBuild>
+    <project>
+        <path>$WS_DIR$\uEZ_NXP_LPC4357_FreeRTOS_IAR.ewp</path>
+    </project>
+    <batchBuild>
+        <batchDefinition>
+            <name>all</name>
+            <member>
+                <project>uEZ_NXP_LPC4357_FreeRTOS_IAR</project>
+                <configuration>Debug</configuration>
+            </member>
+            <member>
+                <project>uEZ_NXP_LPC4357_FreeRTOS_IAR</project>
+                <configuration>Release</configuration>
+            </member>
+            <member>
+                <project>uEZ_NXP_LPC4357_FreeRTOS_IAR</project>
+                <configuration>Release-Bootloader</configuration>
+            </member>
+        </batchDefinition>
+    </batchBuild>
 </workspace>
-
-

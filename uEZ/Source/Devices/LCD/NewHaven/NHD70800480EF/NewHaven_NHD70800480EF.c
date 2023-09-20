@@ -1,9 +1,9 @@
 /*-------------------------------------------------------------------------*
- * File:  NewHaven_NHD70800480EF_Rev2.c
+ * File:  NewHaven_NHD70800480EF.c
  *-------------------------------------------------------------------------*
  * Description:
- *      HAL implementation of the NewHaven_NHD70800480EF_Rev2.
- * This LCD replaces NHD70800480EF but kept the same model number and appearance!
+ *      HAL implementation of the NewHaven_NHD70800480EF.
+ * 
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ typedef struct {
     T_uezDevice itimer;
     T_uezTimerCallback icallback;
     volatile TBool itimerDone;
-} T_NHD70800480EF_Rev2Workspace;
+} T_NHD70800480EFWorkspace;
 
 /*---------------------------------------------------------------------------*
  * Globals:
@@ -208,7 +208,7 @@ extern const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface;
  * Routine:  LCD_NHD70800480EF_InitializeWorkspace_16Bit
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup workspace for NHD70800480EF_Rev2 LCD.
+ *      Setup workspace for NHD70800480EF LCD.
  * Inputs:
  *      void *aW                    -- Particular workspace
  * Outputs:
@@ -216,7 +216,7 @@ extern const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface;
  *---------------------------------------------------------------------------*/
 T_uezError LCD_NHD70800480EF_InitializeWorkspace_16Bit(void *aW)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 0; // 0%
@@ -229,7 +229,7 @@ T_uezError LCD_NHD70800480EF_InitializeWorkspace_16Bit(void *aW)
  * Routine:  LCD_NHD70800480EF_InitializeWorkspace_I15Bit
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup workspace for NHD70800480EF_Rev2 LCD.
+ *      Setup workspace for NHD70800480EF LCD.
  * Inputs:
  *      void *aW                    -- Particular workspace
  * Outputs:
@@ -237,7 +237,7 @@ T_uezError LCD_NHD70800480EF_InitializeWorkspace_16Bit(void *aW)
  *---------------------------------------------------------------------------*/
 T_uezError LCD_NHD70800480EF_InitializeWorkspace_I15Bit(void *aW)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 0; // 0%
@@ -250,7 +250,7 @@ T_uezError LCD_NHD70800480EF_InitializeWorkspace_I15Bit(void *aW)
  * Routine:  LCD_NHD70800480EF_InitializeWorkspace_8Bit
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup workspace for NHD70800480EF_Rev2 LCD.
+ *      Setup workspace for NHD70800480EF LCD.
  * Inputs:
  *      void *aW                    -- Particular  workspace
  * Outputs:
@@ -258,7 +258,7 @@ T_uezError LCD_NHD70800480EF_InitializeWorkspace_I15Bit(void *aW)
  *---------------------------------------------------------------------------*/
 T_uezError LCD_NHD70800480EF_InitializeWorkspace_8Bit(void *aW)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     p->iBaseAddress = LCD_DISPLAY_BASE_ADDRESS;
     p->aNumOpen = 0;
     p->iBacklightLevel = 0; // 0%
@@ -280,7 +280,7 @@ T_uezError LCD_NHD70800480EF_InitializeWorkspace_8Bit(void *aW)
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_Close(void *aW)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     p->aNumOpen--;
 
     return UEZ_ERROR_NONE;
@@ -303,7 +303,7 @@ T_uezError LCD_NHD70800480EF_Configure(
             TUInt32 aBaseAddress,
             DEVICE_Backlight **aBacklight)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     T_uezError error = UEZ_ERROR_NONE;
 
     p->iLCDController = aLCDController;
@@ -325,7 +325,7 @@ T_uezError LCD_NHD70800480EF_Configure(
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_GetInfo(void *aW, T_uezLCDConfiguration *aConfiguration)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
 
     // Use the setting based on color depth
     *aConfiguration = *p->iConfiguration;
@@ -350,7 +350,7 @@ static T_uezError LCD_NHD70800480EF_GetFrame(
             TUInt32 aFrame,
             void **aFrameBuffer)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     *aFrameBuffer = (void *)(p->iBaseAddress + aFrame * RESOLUTION_X * RESOLUTION_Y * 2);
 
     return UEZ_ERROR_NONE;
@@ -370,7 +370,7 @@ static T_uezError LCD_NHD70800480EF_GetFrame(
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_ShowFrame(void *aW, TUInt32 aFrame)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     (*p->iLCDController)->SetBaseAddr(
             p->iLCDController,
             p->iBaseAddress + aFrame * RESOLUTION_X * RESOLUTION_Y * 2,
@@ -399,7 +399,7 @@ static T_uezError LCD_NHD70800480EF_ShowFrame(void *aW, TUInt32 aFrame)
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_SetBacklightLevel(void *aW, TUInt32 aLevel)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     TUInt16 level;
 
     if (!p->iBacklight)
@@ -418,6 +418,8 @@ static T_uezError LCD_NHD70800480EF_SetBacklightLevel(void *aW, TUInt32 aLevel)
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD70800480EF_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -427,7 +429,7 @@ static T_uezError LCD_NHD70800480EF_SetBacklightLevel(void *aW, TUInt32 aLevel)
 *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
 *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_MSTimerStart(void *aW, float milliseconds){
-  T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+  T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
   T_uezError error = UEZ_ERROR_NONE;
   p->itimerDone = EFalse; // set to true when timer finishes
   error = UEZTimerSetupOneShot(p->itimer,
@@ -441,7 +443,10 @@ static T_uezError LCD_NHD70800480EF_MSTimerStart(void *aW, float milliseconds){
   }  
   return error;
 }
+#endif
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD70800480EF_TimerCallback
  *---------------------------------------------------------------------------*
@@ -452,10 +457,11 @@ static T_uezError LCD_NHD70800480EF_MSTimerStart(void *aW, float milliseconds){
  *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
  *---------------------------------------------------------------------------*/
 static void LCD_NHD70800480EF_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
-  T_NHD70800480EF_Rev2Workspace *p = aCallbackWorkspace->iData;
+  T_NHD70800480EFWorkspace *p = aCallbackWorkspace->iData;
   p->itimerDone = ETrue;
   UEZTimerClose(p->itimer);    
 }
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD70800480EF_On
@@ -468,16 +474,20 @@ static void LCD_NHD70800480EF_TimerCallback(T_uezTimerCallback *aCallbackWorkspa
  *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_On(void *aW) {  
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
       
     (*p->iLCDController)->On(p->iLCDController);
     if (p->iBacklight){
-      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {          
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {
          LCD_NHD70800480EF_MSTimerStart(p, 167.0); // minimum 167ms timer
          while (p->itimerDone == EFalse){;} // wait for timer before continuing
-         (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
-         LCD_NHD70800480EF_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
       }
+#endif
+       (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+       LCD_NHD70800480EF_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
     }
     return UEZ_ERROR_NONE;
 }
@@ -493,14 +503,18 @@ static T_uezError LCD_NHD70800480EF_On(void *aW) {
  *      T_uezError               -- If successful, returns UEZ_ERROR_NONE.
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_Off(void *aW) {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;    
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;    
         
     if (p->iBacklight){
       (*p->iBacklight)->Off(p->iBacklight); // Turn off backlight
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         LCD_NHD70800480EF_MSTimerStart(p, 167.0); // minimum 167ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
-      }   
+      }
+#endif
     }    
     (*p->iLCDController)->Off(p->iLCDController); // turn off LCD
     return UEZ_ERROR_NONE;
@@ -520,16 +534,20 @@ static T_uezError LCD_NHD70800480EF_Off(void *aW) {
  *---------------------------------------------------------------------------*/
 static T_uezError LCD_NHD70800480EF_Open(void *aW)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
     HAL_LCDController **plcdc;
     T_uezError error = UEZ_ERROR_NONE;
     TUInt32 i;
     
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  
+#else
     p->icallback.iTimer = p->itimer; // Setup callback information for timer
     p->icallback.iMatchRegister = 1;
     p->icallback.iTriggerSem = 0;
     p->icallback.iCallback = LCD_NHD70800480EF_TimerCallback;
     p->icallback.iData = p;
+#endif
 
     p->aNumOpen++;
     if (p->aNumOpen == 1) {
@@ -585,7 +603,7 @@ static T_uezError LCD_NHD70800480EF_GetBacklightLevel(
         TUInt32 *aLevel,
         TUInt32 *aNumLevels)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aW;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aW;
 
     if (!p->iBacklight)
         return UEZ_ERROR_NOT_SUPPORTED;
@@ -626,7 +644,7 @@ static T_uezError LCD_NHD70800480EF_SetPaletteColor(
                     TUInt16 aGreen,
                     TUInt16 aBlue)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aWorkspace;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aWorkspace;
 
     return (*p->iLCDController)->SetPaletteColor(
                 p->iLCDController,
@@ -648,7 +666,7 @@ static T_uezError LCD_NHD70800480EF_SetPaletteColor(
  *---------------------------------------------------------------------------*/
 static void LCD_NHD70800480EF_VerticalSyncCallback(void *aCallbackWorkspace)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aCallbackWorkspace;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aCallbackWorkspace;
 
     _isr_UEZSemaphoreRelease(p->iVSyncSem);
 }
@@ -669,7 +687,7 @@ static T_uezError LCD_NHD70800480EF_WaitForVerticalSync(
     void *aWorkspace,
     TUInt32 aTimeout)
 {
-    T_NHD70800480EF_Rev2Workspace *p = (T_NHD70800480EF_Rev2Workspace *)aWorkspace;
+    T_NHD70800480EFWorkspace *p = (T_NHD70800480EFWorkspace *)aWorkspace;
     HAL_LCDController **p_hal = p->iLCDController;
 
     UEZSemaphoreGrab(p->iVSyncSem, 0);
@@ -683,10 +701,10 @@ static T_uezError LCD_NHD70800480EF_WaitForVerticalSync(
 const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface_16Bit = {
 	{
 	    // Common interface
-	    "LCD:NewHaven_NHD70800480EF_Rev2:16Bit",
+	    "LCD:NewHaven_NHD70800480EF:16Bit",
 	    0x0100,
 	    LCD_NHD70800480EF_InitializeWorkspace_16Bit,
-	    sizeof(T_NHD70800480EF_Rev2Workspace),
+	    sizeof(T_NHD70800480EFWorkspace),
 	},
 	
     // Functions
@@ -708,10 +726,10 @@ const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface_16Bit = {
 const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface_I15Bit = {
 	{
 	    // Common interface
-	    "LCD:NewHaven_NHD70800480EF_Rev2:I15Bit",
+	    "LCD:NewHaven_NHD70800480EF:I15Bit",
 	    0x0100,
 	    LCD_NHD70800480EF_InitializeWorkspace_I15Bit,
-	    sizeof(T_NHD70800480EF_Rev2Workspace),
+	    sizeof(T_NHD70800480EFWorkspace),
 	},
 	
     // Functions
@@ -733,10 +751,10 @@ const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface_I15Bit = {
 const DEVICE_LCD LCD_NewHaven_NHD70800480EF_Interface_8Bit = {
 	{
 	    // Common interface
-	    "LCD:NewHaven_NHD70800480EF_Rev2:8Bit",
+	    "LCD:NewHaven_NHD70800480EF:8Bit",
 	    0x0100,
 	    LCD_NHD70800480EF_InitializeWorkspace_8Bit,
-	    sizeof(T_NHD70800480EF_Rev2Workspace),
+	    sizeof(T_NHD70800480EFWorkspace),
 	},
 	
     // Functions
@@ -767,5 +785,5 @@ const T_uezDeviceInterface *LCD_NewHaven_NHD70800480EF_InterfaceArray[] = {
 };
 
 /*-------------------------------------------------------------------------*
- * End of File:  NewHaven_NHD70800480EF_Rev2.c
+ * End of File:  NewHaven_NHD70800480EF.c
  *-------------------------------------------------------------------------*/

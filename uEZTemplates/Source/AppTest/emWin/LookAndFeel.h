@@ -91,6 +91,9 @@ void LAFSetup(
         int aWindowID,
         const T_LAFMapping *aMapping);
 
+void ButtonEnablePresses(WM_HWIN hItem);
+void ButtonDisablePresses(WM_HWIN hItem);
+
 void TouchscreenClearPresses(void);
 
 #endif // LOOKANDFEEL_H_

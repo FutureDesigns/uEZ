@@ -102,7 +102,7 @@ static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams);
  * Prototypes:
  *-------------------------------------------------------------------------*/
 static T_HALTimer_Callback playDACAudio(void * workspace);
-static void DACAudioTask();
+static void DACAudioTask(void);
 
 
 //Public functions
@@ -121,7 +121,7 @@ static void DACAudioTask();
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-TBool UEZDACWAVGetStatus()
+TBool UEZDACWAVGetStatus(void)
 {
     return G_DACFileWorkspace.iPlaying;
 }
@@ -392,7 +392,7 @@ T_uezError UEZDACWAVPlayPause(TBool aBool)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-T_uezError UEZDACWAVStop()
+T_uezError UEZDACWAVStop(void)
 {
     T_uezError error = UEZ_ERROR_NONE;
 
@@ -541,7 +541,7 @@ T_uezError UEZDACWAVConfig(const char* aTimer)
  *
  */
 /*---------------------------------------------------------------------------*/
-void UEZDACWAVCleanUp()
+void UEZDACWAVCleanUp(void)
 {
     if(G_DACFileWorkspace.iConfigured){
         //Deallocate buffers
@@ -670,7 +670,7 @@ static T_HALTimer_Callback playDACAudio(void * workspace)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-static void DACAudioTask()
+static void DACAudioTask(void)
 {
     TBool forever = ETrue;
 
@@ -689,7 +689,7 @@ static void DACAudioTask()
                     G_DACFileWorkspace.iNeedFillBuffer1 = EFalse;
                     UEZSemaphoreRelease(G_DACFileWorkspace.iSemFeed);
                     if (G_DACFileWorkspace.iBytesBuffer1 == 0){
-                        //UEZDACWAVStop();
+                        //UEZDACWAVStop(voi);
                         break;
                     }
                 }

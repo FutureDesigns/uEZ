@@ -468,7 +468,8 @@ static TUInt16 IPHYRead(T_LPC17xx_40xx_EMAC_Workspace *p, TUInt8 PhyReg)
 static T_uezError IEMACConfigPHY_National(T_LPC17xx_40xx_EMAC_Workspace *p)
 {
     T_uezError error = UEZ_ERROR_NONE;
-    TUInt32 timeout, regv;
+    TUInt32 timeout; 
+    TUInt32 regv = 0;
 
     // Force ON Auto-MDIX
     IPHYWrite(p, PHY_REG_PHYCR, IPHYRead(p, PHY_REG_PHYCR) | (1 << 15));

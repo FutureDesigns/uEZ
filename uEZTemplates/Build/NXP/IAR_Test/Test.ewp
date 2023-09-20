@@ -376,18 +376,21 @@ $[endif]$[SkipNewLine]
 $[ifdef LPC1788]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4088]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include</state>
+		  <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 		  <state>$PROJ_DIR$/../../../../uEZ/Source/Library/LPCOpen</state>
@@ -676,18 +679,21 @@ $[endif]$[SkipNewLine]
 $[ifdef LPC1788]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4088]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include</state>
+		  <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 		  <state>$PROJ_DIR$/../../../../uEZ/Source/Library/LPCOpen</state>
@@ -1365,7 +1371,7 @@ $[ifdef LPC4357]$[SkipNewLine]
           <state>CORE_M4</state> 
 $[endif]$[SkipNewLine]
 				<state>LWIP_2_0_x</state>
-                <state>DEBUG</state>
+                <state>NDEBUG</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1499,18 +1505,21 @@ $[endif]$[SkipNewLine]
 $[ifdef LPC1788]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4088]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include</state>
+		  <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 		  <state>$PROJ_DIR$/../../../../uEZ/Source/Library/LPCOpen</state>
@@ -1798,18 +1807,21 @@ $[endif]$[SkipNewLine]
 $[ifdef LPC1788]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4088]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
+          <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include</state>
+		  <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/Processor/NXP/LPC43xx/IAR</state>
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
 		  <state>$PROJ_DIR$/../../../../uEZ/Source/Library/LPCOpen</state>

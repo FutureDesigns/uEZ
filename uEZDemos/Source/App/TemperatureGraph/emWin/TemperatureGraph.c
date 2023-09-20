@@ -30,14 +30,14 @@
 #include "LookAndFeel.h"
 #include <stdio.h>
 #include <uEZFile.h>
-#include <UEZTemperature.h>
+#include <uEZTemperature.h>
 #include "TemperatureGraph.h"
 #if RENAME_INI
-#include <UEZWatchdog.h>
+#include <uEZWatchdog.h>
 #endif
-#include <UEZLCD.h>
+#include <uEZLCD.h>
 
-#include <UEZTimeDate.h>
+#include <uEZTimeDate.h>
 
 //#include <uEZTemperature.h>
 
@@ -201,9 +201,9 @@ static GRAPH_SCALE_Handle G_Graph_H_Scale;
 static GRAPH_SCALE_Handle G_Graph_V_Scale;
 static GRAPH_DATA_Handle G_Temp_Data;
 static GRAPH_DATA_Handle G_Humidity_Data;
-static T_uezDevice _hTouchScreen;
-static T_uezQueue _hTSQueue;
-static U8 _RequestExit;
+//static T_uezDevice _hTouchScreen;
+//static T_uezQueue _hTSQueue;
+//static U8 _RequestExit;
 static T_uezFile G_FileHandle;
 static T_uezDevice G_TempSensor;
 //static T_uezTimeDate G_TimeDate;
@@ -217,6 +217,15 @@ static TBool IHandleSettings(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         GUI_ExecCreatedDialog(CreateTemperatureGraph_Setting());
+        
+        if(G_AppSettings.iTempIsFahrenheit){  
+          GRAPH_SetVSizeY(G_GraphHandle, 780);//Code added by BF - Creates a Scroll Bar and allows the graph's range to go up to 185 degrees Fahrenheight
+          //GRAPH_SetVSizeY(G_GraphHandle, 580);//Code added by IMM - Creates a Scroll Bar and allows the graph's range to go up to 120 degrees Fahrenheight
+          GRAPH_SCALE_SetOff(G_Graph_V_Scale, 90);//Code added by IMM - Makes the minimum value on the graph -20
+        } else {     
+          GRAPH_SetVSizeY(G_GraphHandle, 440);//Code added by BF - Creates a Scroll Bar and allows the graph's range to go up to 85 degrees Celcius
+          GRAPH_SCALE_SetOff(G_Graph_V_Scale, 90);//Code added by IMM - Makes the minimum value on the graph -20
+        }
     }
     return EFalse;
 }
@@ -227,11 +236,12 @@ static TBool IHandleExit(WM_MESSAGE * pMsg, int aNCode, int aID)
     T_uezDevice watchdog;
     
     if (aNCode == WM_NOTIFICATION_RELEASED) {
+      UEZPlatform_Watchdog_Require();
       if(UEZWatchdogOpen("Watchdog", &watchdog) == UEZ_ERROR_NONE){
         UEZWatchdogSetMaxTime(watchdog, 100);
-        UEZWatchdogSetMinTime(watchdog, 1);
+        //UEZWatchdogSetMinTime(watchdog, 1);
         UEZWatchdogStart(watchdog);
-        UEZWatchdogFeed(watchdog);
+        //UEZWatchdogFeed(watchdog);
         UEZWatchdogTrip(watchdog);
       }
     }
@@ -255,7 +265,7 @@ static TBool IHandleUpdateReadings(WM_MESSAGE * pMsg, int aNCode)
         f = ((((TUInt32)tempReading)&0xFFFF)*10)>>16;  // Convert to 1 digit decimal
         hItem = WM_GetDialogItem(pMsg->hWin, ID_HUMIDITY_TEXT);
         //fake the humidity reading
-        i = i - 1;
+        i = i - 2;
         sprintf(text, "%3d.%01d%c", i, f, 0x25);
         TEXT_SetText(hItem, text);
 
@@ -269,9 +279,9 @@ static TBool IHandleUpdateReadings(WM_MESSAGE * pMsg, int aNCode)
         }else{
             i = tempReading>>16;
             f = ((((TUInt32)tempReading)&0xFFFF)*10)>>16;  // Convert to 1 digit decimal
-            sprintf(text, "%3d.%01d C", i, f);
-			
+            sprintf(text, "%3d.%01d C", i, f);			
         }
+
         hItem = WM_GetDialogItem(pMsg->hWin, ID_TEMP_TEXT);
         TEXT_SetText(hItem, text);
 
@@ -339,13 +349,13 @@ static TBool IHandleUpdateTime(WM_MESSAGE * pMsg, int aNCode)
             // Put up the 12 hour format with an AM/PM tail
 			
 
-            sprintf(text, "%02d:%02d:%02d %s %02d/%02d/%04d\0", hours, minutes, G_TimeDate.iTime.iSecond, (isPM)?"PM":"AM", G_TimeDate.iDate.iMonth, G_TimeDate.iDate.iDay, G_TimeDate.iDate. iYear);
+            sprintf(text, "%02d:%02d:%02d %s %02d/%02d/%04d", hours, minutes, G_TimeDate.iTime.iSecond, (isPM)?"PM":"AM", G_TimeDate.iDate.iMonth, G_TimeDate.iDate.iDay, G_TimeDate.iDate. iYear);
         }else{
-            sprintf(text, "%02d:%02d:%02d %02d/%02d/%04d\0", hours, minutes, G_TimeDate.iTime.iSecond, G_TimeDate.iDate.iMonth, G_TimeDate.iDate.iDay, G_TimeDate.iDate. iYear);
+            sprintf(text, "%02d:%02d:%02d %02d/%02d/%04d", hours, minutes, G_TimeDate.iTime.iSecond, G_TimeDate.iDate.iMonth, G_TimeDate.iDate.iDay, G_TimeDate.iDate. iYear);
         }
     } else {
         // Error getting the RTC, put up something funny
-        strcpy(text, "??:??:?? PM ??/??/??");
+        strcpy(text, "??:??:?? PM ??\\/??\\/??");
     }
     TEXT_SetText(hItem, text);
 
@@ -361,9 +371,13 @@ static TBool IHandleUpdateGraph(WM_MESSAGE * pMsg, int aNCode)
         tempReading = tempReading>>16;
         GRAPH_DATA_YT_AddValue(G_Humidity_Data, (tempReading - 1) * 4);//times 4 to match graph .25
 
-        tempReading *= 9;
-        tempReading /=5;
-        tempReading += 32;
+        if(G_AppSettings.iTempIsFahrenheit){
+          tempReading *= 9;
+          tempReading /=5;
+          tempReading += (32<<16);
+        } else{
+          
+        }
         GRAPH_DATA_YT_AddValue(G_Temp_Data, tempReading * 4);
     }
     return EFalse;
@@ -385,7 +399,7 @@ static TBool IHandleLogData(WM_MESSAGE * pMsg, int aNCode)
                 i = tempReading>>16;
                 f = ((((TUInt32)tempReading)&0xFFFF)*10)>>16;
                 i -= 1;
-                sprintf(humidity, "%02d.%d%c\0", i, f, 0x25);
+                sprintf(humidity, "%02d.%d%c", i, f, 0x25);
 
                 //Convert to Deg F
                 tempReading *= 9;
@@ -393,7 +407,7 @@ static TBool IHandleLogData(WM_MESSAGE * pMsg, int aNCode)
                 tempReading += (32<<16);
                 i = tempReading>>16;
                 f = ((((TUInt32)tempReading)&0xFFFF)*10)>>16;
-                sprintf(tempInF, "%03d.%dF\0", i, f);
+                sprintf(tempInF, "%03d.%dF", i, f);
                 sprintf(dataOut, "%02d:%02d,%s,%s\r\n", G_TimeDate.iTime.iHour, G_TimeDate.iTime.iMinute, tempInF, humidity);
                 UEZFileWrite(G_FileHandle, dataOut, strlen(dataOut), &BytesWritten);
             }
@@ -441,8 +455,14 @@ static void iInitGraph(WM_MESSAGE *pMsg)
     GRAPH_SCALE_SetFactor(G_Graph_V_Scale, .25);  //Code Modified by IMM, Original code commented out above
     GRAPH_SCALE_SetFactor(G_Graph_H_Scale, .01538);
     
-    GRAPH_SetVSizeY(G_GraphHandle, 580);//Code added by IMM - Creates a Scroll Bar and allows the graph's range to go up to 120 degrees Fahrenheight
-    GRAPH_SCALE_SetOff(G_Graph_V_Scale, 90);//Code added by IMM - Makes the minimum value on the graph -20
+    if(G_AppSettings.iTempIsFahrenheit){  
+      GRAPH_SetVSizeY(G_GraphHandle, 780);//Code added by BF - Creates a Scroll Bar and allows the graph's range to go up to 185 degrees Fahrenheight
+      //GRAPH_SetVSizeY(G_GraphHandle, 580);//Code added by IMM - Creates a Scroll Bar and allows the graph's range to go up to 120 degrees Fahrenheight
+      GRAPH_SCALE_SetOff(G_Graph_V_Scale, 90);//Code added by IMM - Makes the minimum value on the graph -20
+    } else {     
+      GRAPH_SetVSizeY(G_GraphHandle, 440);//Code added by BF - Creates a Scroll Bar and allows the graph's range to go up to 85 degrees Celcius
+      GRAPH_SCALE_SetOff(G_Graph_V_Scale, 90);//Code added by IMM - Makes the minimum value on the graph -20
+    }
     
     G_Temp_Data = GRAPH_DATA_YT_Create(GRAPH_TEMP_COLOR, NUM_TEMP_SAPMPLES, 0, 0);
     
@@ -541,7 +561,7 @@ static void _TemperatureGraphDialog(WM_MESSAGE *pMsg)
  *---------------------------------------------------------------------------*/
 
 
-WM_HWIN Temperature_Create()
+WM_HWIN Temperature_Create(void)
 {
     UEZTemperatureOpen("Temp0",&G_TempSensor);
     return GUI_CreateDialogBox(_iTemperatureGraphDialog, GUI_COUNTOF(_iTemperatureGraphDialog), &_TemperatureGraphDialog, 0,0,0);

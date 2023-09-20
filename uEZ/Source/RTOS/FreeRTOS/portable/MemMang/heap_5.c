@@ -121,6 +121,9 @@ task.h is included from an application file. */
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
+#if (FREERTOS_HEAP_SELECTION==5)
+#pragma message("    FreeRTOS Heap 5 Selected.")
+
 #if( configSUPPORT_DYNAMIC_ALLOCATION == 0 )
 	#error This file must not be used if configSUPPORT_DYNAMIC_ALLOCATION is 0
 #endif
@@ -525,3 +528,4 @@ const HeapRegion_t *pxHeapRegion;
 	xBlockAllocatedBit = ( ( size_t ) 1 ) << ( ( sizeof( size_t ) * heapBITS_PER_BYTE ) - 1 );
 }
 
+#endif

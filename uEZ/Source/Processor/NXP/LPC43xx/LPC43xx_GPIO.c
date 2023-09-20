@@ -45,7 +45,10 @@ typedef struct {
 typedef struct {
     const HAL_GPIOPort *iHAL;
     const LPC43xx_GPIO_PortInfo *iPortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     TUInt32 iLocked;
+#endif
 } T_LPC43xx_GPIO_Workspace;
 
 typedef struct {
@@ -511,7 +514,10 @@ T_uezError LPC43xx_GPIO_Port0_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port0_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -530,7 +536,10 @@ T_uezError LPC43xx_GPIO_Port1_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port1_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -549,7 +558,10 @@ T_uezError LPC43xx_GPIO_Port2_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port2_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -568,7 +580,11 @@ T_uezError LPC43xx_GPIO_Port3_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port3_PortInfo;
+    
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -587,7 +603,10 @@ T_uezError LPC43xx_GPIO_Port4_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port4_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -606,7 +625,10 @@ T_uezError LPC43xx_GPIO_Port5_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port5_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -625,7 +647,10 @@ T_uezError LPC43xx_GPIO_Port6_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port6_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -644,7 +669,10 @@ T_uezError LPC43xx_GPIO_Port7_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_Port7_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -663,7 +691,10 @@ T_uezError LPC43xx_GPIO_PortZ_InitializeWorkspace(void *aWorkspace)
 {
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     p->iPortInfo = &GPIO_LPC43xx_PortZ_PortInfo;
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     p->iLocked = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -968,7 +999,9 @@ T_uezError LPC43xx_GPIO_GetMux(
         void *aWorkspace,
         TUInt8 aPortPinIndex,
         T_gpioMux *aMux)
-{
+{  
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     const LPC43xx_GPIO_PortInfo *p_info = p->iPortInfo;
     TVUInt32 *p_scu;
@@ -982,7 +1015,7 @@ T_uezError LPC43xx_GPIO_GetMux(
 
     /* Get bits 2:0 FUNC */
     *aMux = (*p_scu & (7 << 0));
-
+#endif
     return UEZ_ERROR_NONE;
 }
 
@@ -1293,6 +1326,8 @@ T_uezError LPC43xx_GPIO_Control(
 
 T_uezError LPC43xx_GPIO_Lock(void *aWorkspace, TUInt32 aPortPins)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 #ifndef NDEBUG
     char buffer [50];
 #endif
@@ -1300,7 +1335,7 @@ T_uezError LPC43xx_GPIO_Lock(void *aWorkspace, TUInt32 aPortPins)
     // Any pins already locked?
     if (p->iLocked & aPortPins) {
         #ifndef NDEBUG
-          sprintf (buffer, "PinLock on %s Pin %d", p->iHAL->iInterface.iName, aPortPins);
+          sprintf (buffer, "PinLock on %s Pin %u", p->iHAL->iInterface.iName, aPortPins);
           UEZFailureMsg(buffer);
         #else
           UEZFailureMsg("PinLock");
@@ -1308,25 +1343,33 @@ T_uezError LPC43xx_GPIO_Lock(void *aWorkspace, TUInt32 aPortPins)
         return UEZ_ERROR_NOT_AVAILABLE;
     }
     p->iLocked |= aPortPins;
+#endif
     return UEZ_ERROR_NONE;
 }
 
 T_uezError LPC43xx_GPIO_Unlock(void *aWorkspace, TUInt32 aPortPins)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
 
     p->iLocked &= ~aPortPins;
+#endif
     return UEZ_ERROR_NONE;
 }
 
 TBool LPC43xx_GPIO_GetLock(void *aWorkspace, TUInt32 aPortPins)
 {
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  return EFalse;
+#else
     T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
     if (p->iLocked & aPortPins) { // Any pins already locked?
         return ETrue;
     } else {
         return EFalse;
     }
+#endif
 }
 
 /*---------------------------------------------------------------------------*

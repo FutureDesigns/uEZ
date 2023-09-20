@@ -25,7 +25,7 @@
 #include "Fonts/Fonts.h"
 #include "Graphics/Graphics.h"
 #include "../Bowlers.h"
-#include <UEZRandom.h>
+#include <uEZRandom.h>
 #include "Audio.h"
 
 /*---------------------------------------------------------------------------*
@@ -105,7 +105,7 @@ static TBool IHandleOptions(WM_MESSAGE * pMsg, int aNCode, int aID);
 static TBool IHandleService(WM_MESSAGE * pMsg, int aNCode, int aID);
 static void IUpdateFields(WM_MESSAGE * pMsg);
 
-void BowlingHasFinished();
+void BowlingHasFinished(void);
 /*---------------------------------------------------------------------------*
  * Local Data:
  *---------------------------------------------------------------------------*/
@@ -200,7 +200,7 @@ static T_uezSemaphore G_UpdateSem = 0;
 static T_uezRandomStream G_RandomStream;
 static TBool G_Done = EFalse;
 
-static void IGrab()
+static void IGrab(void)
 {
 #if MAGELLAN_DEBUG
     printf("BS Sem Grab\n");
@@ -208,7 +208,7 @@ static void IGrab()
     UEZSemaphoreGrab(G_UpdateSem, UEZ_TIMEOUT_INFINITE);
 }
 
-static void IRelease()
+static void IRelease(void)
 {
 #if MAGELLAN_DEBUG
     printf("BS Sem Release\n");
@@ -471,7 +471,7 @@ static TBool IHandleService(WM_MESSAGE * pMsg, int aNCode, int aID)
 static void IUpdateFields(WM_MESSAGE * pMsg)
 {
     WM_HWIN hItem;
-    char buttonText[20];
+    char buttonText[180];
     TUInt8 i;
 
     IGrab();
@@ -480,7 +480,7 @@ static void IUpdateFields(WM_MESSAGE * pMsg)
     if(G_BowlersList[0].iName[0] == '\0'){
         //Exit Bowling Mode
         G_RemoveBowlerMode = EFalse;
-        WindowMangager_Show_Window(MAIN_SCREEN);
+        WindowManager_Show_Window(MAIN_SCREEN);
     }
 
     if(G_RemoveBowlerMode){
@@ -619,14 +619,14 @@ static void _BowlingScreenDialog(WM_MESSAGE *pMsg)
  *  @return					The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN BowlingScreen_Create()
+WM_HWIN BowlingScreen_Create(void)
 {
     UEZSemaphoreCreateBinary(&G_UpdateSem);
     UEZRandomStreamCreate(&G_RandomStream, 0x565, UEZ_RANDOM_PSUEDO);
     return GUI_CreateDialogBox(_iBowlingScreenDialog, GUI_COUNTOF(_iBowlingScreenDialog), &_BowlingScreenDialog, 0,0,0);
 }
 
-TBool BowlingIsActive()
+TBool BowlingIsActive(void)
 {
     if (G_Active && !G_RemoveBowlerMode){
         return ETrue;
@@ -635,11 +635,11 @@ TBool BowlingIsActive()
     }
 }
 
-void BowlingHasFinished()
+void BowlingHasFinished(void)
 {
     //Exit Bowling Mode
     G_RemoveBowlerMode = EFalse;
-    WindowMangager_Show_Window(MAIN_SCREEN);
+    WindowManager_Show_Window(MAIN_SCREEN);
 }
 
 void BowlingScreenGetCurrentBowler(T_Bowler *aBowler)

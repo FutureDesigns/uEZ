@@ -26,6 +26,9 @@
  * Constants:
  *---------------------------------------------------------------------------*/
 #define LM75A_I2C_SPEED               400 // kHz
+
+#define TEMP_RESOLUTION 12 // For the LM75BD
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
@@ -57,6 +60,7 @@ T_uezError Temp_NXP_LM75A_InitializeWorkspace(void *aW)
 
     return error;
 }
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  Temp_NXP_LM75A_Read
@@ -100,6 +104,14 @@ T_uezError Temp_NXP_LM75A_Read(void *aWorkspace, TInt32 *aTemperature)
 
         // Now shift down to sign extend
         v >>= 8;
+
+        // These can't be used due to uEZ specific number format, but here are 2 other calculation methods.
+        //v = (TInt32)((int16_t)(((data[0] << 8) | data[1]) & 0xFFE0) >> 5) * 1.25f;
+        
+        // From the TI driver you can adjust the resolution for different LM sensors
+        // and calculate this way using the same driver without using float numbers.
+        //v = (((data[0] << 8) | ((data[1]) << 0)) & 0xFFE0);
+        //v = ((v >> (16 - TEMP_RESOLUTION)) * 1000) >> (TEMP_RESOLUTION - 8);
 
         *aTemperature = (TInt32)v;
     }

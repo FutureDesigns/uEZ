@@ -119,7 +119,7 @@ T_uezError FATFS_RegisterMassStorageDevice(
   
   G_fatfsMassStorageDevices[aSlot] = aMS;
   //    f_mount(aSlot, &G_fatfs[aSlot]);
-  sprintf(message, "%d:", aSlot);
+  sprintf(message, "%u:", aSlot);
   f_mount(G_fatfs+aSlot, message, 1);
   
   return UEZ_ERROR_NONE;
@@ -136,7 +136,7 @@ T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
   if (G_fatfsMassStorageDevices[aSlot] == 0)
     return UEZ_ERROR_NONE;
   
-  sprintf(message, "%d:", aSlot);
+  sprintf(message, "%u:", aSlot);
   f_mount(G_fatfs+aSlot, message, 0);
   // Clear the slot for the next drive
   memset(G_fatfs+aSlot, 0, sizeof(G_fatfs[aSlot]));

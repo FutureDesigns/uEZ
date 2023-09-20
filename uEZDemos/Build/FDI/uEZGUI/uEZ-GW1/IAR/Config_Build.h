@@ -18,12 +18,6 @@
 #define PRINTF_ON_UART_2                    1 // primary uart pins 8/10 on  J6
 #define PRINTF_ON_UART_3                    0 // alternate uart pins 3/5 on J6
 
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY            1
-#define configUSE_TIMERS                    1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
-
 #ifdef NDEBUG
 #define UEZ_REGISTER              	        0
 #else

@@ -137,7 +137,7 @@ static void IBasicWebProcessConnection(
         if (!strncmp(receiveBuffer, "GET", 3)) {
             /* Update the hit count. */
             ulPageHits++;
-            sprintf(cPageHits, "%d", ulPageHits);
+            sprintf(cPageHits, "%u", ulPageHits);
             FuncTestPageHit();
 
             /* Write out the HTTP OK header. */

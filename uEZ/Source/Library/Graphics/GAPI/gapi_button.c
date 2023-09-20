@@ -46,7 +46,7 @@ DD.MM.YYYY OSO-UID Description
 07.15.2008 RTA-JMB Addition to GAPI
 ***********************************************************************************/
 #include <string.h>
-#include "GAPI.H"
+#include "gapi.h"
 
 /**********************************************************************************
 Function Name:   LCDBMPColorCopy

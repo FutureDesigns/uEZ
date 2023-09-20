@@ -110,8 +110,6 @@ extern int32_t MainTask(void);
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-static T_uezDevice G_stdout = 0;
-static T_uezDevice G_stdin = 0;
 T_uezTask G_mainTask;
 static TUInt8 G_ms0_driveNum = 0;
 static TUInt32 G_USBHostDriveNumber = 0xFF;
@@ -185,28 +183,29 @@ void UEZBSPDelayMS(uint32_t aMilliseconds)
  *      Initialize the external SDRAM.
  *---------------------------------------------------------------------------*/
 void UEZBSP_RAMInit(void)
-{
-    static const T_LPC43xx_SDRAM_Configuration sdramConfig_MT48LC2M32B2P = {
+{ // 7 ns is slowest speed rating supported/used. Driver only supports CAS 3. Some numbers would change for CAS 2.
+    static const T_LPC43xx_SDRAM_Configuration sdramConfig_IS42S32800J_6_IS42S32800D_7TL = {
             UEZBSP_SDRAM_BASE_ADDR,
             UEZBSP_SDRAM_SIZE,
-            SDRAM_CAS_2,
-            SDRAM_CAS_3,
+            SDRAM_CAS_3, // only 3 supported, this number ignored
+            SDRAM_RAS_3, // only 3 supported, this number ignored
             LPC43xx_SDRAM_CLKOUT1,
             SDRAM_CLOCK_FREQUENCY,
             64, // ms
-            4096,//8192,//15625,//8192, // cycles
-            SDRAM_CYCLES(20),
-            SDRAM_CYCLES(45),
-            SDRAM_CYCLES(70),
-            5,//SDRAM_CYCLES(18),
-            5,//SDRAM_CLOCKS(4),
-            SDRAM_CLOCKS(14),//(SDRAM_CYCLES(6) + SDRAM_CLOCKS(1)),
-            SDRAM_CYCLES(68),
-            SDRAM_CYCLES(68),
-            SDRAM_CYCLES(70),
-            SDRAM_CYCLES(14),
-            SDRAM_CLOCKS(2) };
-    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_MT48LC2M32B2P);
+            4096, // cycles
+            SDRAM_CYCLES(20), // tRP precharge to activate period - All used parts 18/20. 20 is a higher cycle number, so we slow down for that part
+            SDRAM_CYCLES(45), // tRAS min // Used parts 42/45. Same register value up to 49
+            SDRAM_CYCLES(70), // tXSR min // 69-78 = same cycles, no used parts list SREX. Original part (not available) used 67
+            SDRAM_CYCLES(20), // tAPR/tRCD Active Command to Read Command // 20+ = same cycles, no parts used < 18, slowed down for newer parts
+            SDRAM_CLOCKS(5), // tDAL Input Dat to ACT/REF (tCK units) // On existing parts this stays the same as long as CAS 3 is used.
+            SDRAM_CYCLES(14), // tDPL/tWR = write recovery time = tCK + 1(depends on rise time) // Used parts have less than <=14 cycles
+            SDRAM_CYCLES(68), // tRC Row Cycle Time or Command Period // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(68), // Refresh Cycle Time tRFC/tREF  // 59-68 are same same number, so some parts that are less have same regiser stting
+            SDRAM_CYCLES(70), // tXSR Exit Self-Refresh Time // 69-78 = same cycles.  Original part (not available) used 67
+            SDRAM_CYCLES(14), // tRRD Row active to Row Active (or command period) // no parts use > 19, so same register setting
+            SDRAM_CLOCKS(2) // tMRD Mode Register Set (to command) (tCK units) // Some parts are 14, but 16/2CK is worst case
+            };
+    LPC43xx_SDRAM_Init_32BitBus(&sdramConfig_IS42S32800J_6_IS42S32800D_7TL);
 
 #if CONFIG_MEMORY_TEST_ON_SDRAM
     MemoryTest(UEZBSP_SDRAM_BASE_ADDR, UEZBSP_SDRAM_SIZE);
@@ -1524,7 +1523,8 @@ void UEZPlatform_USBHost_Serial_Require(void)
     Stream_LPCUSBLib_SerialHost_Create("SerialHost", 1); // USB1
 }
 
-void UEZPlatform_Standard_Require(void)
+// Don't enable console anymore in minimal requires, so that we can use this for GUI only bootloader, etc.
+void UEZPlatform_Minimal_Require(void)
 {
     LPC43xx_GPIO0_Require();
     LPC43xx_GPIO1_Require();
@@ -1535,6 +1535,12 @@ void UEZPlatform_Standard_Require(void)
     LPC43xx_GPIO6_Require();
     LPC43xx_GPIO7_Require();
     LPC43xx_GPIOZ_Require();
+}
+
+void UEZPlatform_Standard_Require(void)
+{
+    UEZPlatform_Minimal_Require();
+    
     UEZPlatform_I2C0_Require();
     UEZPlatform_ADC0_6_Require();
     UEZPlatform_LED_Require();

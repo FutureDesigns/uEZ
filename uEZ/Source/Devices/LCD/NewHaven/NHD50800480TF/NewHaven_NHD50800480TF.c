@@ -3,6 +3,7 @@
  *-------------------------------------------------------------------------*
  * Description:
  *      HAL implementation of the NewHaven_NHD50800480TF.
+ * This LCD shipped on Rev 1.X of uEZGUI-4357-50WVN only.
  *-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
@@ -417,6 +418,8 @@ static T_uezError LCD_NHD50800480TF_SetBacklightLevel(void *aW, TUInt32 aLevel)
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD50800480TF_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -425,7 +428,7 @@ static T_uezError LCD_NHD50800480TF_SetBacklightLevel(void *aW, TUInt32 aLevel)
  * Inputs:
 *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
 *---------------------------------------------------------------------------*/
-static T_uezError LCD_NHD50800480TF_MSTimerStart(void *aW, float milliseconds){
+static T_uezError LCD_NHD50800480TF_MSTimerStart(void *aW, float milliseconds) {
   T_NHD50800480TFWorkspace *p = (T_NHD50800480TFWorkspace *)aW;
   T_uezError error = UEZ_ERROR_NONE;
   p->itimerDone = EFalse; // set to true when timer finishes
@@ -440,7 +443,10 @@ static T_uezError LCD_NHD50800480TF_MSTimerStart(void *aW, float milliseconds){
   }  
   return error;
 }
+#endif
 
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD50800480TF_TimerCallback
  *---------------------------------------------------------------------------*
@@ -450,11 +456,12 @@ static T_uezError LCD_NHD50800480TF_MSTimerStart(void *aW, float milliseconds){
  * Inputs:
  *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
  *---------------------------------------------------------------------------*/
-static void LCD_NHD50800480TF_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
+static void LCD_NHD50800480TF_TimerCallback(T_uezTimerCallback *aCallbackWorkspace) {
   T_NHD50800480TFWorkspace *p = aCallbackWorkspace->iData;
   p->itimerDone = ETrue;
-  UEZTimerClose(p->itimer);    
+  UEZTimerClose(p->itimer);
 }
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD50800480TF_On
@@ -471,12 +478,16 @@ static T_uezError LCD_NHD50800480TF_On(void *aW) {
       
     (*p->iLCDController)->On(p->iLCDController);
     if (p->iBacklight){
-      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {          
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {
          LCD_NHD50800480TF_MSTimerStart(p, 167.0); // minimum 167ms timer
          while (p->itimerDone == EFalse){;} // wait for timer before continuing
-         (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
-         LCD_NHD50800480TF_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
       }
+#endif
+       (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
+       LCD_NHD50800480TF_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
     }
     return UEZ_ERROR_NONE;
 }
@@ -496,10 +507,14 @@ static T_uezError LCD_NHD50800480TF_Off(void *aW) {
         
     if (p->iBacklight){
       (*p->iBacklight)->Off(p->iBacklight); // Turn off backlight
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+      UEZTaskDelay(167);
+#else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         LCD_NHD50800480TF_MSTimerStart(p, 167.0); // minimum 167ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
-      }   
+      }
+#endif
     }    
     (*p->iLCDController)->Off(p->iLCDController); // turn off LCD
     return UEZ_ERROR_NONE;
@@ -524,11 +539,15 @@ static T_uezError LCD_NHD50800480TF_Open(void *aW)
     T_uezError error = UEZ_ERROR_NONE;
     TUInt32 i;
     
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+  
+#else
     p->icallback.iTimer = p->itimer; // Setup callback information for timer
     p->icallback.iMatchRegister = 1;
     p->icallback.iTriggerSem = 0;
     p->icallback.iCallback = LCD_NHD50800480TF_TimerCallback;
     p->icallback.iData = p;
+#endif
 
     p->aNumOpen++;
     if (p->aNumOpen == 1) {

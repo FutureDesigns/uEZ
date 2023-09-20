@@ -59,7 +59,7 @@
 #define __RFBPROTO_H__
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     PACK_STRUCT_FIELD(TUInt16 x);
     PACK_STRUCT_FIELD(TUInt16 y);
     PACK_STRUCT_FIELD(TUInt16 w);
@@ -73,7 +73,7 @@ PACK_STRUCT_END
  * Structure used to specify pixel format.
  */
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
     PACK_STRUCT_FIELD(TUInt8 bitsPerPixel); /* 8,16,32 only */
     PACK_STRUCT_FIELD(TUInt8 depth); /* 8 to 32 */
     PACK_STRUCT_FIELD(TUInt8 bigEndian);
@@ -214,7 +214,7 @@ typedef char rfbProtocolVersionMsg[13]; /** allow extra byte for null */
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 shared);
 } PACK_STRUCT_STRUCT rfbClientInitMsg;
 PACK_STRUCT_END
@@ -230,7 +230,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt16 framebufferWidth);
         PACK_STRUCT_FIELD(TUInt16 framebufferHeight);
         PACK_STRUCT_FIELD(rfbPixelFormat format); /** the server's preferred pixel format */
@@ -307,7 +307,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbFramebufferUpdate */
         PACK_STRUCT_FIELD(TUInt8 pad);
         PACK_STRUCT_FIELD(TUInt16 nRects);
@@ -326,7 +326,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(rfbRectangle r);
         PACK_STRUCT_FIELD(TUInt32 encoding); /** one of the encoding types rfbEncoding... */
 } PACK_STRUCT_STRUCT rfbFramebufferUpdateRectHeader;
@@ -345,7 +345,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt16 srcX);
         PACK_STRUCT_FIELD(TUInt16 srcY);
 } PACK_STRUCT_STRUCT rfbCopyRect;
@@ -361,7 +361,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt32 nSubrects);
 } PACK_STRUCT_STRUCT rfbRREHeader;
 PACK_STRUCT_END
@@ -377,7 +377,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 x);
         PACK_STRUCT_FIELD(TUInt8 y);
         PACK_STRUCT_FIELD(TUInt8 w);
@@ -449,7 +449,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbSetColourMapEntries */
         PACK_STRUCT_FIELD(TUInt8 pad);
         PACK_STRUCT_FIELD(TUInt16 firstColour);
@@ -468,7 +468,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbBell */
 } PACK_STRUCT_STRUCT rfbBellMsg;
 PACK_STRUCT_END
@@ -480,7 +480,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbServerCutText */
         PACK_STRUCT_FIELD(TUInt8 pad1);
         PACK_STRUCT_FIELD(TUInt16 pad2);
@@ -498,7 +498,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbReSizeFrameBuffer */
         PACK_STRUCT_FIELD(TUInt8 pad1);
         PACK_STRUCT_FIELD(TUInt16 desktop_w); /** Desktop width */
@@ -536,7 +536,7 @@ typedef union {
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbSetPixelFormat */
         PACK_STRUCT_FIELD(TUInt8 pad1);
         PACK_STRUCT_FIELD(TUInt16 pad2);
@@ -552,7 +552,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbSetScaleFactor */
         PACK_STRUCT_FIELD(TUInt8 scale); /** Scale factor (positive non-zero integer) */
         PACK_STRUCT_FIELD(TUInt16 pad2);
@@ -569,7 +569,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbFixColourMapEntries */
         PACK_STRUCT_FIELD(TUInt8 pad);
         PACK_STRUCT_FIELD(TUInt16 firstColour);
@@ -588,7 +588,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbSetEncodings */
         PACK_STRUCT_FIELD(TUInt8 pad);
         PACK_STRUCT_FIELD(TUInt16 nEncodings);
@@ -605,7 +605,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbFramebufferUpdateRequest */
         PACK_STRUCT_FIELD(TUInt8 incremental);
         PACK_STRUCT_FIELD(TUInt16 x);
@@ -649,7 +649,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbKeyEvent */
         PACK_STRUCT_FIELD(TUInt8 down); /** true if down (press), false if up */
         PACK_STRUCT_FIELD(TUInt16 pad);
@@ -664,7 +664,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /** always rfbPointerEvent */
         PACK_STRUCT_FIELD(TUInt8 buttonMask); /** bits 0-7 are buttons 1-8, 0=up, 1=down */
         PACK_STRUCT_FIELD(TUInt16 x);
@@ -683,7 +683,7 @@ PACK_STRUCT_END
  */
 
 PACK_STRUCT_BEGIN
-typedef struct {
+typedef ATTR_IAR_PACKED struct {
         PACK_STRUCT_FIELD(TUInt8 type); /// always rfbClientCutText 
         PACK_STRUCT_FIELD(TUInt8 pad1);
         PACK_STRUCT_FIELD(TUInt16 pad2);

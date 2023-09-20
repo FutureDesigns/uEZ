@@ -49,6 +49,7 @@
  * Types:
  *-------------------------------------------------------------------------*/
 #include <stdint.h> /* for int types */
+#include <CMSIS/cmsis_compiler.h> /* for int types */
 
 #ifdef __cplusplus
 extern "C" {

@@ -537,7 +537,7 @@ ATLIBGS_MSG_ID_E AtLibGs_NCM_AutoConfig(uint32_t id, int32_t value)
 {
     char cmd[32];
 
-    sprintf(cmd, "AT+NCMAUTOCONF=" _F32_ "," _F32_ "\r\n", id, value);
+    sprintf(cmd, "AT+NCMAUTOCONF=" _FU32_ "," _F32_ "\r\n", id, value);
  
     return AtLibGs_CommandSendString(cmd);
 }
@@ -765,8 +765,9 @@ ATLIBGS_MSG_ID_E AtLibGs_GotoSTNDBy(
 {
     char cmd[100];
 
-    sprintf(cmd, "AT+PSSTBY=%s," _F32_ "," _F8_ "," _F8_ "\r\n", nsec, delay,
-            alarm1_Pol, alarm2_Pol);
+    sprintf(cmd, "AT+PSSTBY=%s," _FU32_ "," _FU8_ "," _FU8_ "\r\n", nsec, delay,
+            (uint32_t) alarm1_Pol, 
+            (uint32_t) alarm2_Pol);
 
     return AtLibGs_CommandSendString(cmd);
 }
@@ -1239,7 +1240,7 @@ ATLIBGS_MSG_ID_E AtLibGs_GetErrCount(uint32_t *errorCount)
     /* TODO: Parse commands here! */
     if ((rxMsgId == ATLIBGS_MSG_ID_OK) && AtLibGs_ParseIntoLines(MRBuffer,
             lines, 1)) {
-        sscanf(lines[0], _F32_, errorCount);
+        sscanf(lines[0], _FU32_, errorCount);
     }
 
     return rxMsgId;
@@ -4207,7 +4208,7 @@ ATLIBGS_MSG_ID_E AtLibGs_EnterDeepSleep(uint32_t milliseconds)
 {
     char cmd[30];
     /* TODO: Does this really take a number of miliseconds? */
-    sprintf(cmd, "AT+PSDPSLEEP=" _F32_ "\r\n", milliseconds);
+    sprintf(cmd, "AT+PSDPSLEEP=" _FU32_ "\r\n", milliseconds);
     return AtLibGs_CommandSendString(cmd);
 }
 
@@ -4766,7 +4767,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SNTPsync(
 {
     char cmd[30];
 
-    sprintf(cmd, "AT+NTIMESYNC=" _F8_ ",%s," _F8_ "," _F8_ "," _F32_ "\r\n",
+    sprintf(cmd, "AT+NTIMESYNC=" _F8_ ",%s," _F8_ "," _F8_ "," _FU32_ "\r\n",
             enable, ip, timeout, periodic, frequency);
 
     return AtLibGs_CommandSendString(cmd);
@@ -4798,7 +4799,7 @@ ATLIBGS_MSG_ID_E AtLibGs_SetSocketOptions(
 
     sprintf(
             cmd,
-            "AT+SETSOCKOPT=%c," _F16_ "," _F16_ "," _F32_ "," _F16_ "\r\n",
+            "AT+SETSOCKOPT=%c," _F16_ "," _F16_ "," _FU32_ "," _F16_ "\r\n",
             cid, type, param, value, length);
 
     return AtLibGs_CommandSendString(cmd);
@@ -4938,7 +4939,7 @@ ATLIBGS_MSG_ID_E AtLibGs_UnsolicitedTXRate(
     sprintf(
             cmd,
             "AT+UNSOLICITEDTX=" _F16_ "," _F16_ "," _F8_ "," _F8_ 
-			"," _F32_ ",%s,%s," _F16_ "\r\n",
+			"," _FU32_ ",%s,%s," _F16_ "\r\n",
             frame, seq, chan, rate, wmm, mac, bssid, len);
 
     return AtLibGs_CommandSendString(cmd);
@@ -5177,7 +5178,7 @@ ATLIBGS_MSG_ID_E AtLibGs_GetWebProvSettings(
         ATLIBGS_WEB_PROV_SETTINGS *wp,
         uint32_t timeout)
 {
-    ATLIBGS_MSG_ID_E rxMsgId;
+    ATLIBGS_MSG_ID_E rxMsgId = ATLIBGS_MSG_ID_NONE;
     char line[80 + 1];
     uint16_t len;
     uint8_t c;

@@ -888,6 +888,9 @@ const DEVICE_Flash Flash_Spansion_S29GL064N90_16Bit_Interface = {
     Flash_S29GL064N90_16Bit_QueryReg,
     Flash_S29GL064N90_16Bit_GetChipInfo,
     Flash_S29GL064N90_16Bit_GetBlockInfo,
+    0,
+    0,
+    0,
 } ;
 
 /*-------------------------------------------------------------------------*

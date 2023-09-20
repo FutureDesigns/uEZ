@@ -57,10 +57,10 @@ void BouncingLogoSS_Setup(
     TUInt32 aDisplayWidth,
     TUInt32 aDisplayHeight);
 
-void BouncingLogoSS_Start();
-void BouncingLogoSS_Update();
-void BouncingLogoSS_End();
-void BouncingLogoSS_Sleep();
+void BouncingLogoSS_Start(void);
+void BouncingLogoSS_Update(void);
+void BouncingLogoSS_End(void);
+void BouncingLogoSS_Sleep(void);
 
 #ifdef __cplusplus
 }

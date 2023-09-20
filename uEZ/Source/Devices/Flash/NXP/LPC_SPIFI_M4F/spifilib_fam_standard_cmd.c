@@ -77,7 +77,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
  * can be pre determined and space is at a premium.  To Reduce code / iRam requirements
  * change the SPIFI_DEVICE_ALL to 0 and change the desired device definition(s) to 1
  */
-#define SPIFI_DEVICE_ALL                1		/**< Enables all devices in family */
+#define SPIFI_DEVICE_ALL                0		/**< Enables all devices in family */
+// Untested QSPIs. Many of these may have wrong numbers.
 #define SPIFI_DEVICE_S25FL016K          0		/**< Enables Spansion S25FL016K device */
 #define SPIFI_DEVICE_S25FL032P          0		/**< Enables Spansion S25FL032P device */
 #define SPIFI_DEVICE_S25FL064P          0		/**< Enables Spansion S25FL064P device */
@@ -85,23 +86,28 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 #define SPIFI_DEVICE_S25FL129P_256K     0		/**< Enables Spansion S25FL129P (256K block) device */
 #define SPIFI_DEVICE_S25FL164K          0		/**< Enables Spansion S25FL164K device */
 #define SPIFI_DEVICE_S25FL256S_64K      0		/**< Enables Spansion S25FL256S (64K block) device */
-#define SPIFI_DEVICE_S25FL256S_256K     0		/**< Enables Spansion S25FL256S (256K block) device */
 #define SPIFI_DEVICE_S25FL512S          0		/**< Enables Spansion S25FL512S device */
 #define SPIFI_DEVICE_MX25L1635E         0		/**< Enables Macronix MX25L1635E device */
 #define SPIFI_DEVICE_MX25L3235E         0		/**< Enables Macronix MX25L3235E device */
 #define SPIFI_DEVICE_MX25L8035E         0		/**< Enables Macronix MX25L8035E device */
 #define SPIFI_DEVICE_MX25L6435E         0		/**< Enables Macronix MX25L6435E device */
-#define SPIFI_DEVICE_MX25L12835F        0       /**< Enables Macronix MX25L12835F device */
 #define SPIFI_DEVICE_W25Q32FV           0		/**< Enables Winbond W25Q32FV device */
 #define SPIFI_DEVICE_W25Q64FV           0		/**< Enables Winbond W25Q32V device */
 #define SPIFI_DEVICE_W25Q80BV           0		/**< Enables Winbond W25Q80BV device */
-
+// Supported QSPIs
+#define SPIFI_DEVICE_MX25L12833F        1       /**< Enables Macronix MX25L12833F device */
+#define SPIFI_DEVICE_MX25L12835F        1       /**< Enables Macronix MX25L12835F device */
+#define SPIFI_DEVICE_MX25L12845E        0       /**< Enables Macronix MX25L12845E device */ // Frequencies not supported unless clock is run much slower
+#define SPIFI_DEVICE_S25FL256S_256K     0		/**< Enables Spansion S25FL256S (256K block) device */
+#define SPIFI_DEVICE_S25FL128S_256K     0		/**< Enables Spansion S25FL256S (256K block) device */
+ 
 /* Required private data size for this family */
 #define PRVDATASIZE 0
 
 #define MAX_SINGLE_READ             16128
 
 /* Command definitions. Only used commands are defined. */
+// READ Command not supported or needed.
 #define CMD_0B_FAST_READ            0x0B		/**< Read Data bytes at Fast Speed */
 #define CMD_BB_DIOR                 0xBB		/**< Dual IORead (all dual except op code( */
 #define CMD_EB_QIOR                 0xEB		/**< Quad IORead (all quad except op code) */
@@ -112,7 +118,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 #define CMD_20_P4E                  0x20		/**< 4 KB Parameter Sector Erase */
 #define CMD_C7_BE                   0xC7		/**< Bulk Erase */
 #define CMD_D8_SE                   0xD8		/**< Sector Erase */
-#define CMD_DC_SE					0xDC		/**< Sector erase (4B addr) */
+#define CMD_DC_SE		            0xDC		/**< Sector erase (4B addr) */
 #define CMD_02_PP                   0x02		/**< Page Programming */
 #define CMD_12_PP                   0x12		/**< Page Programming (4B addr) */
 #define CMD_05_RDSR1                0x05		/**< Read Status Register 1 */
@@ -124,6 +130,16 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 #define CMD_34_QPP                  0x34		/**< Quad Page Programming (4B addr) */
 #define CMD_38_QPP_MACRONIX         0x38		/**< Quad Page Programming for 25L3235E */
 
+// OTP related
+#define CMD_2B_RDSCUR               0x2B        /**< Read Security Register */
+#define CMD_2F_WRSCUR               0x2F        /**< Write Security Register */
+// Macronix OTP
+#define CMD_B1_ENSO                 0xB1        /**< Enable OTP Region */
+#define CMD_C1_EXSO                 0xC1        /**< Disable OTP Region */
+// Infineon OTP
+// TODO
+
+
 /* Common status register definitions */
 /* Status Register Write Disable,
    1 = Protects when W# is low,
@@ -132,7 +148,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 
 /* Block protect bits,
    Protects upper half of address range in 5 sizes */
-#define STATUS_BPMASK                 (7 << 2)
+#define STATUS_BPMASK                 (0xF << 2)  // BP3-BP0
 /* Write Enable Latch,
    1 = Device accepts Write Status Register, program, or erase commands,
    0 = Ignores Write Status Register, program, or erase commands */
@@ -162,6 +178,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												SPIFI_DEVICE_S25FL129P_64K | \
 												SPIFI_DEVICE_S25FL129P_256K | \
 												SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                                SPIFI_DEVICE_S25FL128S_256K | \
 												SPIFI_DEVICE_S25FL256S_256K | \
 												SPIFI_DEVICE_S25FL512S)
 
@@ -173,6 +190,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												 SPIFI_DEVICE_MX25L3235E | \
 												 SPIFI_DEVICE_MX25L8035E | \
 												 SPIFI_DEVICE_MX25L6435E | \
+                                                                                                 SPIFI_DEVICE_MX25L12845E| \
+												 SPIFI_DEVICE_MX25L12833F| \
 												 SPIFI_DEVICE_MX25L12835F)
 
 #define NEED_spifiDeviceDataGetStatusW25Q80BV (SPIFI_DEVICE_ALL | \
@@ -188,6 +207,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 											 SPIFI_DEVICE_MX25L3235E | \
 											 SPIFI_DEVICE_MX25L8035E | \
 											 SPIFI_DEVICE_MX25L6435E | \
+                                                                                         SPIFI_DEVICE_MX25L12845E| \
+                                                                                         SPIFI_DEVICE_MX25L12833F | \
 											 SPIFI_DEVICE_MX25L12835F)
 
 #define NEED_spifiDeviceDataClearStatusS25FL032P (SPIFI_DEVICE_ALL | \
@@ -198,6 +219,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												  SPIFI_DEVICE_S25FL129P_256K |	\
 												  SPIFI_DEVICE_S25FL164K | \
 												  SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                                  SPIFI_DEVICE_S25FL128S_256K | \
 												  SPIFI_DEVICE_S25FL256S_256K |	\
 												  SPIFI_DEVICE_S25FL512S)
 
@@ -208,6 +230,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												SPIFI_DEVICE_S25FL129P_64K | \
 												SPIFI_DEVICE_S25FL129P_256K | \
 												SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                                SPIFI_DEVICE_S25FL128S_256K | \
 												SPIFI_DEVICE_S25FL256S_256K | \
 												SPIFI_DEVICE_S25FL512S | \
 												SPIFI_DEVICE_W25Q80BV |	\
@@ -222,6 +245,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												 SPIFI_DEVICE_MX25L3235E | \
 												 SPIFI_DEVICE_MX25L8035E | \
 												 SPIFI_DEVICE_MX25L6435E | \
+                                                                                                 SPIFI_DEVICE_MX25L12845E| \
+												 SPIFI_DEVICE_MX25L12833F| \
 												 SPIFI_DEVICE_MX25L12835F)
 
 #define NEED_spifiDeviceDataSetOptsQuadModeBit6 (SPIFI_DEVICE_ALL |	\
@@ -229,6 +254,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												 SPIFI_DEVICE_MX25L3235E | \
 												 SPIFI_DEVICE_MX25L8035E | \
 												 SPIFI_DEVICE_MX25L6435E | \
+                                                                                                 SPIFI_DEVICE_MX25L12845E| \
+												 SPIFI_DEVICE_MX25L12833F| \
 												 SPIFI_DEVICE_MX25L12835F)
 
 #define NEED_spifiDeviceDataSetOptsQuadModeBit9 (SPIFI_DEVICE_ALL |	\
@@ -239,6 +266,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												 SPIFI_DEVICE_S25FL129P_256K | \
 												 SPIFI_DEVICE_S25FL164K | \
 												 SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                                 SPIFI_DEVICE_S25FL128S_256K | \
 												 SPIFI_DEVICE_S25FL256S_256K | \
 												 SPIFI_DEVICE_S25FL512S | \
 												 SPIFI_DEVICE_W25Q80BV | \
@@ -252,6 +280,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 										SPIFI_DEVICE_S25FL129P_64K | \
 										SPIFI_DEVICE_S25FL129P_256K | \
 										SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                SPIFI_DEVICE_S25FL128S_256K | \
 										SPIFI_DEVICE_S25FL256S_256K | \
 										SPIFI_DEVICE_S25FL512S | \
 										SPIFI_DEVICE_W25Q80BV |	\
@@ -261,6 +290,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 										SPIFI_DEVICE_MX25L3235E | \
 										SPIFI_DEVICE_MX25L8035E | \
 										SPIFI_DEVICE_MX25L6435E | \
+                                                                                SPIFI_DEVICE_MX25L12845E| \
+                                                                                SPIFI_DEVICE_MX25L12833F| \
 										SPIFI_DEVICE_MX25L12835F)
 
 #define NEED_spifiDeviceDataInitDeinitS25FL164K (SPIFI_DEVICE_ALL |	\
@@ -268,6 +299,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 
 #define NEED_spifiDevice4BInitReadCommand (SPIFI_DEVICE_ALL |	\
 												SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                                SPIFI_DEVICE_S25FL128S_256K | \
 												SPIFI_DEVICE_S25FL256S_256K | \
 												SPIFI_DEVICE_S25FL512S)
 
@@ -285,6 +317,8 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 										 SPIFI_DEVICE_MX25L3235E | \
 										 SPIFI_DEVICE_MX25L8035E | \
 										 SPIFI_DEVICE_MX25L6435E | \
+                                                                                 SPIFI_DEVICE_MX25L12845E| \
+										 SPIFI_DEVICE_MX25L12833F| \
 										 SPIFI_DEVICE_MX25L12835F)
 
 #define NEED_spifiDeviceInitWriteCommand (SPIFI_DEVICE_ALL |	\
@@ -301,6 +335,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 
 #define NEED_spifiDevice4BInitWriteCommand (SPIFI_DEVICE_ALL |	\
 											SPIFI_DEVICE_S25FL256S_64K | \
+                                                                                        SPIFI_DEVICE_S25FL128S_256K | \
 											SPIFI_DEVICE_S25FL256S_256K |	\
 											SPIFI_DEVICE_S25FL512S)
 
@@ -308,7 +343,19 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												  SPIFI_DEVICE_MX25L1635E |	\
 												  SPIFI_DEVICE_MX25L3235E |	\
 												  SPIFI_DEVICE_MX25L6435E | \
+                                                                                                  SPIFI_DEVICE_MX25L12845E| \
+ 												  SPIFI_DEVICE_MX25L12833F| \
 												  SPIFI_DEVICE_MX25L12835F)
+
+                                                                                                  
+#define NEED_spifiDeviceEnterOtpCommandMacronix (SPIFI_DEVICE_ALL |	\
+                                                                                                  SPIFI_DEVICE_MX25L12845E| \
+ 												  SPIFI_DEVICE_MX25L12833F| \
+												  SPIFI_DEVICE_MX25L12835F)
+#define NEED_spifiDevicExitOtpCommandMacronix (SPIFI_DEVICE_ALL |	\
+                                                                                                  SPIFI_DEVICE_MX25L12845E| \
+                                                                                                  SPIFI_DEVICE_MX25L12833F| \
+                                                                                                  SPIFI_DEVICE_MX25L12835F)
 
 /*****************************************************************************
  * Public types/enumerations/variables
@@ -793,6 +840,15 @@ static void spifiDeviceInitWriteCommandMacronix(const SPIFI_HANDLE_T *pHandle, u
 }
 
 #endif
+
+
+#if  NEED_spifiDeviceEnterOtpCommandMacronix
+
+#endif
+#if  NEED_spifiDevicExitOtpCommandMacronix 
+
+#endif
+
 
 /* Function to indicate configuration error */
 static void spifiDeviceFxError(void)
@@ -1476,13 +1532,48 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 		spifiDevRegister(&devFamily, &data);	/* Register the new device */
 	}
 	#endif
-	#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_S25FL256S_256K
+	#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_S25FL128S_256K  // NOT TESTED YET in this driver!!!
+	/* Add support for S25FL256S 256K Sector */
+	{
+		static const SPIFI_DEVICE_DATA_T pData = {
+			"S25FL128S 256kSec",
+			{{0x01, 0x20, 0x18}, 2, {0x4D, 0x0}},	/* JEDEC ID, extCount, ext data  */
+			(SPIFI_CAP_4BYTE_ADDR | SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_FULLLOCK
+                        | SPIFI_CAP_NOBLOCK),
+			64,						/* # of blocks */
+			0x40000,				/* block size */
+			0,						/* # of sub-blocks (Does NOT support full sub-block erase) */
+			0,						/* sub-block size */
+			256,					/* page size */
+			MAX_SINGLE_READ,					/* max single read bytes */
+			80,				/* max clock rate in MHz */
+			50,				/* max read clock rate in MHz */
+			80,				/* max high speed read clock rate in MHz */
+			104,				/* max program clock rate in MHz */
+			80,				/* max high speed program clock rate in MHz */
+			FX_spifiDeviceDataInitDeinit,	/* (Fx Id) use generic deviceInit / deInit */
+			FX_spifiDeviceDataClearStatusS25FL032P,	/* (Fx Id) has persistent bits in status register */
+			FX_spifiDeviceDataGetStatusS25FL032P,	/*  (Fx Id) getStatus */
+			FX_spifiDeviceDataSetStatusS25FL032P,	/* (Fx Id) setStatus */
+			FX_spifiDeviceDataSetOptsQuadModeBit9,	/* (Fx Id) to set/clr options */
+			FX_spifiDevice4BInitReadCommand,	/* (Fx Id) to get memoryMode Cmd */
+			FX_spifiDevice4BInitWriteCommand	/* (Fx Id) to get program Cmd */
+		};
+		static SPIFI_DEV_NODE_T data;			/* Create persistent node */
+
+		data.pDevData = &pData;					/* save the data in the node */
+		spifiDevRegister(&devFamily, &data);	/* Register the new device */
+	}
+	#endif
+
+	#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_S25FL256S_256K  // NOT TESTED YET in this driver!!!
 	/* Add support for S25FL256S 256K Sector */
 	{
 		static const SPIFI_DEVICE_DATA_T pData = {
 			"S25FL256S 256kSec",
 			{{0x01, 0x02, 0x19}, 2, {0x4D, 0x0}},	/* JEDEC ID, extCount, ext data  */
-			(SPIFI_CAP_4BYTE_ADDR | SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_FULLLOCK | SPIFI_CAP_NOBLOCK),
+			(SPIFI_CAP_4BYTE_ADDR | SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_FULLLOCK 
+                        | SPIFI_CAP_NOBLOCK),
 			128,						/* # of blocks */
 			0x40000,				/* block size */
 			0,						/* # of sub-blocks (Does NOT support full sub-block erase) */
@@ -1490,7 +1581,7 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 			256,					/* page size */
 			MAX_SINGLE_READ,					/* max single read bytes */
 			80,				/* max clock rate in MHz */
-			104,				/* max read clock rate in MHz */
+			50,				/* max read clock rate in MHz */
 			80,				/* max high speed read clock rate in MHz */
 			104,				/* max program clock rate in MHz */
 			80,				/* max high speed program clock rate in MHz */
@@ -1842,9 +1933,9 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 			(SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_NOBLOCK |
 			 SPIFI_CAP_SUBBLKERASE),																						/* capabilities */
 			32,						/* # of blocks */
-			0x10000,				/* block size */
+			(64*1024*8),				/* block size */
 			512,					/* # of sub-blocks */
-			0x1000,					/* sub-block size */
+			(4*1024*8),					/* sub-block size */
 			256,					/* page size */
 			MAX_SINGLE_READ,		/* max single read bytes */
 			80,				/* max clock rate in MHz */
@@ -1867,24 +1958,90 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 	}
 	#endif
 
-#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_MX25L12835F
+#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_MX25L12845E // NOT TESTED YET in this driver!!!
+	{ // Note that this this part share the same 4READ command but not the quad read command. We only have 4READ in this driver! This part may have different RDSCUR def bits.
+        static const SPIFI_DEVICE_DATA_T pData = {
+            "MX25L12845F",
+            {{0xC2, 0x20, 0x18}, 0, {0}},   /* JEDEC ID, extCount, ext data  */
+            (SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_NOBLOCK |
+             SPIFI_CAP_SUBBLKERASE | SPIFI_CAP_ENSO_EXSO),                       /* capabilities */
+            256,                    /* # of blocks */
+            0x10000,                /* block size */
+            4096,                   /* # of sub-blocks */
+            4096,                   /* sub-block size */
+            256,                    /* page size */
+            MAX_SINGLE_READ,        /* max single read bytes */
+            104,                    /* max clock rate in MHz */ // frequencies based on default dummy cycle numbers for part for each mode
+            50,                    /* max read clock rate in MHz */ // fR rate
+            50,                    /* max high speed read clock rate in MHz */ // fQ frequency max for both 4READ and QREAD
+            20,                    /* max program clock rate in MHz */ //Limit this to slowest read rate or slower such as SEGGER using 30MHz or less
+            20,                    /* max high speed program clock rate in MHz */
+            FX_spifiDeviceDataInitDeinit,   /* (Fx Id) use generic deviceInit / deInit */
+            FX_spifiDeviceDataClearStatusNone,      /* (Fx Id) no persistent status */
+            FX_spifiDeviceDataGetStatusMX25L3235E,  /* (Fx Id) getStatus function */
+            FX_spifiDeviceDataSetStatusMX25L3235E,  /* (Fx Id) setStatus function */
+            FX_spifiDeviceDataSetOptsQuadModeBit6,  /* (Fx Id) to set/clr options */
+            FX_spifiDeviceInitReadCommand,  /* (Fx Id) to get memoryMode Cmd */
+            FX_spifiDeviceInitWriteCommandMacronix  /* (Fx Id) to get program Cmd */
+        };
+        static SPIFI_DEV_NODE_T data;           /* Create persistent node */
+
+        data.pDevData = &pData;                 /* save the data in the node */
+        spifiDevRegister(&devFamily, &data);    /* Register the new device */
+	}
+#endif     
+        // Both Macronix parts support same frequencies. We don't support normal READ commanad, so we can run all other commands up to 84MHz even if there is no clock adjustment mechanism.
+#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_MX25L12833F  // NOT TESTED YET in this driver!!! // Newer part to replace MX25L12835F
+	{
+        static const SPIFI_DEVICE_DATA_T pData = {
+            "MX25L12833F",
+            {{0xC2, 0x20, 0x18}, 0, {0}},   /* JEDEC ID, extCount, ext data  */
+            (SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_NOBLOCK |
+             SPIFI_CAP_SUBBLKERASE | SPIFI_CAP_ENSO_EXSO),                       /* capabilities */
+            256,                    /* # of blocks */
+            0x10000,                /* block size */
+            4096,                   /* # of sub-blocks */
+            4096,                   /* sub-block size */
+            256,                    /* page size */
+            MAX_SINGLE_READ,        /* max single read bytes */
+            133,                    /* max clock rate in MHz */ // frequencies based on default dummy cycle numbers for part for each mode
+            50,                    /* max read clock rate in MHz */ // fR rate
+            84,                    /* max high speed read clock rate in MHz */ // fQ frequency max for both 4READ and QREAD
+            50,                    /* max program clock rate in MHz */ //Limit this to slowest read rate or slower such as SEGGER using 30MHz or less
+            50,                    /* max high speed program clock rate in MHz */
+            FX_spifiDeviceDataInitDeinit,   /* (Fx Id) use generic deviceInit / deInit */
+            FX_spifiDeviceDataClearStatusNone,      /* (Fx Id) no persistent status */
+            FX_spifiDeviceDataGetStatusMX25L3235E,  /* (Fx Id) getStatus function */
+            FX_spifiDeviceDataSetStatusMX25L3235E,  /* (Fx Id) setStatus function */
+            FX_spifiDeviceDataSetOptsQuadModeBit6,  /* (Fx Id) to set/clr options */
+            FX_spifiDeviceInitReadCommand,  /* (Fx Id) to get memoryMode Cmd */
+            FX_spifiDeviceInitWriteCommandMacronix  /* (Fx Id) to get program Cmd */
+        };
+        static SPIFI_DEV_NODE_T data;           /* Create persistent node */
+
+        data.pDevData = &pData;                 /* save the data in the node */
+        spifiDevRegister(&devFamily, &data);    /* Register the new device */
+	}
+#endif
+
+#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_MX25L12835F // Normal part that ships on uEZGUIs
 	{
         static const SPIFI_DEVICE_DATA_T pData = {
             "MX25L12835F",
             {{0xC2, 0x20, 0x18}, 0, {0}},   /* JEDEC ID, extCount, ext data  */
             (SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_NOBLOCK |
-             SPIFI_CAP_SUBBLKERASE),                                                                                        /* capabilities */
+             SPIFI_CAP_SUBBLKERASE | SPIFI_CAP_ENSO_EXSO),                     /* capabilities */
             256,                    /* # of blocks */
             0x10000,                /* block size */
-            512,                    /* # of sub-blocks */
-            0x1000,                 /* sub-block size */
+            4096,                   /* # of sub-blocks */
+            4096,                   /* sub-block size */
             256,                    /* page size */
             MAX_SINGLE_READ,        /* max single read bytes */
-            133,                    /* max clock rate in MHz */
-            104,                    /* max read clock rate in MHz */
-            104,                    /* max high speed read clock rate in MHz */
-            104,                    /* max program clock rate in MHz */
-            104,                    /* max high speed program clock rate in MHz */
+            133,                    /* max clock rate in MHz */ // frequencies based on default dummy cycle numbers for part for each mode
+            50,                    /* max read clock rate in MHz */ // fR rate
+            84,                    /* max high speed read clock rate in MHz */ // fQ frequency max for both 4READ and QREAD
+            50,                    /* max program clock rate in MHz */ //Limit this to slowest read rate or slower such as SEGGER using 30MHz or less
+            50,                    /* max high speed program clock rate in MHz */
             FX_spifiDeviceDataInitDeinit,   /* (Fx Id) use generic deviceInit / deInit */
             FX_spifiDeviceDataClearStatusNone,      /* (Fx Id) no persistent status */
             FX_spifiDeviceDataGetStatusMX25L3235E,  /* (Fx Id) getStatus function */

@@ -103,6 +103,11 @@ int MainTask(void)
 #endif
 #endif
      
+    Storage_PrintInfo(1, EFalse);
+#if RENAME_INI
+    UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
+#endif
+
      printf("\f" PROJECT_NAME " " VERSION_AS_TEXT "\n\n"); // clear serial screen and put up banner
 
      // Load the settings from non-volatile memory

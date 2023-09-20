@@ -68,16 +68,16 @@ T_uezError UEZDACWAVConfig(const char* aTimer);
 T_uezError UEZDACWAVPlay(char* aFileName, wavFileHeader *aHeader);
 T_uezError UEZDACWAVPlayBuffer(TUInt8 *aBuffer, TUInt32 aSize);
 T_uezError UEZDACWAVPlayPause(TBool aBool);
-T_uezError UEZDACWAVStop();
+T_uezError UEZDACWAVStop(void);
 //Sets the volume changing the data not adjusting the amp
 void UEZDACWaveSetVolume(TUInt16 aVolume);
 
-TBool UEZDACWAVGetStatus();
+TBool UEZDACWAVGetStatus(void);
 TUInt32 UEZDACWAVGetSamplePos(void);
 TBool UEZDACWAVIsDone(void);
 
 //Clean up, should only be called if driver is not need any more
-void UEZDACWAVCleanUp();
+void UEZDACWAVCleanUp(void);
 
 #ifdef __cplusplus
 }

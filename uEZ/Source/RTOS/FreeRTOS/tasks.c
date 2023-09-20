@@ -39,6 +39,7 @@
 #include "timers.h"
 #include "stack_macros.h"
 #include "FreeRTOSConfig.h"
+#include "uEZMemory.h"
 
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
  * because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
@@ -372,7 +373,8 @@ PRIVILEGED_DATA static List_t xPendingReadyList;                         /*< Tas
 PRIVILEGED_DATA static volatile UBaseType_t uxCurrentNumberOfTasks = ( UBaseType_t ) 0U;
 PRIVILEGED_DATA static volatile TickType_t xTickCount = ( TickType_t ) configINITIAL_TICK_COUNT;
 PRIVILEGED_DATA static volatile UBaseType_t uxTopReadyPriority = tskIDLE_PRIORITY;
-PRIVILEGED_DATA static volatile BaseType_t xSchedulerRunning = pdFALSE;
+//PRIVILEGED_DATA static volatile BaseType_t xSchedulerRunning = pdFALSE;
+UEZ_PUT_SECTION(".data", PRIVILEGED_DATA static volatile BaseType_t xSchedulerRunning = pdFALSE);
 PRIVILEGED_DATA static volatile TickType_t xPendedTicks = ( TickType_t ) 0U;
 PRIVILEGED_DATA static volatile BaseType_t xYieldPending = pdFALSE;
 PRIVILEGED_DATA static volatile BaseType_t xNumOfOverflows = ( BaseType_t ) 0;

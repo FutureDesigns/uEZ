@@ -33,12 +33,6 @@
 #include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
 #include <Source/Devices/CRC/Generic/CRC_Generic.h>
-#include <Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h>
-#include <Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#if UEZ_ENABLE_AUDIO_CODEC
-#include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
-#endif
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
 #include <Source/Devices/Button/NXP/PCA9551/Button_PCA9551.h>
 #include <Source/Devices/CRC/Software/CRC_Software.h>
@@ -51,14 +45,10 @@
 #include <Source/Devices/GPDMA/Generic/Generic_GPDMA.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
-#include <Source/Devices/I2S/Generic/Generic_I2S.h>
-#include <Source/Devices/LCD/Innolux/AT070TN84/Innolux_AT070TN84.h>
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
 #include <Source/Devices/MassStorage/LPCUSBLib/LPCUSBLib_MS.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SD_MMC.h>
 #include <Source/Devices/Stream/LPCUSBLib/SerialHost/Stream_LPCUSBLib_SerialHost.h>
-#include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
-#include <Source/Devices/Network/lwIP/Network_lwIP.h>
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
@@ -67,19 +57,8 @@
 #include <Source/Devices/Serial/LPCUSBLib/SerialHost_FTDI/Stream_LPCUSBLib_SerialHost_FTDI.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
-#include <Source/Devices/Timer/Generic/Timer_Generic.h>
-#include <Source/Devices/ToneGenerator/Generic/Timer/ToneGenerator_Generic_Timer.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
 #include <Source/Devices/Touchscreen/Newhaven/FT5306DE4/FT5306DE4TouchScreen.h>
-//#include <Source/Devices/USBDevice/NXP/LPC43xx/LPC43xx_USBDevice.h>
-#include <Source/Devices/USBHost/Generic/Generic_USBHost.h>
-#include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
-#include <Source/Processor/NXP/LPC43xx/LPC43xx_RTC.h>
-#include <Source/Library/Web/BasicWeb/BasicWEB.h>
-#include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
-#include <Source/Library/Graphics/SWIM/lpc_swim.h>
-#include <Source/Library/Memory/MemoryTest/MemoryTest.h>
-#include <Source/Library/StreamIO/StdInOut/StdInOut.h>
 #include <Source/Processor/NXP/LPC43xx/uEZProcessor_LPC43xx.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_ADCBank.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_DAC.h>
@@ -106,7 +85,6 @@
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
 #include <uEZI2C.h>
-#include <uEZNetwork.h>
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
@@ -128,113 +106,87 @@
 /* Test pins. See P:\uEZGUI\uEZGUI-4357-50WVN\FCT\...\DOC\uEZGUI-4357-50WVN FCT Loopback Test Debugging Reference.xlsx */
 const T_uezGPIOPortPin g_loopback_pins_A[LOOPBACK_TEST_NUM_PINS_A] =
 {
-    /* J6 Pins */
-    // GPIO_P5_4,       // Pin 2			// Not connected to anything when using EXPTest
-    // GPIO_P5_3,       // Pin 3            // Connected to DNL MOD1 Xbee Socket
-    GPIO_P4_12,         // Pin 4    (0)
-    GPIO_P3_8,          // Pin 5    (1)
-    GPIO_P6_2,          // Pin 6    (2)
-    GPIO_P6_1,          // Pin 7    (3)
-    GPIO_P6_13,         // Pin 8    (4)
-    GPIO_P6_12,         // Pin 9    (5)
-    // GPIO_NONE,       // Pin 11           // Not a GPIO
-    // GPIO_NONE,       // Pin 12           // Not a GPIO
-    // GPIO_P5_5,       // Pin 13           // Not connected to anything when using EXPTest
-    GPIO_P4_11,         // Pin 14   (6)
-    GPIO_P5_18,         // Pin 15   (7)
-    GPIO_P4_14,         // Pin 16   (8)
-    // GPIO_P4_13,      // Pin 17           // Not connected to anything when using EXPTest
-    // GPIO_NONE,       // Pin 18           // Not a GPIO
-    GPIO_P5_9,          // Pin 19   (9)
-    // GPIO_P5_8,       // Pin 20           // Not connected to anything when using EXPTest
-    // GPIO_NONE,       // Pin 21           // Not a GPIO
-    // bGPIO_P2_4,      // Pin 25           // Connected to U24 ESD array    
-    GPIO_P2_1,          // Pin 26   (10)
-    GPIO_P0_12,         // Pin 27   (11)
-    GPIO_P6_0,          // Pin 28   (12)
-    // GPIO_NONE,       // Pin 30           // Not a GPIO
-    // GPIO_P6_8,       // Pin 31           // Not connected to anything when using EXPTest
-    GPIO_P0_0,          // Pin 33   (13)
-    GPIO_P0_2,          // Pin 34   (14)
-    GPIO_P0_3,          // Pin 35   (15)
-    GPIO_P0_1,          // Pin 36   (16)
-    GPIO_P0_15,         // Pin 37   (17)
-    GPIO_P0_13,         // Pin 38   (18)
-    // GPIO_P7_24,      // Pin 42 			// Used by serial port
-                                
-    /* J5 Pins */               
-    // GPIO_P6_30,      // Pin 2            // Not connected to anything when using EXPTest
-    // GPIO_P4_10,      // Pin 3            // Not connected to anything when using EXPTest
-    GPIO_P6_28,         // Pin 4    (19)
-    // GPIO_P6_27,      // Pin 5            // Not connected to anything when using EXPTest
-    // GPIO_P6_26,      // Pin 6            // Not connected to anything when using EXPTest
-    // GPIO_P6_25,      // Pin 7            // Not connected to anything when using EXPTest
-    GPIO_P6_24,         // Pin 8    (20)
-    GPIO_P5_17,         // Pin 9    (21)
-    GPIO_P4_15,         // Pin 10   (22)
-    // GPIO_P4_9,       // Pin 11           // Not a GPIO
-    // GPIO_P4_8,       // Pin 12           // Not a GPIO
-    GPIO_P3_13,         // Pin 15   (23)
-    GPIO_P3_12,         // Pin 16   (24)
-    // GPIO_P7_22,      // Pin 17           // Not connected to anything when using EXPTest
+   GPIO_P5_3,
+   GPIO_P4_12,
+   GPIO_P3_8,
+   GPIO_P6_2,
+   GPIO_P6_1,
+   GPIO_P6_13,
+   GPIO_P6_12,
+   GPIO_P5_5,
+   GPIO_P4_11,
+   GPIO_P5_18,
+   GPIO_P4_14,
+   GPIO_P5_9,
+   GPIO_P2_4,
+   GPIO_P2_1,
+   GPIO_P0_12,
+   GPIO_P6_0,
+   GPIO_P0_0,
+   GPIO_P0_2,
+   GPIO_P0_3,
+   GPIO_P0_1,
+   GPIO_P0_15,
+   GPIO_P0_13,
+   GPIO_P6_30,
+   GPIO_P4_10,
+   GPIO_P6_28,
+   GPIO_P6_27,
+   GPIO_P6_26,
+   GPIO_P6_25,
+   GPIO_P6_24,
+   GPIO_P5_17,
+   GPIO_P4_15,
+   GPIO_P4_9,
+   GPIO_P4_8,
+   GPIO_P3_13,
+   GPIO_P3_12,
+   GPIO_P7_22
 };
 
 /* Test pin connectivity (1 = Pins are connected)*/
 const uint8_t g_loopback_connected_A[LOOPBACK_TEST_NUM_PINS_A][LOOPBACK_TEST_NUM_PINS_A] =
 {
-    /* J6 Pins */                                                                                                                   /* J5 Pins */
-  //{  1, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   1,          /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-  //{  0, 1,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 1,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-    {/*0, 0,*/ 1, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 1, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 1, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 1, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 1, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 1, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 1, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 1, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 1, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 1, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 1, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 1, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   1, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 1,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 1, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   1, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 1,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 1,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 1, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 1, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 1, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 1, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 1, /*0, 0,*/ 1, /*0, 0, 1,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   1, 0,   0,   0, 1, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 1,   0,   1, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 1, /*0, 0,*/ 1, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 1,   0,   1, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   1, 0,   0,   0, 1, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 1,   0, 0,   0,   0, 0, 1,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 1, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 1, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 1, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 1, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 1,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 1,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 1, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 1, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   1, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   1, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 1,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 1, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 1, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 1, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 1, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 1, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 1, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 1, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 1, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 1, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 1, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 1, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 1, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, /*0*/},
-  //{  1, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   1,            0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   0  },
-                                                                                                                                    
-    /* J5 Pins */                                                                                                                   
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            1, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   1  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 1,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 1,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 1, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 1, 0, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   1, 0, 0,   0, 0, 0,   0, 1,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 1, 0,   0, 0, 0,   1, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 0, 1,   0, 0, 1,   0, 0,   0, 0,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 1, 1, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 0,*/ 1, 1, 0, /*0, 0,*/ 0, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 0, /*0, 0, 1,*/ 0, 0, 1, /*0, 0,*/ 0, 0, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   0, 1, 0,   0, 0, 0,   1, 0,   0, 0,   0  },
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            0, 0,   0,   1, 0, 0,   0, 0, 0,   0, 1,   0, 0,   0  },
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 0,*/ 1, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 1, 0, /*0*/},
-    {/*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 0, 0, 0, 0, 0, /*0,*/        /*0, 1,*/ 0, /*0, 0, 0,*/ 0, 0, 0, /*0, 0,*/ 0, 1, /*0*/},
-  //{  0, 0,   0, 0, 0, 0, 0, 0,   0, 0, 0,   0, 0, 0,   0, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0, 0, 0, 0, 0,   0,            1, 0,   0,   0, 0, 0,   0, 0, 0,   0, 0,   0, 0,   1  },
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 };
 
 const T_uezGPIOPortPin g_loopback_pins_B[LOOPBACK_TEST_NUM_PINS_B] =
-{   
+{
     /* J11 Pins */
     GPIO_P7_16,     // Pin 1    (0)
     GPIO_P7_18,     // Pin 2    (1)
@@ -383,149 +335,63 @@ const uint8_t g_loopback_connected_C[LOOPBACK_TEST_NUM_PINS_C][LOOPBACK_TEST_NUM
     // Skip USB_VBUS, DM, DP not GPIOs
     // Skip UART pins for console
 
-    currentPortPin = GPIO_P7_4; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_13; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_15; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_1; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_3; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_2; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_0; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P6_8; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
+    T_uezGPIOPortPin currentPorrtPinArr[] = {
+        GPIO_P7_4, //0  - J6 pin 40 - P_ func 4
+        GPIO_P0_13,//1  - J6 pin 38 - P_ func 0
+        GPIO_P0_15,//2  - J6 pin 37 - P_ func 0
+        GPIO_P0_1, //3  - J6 pin 36 - P_ func 0
+        GPIO_P0_3, //4  - J6 pin 35 - P_ func 0
+        GPIO_P0_2, //5  - J6 pin 34 - P_ func 0
+        GPIO_P0_0, //6  - J6 pin 33 - P_ func 0
+        GPIO_P6_8, //7  - J6 pin 31 - P_ func 4
+        GPIO_P6_0, //8  - J6 pin 28 - P_ func 4
+        GPIO_P0_12,//9  - J6 pin 27 - P_ func 0
+        GPIO_P2_1, //10 - J6 pin 26 - P_ func 4
+        GPIO_P2_4, //11 - J6 pin 25 - P_ func 0
+        GPIO_P5_8, //12 - J6 pin 20 - P_ func 4
+        GPIO_P5_9, //13 - J6 pin 19 - P_ func 4
+        GPIO_P4_13,//14 - J6 pin 17 - P_ func 0
+        GPIO_P4_14,//15 - J6 pin 16 - P_ func 0
+        GPIO_P5_18,//16 - J6 pin 15 - P_ func 4
+        GPIO_P4_11,//17 - J6 pin 14 - P_ func 0
+        GPIO_P5_5, //18 - J6 pin 13 - P_ func 4
+        GPIO_P6_12,//19 - J6 pin 9 -- P_ func 4
+        GPIO_P6_13,//20 - J6 pin 8 -- P_ func 4
+        GPIO_P6_1, //21 - J6 pin 7 -- P_ func 4
+        GPIO_P6_2, //22 - J6 pin 6 -- P_ func 4
+        GPIO_P3_8, //23 - J6 pin 5 -- P_ func 0
+        GPIO_P4_12,//24 - J6 pin 4 -- P_ func 0
+        GPIO_P5_3, //25 - J6 pin 3 -- P_ func 4
+        GPIO_P5_4  //26 - J6 pin 2 -- P_ func 4
+    };
     
     //P1_19 not a GPIO
-
-    currentPortPin = GPIO_P6_0; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P0_12; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P2_1; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P2_4; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
     // skip reset lines
     // P6_0 not a GPIO
-
-    currentPortPin = GPIO_P5_8; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P5_9; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-
     // P3_0 not a GPIO
-
-    currentPortPin = GPIO_P4_13; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P4_14; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-
-    currentPortPin = GPIO_P5_18; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P4_11; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P5_5; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
     // Skip USB1_DP USB1_DM not GPIOs
 
-    currentPortPin = GPIO_P6_12; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P6_13; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P6_1; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P6_2; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P3_8; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P4_12; // P_ func 0
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P5_3; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
-    
-    currentPortPin = GPIO_P5_4; // P_ func 4
-    UEZGPIOInput(currentPortPin);
-    UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
-    UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.    
+    for (int i = 0; i < 27; i++)
+    {
+        // Placed a breakpoint here to take initial pin reading
+        currentPortPin = currentPorrtPinArr[i]; // P_ func 4
+        UEZGPIOInput(currentPortPin);
+        UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
+        // Can use to test a pin if it got set to GPIO correctly
+        UEZGPIOSet(currentPortPin); 
+        UEZGPIOOutput(currentPortPin); 
+        UEZGPIOClear(currentPortPin);
+
+        // Placed a breakpoint here to take pin reading after toggling it off
+        //printf("Breakpoint");
+
+        UEZGPIOInput(currentPortPin);
+    	UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
+        UEZGPIOSetPull(currentPortPin, GPIO_PULL_UP);
+
+        // Placed a breakpoint here to take reading after attempting to pull high
+        //printf("Breakpoint");
+    }
  }
 
  static void Prepare_GPIOs_J11(void) // except for reset line the other PMOD pins are same between rev 1 and rev 2
@@ -541,10 +407,11 @@ const uint8_t g_loopback_connected_C[LOOPBACK_TEST_NUM_PINS_C][LOOPBACK_TEST_NUM
     //UEZGPIOControl(currentPortPin, GPIO_CONTROL_SET_CONFIG_BITS, value); // This sets only SCU to value
     UEZGPIOControl(currentPortPin, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0); // This enables input buffer, which is required for input mode operation.
     
-  //UEZGPIOSet(currentPortPin); // can use to test a pin if it got set to GPIO correctly
-  //UEZGPIOOutput(currentPortPin); 
-  //UEZGPIOClear(currentPortPin);
-
+#if 0
+  UEZGPIOSet(currentPortPin); // can use to test a pin if it got set to GPIO correctly
+  UEZGPIOOutput(currentPortPin); 
+  UEZGPIOClear(currentPortPin);
+#endif
     currentPortPin = GPIO_P7_17; // PF_2 func 4
     UEZGPIOInput(currentPortPin);
     UEZGPIOSetMux(currentPortPin, (currentPortPin >> 8) >= 5 ? 4 : 0); // This will set SCU to 4 or 0
@@ -619,97 +486,77 @@ void COM_Send(char * bytes, uint16_t numBytes) {
 void UEZPlatform_MemTest_StepA(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
+  UEZBSPDelay1MS();
+  // Currently we can't run this check before we reach main().
+  /*if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
     UEZTaskDelay(1);
-  }
+  }*/
 }
 
 void UEZPlatform_MemTest_StepA_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepB(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepB_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepC(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepC_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepD(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepD_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepE(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepE_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepF(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 void UEZPlatform_MemTest_StepF_Pass(void)
 {
   UEZBSP_HEARTBEAT_TOGGLE();
-  if(UEZIsRtosRunning() == RTOS_SCHEDULER_RUNNING){
-    UEZTaskDelay(1);
-  }
+  UEZBSPDelay1MS();
 }
 
 /** @} */

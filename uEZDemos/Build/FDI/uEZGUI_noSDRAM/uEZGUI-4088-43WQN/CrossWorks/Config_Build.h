@@ -5,16 +5,16 @@
 #define PROCESSOR_OSCILLATOR_FREQUENCY      120000000
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 #define USB_PORT_B_HOST_DETECT_ENABLED      1
-#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD43480272MF
+#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_GENERIC_480X272 // Supports all 5 LCD models.
+//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_DLC0430BCP12RF // Rev 2.1 HW
+//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD43480272MF // Rev 2.0 HW
 //#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD43800480CF
+//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXV
+// sunlight readable LCDs
+//#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD43480272EF_ASXP
+
 #define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
-
-#ifdef FREERTOS_PLUS_TRACE
-#define configUSE_TRACE_FACILITY            1
-#define configUSE_TIMERS                    1
-#define SELECTED_PORT PORT_ARM_CortexM
-#endif
 
 #ifdef NDEBUG
 #define UEZ_REGISTER              			0

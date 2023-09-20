@@ -52,7 +52,7 @@
 #define FCT_TEST_INFO_LENGTH                (FDICMD_MAX_LINE_LENGTH - 8)
 #define LOOPBACK_TEST_ERROR_NUM_MAX         (LOOPBACK_TEST_NUM_PINS_A * LOOPBACK_TEST_NUM_PINS_A)
 #define LOOPBACK_TEST_ERROR_STRING_LENGTH   (5)
-#define GPIO_TEST_RETRIES		    (1)
+#define GPIO_TEST_RETRIES		    (3)
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -74,6 +74,7 @@ int UEZGUICmdNOR(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdSPIFI(void *aWorkspace, int argc, char *argv[]);
 #if (UEZ_ENABLE_LOOPBACK_TEST == 1) // remove to save space
 int UEZGUICmdGPIOArray(void *aWorkspace, int argc, char *argv[]);
+int UEZGUICmdClock(void *aWorkspace, int argc, char *argv[]);
 #endif
 int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[]);
@@ -169,6 +170,7 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "NOR", UEZGUICmdNOR },
         { "SPIFI", UEZGUICmdSPIFI },
 #if (UEZ_ENABLE_LOOPBACK_TEST == 1) // remove to save space
+        // { "CLK", UEZGUICmdClock }, Currently not creating a platform clock function for a feature that we only use for testing/validation.
         { "GPIOARRAY", UEZGUICmdGPIOArray },
 #endif
         { "GPIO", UEZGUICmdGPIO },
@@ -190,7 +192,7 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
         { "RTC", UEZGUICmdRTC },
         { "USB0", UEZGUICmdUSBPort0 },
         { "USB1", UEZGUICmdUSBPort1 },
-        { "VERBOSE", UEZGUICmdVerbose },
+        { "VERBOSE [0/1]", UEZGUICmdVerbose },
 #if (UEZ_ENABLE_LCD == 1)
         { "BL", UEZGUICmdBacklight },
         { "LCD", UEZGUICmdLCD },
@@ -252,6 +254,14 @@ volatile fct_test_return_t g_fct_test_return =
 #if (UEZ_ENABLE_LOOPBACK_TEST == 1) // remove to save space
 static char loopback_error_matrix[LOOPBACK_TEST_ERROR_NUM_MAX][LOOPBACK_TEST_ERROR_STRING_LENGTH];
 #endif
+
+static void strupr(char *string)
+{
+    while (*string)  {
+        *string = toupper(*string);
+        string++;
+    }
+}
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZGUICmdGainSpan
@@ -470,6 +480,7 @@ void UEZGUITestNextTest(T_testData *aData)
  *---------------------------------------------------------------------------*/
 int UEZGUICmdPing(void *aWorkspace, int argc, char *argv[])
 {
+    (void) strupr;
     if (argc == 1) {
 #if UEZ_ENABLE_LCD
         TestModeSendCmd(TEST_MODE_PING);
@@ -621,7 +632,172 @@ int UEZGUICmdSPIFI(void *aWorkspace, int argc, char *argv[])
     return 0;
 }
 
-#if (UEZ_ENABLE_LOOPBACK_TEST == 1) // remove to save space
+
+#if (UEZ_ENABLE_LOOPBACK_TEST == 1) // remove to save space or when we can't use it
+extern T_uezTask G_mainTask;
+extern T_uezTask G_hTouchTask;
+extern T_uezTask G_tsMonitorTask;
+extern T_uezTask G_usbHostTask;
+extern T_uezTask G_heartBeatTask;
+extern T_uezTask G_DACAudioTask;
+
+// Currently not creating a platform clock function for a feature that we only use for testing/validation.
+
+int UEZGUICmdClock(void *aWorkspace, int argc, char *argv[])
+{    
+    char *p;
+    (void) strupr;
+#if(UEZ_PROCESSOR == NXP_LPC4357)          
+     LPC_SCU->SFSCLK_0 = 1; // Set CLK0 to output pin
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+
+    if (argc == 1) {
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+    } else if (argc == 2) {
+        p = argv[1];
+        strupr(p);
+        if (strcmp(p, "LF")==0) {
+          FDICmdSendString(aWorkspace, "Starting Low Frequency Oscillator Clock out of CLK OUT Pin!\n");
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+          LPC_CGU->BASE_OUT_CLK = (0<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // LF Crystal
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+        
+        } else if (strcmp(p, "HF")==0) {
+          FDICmdSendString(aWorkspace, "Starting High Frequency Oscillator Clock out of CLK OUT Pin!\n");
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+          LPC_CGU->BASE_OUT_CLK = (6<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // Crystal
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+        
+        } else if (strcmp(p, "SYS")==0) {
+          FDICmdSendString(aWorkspace, "Starting System Clock PLL1 out of CLK OUT Pin!\n");
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+          LPC_CGU->BASE_OUT_CLK = (0x9<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // PLL1
+          UEZTaskDelay(3000);
+          FDICmdSendString(aWorkspace, "Starting DIVA out of CLK OUT Pin!\n");
+          LPC_CGU->BASE_OUT_CLK = (0xC<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // DIVA
+          UEZTaskDelay(3000);
+          FDICmdSendString(aWorkspace, "Starting DIVB out of CLK OUT Pin!\n");
+          LPC_CGU->BASE_OUT_CLK = (0xD<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // DIVB
+          UEZTaskDelay(3000);
+          FDICmdSendString(aWorkspace, "Starting DIVC out of CLK OUT Pin!\n");
+          LPC_CGU->BASE_OUT_CLK = (0xE<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // DIVC
+          UEZTaskDelay(3000);
+          FDICmdSendString(aWorkspace, "Starting DIVD out of CLK OUT Pin!\n");
+          LPC_CGU->BASE_OUT_CLK = (0xF<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // DIVD
+          UEZTaskDelay(3000);
+          FDICmdSendString(aWorkspace, "Starting DIVE out of CLK OUT Pin!\n");
+          LPC_CGU->BASE_OUT_CLK = (0x10<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // DIVE
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+          
+        } else if (strcmp(p, "USB")==0) {
+          FDICmdSendString(aWorkspace, "Starting USB Clock out of CLK OUT Pin!\n");
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+          // Seems we need to disable USB first to output it.
+          //LPC_CGU->BASE_OUT_CLK = (7<<24) | CGU_BASE_CGU_OUT0_CLK_AUTOBLOCK_Msk; // USB
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+
+        } else if (strcmp(p, "BSP")==0) {
+          FDICmdSendString(aWorkspace, "Starting BSP Delay Measure out of Heartbeat Pin!\n");
+    
+    RTOS_ENTER_CRITICAL();
+  for(TUInt32 i  = 0; i < 5; i++) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZBSPDelayMS(1000);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZBSPDelayMS(500);
+    }
+    RTOS_EXIT_CRITICAL();
+
+        }  else if (strcmp(p, "TASK")==0) {
+          FDICmdSendString(aWorkspace, "Starting Task Delay Measure out of Heartbeat Pin!\n");
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+          LPC_CGU->BASE_OUT_CLK = 1;      // Power down output pin, 32KHz crystal, no autoblock
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+
+// no mechanism in freertos to suspend all other tasks so do it manually.
+  if(G_mainTask != 0) {
+    UEZTaskSuspend(G_mainTask);
+  }
+  if(G_heartBeatTask != 0) {
+    UEZTaskSuspend(G_heartBeatTask);
+  }
+  if(G_tsMonitorTask != 0) {
+    UEZTaskSuspend(G_tsMonitorTask);
+  }
+  if(G_usbHostTask != 0) {
+    UEZTaskSuspend(G_usbHostTask);
+  }
+  if(G_DACAudioTask != 0) {
+    UEZTaskSuspend(G_DACAudioTask);
+  }
+
+for(TUInt32 i  = 0; i < 10; i++) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(2);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(1);
+    }
+
+  for(TUInt32 i  = 0; i < 5; i++) {
+        UEZGPIOSet(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(1000);
+        UEZGPIOClear(GPIO_HEARTBEAT_LED);
+        UEZTaskDelay(500);
+    }
+
+  if(G_mainTask != 0) {
+    UEZTaskResume(G_mainTask);
+  }
+  if(G_heartBeatTask != 0) {
+    UEZTaskResume(G_heartBeatTask);
+  }
+  if(G_tsMonitorTask != 0) {
+    UEZTaskResume(G_tsMonitorTask);
+  }
+  if(G_usbHostTask != 0) {
+    UEZTaskResume(G_usbHostTask);
+  }
+  if(G_DACAudioTask != 0) {
+    UEZTaskResume(G_DACAudioTask);
+  }
+
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+        } else{
+          FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+          
+        }
+    } else {
+        FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
+    }
+
+
+    UEZTaskDelay(10000);
+
+#if(UEZ_PROCESSOR == NXP_LPC4357)          
+    LPC_CGU->BASE_OUT_CLK = 1;      // Power down output pin, 32KHz crystal, no autoblock
+    LPC_SCU->SFSCLK_0 = 0; // set CKL pin back to reset state
+#endif
+
+#if(UEZ_PROCESSOR == NXP_LPC4088)          
+#endif
+    return 0;
+}
+
 int UEZGUICmdGPIOArray(void *aWorkspace, int argc, char *argv[]) {
   T_uezError uez_err = UEZ_ERROR_NONE;
 
@@ -775,7 +951,7 @@ int UEZGUICmdGPIOArray(void *aWorkspace, int argc, char *argv[]) {
       }
     } // end retry loop
 
-    fct_test_return_message_info_append(", %d retries", 3 - retries);
+    fct_test_return_message_info_append(", %d retries", (GPIO_TEST_RETRIES - 1 - retries));
   } else { // One or more pins were locked and we can't run this function.
   }
 
@@ -1121,6 +1297,21 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
 
         // High is high and low is low, good
         FDICmdPrintf(aWorkspace, "PASS: OK\n");
+    } else if (argc == 4) { // Port Pin H/L command goes here:
+        // Got all 3 parameters, parse them
+        portA = FDICmdUValue(argv[1]);
+        pinA = FDICmdUValue(argv[2]);
+        //level = FDICmdUValue(argv[3]); // TODO
+        
+
+
+
+
+
+
+
+
+
     } else if (argc == 1) {
         //IUEZGUICmdRunTest(aWorkspace, FuncTestGPIOs, &testData); // not working currently
         FDICmdSendString(aWorkspace, "FAIL: Incorrect parameters\n");
@@ -1501,15 +1692,17 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
         // Set the time to 1/1/2018, 8:00:00
         UEZTimeDateSet(&td);
 
-        UEZTaskDelay(5000);
+        //UEZTaskDelay(5000);
+        UEZTaskDelay(3000);
 
         UEZTimeDateGet(&td);
         if ((td.iDate.iMonth==1) &&
-                (td.iDate.iDay == 1) &&
-                (td.iDate.iYear == 2018) &&
-                (td.iTime.iHour == 8) &&
-                (td.iTime.iMinute == 0) &&
-                (td.iTime.iSecond > 1)) {
+            (td.iDate.iDay == 1) &&
+            (td.iDate.iYear == 2018) &&
+            (td.iTime.iHour == 8) &&
+            (td.iTime.iMinute == 0) &&
+            (td.iTime.iSecond > 1))
+        {
             FDICmdSendString(aWorkspace, "PASS: OK\n");
         } else {
             FDICmdSendString(aWorkspace, "FAIL: Not Incrementing\n");

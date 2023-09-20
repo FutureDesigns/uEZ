@@ -296,8 +296,9 @@ static void GainSpan_SPI_ProcessIncoming(void)
     /* Process all the bytes sent last */
     /* but only process if we have room in the receiving buffer */
     next = G_GainSpan_SPI_RXIn + 1;
-    if (next >= GAINSPAN_SPI_RX_BUFFER_SIZE)
+    if (next >= GAINSPAN_SPI_RX_BUFFER_SIZE) {
         next = 0;
+    }
     //if (next != G_GainSpan_SPI_RXOut) {
         /* Was the last character sent used to watch for flow control? */
         if (!G_GainSpan_SPI_CanTransmit) {

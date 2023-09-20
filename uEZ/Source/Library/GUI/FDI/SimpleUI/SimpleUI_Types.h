@@ -50,21 +50,23 @@
 extern "C" {
 #endif
 
-// 8-bit pixels
-#if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_8_BIT)
-    typedef TUInt8 T_pixelColor;
+#if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_8_BIT) // 8-bit pixels
+    //typedef TUInt8 T_pixelColor; // Moved to lpc_swim.h  
+//#pragma message("       T_pixelColor is TUInt8.")
     #define RGB(r, g, b) \
         ((((r>>5)&7)<<5)| \
         (((g>>5)&7)<<2)| \
         (((b>>6)&3)<<0))
-#elif (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_16_BIT)
-    typedef TUInt16 T_pixelColor;
+#elif (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_16_BIT) // 16-bit pixels
+//    typedef TUInt16 T_pixelColor;
+//#pragma message("       T_pixelColor is TUInt16.")
     #define RGB(r, g, b)      \
         ( (((r>>3)&0x1F)<<11)| \
           (((g>>2)&0x3F)<<5)| \
           (((b>>3)&0x1F)<<0) )
-#elif (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_I15_BIT)
-    typedef TUInt16 T_pixelColor;
+#elif (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_I15_BIT) // 16-bit pixels
+    //typedef TUInt16 T_pixelColor;
+//#pragma message("       T_pixelColor is TUInt16.")
     #define RGB(r, g, b)      \
         ( (((r>>3)&0x1F)<<10)| \
           (((g>>3)&0x1F)<<5)| \

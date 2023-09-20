@@ -7,8 +7,11 @@
 #define GAPI_H
 
 #include <uEZ.h>
+#include <Device/LCD/Config_LCD.h>
+#include <Config_Build.h>
 #include <uEZPacked.h>
 #include <uEZInline.h>
+#include <uEZMemory.h>
 
 /***********************************************************************************
 FILE NAME    : GAPI.h
@@ -59,7 +62,7 @@ typedef int32_t gapiResp_type;
 
 
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(type_Efont base);
         PACK_STRUCT_FIELD(type_Eglyph glyphs[1]);  /* this will really be an array of as many glyphs in font */
@@ -68,7 +71,7 @@ PACK_STRUCT_END
 
 /* Data structure of BMP color table entry */
 #if 0
-typedef struct 
+typedef ATTR_IAR_PACKED struct 
 {
   uI08 Blue;
   uI08 Green;
@@ -80,7 +83,7 @@ typedef struct
 #define CT_GREEN 1
 #define CT_RED 2
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(uI08 channel[4]);
 } PACK_STRUCT_STRUCT ColorTable_type;
@@ -90,7 +93,7 @@ PACK_STRUCT_END
 
 /* BMP header structure */
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(uI08 bfSignature[2]);
         PACK_STRUCT_FIELD(uI08 bfFileSize[4]);
@@ -134,7 +137,7 @@ PACK_STRUCT_END
 typedef uI16 PIXEL_16bpp_type;
 
 PACK_STRUCT_BEGIN
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
         PACK_STRUCT_FIELD(uI08 Blue);
         PACK_STRUCT_FIELD(uI08 Green);
@@ -154,7 +157,7 @@ typedef union
 PACK_STRUCT_END
 
 /* structure definition for font information for "gputs" routine */
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
   GFont_type const **ppFont;  /* pointer to font pointer */
   ColorTable_type ct[2];      /* color table 0=BGND, 1=FGND (BGND only applies to two color fonts) */
@@ -171,7 +174,7 @@ typedef struct
   } Options;
 }GPUT_type;
 
-typedef struct
+typedef ATTR_IAR_PACKED struct
 {
   ColorTable_type ct[2];      /* color table for gemerating gradient for colorizing button...[0]=black replace, [1]=white replace */
   GPUT_type font;             /* information for text placement */

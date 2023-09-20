@@ -53,7 +53,7 @@ static TUInt32 ICRC_Reflect(TUInt32 ref, TUInt8 ch)
     TUInt32 value = 0;
 
     // Swap bit 0 for bit 7, bit 1 for bit 6, etc.
-    for (TUInt32 i = 1; i < (ch + 1); i++) {
+    for (TUInt32 i = 1; i < (TUInt8) (ch + 1); i++) {
         if (ref & 1) {
             value |= 1 << (ch - i);
         }

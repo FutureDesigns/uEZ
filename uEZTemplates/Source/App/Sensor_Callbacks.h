@@ -18,7 +18,7 @@
  * Types:
  *-------------------------------------------------------------------------*/
 typedef struct {
-        char iBoardTemp[10];
+        char iBoardTemp[12];
         char iAccelerometer[22];
 }T_SensorSettings;
 

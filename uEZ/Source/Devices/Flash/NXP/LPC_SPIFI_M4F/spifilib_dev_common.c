@@ -50,6 +50,13 @@ static SPIFI_FAM_NODE_T famListHead = {0};
 /* Generic device OP Codes */
 #define SPIFI_OP_CODE_RDID          0x9F
 
+// Common OPT related command IDs (macronix, Cyprus/Infineon, possibly others
+#define CMD_06_WREN                 0x06		/**< Write Enable */
+#define CMD_B1_ENSO                 0xB1                /**< Enable OTP Region */
+#define CMD_C1_EXSO                 0xC1                /**< Disable OTP Region */
+#define CMD_2B_RDSCUR               0x2B                /**< Read Security Register */
+#define CMD_2F_WRSCUR               0x2F                /**< Write Security Register */
+
 /* Number of supported devices */
 #define NUMSUPPDEVS (sizeof(pPrvDevs) / sizeof(SPIFI_DEVDESC_T *))
 
@@ -322,11 +329,11 @@ uint16_t spifiGetLibVersion(void)
 }
 
 /* Initialize the SPIFILIB driver */
-SPIFI_ERR_T spifiInit(uint32_t spifiCtrlAddr, uint8_t reset)
+SPIFI_ERR_T spifiInit(uint32_t spifiCtrlAddr, TBool reset)
 {
     LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) spifiCtrlAddr;
 
-    if (reset) {
+    if (reset == ETrue) {
         /* Reset controller */
         spifi_HW_ResetController(pSpifiCtrlAddr);
 
@@ -338,11 +345,14 @@ SPIFI_ERR_T spifiInit(uint32_t spifiCtrlAddr, uint8_t reset)
 
         /* Setup SPIFI controller */
         spifi_HW_SetCtrl(pSpifiCtrlAddr,
-                         (SPIFI_CTRL_TO(1000) |
-                          SPIFI_CTRL_CSHI(15) |
-                          SPIFI_CTRL_RFCLK(1) |
-                          SPIFI_CTRL_FBCLK(1) |
-                          SPIFI_CTRL_DUAL(0)));
+           (SPIFI_CTRL_TO(1000)                 | // timeout 4096 clock periods
+            SPIFI_CTRL_CSHI(15)                 | // minimum CS high time
+            SPIFI_CTRL_DATA_PREFETCH_DISABLE(0) | // AHB Prefretch enabled
+            SPIFI_CTRL_MODE3(0)                 | // Mode 3 select SCK Low
+            SPIFI_CTRL_PREFETCH_DISABLE(0)      | // Cache Prefretch enabled
+            SPIFI_CTRL_RFCLK(1)                 | // falling edge for input data
+            SPIFI_CTRL_FBCLK(1)                 | // feedback clock enabled
+            SPIFI_CTRL_DUAL(0)));                 // quad protocol, not dual protocol
     }
 
     /* Nothing to do here yet */
@@ -582,6 +592,8 @@ SPIFI_HANDLE_T *spifiInitDevice(void *pMem, uint32_t sizePMem, uint32_t spifiCtr
     if (!detectedPart) {
         return NULL;
     }
+    
+    // Here we should know how big our QSPI chip is or we have an initialization problem.
 
     /* Is passed memory space big enough? */
     if (spifiPrvCalculateHandleSize(detectedPart) > sizePMem) {
@@ -899,4 +911,212 @@ SPIFI_ERR_T spifiEraseByAddr(const SPIFI_HANDLE_T *pHandle, uint32_t firstAddr, 
     }
 
     return err;
+}
+
+// Enter OTP Region 
+SPIFI_ERR_T spifiSetENSO(const SPIFI_HANDLE_T *pHandle)
+{
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(pHandle);
+    return SPIFI_ERR_NONE;
+#else
+    LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
+    spifi_HW_SetCmd(pSpifiCtrlAddr,
+                          (SPIFI_CMD_OPCODE(CMD_B1_ENSO) |
+                           SPIFI_CMD_FIELDFORM(SPIFI_FIELDFORM_ALL_SERIAL) |
+                           SPIFI_CMD_FRAMEFORM(SPIFI_FRAMEFORM_OP)));
+
+    spifi_HW_WaitCMD(pSpifiCtrlAddr);
+    return SPIFI_ERR_NONE;
+#endif
+}
+
+// Exit OTP Region
+SPIFI_ERR_T spifiSetEXSO(const SPIFI_HANDLE_T *pHandle)
+{
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(pHandle);
+    return SPIFI_ERR_NONE;
+#else
+    LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
+    spifi_HW_SetCmd(pSpifiCtrlAddr,
+                          (SPIFI_CMD_OPCODE(CMD_C1_EXSO) |
+                           SPIFI_CMD_FIELDFORM(SPIFI_FIELDFORM_ALL_SERIAL) |
+                           SPIFI_CMD_FRAMEFORM(SPIFI_FRAMEFORM_OP)));
+
+    spifi_HW_WaitCMD(pSpifiCtrlAddr);
+    return SPIFI_ERR_NONE;
+#endif
+}
+
+// Return the current OTP status 
+uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
+{
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(pHandle);
+    return SPIFI_ERR_NONE;
+#else
+    LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
+    uint32_t statusReg = 0;
+    spifi_HW_SetCmd(pSpifiCtrlAddr,
+                          (SPIFI_CMD_OPCODE(CMD_2B_RDSCUR) |
+                           SPIFI_CMD_DATALEN(1) |
+                           SPIFI_CMD_FIELDFORM(SPIFI_FIELDFORM_ALL_SERIAL) |
+                           SPIFI_CMD_FRAMEFORM(SPIFI_FRAMEFORM_OP)));
+
+    
+    statusReg = (spifi_HW_GetData8(pSpifiCtrlAddr));
+    spifi_HW_WaitCMD(pSpifiCtrlAddr);
+
+    return statusReg;
+#endif
+}
+
+ // Program OTP region
+ SPIFI_ERR_T spifiProgramOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, const uint32_t *writeBuff, uint32_t bytes)
+ {
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(pHandle);
+    UNUSED(addr);
+    UNUSED(writeBuff);
+    UNUSED(bytes);
+    return SPIFI_ERR_NONE;
+#else
+    SPIFI_ERR_T err = SPIFI_ERR_NONE;
+    uint32_t sendBytes;
+    uint32_t remainder;
+    LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
+
+    // Disable caching for OTP access. In application level would re-init QSPI to enable it again.
+    spifi_HW_SetCtrl(pSpifiCtrlAddr,
+         (SPIFI_CTRL_TO(1000)                 | // timeout 4096 clock periods
+          SPIFI_CTRL_CSHI(15)                 | // minimum CS high time
+          SPIFI_CTRL_DATA_PREFETCH_DISABLE(1) | // AHB Prefretch disabled
+          SPIFI_CTRL_MODE3(0)                 | // Mode 3 select SCK Low
+          SPIFI_CTRL_PREFETCH_DISABLE(1)      | // Cache Prefretch disabled
+          SPIFI_CTRL_RFCLK(1)                 | // falling edge for input data
+          SPIFI_CTRL_FBCLK(1)                 | // feedback clock enabled
+          SPIFI_CTRL_DUAL(0)));                 // quad protocol, not dual protocol
+
+    spifiSetENSO(pHandle);
+
+    /* Program using up to page size */
+    while ((bytes > 0) && (err == SPIFI_ERR_NONE)) {
+        sendBytes = bytes;
+
+        if (sendBytes > pHandle->pInfoData->pageSize) {
+            sendBytes = pHandle->pInfoData->pageSize;
+        }
+
+        //Check to see if the we will cross the page boundary
+        remainder = addr % pHandle->pInfoData->pageSize;
+        if(remainder){
+            //address is not on a page boundary
+            //is it going to cross a boundary?
+            if(addr + (sendBytes) > ((addr - remainder) + pHandle->pInfoData->pageSize)){
+                //Yes it is, write only the rest of the page
+                sendBytes = pHandle->pInfoData->pageSize - remainder;
+            }
+        }
+
+        err = pHandle->pFamFx->pageProgram(pHandle, addr, writeBuff, sendBytes);
+        addr += sendBytes;        
+        writeBuff = (uint32_t *)((char*)writeBuff+sendBytes);        
+        bytes -= sendBytes;
+    }
+    
+    spifiSetEXSO(pHandle);
+
+    return err;
+#endif
+ }
+
+ // Read OTP region
+ SPIFI_ERR_T spifiReadOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, uint32_t *readBuff, uint32_t bytes)
+ {
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(pHandle);
+    UNUSED(addr);
+    UNUSED(readBuff);
+    UNUSED(bytes);
+    return SPIFI_ERR_NONE;
+#else
+    uint32_t readBytes;
+    SPIFI_ERR_T err = SPIFI_ERR_NONE;
+    LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
+
+    // Disable caching for OTP access. In application level would re-init QSPI to enable it again.
+    spifi_HW_SetCtrl(pSpifiCtrlAddr,
+         (SPIFI_CTRL_TO(1000)                 | // timeout 4096 clock periods
+          SPIFI_CTRL_CSHI(15)                 | // minimum CS high time
+          SPIFI_CTRL_DATA_PREFETCH_DISABLE(1) | // AHB Prefretch disabled
+          SPIFI_CTRL_MODE3(0)                 | // Mode 3 select SCK Low
+          SPIFI_CTRL_PREFETCH_DISABLE(1)      | // Cache Prefretch disabled
+          SPIFI_CTRL_RFCLK(1)                 | // falling edge for input data
+          SPIFI_CTRL_FBCLK(1)                 | // feedback clock enabled
+          SPIFI_CTRL_DUAL(0)));                 // quad protocol, not dual protocol
+
+    spifiSetENSO(pHandle);
+
+    /* Read using up to the maximum read size */
+    while ((bytes > 0) && (err == SPIFI_ERR_NONE)) {
+        readBytes = bytes;
+        if (readBytes > pHandle->pInfoData->maxReadSize) {
+            readBytes = pHandle->pInfoData->maxReadSize;
+        }
+
+        err = pHandle->pFamFx->read(pHandle, addr, readBuff, readBytes);
+        addr += readBytes;
+        readBuff += (readBytes / sizeof(uint32_t));
+        bytes -= readBytes;
+    }
+
+    spifiSetEXSO(pHandle);
+
+    return err;
+#endif
+ }
+
+#include <Config_Build.h>
+
+// Lock the current OTP forever
+uint32_t spifiLockOtp(const SPIFI_HANDLE_T *pHandle, TBool lockOtp)
+{
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+    UNUSED(pHandle);
+    UNUSED(lockOtp);
+    return SPIFI_ERR_NONE;
+#else
+#if (ALLOW_LOCKING_XSPI_OTP == 1)
+    LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
+#endif
+    uint32_t statusReg = spifiReadCUR(pHandle);
+    
+    if((statusReg & 0x01) == 0x01) { // Macronix Security Register bit 0. Some parts may use a different bit
+        return SPIFI_ERR_LOCKED; // Cannot ever update this QSPI chip's OTP region again.
+    } else {
+      if(lockOtp == EFalse) {    
+        return SPIFI_ERR_NONE;
+      } else { // if compiled in set write enable then issue WRSCUR instruction (no parameters)      
+#if (ALLOW_LOCKING_XSPI_OTP == 1)
+        spifiSetENSO(pHandle);
+
+  	spifi_HW_SetCmd(pSpifiCtrlAddr,
+                              (SPIFI_CMD_OPCODE(CMD_06_WREN) |
+                               SPIFI_CMD_FIELDFORM(SPIFI_FIELDFORM_ALL_SERIAL) |
+                               SPIFI_CMD_FRAMEFORM(SPIFI_FRAMEFORM_OP)));
+  	spifi_HW_WaitCMD(pSpifiCtrlAddr);
+        
+        spifi_HW_SetCmd(pSpifiCtrlAddr,
+                            (SPIFI_CMD_OPCODE(CMD_2F_WRSCUR) |
+                             SPIFI_CMD_FIELDFORM(SPIFI_FIELDFORM_ALL_SERIAL) |
+                             SPIFI_CMD_FRAMEFORM(SPIFI_FRAMEFORM_OP)));
+        spifi_HW_WaitCMD(pSpifiCtrlAddr);
+        
+        spifiSetEXSO(pHandle);
+#endif
+        return SPIFI_ERR_NONE;    
+      }
+    }
+#endif
 }

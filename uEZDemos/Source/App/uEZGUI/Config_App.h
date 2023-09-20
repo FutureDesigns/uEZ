@@ -141,7 +141,18 @@
 #define emacMACADDR5    0x22
 #endif
 
-#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+//#include <Source/Library/Graphics/SWIM/lpc_swim.h> // To get just the T_pixelColor def.
+
+// To get both T_pixelColor and RGB def must include the SimpleUI_Types here.
+// We need to get pixel color type size here from simpleui types, but not in assembler.
+#if (COMPILER_TYPE == IAR)
+#ifdef __ICCARM__  
+     //Ensure the #include is only used by the compiler, and not the assembler.
+     #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+#endif
+#else 
+   #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+#endif
 
 #include <uEZPlatform.h> // To get SDRAM size, but currently we don't use that here.
 
@@ -170,14 +181,14 @@
 /*-------------------------------------------------------------------------*
  * Display and frames section:
  *-------------------------------------------------------------------------*/
-#define MAX_NUM_FRAMES          5 // for largest screen uezgui frames memory = (800*480**2*5)/1024/1024 = 3.662MB
+#define MAX_NUM_FRAMES          5 // for largest screen uezgui frames memory = (800*480*2*5)/1024/1024 = 3.662MB
 // It is important not to lower this or slideshow will break.
 // Slideshow memory can't use the first 3 frames partially as they are used by the SWIM GUI.
 // We set 5 frames, but slideshow needs an extra 3*UEZ_LCD_DISPLAY_WIDTH to load a picture, so only cache up to 3 max.
 
 #define DISPLAY_WIDTH           UEZ_LCD_DISPLAY_WIDTH
 #define DISPLAY_HEIGHT          UEZ_LCD_DISPLAY_HEIGHT
-#define FRAME_SIZE              (DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(T_pixelColor))
+#define FRAME_SIZE              (UEZ_LCD_DISPLAY_WIDTH*UEZ_LCD_DISPLAY_HEIGHT*sizeof(T_pixelColor))
 #define LCD_FRAMES_START        ((TUInt8 *)LCD_DISPLAY_BASE_ADDRESS)
 #define LCD_FRAMES_END          (((TUInt8 *)LCD_FRAMES_START + (FRAME_SIZE*MAX_NUM_FRAMES))-1)
 #define LCD_FRAMES_SIZE         (FRAME_SIZE*MAX_NUM_FRAMES+(UEZ_LCD_DISPLAY_WIDTH*3))

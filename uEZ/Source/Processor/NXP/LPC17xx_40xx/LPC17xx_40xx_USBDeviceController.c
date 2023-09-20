@@ -201,20 +201,21 @@ static void ILPC17xx_40xx_USBDev_Command(
             T_LPC17xx_40xx_USBDev_Workspace *p,
             TUInt8 aCommand)
 {
-if (aCommand == USB_ENDPOINT_CMD_VALIDATE_BUFFER)
+if (aCommand == USB_ENDPOINT_CMD_VALIDATE_BUFFER) {
     dprintf("[Cmd V]");
-else if (aCommand == USB_ENDPOINT_CMD_CLEAR_BUFFER)
+} else if (aCommand == USB_ENDPOINT_CMD_CLEAR_BUFFER) {
     dprintf("[Cmd C]");
-else if (aCommand <= 0x3F)
+} else if (aCommand <= 0x3F) {
     dprintf("[Cmd S%d]", aCommand&0x3F);
-else if ((aCommand & 0xC0)==0x40)
+} else if ((aCommand & 0xC0)==0x40) {
     dprintf("[Cmd SC%d]", aCommand&0x3F);
-else if (aCommand == USB_DEVICE_CMD_SET_MODE)
+} else if (aCommand == USB_DEVICE_CMD_SET_MODE) {
     dprintf("[Cmd SM]");
-else if (aCommand == USB_DEVICE_CMD_STATUS)
+} else if (aCommand == USB_DEVICE_CMD_STATUS) {
     ; // do nothing
-else
+} else {
     dprintf("[Cmd ?%02X]", aCommand);
+}
     // Start by clearing the full and empty flags for the
     // command.
     LPC_USB->USBDevIntClr = CDFULL | CCEMTY;

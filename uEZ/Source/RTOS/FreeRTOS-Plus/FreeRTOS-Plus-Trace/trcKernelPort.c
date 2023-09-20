@@ -81,7 +81,7 @@ objectHandleType prvTraceGetObjectNumber(void* handle)
 
 unsigned char prvTraceGetObjectType(void* handle)
 {
-	return uxQueueGetQueueType(handle);
+	return ucQueueGetQueueType(handle);
 }
 
 objectHandleType prvTraceGetTaskNumber(void* handle)

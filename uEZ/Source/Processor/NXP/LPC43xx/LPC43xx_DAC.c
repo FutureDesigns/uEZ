@@ -85,10 +85,10 @@ T_uezError LPC43xx_DAC_Write(void *aWorkspace, TUInt32 aValue)
     aValue = (aValue << DACR_VALUE_BIT) & 0xFFC0;
 
     if (EFalse != p->iBias) {
-        // The settling time of the DAC is 2.5 µs and the maximum current is 350 µA.
+        // The settling time of the DAC is 2.5 us and the maximum current is 350 uA.
         aValue |= DACR_BIAS;
     } else {
-        //The settling time of the DAC is 1 µs max, and the maximum current is 700 µA.
+        //The settling time of the DAC is 1 us max, and the maximum current is 700 uA.
     }
 
     // Write modified value to the register.
@@ -124,12 +124,12 @@ T_uezError LPC43xx_DAC_WriteMilliVolt(void *aWorkspace, TUInt32 aMilliVolts)
     aMilliVolts = (aMilliVolts << DACR_VALUE_BIT) & 0xFFC0;
 
     if (EFalse != p->iBias) {
-        // The settling time of the DAC is 2.5 µs
-        // and the maximum current is 350 µA.
+        // The settling time of the DAC is 2.5 us
+        // and the maximum current is 350 uA.
         aMilliVolts |= DACR_BIAS;
     } else {
-        // The settling time of the DAC is 1 µs max,
-        // and the maximum current is 700 µA.
+        // The settling time of the DAC is 1 us max,
+        // and the maximum current is 700 uA.
     }
 
     // Write modified value to the register.
@@ -264,15 +264,17 @@ void LPC43xx_DAC0_Require(T_uezGPIOPortPin aPin)
     HALInterfaceRegister("DAC0", (T_halInterface *)&DAC_LPC43xx_DAC0_Interface,
             0, 0);
 
-    if(aPin != GPIO_NONE){
+    if(aPin == GPIO_P2_4){
         LPC43xx_GPIO2_Require();
+        LPC43xx_SCU_ConfigPin(aPin, dac, ARRAY_COUNT(dac)); // This would cover multiple pins if there were setup in the list.        
+        LPC_SCU->ENAIO2 = (1<<0); // This enables DAC on P4_4, See 17.4.8 Analog function select register.
+        LPC_DAC->CTRL |= (1<<3); //Despite the name this enable the DAC output -DMA_EN bit // This enables the dedicated DAC pin always
+    } else { // TODO other pins (main one is used by LCD though so don't add it)     
     }
 
-    LPC43xx_SCU_ConfigPin(aPin, dac, ARRAY_COUNT(dac));
-
-    if(aPin == GPIO_P2_4){
-        LPC_SCU->ENAIO0 = (1<<0);
-        LPC_DAC->CTRL |= (1<<3); //Despite the name this enable the DAC output
+    if(aPin != GPIO_NONE){
+    } else {
+        LPC_DAC->CTRL |= (1<<3); //Despite the name this enable the DAC output -DMA_EN bit
     }
 }
 

@@ -31,12 +31,6 @@
 #include <Source/Devices/Accelerometer/Freescale/MMA7455/Freescale_MMA7455.h>
 #include <Source/Devices/Accelerometer/ST/LIS3DH/ST_LIS3DH_I2C.h>
 #include <Source/Devices/ADC/Generic/Generic_ADC.h>
-#include <Source/Devices/AudioAmp/NXP/TDA8551_T/AudioAmp_TDA8551T.h>
-#include <Source/Devices/AudioAmp/Wolfson/WM8731/AudioAmp_WM8731.h>
-#include <Source/Devices/AudioAmp/TI/LM48100/AudioAmp_LM48100.h>
-#if UEZ_ENABLE_AUDIO_CODEC
-#include <Source/Devices/Audio Codec/Wolfson/WM8731/AudioCodec_WM8731.h>
-#endif
 #include <Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h>
 #include <Source/Devices/Button/NXP/PCA9551/Button_PCA9551.h>
 #include <Source/Devices/CRC/Generic/CRC_Generic.h>
@@ -47,11 +41,7 @@
 #include <Source/Devices/GPDMA/Generic/Generic_GPDMA.h>
 #include <Source/Devices/HID/Generic/HID_Generic.h>
 #include <Source/Devices/I2C/Generic/Generic_I2C.h>
-#include <Source/Devices/I2S/Generic/Generic_I2S.h>
-#include <Source/Devices/LCD/Tianma/TM035KBH02-09/Tianma_TM035KBH02_09.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SD_MMC.h>
-#include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
-#include <Source/Devices/Network/lwIP/Network_lwIP.h>
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
@@ -62,23 +52,12 @@
 #include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/Timer/ToneGenerator_Generic_Timer.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
-#include <Source/Devices/Touchscreen/Himax/HX8526-A/HX8526-A_Touchscreen.h>
-#include <Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.h>
-#include <Source/Devices/Watchdog/Generic/Watchdog_Generic.h>
-#include <Source/Library/Web/BasicWeb/BasicWEB.h>
-#include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
-#include <Source/Library/Graphics/SWIM/lpc_swim.h>
-#include <Source/Library/Memory/MemoryTest/MemoryTest.h>
-#include <Source/Library/StreamIO/StdInOut/StdInOut.h>
 #include <Source/Processor/NXP/LPC546xx/uEZProcessor_LPC546xx.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_ADCBank.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_CRC.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_EMAC.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_EMC_Static.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_GPDMA.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_GPIO.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_I2C.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_I2S.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_LCDController.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SD_MMC.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_PWM.h>
@@ -88,8 +67,6 @@
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_Serial.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_SPI.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_Timer.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_USBDeviceController.h>
-//#include <Source/Processor/NXP/LPC546xx/LPC546xx_USBHost.h>
 #include <Source/Processor/NXP/LPC546xx/LPC546xx_Watchdog.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
@@ -97,7 +74,6 @@
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
 #include <uEZI2C.h>
-#include <uEZNetwork.h>
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>

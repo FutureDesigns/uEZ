@@ -59,7 +59,7 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-void TimeDateSettingsDLG();
+void TimeDateSettingsDLG(void);
 
 #ifdef __cplusplus
 }
