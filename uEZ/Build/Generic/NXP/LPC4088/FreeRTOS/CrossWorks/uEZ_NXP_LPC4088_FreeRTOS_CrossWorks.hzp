@@ -458,6 +458,10 @@
               <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF.h" />
               <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD50800480TF/NewHaven_NHD50800480TF_Rev2.c" />
             </folder>
+            <folder Name="NHD70800480EF">
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD70800480EF/NewHaven_NHD70800480EF.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/NewHaven/NHD70800480EF/NewHaven_NHD70800480EF.h" />
+            </folder>
           </folder>
           <folder Name="OKAYA">
             <folder Name="RH320240T">
@@ -1380,21 +1384,7 @@
             Name="ReleaseOptForSize"
             build_exclude_from_build="Yes" />
           <folder Name="FreeRTOS-Plus-Trace">
-            <folder Name="Include">
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcBase.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcConfig.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcHardwarePort.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernel.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernelHooks.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernelPort.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcTypes.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcUser.h" />
-            </folder>
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcBase.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcHardwarePort.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcKernel.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcKernelPort.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcUser.c" />
+            <folder Name="Include" />
           </folder>
         </folder>
         <file file_name="../../../../../../Source/RTOS/uEZRTOS.c" />

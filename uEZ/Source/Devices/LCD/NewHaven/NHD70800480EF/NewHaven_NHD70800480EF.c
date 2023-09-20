@@ -35,7 +35,110 @@
 #define RESOLUTION_X        800
 #define RESOLUTION_Y        480
 
+#if 1
+#define LCD_CLOCK_RATE      29144000 // 29.143  if using 204MHz clock
+
+#define HORZ_BACK_PORCH         40
+#define HORZ_FRONT_PORCH        25 //20 // min is 20
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         31//29 // 29-31
+#define VERT_FRONT_PORCH        20 //23
+#define VERT_PULSE_WIDTH        1//3  // 1-3
+#endif
+
+#if 0
+#define LCD_CLOCK_RATE      34000000  // actual 34.00Mhz if using 204MHz clock
+
+#define HORZ_BACK_PORCH         40
+#define HORZ_FRONT_PORCH        115
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         29
+#define VERT_FRONT_PORCH        53
+#define VERT_PULSE_WIDTH        3
+#endif
+
+// Alternate clock source options using 120MHz peripheral clock.
+
+#if 0
+// Newhaven runs these settings in FT81X example board: 30MHz, 928/525 totals
+// Vfp+Vpw = 3, Vfp = 0, Blanking total = 32, but descrepancy of 13 lines
+// Hfp+Hpw = 48, Hfp = 0, Blanking total = 88, but descrepancy of 40 clocks
+// Newhaven uses a special delay hardware for red and blue colors to reduce noise.
+// REG_CSPREAD=1, R[7:0] changes a PCLK clock early and B[7:0] a PCLK clock later, which helps reduce the switching noise.
+#define LCD_CLOCK_RATE      30000000 
+
+#define HORZ_BACK_PORCH         40
+#define HORZ_FRONT_PORCH        40
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         29
+#define VERT_FRONT_PORCH        13
+#define VERT_PULSE_WIDTH        3
+#endif
+
+#if 0
+// Newhaven runs these settings in FT81X example board: 30MHz, 928/525 totals
+// Vfp+Vpw = 3, Vfp = 0, Blanking total = 32, but descrepancy of 13 lines
+// Hfp+Hpw = 48, Hfp = 0, Blanking total = 88, but descrepancy of 40 clocks
+// Newhaven uses a special delay hardware for red and blue colors to reduce noise.
+// REG_CSPREAD=1, R[7:0] changes a PCLK clock early and B[7:0] a PCLK clock later, which helps reduce the switching noise.
+#define LCD_CLOCK_RATE      30000000 
+
+#define HORZ_BACK_PORCH         80
+#define HORZ_FRONT_PORCH        0
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         42
+#define VERT_FRONT_PORCH        0
+#define VERT_PULSE_WIDTH        3
+#endif
+#if 0
 #define LCD_CLOCK_RATE      30000000
+
+#define HORZ_BACK_PORCH         40
+#define HORZ_FRONT_PORCH        31
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         29
+#define VERT_FRONT_PORCH        32
+#define VERT_PULSE_WIDTH        3
+#endif
+
+#if 0
+#define LCD_CLOCK_RATE      40000000 // 60Hz, max clock this LCD can run
+
+#define HORZ_BACK_PORCH         40
+#define HORZ_FRONT_PORCH        200
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         29
+#define VERT_FRONT_PORCH        101
+#define VERT_PULSE_WIDTH        3
+#endif
+
+
+#if 0
+#define LCD_CLOCK_RATE      40000000 // 85Hz, max allowed pixel clock
+
+#define HORZ_BACK_PORCH         40
+#define HORZ_FRONT_PORCH        22
+#define HORZ_PULSE_WIDTH        48
+
+#define VERT_BACK_PORCH         29
+#define VERT_FRONT_PORCH        5
+#define VERT_PULSE_WIDTH        3
+#endif
+
+#define OUTPUT_ENABLE_INVERT    EFalse // DE is active high
+#define OUTPUT_PCLK_INVERT      EFalse // Latch color bit on rising DCLK edge
+#define OUTPUT_HSYNC_INVERT     ETrue // Active Low, Don't care in DE-only mode
+#define OUTPUT_VSYNC_INVERT     ETrue // Active Low, Don't care in DE-only mode
+
+#define HORZ_PIXELS_PER_LINE    RESOLUTION_X
+#define VERT_LINES_PER_PANEL    RESOLUTION_Y
+
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -101,22 +204,22 @@ static const T_LCDControllerSettings LCD_NHD70800480EF_paramsI15bit = {
     LCD_ADVANCED_TFT,
     LCD_COLOR_RES_16_I555,
     // Per updated spec (confirms our findings) that Hor Back porch+pulse width MUST = 88!
-    40,         // Horizontal back porch, must be 40!
-    20,         // Horizontal front porch - adjust to meet the desired freq
-    48,         // HSYNC pulse width, must be 48!
-    800,        // Pixels per line
+    HORZ_BACK_PORCH,      // Horizontal back porch, must be 40!
+    HORZ_FRONT_PORCH,     // Horizontal front porch - adjust to meet the desired freq
+    HORZ_PULSE_WIDTH,     // HSYNC pulse width, must be 48!
+    HORZ_PIXELS_PER_LINE, // Pixels per line
     // Per updated spec (confirms our findings) that Ver Back porch+pulse width MUST = 32!
-    29, //36,   // Vertical back porch - New LCDs require different backporch.
-    23, //16,   // Vertical front porch - adjust to meet the desired freq
-    3,          // VSYNC pulse width, must be 3!
-    480,        // Lines per panel
+    VERT_BACK_PORCH,      // Vertical back porch - New LCDs require different backporch.
+    VERT_FRONT_PORCH,     // Vertical front porch - adjust to meet the desired freq
+    VERT_PULSE_WIDTH,     // VSYNC pulse width, must be 3!
+    VERT_LINES_PER_PANEL, // Lines per panel
 
     0,          // Line end delay disabled
 
-    EFalse,     // Invert Output enable
-    EFalse,     // Invert panel clock
-    ETrue,      // Invert HSYNC
-    ETrue,      // Invert VSYNC
+    OUTPUT_ENABLE_INVERT,     // Invert Output enable
+    OUTPUT_PCLK_INVERT,     // Invert panel clock
+    OUTPUT_HSYNC_INVERT,      // Invert HSYNC
+    OUTPUT_VSYNC_INVERT,      // Invert VSYNC
 
     0,          /* AC bias frequency (not used) */
 

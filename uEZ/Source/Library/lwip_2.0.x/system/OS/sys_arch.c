@@ -852,6 +852,14 @@ sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, void *arg,
     int32_t result;
 
     if (nextthread < SYS_THREAD_MAX) {
+
+        if(stacksize == 0) {
+          stacksize = 2*configMINIMAL_STACK_SIZE;
+        }
+        if(prio == 0) {
+          prio = UEZ_PRIORITY_HIGH;
+        }
+
         result = UEZTaskCreate(
                 (T_uezTaskFunction)thread,
                 name,

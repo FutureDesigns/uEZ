@@ -28,6 +28,8 @@
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_DAC.h>
 #include "LPC43xx_GPIO.h"
 
+// No interrupts are setup in this driver, so no M0 specific support was added.
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/

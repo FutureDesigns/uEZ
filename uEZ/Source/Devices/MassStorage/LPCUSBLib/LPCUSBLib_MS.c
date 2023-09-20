@@ -623,7 +623,7 @@ static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 
     SCSI_Request_Sense_Response_t SenseData;
     if (MS_Host_RequestSense(hDisk, 0, &SenseData) != 0) {
-        printf("Error retrieving device sense.\r\n");
+        //printf("Error retrieving device sense.\r\n");
         USB_Host_SetDeviceConfiguration(hDisk->Config.PortNumber, 0);
         return;
     }

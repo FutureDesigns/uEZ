@@ -343,7 +343,7 @@ void SYSVIEW_UpdateTask   (U32 xHandle, const char* pcTaskName, unsigned uxCurre
 void SYSVIEW_DeleteTask   (U32 xHandle);
 void SYSVIEW_SendTaskInfo (U32 TaskID, const char* sName, unsigned Prio, U32 StackBase, unsigned StackSize);
 
-//U32 SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific(void);
+U32 SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific(void);
 
 #ifdef __cplusplus
 }

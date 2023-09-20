@@ -28,7 +28,7 @@
 #include <uEZBSP.h>
 
 #ifdef FREERTOS_PLUS_TRACE //LPC1788/LPC4088 only as of uEZ v2.06
-#include "Include/trcUser.h"
+//#include "Include/trcUser.h"
 #endif
 
 static xSemaphoreHandle G_startingTaskReady;
@@ -39,7 +39,7 @@ UEZ_PUT_SECTION(".data", static TBool G_isRTOSRunning = EFalse);
 #define UEZ_DEBUG_HEAVY_ASSERTS     1
 #endif
 
-#if UEZ_DEBUG_HEAVY_ASSERTS
+#if (UEZ_DEBUG_HEAVY_ASSERTS == 1)
     #define UEZAssert(x)        if (!(x)) UEZHalt()
 
 static void UEZHalt(void)
@@ -1076,14 +1076,25 @@ T_uezError UEZQueueGetCount(T_uezQueue aQueue, TUInt32 *aCount)
 #include <uEZProcessor.h>
 TUInt32 UEZTickCounterGet(void)
 {
-#if (UEZ_PROCESSOR_CORE_TYPE == CORE_TYPE_CORTEX_M4 || UEZ_PROCESSOR_CORE_TYPE == CORE_TYPE_CORTEX_M3)
+#ifdef CORE_M3
     //Check to see if being called from interrupt and call the appropriate function
     if((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) == 0){
         return xTaskGetTickCount();
     } else {
         return xTaskGetTickCountFromISR();
     }
-#else
+#endif
+
+#ifdef CORE_M4
+    //Check to see if being called from interrupt and call the appropriate function
+    if((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) == 0){
+        return xTaskGetTickCount();
+    } else {
+        return xTaskGetTickCountFromISR();
+    }
+#endif
+
+#ifdef CORE_M0 // TODO
     return xTaskGetTickCount();
 #endif
 }

@@ -9,10 +9,13 @@
 
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 
-// If Newhaven revs the LCD again you cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
+// You cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD70800480EF // 7" version of LCD, Rev 12 or later
 #define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
+
+#define APP_ENABLE_HEARTBEAT_LED            1
+#define LPC43XX_ENABLE_M0_CORES             0
 
 #ifdef NDEBUG
 #define UEZ_REGISTER              	        0

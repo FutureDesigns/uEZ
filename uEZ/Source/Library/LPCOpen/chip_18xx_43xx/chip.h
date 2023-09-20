@@ -53,6 +53,8 @@
 #define false EFalse
 #endif
 
+#define CHIP_LPC43XX 1
+
 #include "enet_18xx_43xx.h"
 #include "rgu_18xx_43xx.h"
 #include "cguccu_18xx_43xx.h"

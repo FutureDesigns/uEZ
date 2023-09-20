@@ -27,6 +27,10 @@
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_Watchdog.h>
 
+// No interrupts are setup in this driver, so no M0 specific support was added.
+// Currently the driver only supports reseting the chip.
+// But either core could go to ISR instead of immediate reset.
+
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/

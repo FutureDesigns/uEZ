@@ -31,11 +31,13 @@
 #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 
+// Currently this is only used on LPC4357 and maybe for LPC54XX and LPC55XX MCUs.
+
 /*---------------------------------------------------------------------------*
  * Options:
  *---------------------------------------------------------------------------*/
 #ifndef SDCARD_SD_MMC_RATE_FOR_ID_STATE
-#define SDCARD_SD_MMC_RATE_FOR_ID_STATE            200000UL   // 400kHz (100-400kHz)
+#define SDCARD_SD_MMC_RATE_FOR_ID_STATE            400000UL // 400kHz (100-400kHz) // 4357 can't do less than 400KHz without clock tree change
 #endif
 #ifndef SDCARD_SD_MMC_ACQUIRE_DELAY
 #define SDCARD_SD_MMC_ACQUIRE_DELAY      (10)          /*!< inter-command acquire oper condition delay in msec*/
@@ -154,16 +156,16 @@ typedef struct {
 /* Get card's current state (idle, transfer, program, etc.) */
 static TInt32 ISDMMC_GetState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 {
-	uint32_t status;
-	TUInt32 response[4];
+    uint32_t status;
+    TUInt32 response[4];
 
 	/* get current state of the card */
     status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SEND_STATUS, (p->iRCA << 16), 0, response);
-	if (status & MCI_INT_RTO)
-		return -1;
+    if (status & MCI_INT_RTO)
+	    return -1;
 
-	/* check card state in response */
-	return (TInt32) R1_CURRENT_STATE(response[0]);
+    /* check card state in response */
+    return (TInt32) R1_CURRENT_STATE(response[0]);
 }
 
 /*---------------------------------------------------------------------------*
@@ -290,6 +292,17 @@ static void IProcessCSD(T_MassStorage_SDCard_SD_MMC_Workspace *p)
         /* See section 5.3.3 CSD Register (CSD Version 2.0) of SD2.0 spec  an explanation for the calculation of these values */
         c_size = IGetBits(48, 69, p->iCSD) + 1;
         p->iBlockNum = (c_size << 10);  /* 512 byte blocks assumed */
+
+        // TODO check SD card specific CMD6 for 50MHz mode vs 25MHz only. ALL microSD cards are supposed to support 50MHz mode.
+
+        #if 0
+        if (TODO) {
+            (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_HIGH_BUS_MAX_CLOCK);//UEZPlatform_MCI_DefaultFreq());
+        }
+        else {
+            (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_LOW_BUS_MAX_CLOCK);
+        }
+        #endif
     }
     else {
         /* See section 5.3 of the 4.1 revision of the MMC specs for  an explanation for the calculation of these values */
@@ -322,12 +335,12 @@ static void IProcessCSD(T_MassStorage_SDCard_SD_MMC_Workspace *p)
                     p->iBlockNum = p->iExtCSD[53];
 
                 }
-                /* switch to 52MHz clock if card type is set to 1 or else set to 26MHz */
+                /* switch to 51MHz clock if card type is set to 1 or else set to 25.5MHz (actual default uEZGUI speeds on 4357 204MHz source clock)*/
                 if ((p->iExtCSD[49] & 0xFF) == 1) {
                     /* for type 1 MMC cards high speed is 52MHz */
                     (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_HIGH_BUS_MAX_CLOCK);//UEZPlatform_MCI_DefaultFreq());
                 }
-                else {
+                else { // This may not be correct for actual SD cards, but apparently all microSD cards support 50MHz, so would need to test with very old full size card. Should be command 6.
                     /* for type 0 MMC cards high speed is 26MHz */
                     (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_LOW_BUS_MAX_CLOCK);
                 }
@@ -442,6 +455,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
 
     (*p->iSD_MMC)->PowerOn(p->iSD_MMC); /* Force socket power on */
     (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, SDCARD_SD_MMC_RATE_FOR_ID_STATE);
+
     UEZTaskDelay(2);
 
     /* clear card type */
@@ -451,14 +465,14 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
     if (p->iStat & STA_NODISK)
         return UEZ_ERROR_DEVICE_NOT_FOUND;
 
-    /* set high speed for the card as 20MHz */
-    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);//UEZPlatform_MCI_DefaultFreq());
+    /* set <=25MHz initial*/
+    (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_LOW_BUS_MAX_CLOCK/2);
     status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_IDLE, 0, MCI_INT_CMD_DONE, response);
 
     while (state < 100) {
         switch (state) {
             case 0: /* Setup for SD */
-                /* check if it is SDHC card */
+                /* check if it is SDHC card */ // CMD8
                 status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SD_SEND_IF_COND, SD_SEND_IF_ARG, 0, response);
                 if (!(status & MCI_INT_RTO)) {
                     /* check response has same echo pattern */
@@ -472,12 +486,11 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
                 tries = INIT_OP_RETRIES;
 
                 /* assume SD card */
-                p->iCardType |= CARD_TYPE_SD;
-                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, SD_MAX_CLOCK);//UEZPlatform_MCI_DefaultFreq());
+                p->iCardType |= CARD_TYPE_SD; // After first command, set normal speed mode
+                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_LOW_BUS_MAX_CLOCK); // 25.5MHz //UEZPlatform_MCI_DefaultFreq());
                 break;
 
-            case 10: /* Setup for MMC */
-                // start fresh for MMC cards
+            case 10: // CMD8 failed, not an SD card, restart init for MMC card. (NOT TESTED!)
                 p->iCardType &= ~CARD_TYPE_SD;
                 status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_IDLE, 0, MCI_INT_CMD_DONE, response);
                 command = CMD_MMC_OP_COND;
@@ -486,14 +499,14 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
                 ++state;
 
                 /* for MMC cards high speed is 20MHz */
-                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);//UEZPlatform_MCI_DefaultFreq());
+                (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK); // Now full speed is set//UEZPlatform_MCI_DefaultFreq());
                 break;
 
             case 1:
             case 11:
                 status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, command, 0, 0, response);
                 if (status & MCI_INT_RTO) {
-                    state += 9; /* Mode unavailable */
+                    state += 9; /* NOT SD card */
                 } else {
                     ++state;
                 }
@@ -732,6 +745,7 @@ static T_uezError SDCard_MS_SD_MMC_Read(
   
   IGrab();
   
+  // TODO remove this and use max specified in IProcessCSD or allow for a max that is set in platform file.
   (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK);//UEZPlatform_MCI_DefaultFreq());
   
   while (1) {
@@ -870,7 +884,7 @@ static T_uezError SDCard_MS_SD_MMC_Read(
       while (p->iIsCompleteReadFlag == EFalse) {
         UEZTaskDelay(0);
         if (UEZTickCounterGetDelta(start) >= 25) { // numTransferring
-          UEZTaskDelay(2);
+          UEZTaskDelay(0);
         }
         if (UEZTickCounterGetDelta(start) >= 5000 * numTransferring) {  // TODO this may need to be higher? we freq timeout after doing write....
           error = UEZ_ERROR_TIMEOUT;
@@ -888,7 +902,7 @@ static T_uezError SDCard_MS_SD_MMC_Read(
       while (ISDMMC_GetState(p) != SDMMC_TRAN_ST) {
         UEZTaskDelay(0);
         if (UEZTickCounterGetDelta(start) >= 25) { // numTransferring
-          UEZTaskDelay(2);
+          UEZTaskDelay(0);
         }
         if (UEZTickCounterGetDelta(start) >= 500 * numTransferring) {
           error = UEZ_ERROR_TIMEOUT;
@@ -946,7 +960,9 @@ static T_uezError SDCard_MS_SD_MMC_Write(
 
     IGrab();
 
+    // TODO remove this and use max specified in IProcessCSD or allow for a max that is set in platform file.
     (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_WRITE_CLOCK);//UEZPlatform_MCI_DefaultFreq());
+
     while (1) {
     for (uint8_t i = 0; i < SDCARD_FAILED_WRITE_RETRY_COUNT; i++) {
       error = UEZ_ERROR_NONE;
@@ -1004,7 +1020,7 @@ static T_uezError SDCard_MS_SD_MMC_Write(
         
         p->iError = 0;
 
-#if (MULTIBLOCK_WRITE_SUPPORTED==1)
+#if (MULTIBLOCK_WRITE_SUPPORTED==1) // TODO this isn't fully implemented/working yet.
         /* set number of bytes to write */
         (*p->iSD_MMC)->ReadyTransmission(p->iSD_MMC, aBuffer, aNumBlocks, 512, &numWriting, ISD_MMCCompleteWrite, p);
 
@@ -1058,7 +1074,7 @@ static T_uezError SDCard_MS_SD_MMC_Write(
         (*p->iSD_MMC)->ReadyTransmission(p->iSD_MMC, aBuffer, 1, 512, &dum, ISD_MMCCompleteWrite, p);
         p->iIsCompleteWriteFlag = EFalse;
     
-        // Select single or multiple read based on number of blocks 
+        // Select single or multiple write based on number of blocks 
         if (aNumBlocks == 1) {
           (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_WRITE_SINGLE, index, 0 | MCI_INT_DATA_OVER, response);
 

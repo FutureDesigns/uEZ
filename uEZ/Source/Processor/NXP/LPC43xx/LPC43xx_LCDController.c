@@ -29,6 +29,18 @@
 #include <uEZBSP.h>
 #include <HAL/Interrupt.h>
 
+/* For using 204MHz main CPU clock the following are available in this driver:
+ * Divider (X) 0-16, clock (Y) in MHz: 204000000/(X+2)/1000/1000=Y
+ * Possible Y value clocks in MHz:
+ * 11.33,12,12.75,13.6,14.57,15.69,17,18.55,20.4,22.67,25.5,29.143,34,40.8,51,68
+ */
+
+/* For using 160MHz main CPU clock/2 the following are available in this driver:
+ * Divider (X) 0-16, clock (Y) in MHz: 160000000/(X+2)/1000/1000=Y
+ * Possible Y value clocks in MHz:
+ * 11.33,12,12.75,13.6,14.57,15.69,17,18.55,20.4,22.67,25.5,29.143,34,40.8,51,68
+ */
+
 /* For using 120MHz main CPU clock the following are available in this driver:
  * Divider (X) 0-16, clock (Y) in MHz: 120000000/(X+2)/1000/1000=Y
  * Possible Y value clocks in MHz:
@@ -37,13 +49,24 @@
  * If a weird clock was needed, an external clock could be supplied to a pin.
  */
 
-/* For using 102MHz main CPU clock the following are available in this driver:
+/* For using 102MHz main CPU clock/2 the following are available in this driver:
  * Divider (X) 0-16, clock (Y) in MHz: 102000000/(X+2)/1000/1000=Y
  * Possible Y value clocks in MHz:
- * 5.67,6,6.37,6.8,7.29,7.85,8.5,9.27,10.2,11.33,12.75,14.57,17,20.4,25.5,31,51
+ * 5.67,6,6.37,6.8,7.29,7.85,8.5,9.27,10.2,11.33,12.75,14.57,17,20.4,25.5,34,51
  */
+ 
+// While 480 is in the clock tree, we can't go over 204 in this peripheral.
+#define LCD_SOURCE_CLOCK_204 204000000 // not tested yet
+#define LCD_SOURCE_CLOCK_160 160000000 // not tested yet
+#define LCD_SOURCE_CLOCK_120 120000000
+#define LCD_SOURCE_CLOCK_102 102000000 // defualt in PLL.c
 
- // Other clocks could be configured on this part for LCD such as 180MHz.
+#ifndef LCD_SOURCE_CLOCK
+//#define LCD_SOURCE_CLOCK          LCD_SOURCE_CLOCK_204
+//#define LCD_SOURCE_CLOCK          LCD_SOURCE_CLOCK_160
+//#define LCD_SOURCE_CLOCK          LCD_SOURCE_CLOCK_120
+#define LCD_SOURCE_CLOCK          LCD_SOURCE_CLOCK_102
+#endif
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -158,10 +181,20 @@ T_uezError LPC43xx_LCDController_InitializeWorkspace(void *aWorkspace)
     // Setup workspace for this space for interrupts
     G_LPC43xx_lcdWorkspace = p;
 
+#ifdef CORE_M4
     // Register interrupts for this LCD Controller
     InterruptRegister(LCD_IRQn, LCDControllerVerticalIRQ,
         INTERRUPT_PRIORITY_NORMAL, "VSync");
     InterruptEnable(LCD_IRQn);
+#endif
+#ifdef CORE_M0
+    // Register interrupts for this LCD Controller
+    InterruptRegister(M0_LCD_IRQn, LCDControllerVerticalIRQ,
+        INTERRUPT_PRIORITY_NORMAL, "VSync");
+    InterruptEnable(M0_LCD_IRQn);
+#endif
+#ifdef CORE_M0SUB
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -189,9 +222,21 @@ T_uezError LPC43xx_LCDController_Configure(
     TUInt32 calcDiv;
 
     // Turn on the power to the subsystem
-    //Turn on peripheral clock
+
+    // Turn on peripheral clock
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_204)
+    // TODO turn off divider
+#endif
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_160)
+    LPC_CGU->IDIVA_CTRL = (7<<24) | (1<<11) | (2<<2); //Produce a 160MHz clock on DIVA
+    LPC_CGU->BASE_LCD_CLK = (0xC<<24) | (1<<11); // auto block enabled, DIVA clock selected 120MHz
+#endif
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_120)
+    LPC_CGU->BASE_LCD_CLK = (0xC<<24) | (1<<11); // auto block enabled, DIVA clock selected 120MHz
+#endif
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_102)
     LPC_CGU->BASE_LCD_CLK = (9<<24) | (1<<11); // auto block enabled, PLL1 clock selected 102MHz
-    //LPC_CGU->BASE_LCD_CLK = (0xE<<24) | (1<<11); // auto block enabled, DIVA clock selected 120MHz
+#endif
 
     // disable the display`
     LPC_LCD->CTRL &= ~LCD_CTRL_LcdEn;
@@ -250,10 +295,22 @@ T_uezError LPC43xx_LCDController_Configure(
             break;
     }
 
+    
     // Find the dot clock divider with the fastest clock rate to match the requested
     // dot clock rate without going over.
     for (dotClockDivider = 0; dotClockDivider < 0x0F; dotClockDivider++) {
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_204)
+        calcDiv = (PROCESSOR_OSCILLATOR_FREQUENCY / (dotClockDivider + 1)); // TODO
+#endif
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_160)
+        calcDiv = (LCD_SOURCE_CLOCK_160 / (dotClockDivider + 2));
+#endif
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_120)
+        calcDiv = (LCD_SOURCE_CLOCK_120 / (dotClockDivider + 2));
+#endif
+#if (LCD_SOURCE_CLOCK==LCD_SOURCE_CLOCK_102)
         calcDiv = (PROCESSOR_OSCILLATOR_FREQUENCY / (dotClockDivider + 2));
+#endif
         if (calcDiv <= aSettings->iDotClockHz)
             break;
     }
@@ -642,119 +699,119 @@ void LPC43xx_LCDController_Require(const T_LPC43xx_LCDController_Pins *aPins)
     T_halWorkspace *p_lcd;
     
     static const T_LPC43xx_SCU_ConfigList pinsVD0[] = {
-            {GPIO_P2_1,  SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD0
+            {GPIO_P2_1,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD0
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD1[] = {
-            {GPIO_P2_4,  SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD1
+            {GPIO_P2_4,  SCU_HIGH_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)},   // LCD_VD1 //HD-pin
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD2[] = {
-            {GPIO_P2_3,  SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD2
+            {GPIO_P2_3,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD2
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD3[] = {
-            {GPIO_P2_2,  SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD3
+            {GPIO_P2_2,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD3
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD4[] = {
-            {GPIO_P3_12,  SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD4
-            {GPIO_P4_7, SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD4
+            {GPIO_P3_12, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD4
+            {GPIO_P4_7,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD4
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD5[] = {
-            {GPIO_P3_11,  SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD5
-            {GPIO_P4_6, SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD5
+            {GPIO_P3_11, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD5
+            {GPIO_P4_6,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD5
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD6[] = {
-            {GPIO_P3_10, SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD6
-            {GPIO_P4_5,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD6
+            {GPIO_P3_10, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD6
+            {GPIO_P4_5,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD6
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD7[] = {
-            {GPIO_P3_9, SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD7
-            {GPIO_P4_4,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD7
+            {GPIO_P3_9,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD7
+            {GPIO_P4_4,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD7
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD8[] = {
-            {GPIO_P3_13,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD8
-            {GPIO_P4_5, SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD8
+            {GPIO_P3_13, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD8
+            {GPIO_P4_5,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD8
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD9[] = {
-            {GPIO_P5_12,   SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD9
+            {GPIO_P5_12, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD9
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD10[] = {
-            {GPIO_P5_14, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD10
+            {GPIO_P5_14, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD10
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD11[] = {
-            {GPIO_P5_13, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD11
+            {GPIO_P5_13, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD11
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD12[] = {
-            {GPIO_P4_3, SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD12
-            {GPIO_P2_2, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD12
-            {GPIO_P1_15, SCU_NORMAL_DRIVE_DEFAULT(7)}, // LCD_VD12
+            {GPIO_P4_3,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD12
+            {GPIO_P2_2,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD12
+            {GPIO_P1_15, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(7)}, // LCD_VD12
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD13[] = {
-            {GPIO_P1_14, SCU_NORMAL_DRIVE_DEFAULT(7)}, // LCD_VD13
-            {GPIO_P2_0, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD13
-            {GPIO_P5_26, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD13
+            {GPIO_P1_14, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(7)}, // LCD_VD13
+            {GPIO_P2_0,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD13
+            {GPIO_P5_26, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD13
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD14[] = {
-            {GPIO_P5_9, SCU_NORMAL_DRIVE_DEFAULT(6)}, // LCD_VD14
-            {GPIO_P5_14, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD14
-            {GPIO_P5_25, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD14
+            {GPIO_P5_9,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(6)}, // LCD_VD14
+            {GPIO_P5_14, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD14
+            {GPIO_P5_25, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD14
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD15[] = {
-            {GPIO_P5_8, SCU_NORMAL_DRIVE_DEFAULT(6)}, // LCD_VD15
-            {GPIO_P5_13, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD15
-            {GPIO_P5_24, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD15
+            {GPIO_P5_8,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(6)}, // LCD_VD15
+            {GPIO_P5_13, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD15
+            {GPIO_P5_24, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD15
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD16[] = {
-            {GPIO_P3_12,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD16
-            {GPIO_P4_4,  SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD16
+            {GPIO_P3_12, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD16
+            {GPIO_P4_4,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD16
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD17[] = {
-            {GPIO_P3_11,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD17
+            {GPIO_P3_11, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD17
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD18[] = {
-            {GPIO_P3_10, SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD18
+            {GPIO_P3_10, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD18
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD19[] = {
-            {GPIO_P2_1, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD19
-            {GPIO_P3_9, SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_VD19
-            {GPIO_P4_3, SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD19
-            {GPIO_P5_26, SCU_NORMAL_DRIVE_DEFAULT(6)}, // LCD_VD19
+            {GPIO_P2_1,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD19
+            {GPIO_P3_9,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_VD19
+            {GPIO_P4_3,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD19
+            {GPIO_P5_26, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(6)}, // LCD_VD19
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD20[] = {
-            {GPIO_P2_4, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD20
-            {GPIO_P5_23, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD20
+            {GPIO_P2_4,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD20
+            {GPIO_P5_23, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD20
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD21[] = {
-            {GPIO_P2_3, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD21
-            {GPIO_P5_22, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD21
+            {GPIO_P2_3,  SCU_HIGH_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)},   // LCD_VD21 //HD-pin
+            {GPIO_P5_22, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD21
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD22[] = {
-            {GPIO_P5_12, SCU_NORMAL_DRIVE_DEFAULT(5)}, // LCD_VD22
-            {GPIO_P5_21, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD22
+            {GPIO_P5_12, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(5)}, // LCD_VD22
+            {GPIO_P5_21, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD22
     };
     static const T_LPC43xx_SCU_ConfigList pinsVD23[] = {
-            {GPIO_P3_13, SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_VD23
-            {GPIO_P5_20, SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_VD23
+            {GPIO_P3_13, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_VD23
+            {GPIO_P5_20, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_VD23
     };
     static const T_LPC43xx_SCU_ConfigList pinsPWR[] = {
-            {GPIO_P3_15,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_PWR
-            {GPIO_PZ_3_P4_7,  SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_PWR
-            {GPIO_P5_25,  SCU_NORMAL_DRIVE_DEFAULT(6)}, // LCD_PWR
+            {GPIO_P3_15, SCU_NORMAL_DRIVE_DEFAULT(3)},               // LCD_PWR
+            {GPIO_PZ_3_P4_7,  SCU_NORMAL_DRIVE_DEFAULT(4)},          // LCD_PWR
+            {GPIO_P5_25, SCU_NORMAL_DRIVE_DEFAULT(6)},               // LCD_PWR
     };
     static const T_LPC43xx_SCU_ConfigList pinsLE[] = {
-            {GPIO_P3_8,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_LE
+            {GPIO_P3_8,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_LE
     };
     static const T_LPC43xx_SCU_ConfigList pinsDCLK[] = {
-            {GPIO_PZ_3_P4_7,  SCU_NORMAL_DRIVE_DEFAULT(0)}, // LCD_DCLK
-            {GPIO_PZ_Z_PC_0,  SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_DCLK
+            {GPIO_PZ_3_P4_7, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(0)}, // LCD_DCLK
+            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_DCLK
     };
     static const T_LPC43xx_SCU_ConfigList pinsFP[] = {
-            {GPIO_P2_5,  SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_FP
+            {GPIO_P2_5,  SCU_HIGH_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)},   // LCD_FP   //HD-pin
     };
     static const T_LPC43xx_SCU_ConfigList pinsENAB[] = {
-            {GPIO_P2_6,  SCU_NORMAL_DRIVE_DEFAULT(2)}, // LCD_ENAB_M
+            {GPIO_P2_6,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(2)}, // LCD_ENAB_M
     };
     static const T_LPC43xx_SCU_ConfigList pinsLP[] = {
-            {GPIO_P3_14,  SCU_NORMAL_DRIVE_DEFAULT(3)}, // LCD_LP
-            {GPIO_P4_6,  SCU_NORMAL_DRIVE_DEFAULT(4)}, // LCD_LP
+            {GPIO_P3_14, SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(3)}, // LCD_LP
+            {GPIO_P4_6,  SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(4)}, // LCD_LP
     };
     static const T_LPC43xx_SCU_ConfigList pinsCLKIN[] = {
             {GPIO_PZ_8_PF_0, SCU_NORMAL_DRIVE_DEFAULT(1)}, // LCD_CLKIN

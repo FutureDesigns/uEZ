@@ -1349,9 +1349,19 @@ void LPC43xx_EMAC_EnableReceiveInterrupt(
     p->iReceiveCallback = aCallback;
     p->iReceiveCallbackWorkspace = aCallbackWorkspace;
     // Register this interrupt (if not already)
+#ifdef CORE_M4
     InterruptRegister(ETHERNET_IRQn, (TISRFPtr)LPC43xx_EMAC_ISR,
         INTERRUPT_PRIORITY_HIGH, "EMAC");
     InterruptEnable(ETHERNET_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptRegister(M0_ETHERNET_IRQn, (TISRFPtr)LPC43xx_EMAC_ISR,
+        INTERRUPT_PRIORITY_HIGH, "EMAC");
+    InterruptEnable(M0_ETHERNET_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    // None
+#endif
     // Turn on those types of interrupts
     //LPC_ETHERNET->DMA_INT_EN = (1<<16) | (1<<6);//INT_RX_DONE;
     LPC_ETHERNET->DMA_INT_EN = (1 << 0) | (1 << 4) | (1 << 5) | (1 << 6) |
@@ -1370,7 +1380,15 @@ void LPC43xx_EMAC_DisableReceiveInterrupt(void *aWorkspace)
     // Turn off those types of interrupts
     LPC_ETHERNET->DMA_INT_EN = 0;//INT_RX_DONE;
     // Turn off the whole interrutp since it is the only one
-    InterruptDisable(ETHERNET_IRQn);//?
+#ifdef CORE_M4
+    InterruptDisable(ETHERNET_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptDisable(M0_ETHERNET_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    // None
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -1440,16 +1458,23 @@ const HAL_EMAC G_LPC43xx_EMAC_Interface = {
  *      T_LPC43xx_EMAC_Settings *aSettings -- Settings to configure EMAC as
  *      TBool *aIsFound -- REturned flag if found
  *---------------------------------------------------------------------------*/
-#define EMAC_DRIVE(mode)          SCU_NORMAL_DRIVE(mode, \
+#define EMAC_DRIVE(mode)             SCU_NORMAL_DRIVE(mode, \
                                                    SCU_EPD_DISABLE, \
                                                    SCU_EPUN_DISABLE, \
                                                    SCU_EHS_FAST, \
                                                    SCU_EZI_ENABLE, \
                                                    SCU_ZIF_ENABLE)
+// Disable input buffer
+#define EMAC_DRIVE_OUTPUT_ONLY(mode) SCU_NORMAL_DRIVE(mode, \
+                                                   SCU_EPD_DISABLE, \
+                                                   SCU_EPUN_DISABLE, \
+                                                   SCU_EHS_FAST, \
+                                                   SCU_EZI_DISABLE, \
+                                                   SCU_ZIF_ENABLE)
 void LPC43xx_EMAC_RMII_Require(const T_LPC43xx_EMAC_Settings *aSettings)
 {
     T_LPC43xx_EMAC_Workspace *p;
-
+    // Note that all of these are normal drive pins on this LPC. TODO do we want to disable input buffer on TX only pins?
     static const T_LPC43xx_SCU_ConfigList TX_EN[] = {
             {GPIO_P0_1       , SCU_NORMAL_DRIVE_DEFAULT(6)}, //TX Enable
             {GPIO_P6_3       , SCU_NORMAL_DRIVE_DEFAULT(3)}, //TX Enable
@@ -1472,7 +1497,7 @@ void LPC43xx_EMAC_RMII_Require(const T_LPC43xx_EMAC_Settings *aSettings)
             {GPIO_P6_4       , SCU_NORMAL_DRIVE_DEFAULT(4)}, //TX Error
             {GPIO_P6_13      , SCU_NORMAL_DRIVE_DEFAULT(6)}, //TX Error
     };
-    static const T_LPC43xx_SCU_ConfigList TX_CLK[] = {
+    static const T_LPC43xx_SCU_ConfigList TX_CLK[] = { // This is actually an input clock pin ENET_REFCLK
             {GPIO_PZ_0_P1_19 , SCU_NORMAL_DRIVE(0, (1 << 7) , (1 << 6) , (1 << 5) , (1 << 4), (0 << 3))}, //TX Clk
     };
     static const T_LPC43xx_SCU_ConfigList RX_DV[] = {

@@ -121,6 +121,11 @@ static WM_HTIMER G_UpdateTimer;
 /** Active Flag, tell the dialog when it receives messages that the screen is in the foreground*/
 static TBool G_Active = EFalse;
 
+
+TBool G_SDCard_inserted = EFalse;
+TBool G_USBFlash_inserted = EFalse;
+
+
 /*---------------------------------------------------------------------------*
  * Routine: IHandleButtonRightTop
  *---------------------------------------------------------------------------*/
@@ -184,8 +189,8 @@ static TBool IHandleButtonRightMiddle(WM_MESSAGE * pMsg, int aNCode, int aID)
 static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     if (aNCode == WM_NOTIFICATION_RELEASED) {
-        Storage_PrintInfo('0');
-        Storage_PrintInfo('1');
+        G_SDCard_inserted = Storage_PrintInfo('1');
+        G_USBFlash_inserted = Storage_PrintInfo('0');
         WindowManager_Show_Window(STORAGE_SCREEN);
     }
     return EFalse;

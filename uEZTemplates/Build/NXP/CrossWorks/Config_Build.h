@@ -28,19 +28,29 @@ $[ifdef uEZGUI_4357_50WVN]#define PROCESSOR_OSCILLATOR_FREQUENCY      204000000
 #define SDRAM_CLOCK_FREQUENCY               PROCESSOR_OSCILLATOR_FREQUENCY/2
 #define EMC_CLOCK_FREQUENCY                 PROCESSOR_OSCILLATOR_FREQUENCY/2
 
+#define UEZGUI_4357_50WVN_REV               2 // For Rev 1 change to 1. Need to reduce SDRAM size in projects to 16MB.
+
 // For Rev 2.1 units and later Newhaven updated the LCD (but kept the same PN) so use the Rev2 option for correct alignment.
 // You cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
-//#define UEZ_DEFAULT_LCD_CONFIG            LCD_CONFIG_NEWHAVEN_NHD50800480TF // Original version of LCD
+#if (UEZGUI_4357_50WVN_REV == 2)
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF_Rev2 // Rev 2 version of LCD
-#define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch$[endif]
+#else
+// For Rev 1.X units the UEZBSP_SDRAM_SIZE is 16MB and the project files need to be changed for 16MB only.
+#define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD50800480TF // Original version of LCD
+#endif
+#define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
+
+#define LPC43XX_ENABLE_M0_CORES             0 // 1 to start M0 core. Should program M0 app first.$[endif]
 $[ifdef uEZGUI_4357_70WVN]#define PROCESSOR_OSCILLATOR_FREQUENCY      204000000
 #define OSCILLATOR_CLOCK_FREQUENCY          12000000
 #define SDRAM_CLOCK_FREQUENCY               PROCESSOR_OSCILLATOR_FREQUENCY/2
 #define EMC_CLOCK_FREQUENCY                 PROCESSOR_OSCILLATOR_FREQUENCY/2
 
-// If Newhaven revs the LCD again you cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
+// If Newhaven revs the LCD you normally cannot tell from looking at the LCD that it is different, so go by the uEZGUI Revision label.
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_NEWHAVEN_NHD70800480EF // 7" version of LCD, Rev 12 or later
-#define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch$[endif]$[SkipNewLine]
+#define USE_RESISTIVE_TOUCH                 0 // set to 1 to enable 4 wire resistive touch, 0 for cap touch
+
+#define LPC43XX_ENABLE_M0_CORES             0 // 1 to start M0 core. Should program M0 app first.$[endif]$[SkipNewLine]
 
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 #define UEZGUI_EXPANSION_DEVKIT             0 // Turn on for uEZGUI-EXP-DK development board

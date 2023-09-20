@@ -59,10 +59,25 @@ typedef struct {
 } T_LPC43xx_SCU_ConfigList;
 
 /*-------------------------------------------------------------------------*
+ * Workspace:
+ *-------------------------------------------------------------------------*/
+typedef struct {
+    TUInt32 iCore;
+    TUInt32 iTest;
+} T_LPC43xx_M0_APP_Workspace;
+typedef struct {
+    TUInt32 iCore;
+    TUInt32 iTest;
+} T_LPC43xx_M4_CORE_Workspace;
+
+/*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
 void CPUDisableInterrupts(void);
 void CPUEnableInterrupts(void);
+
+T_uezError LPC43xx_InterCore_InitializeWorkspace(void *aWorkspace);
+void LPC43xxSetupInterCoreInterrupts(void);
 
 void LPC43xxPowerOn(TUInt32 bits); // This LPC doesn't have an actual PCONP type register!
 void LPC43xxPowerOff(TUInt32 bits);

@@ -4,7 +4,7 @@
 
 :cross_set
 @ if defined CROSSBUILD goto keil_set
-@   set CROSSBUILD=""C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 4.0\bin\crossbuild.exe""
+@   set CROSSBUILD="C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 4.10\bin\crossbuild.exe"
 
 :keil_set
 @ if defined KEILUV4 goto hew_set

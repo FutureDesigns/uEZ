@@ -147,11 +147,13 @@ static void MassStorageConfigChanged(void);
 static void MassStorageControlRequest(void);
 static int32_t MassStorageUpdate(int32_t aUnitAddress);
 
+//#ifndef USB_HOST_ONLY
+
 static void ISetCSW(USB_ClassInfo_MS_Device_t *const MSInterfaceInf);
 static void IMSRead(USB_ClassInfo_MS_Device_t *const MSInterfaceInf);
 static void IMSWrite(USB_ClassInfo_MS_Device_t *const MSInterfaceInfo);
 static void DataInTransfer(USB_ClassInfo_MS_Device_t *const MSInterfaceInfo, TUInt32 aLength);
-
+//#endif
 
 /*-------------------------------------------------------------------------*
  * Globals:
@@ -261,6 +263,7 @@ static const USB_Descriptor_Configuration_t ConfigurationDescriptor =
         }
 };
 
+//#ifndef USB_HOST_ONLY
 static USB_ClassInfo_MS_Device_t UEZ_MS_Device = {
         .Config = {
             .InterfaceNumber = 0,
@@ -277,6 +280,7 @@ static USB_ClassInfo_MS_Device_t UEZ_MS_Device = {
             .PortNumber = 0
         }
 };
+//#endif
 
 static T_USBMSDriveCallbacks G_callbacks;
 static void *G_callbackWorkspace;

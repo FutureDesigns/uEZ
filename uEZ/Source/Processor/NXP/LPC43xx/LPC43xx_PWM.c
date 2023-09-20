@@ -29,6 +29,8 @@
 #include <uEZBSP.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_PWM.h>
 
+// No interrupts are setup in this driver, so no M0 specific support was added.
+
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/

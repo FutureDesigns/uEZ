@@ -2,8 +2,9 @@ ExitOnError 1
 usb 0
 device LPC4357_M4
 si SWD
-speed 1000
+speed 12000
 
+RSetType 2
 rx 200
 h
 

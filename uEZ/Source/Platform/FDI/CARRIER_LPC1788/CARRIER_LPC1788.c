@@ -906,9 +906,10 @@ void UEZPlatform_Console_FullDuplex_UART_Require(
     Serial_Generic_FullDuplex_Stream_Create("Console", aHALSerialName,
             aWriteBufferSize, aReadBufferSize);
     // Set standard output to console
-    T_uezDevice G_stdptr = StdoutGet();
-    UEZStreamOpen("Console", &G_stdptr); // set stdOut
-    StdinRedirect(G_stdptr); // set stdIn
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*
@@ -942,9 +943,10 @@ void UEZPlatform_Console_HalfDuplex_UART_Require(
             aWriteBufferSize, aReadBufferSize, aDriveEnablePortPin,
             aDriveEnablePolarity, aDriveEnableReleaseTime);
     // Set standard output to console
-    T_uezDevice G_stdptr = StdoutGet();
-    UEZStreamOpen("Console", &G_stdptr); // set stdOut
-    StdinRedirect(G_stdptr); // set stdIn
+    T_uezDevice stdInOut;
+    UEZStreamOpen("Console", &stdInOut); // open device
+    StdinRedirect(stdInOut); // set stdIn in library StdInOut.c
+    StdoutRedirect(stdInOut); // set stdOut in library StdInOut.c
 }
 
 /*---------------------------------------------------------------------------*

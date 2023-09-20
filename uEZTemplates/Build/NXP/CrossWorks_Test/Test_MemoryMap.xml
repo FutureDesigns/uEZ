@@ -25714,7 +25714,7 @@ $[ifdef LPC4357]
   </MemorySegment>
 
   <!-- 1st SDRAM section used with 16MB part. Use DYCS0_SIZE variable to increase size instead of editing this file. -->
-  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(DYCS0_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
+  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
   <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />  
   <!-- Second SDRAM section not currently used. -->
   <MemorySegment start="0x30000000" name="$(DYCS1_NAME:DYCS1)" size="$(DYCS1_SIZE:0)-$(DYCS0_CM1_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />

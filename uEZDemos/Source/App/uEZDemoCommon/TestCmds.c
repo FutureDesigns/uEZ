@@ -1679,34 +1679,31 @@ int UEZGUICmdReset(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
 {
-    T_uezTimeDate td;    
+    T_uezTimeDate td;
+    T_uezTimeDate tdCompare;
     char *p;
 
     if (argc == 1) {
-        td.iDate.iMonth = 1;
-        td.iDate.iDay = 1;
-        td.iDate.iYear = 2018;
-        td.iTime.iHour = 8;
-        td.iTime.iMinute = 0;
-        td.iTime.iSecond = 0;
-        // Set the time to 1/1/2018, 8:00:00
-        UEZTimeDateSet(&td);
 
-        //UEZTaskDelay(5000);
-        UEZTaskDelay(3000);
-
-        UEZTimeDateGet(&td);
-        if ((td.iDate.iMonth==1) &&
-            (td.iDate.iDay == 1) &&
-            (td.iDate.iYear == 2018) &&
-            (td.iTime.iHour == 8) &&
-            (td.iTime.iMinute == 0) &&
-            (td.iTime.iSecond > 1))
+        UEZTimeDateGet(&tdCompare); // Get the reading for a value to compare against
+        UEZTaskDelay(1100);  // Wait ~1 second. Gives RTC time to increment another second
+        UEZTimeDateGet(&td); // Get the reading again
+        UEZTaskDelay(500);  // Wait ~0.5 second for the reading to return
+                
+        if (tdCompare.iDate.iMonth == td.iDate.iMonth
+        && tdCompare.iDate.iDay == td.iDate.iDay
+        && tdCompare.iDate.iYear == td.iDate.iYear
+        && tdCompare.iTime.iHour == td.iTime.iHour
+        && tdCompare.iTime.iMinute == td.iTime.iMinute
+        && tdCompare.iTime.iSecond == td.iTime.iSecond)
         {
-            FDICmdSendString(aWorkspace, "PASS: OK\n");
-        } else {
             FDICmdSendString(aWorkspace, "FAIL: Not Incrementing\n");
         }
+        else
+        {
+            FDICmdSendString(aWorkspace, "PASS: OK\n");
+        }
+        
     } else if (argc == 2) {
         p = argv[1];
         if (strcmp(p, "set")==0) {        
@@ -1769,7 +1766,7 @@ int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[])
                 break;
             case UEZ_ERROR_NOT_AVAILABLE:
             case UEZ_ERROR_NOT_READY:
-                FDICmdSendString(aWorkspace, "FAIL: Drive not Found\n");
+                FDICmdSendString(aWorkspace, "FAIL: USB Drive not ready\n");
                 break;
             case UEZ_ERROR_NOT_FOUND:
                 FDICmdSendString(aWorkspace, "FAIL: File not Found\n");

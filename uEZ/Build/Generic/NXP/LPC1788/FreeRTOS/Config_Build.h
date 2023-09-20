@@ -40,14 +40,12 @@
 #ifdef NDEBUG
 #define UEZ_REGISTER              0
 
-#define configUSE_TRACE_FACILITY      0
-//#define configGENERATE_RUN_TIME_STATS 0
 #else
 #define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
 
-#define configUSE_TRACE_FACILITY      1
-//#define configGENERATE_RUN_TIME_STATS 0
 #endif
+
+#define DEBUG_HTTP_SERVER           	      0
 
 #define NETWORK_LWIP_MAX_NUM_SOCKETS          16
 
@@ -84,4 +82,10 @@
 
 #if (FREERTOS_HEAP_SELECTION==5)
 // TODO see https://www.freertos.org/a00111.html#heap_5.
+#endif
+
+#define ALLOW_LOCKING_XSPI_OTP 0 // set to 1 to allow sending WRSCUR command for 512/1024 byte hidden region in spifiLockOtp function.
+
+#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+// Placeholder
 #endif

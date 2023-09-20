@@ -28,6 +28,8 @@
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
+#define DEBUG_SD_CRC_COUNT         0 // for 4357 SD card testing
+
 /* ----- MMC/SDC command ----- */
 //#define SD_MMC_CMD0    (0)             /* GO_IDLE_STATE */
 //#define SD_MMC_CMD1    (1)             /* SEND_OP_COND (MMC) */
@@ -275,19 +277,24 @@
  * @brief Max MMC clock rate
  */
 #if(UEZ_PROCESSOR == NXP_LPC4357)
-/* // This combination (single block writes) still fails with multiple CRC errors on read on rev 1.4+ board.
+// This combination passes with uEZ > 2.13 on 50WVN R1.4, 50WVN R2, 70WVN R1 boards
+// This only satisfies MMC spec, not SD spec. Need to lower MCU clock to get <=50MHz for SD spec.
+#define MMC_MAX_READ_CLOCK           51000000
+#define MMC_MAX_WRITE_CLOCK          51000000
+
+/* // This combination (single block writes)  passes with uEZ > 2.13 on 50WVN R1.4, 50WVN R2, 70WVN R1 boards
 #define MMC_MAX_READ_CLOCK           51000000
 #define MMC_MAX_WRITE_CLOCK          25500000 */
 
-// This combination passes (single block writes) on rev 1.4+ board. If the resistors on SD card are wrong we will fail to run this speed properly.
+/* // This combination has issues with some SD card switchers/repeaters
 #define MMC_MAX_READ_CLOCK           34000000
-#define MMC_MAX_WRITE_CLOCK          25500000
+#define MMC_MAX_WRITE_CLOCK          25500000*/
 
 /* // This combination at passes file write test using single block writes, but only if input glitch filter is disabled on the 6 signal pins.
 #define MMC_MAX_READ_CLOCK           25500000
 #define MMC_MAX_WRITE_CLOCK          25500000 */
 
-/* // This combination passes file write test using single block writes.
+/* // Force slow write speed
 #define MMC_MAX_READ_CLOCK           25500000
 #define MMC_MAX_WRITE_CLOCK          12750000*/
 
@@ -299,12 +306,12 @@
 /**
  * @brief Type 0 MMC card max clock rate
  */
-#define MMC_LOW_BUS_MAX_CLOCK   26000000
+#define MMC_LOW_BUS_MAX_CLOCK   25500000
 
 /**
  * @brief Type 1 MMC card max clock rate
  */
-#define MMC_HIGH_BUS_MAX_CLOCK  52000000
+#define MMC_HIGH_BUS_MAX_CLOCK  51000000
 
 /**
  * @brief Max SD clock rate
@@ -312,7 +319,7 @@
 #if(UEZ_PROCESSOR != NXP_LPC4357)
 #define SD_MAX_CLOCK            25000000
 #else
-#define SD_MAX_CLOCK            34000000
+#define SD_MAX_CLOCK            25500000//34000000
 #endif
 
 #define CMD_MASK_RESP       (0x3UL << 28)

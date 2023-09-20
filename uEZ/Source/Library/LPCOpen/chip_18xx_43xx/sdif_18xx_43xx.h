@@ -264,11 +264,15 @@ typedef struct _sdif_device {
 #define INIT_OP_RETRIES       50			/*!< initial OP_COND retries */
 #define SET_OP_RETRIES        1000			/*!< set OP_COND retries */
 #define SDIO_BUS_WIDTH        4				/*!< Max bus width supported */
-#define SD_MMC_ENUM_CLOCK       400000		/*!< Typical enumeration clock rate */
-#define MMC_MAX_CLOCK           20000000	/*!< Max MMC clock rate */
-#define MMC_LOW_BUS_MAX_CLOCK   26000000	/*!< Type 0 MMC card max clock rate */
-#define MMC_HIGH_BUS_MAX_CLOCK  52000000	/*!< Type 1 MMC card max clock rate */
-#define SD_MAX_CLOCK            25000000	/*!< Max SD clock rate */
+
+// We only use the frequency defines in Types/SD_MMC.h in a higher level file that doesn't include this.
+// In the future if we needed LPC18XX/43XX/5XXX specific numbers we should switch to these headers, but it could be very messy so don't do it right now!
+
+//#define SD_MMC_ENUM_CLOCK       400000		/*!< Typical enumeration clock rate */
+//#define MMC_MAX_CLOCK           20000000	/*!< Max MMC clock rate */
+//#define MMC_LOW_BUS_MAX_CLOCK   25500000	/*!< Type 0 MMC card max clock rate */
+//#define MMC_HIGH_BUS_MAX_CLOCK  51000000	/*!< Type 1 MMC card max clock rate */
+//#define SD_MAX_CLOCK            25500000	/*!< Max SD clock rate */
 
 /**
  * @brief	Set block size for the transfer

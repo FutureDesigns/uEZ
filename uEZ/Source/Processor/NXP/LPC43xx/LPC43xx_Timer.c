@@ -55,7 +55,6 @@ typedef struct {
     TUInt16 iVector;
     TISRFPtr iISR;
     const char *iName;
-    TUInt8 iPCONBitIndex;
 } T_LPC43xx_Timer_Info;
 
 typedef struct {
@@ -578,29 +577,40 @@ static T_uezError LPC43xx_Timer_SetMatchRegisterFunctions(
 /*---------------------------------------------------------------------------*
  * Internal Information tables:
  *---------------------------------------------------------------------------*/
+#ifdef CORE_M4
 static const T_LPC43xx_Timer_Info G_Timer0_Info = {
         TIMER0_IRQn,
         (TISRFPtr)Timer0_ISR,
-        "Timer0",
-        1, };
+        "Timer0"};
 
 static const T_LPC43xx_Timer_Info G_Timer1_Info = {
         TIMER1_IRQn,
         (TISRFPtr)Timer1_ISR,
-        "Timer1",
-        2, };
+        "Timer1"};
 
 static const T_LPC43xx_Timer_Info G_Timer2_Info = {
         TIMER2_IRQn,
         (TISRFPtr)Timer2_ISR,
-        "Timer2",
-        22, };
+        "Timer2"};
 
 static const T_LPC43xx_Timer_Info G_Timer3_Info = {
         TIMER3_IRQn,
         (TISRFPtr)Timer3_ISR,
-        "Timer3",
-        23, };
+        "Timer3"};
+#endif
+#ifdef CORE_M0
+static const T_LPC43xx_Timer_Info G_Timer0_Info = {
+        M0_TIMER0_IRQn,
+        (TISRFPtr)Timer0_ISR,
+        "Timer0"};
+
+static const T_LPC43xx_Timer_Info G_Timer3_Info = {
+        M0_TIMER3_IRQn,
+        (TISRFPtr)Timer3_ISR,
+        "Timer3"};
+#endif
+#ifdef CORE_M0SUB
+#endif
 
 /*---------------------------------------------------------------------------*
  * HAL Interface table:

@@ -102,8 +102,18 @@ int MainTask(void)
     DEBUG_SV_PrintE("Error Test"); // example error
 #endif
 #endif
-     
+
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+#if (LPC43XX_ENABLE_M0_CORES == 1)
+     uEZPlatform_Start_Additonal_Cores(); // safe to call from M0 cores
+#endif
+#endif
+
+#if (UEZ_ENABLE_USB_HOST_STACK == 1)     
     Storage_PrintInfo(1, EFalse);
+#else
+#endif
+
 #if RENAME_INI
     UEZFileRename("1:/INSTALL.FIN", "1:/INSTALL.INI");
 #endif
@@ -131,7 +141,7 @@ int MainTask(void)
 #endif
 #endif
 
-     // Setup any additional misc. tasks (such as the heartbeat task)
+     // Setup any additional misc. tasks (such as the heartbeat task, network task, speaker test task)
      SetupTasks();
 
      // Setup DAC audio if available - ignore error
@@ -362,6 +372,9 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
      // Create a main task (not running yet)
      UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
                    UEZ_PRIORITY_NORMAL, &G_mainTask);
+
+     // For LPC4357 make sure to start other tasks first so that RTC doesn't stall boot.
+     UEZPlatform_IRTC_Require();
 
      // Done with this task, fall out
      return 0;

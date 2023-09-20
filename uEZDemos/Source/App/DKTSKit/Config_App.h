@@ -141,8 +141,6 @@
 
 //#define FAST_STARTUP                0
 
-//#define APP_ENABLE_HEARTBEAT_LED_ON 1
-
 #define ConsoleIsExpansionBoardConnected()   	1
 #define ConsoleIsPoeExpansionBoardConnected()   1
 
@@ -201,7 +199,8 @@
 #define SLIDESHOW_PREFETCH_BEHIND 1
 #endif
 
-#define APP_ENABLE_HEARTBEAT_LED_ON       1
+#define APP_ENABLE_HEARTBEAT_LED       1
+
 #ifndef SIMPLEUI_DOUBLE_SIZED_ICONS
 #if (DISPLAY_WIDTH > 480)
 #define SIMPLEUI_DOUBLE_SIZED_ICONS 1 // 1 for double sized icons, 0 for single sized

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33423.256
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VideoTGAtoBIN", "VideoTGAtoBIN\VideoTGAtoBIN.vcxproj", "{FA1B1F60-8D08-4984-8523-6C803E3E9970}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA1B1F60-8D08-4984-8523-6C803E3E9970}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA1B1F60-8D08-4984-8523-6C803E3E9970}.Debug|Win32.Build.0 = Debug|Win32
+		{FA1B1F60-8D08-4984-8523-6C803E3E9970}.Release|Win32.ActiveCfg = Release|Win32
+		{FA1B1F60-8D08-4984-8523-6C803E3E9970}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BBC60D10-5CA4-4E49-944C-8F2938A9B476}
+	EndGlobalSection
+EndGlobal

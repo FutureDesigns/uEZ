@@ -44,10 +44,22 @@
 #include "LPC43xx_EMAC.h"
 
 // Information about the processor
+
+// Currently UEZ_PROCESSOR_CORE_TYPE isn't used anywhere and would be non-portable.
+// We use CORE_M4/CORE_M3/CORE_M0 everywhere and that is "standard" and comes from CMSIS.
+// If we used sub core type, it would only ever be 1 type on 43XX parts, even on triple core parts.
+
+#ifdef CORE_M4
 #define UEZ_PROCESSOR_CORE_TYPE             CORE_TYPE_CORTEX_M4
 
 #define UEZ_PROCESSOR_CORE_MODE             CORE_MODE_THUMB
-#define UEZ_PROCESSOR_CORE_SUBTYPE          CORE_SUBTYPE_NONE
+//#define UEZ_PROCESSOR_CORE_SUBTYPE          CORE_SUBTYPE_NONE // Not used today
+#else
+#define UEZ_PROCESSOR_CORE_TYPE             CORE_TYPE_CORTEX_M0
+
+#define UEZ_PROCESSOR_CORE_MODE             CORE_MODE_THUMB
+//#define UEZ_PROCESSOR_CORE_SUBTYPE          CORE_SUBTYPE_NONE // Not used today
+#endif
 
 #define AHBSRAM0_BASE       0x20000000  // 16K: Ethernet descriptors/memory
 #define AHBSRAM1_BASE       0x20004000  // 16K: Ethernet memp in first 10K
@@ -59,16 +71,22 @@
 #endif
 
 #ifndef PROCESSOR_OSCILLATOR_FREQUENCY
-#define PROCESSOR_OSCILLATOR_FREQUENCY      120000000    // Hz
+#define PROCESSOR_OSCILLATOR_FREQUENCY      204000000    // Hz
 #endif
 
 // Option to put the name of the interrupts in the interrupt
 // table for internal debugging
-#ifndef LPC1788_INTERRUPT_TRACK_NAMES
-#define LPC1788_INTERRUPT_TRACK_NAMES       0
+#ifndef LPC43XX_INTERRUPT_TRACK_NAMES
+#define LPC43XX_INTERRUPT_TRACK_NAMES       0
 #endif
 
+// See IRQn_Type in LPC43XX.h
+#ifdef CORE_M4
 #define UEZ_MAX_IRQ_CHANNELS      53    // 0 - 52
+#else // Same number for both M0 and M0SUB
+#define UEZ_MAX_IRQ_CHANNELS      32    // 0 - 31
+#endif
+
 
 //#ifndef PCLK_DIVIDER
 //#define PCLK_DIVIDER
@@ -433,6 +451,7 @@
 #define SCU_I2C_SDA_SCL(scl_efp , scl_ehd , scl_ezi , scl_zif , sda_efp , sda_ehd , sda_ezi , sda_zif) \
                        (scl_efp | scl_ehd | scl_ezi | scl_zif | sda_efp | sda_ehd | sda_ezi | sda_zif)
 
+// Normal pins using normal registers
 #define SCU_NORMAL_DRIVE_DEFAULT(mode) \
         SCU_NORMAL_DRIVE(mode, \
                 SCU_EPD_DISABLE, \
@@ -440,7 +459,7 @@
                 SCU_EHS_FAST, \
                 SCU_EZI_ENABLE, \
                 SCU_ZIF_ENABLE)
-
+// Normal pins using normal registers in high freq mode
 #define SCU_NORMAL_DRIVE_HIGH_FREQ(mode) \
         SCU_NORMAL_DRIVE(mode, \
                 SCU_EPD_DISABLE, \
@@ -449,6 +468,16 @@
                 SCU_EZI_ENABLE, \
                 SCU_ZIF_DISABLE)  // Disable filter for 30+MHZ signals
 
+// Normal pins using normal registers in high freq mode output only // Use for LCD, etc.
+#define SCU_NORMAL_DRIVE_HIGH_FREQ_OUTPUT_ONLY(mode) \
+        SCU_NORMAL_DRIVE(mode, \
+                SCU_EPD_DISABLE, \
+                SCU_EPUN_DISABLE, \
+                SCU_EHS_FAST, \
+                SCU_EZI_DISABLE, \
+                SCU_ZIF_DISABLE)  // Disable filter for 30+MHZ signals
+
+// High drive pins only: P1_17, P2_3 to P2_5, P8_0 to P8_2, PA_1 to PA_3
 #define SCU_HIGH_DRIVE_DEFAULT(mode) \
         SCU_HIGH_DRIVE(mode, \
                 SCU_EPD_DISABLE, \
@@ -456,7 +485,17 @@
                 SCU_EZI_ENABLE, \
                 SCU_ZIF_ENABLE, \
                 SCU_EHD_NORMAL)
+                
+// High drive pins only in high freq mode // Use for LCD, etc.
+#define SCU_HIGH_DRIVE_HIGH_FREQ_OUTPUT_ONLY(mode) \
+        SCU_HIGH_DRIVE(mode, \
+                SCU_EPD_DISABLE, \
+                SCU_EPUN_DISABLE, \
+                SCU_EZI_DISABLE, \
+                SCU_ZIF_DISABLE, \
+                SCU_EHD_NORMAL)
 
+// P3_3 and pins CLK0 to CLK3 only
 #define SCU_HIGH_SPEED_DEFAULT(mode) \
         SCU_HIGH_SPEED(mode, \
                 SCU_EPD_DISABLE, \

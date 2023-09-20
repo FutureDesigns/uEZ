@@ -44,6 +44,14 @@
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
+
+/*-------------------------------------------------------------------------*
+ * Wireless:
+ *-------------------------------------------------------------------------*/
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+extern void INetworkConfigureWirelessConnection(T_uezDevice network);
+extern void INetworkConfigureWirelessAccessPoint(T_uezDevice network);
+extern void UEZPlatform_WirelessNetwork0_Require(void); // This should be in platform file header.
 void INetworkConfigureWirelessConnection(T_uezDevice network)
 {
     T_uezNetworkSettings network_settings = { UEZ_NETWORK_TYPE_INFRASTRUCTURE,
@@ -194,7 +202,11 @@ void INetworkConfigureWirelessAccessPoint(T_uezDevice network)
 
     UEZNetworkInfrastructureConfigure(network, &network_settings);
 }
+#endif
 
+/*-------------------------------------------------------------------------*
+ * Wired:
+ *-------------------------------------------------------------------------*/
 void INetworkConfigureWiredConnection(T_uezDevice network)
 {
     T_uezNetworkSettings network_settings = {
@@ -271,6 +283,10 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
     UEZNetworkInfrastructureConfigure(network, &network_settings);
 }
 
+
+/*-------------------------------------------------------------------------*
+ * Common NetworkStartup:
+ *-------------------------------------------------------------------------*/
 TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 {
 //    UEZTaskDelay(2000); // can delay here to for example wait for SD card to init first.
@@ -282,18 +298,8 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     T_uezError error = UEZ_ERROR_NONE;
 #endif
 
-#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
-    int wirelessStarted = 0;
-    T_uezDevice wireless_network;
-    extern void UEZPlatform_WirelessNetwork0_Require(void);
-#endif
 #if (UEZ_ENABLE_WIRED_NETWORK == 1)
     T_uezDevice wired_network;
-    extern void INetworkConfigureWirelessConnection(T_uezDevice network);
-    extern void INetworkConfigureWirelessAccessPoint(T_uezDevice network);
-#endif
-
-#if (UEZ_ENABLE_WIRED_NETWORK == 1)
     // ----------------------------------------------------------------------
     // Bring up the Wired Network
     // ----------------------------------------------------------------------
@@ -328,9 +334,11 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     } else {
         printf("Bringing up wired network: Done\n");
     }
-#endif
+#endif // if wired
 
 #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+    int wirelessStarted = 0;
+    T_uezDevice wireless_network;
     // ----------------------------------------------------------------------
     // Bring up the Wireless Network
     // ----------------------------------------------------------------------
@@ -368,11 +376,14 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     } else {
         printf("Bringing up wireless network: Done\n");
     }
-#endif
+#endif // if wireless
     
+    // ----------------------------------------------------------------------
+    // Now we can start web server, modbus, or do DHCP related things here.
+    // ----------------------------------------------------------------------
+
 #if (UEZ_ENABLE_TCPIP_STACK == 1) // TODO fix DHCP for runtime on or static settings
 #if 1//LWIP_DHCP && UEZ_ENABLE_WIRELESS_NETWORK
-
     while(wait){
         UEZNetworkGetStatus(wired_network, &status);
 
@@ -386,8 +397,8 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
         }
         UEZTaskDelay(1000);
     }
-#endif
-#endif
+#endif // if 1
+#endif // if enable tcpip
 
 //ModbusTCPIPTask_Start();
 
@@ -411,6 +422,9 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     #endif
 #endif
 
+    while(1){
+        UEZTaskDelay(1000);
+    }
     return 0;
 }
 #endif

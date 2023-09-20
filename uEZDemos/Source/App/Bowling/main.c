@@ -365,6 +365,9 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
     UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
             UEZ_PRIORITY_NORMAL, &G_mainTask);
 
+     // For LPC4357 make sure to start other tasks first so that RTC doesn't stall boot.
+     UEZPlatform_IRTC_Require();
+
     // Done with this task, fall out
     return 0;
 }

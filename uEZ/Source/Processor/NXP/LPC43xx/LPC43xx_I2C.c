@@ -597,10 +597,23 @@ T_uezError LPC43xx_I2C_Bus0_InitializeWorkspace(void *aWorkspace)
     G_LPC43xx_i2c0Workspace = p;
     p->iPowerBits = 7;
 
+
     // Setup interrupt vector
+#ifdef CORE_M4
     InterruptRegister(I2C0_IRQn, ILPC43xx_I2C0InterruptHandler,
             INTERRUPT_PRIORITY_NORMAL, "I2C0");
     InterruptEnable(I2C0_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptRegister(M0_I2C0_OR_I2C1_IRQn, ILPC43xx_I2C0InterruptHandler,
+            INTERRUPT_PRIORITY_NORMAL, "I2C");
+    InterruptEnable(M0_I2C0_OR_I2C1_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    InterruptRegister(M0S_I2C0_IRQn, ILPC43xx_I2C0InterruptHandler,
+            INTERRUPT_PRIORITY_NORMAL, "I2C0");
+    InterruptEnable(M0S_I2C0_IRQn);
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -624,10 +637,23 @@ T_uezError LPC43xx_I2C_Bus1_InitializeWorkspace(void *aWorkspace)
     G_LPC43xx_i2c1Workspace = p;
     p->iPowerBits = 19;
 
+    
     // Setup interrupt vector
+#ifdef CORE_M4
     InterruptRegister(I2C1_IRQn, ILPC43xx_I2C1InterruptHandler,
             INTERRUPT_PRIORITY_NORMAL, "I2C1");
     InterruptEnable(I2C1_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptRegister(M0_I2C0_OR_I2C1_IRQn, ILPC43xx_I2C1InterruptHandler,
+            INTERRUPT_PRIORITY_NORMAL, "I2C");
+    InterruptEnable(M0_I2C0_OR_I2C1_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    InterruptRegister(M0S_I2C1_IRQn, ILPC43xx_I2C1InterruptHandler,
+            INTERRUPT_PRIORITY_NORMAL, "I2C1");
+    InterruptEnable(M0S_I2C1_IRQn);
+#endif
 
     return UEZ_ERROR_NONE;
 }

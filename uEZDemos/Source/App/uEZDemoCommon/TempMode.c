@@ -28,7 +28,7 @@
 #include <Device/RTC.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
-#include <uEZTimeDate.h>
+//#include <uEZTimeDate.h>
 #include "uEZDemoCommon.h"
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>

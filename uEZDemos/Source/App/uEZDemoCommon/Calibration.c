@@ -27,6 +27,7 @@
 #include "AppMenu.h"
 #include "Audio.h"
 #include <uEZLCD.h>
+#include "uEZPlatform.h"
 
 #ifndef TP_INSET
     #define TP_INSET        50
@@ -450,6 +451,7 @@ TUInt32 Calibrate(TBool aForceCalibrate)
  *---------------------------------------------------------------------------*/
 TBool CalibrateTestIfTouchscreenHeld(void)
 {
+#if (UEZ_ENABLE_TOUCHSCREEN_CALIBRATION == 1)
     T_uezDevice ts;
     T_uezTSReading reading;
     TBool sawPress = ETrue;
@@ -469,6 +471,9 @@ TBool CalibrateTestIfTouchscreenHeld(void)
         UEZTaskDelay(10);
     }
     return sawPress;
+#else
+    return EFalse;
+#endif
 }
 
 /*---------------------------------------------------------------------------*

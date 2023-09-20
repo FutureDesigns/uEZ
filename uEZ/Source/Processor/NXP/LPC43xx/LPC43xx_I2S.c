@@ -134,7 +134,15 @@ T_uezError LPC43xx_I2S_InitializeWorkspace(void *aWorkspace)
 T_uezError LPC43xx_I2S_Stop(void *aWorkspace)
 {
     //Turn off Interrupts
+#ifdef CORE_M4
     InterruptDisable(I2S0_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptDisable(M0_I2S0_OR_I2S1_QEI_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    InterruptDisable(M0S_I2S0_OR_I2S1_OR_QEI_IRQn);
+#endif
     LPC_I2S0->IRQ &= ~2;
     return UEZ_ERROR_NONE;
 }
@@ -159,7 +167,16 @@ T_uezError LPC43xx_I2S_Start(void *aWorkspace)//transmit low functions ?
     LPC_I2S0->TXFIFO = 0;
     LPC_I2S0->TXFIFO = 0;
     LPC_I2S0->TXFIFO = 0;
+
+#ifdef CORE_M4
     InterruptEnable(I2S0_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptEnable(M0_I2S0_OR_I2S1_QEI_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    InterruptEnable(M0S_I2S0_OR_I2S1_OR_QEI_IRQn);
+#endif
     LPC_I2S0->IRQ |= 2;
     return UEZ_ERROR_NONE;
 }
@@ -215,9 +232,22 @@ T_uezError LPC43xx_I2S_config_TX(
     LPC_I2S0->DAO &= ~0x18;
 
     if (!intRegistered) {
+
+#ifdef CORE_M4
         InterruptRegister(I2S0_IRQn, ILPC43xx_I2SInterruptHandler,
                 INTERRUPT_PRIORITY_NORMAL, "I2S");
         InterruptEnable(I2S0_IRQn);
+#endif
+#ifdef CORE_M0
+        InterruptRegister(M0_I2S0_OR_I2S1_QEI_IRQn, ILPC43xx_I2SInterruptHandler,
+                INTERRUPT_PRIORITY_NORMAL, "I2S");
+        InterruptEnable(M0_I2S0_OR_I2S1_QEI_IRQn);
+#endif
+#ifdef CORE_M0SUB
+        InterruptRegister(M0S_I2S0_OR_I2S1_OR_QEI_IRQn, ILPC43xx_I2SInterruptHandler,
+                INTERRUPT_PRIORITY_NORMAL, "I2S");
+        InterruptEnable(M0S_I2S0_OR_I2S1_OR_QEI_IRQn);
+#endif
         intRegistered = 1;
     }
 

@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 
+// Currently this is only used on LPC17XX/LPC40XX.
+
 /*---------------------------------------------------------------------------*
  * Options:
  *---------------------------------------------------------------------------*/
@@ -53,7 +55,7 @@
 #define SDCARD_MCI_RATE_FOR_ID_STATE            200000UL   // 400kHz (100-400kHz)
 #endif
 #ifndef SDCARD_MCI_RATE_FOR_RW_STATE
-#define SDCARD_MCI_RATE_FOR_RW_STATE            25000000UL // 0000UL // 18000000UL // 18 MHz
+#define SDCARD_MCI_RATE_FOR_RW_STATE            25000000UL // Typ clock tree only allows up to 15MHz
 #endif
 
 #define SDCARD_FAILED_READ_RETRY_COUNT              5

@@ -501,6 +501,13 @@ void WindowManager_SaveScreenShotBMP(char driveNumber){
     }
 }
 
+void WindowManager_InvalidateCurrentWindow(void)
+{
+    //WM_InvalidateWindow(hWin); // per window
+    GUI_RECT Rect = {.x0 = 0, .y0 = 0, .x1 = UEZ_LCD_DISPLAY_WIDTH, .y1 = UEZ_LCD_DISPLAY_HEIGHT}; // whole area, any window
+    WM_InvalidateArea(&Rect);
+}
+
 /** @} */
 /*-------------------------------------------------------------------------*
  * End of File:    MainWindow.c

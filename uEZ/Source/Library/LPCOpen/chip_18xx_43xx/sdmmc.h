@@ -414,30 +414,34 @@ typedef struct {
  */
 #define MMC_SECTOR_SIZE     512
 
+
+// We only use the frequency defines in Types/SD_MMC.h in a higher level file that doesn't include this.
+// In the future if we needed LPC18XX/43XX/5XXX specific numbers we should switch to these headers, but it could be very messy so don't do it right now!
+
 /**
  * @brief Typical enumeration clock rate
  */
-#define SD_MMC_ENUM_CLOCK       400000
+//#define SD_MMC_ENUM_CLOCK       400000
 
 /**
  * @brief Max MMC clock rate
  */
-#define MMC_MAX_CLOCK           20000000
+//#define MMC_MAX_CLOCK           20000000
 
 /**
  * @brief Type 0 MMC card max clock rate
  */
-#define MMC_LOW_BUS_MAX_CLOCK   26000000
+//#define MMC_LOW_BUS_MAX_CLOCK   25500000
 
 /**
  * @brief Type 1 MMC card max clock rate
  */
-#define MMC_HIGH_BUS_MAX_CLOCK  52000000
+//#define MMC_HIGH_BUS_MAX_CLOCK  51000000
 
 /**
  * @brief Max SD clock rate
  */
-#define SD_MAX_CLOCK            25000000
+//#define SD_MAX_CLOCK            25500000
 
 #ifdef __cplusplus
 }

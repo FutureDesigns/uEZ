@@ -100,6 +100,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 #define SPIFI_DEVICE_MX25L12845E        0       /**< Enables Macronix MX25L12845E device */ // Frequencies not supported unless clock is run much slower
 #define SPIFI_DEVICE_S25FL256S_256K     0		/**< Enables Spansion S25FL256S (256K block) device */
 #define SPIFI_DEVICE_S25FL128S_256K     0		/**< Enables Spansion S25FL256S (256K block) device */
+#define SPIFI_DEVICE_S25FL256L_64K      0		/**< Enables Spansion S25FL256L (64K block) device */
  
 /* Required private data size for this family */
 #define PRVDATASIZE 0
@@ -180,6 +181,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												SPIFI_DEVICE_S25FL256S_64K | \
                                                                                                 SPIFI_DEVICE_S25FL128S_256K | \
 												SPIFI_DEVICE_S25FL256S_256K | \
+                                                                                                SPIFI_DEVICE_S25FL256L_64K | \
 												SPIFI_DEVICE_S25FL512S)
 
 #define NEED_spifiDeviceDataGetStatusS25FL164K (SPIFI_DEVICE_ALL | \
@@ -221,6 +223,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												  SPIFI_DEVICE_S25FL256S_64K | \
                                                                                                   SPIFI_DEVICE_S25FL128S_256K | \
 												  SPIFI_DEVICE_S25FL256S_256K |	\
+                                                                                                  SPIFI_DEVICE_S25FL256L_64K | \
 												  SPIFI_DEVICE_S25FL512S)
 
 #define NEED_spifiDeviceDataSetStatusS25FL032P (SPIFI_DEVICE_ALL |	\
@@ -232,6 +235,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												SPIFI_DEVICE_S25FL256S_64K | \
                                                                                                 SPIFI_DEVICE_S25FL128S_256K | \
 												SPIFI_DEVICE_S25FL256S_256K | \
+                                                                                                SPIFI_DEVICE_S25FL256L_64K | \
 												SPIFI_DEVICE_S25FL512S | \
 												SPIFI_DEVICE_W25Q80BV |	\
 												SPIFI_DEVICE_W25Q32FV |	\
@@ -268,6 +272,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												 SPIFI_DEVICE_S25FL256S_64K | \
                                                                                                  SPIFI_DEVICE_S25FL128S_256K | \
 												 SPIFI_DEVICE_S25FL256S_256K | \
+                                                                                                 SPIFI_DEVICE_S25FL256L_64K | \
 												 SPIFI_DEVICE_S25FL512S | \
 												 SPIFI_DEVICE_W25Q80BV | \
 												 SPIFI_DEVICE_W25Q32FV | \
@@ -282,6 +287,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 										SPIFI_DEVICE_S25FL256S_64K | \
                                                                                 SPIFI_DEVICE_S25FL128S_256K | \
 										SPIFI_DEVICE_S25FL256S_256K | \
+                                                                                SPIFI_DEVICE_S25FL256L_64K | \
 										SPIFI_DEVICE_S25FL512S | \
 										SPIFI_DEVICE_W25Q80BV |	\
 										SPIFI_DEVICE_W25Q32FV |	\
@@ -301,6 +307,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 												SPIFI_DEVICE_S25FL256S_64K | \
                                                                                                 SPIFI_DEVICE_S25FL128S_256K | \
 												SPIFI_DEVICE_S25FL256S_256K | \
+                                                                                                SPIFI_DEVICE_S25FL256L_64K | \
 												SPIFI_DEVICE_S25FL512S)
 
 #define NEED_spifiDeviceInitReadCommand (SPIFI_DEVICE_ALL |	\
@@ -337,6 +344,7 @@ extern SPIFI_ERR_T spifiDevRegister(SPIFI_FAM_NODE_T *pFamily, SPIFI_DEV_NODE_T 
 											SPIFI_DEVICE_S25FL256S_64K | \
                                                                                         SPIFI_DEVICE_S25FL128S_256K | \
 											SPIFI_DEVICE_S25FL256S_256K |	\
+                                                                                        SPIFI_DEVICE_S25FL256L_64K | \
 											SPIFI_DEVICE_S25FL512S)
 
 #define NEED_spifiDeviceInitWriteCommandMacronix (SPIFI_DEVICE_ALL |	\
@@ -1536,7 +1544,7 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 	/* Add support for S25FL256S 256K Sector */
 	{
 		static const SPIFI_DEVICE_DATA_T pData = {
-			"S25FL128S 256kSec",
+			"S25FL128S 256kSec",  // read extra 2 bytes to check for 4D and 0 for uniform section
 			{{0x01, 0x20, 0x18}, 2, {0x4D, 0x0}},	/* JEDEC ID, extCount, ext data  */
 			(SPIFI_CAP_4BYTE_ADDR | SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_FULLLOCK
                         | SPIFI_CAP_NOBLOCK),
@@ -1570,7 +1578,7 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 	/* Add support for S25FL256S 256K Sector */
 	{
 		static const SPIFI_DEVICE_DATA_T pData = {
-			"S25FL256S 256kSec",
+			"S25FL256S 256kSec", // read extra 2 bytes to check for 4D and 0 for uniform section
 			{{0x01, 0x02, 0x19}, 2, {0x4D, 0x0}},	/* JEDEC ID, extCount, ext data  */
 			(SPIFI_CAP_4BYTE_ADDR | SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_FULLLOCK 
                         | SPIFI_CAP_NOBLOCK),
@@ -1585,6 +1593,39 @@ SPIFI_FAM_NODE_T *spifi_REG_FAMILY_CommonCommandSet(void)
 			80,				/* max high speed read clock rate in MHz */
 			104,				/* max program clock rate in MHz */
 			80,				/* max high speed program clock rate in MHz */
+			FX_spifiDeviceDataInitDeinit,	/* (Fx Id) use generic deviceInit / deInit */
+			FX_spifiDeviceDataClearStatusS25FL032P,	/* (Fx Id) has persistent bits in status register */
+			FX_spifiDeviceDataGetStatusS25FL032P,	/*  (Fx Id) getStatus */
+			FX_spifiDeviceDataSetStatusS25FL032P,	/* (Fx Id) setStatus */
+			FX_spifiDeviceDataSetOptsQuadModeBit9,	/* (Fx Id) to set/clr options */
+			FX_spifiDevice4BInitReadCommand,	/* (Fx Id) to get memoryMode Cmd */
+			FX_spifiDevice4BInitWriteCommand	/* (Fx Id) to get program Cmd */
+		};
+		static SPIFI_DEV_NODE_T data;			/* Create persistent node */
+
+		data.pDevData = &pData;					/* save the data in the node */
+		spifiDevRegister(&devFamily, &data);	/* Register the new device */
+	}
+	#endif
+	#if SPIFI_DEVICE_ALL || SPIFI_DEVICE_S25FL256L_64K  // NOT TESTED YET in this driver!!!
+	/* Add support for S25FL256L 64K Sector */
+	{
+		static const SPIFI_DEVICE_DATA_T pData = {
+			"S25FL256L 64kSec", // don't need to read extra bytes, next bytes are reserved
+			{{0x01, 0x60, 0x19}, 0, {0x0, 0x0}},	/* JEDEC ID, extCount, ext data  */
+			(SPIFI_CAP_4BYTE_ADDR | SPIFI_CAP_DUAL_READ | SPIFI_CAP_QUAD_READ | SPIFI_CAP_QUAD_WRITE | SPIFI_CAP_FULLLOCK 
+                        | SPIFI_CAP_NOBLOCK),
+			128,						/* # of blocks */
+			0x40000,				/* block size */
+			0,						/* # of sub-blocks (Does NOT support full sub-block erase) */
+			0,						/* sub-block size */
+			256,					/* page size */
+			MAX_SINGLE_READ,					/* max single read bytes */
+			133,				/* max clock rate in MHz */
+			50,				/* max read clock rate in MHz */
+			133,				/* max high speed read clock rate in MHz */
+			133,				/* max program clock rate in MHz */
+			133,				/* max high speed program clock rate in MHz */
 			FX_spifiDeviceDataInitDeinit,	/* (Fx Id) use generic deviceInit / deInit */
 			FX_spifiDeviceDataClearStatusS25FL032P,	/* (Fx Id) has persistent bits in status register */
 			FX_spifiDeviceDataGetStatusS25FL032P,	/*  (Fx Id) getStatus */

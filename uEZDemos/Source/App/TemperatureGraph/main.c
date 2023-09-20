@@ -340,6 +340,9 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 
     SUIInitialize(SIMPLEUI_DOUBLE_SIZED_ICONS, EFalse, EFalse); // SWIM not flipped
 
+     // For LPC4357 make sure to start other tasks first so that RTC doesn't stall boot.
+     UEZPlatform_IRTC_Require();
+
     // Create a main task (not running yet)
     UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
             UEZ_PRIORITY_NORMAL, &G_mainTask);

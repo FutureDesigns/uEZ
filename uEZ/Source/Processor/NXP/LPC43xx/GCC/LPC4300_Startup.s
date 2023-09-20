@@ -98,7 +98,7 @@ ISR_HANDLER xPortPendSVHandler //PendSV_Handler
 ISR_HANDLER xPortSysTickHandler //SysTick_Handler
 // External interrupts start her 
 ISR_HANDLER DAC_IRQHandler
-ISR_HANDLER M0CORE_IRQHandler
+ISR_HANDLER M0APP_IRQHandler
 ISR_HANDLER DMA_IRQHandler
 ISR_RESERVED
 ISR_HANDLER FLASHEEPROM_IRQHandler
@@ -167,7 +167,9 @@ _vectors_end:
   orrs r1, r1, #(0xf << 20)
   str r1, [r0]
 #endif
-  ldr sp, =__SRAM2_segment_end__
+  // For the SRAM1 or 2 that is used on M4 select that section end here.
+  // If the SRAM size is defined as 0, the segment end will be the start and you will fault.
+  ldr sp, =__SRAM1_segment_end__ 
   bl SystemInit
 #endif
 

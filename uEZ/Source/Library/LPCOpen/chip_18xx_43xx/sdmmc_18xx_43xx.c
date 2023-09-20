@@ -145,12 +145,15 @@ static int32_t sdmmc_execute_command(LPC_SDMMC_T *pSDMMC, uint32_t cmd, uint32_t
 	return 0;
 }
 
+#if 0 // see IIsCardAquired
 /* Checks whether card is acquired properly or not */
 static int32_t prv_card_acquired(void)
 {
 	return g_card_info->card_info.cid[0] != 0;
 }
+#endif
 
+#if 0 // see IGetBits
 /* Helper function to get a bit field withing multi-word  buffer. Used to get
    fields with-in CSD & EXT-CSD */
 static uint32_t prv_get_bits(int32_t start, int32_t end, uint32_t *data)
@@ -168,7 +171,9 @@ static uint32_t prv_get_bits(int32_t start, int32_t end, uint32_t *data)
 
 	return v & ((1 << (end - start + 1)) - 1);
 }
+#endif
 
+#if 0 // see IProcessCSD
 /* Function to process the CSD & EXT-CSD of the card */
 static void prv_process_csd(LPC_SDMMC_T *pSDMMC)
 {
@@ -234,6 +239,7 @@ static void prv_process_csd(LPC_SDMMC_T *pSDMMC)
 
 	g_card_info->card_info.device_size = g_card_info->card_info.blocknr << 9;	/* blocknr * 512 */
 }
+#endif
 
 /* Puts current selected card in trans state */
 static int32_t prv_set_trans_state(LPC_SDMMC_T *pSDMMC)
@@ -271,6 +277,7 @@ static int32_t prv_set_trans_state(LPC_SDMMC_T *pSDMMC)
 	return 0;
 }
 
+#if 0 // see ISetCardParams
 /* Sets card data width and block size */
 static int32_t prv_set_card_params(LPC_SDMMC_T *pSDMMC)
 {
@@ -299,6 +306,7 @@ static int32_t prv_set_card_params(LPC_SDMMC_T *pSDMMC)
 
 	return 0;
 }
+#endif
 
 /*****************************************************************************
  * Public functions
@@ -318,6 +326,7 @@ int32_t Chip_SDMMC_GetState(LPC_SDMMC_T *pSDMMC)
 	return (int32_t) R1_CURRENT_STATE(g_card_info->card_info.response[0]);
 }
 
+#if 0 // see SDCard_MS_SD_MMC_Init instead
 /* Function to enumerate the SD/MMC/SDHC/MMC+ cards */
 uint32_t Chip_SDMMC_Acquire(LPC_SDMMC_T *pSDMMC, mci_card_struct *pcardinfo)
 {
@@ -479,6 +488,7 @@ uint32_t Chip_SDMMC_Acquire(LPC_SDMMC_T *pSDMMC, mci_card_struct *pcardinfo)
 
 	return prv_card_acquired();
 }
+#endif
 
 /* Get the device size of SD/MMC card (after enumeration) */
 int32_t Chip_SDMMC_GetDeviceSize(LPC_SDMMC_T *pSDMMC)

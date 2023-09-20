@@ -33,7 +33,15 @@
 /*-------------------------------------------------------------------------*
  * Defines:
  *-------------------------------------------------------------------------*/
+#ifdef CORE_M4
 #define INTERRUPT_CHANNEL_GP_DMA                            DMA_IRQn
+#endif
+#ifdef CORE_M0        
+#define INTERRUPT_CHANNEL_GP_DMA                            M0_DMA_IRQn
+#endif
+#ifdef CORE_M0SUB        
+#define INTERRUPT_CHANNEL_GP_DMA                            M0S_DMA_IRQn
+#endif
 
 #define GPDMA_FLOW_CONTROL_DMA_CONTROLLER                   (0<<2)
 #define GPDMA_FLOW_CONTROL_PERIPHERAL_CONTROLLER            (1<<2)

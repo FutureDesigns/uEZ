@@ -103,7 +103,7 @@
 // Also any pin combination with an extra long length cable (over 10") should use a different test with a longer timeout.
 // Any signal with long unterminated branches will also require a longer time for pins to settle than typical.
 
-/* Test pins. See P:\uEZGUI\uEZGUI-4357-50WVN\FCT\...\DOC\uEZGUI-4357-50WVN FCT Loopback Test Debugging Reference.xlsx */
+/* Test pins. See P:\uEZGUI\uEZGUI-4357-70WVN\FCT\...\DOC\uEZGUI-4357-70WVN FCT Loopback Test Debugging Reference.xlsx */
 const T_uezGPIOPortPin g_loopback_pins_A[LOOPBACK_TEST_NUM_PINS_A] =
 {
    GPIO_P5_3,
@@ -364,8 +364,8 @@ const uint8_t g_loopback_connected_C[LOOPBACK_TEST_NUM_PINS_C][LOOPBACK_TEST_NUM
         GPIO_P5_3, //25 - J6 pin 3 -- P_ func 4
         GPIO_P5_4  //26 - J6 pin 2 -- P_ func 4
     };
-    
-    //P1_19 not a GPIO
+
+    // P1_19 not a GPIO
     // skip reset lines
     // P6_0 not a GPIO
     // P3_0 not a GPIO

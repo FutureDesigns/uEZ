@@ -76,7 +76,18 @@ static void IRelease(void)
     RTOS_EXIT_CRITICAL();
 }
 
-#define HANDLE_ASSERT(cond)       if (!(cond)) { HandleFail(); }
+#ifndef UEZ_DEBUG_HEAVY_ASSERTS
+#define UEZ_DEBUG_HEAVY_ASSERTS     1
+#endif
+
+#if (UEZ_DEBUG_HEAVY_ASSERTS == 1)
+    #define HANDLE_ASSERT(cond)       if (!(cond)) { HandleFail(); }
+
+#else
+    // Not heavy asserts.  Remove them
+    #define HANDLE_ASSERT(cond)
+#endif
+
 
 void HandleFail(void)
 {

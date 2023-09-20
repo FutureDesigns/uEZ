@@ -49,7 +49,7 @@
 
 #define UEZ_VERSION_MAJOR           2
 #define UEZ_VERSION_MINOR           13
-#define UEZ_VERSION_STRING          "2.13.000"
+#define UEZ_VERSION_STRING          "2.13.100"
 #define UEZ_VERSION_DATE            "12/05/2022" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
@@ -125,13 +125,13 @@ extern "C" {
 #define NXP_LPC2478                             1
 #define NXP_LPC1768                             2
 #define RENESAS_H8SX_1668RF                     3
-#define NXP_LPC1788                             4
+#define NXP_LPC1788                             4  // actively supported/tested
 #define RENESAS_RX62N                           5
 #define STMICRO_STM32F105_7                     6
 #define NXP_LPC1756                             7
 #define RENESAS_RX63N                           8
-#define NXP_LPC4088                             9
-#define NXP_LPC4357                             10
+#define NXP_LPC4088                             9  // actively supported/tested
+#define NXP_LPC4357                             10 // actively supported/tested
 #define NXP_LPC546xx                            11
 
 // Select processor:

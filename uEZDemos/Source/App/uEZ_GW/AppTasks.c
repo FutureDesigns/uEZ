@@ -88,7 +88,7 @@ T_uezError SetupTasks(void)
 {
     T_uezError error = UEZ_ERROR_NONE;
 
-#if APP_ENABLE_HEARTBEAT_LED_ON
+#if (APP_ENABLE_HEARTBEAT_LED == 1)
     // Start up the heart beat of the LED
     UEZTaskCreate(Heartbeat, "Heart", 64, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif

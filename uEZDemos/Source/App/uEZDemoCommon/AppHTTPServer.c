@@ -66,18 +66,17 @@ static T_uezError IMainHTTPServerGetValue(
             sprintf(line, "%02u:%02u:%02u PM\r\n", (TimeDate.iTime.iHour-12),
                 TimeDate.iTime.iMinute, TimeDate.iTime.iSecond);
           }
-            HTTPServerSetVar(aHTTPState, aVarName, line);
+          return HTTPServerSetVar(aHTTPState, aVarName, line);
         } else if (strcmp(aVarName, "date") == 0) {
-            sprintf(line, "%02u/%02u/%04u\r\n", TimeDate.iDate.iMonth,
+          sprintf(line, "%02u/%02u/%04u\r\n", TimeDate.iDate.iMonth,
                 TimeDate.iDate.iDay, TimeDate.iDate.iYear);
-            HTTPServerSetVar(aHTTPState, aVarName, line);
+          return HTTPServerSetVar(aHTTPState, aVarName, line);
         } else {
-            HTTPServerSetVar(aHTTPState, aVarName, "InsertVariableHere");
+          return HTTPServerSetVar(aHTTPState, aVarName, "InsertVariableHere");
         }
     } else { // timedate failure
-        HTTPServerSetVar(aHTTPState, aVarName, "InsertVariableHere");
-    }
-    
+        return HTTPServerSetVar(aHTTPState, aVarName, "InsertVariableHere");
+    }    
     return UEZ_ERROR_NONE;
 }
 /*---------------------------------------------------------------------------*
@@ -97,15 +96,21 @@ static T_uezError IMainHTTPServerSetValue(
 
     if (strcmp(aVarName, "freq") == 0) {    // Remember the last know frequency
         frequency = atoi(aValue);
+        //printf("Freq\n");
+        return UEZ_ERROR_NONE;
     } else if (strcmp(aVarName, "duration") == 0) {
+        //printf("Duration\n");
         PlayAudio(frequency, atoi(aValue) * 1000);
+        return UEZ_ERROR_NONE;
+    } else { // TODO can add more variables here
+        //printf("Variable %s\n", aVarName);
+        return UEZ_ERROR_NONE;
     }
-    return UEZ_ERROR_NONE;
 }
 
 static T_httpServerParameters G_httpServerParamsWired = {
-    IMainHTTPServerGetValue,
-    IMainHTTPServerSetValue,
+    .iGet = IMainHTTPServerGetValue,
+    .iSet = IMainHTTPServerSetValue,
 };
 
 /*---------------------------------------------------------------------------*
