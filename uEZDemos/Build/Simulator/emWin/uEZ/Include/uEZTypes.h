@@ -53,7 +53,7 @@
 extern "C" {
 #endif
 
-#if (COMPILER_TYPE==CodeRed)
+#if (COMPILER_TYPE==CODERED)
     typedef unsigned int TUInt32;
     typedef unsigned short TUInt16;
     typedef unsigned char TUInt8;
@@ -113,7 +113,7 @@ typedef T_uezHandle T_uezDevice;
 #define CPUReg16(addr)      *((TVUInt16 *)(addr))
 #define CPUReg8(addr)       *((TVUInt8 *)(addr))
 
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
     #define PARAM_NOT_USED(p)     (p)=(p)
     #define VARIABLE_NOT_USED(v)  (v)=(v)
 #else

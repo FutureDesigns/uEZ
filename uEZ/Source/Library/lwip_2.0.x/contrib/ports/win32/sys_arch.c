@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2001-2003 Swedish Institute of Computer Science.
- * All rights reserved. 
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice,
@@ -11,21 +11,21 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission. 
+ *    derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED 
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
  * This file is part of the lwIP TCP/IP stack.
- * 
+ *
  * Author: Adam Dunkels <adam@sics.se>
  *         Simon Goldschmidt
  *
@@ -78,17 +78,6 @@ static DWORD netconn_sem_tls_index;
 
 static HCRYPTPROV hcrypt;
 
-u32_t
-sys_win_rand(void)
-{
-  u32_t ret;
-  if (CryptGenRandom(hcrypt, sizeof(ret), (BYTE*)&ret)) {
-    return ret;
-  }
-  LWIP_ASSERT("CryptGenRandom failed", 0);
-  return 0;
-}
-
 static void
 sys_win_rand_init(void)
 {
@@ -103,6 +92,22 @@ sys_win_rand_init(void)
       LWIP_ASSERT(errbuf, 0);
     }
   }
+}
+
+unsigned int
+lwip_port_rand(void)
+{
+  u32_t ret;
+  if (CryptGenRandom(hcrypt, sizeof(ret), (BYTE*)&ret)) {
+    return ret;
+  }
+  /* maybe CryptAcquireContext has not been called... */
+  sys_win_rand_init();
+  if (CryptGenRandom(hcrypt, sizeof(ret), (BYTE*)&ret)) {
+    return ret;
+  }
+  LWIP_ASSERT("CryptGenRandom failed", 0);
+  return 0;
 }
 
 static void
@@ -137,7 +142,11 @@ sys_jiffies(void)
 u32_t
 sys_now(void)
 {
-  return (u32_t)sys_get_ms_longlong();
+  u32_t now = (u32_t)sys_get_ms_longlong();
+#ifdef LWIP_FUZZ_SYS_NOW
+  now += sys_now_offset;
+#endif
+  return now;
 }
 
 CRITICAL_SECTION critSec;
@@ -248,7 +257,7 @@ sys_sem_new(sys_sem_t *sem, u8_t count)
     sem->sem = new_sem;
     return ERR_OK;
   }
-   
+
   /* failed to allocate memory... */
   if (SYS_INITIALIZED()) {
     SYS_ARCH_LOCKED(SYS_STATS_INC(sem.err));
@@ -336,7 +345,7 @@ sys_mutex_new(sys_mutex_t *mutex)
     mutex->mut = new_mut;
     return ERR_OK;
   }
-   
+
   /* failed to allocate memory... */
   SYS_ARCH_LOCKED(SYS_STATS_INC(mutex.err));
   mutex->mut = NULL;
@@ -421,7 +430,7 @@ SetThreadName(DWORD dwThreadID, const char* threadName)
 }
 #endif /* _MSC_VER */
 
-static void
+static DWORD WINAPI
 sys_thread_function(void* arg)
 {
   struct threadlist* t = (struct threadlist*)arg;
@@ -432,6 +441,7 @@ sys_thread_function(void* arg)
 #if LWIP_NETCONN_SEM_PER_THREAD
   sys_arch_netconn_sem_free();
 #endif
+  return 0;
 }
 
 sys_thread_t
@@ -454,7 +464,7 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
     new_thread->next = lwip_win32_threads;
     lwip_win32_threads = new_thread;
 
-    h = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)sys_thread_function, new_thread, 0, &(new_thread->id));
+    h = CreateThread(0, 0, sys_thread_function, new_thread, 0, &(new_thread->id));
     LWIP_ASSERT("h != 0", h != 0);
     LWIP_ASSERT("h != -1", h != INVALID_HANDLE_VALUE);
     LWIP_UNUSED_ARG(h);
@@ -688,7 +698,7 @@ sys_arch_mbox_tryfetch(sys_mbox_t *q, void **msg)
       *msg  = NULL;
     }
 
-    return SYS_ARCH_TIMEOUT;
+    return SYS_MBOX_EMPTY;
   }
 }
 

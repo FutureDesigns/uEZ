@@ -772,7 +772,7 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
   \details Returns the current value of the Floating Point Status/Control register.
   \return               Floating Point Status/Control register value
  */
-#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
 #define __get_FPSCR      (uint32_t)__builtin_arm_get_fpscr
 #else
@@ -784,7 +784,7 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
   \details Assigns the given value to the Floating Point Status/Control register.
   \param [in]    fpscr  Floating Point Status/Control value to set
  */
-#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
 #define __set_FPSCR      __builtin_arm_set_fpscr
 #else

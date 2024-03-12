@@ -146,6 +146,8 @@ typedef struct {
 // LED pin(s)
 #define GPIO_HEARTBEAT_LED  		GPIO_P0_11
 
+#define GPIO_PSU_3VERR              UEZ_GPIO_PORT_NONE
+
 // LED pins in Rev 1,2 PCB
 #define LEDENABLEn  				GPIO_P6_26
 #define LED_GREEN   				GPIO_P6_27

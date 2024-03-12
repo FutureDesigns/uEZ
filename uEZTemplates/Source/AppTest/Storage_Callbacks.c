@@ -10,11 +10,11 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <uEZ.h>
 #include <Device/MassStorage.h>
 #include <Global.h>
 #include <Storage_Callbacks.h>
 #include <stdio.h>
-#include <uEZ.h>
 #include <uEZFile.h>
 
 #include "Audio.h"
@@ -29,6 +29,10 @@
 #include "uEZPlatform.h"
 #include "emWin/WindowManager.h"
 
+#include "Audio.h"
+#include <uEZToneGenerator.h>
+#include <uEZAudioMixer.h>
+
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
@@ -42,7 +46,7 @@ UEZ_ALIGN_VAR(4,char buffW[2048]);
 UEZ_ALIGN_VAR(4,char buffR[2048] = {0});
 static TUInt16 G_StressTestLevel = 0;
 static TBool G_TestRunning = EFalse;
-static WM_HWIN G_hMultiedit = NULL;
+static WM_HWIN G_hMultiedit = 0;
 void IPrintF(const char *msg, ...);
 static TUInt16 testFileSize = 0;
 static TUInt16 testIterations = 0;
@@ -55,12 +59,12 @@ extern TBool G_USBFlash_inserted;
  * Prototypes:
  *-------------------------------------------------------------------------*/
 
-static void IGrab()
+static void IGrab(void)
 {
     UEZSemaphoreGrab(G_Sem, UEZ_TIMEOUT_INFINITE);
 }
 
-static void IRelease()
+static void IRelease(void)
 {
     UEZSemaphoreRelease(G_Sem);
 }
@@ -71,7 +75,18 @@ static void IRelease()
  *-------------------------------------------------------------------------*/
 void Storage_FormatMedium(U8 device)
 {
+    T_uezDevice tone;
     IGrab();
+
+    if(UEZToneGeneratorOpen("Speaker", &tone) == UEZ_ERROR_NONE) {
+       UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+       UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1500), 25);
+
+       UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1000), 25);
+       UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+       UEZToneGeneratorClose(tone);
+    }
+
     switch(device)
     {
     case 0:
@@ -169,6 +184,8 @@ void Storage_FileTest(U8 device, U8 size, U8 duration)
  *---------------------------------------------------------------------------*/
 TUInt32 StressTask(T_uezTask aMyTask, void *aParams)
 {
+   PARAM_NOT_USED(aMyTask);
+   PARAM_NOT_USED(aParams);
    while(1) {
       if(G_StressTestLevel > 0) {
         RTOS_ENTER_CRITICAL();
@@ -182,7 +199,10 @@ TUInt32 StressTask(T_uezTask aMyTask, void *aParams)
 
 TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
 {
+  PARAM_NOT_USED(aMyTask);
+  PARAM_NOT_USED(aParams);
   T_uezFile file;
+  T_uezDevice tone;
   char fileName[14] = {0};  // first char is drive number path
   char syncPath[3] = {'1',':',0}; // first char is drive number path
   TUInt32 numWritten;
@@ -196,6 +216,15 @@ TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
       fileName[0] = G_StorageDevice;
       for (U16 i = 0; i < testFileSize; i++) {
         buffW[i] = (U16) i;
+      }
+
+      if(UEZToneGeneratorOpen("Speaker", &tone) == UEZ_ERROR_NONE) {
+         UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+         UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1500), 25);
+
+         UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1000), 25);
+         UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+         UEZToneGeneratorClose(tone);
       }
 
       for (int r = 0; r < 50; r++) {
@@ -254,6 +283,16 @@ TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
         IPrintF("Stress Level: %u\n", G_StressTestLevel);
         IPrintF("Run: %u\n\n", r);
 
+        
+        if(UEZToneGeneratorOpen("Speaker", &tone) == UEZ_ERROR_NONE) {
+           UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+           UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1500), 25);
+
+           UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1000), 25);
+           UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+           UEZToneGeneratorClose(tone);
+        }
+
         if(G_TestRunning == ETrue) {
            G_StressTestLevel +=30;
         } else {
@@ -263,7 +302,9 @@ TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
       G_TestRunning = EFalse;
     } else { // not running test, can poll USB status
         if (G_USBFlash_inserted == EFalse) {
-          G_USBFlash_inserted = Storage_PrintInfo('0');          
+#if (UEZ_ENABLE_USB_HOST_STACK == 1)
+          G_USBFlash_inserted = Storage_PrintInfo('0');
+#endif
           if (G_USBFlash_inserted == ETrue) { // force repaint
             WindowManager_InvalidateCurrentWindow();
           }
@@ -325,8 +366,8 @@ void  IPrintF(const char *msg, ...)
   va_start(args, msg);
   vsprintf(buffer, msg, args);
   printf(buffer);
-  if(G_hMultiedit != NULL){
-    if(MULTIEDIT_GetTextSize(G_hMultiedit) > (STORAGE_ME_BUFF_SIZE-sizeof(buffer))) {
+  if(G_hMultiedit != 0){
+    if((uint32_t) MULTIEDIT_GetTextSize(G_hMultiedit) > (STORAGE_ME_BUFF_SIZE-sizeof(buffer))) {
       MULTIEDIT_SetText(G_hMultiedit, buffer);
 
     } else {
@@ -366,6 +407,12 @@ T_uezError uEZFormatDrive(char driveLetter) {
   char drivePath[4] = {driveLetter,':','/',0}; // logical drive path
   uint64_t totalBytes = 0;
   float sizeDecimal = 0.0;
+  T_uezDevice tone;
+
+  if(UEZToneGeneratorOpen("Speaker", &tone) == UEZ_ERROR_NONE) {
+     UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+     UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1500), 25);
+  }
 
   IPrintF("Formatting Drive....");
   if (UEZFileMKFS(driveLetter) != UEZ_ERROR_NONE) {
@@ -434,6 +481,12 @@ T_uezError uEZFormatDrive(char driveLetter) {
         IPrintF(buff);
     }
 
+    if(UEZToneGeneratorOpen("Speaker", &tone) == UEZ_ERROR_NONE) {
+       UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1000), 25);
+       UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+       UEZToneGeneratorClose(tone);
+    }
+
     if (UEZFileClose(file) != UEZ_ERROR_NONE) {             
       return UEZ_ERROR_FAIL;// Error closing file
     }
@@ -465,10 +518,9 @@ TBool Storage_PrintInfo(char driveLetter) {
     uint64_t totalBytes = 0;
     float sizeDecimal = 0.0;
 
-    printf("\nDrive %c information:\n", driveLetter);
-
     T_msSizeInfo aDeviceInfo;
     if (UEZFileSystemGetStorageInfo(drivePath, &aDeviceInfo) == UEZ_ERROR_NONE) {
+        printf("\nDrive %c information:\n", driveLetter);
         totalBytes = ((uint64_t) aDeviceInfo.iNumSectors) * aDeviceInfo.iSectorSize;
         sizeDecimal = totalBytes/STORAGE_DIVIDER/STORAGE_DIVIDER; // MB
         printf("Storage Medium Report:\n  Sectors: %u\n", aDeviceInfo.iNumSectors);

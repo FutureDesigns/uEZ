@@ -44,6 +44,7 @@
  */
 #include <uEZ.h>
 #include <uEZRandom.h>
+#include <Source/Library/Random/simplerandom/simplerandom.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -55,6 +56,8 @@
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
+static SimpleRandomCong_t G_rng_cong;
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -92,16 +95,23 @@ T_uezError UEZRandomStreamCreate(
     TInt32 aPlant,
     T_uezRandomStreamType aStreamType)
 {
+#if 0
+    /* Original implementation didn't seem to work */
     const TInt32 Q = MODULUS / A256;
     const TInt32 R = MODULUS % A256;
     TInt32 seed;
     TInt32 x;
-
+#endif
     if (aStreamType == UEZ_RANDOM_PSUEDO) {
+#if 0
+        /* Original implementation didn't seem to work */
         seed = aPlant % MODULUS;
         x = A256 * (seed % Q) - R * (seed / Q);
         aStream->iType = aStreamType;
         aStream->iSeed = x + ((x > 0) ? 0 : MODULUS);
+#else
+        aStream->iSeed = simplerandom_cong_next(&G_rng_cong);
+#endif
     } else {
         return UEZ_ERROR_NOT_SUPPORTED;
     }
@@ -130,6 +140,8 @@ T_uezError UEZRandomStreamCreate(
 /*---------------------------------------------------------------------------*/
 TInt32 UEZRandomSigned32Bit(T_uezRandomStream *aStream)
 {
+#if 0
+    /* Original implementation didn't seem to work */
     const long Q = MODULUS / MULTIPLIER;
     const long R = MODULUS % MULTIPLIER;
     TInt32 x;
@@ -137,7 +149,9 @@ TInt32 UEZRandomSigned32Bit(T_uezRandomStream *aStream)
 
     x = MULTIPLIER * (seed % Q) - R * (seed / Q);
     aStream->iSeed = x + ((x > 0) ? 0 : MODULUS);
-
+#else
+    aStream->iSeed = simplerandom_cong_next(&G_rng_cong);
+#endif
     return aStream->iSeed;
 }
 /** @} */

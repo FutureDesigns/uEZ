@@ -1,0 +1,12 @@
+<!DOCTYPE CrossStudio_Session_File>
+<session>
+$[ifdef LPC1788]
+ <ARMCrossStudioWindow activeProject="$[sym project_name]" fileDialogDefaultFilter="*.c" autoConnectTarget="SEGGER J-Link" buildConfiguration="Debug_Heap4" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3711"/>
+$[endif]
+$[ifdef LPC4088]
+ <ARMCrossStudioWindow activeProject="$[sym project_name]" fileDialogDefaultFilter="*.c" autoConnectTarget="SEGGER J-Link" buildConfiguration="Debug_Heap4" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3711"/>
+$[endif]
+$[ifdef LPC4357]
+ <ARMCrossStudioWindow activeProject="$[sym project_name]" fileDialogDefaultFilter="*.c" autoConnectTarget="SEGGER J-Link" buildConfiguration="Debug_Heap4" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3711"/>
+$[endif]
+</session>

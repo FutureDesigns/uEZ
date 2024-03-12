@@ -18,6 +18,7 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
+#include <uEZ.h>
 #include "Config.h"
 #include "uEZRTOS.h"
 
@@ -30,7 +31,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAX_UEZ_TASK_LIST   10
+#define MAX_UEZ_TASK_LIST   15
 
 #ifndef configMAX_TASK_NAME_LEN
 #define configMAX_TASK_NAME_LEN   16
@@ -92,7 +93,15 @@ void UEZTaskRegister(const char * const aName, T_uezPriority aPriority, TUInt32 
     UEZSemaphoreRelease(G_TaskListSem);
 }
 
-#define MAX_TASK_LINE   500
+#if (configUSE_TRACE_FACILITY == 1)
+// Don't use this function, see UEZGetTaskInfo and UEZGUICmdTaskInfo for proper FreeRTOS standard polling procedure
+ void UEZGetTaskList(char* aBuffer)
+{
+  (void) aBuffer;
+}
+#else
+
+#define MAX_TASK_LINE   512
 void UEZGetTaskList(char* aBuffer)
 {
     TUInt8 i = 0;
@@ -112,6 +121,8 @@ void UEZGetTaskList(char* aBuffer)
     UEZSemaphoreRelease(G_TaskListSem);
 }
 #endif
+
+#endif // DISABLE_FEATURES_FOR_BOOTLOADER
 /*-------------------------------------------------------------------------*
  * End of File:  uEZRTOS.c
  *-------------------------------------------------------------------------*/

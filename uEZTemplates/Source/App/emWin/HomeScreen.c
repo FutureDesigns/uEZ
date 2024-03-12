@@ -111,7 +111,7 @@ static T_LAFMapping HomeScreenMapping[] = {
                                 , GUI_BLACK , GUI_WHITE , &FONT_LARGE, LAFSetupText   , 0},
     { ID_BUTTON_RIGHT_TOP   , "Sensors"
                                 , GUI_GRAY  , GUI_BLACK , &FONT_LARGE, LAFSetupButton , (TBool (*)(WM_MESSAGE *, int, int))IHandleButtonRightTop},
-    { ID_BUTTON_RIGHT_MIDDLE, "GUI Builder"
+    { ID_BUTTON_RIGHT_MIDDLE, "MQTT Demo"
                                 , GUI_GRAY  , GUI_BLACK , &FONT_LARGE, LAFSetupButton , (TBool (*)(WM_MESSAGE *, int, int))IHandleButtonRightMiddle},
     { ID_BUTTON_RIGHT_BOTTOM, "Time/Date"
                                 , GUI_GRAY  , GUI_BLACK , &FONT_LARGE, LAFSetupButton , (TBool (*)(WM_MESSAGE *, int, int))IHandleButtonRightBottom},
@@ -139,9 +139,11 @@ static TBool G_Active = EFalse;
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonRightTop(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         WindowManager_Show_Window(SENSOR_SCREEN);
-
     }
     return EFalse;
 }
@@ -160,8 +162,15 @@ static TBool IHandleButtonRightTop(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonRightMiddle(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
-		// TODO can show a different window here
+#if(UEZ_AWS_IOT_CLIENT_DEMO == 1)
+        WindowManager_Show_Window(MQTT_SCREEN);
+#else
+#endif
+	// As an excercise can drop in a a custom GUI from SEGGER's GUIBuild.exe here.
     }
     return EFalse;
 }
@@ -180,6 +189,9 @@ static TBool IHandleButtonRightMiddle(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         WindowManager_Show_Window(TIMEDATE_SCREEN);
     }
@@ -200,6 +212,9 @@ static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonLeftBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
       UEZPlatform_Watchdog_Require();
       T_uezDevice watchdog;
@@ -229,6 +244,7 @@ static TBool IHandleButtonLeftBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static void IUpdateFields(WM_MESSAGE * pMsg)
 {
+     PARAM_NOT_USED(pMsg);
 
 }
 
@@ -270,9 +286,12 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
         // See menual 6.2.5.1.1 BUTTON_REACT_ON_LEVEL
         // See manual "Example for an unwanted BUTTON click"
         BUTTON_SetReactOnLevel();
-		
+        
+#if(UEZ_AWS_IOT_CLIENT_DEMO == 1)
+#else
         hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_RIGHT_MIDDLE);
         WM_HideWindow(hItem); // Hide the middle button until we have a GUI screen here.
+#endif
 
         hItem = WM_GetDialogItem(pMsg->hWin, ID_TITLE_TEXT);
         //TEXT_SetText(hItem, "Demo"); // Example how to change the title text at run time.
@@ -309,17 +328,22 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
 		
         break;
     case WM_APP_GAINED_FOCUS:
-        G_Active = ETrue;
-        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
-        // Disable the button every time we switch to the screen
-        ButtonDisablePresses(hItem); // Use timer to enable button after timeout
-        WM_RestartTimer(G_UpdateTimer, BUTTON_ENABLE_TIME_MS);
+        WM_GetFocusedWindow();
+        if(WindowManager_GetCurrent_Window() == HOME_SCREEN) {
+          G_Active = ETrue;
+          hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+          // Disable the button every time we switch to the screen
+          ButtonDisablePresses(hItem); // Use timer to enable button after timeout
+          WM_RestartTimer(G_UpdateTimer, BUTTON_ENABLE_TIME_MS);
+        }
         break;
     case WM_APP_LOST_FOCUS:
-        G_Active = EFalse;
-        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
-        // Disable the button every time we switch away from the screen.
-        ButtonDisablePresses(hItem);
+        if(WindowManager_GetCurrent_Window() == HOME_SCREEN) {
+          G_Active = EFalse;
+          hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+          // Disable the button every time we switch away from the screen.
+          ButtonDisablePresses(hItem);
+        }
         break;
     default:
       WM_DefaultProc(pMsg);
@@ -337,7 +361,7 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
  *  @return                    The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN HomeScreen_Create()
+WM_HWIN HomeScreen_Create(void)
 {
 #if (INCLUDE_UEZ_RESOURCE_EXAMPLE==1)
     // Example to load a single image from the resource file

@@ -79,6 +79,7 @@ _start:
 #endif
 1:
 
+#ifdef USE_PROCESS_STACK
   /* Set up process stack if size > 0 */
   ldr r1, =__stack_process_end__
   ldr r0, =__stack_process_start__
@@ -96,6 +97,7 @@ _start:
   bl memory_set
 #endif
 1:
+#endif
 
   /* Copy initialised memory sections into RAM (if necessary). */
   ldr r0, =__data_load_start__
@@ -365,6 +367,8 @@ args:
 
   /* Setup attibutes of stack and heap sections so they don't take up room in the elf file */
   .section .stack, "wa", %nobits
+#ifdef USE_PROCESS_STACK
   .section .stack_process, "wa", %nobits
+#endif
   .section .heap, "wa", %nobits
 

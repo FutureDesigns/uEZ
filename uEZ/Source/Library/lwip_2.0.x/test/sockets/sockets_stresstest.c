@@ -125,7 +125,7 @@ check_test_data(const void *buf, size_t buf_len_bytes)
   u8_t *p = (u8_t*)buf;
   u16_t i, chk, chk_rx, len_rx;
   
-  (void) ((chk_rx));
+  LWIP_UNUSED_ARG(chk_rx);
 
   LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
   len_rx = (((u16_t)p[0]) << 8) | p[1];
@@ -457,6 +457,7 @@ sockets_stresstest_conn_client(void *arg)
 #if LWIP_NETCONN_FULLDUPLEX
   if (LWIP_RAND() & 1) {
     sys_thread_t t;
+    LWIP_UNUSED_ARG(t);
     data = (struct sockets_stresstest_fullduplex*)mem_malloc(sizeof(struct sockets_stresstest_fullduplex));
     LWIP_ASSERT("data != NULL", data != 0);
     SYS_ARCH_INC(sockets_stresstest_numthreads, 1);
@@ -492,8 +493,8 @@ sockets_stresstest_conn_client(void *arg)
       ret = lwip_write(s, txbuf, send_len);
       if (ret == -1) {
         /* TODO: for this to work, 'errno' has to support multithreading... */
-        int err = errno;        
-        (void) ((err));
+        int err = errno;
+        LWIP_UNUSED_ARG(err);
         LWIP_ASSERT("err == 0", err == 0);
       }
       LWIP_ASSERT("ret == send_len", ret == (int)send_len);
@@ -571,7 +572,7 @@ sockets_stresstest_start_clients(const struct sockaddr_storage *remote_addr)
 
   for (i = 0; i < max_connections; i++) {
     sys_thread_t t;
-    (void) ((t));
+    LWIP_UNUSED_ARG(t);
     SYS_ARCH_INC(sockets_stresstest_numthreads, 1);
     t = sys_thread_new("sockets_stresstest_conn_client", sockets_stresstest_conn_client, (void*)remote_addr, 0, 0);
     LWIP_ASSERT("thread != NULL", t != 0);
@@ -588,7 +589,8 @@ sockets_stresstest_listener(void *arg)
   socklen_t addr_len;
   struct test_settings *settings = (struct test_settings *)arg;
   int num_clients, num_servers = 0;
-  (void) ((ret));
+
+  LWIP_UNUSED_ARG(ret);
 
   slisten = lwip_socket(AF_INET, SOCK_STREAM, 0);
   LWIP_ASSERT("slisten >= 0", slisten >= 0);
@@ -613,8 +615,9 @@ sockets_stresstest_listener(void *arg)
 #if 1
     /* using server threads */
     {
-      sys_thread_t t;      
-      (void) ((t));
+      sys_thread_t t;
+      
+      LWIP_UNUSED_ARG(t);
       SYS_ARCH_INC(sockets_stresstest_numthreads, 1);
       num_servers++;
       t = sys_thread_new("sockets_stresstest_conn_server", sockets_stresstest_conn_server, (void*)sclient, 0, 0);
@@ -662,8 +665,8 @@ sockets_stresstest_listener_loop(void *arg)
 void
 sockets_stresstest_init_loopback(int addr_family)
 {
-  sys_thread_t t;  
-  (void) ((t));
+  sys_thread_t t;
+  LWIP_UNUSED_ARG(t);
   struct test_settings *settings = (struct test_settings *)mem_malloc(sizeof(struct test_settings));
 
   LWIP_ASSERT("OOM", settings != NULL);
@@ -682,8 +685,8 @@ sockets_stresstest_init_loopback(int addr_family)
 void
 sockets_stresstest_init_server(int addr_family, u16_t server_port)
 {
-  sys_thread_t t;  
-  (void) ((t));
+  sys_thread_t t;
+  LWIP_UNUSED_ARG(t);
   struct test_settings *settings = (struct test_settings *)mem_malloc(sizeof(struct test_settings));
 
   LWIP_ASSERT("OOM", settings != NULL);

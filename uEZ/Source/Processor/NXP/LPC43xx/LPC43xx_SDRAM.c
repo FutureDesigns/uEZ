@@ -23,11 +23,13 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <uEZProcessor.h>
 #include <uEZBSP.h>
 #include <stdint.h>
 #include "LPC43xx_ExternalBus.h"
 #include "LPC43xx_SDRAM.h"
+#include "LPC43xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

@@ -35,10 +35,12 @@
  * Constants:
  *---------------------------------------------------------------------------*/
 #if (UEZ_PROCESSOR == NXP_LPC4088)
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_UtilityFuncs.h>
 #define SPIFLASH_BASE_ADDRESS           (0x28000000)
 #define SPIFI_BASE                      LPC_SPIFI_BASE
 #define LPC_SPIFI_BASE                  (0x20080000  + 0x14000)
 #elif (UEZ_PROCESSOR == NXP_LPC4357)
+#include <Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.h>
 #define SPIFLASH_BASE_ADDRESS           (0x14000000)
 #define SPIFI_BASE                      LPC_SPIFI_BASE
 #elif (UEZ_PROCESSOR == NXP_LPC546xx)
@@ -381,7 +383,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_ReadOtpRegion(
         TUInt8 *aBuffer,
         TUInt32 aNumBytes)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(aWorkspace);
     UNUSED(aOffset);
     UNUSED(aBuffer);
@@ -426,7 +428,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_WriteOtpRegion(
         TUInt32 aNumBytes)
 {
 
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(aWorkspace);
     UNUSED(aOffset);
     UNUSED(aBuffer);
@@ -465,7 +467,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_WriteOtpRegion(
 T_uezError Flash_NXP_LPC_SPIFI_M4_LockOtp(
         void *aWorkspace, TBool aLockOtp)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(aWorkspace);
     UNUSED(aLockOtp);
     return UEZ_ERROR_NONE;

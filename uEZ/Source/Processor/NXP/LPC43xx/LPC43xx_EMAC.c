@@ -31,6 +31,7 @@
 #include <uEZGPIO.h>
 #include <uEZErrors.h>
 #include <Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Options:
@@ -62,7 +63,7 @@
  *---------------------------------------------------------------------------*/
 #if ECLIPSE_EDITOR
     #define EMAC_MEMORY // no mods (avoid messing up the syntax highlighting)
-#elif ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+#elif ((COMPILER_TYPE==GCC_ARM) || (COMPILER_TYPE==KEIL_UV))
     #define EMAC_MEMORY __attribute__((section(".emacmem")));
 #elif (COMPILER_TYPE==IAR)
     #define EMAC_MEMORY @ ".emacmem"
@@ -361,6 +362,9 @@ typedef struct {
     TBool iIsDetected;
     TUInt16 iReceiveIndex;
     TUInt16 iTransmitIndex;
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    TUInt16 iPhyTimeoutDetect;
+#endif
 } T_LPC43xx_EMAC_Workspace;
 
 typedef struct {
@@ -459,10 +463,21 @@ typedef struct {
 extern const HAL_EMAC EMAC_LPC43xx_Interface;
 static T_LPC43xx_EMAC_Workspace *G_LPC43xx_EMAC;
 
-/* EMAC Memory Buffer configuration for 16K Ethernet RAM. */
-// Memory EMAC packet memory
-#define ENET_NUM_TX_DESC 2//4         /* Num.of TX Fragments 2*1536= 3.0kB */
-#define ENET_NUM_RX_DESC 8//4         /* Num.of RX Fragments 4*1536= 6.0kB */
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+/* EMAC Memory Buffer configuration for 40.640K Ethernet RAM. */
+#define ENET_NUM_TX_DESC 2//         /* Num.of TX Fragments 2*8128= 16.256kB */
+#define ENET_NUM_RX_DESC 3//         /* Num.of RX Fragments 3*8128= 24.384kB */
+
+#else
+
+/* EMAC Memory Buffer configuration for 16KB Ethernet RAM. */
+//#define ENET_NUM_TX_DESC 2//4         /* Num.of TX Fragments 2*1536= 3.0kB */
+//#define ENET_NUM_RX_DESC 8//4         /* Num.of RX Fragments 8*1536= 12.228kB */
+
+/* EMAC Memory Buffer configuration for 43KB Ethernet RAM. */
+#define ENET_NUM_TX_DESC 8//         /* Num.of TX Fragments 8*1536= 12.228kB */
+#define ENET_NUM_RX_DESC 20//        /* Num.of RX Fragments 20*1536= 30.72kB */
+#endif
 
 static ENET_ENHTXDESC_T TXDescs[ENET_NUM_TX_DESC]EMAC_MEMORY;
 static ENET_ENHRXDESC_T RXDescs[ENET_NUM_RX_DESC]EMAC_MEMORY;
@@ -548,7 +563,7 @@ static T_uezError IEMACConfigPHY_National(T_LPC43xx_EMAC_Workspace *p)
 
     // Wait to complete Auto_Negotiation.
     for (timeout = 0; timeout < 10; timeout++) {
-        UEZBSPDelayMS(100);
+        UEZTaskDelay(100);
         regv = IPHYRead(p, PHY_REG_BMSR);
         if (regv & 0x0020) {
             // Autonegotiation Complete.
@@ -560,7 +575,7 @@ static T_uezError IEMACConfigPHY_National(T_LPC43xx_EMAC_Workspace *p)
     if (error == UEZ_ERROR_NONE) {
         error = UEZ_ERROR_TIMEOUT;
         for (timeout = 0; timeout < 10; timeout++) {
-            UEZBSPDelayMS(100);
+            UEZTaskDelay(100);
             regv = IPHYRead(p, PHY_REG_STS);
             if (regv & 0x0001) {
                 // Link is on.
@@ -619,7 +634,7 @@ static T_uezError IEMACConfigPHY_Micrel(T_LPC43xx_EMAC_Workspace *p)
 #if DEBUG_LPC43xx_EMAC_STARTUP
         printf(".");
 #endif
-        UEZBSPDelayMS(100);
+        UEZTaskDelay(100);
         regv = IPHYRead(p, PHY_REG_BMSR);
         if (regv & (BMSR_AUTO_DONE | BMSR_LINK_ESTABLISHED)) {
             // Autonegotiation Complete.
@@ -901,7 +916,7 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     // Initializes the EMAC Ethernet controller
 
     // Delay a small amount
-    UEZBSPDelayMS(1);
+    UEZTaskDelay(1);
 
     LPC_CREG->CREG6 |= 0x4;
 
@@ -938,13 +953,13 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
                                    (p->iSettings.iMACAddress[2] << 16) |
                                    (p->iSettings.iMACAddress[1] << 8) |
                                    (p->iSettings.iMACAddress[0]);
-
+    
     LPC_ETHERNET->MAC_CONFIG =  (3<<17) | (1<<15) | (1 << 14) | (1<<13) | (1 << 11) | (1 << 10);
 
     /* Setup default filter */
     LPC_ETHERNET->MAC_FRAME_FILTER = (1<<0) | (1UL<<31);
 
-    UEZBSPDelayMS(500);
+    UEZTaskDelay(500);
 
     // Find the PHY address
     for (addr = 0; addr < 16; addr++) {
@@ -963,7 +978,7 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
 
     /* Put the Phy in reset mode */
     IPHYWrite(p, PHY_REG_BMCR, 0x8000);
-    UEZBSPDelayMS(1);
+    UEZTaskDelay(1);
 
     // Wait for hardware reset to end.
     // We try 100 times with a 10 ms delay for a complete
@@ -971,7 +986,7 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     retry = 3;
     do {
         for (timeout = 0; timeout < 100; timeout++) {
-            UEZBSPDelayMS(10);
+            UEZTaskDelay(10);
             regv = IPHYRead(p, PHY_REG_BMCR);
             if (!(regv & 0x8000)) {
                 // Reset complete
@@ -1055,6 +1070,11 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     
     /* Enable receive and transmit mode of MAC Ethernet core */
     LPC_ETHERNET->MAC_CONFIG |= (1 << 3) | (1 << 2);
+
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)    
+    // Enable Jumber Frame (bit 20, Jumbo Frame Enable)
+    LPC_ETHERNET->MAC_CONFIG |= ETHERNET_MAC_CONFIG_JE_Msk;
+#endif
     
     LPC_ETHERNET->DMA_REC_POLL_DEMAND = 1;
 
@@ -1305,6 +1325,9 @@ static void LPC43xx_EMAC_ProcessInterrupt(void)
             p->iReceiveCallback(p->iReceiveCallbackWorkspace);
         }
     }
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    p->iPhyTimeoutDetect = 0;
+#endif
     // Clear any interrupts that triggered this code
     LPC_ETHERNET->DMA_STAT = status;
 }
@@ -1350,13 +1373,17 @@ void LPC43xx_EMAC_EnableReceiveInterrupt(
     p->iReceiveCallbackWorkspace = aCallbackWorkspace;
     // Register this interrupt (if not already)
 #ifdef CORE_M4
-    InterruptRegister(ETHERNET_IRQn, (TISRFPtr)LPC43xx_EMAC_ISR,
-        INTERRUPT_PRIORITY_HIGH, "EMAC");
+    if(InterruptIsRegistered(ETHERNET_IRQn) == EFalse) {
+      InterruptRegister(ETHERNET_IRQn, (TISRFPtr)LPC43xx_EMAC_ISR,
+          INTERRUPT_PRIORITY_HIGH, "EMAC");
+    }
     InterruptEnable(ETHERNET_IRQn);
 #endif
 #ifdef CORE_M0
-    InterruptRegister(M0_ETHERNET_IRQn, (TISRFPtr)LPC43xx_EMAC_ISR,
-        INTERRUPT_PRIORITY_HIGH, "EMAC");
+    if(InterruptIsRegistered(M0_ETHERNET_IRQn) == EFalse) {
+      InterruptRegister(M0_ETHERNET_IRQn, (TISRFPtr)LPC43xx_EMAC_ISR,
+          INTERRUPT_PRIORITY_HIGH, "EMAC");
+    }
     InterruptEnable(M0_ETHERNET_IRQn);
 #endif
 #ifdef CORE_M0SUB
@@ -1413,9 +1440,22 @@ T_uezError LPC43xx_EMAC_InitializeWorkspace(void *aWorkspace)
     p->rptr = 0;
     p->iReceiveIndex = 0;
     p->iTransmitIndex = 0;
+    
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    p->iPhyTimeoutDetect = 0;
+#endif
 
     return UEZ_ERROR_NONE;
 }
+
+TUInt16* LPC43xx_EMAC_GetPhyTimeoutCounter(void) {
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+  return &G_LPC43xx_EMAC->iPhyTimeoutDetect;
+#else
+  return 0;
+#endif
+
+}    
 
 /*---------------------------------------------------------------------------*
  * HAL Interface table:
@@ -1439,7 +1479,10 @@ const HAL_EMAC G_LPC43xx_EMAC_Interface = {
     // uEZ v1.10
     LPC43xx_EMAC_EnableReceiveInterrupt,
     LPC43xx_EMAC_DisableReceiveInterrupt,
-
+    // uEZ v2.14
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    LPC43xx_EMAC_GetPhyTimeoutCounter,
+#endif
 };
 
 /*---------------------------------------------------------------------------*

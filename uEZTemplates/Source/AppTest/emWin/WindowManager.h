@@ -54,11 +54,12 @@ extern WM_HWIN G_SystemWindows[];
 /*---------------------------------------------------------------------------*
  * Prototypes:
  *---------------------------------------------------------------------------*/
-T_uezError WindowManager_Start_emWin();
-T_uezError WindowManager_Close_emWin();
+T_uezError WindowManager_Start_emWin(void);
+T_uezError WindowManager_Close_emWin(void);
 void WindowManager_Create_All_Active_Windows(void);
 
 void WindowManager_Show_Window(TUInt8 aWindow);
+TUInt8 WindowManager_GetCurrent_Window(void);
 void WindowManager_Get_Touch( GUI_PID_STATE *aState);
 void WindowManager_UpdateCommonElements(T_CommonMode aMode);
 void WindowManager_ClearTouches(void);

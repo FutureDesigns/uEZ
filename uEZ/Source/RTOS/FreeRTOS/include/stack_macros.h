@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V10.4.3
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.6.1
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -43,17 +45,25 @@
 
 /*-----------------------------------------------------------*/
 
+/*
+ * portSTACK_LIMIT_PADDING is a number of extra words to consider to be in
+ * use on the stack.
+ */
+#ifndef portSTACK_LIMIT_PADDING
+    #define portSTACK_LIMIT_PADDING    0
+#endif
+
 #if ( ( configCHECK_FOR_STACK_OVERFLOW == 1 ) && ( portSTACK_GROWTH < 0 ) )
 
 /* Only the current stack state is to be checked. */
     #define taskCHECK_FOR_STACK_OVERFLOW()                                                            \
-    {                                                                                                 \
+    do {                                                                                              \
         /* Is the currently saved stack pointer within the stack limit? */                            \
-        if( pxCurrentTCB->pxTopOfStack <= pxCurrentTCB->pxStack )                                     \
+        if( pxCurrentTCB->pxTopOfStack <= pxCurrentTCB->pxStack + portSTACK_LIMIT_PADDING )           \
         {                                                                                             \
             vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName ); \
         }                                                                                             \
-    }
+    } while( 0 )
 
 #endif /* configCHECK_FOR_STACK_OVERFLOW == 1 */
 /*-----------------------------------------------------------*/
@@ -62,14 +72,14 @@
 
 /* Only the current stack state is to be checked. */
     #define taskCHECK_FOR_STACK_OVERFLOW()                                                            \
-    {                                                                                                 \
+    do {                                                                                              \
                                                                                                       \
         /* Is the currently saved stack pointer within the stack limit? */                            \
-        if( pxCurrentTCB->pxTopOfStack >= pxCurrentTCB->pxEndOfStack )                                \
+        if( pxCurrentTCB->pxTopOfStack >= pxCurrentTCB->pxEndOfStack - portSTACK_LIMIT_PADDING )      \
         {                                                                                             \
             vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName ); \
         }                                                                                             \
-    }
+    } while( 0 )
 
 #endif /* configCHECK_FOR_STACK_OVERFLOW == 1 */
 /*-----------------------------------------------------------*/
@@ -77,7 +87,7 @@
 #if ( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) && ( portSTACK_GROWTH < 0 ) )
 
     #define taskCHECK_FOR_STACK_OVERFLOW()                                                            \
-    {                                                                                                 \
+    do {                                                                                              \
         const uint32_t * const pulStack = ( uint32_t * ) pxCurrentTCB->pxStack;                       \
         const uint32_t ulCheckValue = ( uint32_t ) 0xa5a5a5a5;                                        \
                                                                                                       \
@@ -88,7 +98,7 @@
         {                                                                                             \
             vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName ); \
         }                                                                                             \
-    }
+    } while( 0 )
 
 #endif /* #if( configCHECK_FOR_STACK_OVERFLOW > 1 ) */
 /*-----------------------------------------------------------*/
@@ -96,7 +106,7 @@
 #if ( ( configCHECK_FOR_STACK_OVERFLOW > 1 ) && ( portSTACK_GROWTH > 0 ) )
 
     #define taskCHECK_FOR_STACK_OVERFLOW()                                                                                                \
-    {                                                                                                                                     \
+    do {                                                                                                                                  \
         int8_t * pcEndOfStack = ( int8_t * ) pxCurrentTCB->pxEndOfStack;                                                                  \
         static const uint8_t ucExpectedStackBytes[] = { tskSTACK_FILL_BYTE, tskSTACK_FILL_BYTE, tskSTACK_FILL_BYTE, tskSTACK_FILL_BYTE,   \
                                                         tskSTACK_FILL_BYTE, tskSTACK_FILL_BYTE, tskSTACK_FILL_BYTE, tskSTACK_FILL_BYTE,   \
@@ -112,7 +122,7 @@
         {                                                                                                                                 \
             vApplicationStackOverflowHook( ( TaskHandle_t ) pxCurrentTCB, pxCurrentTCB->pcTaskName );                                     \
         }                                                                                                                                 \
-    }
+    } while( 0 )
 
 #endif /* #if( configCHECK_FOR_STACK_OVERFLOW > 1 ) */
 /*-----------------------------------------------------------*/

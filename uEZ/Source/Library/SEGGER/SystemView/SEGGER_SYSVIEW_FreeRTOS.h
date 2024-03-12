@@ -69,7 +69,8 @@ Notes:
 **********************************************************************
 */
 #ifndef portSTACK_GROWTH
-  //#define portSTACK_GROWTH              ( -1 ) // The spaces inside parentesis always have to match FreeRTOS or we get warnings. But we can just bring in the existing define instead of this one.
+// For all current Cortex-M ports in uEZ this is negative for downward stack. We would need rework to include portmacro include here.
+ #define portSTACK_GROWTH              ( -1 ) // The spaces inside parentesis always have to match FreeRTOS or we get warnings. But we can just bring in the existing define instead of this one.
 #endif
 
 //After the limit, task information is not recorded by SystemView

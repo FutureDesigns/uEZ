@@ -30,6 +30,7 @@
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_Timer.h>
 #include <HAL/Interrupt.h>
 #include <uEZPlatformAPI.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Types:

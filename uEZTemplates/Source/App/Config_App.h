@@ -42,7 +42,7 @@
 // Choose one when stack is enabled
 #define UEZ_HTTP_SERVER                     0
 #define DEBUG_HTTP_SERVER                   0
-#define UEZ_BASIC_WEB_SERVER                UEZ_ENABLE_TCPIP_STACK
+#define UEZ_BASIC_WEB_SERVER                0
 
 #ifndef UEZ_ENABLE_USB_HOST_STACK
 #define UEZ_ENABLE_USB_HOST_STACK           1
@@ -65,6 +65,27 @@
 
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
 
+#ifndef UEZ_REGISTER // see UEZQueueSetName examples
+#define UEZ_REGISTER                        0
+#endif
+#ifndef RENAME_INI
+#define RENAME_INI                          0
+#endif
+#ifndef APP_MENU_ALLOW_TEST_MODE
+#define APP_MENU_ALLOW_TEST_MODE            0
+#endif
+#ifndef LPC43XX_ENABLE_M0_CORES
+#define LPC43XX_ENABLE_M0_CORES             0
+#endif
+#ifndef UEZ_WIRELESS_PROGRAM_MODE
+#define UEZ_WIRELESS_PROGRAM_MODE           0
+#endif
+#ifndef UEZ_ENABLE_WIRELESS_NETWORK
+#define UEZ_ENABLE_WIRELESS_NETWORK         0
+#endif
+#ifndef UEZ_ENABLE_AUDIO_CODEC
+#define UEZ_ENABLE_AUDIO_CODEC              0
+#endif
 /*-------------------------------------------------------------------------*
  * Default Values:
  *-------------------------------------------------------------------------*/

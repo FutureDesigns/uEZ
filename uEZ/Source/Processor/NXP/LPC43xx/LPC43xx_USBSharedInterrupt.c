@@ -23,6 +23,7 @@
 #include <uEZProcessor.h>
 #include <HAL/Interrupt.h>
 #include <uEZRTOS.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Function Prototypes:

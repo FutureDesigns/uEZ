@@ -347,11 +347,14 @@ T_uezError UEZNetworkConnect(
         T_uezDevice *aNetwork,
         T_uezNetworkStatus *aStatus);
 
-T_uezError UEZNetworkInfrastructureConfigure(
+T_uezError UEZNetworkResolveAddress(
     T_uezDevice aNetworkDevice,
-    T_uezNetworkSettings *aSettings);
+    const char *aString,
+    T_uezNetworkAddr *aAddr);
+
 T_uezError UEZNetworkInfrastructureBringUp(T_uezDevice aNetworkDevice);
 T_uezError UEZNetworkInfrastructureTakeDown(T_uezDevice aNetworkDevice);
+T_uezError UEZNetworkInfrastructureRestart(T_uezDevice aNetworkDevice);
 
 T_uezError UEZNetworkGetConnectionInfo(T_uezDevice aNetworkDevice,
 		T_uezNetworkSocket aSocket,

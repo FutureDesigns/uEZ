@@ -23,6 +23,7 @@
 #include "GUI.h"
 #include "WM.h"
 #include <uEZPlatform.h>
+#include <uEZMemory.h>
 #include "WindowManager.h"
 //#include "Create_Window_Functions.h"
 #include <uEZLCD.h>

@@ -215,6 +215,7 @@ typedef enum{
  /*---------------------------------------------------------------------------*/
 static void IUpdateFields(WM_MESSAGE *pMsg)
 {
+    PARAM_NOT_USED(pMsg);
     //WM_HWIN hItem;
     //hItem = WM_GetDialogItem(pMsg->hWin, ID_TITLE_TEXT);
     //TEXT_SetText(hItem, G_AlbumName);
@@ -235,6 +236,8 @@ static void IUpdateFields(WM_MESSAGE *pMsg)
 static TBool IHandlePlayPause(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     //WM_HWIN hItem;
+    PARAM_NOT_USED(pMsg);
+    PARAM_NOT_USED(aID);
 
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         IHideButtonsAndText(pMsg);
@@ -271,7 +274,9 @@ static TBool IHandleReverse(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
     //T_ImageMessage message;
     //TUInt32 *tempPointer;
-
+    PARAM_NOT_USED(pMsg);
+    PARAM_NOT_USED(aID);
+                   
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         /*
         UEZSemaphoreGrab(G_LoadingSemaphore, UEZ_TIMEOUT_INFINITE);
@@ -307,6 +312,8 @@ static TBool IHandleReverse(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleForward(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+    PARAM_NOT_USED(pMsg);
+    PARAM_NOT_USED(aID);
     //T_ImageMessage message;
     //TUInt32 *tempPointer;
 
@@ -445,7 +452,9 @@ static void _PFMainDialog(WM_MESSAGE *pMsg)
         p_touchState = (GUI_PID_STATE *)(pMsg->Data.p);
         if (!p_touchState->Pressed) { // if main window is touched, then released
 
-            WindowManager_Show_Window(HOME_SCREEN);
+            if(WindowManager_GetCurrent_Window() == SLIDESHOW_SCREEN) {
+              WindowManager_Show_Window(HOME_SCREEN);
+            }
 
             // TODO finish implementing on-screen buttons with transparency
             WM_RestartTimer(G_OverlayTimer, OVERLAY_TIMEOUT_MS);
@@ -490,7 +499,7 @@ static void _PFMainDialog(WM_MESSAGE *pMsg)
  *  @return                 The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN SlideShowWindow_Create()
+WM_HWIN SlideShowWindow_Create(void)
 {
     //sprintf(filename, IMAGE_NAME_DIR IMAGE_NAME_BASE "%02d" IMAGE_EXT, G_CurrentImage_Number);
 

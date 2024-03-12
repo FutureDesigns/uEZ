@@ -44,6 +44,8 @@
 #define GAINSPAN_SPI_ALLOW_FORCE_FLOW_CONTROL	 0 // off by default, only works on GS1011M, not GS2011M
 #endif
 
+T_uezTask G_GainspanSpiTask;
+
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
@@ -157,7 +159,8 @@ void GainSpan_SPI_Start(void)
     UEZSemaphoreCreateBinary(&G_sem);
 
     // Create a background task to handle all SPI communications
-    UEZTaskCreate(IGainSpan_SPI_Thread, "GS_SPI_Comm", UEZ_TASK_STACK_BYTES(1024), 0, UEZ_PRIORITY_HIGH, 0);
+    UEZTaskCreate(IGainSpan_SPI_Thread, "GS_SPI_Comm", UEZ_TASK_STACK_BYTES(1024), 0,
+      UEZ_PRIORITY_HIGH, &G_GainspanSpiTask);
 }
 
 /*---------------------------------------------------------------------------*

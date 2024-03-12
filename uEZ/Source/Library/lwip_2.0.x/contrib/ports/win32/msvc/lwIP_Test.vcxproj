@@ -19,11 +19,13 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -53,7 +55,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\lwip\src\include;..\..\..\..\lwip\src\include\ipv4;..\..\..\..\lwip\src\include\ipv6;..\include;..\..\..\examples\example_app;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\src\include;..\..\..\..\src\include\ipv4;..\..\..\..\src\include\ipv6;..\include;..\..\..\examples\example_app;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -62,7 +64,7 @@
       </PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <ProgramDataBaseFileName>$(IntDir)$(ProjectName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -74,7 +76,7 @@
     <Link>
       <AdditionalDependencies>Packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(PCAP_DIR)\Lib;..\..\..\..\winpcap\WpdPack\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PCAP_DIR)\Lib;..\..\..\..\..\winpcap\WpdPack\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\Release/test.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -83,6 +85,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <DelayLoadDLLs>Packet.dll;wpcap.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -93,7 +96,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\lwip\src\include;..\..\..\..\lwip\src\include\ipv4;..\..\..\..\lwip\src\include\ipv6;..\include;..\..\..\examples\example_app;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\src\include;..\..\..\..\src\include\ipv4;..\..\..\..\src\include\ipv6;..\include;..\..\..\examples\example_app;..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CONSOLE;WIN32;_DEBUG;LWIP_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -101,7 +104,7 @@
       </PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <ProgramDataBaseFileName>$(IntDir)$(ProjectName).pdb</ProgramDataBaseFileName>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
@@ -114,7 +117,7 @@
     <Link>
       <AdditionalDependencies>Packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(PCAP_DIR)\Lib;..\..\..\..\winpcap\WpdPack\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PCAP_DIR)\Lib;..\..\..\..\..\winpcap\WpdPack\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -123,6 +126,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <DelayLoadDLLs>Packet.dll;wpcap.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -134,6 +138,7 @@
     <ClCompile Include="..\..\..\examples\httpd\cgi_example\cgi_example.c" />
     <ClCompile Include="..\..\..\examples\httpd\fs_example\fs_example.c" />
     <ClCompile Include="..\..\..\examples\httpd\genfiles_example\genfiles_example.c" />
+    <ClCompile Include="..\..\..\examples\httpd\https_example\https_example.c" />
     <ClCompile Include="..\..\..\examples\httpd\post_example\post_example.c" />
     <ClCompile Include="..\..\..\examples\httpd\ssi_example\ssi_example.c" />
     <ClCompile Include="..\..\..\examples\lwiperf\lwiperf_example.c" />
@@ -173,6 +178,7 @@
     <ClInclude Include="..\..\..\examples\httpd\cgi_example\cgi_example.h" />
     <ClInclude Include="..\..\..\examples\httpd\fs_example\fs_example.h" />
     <ClInclude Include="..\..\..\examples\httpd\genfiles_example\genfiles_example.h" />
+    <ClInclude Include="..\..\..\examples\httpd\https_example\https_example.h" />
     <ClInclude Include="..\..\..\examples\httpd\ssi_example\ssi_example.h" />
     <ClInclude Include="..\..\..\examples\lwiperf\lwiperf_example.h" />
     <ClInclude Include="..\..\..\examples\mdns\mdns_example.h" />

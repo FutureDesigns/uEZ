@@ -202,7 +202,7 @@ slipif_input(struct netif *netif)
       break;
     }
   }
-#if ((COMPILER_TYPE!=IAR) && (COMPILER_TYPE != Keil4))
+#if ((COMPILER_TYPE!=IAR) && (COMPILER_TYPE != KEIL_UV))
    return NULL;
 #endif
 }

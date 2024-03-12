@@ -70,7 +70,7 @@ extern const T_programTag G_programTag;
 #pragma pack(pop)
 #endif
 
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
 typedef struct __attribute__ ((__packed__)) {
     TUInt32 iSpecialHeader;
     char iName[64];

@@ -86,13 +86,13 @@ T_uezError Temp_NXP_LM75A_Read(void *aWorkspace, TInt32 *aTemperature)
     r.iSpeed = LM75A_I2C_SPEED;
     r.iWriteData = reg0;
     r.iWriteLength = 1;
-    r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
+    r.iWriteTimeout = 500;
     r.iReadData = data;
     r.iReadLength = 2;
-    r.iReadTimeout = UEZ_TIMEOUT_INFINITE; // wait until bus ready
+    r.iReadTimeout = 500; // wait until bus ready
 
     // Allow only one transfer at a time
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 1000);
 
     error = (*p->iI2C)->ProcessRequest(p->iI2C, &r);
     if (!error) {

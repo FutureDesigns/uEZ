@@ -63,6 +63,7 @@
  *  }
  *  @endcode
  */
+#include <uEZ.h>
 #include <ctype.h>
 #include <string.h>
 #include "Config.h"
@@ -71,6 +72,7 @@
 #include "uEZDevice.h"
 #include <uEZDeviceTable.h>
 #include <uEZTimeDate.h>
+#include <build_time.h>
 
 /*-------------------------------------------------------------------------*
  * Internal data:
@@ -95,6 +97,19 @@ static TUInt8 G_daysInMonth[] = { 0, //added for offset
  *-------------------------------------------------------------------------*/
 static T_uezDevice G_sysTimeDate;
 static DEVICE_RTC **G_sysTimeDateDevice = 0;
+
+#ifndef DEFAULT_RTC_IS_BUILD_TIME
+#define DEFAULT_RTC_IS_BUILD_TIME  1 // When 1 build time is default RTC time, but every build will change ELF
+#endif
+
+T_uezTimeDate G_aBuildTimeDate = // default to match time.h struct tm where year starts from 1900
+#if (DEFAULT_RTC_IS_BUILD_TIME == 1)
+   { .iTime.iHour = BUILD_HOUR,   .iTime.iMinute = BUILD_MIN, .iTime.iSecond = BUILD_SEC, .iTime.iReserved = 0,
+     .iDate.iMonth = BUILD_MONTH, .iDate.iDay = BUILD_DAY,    .iDate.iYear = BUILD_YEAR_FROM_1900 };
+#else
+   { .iTime.iHour = 1,  .iTime.iMinute = 1, .iTime.iSecond = 1, .iTime.iReserved = 0,
+     .iDate.iMonth = 1, .iDate.iDay = 1,    .iDate.iYear = 2024 };
+#endif
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

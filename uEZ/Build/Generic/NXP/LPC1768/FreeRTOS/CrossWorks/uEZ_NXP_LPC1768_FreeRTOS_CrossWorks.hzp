@@ -867,20 +867,7 @@
         <folder Name="FreeRTOS-Plus">
           <folder Name="FreeRTOS-Plus-Trace">
             <folder Name="Include">
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcBase.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcConfig.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcHardwarePort.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernel.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernelHooks.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcKernelPort.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcTypes.h" />
-              <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcUser.h" />
             </folder>
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcBase.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcHardwarePort.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcKernel.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcKernelPort.c" />
-            <file file_name="../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/trcUser.c" />
           </folder>
           <configuration Name="Debug" build_exclude_from_build="Yes" />
           <configuration Name="Release" build_exclude_from_build="Yes" />

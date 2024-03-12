@@ -22,7 +22,7 @@
 #include <uEZLCD.h>
 #include <uEZTS.h>
 #include "AppDemo.h"
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
 #include "NVSettings.h"
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
 #include <Calibration.h>

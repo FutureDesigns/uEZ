@@ -153,7 +153,7 @@ static TBool IHandleButton(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static void IUpdateFields(WM_MESSAGE * pMsg)
 {
-
+    PARAM_NOT_USED(pMsg);
 }
 
 /*---------------------------------------------------------------------------*
@@ -192,7 +192,7 @@ static void _TS_TestDialog(WM_MESSAGE *pMsg)
   }
 }
 
-static void IFillStructures()
+static void IFillStructures(void)
 {
     TUInt32 i, j;
     TUInt32 count = 1;
@@ -220,7 +220,7 @@ static void IFillStructures()
  *  @return					The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN TS_Test_Create()
+WM_HWIN TS_Test_Create(void)
 {
     IFillStructures();
     return GUI_CreateDialogBox(_iTS_TestDialog, GUI_COUNTOF(_iTS_TestDialog), &_TS_TestDialog, 0,0,0);

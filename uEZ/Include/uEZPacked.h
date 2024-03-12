@@ -61,23 +61,8 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
-#if (COMPILER_TYPE==CodeRed)
-#define PACK_STRUCT_BEGIN
-#define ATTR_IAR_PACKED	 
-#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
-#define PACK_STRUCT_END
-#define PACK_STRUCT_FIELD(x) x
-#endif
 
-#if (COMPILER_TYPE==RowleyARM)
-#define PACK_STRUCT_BEGIN
-#define ATTR_IAR_PACKED	 
-#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
-#define PACK_STRUCT_END
-#define PACK_STRUCT_FIELD(x) x
-#endif
-
-#if (COMPILER_TYPE==GCC)
+#if (COMPILER_TYPE==GCC_ARM)
 #define PACK_STRUCT_BEGIN
 #define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
@@ -94,7 +79,7 @@ extern "C" {
 #define PACK_STRUCT_FIELD(x) x
 #endif
 
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 #define PACK_STRUCT_BEGIN
 #define ATTR_IAR_PACKED	 
 #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
@@ -103,7 +88,7 @@ extern "C" {
 #endif
 
 
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
 #define PACK_STRUCT_USE_INCLUDES 1
 #define PACK_STRUCT_BEGIN
 #define ATTR_IAR_PACKED	 

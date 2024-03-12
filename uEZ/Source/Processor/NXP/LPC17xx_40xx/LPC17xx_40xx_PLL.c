@@ -24,7 +24,9 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZProcessor.h>
+#include <uEZMemory.h>
 #include "LPC17xx_40xx_PLL.h"
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

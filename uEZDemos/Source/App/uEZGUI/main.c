@@ -28,6 +28,7 @@
 #include <uEZPlatform.h>
 #include <uEZDeviceTable.h>
 #include <uEZDemoCommon.h>
+#include <uEZMemory.h>
 #include "NVSettings.h"
 #include "AppTasks.h"
 #include "AppDemo.h"
@@ -47,7 +48,7 @@
 #endif
 #endif
 
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
     #include <trcUser.h>
 #endif
 
@@ -62,6 +63,29 @@ extern T_uezTask G_mainTask;
 #if (UEZ_PROCESSOR == NXP_LPC4357)
 static TBool G_OnBoardUSBIsHost = EFalse;
 #endif
+
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  3
+#endif
+
+#ifndef __HEAP_SIZE__
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define __HEAP_SIZE__ 5000000
+#else
+#define __HEAP_SIZE__ 2000000
+#endif
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
+#endif
+
 /*---------------------------------------------------------------------------*
 * Task:  main
 *---------------------------------------------------------------------------*
@@ -81,13 +105,11 @@ int MainTask(void)
      
 #if (SEGGER_ENABLE_RTT ==1 )  // enable RTT
 #if (SEGGER_ENABLE_SYSTEM_VIEW != 1) //systemview will auto init RTT
-    (void)_SEGGER_RTT; // GCC complains if we don't use this.
-    SEGGER_RTT_Init();
     SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
-#endif  
+#endif
 #endif
 
-#if FREERTOS_PLUS_TRACE 
+#ifdef FREERTOS_PLUS_TRACE 
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
@@ -110,7 +132,7 @@ int MainTask(void)
 #endif
 
 #if (UEZ_ENABLE_USB_HOST_STACK == 1)     
-    Storage_PrintInfo(1, EFalse);
+    Storage_PrintInfo('0', EFalse);
 #else
 #endif
 
@@ -147,7 +169,7 @@ int MainTask(void)
      // Setup DAC audio if available - ignore error
      UEZDACWAVConfig("Timer2");
 
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
      // initialize command console for test commands
      UEZGUITestCmdsInit();
 #endif
@@ -271,7 +293,7 @@ void uEZPlatformStartup_EXP_BRKOUT()
 * Description:
 *
 *---------------------------------------------------------------------------*/
-void uEZPlatformStartup_NO_EXP()
+void uEZPlatformStartup_NO_EXP(void)
 {
 #if UEZ_ENABLE_VIRTUAL_COM_PORT && (UEZ_PROCESSOR == NXP_LPC4357)
     static T_vcommCallbacks vcommCallbacks = {
@@ -323,7 +345,13 @@ void uEZPlatformStartup_NO_EXP()
     #endif
 
     #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+    #if 0
+        /* Gainspan */
         UEZPlatform_WirelessNetwork0_Require();
+    #else
+        /* ESP-WROOM32 */
+        UEZPlatform_WirelessNetwork1_Require();
+    #endif
     #endif
 
     UEZPlatform_SDCard_Drive_Require(1);
@@ -339,7 +367,9 @@ void uEZPlatformStartup_NO_EXP()
 *---------------------------------------------------------------------------*/
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
-    #if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
+    #ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
         TUInt32 traceAddressInMemory = 0;
     #endif
 
@@ -361,7 +391,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 
     SUIInitialize(SIMPLEUI_DOUBLE_SIZED_ICONS, EFalse, EFalse); // SWIM not flipped
 
-    #if FREERTOS_PLUS_TRACE //LPC1788/4088 only as of uEZ v2.06
+    #ifdef FREERTOS_PLUS_TRACE //LPC1788/4088 only as of uEZ v2.06
          uiTraceStart();
          //vTraceStartStatusMonitor(); //Removed on new version of Trace
          traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();
@@ -381,7 +411,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 }
 
 // Is this required?
-void UEZBSP_VectorTableInit(){ /* No Implementation */ }
+void UEZBSP_VectorTableInit(void){ /* No Implementation */ }
 /*-------------------------------------------------------------------------*
 * File:  main.c
 *-------------------------------------------------------------------------*/

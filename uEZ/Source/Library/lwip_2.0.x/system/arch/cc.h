@@ -29,35 +29,57 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
+
+/*
+ * SPDX-FileCopyrightText: 2001 Swedish Institute of Computer Science
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ * SPDX-FileContributor: 2018-2022 Espressif Systems (Shanghai) CO LTD
+ */
 #ifndef __CC_H__
 #define __CC_H__
 
 #include "cpu.h"
+#include <Config.h>
 #include <stdlib.h>
 #include <stdint.h> /* for int types */
+#include <uEZTypes.h> // bring in cmsis functions for btye swap, they are different for each toolchain
 #include <uEZPacked.h>
+//#include <time.h> // this isn't working properly in IAR yet
+#include <sys/time.h> // uez has own timeval definition
 
-typedef unsigned   char    u8_t;
-typedef signed     char    s8_t;
-typedef unsigned   short   u16_t;
-typedef signed     short   s16_t;
-typedef unsigned   long    u32_t;
-typedef signed     long    s32_t;
-typedef u32_t mem_ptr_t;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifndef BYTE_ORDER
+#define BYTE_ORDER LITTLE_ENDIAN
+#endif // BYTE_ORDER
+
+#define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS // provide our platform specific byte swap for perf
+
+#define htons(x) __REVSH(x) // IAR doesn't have __builtin_bswap16 and related, but has iar__ versions
+#define ntohs(x) __REVSH(x) // get __builtin_bswap16(x) from cmsis
+#define htonl(x) __REV(x) // get __builtin_bswap32(x) from cmsis
+#define ntohl(x) __REV(x)
+
+//typedef uint8_t  u8_t;
+//typedef int8_t   s8_t;
+//typedef uint16_t u16_t;
+//typedef int16_t  s16_t;
+//typedef uint32_t u32_t;
+//typedef int32_t  s32_t;
+
 typedef int32_t sys_prot_t;
 
-
-#define U16_F "hu"
 #define S16_F "d"
-#define X16_F "hx"
-#define U32_F "u"
+#define U16_F "d"
+#define X16_F "x"
+
 #define S32_F "d"
+#define U32_F "u"
 #define X32_F "x"
-#define SZT_F "uz"
-
-
-#define LWIP_PLATFORM_DIAG(message) do {printf message;} while(0)
-
 
 /* define compiler specific symbols */
 #if defined (__ICCARM__)
@@ -78,7 +100,7 @@ typedef int32_t sys_prot_t;
 #elif defined (__GNUC__)
 
 #define PACK_STRUCT_BEGIN
-//#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
+#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x) x
 
@@ -91,10 +113,54 @@ typedef int32_t sys_prot_t;
 
 #endif
 
+// use time.h so we don't have duplicate timeval structure in sockets.h
+// This may be broken in IAR builds currently and require customized DLIB settings.
+#define LWIP_TIMEVAL_PRIVATE 0 
+
+// Note: Can log also to a file here. ESP-IDF does this.
+
+#if (SEGGER_ENABLE_RTT ==1 )  // use rtt for fast diag messages. Don't use it for asserts currently
+#define LWIP_PLATFORM_DIAG(message) do {SEGGER_RTT_printf_0 message;} while(0)
+#else
+#define LWIP_PLATFORM_DIAG(message) do {printf message;} while(0)
+#endif
+
+#include <stdio.h>
+
+#if 0
+#ifdef NDEBUG
+#define LWIP_NOASSERT 1
+#else // Assertions enabled
+#if CONFIG_OPTIMIZATION_ASSERTIONS_SILENT
+//#define LWIP_PLATFORM_ASSERT(message) abort()
+#else
+// __assert_func is the assertion failure handler from newlib, defined in assert.h
+#define LWIP_PLATFORM_ASSERT(message) __assert_func(__FILE__, __LINE__, __ASSERT_FUNC, message)
+#endif
+
+// If assertions are on, the default LWIP_ERROR handler behaviour is to
+// abort w/ an assertion failure. Don't do this, instead just print the error (if LWIP_DEBUG is set)
+// and run the handler (same as the LWIP_ERROR behaviour if LWIP_NOASSERT is set).
+#ifdef LWIP_DEBUG
+#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+  puts(message); handler;}} while(0)
+#else
+// If LWIP_DEBUG is not set, return the error silently (default LWIP behaviour, also.)
+#define LWIP_ERROR(message, expression, handler) do { if (!(expression)) { \
+  handler;}} while(0)
+#endif // LWIP_DEBUG
+
+#endif /* NDEBUG */
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
 //#define LWIP_PLATFORM_ASSERT(x) //do { if(!(x)) while(1); } while(0)
 
 //#define LWIP_RAND() ((u32_t)rand())
 
-#define LWIP_NO_STDINT_H 1
+//#define LWIP_NO_STDINT_H 1 // We use stdint.h above so don't define this.
 
 #endif /* __CC_H__ */

@@ -30,6 +30,7 @@
 #include <HAL/I2SBus.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_I2S.h>
 #include <uEZPlatform.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Types:

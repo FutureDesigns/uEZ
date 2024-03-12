@@ -51,6 +51,8 @@ typedef enum {
 
 // TODO: Comment this API!
 
+// Note: This is different from the MCI.h HAL!
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -95,6 +97,9 @@ typedef struct {
     void (*SetupErrorCallback) (void *aWorkspace,
          T_SD_MMCError aErrorCallback,
          void *aErrorCallbackWorkspace);
+
+    // 2.14
+    TBool (*IsCardInserted) (void *aWorkspace);
 } HAL_SD_MMC;
 
 #endif // SD_MMC_H_

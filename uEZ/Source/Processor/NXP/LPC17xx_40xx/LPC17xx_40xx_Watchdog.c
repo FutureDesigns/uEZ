@@ -26,6 +26,7 @@
 #include <uEZ.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Watchdog.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -48,7 +49,7 @@ typedef struct {
 /*-------------------------------------------------------------------------*
  * Macros:
  *-------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
+#if(COMPILER_TYPE==KEIL_UV)
 #define nop()      __nop()
 #else
 #define nop()      NOP()//asm("nop")

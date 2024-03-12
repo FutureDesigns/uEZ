@@ -23,13 +23,16 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
+#include <uEZ.h>
 #include <Config.h>
 #include <HAL/HAL.h>
 #include <HAL/Interrupt.h>
 #include <uEZTypes.h>
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
+
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Serial.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 // TBD: not here!
 #include <uEZRTOS.h>

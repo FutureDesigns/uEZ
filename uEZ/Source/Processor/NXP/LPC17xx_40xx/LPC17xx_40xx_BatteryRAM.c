@@ -24,6 +24,7 @@
 #include <uEZTypes.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_BatteryRAM.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Defines:

@@ -75,6 +75,14 @@ void UEZBSP_Startup(void)
     // configuration.
     UEZSystemInit();
 
+#if (SEGGER_ENABLE_RTT ==1 )  // enable RTT
+#if (SEGGER_ENABLE_SYSTEM_VIEW != 1) //systemview will auto init RTT
+    (void)_SEGGER_RTT; // GCC complains if we don't use this.
+    SEGGER_RTT_Init(); // RTT can be enabled and used early here before RTOS, (no RTOS required)
+    //SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
+#endif  
+#endif
+
     // Initialize the devices
     uEZProcessorServicesInit();
 

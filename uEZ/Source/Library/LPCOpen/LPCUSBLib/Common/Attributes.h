@@ -140,7 +140,7 @@
 #if defined (__CC_ARM)
 				#define ATTR_ERROR(Message)			   //__attribute__ (( error(Message) ))
 #else
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
                                 #define ATTR_ERROR(Message)			   __attribute__ (( error(Message) )) // CLANG doesn't like this
 #else
                                 #define ATTR_ERROR(Message)			   __attribute__ (( error(Message) ))

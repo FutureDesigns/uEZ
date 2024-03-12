@@ -54,6 +54,25 @@
  *---------------------------------------------------------------------------*/
  TBool G_HeartBeat;		// Global Variable for uC/Probe Demo
 
+
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  3
+#endif
+
+#ifndef __HEAP_SIZE__
+#define __HEAP_SIZE__ 5000000
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
+#endif
+
  /*---------------------------------------------------------------------------*
  * Task:  Heartbeat
  *---------------------------------------------------------------------------*
@@ -115,7 +134,7 @@ void MainTask(void)
 #endif  
 #endif
 
-#if FREERTOS_PLUS_TRACE 
+#ifdef FREERTOS_PLUS_TRACE 
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
@@ -226,15 +245,15 @@ void uEZPlatformStartup_NO_EXP()
     }
 
     // network section require
-    #if UEZ_ENABLE_WIRED_NETWORK
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZPlatform_WiredNetwork0_Require();
     #endif
 
-    #if UEZ_WIRELESS_PROGRAM_MODE
+    #if (UEZ_WIRELESS_PROGRAM_MODE == 1)
         UEZPlatform_WiFiProgramMode(EFalse);
     #endif
 
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         UEZPlatform_WirelessNetwork0_Require();
     #endif
 }

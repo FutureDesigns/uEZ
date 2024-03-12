@@ -1,6 +1,5 @@
 #define BUILD_NUMBER                        2
 #define BUILD_DATE                          "12/02/2013"
-#define COMPILER_TYPE                       RowleyARM
 #define UEZ_PROCESSOR                       NXP_LPC1788
 #define PROCESSOR_OSCILLATOR_FREQUENCY      120000000
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
@@ -56,7 +55,7 @@
 #define APP_DEMO_VIDEO_PLAYER               1
 #define TS_TEST_DEMO                        0
 
-#define INCLUDE_EMWIN                       1
+#define INCLUDE_EMWIN                       0
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN
 #ifndef FREERTOS_PLUS_TRACE
 #define APP_DEMO_COM                        0

@@ -147,7 +147,7 @@ void IFuncTestAccelerometer(const T_testAPI *aAPI, T_testData *aData, TUInt16 aB
 void IFuncTestLEDAndButtons(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton);
 void IFuncTestSpeaker(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton);
 void FuncTestAccelerometerFast(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton);
-#if COMPILE_OPTION_USB_KEYBOARD
+#if (COMPILE_OPTION_USB_KEYBOARD == 1)
 void IFuncTestUSBDevice(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton);
 #endif
 void IFuncTestComplete(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton);
@@ -171,7 +171,7 @@ const T_testState G_testStates[] = {
     //{ "Accelerometer", IFuncTestAccelerometer, 3, EFalse },
     { "Accelerometer", FuncTestAccelerometerFast, 1, EFalse },
     { "LED and Buttons", IFuncTestLEDAndButtons, 2, EFalse },
-#if COMPILE_OPTION_USB_KEYBOARD
+#if (COMPILE_OPTION_USB_KEYBOARD == 1)
     { "USBDevice", IFuncTestUSBDevice, 2, EFalse },
 #endif
     { "Speaker", IFuncTestSpeaker, 1, EFalse },
@@ -415,7 +415,7 @@ void IFuncTestTemperature(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
         else
             frac = v;
         frac = ((((TUInt32)(frac)) & 0xFFFF) >> 13) * 125;
-        sprintf(p->iLine, "Checking Temperature ... %d.%03d C", v>>16, frac);
+        sprintf(p->iLine, "Checking Temperature ... %d.%03u C", v>>16, frac);
         aAPI->iTextLine(aData, 0, p->iLine);
         UEZTaskDelay(200);
 
@@ -429,7 +429,7 @@ void IFuncTestTemperature(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
                 else
                     frac = v;
                 frac = ((((TUInt32)(frac)) & 0xFFFF) >> 13) * 125;
-                sprintf(p->iLine, "Checking Temperature ... %d.%03d C (COLD!)", v>>16, frac);
+                sprintf(p->iLine, "Checking Temperature ... %d.%03u C (COLD!)", v>>16, frac);
                 aAPI->iTextLine(aData, 0, p->iLine);
 
                 // Too cold!
@@ -442,7 +442,7 @@ void IFuncTestTemperature(const T_testAPI *aAPI, T_testData *aData, TUInt16 aBut
                 else
                     frac = v;
                 frac = ((((TUInt32)(frac)) & 0xFFFF) >> 13) * 125;
-                sprintf(p->iLine, "Checking Temperature ... %d.%03d C (HOT!)", v>>16, frac);
+                sprintf(p->iLine, "Checking Temperature ... %d.%03u C (HOT!)", v>>16, frac);
                 aAPI->iTextLine(aData, 0, p->iLine);
 
                 // Too hot!
@@ -638,6 +638,7 @@ exit:
 #if UEZBSP_SDRAM
 TUInt32 SDRAMMemoryTest(TUInt32 aSize)
 {
+    PARAM_NOT_USED(aSize);
     TUInt8 mem[100];
     TUInt8 prime;
     volatile TUInt8 *Base = (TUInt8 *)UEZBSP_SDRAM_BASE_ADDR;
@@ -697,7 +698,7 @@ void IFuncTestSDRAM(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 
         // Just do it quickly and size it
         size = SDRAMMemoryTest(UEZBSP_SDRAM_SIZE);
-        sprintf(p->iLine, "Checking SDRAM ... Size: %d bytes", size);
+        sprintf(p->iLine, "Checking SDRAM ... Size: %u bytes", size);
         aAPI->iTextLine(aData, 0, p->iLine);
 //        aAPI->iTextLine(aData, 1, "  Is this the correct size?");
 //        aAPI->iAddButtons(aData, OPT_BUTTON_YES|OPT_BUTTON_NO);
@@ -1026,10 +1027,10 @@ void IFuncTestLEDAndButtons(const T_testAPI *aAPI, T_testData *aData, TUInt16 aB
         TUInt8 v;
 
         (*p->p_leds)->On(p->p_leds, (p->bits & 0x0F)<<4);
-        (*p->p_leds)->Off(p->p_leds, ((~p->bits) & 0x0F)<<4);
+        (*p->p_leds)->Off(p->p_leds, ((~((TUInt32)p->bits)) & 0x0F)<<4);
         (*p->p_buttons)->Read(p->p_buttons, &butbits);
         p->newv = butbits;
-        v = ~p->newv & p->oldv;
+        v = (~((TUInt32)p->newv)) & p->oldv;
         p->bits ^= v;
         p->oldv = p->newv;
         if (p->iSubstep == 0) {
@@ -1075,7 +1076,7 @@ void IFuncTestSpeaker(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
     }
 }
 
-#if COMPILE_OPTION_USB_KEYBOARD
+#if (COMPILE_OPTION_USB_KEYBOARD == 1)
 void IFuncTestUSBDevice(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
     typedef struct {
@@ -1379,7 +1380,7 @@ void TestRemoveButtons(T_testData *aData, TUInt16 aButtonTypes)
     }
 
     // Remove those buttons from the logic
-    aData->iButtons &= ~aButtonTypes;
+    aData->iButtons &= (TUInt16) (~((TUInt32)aButtonTypes));
 }
 
 void TestTextLine(T_testData *aData, TUInt16 aLine, const char *aText)
@@ -1488,6 +1489,7 @@ const T_testAPI G_testAPI = {
  *---------------------------------------------------------------------------*/
 void FunctionalTest(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezInputEvent inputEvent;
     T_uezDevice ts;
     T_uezDevice lcd;

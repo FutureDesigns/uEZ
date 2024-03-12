@@ -144,8 +144,8 @@ T_uezError I2C_Generic_ProcessRequest(void *aWorkspace, I2C_Request *aRequest)
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aWorkspace;
     TBool BusHung;
 
-    // Allow only one request at a time
-    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    // Allow only one request at a time, this doesn't prevent the task getting interrupted between send and receive. Want high prio I2C tasks.
+    UEZSemaphoreGrab(p->iSem, aRequest->iReadTimeout+aRequest->iWriteTimeout); //UEZ_TIMEOUT_INFINITE);
 
     (*p->iI2C)->IsHung(p->iI2C, &BusHung);
 

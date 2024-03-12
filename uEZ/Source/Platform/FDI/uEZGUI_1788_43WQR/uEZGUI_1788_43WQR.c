@@ -66,12 +66,14 @@
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
 #include <Source/Devices/Network/lwIP/Network_lwIP.h>
 #endif
+#include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
 #include <Source/Devices/Serial/RS485/Generic/Generic_RS485.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
+#include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
 #include <Source/Devices/Timer/Generic/Timer_Generic.h>
 #include <Source/Devices/ToneGenerator/Generic/PWM/ToneGenerator_Generic_PWM.h>
@@ -108,6 +110,8 @@
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBHost.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_Watchdog.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_MCI.h>
+#include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_UtilityFuncs.h>
+#include <uEZADC.h>
 #include <uEZAudioAmp.h>
 #include <uEZBSP.h>
 #include <uEZCRC.h>
@@ -115,11 +119,15 @@
 #include <uEZDeviceTable.h>
 #include <uEZFile.h>
 #include <uEZI2C.h>
+#include <uEZMemory.h>
 #include <uEZNetwork.h>
 #include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <uEZStream.h>
 #include <uEZPlatform.h>
+#include <uEZTimer.h>
+#include <Source/uEZSystem/uEZHandles.h>
+#include <uEZPlatformAPI.h>
 #include <uEZAudioMixer.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
@@ -189,60 +197,33 @@ volatile TUInt8 *_usbMemoryptr = G_usbHostMemory;
 /*---------------------------------------------------------------------------*
  * Macros:
  *---------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
-#define nop()      __nop()
-#elif(COMPILER_TYPE==RowleyARM)
-#include <intrinsics.h>
-#define nop()     __asm__("nop")
-#else
-#define nop()     NOP()
-#endif
-#define nops5()    nop();nop();nop();nop();nop()
-#define nops10()   nops5();nops5()
-#define nops50()   nops10();nops10();nops10();nops10();nops10()
 
-/*---------------------------------------------------------------------------*
- * Routine:  UEZBSPDelayMS
- *---------------------------------------------------------------------------*
- * Description:
- *      Use a delay loop to approximate the time to delay.
- *      Should use UEZTaskDelayMS() when in a task instead.
- *---------------------------------------------------------------------------*/
+// Note that uEZBSP Delays are only accurate for around level 2 or medium optimization.
+// With no optimization it will be about double the time. So we will always optimize them.
+// For IAR application projects set the optimization level of this file to medium or high.
+#if ( PROCESSOR_OSCILLATOR_FREQUENCY == 120000000)
+//#elif ( PROCESSOR_OSCILLATOR_FREQUENCY == 72000000) // TODO not validated yet.
+#else
+    #error "1 microSecond delay not defined for CPU speed"
+#endif
+
+// Note: To use a non-default max MCU frequency, can redefine UEZBSPDelay1US here.
+// UEZBSDelay functions are now weakly defined in library for default frequency.
+#if 0 // example for slower clock version of delay function
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
 void UEZBSPDelay1US(void)
 {
-    //Based on Flash Accelerator being on and Flash Access Time set to 6 CPU Cycles
-#if ( PROCESSOR_OSCILLATOR_FREQUENCY == 120000000)
+#if ( PROCESSOR_OSCILLATOR_FREQUENCY == 72000000) // TODO not validated yet.
     nops50();
-    nops50();
-    nop();
+    nops10();
     nop();
     nop();
     nop();
 #else
     #error "1 microSecond delay not defined for CPU speed"
 #endif
-}
-void UEZBSPDelayUS(uint32_t aMicroseconds)
-{
-    while (aMicroseconds--)
-        UEZBSPDelay1US();
-}
-
-void UEZBSPDelay1MS(void)
-{
-    TUInt32 i;
-
-    // Approximate delays here
-    for (i = 0; i < 650; i++)
-        UEZBSPDelay1US();
-}
-
-void UEZBSPDelayMS(uint32_t aMilliseconds)
-{
-    while (aMilliseconds--) {
-        UEZBSPDelay1MS();
-    }
-}
+})
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSPSDRAMInit
@@ -460,7 +441,7 @@ void UEZBSP_Pre_PLL_SystemInit(void) {
 
   // Configure status led to be fully in our control
   // Make P1.13 be a GPIO pin
-  LPC_GPIO1->PIN &= ~(3 << 3);
+  LPC_GPIO1->PIN &= (uint32_t) ~(3 << 3);
   LPC_GPIO1->CLR |= (1 << 13); // off
   // and an output pin
   LPC_GPIO1->DIR |= (1 << 13);
@@ -695,7 +676,50 @@ void uEZPlatformInit(void)
     break;
   }
 #endif
+
+#if (configGENERATE_RUN_TIME_STATS == 1)
+    UEZPlatform_Timer1_Require();
+#endif
 }
+
+#if (configGENERATE_RUN_TIME_STATS == 1)
+T_uezDevice G_StatsTimer;
+T_uezTimerCallback G_StatsTimerCallback;
+volatile configRUN_TIME_COUNTER_TYPE G_RunTimeStatsCounter;
+
+void RtosStatsTimerCallback(T_uezTimerCallback *aWorkspace)
+{
+   PARAM_NOT_USED(aWorkspace);
+   G_RunTimeStatsCounter++;
+}
+ 
+configRUN_TIME_COUNTER_TYPE UEZBSP_GetGetRunTimeStatsCounter(void)
+{
+  return G_RunTimeStatsCounter;
+}
+
+T_uezError UEZBSP_ConfigureTimerForRunTimeStats(void)
+{
+  T_uezError error = UEZ_ERROR_HANDLE_INVALID;
+  G_RunTimeStatsCounter = 0;
+  if (UEZTimerOpen("Timer1", &G_StatsTimer) == UEZ_ERROR_NONE) {
+    G_StatsTimerCallback.iTimer = G_StatsTimer;
+    G_StatsTimerCallback.iMatchRegister = 1;
+    G_StatsTimerCallback.iTriggerSem = UEZ_NULL_HANDLE;
+    G_StatsTimerCallback.iCallback = RtosStatsTimerCallback;
+    if (UEZTimerSetupRegularInterval(G_StatsTimer, 1,
+            (PROCESSOR_OSCILLATOR_FREQUENCY) / (20*1000),
+            &G_StatsTimerCallback) == UEZ_ERROR_NONE) {
+      error = UEZTimerSetTimerMode(G_StatsTimer, TIMER_MODE_CLOCK);
+      error = UEZTimerReset(G_StatsTimer);
+      InterruptSetPriority(TIMER1_IRQn, INTERRUPT_PRIORITY_LOW);
+      UEZTimerEnable(G_StatsTimer);
+    } else { // an error occurred opening Timer
+    }
+  }
+  return error;
+}
+#endif
 
 /*---------------------------------------------------------------------------*
  * Routine:  UEZBSP_FatalError
@@ -716,7 +740,7 @@ void UEZBSP_FatalError(int32_t aErrorCode)
 
     // Configure status led to be fully in our control
     // Make P1.13 be a GPIO pin
-    LPC_GPIO1->PIN &= ~(3 << 3);
+    LPC_GPIO1->PIN &= (uint32_t) ~(3 << 3);
     // and an output pin
     LPC_GPIO1->DIR |= (1 << 13);
 
@@ -732,7 +756,7 @@ void UEZBSP_FatalError(int32_t aErrorCode)
             nop();
         //__nop();//asm ( "nop" );
         count++;
-        if (count >= aErrorCode) {
+        if (count >= (uint32_t) aErrorCode) {
             // Long pause
             for (i = 0; i < 80000000; i++)
                 nop();
@@ -2782,9 +2806,37 @@ T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b)
     return RGB(r, g, b);
 }
 
+TUInt32 UEZPlatform_5V_Monitor_Get_Raw_Reading(void)
+{    
+    T_uezDevice adc;
+    T_uezError error;
+    ADC_RequestSingle r;
+    TUInt32 reading = 0; // on any failure just return 0.
+    // 0 isn't valid as we should have some voltage on a running unit, even on bad 5V rail.
+     
+    error = UEZADCOpen("ADC0", &adc);
+    if (error == UEZ_ERROR_NONE) { // Take a reading
+        r.iADCChannel = 2;
+        r.iBitSampleSize = 10;
+        r.iTrigger = ADC_TRIGGER_NOW;
+        r.iCapturedData = &reading;
+        error = UEZADCRequestSingle(adc, &r);
+        if (error == UEZ_ERROR_NONE) {
+            // Generate percentage based on perfect 5V input
+            // divided by 2, but compared to a A/D value of 0 - 0x3FFF
+            // with a reference voltage of 3.3V
+            //   reading = (voltage / 5 V) * 0x3FF
+            //   percent = 100 * (reading / (0x3FF * 3.3V/5V))
+            //percent = reading * 100 / 0x307;
+        }
+    }
+    UEZADCClose(adc);
+    return reading;
+}
+
 void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha aAlpha)
 {
-    static COLOR_T mask = ~((1<<10)|(1<<5)|(1<<0));
+    static COLOR_T mask = (COLOR_T)(~((1<<10)|(1<<5)|(1<<0)));
     COLOR_T *p = (COLOR_T *)aAddr;
 
     switch (aAlpha) {
@@ -2794,32 +2846,16 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
     }
 }
 
-#if (COMPILER_TYPE==Keil4)
-__asm void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
-{
-    /* Determine which stack was in use when the MPU fault occurred and extract
-    the stacked PC. */
-    tst lr, #4
-    ite eq
-    mrseq r0, msp /* The code that generated the exception was using the main stack. */
-    mrsne r0, psp /* The code that generated the exception was using the process stack. */
-    ldr r0, [r0, #24]   /* Extract the value of the stacked PC. */
-    str r0, [sp]    /* Store the value of the stacked PC into ulStacked_pc. */
-
-    /* Inspect ulStacked_pc to locate the offending instruction. */
-loopforever
-    bl loopforever
-}
-#else
 void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
 {
+    PARAM_NOT_USED(pulFaultRegisters);
 unsigned long ulStacked_pc = 0UL;
 
     ( void ) ulStacked_pc;
 
     /* Determine which stack was in use when the MPU fault occurred and extract
     the stacked PC. */
-    __asm
+    __asm volatile
     (
         "   tst lr, #4          \n"
         "   ite eq              \n"
@@ -2832,7 +2868,7 @@ unsigned long ulStacked_pc = 0UL;
     /* Inspect ulStacked_pc to locate the offending instruction. */
     for( ;; );
 }
-#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  main
  *---------------------------------------------------------------------------*/

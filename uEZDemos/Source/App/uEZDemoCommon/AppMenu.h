@@ -78,7 +78,7 @@ void AppSubmenu(const T_choice *aChoice);
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
     extern TBool volatile G_mmTestMode;
 #endif
 

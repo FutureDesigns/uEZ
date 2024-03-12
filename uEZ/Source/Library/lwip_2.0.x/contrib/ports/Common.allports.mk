@@ -37,7 +37,7 @@ CFLAGS+=-g -DLWIP_DEBUG -Wall -pedantic -Werror \
 	-Wparentheses -Wsequence-point -Wswitch-default \
 	-Wextra -Wundef -Wshadow -Wpointer-arith -Wcast-qual \
 	-Wc++-compat -Wwrite-strings -Wold-style-definition -Wcast-align \
-	-Wmissing-prototypes -Wredundant-decls -Wnested-externs \
+	-Wmissing-prototypes -Wnested-externs \
 	-Wunreachable-code -Wuninitialized -Wmissing-prototypes \
 	-Wredundant-decls -Waggregate-return -Wlogical-not-parentheses
 #	-Wconversion -Wsign-compare -Wmissing-include-dirs
@@ -55,8 +55,8 @@ CONTRIBDIR?=../../..
 ARFLAGS?=rs
 
 #Set this to where you have the lwip core module checked out from git
-#default assumes it's a dir named lwip at the same level as the contrib module
-LWIPDIR?=$(CONTRIBDIR)/../lwip/src
+#default assumes it's a dir above the contrib module
+LWIPDIR?=$(CONTRIBDIR)/..
 
 CFLAGS+=-I. \
 	-I$(CONTRIBDIR) \
@@ -64,7 +64,7 @@ CFLAGS+=-I. \
 	-I$(LWIPARCH)/include
 
 # Add include path and link to mbedTLS lib if available
-MBEDTLSDIR?=$(CONTRIBDIR)/../mbedtls
+MBEDTLSDIR?=$(LWIPDIR)/../mbedtls
 ifneq (,$(wildcard $(MBEDTLSDIR)/include/mbedtls/*.h))
 LDFLAGS+=-L$(MBEDTLSDIR)/library -lmbedtls -lmbedcrypto -lmbedx509
 CFLAGS+=-I$(MBEDTLSDIR)/include -Wno-redundant-decls -DLWIP_HAVE_MBEDTLS=1 -Wno-c90-c99-compat

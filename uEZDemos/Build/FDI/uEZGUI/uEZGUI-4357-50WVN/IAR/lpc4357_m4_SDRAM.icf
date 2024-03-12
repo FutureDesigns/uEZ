@@ -8,7 +8,7 @@ define symbol __ICFEDIT_intvec_start__ = 0x1A000000;
 define symbol __ICFEDIT_region_ROM_start__ = 0x1A000114;
 define symbol __ICFEDIT_region_ROM_end__   = 0x1A07FFFF;
 define symbol __ICFEDIT_region_RAM_start__ = 0x28000000;
-define symbol __ICFEDIT_region_RAM_end__   = 0x28FFFFFF;
+define symbol __ICFEDIT_region_RAM_end__   = 0x29FFFFFF; // 32MB
 
 /*-Sizes-*/
 define symbol __ICFEDIT_size_cstack__   = 0x400;
@@ -17,7 +17,7 @@ define symbol __ICFEDIT_size_irqstack__ = 0x100;
 define symbol __ICFEDIT_size_fiqstack__ = 0x100;
 define symbol __ICFEDIT_size_undstack__ = 0x10;
 define symbol __ICFEDIT_size_abtstack__ = 0x10;
-define symbol __ICFEDIT_size_heap__     = 5000000;
+define symbol __ICFEDIT_size_heap__     = 8000000;
 /**** End of ICF editor section. ###ICF###*/
 
 define symbol __size_vectors__              = 0xE8;
@@ -70,6 +70,7 @@ define region LOCAL_SRAM_region    = mem:[from LOCAL_SRAM_start__             to
 define region AHB_SRAM1_region     = mem:[from AHB_SRAM1_start__              to AHB_SRAM1_end__];
 define region AHB_SRAM2_region     = mem:[from AHB_SRAM2_start__              to AHB_SRAM2_end__];
 define region AHB_SRAM1_2_region   = mem:[from AHB_SRAM1_start__              to AHB_SRAM2_end__];
+define region AHB_SRAM1_3_region   = mem:[from AHB_SRAM1_start__              to ETB_SRAM_end__];
 define region ETB_SRAM_region      = mem:[from ETB_SRAM_start__               to ETB_SRAM_end__];
 define region CRP1_region          = mem:[from  __CRP1_start__ to __CRP1_end__];
 define region CRP2_region          = mem:[from  __CRP2_start__ to __CRP2_end__];
@@ -149,8 +150,8 @@ place in SPIFI_region {
     ro object GUIDEMO_Resource.o,
 };
 
-place in AHB_SRAM1_2_region {
-    readwrite section .usbhostmem,
+place in AHB_SRAM1_3_region {
+    first readwrite section .usbhostmem,
     readwrite section .emacmem,
     readwrite section .mcimem,
 };

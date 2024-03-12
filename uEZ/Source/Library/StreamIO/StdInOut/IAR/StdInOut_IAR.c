@@ -22,9 +22,8 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
-#include <uEZ.h>
-#include <uEZStream.h>
 #include "..\StdInOut.h"
+#include <uEZStream.h>
 
 /*---------------------------------------------------------------------------*
  * Routine:  putchar
@@ -41,12 +40,12 @@
 int32_t putchar(int32_t aChar)
 {
     char c = aChar;
-    T_uezDevice stdout = StdoutGet();
+    T_uezDevice stdoutTemp = StdoutGet();
 
-    if (stdout) {
+    if (stdoutTemp) {
         if (aChar == '\n')
             putchar('\r');
-        UEZStreamWrite(stdout, &c, 1, 0, UEZ_TIMEOUT_INFINITE);
+        UEZStreamWrite(stdoutTemp, &c, 1, 0, UEZ_TIMEOUT_INFINITE);
     } else {
         return EOF;
     }
@@ -66,10 +65,10 @@ int32_t putchar(int32_t aChar)
 int32_t getchar(void)
 {
     char c;
-    T_uezDevice stdin = StdinGet();
+    T_uezDevice stdinTemp = StdinGet();
 
-    if (stdin) {
-        if (UEZStreamRead(stdin, &c, 1, 0, UEZ_TIMEOUT_INFINITE)
+    if (stdinTemp) {
+        if (UEZStreamRead(stdinTemp, &c, 1, 0, UEZ_TIMEOUT_INFINITE)
                 == UEZ_ERROR_NONE)
             return c;
         else

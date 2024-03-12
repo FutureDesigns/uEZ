@@ -22,12 +22,12 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
+#include <uEZMemory.h>
 #include <uEZTS.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include "uEZDemoCommon.h"
-#include <uEZLCD.h>
 #include <uEZKeypad.h>
 #include <build_time.h>
 
@@ -86,7 +86,7 @@ typedef struct {
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
 TBool volatile G_mmTestMode = EFalse;
 #endif
 
@@ -150,11 +150,13 @@ static void AppMenuScreen(T_appMenuWorkspace *aWS)
     if(G_romChecksumCalculated){
 
 #if (defined __ICCARM__) || (defined __ICCRX__)
-        sprintf(title, "%s CS: 0x%08X - IAR Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, BUILD_MONTH,BUILD_DAY,BUILD_YEAR);
+        sprintf(title, "%s CS: 0x%08X - IAR Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, (uint32_t)BUILD_MONTH,(uint32_t)BUILD_DAY,(uint32_t)BUILD_YEAR);
+#elif (defined __clang__)
+        sprintf(title, "%s CS: 0x%08X - Clang Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, (uint32_t)BUILD_MONTH,(uint32_t)BUILD_DAY,(uint32_t)BUILD_YEAR);
 #elif (defined __GNUC__)
-        sprintf(title, "%s CS: 0x%08X - GCC Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, BUILD_MONTH,BUILD_DAY,BUILD_YEAR);
+        sprintf(title, "%s CS: 0x%08X - GCC Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, (uint32_t)BUILD_MONTH,(uint32_t)BUILD_DAY,(uint32_t)BUILD_YEAR);
 #else
-        sprintf(title, "%s CS: 0x%08X - Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, BUILD_MONTH,BUILD_DAY,BUILD_YEAR);
+        sprintf(title, "%s CS: 0x%08X - Built on %02u/%02u/%04u", aWS->iMenu->iTitle, G_romChecksum, (uint32_t)BUILD_MONTH,(uint32_t)BUILD_DAY,(uint32_t)BUILD_YEAR);
 #endif
         swim_set_title(&aWS->iWin, title, BLUE);
     } else {
@@ -369,7 +371,7 @@ void AppMenu(const T_appMenu *aMenu)
                             AppMenuScreen(p_ws);
                     }
                     
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
                     if (G_mmTestMode) {
                         // Go into this test mode
                         TestMode();

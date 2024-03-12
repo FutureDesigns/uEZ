@@ -39,15 +39,14 @@
 *    *===============================================================*
 *
 *-------------------------------------------------------------------------*/
-
 #include <Config.h>
+// Don't include util functions here!
 #if (UEZ_PROCESSOR == NXP_LPC1788)
 #include <CMSIS/LPC407x_8x_177x_8x.h>
 #elif (UEZ_PROCESSOR == NXP_LPC4088)
 #include <CMSIS/LPC407x_8x_177x_8x.h>
 #endif
 #include <Types/GPIO.h>
-#include "LPC17xx_40xx_UtilityFuncs.h"
 #include "LPC17xx_40xx_EMAC.h"
 
 #ifdef __cplusplus
@@ -94,23 +93,10 @@ extern "C" {
 #define INTERRUPT_CHANNEL_ETHERNET  ENET_IRQn
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==CodeRed)
-#define     IRQ_ROUTINE(name)  void name(void) ;\
-                                void name(void)
-#define     IRQ_START()
-#define     IRQ_END()
-#define     IRQ_HANDLER(funcname, param) \
-                    IRQ_ROUTINE(funcname##_irq) \
-                    IRQ_START() \
-                    funcname(param);\
-                    IRQ_END()
-#define     __packed        __attribute__((packed))
-#define     INLINE          inline
-#define     IN_INTERNAL_RAM  // tbd
-#endif // (COMPILER_TYPE==CodeRed)
+
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -123,22 +109,7 @@ extern "C" {
 #define     __packed        __attribute__((packed))
 #define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
-#endif // (COMPILER_TYPE==RowleyARM)
-
-#if (COMPILER_TYPE==GCC)
-#define     IRQ_ROUTINE(name)  void name(void) ;\
-                                void name(void)
-#define     IRQ_START()
-#define     IRQ_END()
-#define     IRQ_HANDLER(funcname, param) \
-                    IRQ_ROUTINE(funcname##_irq) \
-                    IRQ_START() \
-                    funcname(param);\
-                    IRQ_END()
-#define     __packed        __attribute__((packed))
-#define INLINE inline __attribute__((always_inline))
-#define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
-#endif // (COMPILER_TYPE==GCC)
+#endif // (COMPILER_TYPE==GCC_ARM)
 
 #if (COMPILER_TYPE==IAR)
 #define     IRQ_ROUTINE(name)  void name(void)
@@ -155,7 +126,7 @@ extern "C" {
 #endif // (COMPILER_TYPE==IAR)
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -168,19 +139,16 @@ extern "C" {
 #define     __packed        __attribute__((packed))
 #define     INLINE          __inline
 #define     IN_INTERNAL_RAM  // tbd
-#endif // (COMPILER_TYPE==Keil4)
+#endif // (COMPILER_TYPE==KEIL_UV)
 
 
-#if(COMPILER_TYPE == RowleyARM)
-	#define NOP() __NOP()
-#endif
-#if(COMPILER_TYPE == GCC)
+#if(COMPILER_TYPE == GCC_ARM)
 	#define NOP() __NOP()
 #endif
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
 #endif
-#if(COMPILER_TYPE == Keil4)
+#if(COMPILER_TYPE == KEIL_UV)
 	#define __NOP                             __nop
 	#define NOP()	__NOP
 #endif

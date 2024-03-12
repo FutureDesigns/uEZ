@@ -35,7 +35,7 @@
 #include "Audio.h"
 #include "Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h"
 
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
 #include <trcUser.h>
 #endif
 
@@ -115,7 +115,9 @@ int MainTask(void)
  *---------------------------------------------------------------------------*/
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
      TUInt32 traceAddressInMemory = 0;
 	 vTraceInitTraceData();
 #endif
@@ -157,7 +159,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
      UEZPlatform_ButtonBoard_Require();
 #endif
          
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
      uiTraceStart();
      
      traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();

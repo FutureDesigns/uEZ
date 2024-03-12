@@ -149,7 +149,7 @@ static void SSMExit(const T_choice *aChoice)
     G_ws->iNeedDraw = ETrue;
     G_ws->iShowHourglass = EFalse;
 
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
      if(UEZWAVGetStatus()){
         UEZStopWAV();
     }
@@ -173,7 +173,7 @@ static void SSMNext(const T_choice *aChoice)
         G_ws->iSlideNum = 0;
     G_ws->iNeedLoad = ETrue;
     G_ws->iAnimateDown = ETrue;
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
     if(UEZWAVGetStatus()){
         UEZStopWAV();
     }
@@ -197,7 +197,7 @@ static void SSMPrevious(const T_choice *aChoice)
     G_ws->iShowPanel = EFalse;
     G_ws->iNeedLoad = ETrue;
     G_ws->iAnimateUp = ETrue;
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
      if(UEZWAVGetStatus()){
         UEZStopWAV();
     }
@@ -227,7 +227,7 @@ static void SSMAutoOn(const T_choice *aChoice)
     p->iAction = SSMAutoOff;
 
     // Immediately go to the next slide (we're ready to go on)
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
      if(!UEZWAVGetStatus())
 #endif
      SSMNext(0);
@@ -407,7 +407,7 @@ void SSMDetermineNumSlides(void)
             directory[0] = '\0';
         else
             sprintf(directory, SLIDES_DIRECTORY, G_ws->iDef->iDirectory);
-        sprintf(filename, "%d:" SLIDESHOW_PICTURE_NAMING, G_ws->iDef->iDrive,
+        sprintf(filename, "%u:" SLIDESHOW_PICTURE_NAMING, G_ws->iDef->iDrive,
                 directory, G_ws->iNumSlides + 1);
         if (UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &file) != UEZ_ERROR_NONE) {
 #if SLIDESHOW_BACKWARDS_COMPATIBLE
@@ -433,7 +433,7 @@ void SSMDetermineNumSlides(void)
 
 static T_uezError IDoLoad(TUInt32 aSlideNum, TUInt32 aFrame, TBool *aAbortFlag)
 {
-    char filename[100]; // allow up to 20 extra char for filename on top of directory path.
+    char filename[120]; // allow up to 20 extra char for filename on top of directory path.
     char directory[80];
     T_uezFile file;
 
@@ -444,7 +444,7 @@ static T_uezError IDoLoad(TUInt32 aSlideNum, TUInt32 aFrame, TBool *aAbortFlag)
         directory[0] = '\0';
     else
         sprintf(directory, SLIDES_DIRECTORY, G_ws->iDef->iDirectory);
-    sprintf(filename, "%d:" SLIDESHOW_PICTURE_NAMING, G_ws->iDef->iDrive,
+    sprintf(filename, "%u:" SLIDESHOW_PICTURE_NAMING, G_ws->iDef->iDrive,
             directory, aSlideNum + 1);
     if (UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &file) != UEZ_ERROR_NONE) {
 #if SLIDESHOW_BACKWARDS_COMPATIBLE
@@ -533,7 +533,7 @@ static void SSMDrawSlide(TBool aDoAnimate)
         swim_set_fill_transparent(&G_win, TRUE);
         ChoicesDraw(&G_win, G_ws->iChoices);
 
-        sprintf(slideCount, "Slide %d of %d", 1 + G_ws->iSlideNum,
+        sprintf(slideCount, "Slide %u of %u", 1 + G_ws->iSlideNum,
                 G_ws->iNumSlides);
         lineWidth = swim_get_text_line_width(&G_win, slideCount);
 
@@ -639,10 +639,10 @@ static void ICacheEntryDetermineNextSlide(
                 < SLIDESHOW_PREFETCH_AHEAD)) {
             // Need more forward, determine the next forward slide and cacheEntry
             // rolling around as necessary
-            if (neededCacheEntryForward > numCacheCacheEntrys)
+            if ((uint32_t)neededCacheEntryForward > numCacheCacheEntrys)
                 neededCacheEntryForward -= numCacheCacheEntrys;
             cacheEntry = neededCacheEntryForward++;
-            if (neededSlideForward > G_ws->iNumSlides)
+            if ((uint32_t)neededSlideForward > G_ws->iNumSlides)
                 neededSlideForward -= G_ws->iNumSlides;
             slide = neededSlideForward++;
             rolledForward++;
@@ -670,6 +670,8 @@ static void ICacheEntryDetermineNextSlide(
 
 TUInt32 SSMLoadTask(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     TUInt32 slideNum;
     T_slideLoadResponse slideResponse;
     //TUInt32 i;
@@ -803,7 +805,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
 #if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
     char filename[80];
     char directory[80];
     T_uezError error;
@@ -841,11 +843,11 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
     G_ws->iNeedLoad = ETrue;
     G_ws->iNeedDraw = ETrue;
     G_ws->iTouched = EFalse;
-#if DKTS_BUTTON_SLIDE_SHOW_DEMO
+#if (DKTS_BUTTON_SLIDE_SHOW_DEMO == 1)
     G_ws->iAutoSlideshow = ETrue;
 #endif
 
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
     UEZWAVConfig(48);
 #endif
 
@@ -881,7 +883,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
                         if (G_ws->iNeedLoad) {
                             SSMLoadSlide();
                             time = UEZTickCounterGet();
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
                             sprintf(directory, SLIDES_DIRECTORY, G_ws->iDef->iDirectory);
                             sprintf(filename, "%d:" SLIDESHOW_AUDIO_NAMING, G_ws->iDef->iDrive, directory, G_ws->iSlideNum+1);
                             if(!UEZWAVGetStatus()){
@@ -943,7 +945,7 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
                                         if (UEZTickCounterGetDelta(time)
                                                 >= SLIDESHOW_PANEL_AUTO_NEXT_SLIDE_TIME) {
                                             // Act as if pressed next
-#if UEZ_ENABLE_I2S_AUDIO
+#if (UEZ_ENABLE_I2S_AUDIO == 1)
                                             if(UEZWAVGetStatus());
 
                                             else
@@ -1030,7 +1032,7 @@ TUInt32 SingleSlideshowGetNumSlides(void)
     return 0;
 }
 
-void SlideShowExit()
+void SlideShowExit(void)
 {
     if(G_ws)
       G_ws->iExit = ETrue;

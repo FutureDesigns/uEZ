@@ -44,6 +44,7 @@
 #include <uEZ.h>
 #include "FuncTestFramework.h"
 #include <HAL/GPIO.h>
+#include <uEZPlatform.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
 #ifdef __cplusplus
@@ -92,7 +93,7 @@ void FuncTestMicroSDCard(
         const T_testAPI *aAPI,
         T_testData *aData,
         TUInt16 aButton);
-#if LIGHT_SENSOR_ENABLED
+#if (LIGHT_SENSOR_ENABLED == 1)
 void FuncTestLightSensor(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton);
 #endif
 void FuncTestAccelerometer(

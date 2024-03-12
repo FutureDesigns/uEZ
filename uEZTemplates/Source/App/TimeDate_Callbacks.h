@@ -27,7 +27,7 @@ typedef struct {
  *-------------------------------------------------------------------------*/
 void TimeDate_GetSettings(T_TimeDateSettings *aSettings);
 void TimeDate_SetSettings(T_TimeDateSettings *aSettings);
-void TimeDate_Initialize();
+void TimeDate_Initialize(void);
 
 #endif // TIMEDATE_CALLBACK_H_
 /*-------------------------------------------------------------------------*

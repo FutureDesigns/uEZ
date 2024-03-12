@@ -123,7 +123,7 @@ static void MSMSetupChoices(void)
     T_region rbottom;
     TUInt16 fontHeight;
     TUInt16 lineHeight;
-    int i;
+    TUInt16 i;
     T_choice *p = G_ws->iChoices;
 
     r.iLeft = 0;
@@ -284,10 +284,10 @@ T_uezError OldSlideshowCheckAvailable(TUInt32 aDrive)
     T_uezFile file;
 
     // Look for slide directory
-    sprintf(directory, "%d:/", aDrive);
+    sprintf(directory, "%u:/", aDrive);
 
     // Look for the standard name
-    sprintf(filename, SLIDESHOW_PICTURE_NAMING, directory, 1);
+    sprintf(filename, SLIDESHOW_PICTURE_NAMING, directory, (uint32_t) 1);
     error=UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &file);
     if (error == UEZ_ERROR_NONE)
         UEZFileClose(file);
@@ -324,7 +324,7 @@ T_uezError MultiSlideshowCheckAvailable(TUInt32 aDrive)
     T_uezFile file;
 
     // Look for slide directory
-    sprintf(filename, "%d:/SLIDES/SLIDES.TXT" , aDrive);
+    sprintf(filename, "%u:/SLIDES/SLIDES.TXT" , aDrive);
     error=UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &file);
     if (error == UEZ_ERROR_NONE)
         UEZFileClose(file);
@@ -340,7 +340,7 @@ T_uezError MultiSlideshowCheckAvailableINI(TUInt32 aDrive)
     T_uezFile file;
 
     // Look for slide directory
-    sprintf(filename, "%d:/SLIDES/SLIDES.INI" , aDrive);
+    sprintf(filename, "%u:/SLIDES/SLIDES.INI" , aDrive);
     error=UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &file);
     if (error == UEZ_ERROR_NONE)
         UEZFileClose(file);
@@ -359,7 +359,7 @@ T_uezError IMSLoadDirectoryINI(TUInt32 aDrive)
     TUInt8 i;
     T_slideshowDefinition *p_list = G_ws->iSlideshowList.iList;
 
-    sprintf(filename, "%d:/SLIDES/SLIDES.INI" , aDrive);
+    sprintf(filename, "%u:/SLIDES/SLIDES.INI" , aDrive);
     if(UEZINIOpen(filename, &ini) == UEZ_ERROR_NONE){
         if (UEZINIGotoSection(ini, UEZ_SLIDESHOW_NAME) == UEZ_ERROR_NONE){
           UEZINIGetInteger32(ini, "numShows", 0, &numShows);
@@ -406,7 +406,7 @@ T_uezError IMSLoadDirectory(TUInt32 aDrive)
     char c;
 
     // Look for slide directory
-    sprintf(filename, "%d:/SLIDES/SLIDES.TXT" , aDrive);
+    sprintf(filename, "%u:/SLIDES/SLIDES.TXT" , aDrive);
     error=UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &file);
     if (error == UEZ_ERROR_NONE) {
         UEZFileGetLength(file, &len);
@@ -466,6 +466,7 @@ T_uezError IMSLoadDirectory(TUInt32 aDrive)
  *---------------------------------------------------------------------------*/
 void MultiSlideshowMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice lcd;
 //    T_uezError error;
 //    T_uezFile file;

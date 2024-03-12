@@ -67,7 +67,7 @@ BOOL rtc_settime (const RTC *rtc)
 /* This is not required in read-only configuration.        */
 
 
-DWORD get_fattime ()
+DWORD get_fattime (void)
 {
 	RTC rtc = {0, 0, 0, 0, 0, 0};
 

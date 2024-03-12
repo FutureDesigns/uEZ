@@ -24,6 +24,7 @@
 #include <uEZProcessor.h>
 #include <HAL/Interrupt.h>
 #include <uEZRTOS.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Function Prototypes:

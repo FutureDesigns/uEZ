@@ -27,6 +27,7 @@
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_EMC_Static.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_ExternalBus.h>
 #include <uEZBSP.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

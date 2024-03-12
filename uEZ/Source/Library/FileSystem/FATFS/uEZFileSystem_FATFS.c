@@ -40,6 +40,7 @@
  *
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <uEZFile.h>
 #include <uEZDeviceTable.h>
 #include "uEZFileSystem_FATFS.h"
@@ -1355,6 +1356,10 @@ T_uezError FS_FATFS_MKFS(
         const MKFS_PARM* opt)
 {
 #if (DISABLE_FILESYSTEM_FORMAT_SUPPORT == 1)
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(path);
+    PARAM_NOT_USED(opt);
+
     return UEZ_ERROR_FAIL;
 #else
     T_FATFS_FileSystem_Workspace *p =
@@ -1394,7 +1399,69 @@ T_uezError FS_FATFS_MKFS_ReadOnly(
         const TCHAR* path,
         const MKFS_PARM* opt)
 {
-        return UEZ_ERROR_FAIL;
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(path);
+    PARAM_NOT_USED(opt);
+
+    return UEZ_ERROR_FAIL;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  FS_FATFS_SetTableBuffer
+ *---------------------------------------------------------------------------*/
+/*
+ *  Set the buffer pointer for fast seek. Buffer should be pre-init to length
+ *  (of buffer) then pass in the buffer after the file is open.
+ *
+ *  @param [in]    *aWorkspace     	Workspace
+ *
+ *  @param [in]    aFileHandle    	File currently open
+ *
+ *  @param [in]    bufPtr          	pointer to bufffer
+ *
+ *  @return        T_uezError    	Error code
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  
+ *  TODO
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError FS_FATFS_SetTableBuffer(
+        void *aWorkspace,
+            TUInt32 aFileHandle,
+         DWORD* bufPtr)
+{
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aFileHandle);
+    PARAM_NOT_USED(bufPtr);
+    
+    return IFATFS_ConvertResultCodeToErrorCode(FR_OK); // pretend that we have the feature to avoid errors.
+    //return UEZ_ERROR_NOT_SUPPORTED;
+#else
+    T_FATFS_FileSystem_Workspace *p = (T_FATFS_FileSystem_Workspace *)aWorkspace;
+    T_FATFS_File *p_file;
+    FRESULT res=(FRESULT)0;
+
+    // Check for valid file handle
+    if (aFileHandle >= MAX_FILES_OPEN)
+        return UEZ_ERROR_INVALID_PARAMETER;
+
+    // Determine if valid file handle data
+    p_file = p->iFiles + aFileHandle;
+    if (!p_file->iInUse)
+        return UEZ_ERROR_HANDLE_INVALID;
+
+    IGrab(p);
+
+    p_file->iFile.cltbl = bufPtr;
+    res = f_lseek(&p_file->iFile, CREATE_LINKMAP);
+    IRelease(p);
+
+    return IFATFS_ConvertResultCodeToErrorCode(res);
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -1434,7 +1501,10 @@ const DEVICE_FileSystem FATFS_FileSystem_Interface = {
 
     // v2.12 Functions
     FileSystem_FATFS_GetStorageInfo,
-    FS_FATFS_MKFS
+    FS_FATFS_MKFS,
+
+    // v2.14 Functions
+    FS_FATFS_SetTableBuffer
 } ;
 
 const DEVICE_FileSystem FATFS_FileSystem_ReadOnly_Interface = {
@@ -1471,7 +1541,10 @@ const DEVICE_FileSystem FATFS_FileSystem_ReadOnly_Interface = {
 
     // v2.12 Functions
     FileSystem_FATFS_GetStorageInfo,
-    FS_FATFS_MKFS_ReadOnly
+    FS_FATFS_MKFS_ReadOnly,
+
+    // v2.14 Functions
+    FS_FATFS_SetTableBuffer
 } ;
 /* @} */
 

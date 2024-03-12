@@ -94,6 +94,7 @@ extern const TUInt8 G_arrowDown[];
 extern const TUInt8 G_GainSpanLogo[];
 extern const TUInt8 G_uEZLogo[];
 extern const TUInt8 G_videoIcon[];
+extern const TUInt8 G_MQTT_Logo[];
 
 #ifdef __cplusplus
 }

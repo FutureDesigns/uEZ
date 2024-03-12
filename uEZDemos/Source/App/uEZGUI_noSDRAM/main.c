@@ -25,6 +25,7 @@
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 #include <stdio.h>
 #include <uEZ.h>
+#include <uEZGPIO.h>
 #include <uEZPlatform.h>
 #include <uEZDeviceTable.h>
 #include "NVSettings.h"
@@ -47,7 +48,7 @@
 #endif
 #endif
 
-#if FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE
     #include <trcUser.h>
 #endif
 
@@ -67,6 +68,24 @@ TUInt32 G_romChecksum;
 TBool G_romChecksumCalculated;
 TBool volatile G_mmTestMode = ETrue;
 
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  3
+#endif
+
+#ifndef __HEAP_SIZE__
+#define __HEAP_SIZE__ 5000000
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
+#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  ROMChecksumCalculate
  *---------------------------------------------------------------------------*
@@ -77,7 +96,7 @@ TBool volatile G_mmTestMode = ETrue;
  *      TUInt32                   -- 32-bit additive checksum
  *---------------------------------------------------------------------------*/
 // This currently has to be defined for FCT test command console even though it isn't correct yet.
-TUInt32 ROMChecksumCalculate()
+TUInt32 ROMChecksumCalculate(void)
 {
 #if (UEZ_PROCESSOR != NXP_LPC4357)
     TUInt8 *p = (TUInt8 *)0x00000000;
@@ -108,6 +127,8 @@ TUInt32 ROMChecksumCalculate()
  *---------------------------------------------------------------------------*/
 TUInt32 RAM_Test(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     // initial quick blink at bootup
     for (int i = 0; i < 20; i++) {
         UEZGPIOSet(GPIO_HEARTBEAT_LED);
@@ -164,7 +185,7 @@ int MainTask(void)
 #endif  
 #endif
 
-#if FREERTOS_PLUS_TRACE 
+#ifdef FREERTOS_PLUS_TRACE
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
@@ -210,8 +231,8 @@ int MainTask(void)
     // initialize command console for test commands
     UEZGUITestCmdsInit();
 #endif
-    // Setup DAC audio if available - ignore error
-    UEZDACWAVConfig("Timer2");
+    // Setup DAC audio if available
+    //UEZDACWAVConfig("Timer2"); // Don't use DAC audio on no external RAM projects since it requires large buffers. Only support PWM audio. With MALLAC failed hook it will now hang on faield alloc err.
 
     // Our heatbeat LED already should be set a low level, but we should replace this code here with a platform callback to set it.
     // This old code isn't complete on LPC4357 for example and mux could be non-zero on a platform.
@@ -240,7 +261,7 @@ int MainTask(void)
 * Description:
 *
 *---------------------------------------------------------------------------*/
-void uEZPlatformStartup_NO_EXP()
+void uEZPlatformStartup_NO_EXP(void)
 {
 #if UEZ_ENABLE_VIRTUAL_COM_PORT && (UEZ_PROCESSOR == NXP_LPC4357)
     static T_vcommCallbacks vcommCallbacks = {
@@ -296,6 +317,8 @@ void uEZPlatformStartup_NO_EXP()
 *---------------------------------------------------------------------------*/
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     UEZPlatform_Standard_Require();
     UEZPlatform_Timer0_Require();
 
@@ -320,7 +343,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 }
 
 // Is this required?
-void UEZBSP_VectorTableInit(){ /* No Implementation */ }
+void UEZBSP_VectorTableInit(void){ /* No Implementation */ }
 /*-------------------------------------------------------------------------*
 * File:  main.c
 *-------------------------------------------------------------------------*/

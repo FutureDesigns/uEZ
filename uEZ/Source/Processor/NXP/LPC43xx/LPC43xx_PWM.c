@@ -28,6 +28,7 @@
 #include <HAL/GPIO.h>
 #include <uEZBSP.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_PWM.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 // No interrupts are setup in this driver, so no M0 specific support was added.
 

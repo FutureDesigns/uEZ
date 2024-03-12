@@ -26,14 +26,20 @@
 #include "Source/uEZSystem/uEZHandles.h"
 #include "uEZRTOS.h"
 #include <uEZBSP.h>
+#include <uEZMemory.h>
+#include <uEZTimer.h>
+#include <uEZPlatform.h>
 
-#ifdef FREERTOS_PLUS_TRACE //LPC1788/LPC4088 only as of uEZ v2.06
+#ifdef FREERTOS_PLUS_TRACE //
 //#include "Include/trcUser.h"
 #endif
 
 static xSemaphoreHandle G_startingTaskReady;
 static xSemaphoreHandle G_semTask;
 UEZ_PUT_SECTION(".data", static TBool G_isRTOSRunning = EFalse);
+
+#if (configGENERATE_RUN_TIME_STATS == 1)
+#endif
 
 #ifndef UEZ_DEBUG_HEAVY_ASSERTS
 #define UEZ_DEBUG_HEAVY_ASSERTS     1
@@ -409,6 +415,21 @@ T_uezError UEZTaskResume(T_uezTask aTask)
 }
 
 /*-------------------------------------------------------------------------*
+ * Section: Timers
+ *-------------------------------------------------------------------------*/
+#if (configGENERATE_RUN_TIME_STATS == 1)
+configRUN_TIME_COUNTER_TYPE UEZGetRunTimeStatsCounter(void)
+{
+  return UEZBSP_GetGetRunTimeStatsCounter();
+}
+
+T_uezError UEZConfigureTimerForRunTimeStats(void)
+{
+  return UEZBSP_ConfigureTimerForRunTimeStats();
+}
+#endif
+
+/*-------------------------------------------------------------------------*
  * Section: Semaphores
  *-------------------------------------------------------------------------*/
 //typedef T_uezHandle T_uezSemaphore;
@@ -754,7 +775,6 @@ T_uezError UEZSemaphoreRecursiveRelease(
     }
 }
 
-
 /*-------------------------------------------------------------------------*
  * Section: Queues
  *-------------------------------------------------------------------------*/
@@ -843,7 +863,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
                 error = UEZ_ERROR_HANDLE_INVALID;
             } else {
                 vQueueAddToRegistry(Queue, (char *)pcQueueName);
-#ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
+#ifdef FREERTOS_PLUS_TRACE 
                 if(aInterfaceName[0] != '\0'){
                     sscanf(aInterfaceName, "%s %s", data, interface);
                     sprintf(name, "%s_%s", pcQueueName, interface);
@@ -1099,9 +1119,16 @@ TUInt32 UEZTickCounterGet(void)
 #endif
 }
 
+// xTaskGetTickCount will return raw 16/32/64 bit tick.
+// To get correct positive difference always need to check which number is greater.
 TUInt32 UEZTickCounterGetDelta(TUInt32 aStart)
 {
-    return xTaskGetTickCount()-aStart;
+    TickType_t currentTicks = xTaskGetTickCount();
+    if (currentTicks >= aStart) {
+        return currentTicks - aStart;
+    } else { // time rollover (overflow)
+        return (portMAX_DELAY - aStart) + 1 + currentTicks;
+    }
 }
 
 // Immediately context switch to another task inside the interrupt routine

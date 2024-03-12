@@ -158,6 +158,10 @@ typedef struct {
     T_uezError (*GetConnectionInfo)(void *aWorkspace,
     		T_uezNetworkSocket aSocket,
     		T_uEZNetworkConnectionInfo *aConnection);
+    /*
+     * Functions uEZ v2.14
+     */        
+    T_uezError (*InfrastructureRestart)(void *aWorkspace);
 } DEVICE_Network;
 
 #ifdef __cplusplus

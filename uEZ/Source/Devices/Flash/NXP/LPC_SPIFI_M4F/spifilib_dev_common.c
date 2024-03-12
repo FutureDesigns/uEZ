@@ -916,7 +916,7 @@ SPIFI_ERR_T spifiEraseByAddr(const SPIFI_HANDLE_T *pHandle, uint32_t firstAddr, 
 // Enter OTP Region 
 SPIFI_ERR_T spifiSetENSO(const SPIFI_HANDLE_T *pHandle)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(pHandle);
     return SPIFI_ERR_NONE;
 #else
@@ -934,7 +934,7 @@ SPIFI_ERR_T spifiSetENSO(const SPIFI_HANDLE_T *pHandle)
 // Exit OTP Region
 SPIFI_ERR_T spifiSetEXSO(const SPIFI_HANDLE_T *pHandle)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(pHandle);
     return SPIFI_ERR_NONE;
 #else
@@ -952,7 +952,7 @@ SPIFI_ERR_T spifiSetEXSO(const SPIFI_HANDLE_T *pHandle)
 // Return the current OTP status 
 uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(pHandle);
     return SPIFI_ERR_NONE;
 #else
@@ -975,7 +975,7 @@ uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
  // Program OTP region
  SPIFI_ERR_T spifiProgramOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, const uint32_t *writeBuff, uint32_t bytes)
  {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(pHandle);
     UNUSED(addr);
     UNUSED(writeBuff);
@@ -1034,7 +1034,7 @@ uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
  // Read OTP region
  SPIFI_ERR_T spifiReadOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, uint32_t *readBuff, uint32_t bytes)
  {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(pHandle);
     UNUSED(addr);
     UNUSED(readBuff);
@@ -1082,7 +1082,7 @@ uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
 // Lock the current OTP forever
 uint32_t spifiLockOtp(const SPIFI_HANDLE_T *pHandle, TBool lockOtp)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
     UNUSED(pHandle);
     UNUSED(lockOtp);
     return SPIFI_ERR_NONE;

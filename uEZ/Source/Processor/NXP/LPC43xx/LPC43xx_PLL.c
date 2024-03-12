@@ -23,8 +23,10 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <uEZProcessor.h>
 #include "LPC43xx_PLL.h"
+#include "LPC43xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

@@ -169,6 +169,7 @@ T_uezError NVSettingsGetMACAddress(TUInt8 *aMACAddress)
 
 void *UEZEMACGetMACAddr(TUInt32 aUnitNumber)
 {
+    PARAM_NOT_USED(aUnitNumber);
     extern T_nonvolatileSettings G_nonvolatileSettings;
     return G_nonvolatileSettings.iMACAddr;
 }

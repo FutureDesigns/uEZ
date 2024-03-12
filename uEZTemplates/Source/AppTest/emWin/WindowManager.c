@@ -67,6 +67,8 @@ static GUI_PID_STATE G_State;
  * Globals:
  *---------------------------------------------------------------------------*/
 WM_HWIN G_SystemWindows[NUM_WINDOWS];
+static TUInt8 G_CurrentWindow = 0;
+
 // backlight management examples
 static TUInt8 G_backlightLevel = 0;
 #if (BACKLIGHT_TIMEOUT_ENABLED == 1)
@@ -350,6 +352,7 @@ static void WindowManager_Hide_Other_Windows(TUInt8 aWindow)
             if(G_SystemWindows[i]){
                 WM_SendMessageNoPara(G_SystemWindows[i], WM_APP_LOST_FOCUS);
                 WM_HideWindow(G_SystemWindows[i]);
+                G_CurrentWindow = aWindow;
             }
         }
         i++;
@@ -376,6 +379,22 @@ void WindowManager_Show_Window(TUInt8 aWindow)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine: WindowManager_GetCurrent_Window
+ *---------------------------------------------------------------------------*/
+/** Returns the index of the current window from 0 to NUM_WINDOWS.
+ *  Multiple windows can run void XXXX_Dialog(WM_MESSAGE *pMsg) when not 
+ *  focused on that window, so use this restrict behavior to when the window is
+ *  really active (or not active).
+ *
+ *  @return                 Index of current window
+ */
+ /*---------------------------------------------------------------------------*/
+TUInt8 WindowManager_GetCurrent_Window(void)
+{
+  return G_CurrentWindow;
+}
+
+/*---------------------------------------------------------------------------*
  * Routine: WindowManager_UpdateCommonElements
  *---------------------------------------------------------------------------*/
 /** Function used to set the common UI elements across all screens.
@@ -385,7 +404,7 @@ void WindowManager_Show_Window(TUInt8 aWindow)
  /*---------------------------------------------------------------------------*/
 void WindowManager_UpdateCommonElements(T_CommonMode aMode)
 {
-
+     PARAM_NOT_USED(aMode);
    
 }
 
@@ -448,6 +467,7 @@ static TUInt32 sstick = 0;
 
 static void _WriteByte2File(U8 Data, void * p)
 {	
+  PARAM_NOT_USED(p);
   TUInt32 numWritten;
   ssBuffer[ssindex++]=Data;
   if(ssindex==sizeof(ssBuffer)) {

@@ -27,6 +27,7 @@
 #include <uEZBSP.h>
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_I2C.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 // Setup Master mode only.  Slave mode is a future version but we'll
 // leave some of the code in so we don't have to write it later.

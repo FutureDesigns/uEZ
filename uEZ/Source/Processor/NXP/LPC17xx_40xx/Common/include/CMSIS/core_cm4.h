@@ -75,7 +75,7 @@
 */
 #if defined ( __CC_ARM )
   #if defined __TARGET_FPU_VFP
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
@@ -87,7 +87,7 @@
 
 #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
   #if defined __ARM_FP
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #warning "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
@@ -99,7 +99,7 @@
 
 #elif defined ( __GNUC__ )
   #if defined (__VFP_FP__) && !defined(__SOFTFP__)
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
@@ -111,7 +111,7 @@
 
 #elif defined ( __ICCARM__ )
   #if defined __ARMVFP__
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
@@ -123,7 +123,7 @@
 
 #elif defined ( __TI_ARM__ )
   #if defined __TI_VFP_SUPPORT__
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
@@ -135,7 +135,7 @@
 
 #elif defined ( __TASKING__ )
   #if defined __FPU_VFP__
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
@@ -147,7 +147,7 @@
 
 #elif defined ( __CSMC__ )
   #if ( __CSMC__ & 0x400U)
-    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)
+    #if defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)
       #define __FPU_USED       1U
     #else
       #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"

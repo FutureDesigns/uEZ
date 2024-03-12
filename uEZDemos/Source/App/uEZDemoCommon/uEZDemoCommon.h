@@ -98,6 +98,8 @@ void TempMode(const T_choice *aChoice);
 
 void AudioPlayerMode(const T_choice *aChoice);
 
+void MQTT_Demo(const T_choice *aChoice);
+
 void TS_NoiseDetect(void);
 void FWTSTest(void);
 

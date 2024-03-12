@@ -116,9 +116,7 @@ void fpu_init(void)
 
 void Lpc43xxSystemInit (void)
 {
-#ifndef __CODE_RED
 #ifdef CORE_M4
     fpu_init();
-#endif
 #endif
 }

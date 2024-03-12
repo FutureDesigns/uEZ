@@ -20,10 +20,12 @@ Purpose     : Config / System dependent externals for GUI
 ---------------------------END-OF-HEADER------------------------------
 */
 
+#include <uEZ.h>
 #include <stdio.h>
 #include <string.h>
 #include "uEZRTOS.h"
 #include "GUI.h"
+#include "task.h"
 //#include <intrinsics.h>
 
 /*********************************************************************
@@ -98,7 +100,7 @@ U32  GUI_X_GetTaskId(void) { return UEZTaskGetCurrent(); }
 void GUI_X_InitOS(void)    { UEZSemaphoreCreateRecursiveMutex(&_RSema, UEZ_PRIORITY_VERY_HIGH); }
 void GUI_X_Unlock(void)    { UEZSemaphoreRecursiveRelease(_RSema); }
 void GUI_X_Lock(void)      { UEZSemaphoreRecursiveGrab(_RSema, UEZ_TIMEOUT_INFINITE); }
-U32  GUI_X_GetTaskId(void) { return UEZTaskGetCurrent(); }
+U32  GUI_X_GetTaskId(void) { return ( uint32_t )xTaskGetCurrentTaskHandle();} //return UEZTaskGetCurrent(); } // emWin constantly calls locking functions to check the current task, so don't search all of the uEZ handles constantly
 #endif
 
 /*********************************************************************

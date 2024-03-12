@@ -40,12 +40,12 @@ static T_SensorSettings G_SensorSettings = { "00.0 C", "-0.0X -0.0Y -0.0Z"};
  * Prototypes:
  *-------------------------------------------------------------------------*/
 
-static void IGrab()
+static void IGrab(void)
 {
     UEZSemaphoreGrab(G_Sem, UEZ_TIMEOUT_INFINITE);
 }
 
-static void IRelease()
+static void IRelease(void)
 {
     UEZSemaphoreRelease(G_Sem);
 }

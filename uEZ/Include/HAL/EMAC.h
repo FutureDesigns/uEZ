@@ -54,9 +54,14 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <uEZ.h>
 #include <uEZTypes.h>
 #include <HAL/HAL.h>
 #include <Include/Types/EMAC.h>
+
+#ifndef EMAC_USE_INTERRUPT_TIMEOUT_DETECT
+#define EMAC_USE_INTERRUPT_TIMEOUT_DETECT  0 // enable to detect PHY timeout, restart of full stack experimental.
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -87,6 +92,11 @@ typedef struct {
         T_uezEMACReceiveInterruptCallback aCallback,
         void *aCallbackWorkspace);
     void (*DisableReceiveInterrupt)(void *aWorkspace);
+    
+    // uEZ v2.14
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    TUInt16 * (*GetPhyTimeoutCounter)(void);
+#endif
 } HAL_EMAC;
 
 #ifdef __cplusplus

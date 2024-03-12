@@ -24,6 +24,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZMemory.h>
 #include "USBMSDrive.h"
 #include <uEZPacked.h>
 #include <Source/Library/LPCOpen/LPCUSBLib/Drivers/USB/USB.h>

@@ -58,7 +58,7 @@
 #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
 #endif
 
-#if FREERTOS_PLUS_TRACE 
+#ifdef FREERTOS_PLUS_TRACE
 #include <Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include/trcUser.h>
 #endif
    
@@ -70,6 +70,25 @@
  * Globals:
  *---------------------------------------------------------------------------*/
  TBool G_HeartBeat;		// Global Variable for uC/Probe Demo
+
+
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  3
+#endif
+
+#ifndef __HEAP_SIZE__
+#define __HEAP_SIZE__ 5000000
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
+#endif
 
  /*---------------------------------------------------------------------------*
  * Task:  Heartbeat
@@ -84,6 +103,8 @@
  *---------------------------------------------------------------------------*/
 TUInt32 HeartbeatTask(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     UEZGPIOOutput(GPIO_HEARTBEAT_LED); // see uEZPlatform.h for pin def
     UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);    
     
@@ -119,6 +140,8 @@ TUInt32 HeartbeatTask(T_uezTask aMyTask, void *aParams)
  *---------------------------------------------------------------------------*/
 TUInt32 GUIInterfaceTask(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     TBool done = EFalse;
     if( WindowManager_Start_emWin() != UEZ_ERROR_NONE){
         UEZFailureMsg("Failed to start emWin!");
@@ -195,7 +218,7 @@ void MainTask(void)
 #endif
 #endif
 
-#if FREERTOS_PLUS_TRACE 
+#ifdef FREERTOS_PLUS_TRACE
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
@@ -268,12 +291,12 @@ void MainTask(void)
 #endif
 
     //Start emWin interface
-    UEZTaskCreate(GUIInterfaceTask, "GUIInterface", (4 * 1024), (void *) 0, UEZ_PRIORITY_NORMAL, 0);
+    UEZTaskCreate(GUIInterfaceTask, "GUIInterface", (8 * 1024), (void *) 0, UEZ_PRIORITY_NORMAL, 0);
     
-#if UEZ_ENABLE_WIRELESS_NETWORK || UEZ_ENABLE_WIRED_NETWORK        
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1) || (UEZ_ENABLE_WIRED_NETWORK == 1)
     // Start the network task if needed
     UEZTaskCreate((T_uezTaskFunction)NetworkStartup, "NetStart", 
-        UEZ_TASK_STACK_BYTES(1024), (void *)0, UEZ_PRIORITY_NORMAL, 0);
+        UEZ_TASK_STACK_BYTES(6144), (void *)0, UEZ_PRIORITY_NORMAL, 0);
 #endif
     
     // Raise Volume slightly for bootup sound
@@ -404,7 +427,7 @@ void uEZPlatformStartup_EXP_BRKOUT()
 * Description:
 *      Configure the uEZGUI without an expanion board connected
 *---------------------------------------------------------------------------*/
-void uEZPlatformStartup_NO_EXP()
+void uEZPlatformStartup_NO_EXP(void)
 {
 #if UEZ_ENABLE_VIRTUAL_COM_PORT && (UEZ_PROCESSOR == NXP_LPC4357)
     static T_vcommCallbacks vcommCallbacks = {
@@ -445,15 +468,15 @@ void uEZPlatformStartup_NO_EXP()
     }
 
     // network section require
-    #if UEZ_ENABLE_WIRED_NETWORK
+    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
         UEZPlatform_WiredNetwork0_Require();
     #endif
 
-    #if UEZ_WIRELESS_PROGRAM_MODE
+    #if (UEZ_WIRELESS_PROGRAM_MODE == 1)
         UEZPlatform_WiFiProgramMode(EFalse);
     #endif
 
-    #if UEZ_ENABLE_WIRELESS_NETWORK
+    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         UEZPlatform_WirelessNetwork0_Require();
     #endif
 }
@@ -468,9 +491,11 @@ void uEZPlatformStartup_NO_EXP()
 *---------------------------------------------------------------------------*/
 TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     extern T_uezTask G_mainTask;
     
-    #if FREERTOS_PLUS_TRACE 
+    #ifdef FREERTOS_PLUS_TRACE
         TUInt32 traceAddressInMemory = 0;
     #endif
     
@@ -484,7 +509,7 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
         uEZPlatformStartup_NO_EXP();
     #endif
 
-    #if FREERTOS_PLUS_TRACE
+    #ifdef FREERTOS_PLUS_TRACE
          uiTraceStart();
          //vTraceStartStatusMonitor(); //Removed on new version of Trace
          traceAddressInMemory = (TUInt32)vTraceGetTraceBuffer();
@@ -531,7 +556,7 @@ unsigned long GetTimerForRunTimeStats( void )
  * Description:
  *      This function hook is for any custom vector table initialization
  *---------------------------------------------------------------------------*/
-void UEZBSP_VectorTableInit()
+void UEZBSP_VectorTableInit(void)
 {
     /* No current implementation */
 }

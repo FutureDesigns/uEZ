@@ -274,6 +274,10 @@ HELPER __debug_io_lock
   bx lr
 HELPER __debug_io_unlock
   bx lr
+HELPER __assert
+  b .
+HELPER __aeabi_assert
+  b .
 
 
 #ifdef FULL_LIBRARY
@@ -284,6 +288,8 @@ args:
 
   /* Setup attibutes of stack and heap sections so they don't take up room in the elf file */
   .section .stack, "wa", %nobits
+#ifdef USE_PROCESS_STACK
   .section .stack_process, "wa", %nobits
+#endif
   .section .heap, "wa", %nobits
 

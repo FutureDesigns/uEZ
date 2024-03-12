@@ -24,7 +24,7 @@
   <!-- Bank B -->
   <MemorySegment start="0x1B000000" name="FLASHB0" size="0x2FC" access="ReadOnly" />
   <MemorySegment start="0x1B0002FC" name="CRP2" size="0x4" access="ReadOnly" /> <!-- CRP Region B -->
-  <MemorySegment start="0x1B000300" name="FLASHB" size="0x1B080000-$(FLASHB_CM0_SIZE:0)-0x1B000300" access="ReadOnly" />
+  <MemorySegment start="$(FLASHB_START:0x0)" name="FLASHB" size="0x1B080000-$(FLASHB_CM0_SIZE:0)-$(FLASHB_START:0x0)" access="ReadOnly" />
   <MemorySegment start="0x1B080000-$(FLASHB_CM0_SIZE:0x0)" name="FLASHB_CM0" size="$(FLASHB_CM0_SIZE:0x0)" access="ReadOnly" />
   
   <!-- CS0-CS3 not currently used. -->
@@ -37,11 +37,18 @@
   <MemorySegment start="0x1F000000" name="$(CS3_NAME:CS3)" size="$(CS3_SIZE:0)" access="$(CS3_ACCESS:Read/Write)" />
   <MemorySegment start="0x1F000000+$(CS3_SIZE:0)-$(CS3_CM0_SIZE:0)" name="$(CS3_NAME:CS3)_CM0" size="$(CS3_CM0_SIZE:0)" access="$(CS3_ACCESS:Read/Write)" />
   
-  <!-- Use AHBSRAM 1 for usb/emac memory. AHBSRAM2 requires special handling to use and inteferes with ETB operation. -->
-  <MemorySegment start="0x20000000" name="AHBSRAM1" size="0xc000-$(AHBSRAM1_CM0_SIZE:0xc000/4)" access="Read/Write" />
-  <MemorySegment start="0x20000000+0xc000-$(AHBSRAM1_CM0_SIZE:0xc000/4)" name="AHBSRAM1_CM0" size="$(AHBSRAM1_CM0_SIZE:0xc000/4)" access="Read/Write" />
-  <MemorySegment start="0x2000C000" name="AHBSRAM2" size="0x4000-$(AHBSRAM2_CM0_SIZE:0x2000/4)" access="Read/Write" />
-  <MemorySegment start="0x2000C000+0x4000-$(AHBSRAM2_CM0_SIZE:0x2000/4)" name="AHBSRAM2_CM0" size="$(AHBSRAM2_CM0_SIZE:0x2000/4)" access="Read/Write" />
+  <!-- Use AHBSRAM for usb/emac memory. AHBSRAM 3 inteferes with ETB (trace) operation but otherwise can be used. -->
+  <!-- Normally a small part is reserved for USB Host, then the rest can be used to get as many Ethernet Frames as possible. -->
+  
+  <!-- AHBSRAM 1,2,3 combined with ability to split off part of it for CM0 -->
+  <MemorySegment start="0x20000000" name="AHBSRAM1_3" size="0x10000-$(AHBSRAM1_3_CM0_SIZE:0x10000/4)" access="Read/Write" />
+  <MemorySegment start="0x20000000+0x10000-$(AHBSRAM1_3_CM0_SIZE:0x10000/4)" name="AHBSRAM1_3_CM0" size="$(AHBSRAM1_3_CM0_SIZE:0x10000/4)" access="Read/Write" />
+  <!-- AHBSRAM 1 + AHBSRAM 2 combined with ability to split off part of it for CM0 -->
+  <MemorySegment start="0x20000000" name="AHBSRAM1_2" size="0xc000-$(AHBSRAM1_2_CM0_SIZE:0xc000/4)" access="Read/Write" />
+  <MemorySegment start="0x20000000+0xc000-$(AHBSRAM1_2_CM0_SIZE:0xc000/4)" name="AHBSRAM1_2_CM0" size="$(AHBSRAM1_2_CM0_SIZE:0xc000/4)" access="Read/Write" />
+  <!-- AHBSRAM 3 with ability to split off part of it for CM0 -->
+  <MemorySegment start="0x2000C000" name="AHBSRAM3" size="0x4000-$(AHBSRAM3_CM0_SIZE:0x2000/4)" access="Read/Write" />
+  <MemorySegment start="0x2000C000+0x4000-$(AHBSRAM3_CM0_SIZE:0x2000/4)" name="AHBSRAM3_CM0" size="$(AHBSRAM3_CM0_SIZE:0x2000/4)" access="Read/Write" />
   
   <!-- Non-volatile data storage supported using NVSettings.c -->
   <MemorySegment start="0x20040000" name="EEPROM" size="0x4000" access="ReadOnly">

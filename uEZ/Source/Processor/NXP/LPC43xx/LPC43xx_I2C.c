@@ -27,6 +27,7 @@
 #include <uEZBSP.h>
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_I2C.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 // Setup Master mode only.  Slave mode is a future version but we'll
 // leave some of the code in so we don't have to write it later.
@@ -601,17 +602,17 @@ T_uezError LPC43xx_I2C_Bus0_InitializeWorkspace(void *aWorkspace)
     // Setup interrupt vector
 #ifdef CORE_M4
     InterruptRegister(I2C0_IRQn, ILPC43xx_I2C0InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C0");
+            INTERRUPT_PRIORITY_HIGH, "I2C0");
     InterruptEnable(I2C0_IRQn);
 #endif
 #ifdef CORE_M0
     InterruptRegister(M0_I2C0_OR_I2C1_IRQn, ILPC43xx_I2C0InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C");
+            INTERRUPT_PRIORITY_HIGH, "I2C");
     InterruptEnable(M0_I2C0_OR_I2C1_IRQn);
 #endif
 #ifdef CORE_M0SUB
     InterruptRegister(M0S_I2C0_IRQn, ILPC43xx_I2C0InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C0");
+            INTERRUPT_PRIORITY_HIGH, "I2C0");
     InterruptEnable(M0S_I2C0_IRQn);
 #endif
 
@@ -641,17 +642,17 @@ T_uezError LPC43xx_I2C_Bus1_InitializeWorkspace(void *aWorkspace)
     // Setup interrupt vector
 #ifdef CORE_M4
     InterruptRegister(I2C1_IRQn, ILPC43xx_I2C1InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C1");
+            INTERRUPT_PRIORITY_HIGH, "I2C1");
     InterruptEnable(I2C1_IRQn);
 #endif
 #ifdef CORE_M0
     InterruptRegister(M0_I2C0_OR_I2C1_IRQn, ILPC43xx_I2C1InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C");
+            INTERRUPT_PRIORITY_HIGH, "I2C");
     InterruptEnable(M0_I2C0_OR_I2C1_IRQn);
 #endif
 #ifdef CORE_M0SUB
     InterruptRegister(M0S_I2C1_IRQn, ILPC43xx_I2C1InterruptHandler,
-            INTERRUPT_PRIORITY_NORMAL, "I2C1");
+            INTERRUPT_PRIORITY_HIGH, "I2C1");
     InterruptEnable(M0S_I2C1_IRQn);
 #endif
 

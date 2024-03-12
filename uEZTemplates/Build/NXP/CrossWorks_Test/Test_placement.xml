@@ -9,18 +9,26 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="CRP1">
     <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
-  <MemorySegment name="FLASHA">
-    <ProgramSection alignment="4" load="Yes" name=".init" />
+  <MemorySegment name="$(FLASH_NAME:FLASH)">
+    <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.ctors.*))) KEEP (*(.ctors))" name=".ctors"/>
     <ProgramSection alignment="4" load="Yes" name=".text" />
-    <ProgramSection alignment="4" load="Yes" name=".dtors" />
-    <ProgramSection alignment="4" load="Yes" name=".ctors" />
-    <ProgramSection alignment="4" load="Yes" name=".rodata" />
-    <ProgramSection alignment="4" load="Yes" name=".constdata" />
+    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
+    <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+  </MemorySegment>
+  <MemorySegment name="FLASHA">
+    <!-- Move data sections to a segment after the above (in this xml file) so we can split rodata and text. -->
+    <!-- This splitting is based on how Crossworks generates ld file from this xml file. -->
+    <ProgramSection alignment="4" load="Yes" name=".init" />
+    <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
     <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
-    <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
-    <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+    <!-- constdata and conststring sections don't normally exist -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" name=".rodata" />
   </MemorySegment>
    <!-- Cannot put the same section in both Flash and NOR Flash at the same time! -->
    <MemorySegment name="NORFLASH">
@@ -54,7 +62,8 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="Yes" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack" />
-    <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" />
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
   </MemorySegment>
@@ -65,7 +74,6 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="AHBSRAM" oldname="USB RAM">
     <ProgramSection load="No" name=".usbhostmem"/>
     <ProgramSection load="No" name=".mcimem"/>
-    <!-- The ethernet area is reserved currently -->
     <ProgramSection load="No" name=".emacmem"/>
   </MemorySegment>
   $[endif]
@@ -78,18 +86,26 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="CRP1">
     <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
-  <MemorySegment name="FLASHA">
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.init .init.*)" name=".init"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)" name=".text"/>
+  <MemorySegment name="$(FLASH_NAME:FLASH)">
+    <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
     <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>
     <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.ctors.*))) KEEP (*(.ctors))" name=".ctors"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata .rodata.* .gnu.linkonce.r.*)" name=".rodata"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
-    <ProgramSection alignment="4" load="Yes" runin=".fast_run" inputsections="*(.fast .fast.*)" name=".fast"/>
-    <ProgramSection alignment="4" load="Yes" runin=".data_run" inputsections="*(.data .data.* .gnu.linkonce.d.*)" name=".data"/>
-    <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
+    <ProgramSection alignment="4" load="Yes" name=".text" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+  </MemorySegment>
+  <MemorySegment name="FLASHA">
+    <!-- Move data sections to a segment after the above (in this xml file) so we can split rodata and text. -->
+    <!-- This splitting is based on how Crossworks generates ld file from this xml file. -->
+    <ProgramSection alignment="4" load="Yes" name=".init" />
+    <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
+    <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
+    <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
+    <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
+    <!-- constdata and conststring sections don't normally exist -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" name=".rodata" />
   </MemorySegment>
    <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
    <MemorySegment name="QSPI">
@@ -123,7 +139,8 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="Yes" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack"/>
-    <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process"/>
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
   </MemorySegment>
@@ -134,7 +151,6 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="AHBSRAM" oldname="USB RAM">
     <ProgramSection load="No" name=".usbhostmem"/>
     <ProgramSection load="No" name=".mcimem"/>
-    <!-- The ethernet area is reserved currently -->
     <ProgramSection load="No" name=".emacmem"/>
   </MemorySegment>
   $[endif]
@@ -146,21 +162,27 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:FLASH)">
-    <ProgramSection alignment="4" load="Yes" name=".init" />
-    <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
-    <ProgramSection alignment="4" load="Yes" name=".dtors" />
-    <ProgramSection alignment="4" load="Yes" name=".ctors" />
-    <ProgramSection alignment="4" load="Yes" name=".rodata" />
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
-    <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
-    <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
-    <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
+    <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.ctors.*))) KEEP (*(.ctors))" name=".ctors"/>
+    <ProgramSection alignment="4" load="Yes" name=".text" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
   </MemorySegment>
+  <MemorySegment name="FLASHA">
+    <!-- Move data sections to a segment after the above (in this xml file) so we can split rodata and text. -->
+    <!-- This splitting is based on how Crossworks generates ld file from this xml file. -->
+    <ProgramSection alignment="4" load="Yes" name=".init" />
+    <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
+    <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
+    <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
+    <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
+    <!-- constdata and conststring sections don't normally exist -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+  </MemorySegment>
   <MemorySegment name="FLASHA_CM0">
-    <!-- Can place Cortex-M0 code here. -->
+    <!-- Can place Cortex-M0 code here at the end of flash A, start offset in increments of 64KB. Adjust using FLASHA_CM0_SIZE -->
   </MemorySegment>
 
   <MemorySegment name="FLASHB0">
@@ -169,10 +191,11 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashB0"/>
   </MemorySegment>
   <MemorySegment name="FLASHB">
-    <ProgramSection alignment="4" load="Yes" name=".text" />    
+    <!-- Use FLASHB_START to adjust the starting offset. If 64KB offset, then the 2nd-7th sections (57,344 bytes) can be used for mflash. -->
+    <ProgramSection alignment="4" load="Yes" name=".rodata" />
   </MemorySegment>
   <MemorySegment name="FLASHB_CM0">
-    <!-- Can place Cortex-M0 code here. -->
+    <!-- Can place Cortex-M0 code here at the end of flash B, start offset in increments of 64KB. Adjust using FLASHB_CM0_SIZE -->
   </MemorySegment>
 
   <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
@@ -180,10 +203,21 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <!-- Change individual files or folders's .text and .rodata sections to these for QSPI -->
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashResource .ExternalFlashResource.*)" name=".ExternalFlashResource" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashHeader .ExternalFlashHeader.*)" name=".ExternalFlashHeader" />
+    <!-- Section name overrides on a per-file basis specified in the project file. -->
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashText .ExternalFlashText.*)" name=".ExternalFlashText" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashRodata .ExternalFlashRodata.*)" name=".ExternalFlashRodata" />
     <ProgramSection alignment="4" load="Yes" name=".ExternalFlash" />
+    <!-- Some common crypto algorithm files section names. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text.des* .text.ecp* .text.aria* .text.amellia* .text.chacha* .text.brainpool* .text.curve* .text.x255* .text.secp* .text.oid_* .text.dhm_* .text.mpi* .text.aes* .text.gcm* .text.ccm* .text.psa* .text.ssl* .text.tls* .text.x509* .text.eckey* .text.kw_*)" name=".EFlashTextCrypt" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata.des* .rodata.ecp* .rodata.aria* .rodata.amellia* .rodata.chacha* .rodata.brainpool* .rodata.curve* .rodata.x255* .rodata.secp* .rodata.oid_* .rodata.dhm_* .rodata.mpi* .rodata.aes* .rodata.gcm* .rodata.ccm* .rodata.psa* .rodata.ssl* .rodata.tls* .rodata.x509* .rodata.eckey* .rodata.kw_*)" name=".EFlashRodataCrypt" />
+    <!-- Some common network protocols files section names. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text.UEZNetwork* .text.NETWORK* .text.INETWORK* .text.MDIO* .text.mbedtls* .text.pkcs* text.snmp* text.mib* text.MQTT* .text.HTTP* .text.IHTTP*  .text.dhcp*)" name=".EFlashText_mbed_pkcs_protocol" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata.UEZNetwork* .rodata.NETWORK* .rodata.INETWORK* .rodata.MDIO* .rodata.mbedtls* .rodata.pkcs*  .rodata.snmp* .rodata.mib* .rodata.MQTT* .rodata.HTTP* .rodata.IHTTP* .rodata.dhcp*)" name=".EFlashRodata_mbed_pkcs_protocol" />
+    <!-- Some common emWin section names. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text.swim_* .text.SUI* .text.Keypad* .text.Keyboard* .text.Window* .text.LAF* .text.GUI* .text.WM_* .text.APPW_* .text.LCD* .text.TREEVIEW* .text.MESSAGE* .text.acFont* .text.WIDGET* .text.RADIO* .text.CHECKBOX* .text.BUTTON* .text.SCROLLBAR* .text.SCROLLER* .text.WINDOW* .text.IMAGE* .text.acGUI* )" name=".EFlashText_emWin" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata.swim_*  .rodata.SUI* .rodata.Keypad* .rodata.Keyboard* .rodata.Window* .rodata.LAF* .rodata.GUI* .rodata.WM_* .rodata.APPW_* .rodata.LCD* .rodata.TREEVIEW* .rodata.MESSAGE* .rodata.acFont* .rodata.WIDGET* .rodata.RADIO* .rodata.CHECKBOX*  .rodata.BUTTON* .rodata.SCROLLBAR* .rodata.SCROLLER* .rodata.WINDOW* .rodata.IMAGE* .rodata.acGUI* )" name=".EFlashRodata_emWin" />
   </MemorySegment>
+
   <MemorySegment name="$(RAM_NAME:RAM);SDRAM">
     <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
     <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
@@ -196,8 +230,14 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
+    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
+    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
   </MemorySegment>
+
+  <!-- Pick entire 40KB SRAM2 for CM4 and entire 32KB SRAM1 for CM0 -->
   <MemorySegment name="SRAM1">
+  </MemorySegment>
+  <MemorySegment name="SRAM2">
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
     <ProgramSection alignment="4" load="No" name=".fast_run" />
     <ProgramSection alignment="4" load="No" name=".data_run" />
@@ -205,28 +245,31 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="No" name=".tbss" />
     <ProgramSection alignment="4" load="No" name=".non_init" />
     <ProgramSection alignment="4" load="No" name=".tdata_run" />
+    <ProgramSection alignment="8" size="__STACKSIZE__" load="No" name=".stack" />
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. -->
     <ProgramSection alignment="4" load="No" name=".rtt" />
-    <ProgramSection alignment="8" size="__STACKSIZE__" load="No" name=".stack" />
-    <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
-    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
-    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
-  </MemorySegment>
-  <MemorySegment name="SRAM2">
   </MemorySegment>
   
-  <!-- Note that AHB section defines are different from the IAR project which is split into 3 sections. -->
+  <!-- Use a combination of all 3 AHB sections as a single section. -->
   <!-- Note that the shown size of these will be the size-CM0 size. -->
-  <MemorySegment name="AHBSRAM1">
-    <!-- The AHB area from 0x20000000 to 0x2000C000 -->
+  <!-- If splitting only USB or Ethernet to M0 core, make sure not to conflict with M4 project's start address. -->
+  <MemorySegment name="AHBSRAM1_3">
+    <!-- The AHB area from 0x20000000 to 0x20010000 -->
     <ProgramSection load="No" name=".usbhostmem"/>
     <ProgramSection load="No" name=".emacmem"/>
+    <!-- Currently no mcimem region for this LPC's driver, so we will fill emac till the end, and keep this placeholder. -->
     <ProgramSection load="No" name=".mcimem"/>
   </MemorySegment>
-
+  
   <!-- When the Embedded Trace Buffer is used the 16 kB memory space at 0x2000C000 must not be used by any other process-->
-  <MemorySegment name="AHBSRAM2">
+  <MemorySegment name="AHBSRAM1_2">
+    <!-- The AHB area from 0x20000000 to 0x200C000 -->
+    <!-- Move USB and Ethernet here to use ETB buffer.-->
+  </MemorySegment>
+  <MemorySegment name="AHBSRAM3">
     <!-- From 0x2000C000 to 0x2010000-->
   </MemorySegment>
   

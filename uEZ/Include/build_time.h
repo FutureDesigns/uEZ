@@ -77,6 +77,7 @@ extern "C" {
 #define BUILD_YEAR ((BUILD_YEAR_CH0-48)*1000+(BUILD_YEAR_CH1-48)*100 \
 		+(BUILD_YEAR_CH2-48)*10+(BUILD_YEAR_CH3-48))
 #define BUILD_YEAR_SHORT (BUILD_YEAR-2000)
+#define BUILD_YEAR_FROM_1900 (BUILD_YEAR-1900)
 
 // Use Julian Day calculation to find the day of the week
 #define DAY_OF_WEEK(DAY,MONTH,YEAR) \

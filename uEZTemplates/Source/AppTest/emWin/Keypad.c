@@ -190,6 +190,9 @@ static T_keypadMapping *G_keypadCurrentMapping = G_keypadMapping;
  *---------------------------------------------------------------------------*/
 static TBool IKeypadHandleEnter(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     G_enteringData = EFalse;
     G_textBox[G_textBoxIndex] = '\0';
     G_returnCode = 1;
@@ -211,6 +214,9 @@ static TBool IKeypadHandleEnter(WM_MESSAGE * pMsg, int aNCode, int aID)
  *---------------------------------------------------------------------------*/
 static TBool IKeypadHandleCancel(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     KeypadClose();
     return ETrue;
 }
@@ -321,6 +327,7 @@ static TBool IKeypadHandleEvent(WM_MESSAGE * pMsg, int aNCode, int aID)
 
 void IHandleWindowClosing(WM_MESSAGE *pMsg)
 {
+     PARAM_NOT_USED(pMsg);
     TUInt16 i, n, j;
     char buffer[MAX_NUMBER_OF_CHARS + 1];
     WM_MESSAGE msg;

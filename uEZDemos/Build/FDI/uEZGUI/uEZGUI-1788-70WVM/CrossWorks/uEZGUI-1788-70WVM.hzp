@@ -42,13 +42,13 @@
       arm_simulator_memory_simulation_parameter="LPC177x_8x;0x80000;0x10000;0x8000"
       arm_target_debug_interface_type="ADIv5"
       arm_target_loader_parameter="12000000"
-      batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug-Trace;THUMB Flash Debug CLANG;THUMB Flash Release"
+      batch_build_configurations="THUMB Flash Debug;THUMB Flash Debug CLANG;THUMB Flash Release"
       build_output_directory="$(Configuration)"
       build_remove_unused_symbols="Yes"
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
-      c_preprocessor_definitions="USE_PROCESS_STACK;GCC_ARMCM3;STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M3"
-      c_user_include_directories=".;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM3;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVM;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M3"
+      c_user_include_directories=".;../../../../../Source/App;../../../../../Source/App/uEZGUI;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../Source/App/SEGGER/emWin/GUIDEMO;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM3;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_1788_70WVM;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/;../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../../../uEZ/Source/Library/Encryption/mbedtls/include;../../../../../../uEZ/Source/Library/Encryption/mbedtls;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin;../../../../../../uEZ/Source/Platform/emWin/Inc;../../../../../../uEZ/Source/Platform/emWin/Config"
       gcc_c_language_standard="c11"
       gcc_cplusplus_language_standard="c++11"
       gcc_short_enum="Minimal Container Size"
@@ -62,8 +62,9 @@
       linker_scanf_fmt_level="long"
       linker_scanf_fp_enabled="Yes"
       linker_section_placement_file="$(ProjectDir)/uEZGUI-1788-70WVM_placement.xml"
-      linker_section_placement_macros="CRP1_KEEP=Yes"
+      linker_section_placement_macros="FLASH_NAME=FLASHA;CRP1_KEEP=Yes"
       oscillator_frequency="12MHz"
+      package_dependencies="LPC1000"
       project_directory=""
       project_type="Executable"
       property_groups_file_path="$(TargetsDir)/LPC1000/propertyGroups177x_8x.xml"
@@ -74,7 +75,7 @@
       build_debug_information="Yes"
       c_preprocessor_definitions="DEBUG"
       gcc_debugging_level="Level 3"
-      gcc_optimization_level="None" />
+      gcc_optimization_level="Level 1" />
     <configuration
       Name="Flash"
       Placement="Flash"
@@ -97,7 +98,7 @@
     <configuration Name="THUMB" target_reset_script="FlashReset()" />
     <configuration
       Name="THUMB Flash Debug CLANG"
-      arm_assembler_variant="clang"
+      arm_assembler_variant="gcc"
       arm_compiler_variant="clang" />
     <configuration
       Name="THUMB Flash Debug-Trace"
@@ -106,9 +107,25 @@
       Name="THUMB Flash Release-Bootloader"
       c_preprocessor_definitions="RENAME_INI=1;DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1"
       linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
-      linker_section_placement_macros="CRP1_KEEP=No" />
+      linker_section_placement_macros="FLASH_NAME=FLASHA;CRP1_KEEP=No" />
     <folder Name="Source">
       <folder Name="App">
+        <folder Name="emWin">
+          <file file_name="../../../../../Source/App/emWin/WindowManager.h" />
+        </folder>
+        <folder Name="emWinAppScreens">
+          <folder Name="emWin">
+            <folder Name="Graphics">
+              <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/emWin/Graphics/Graphics.h" />
+              <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/emWin/Graphics/iotQrCode.c" />
+              <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/emWin/Graphics/mqttLogo128.c" />
+              <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/emWin/Graphics/mqttLogo64.c" />
+            </folder>
+            <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/emWin/MQTT_Screen.c" />
+          </folder>
+          <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/MQTT_Callbacks.c" />
+          <file file_name="../../../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/MQTT_Callbacks.h" />
+        </folder>
         <folder Name="SEGGER">
           <folder Name="emWin">
             <folder Name="GUIDEMO">

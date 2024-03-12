@@ -81,28 +81,20 @@ typedef enum {
     INTERRUPT_PRIORITY_LOWEST=5
 } T_irqPriority ;
 
-#if (COMPILER_TYPE==CodeRed)
-typedef TFPtr TISRFPtr;
-#endif
-#if (COMPILER_TYPE==RowleyARM)
+
+#if (COMPILER_TYPE==GCC_ARM)
 typedef TFPtr TISRFPtr;
 #endif
 #if (COMPILER_TYPE==IAR)
 typedef void (*TISRFPtr)(void); 
 #endif
-#if (COMPILER_TYPE==HEW)
+#if (COMPILER_TYPE==KEIL_UV)
 typedef TFPtr TISRFPtr;
 #endif
-#if (COMPILER_TYPE==Keil4)
-typedef TFPtr TISRFPtr;
-#endif
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
 typedef TFPtr TISRFPtr;
 #endif
 #if (COMPILER_TYPE==VisualC)
-typedef TFPtr TISRFPtr;
-#endif
-#if (COMPILER_TYPE==GCC)
 typedef TFPtr TISRFPtr;
 #endif
 
@@ -124,6 +116,11 @@ void InterruptDisable(T_irqChannel aChannel);
 
 void InterruptDisableAllRegistered(void);
 void InterruptEnableAllRegistered(void);
+
+// v2.14
+void InterruptSetPriority(
+        TUInt32 aInterruptChannel,        
+        T_irqPriority aPriority);
 
 #ifdef __cplusplus
 }

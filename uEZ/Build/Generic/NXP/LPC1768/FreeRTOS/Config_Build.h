@@ -5,7 +5,7 @@
 #define COMPILER_TYPE               IAR
 #else
 #ifdef __GNUC__
-#define COMPILER_TYPE               RowleyARM
+#define COMPILER_TYPE               GCC_ARM
 #endif
 #endif
 // end uEZ Compiler define

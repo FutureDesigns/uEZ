@@ -27,7 +27,7 @@ typedef struct {
  *-------------------------------------------------------------------------*/
 void Sensor_GetSettings(T_SensorSettings *aSettings);
 void Sensor_SetSettings(T_SensorSettings *aSettings);
-void Sensor_Initialize();
+void Sensor_Initialize(void);
 
 /*-------------------------------------------------------------------------*
  * End of File:  Sensor_Callbacks.h

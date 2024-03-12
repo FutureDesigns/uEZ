@@ -46,6 +46,7 @@
  *-------------------------------------------------------------------------*/
 #include <HAL/EMAC.h>
 #include <Types/GPIO.h>
+#include <Config_Build.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,10 +59,26 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+#ifndef EMAC_ENABLE_JUMBO_FRAME
+#define EMAC_ENABLE_JUMBO_FRAME  1
+#endif
+
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+// On this MCU it allows up to ??? size. There may be a limit per buffer.
+// In Pratice we must share AHB with USB Host and SD card card, so even 3x9k
+// buffers are not possible unless a feature is removed or performance restrictured.
+
+#define ETH_MTU        (2000) /* Need to match the TCP_MSS in lwIP */
+
+#else // standard packet size only
+
 #define ETH_MTU        1500   /* Max. Ethernet Frame Size (Used by LwIP) */
-  
-#define ETH_FRAG_SIZE  1536   /* Packet Fragment size 1536 Bytes   */
-#define ETH_MAX_FLEN   1536   /* Max. Ethernet Frame Size          */
+
+#endif // EMAC_ENABLE_JUMBO_FRAME
+
+#define EMAC_ETH_MAX_FLEN (ETH_MTU+36)     /* Max. Ethernet Frame Size     */
+#define ETH_FRAG_SIZE  EMAC_ETH_MAX_FLEN   /* Packet Fragment size Bytes   */ // seems it can't go above 2048....
+#define ETH_MAX_FLEN   EMAC_ETH_MAX_FLEN   /* Max. Ethernet Frame Size     */
   
 typedef struct {
     T_uezGPIOPortPin iTX_EN;    // ENET_TX_ENn  (O)     Transmit data enable, active low

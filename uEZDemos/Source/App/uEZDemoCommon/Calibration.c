@@ -92,7 +92,7 @@ static void IEraseTarget(T_pixelColor *aPixels, TUInt16 aX, TUInt16 aY)
  *      TUInt16 *aPixels            -- Pointer to pixel memory
  *      TUInt16 aX, aY              -- Coordinate of target to draw
  *---------------------------------------------------------------------------*/
-void CalibrateScreen()
+void CalibrateScreen(void)
 {
   T_uezDevice lcd;
   T_pixelColor *pixels;
@@ -264,7 +264,7 @@ void CalibrateProcedure(
                     sum.iY = 0;
                     for (count=0; count<4; ) {
                         if (UEZTSGetReading(ts, &reading)==UEZ_ERROR_NONE)  {
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
                             if (G_mmTestMode == ETrue) {
                                 // Use junk data to finish out the calibration mode
                                 reading.iX = 0;
@@ -303,7 +303,7 @@ void CalibrateProcedure(
                 }
 
                 // Wait for the pen to lift
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
                 for (;G_mmTestMode == EFalse;) {
 #else
                 for (;;) {
@@ -320,7 +320,7 @@ void CalibrateProcedure(
 
         // Calibration is complete.  Put the new calibration into effect.
         error = UEZTSCalibrationEnd(ts);
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
         if (G_mmTestMode == EFalse) {
 #endif
             //Check that the last two points read in the expected range.
@@ -359,13 +359,13 @@ void CalibrateProcedure(
                     }
                 }
             }
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
         }else{
             invalid = EFalse;
             }
 #endif
 
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
         // Stop if we are going into test mode (and don't save any settings)
         if (G_mmTestMode)
             break;
@@ -487,6 +487,7 @@ TBool CalibrateTestIfTouchscreenHeld(void)
  *---------------------------------------------------------------------------*/
 void CalibrateMode(const T_choice *p_choice)
 {
+    PARAM_NOT_USED(p_choice);
     Calibrate(ETrue);
 }
 

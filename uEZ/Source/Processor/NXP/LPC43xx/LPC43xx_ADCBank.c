@@ -29,6 +29,7 @@
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_ADCBank.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_GPIO.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Types:

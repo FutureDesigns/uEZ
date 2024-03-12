@@ -546,7 +546,7 @@ STATIC INLINE void Chip_ENET_TXEnable(LPC_ENET_T *pENET)
  */
 STATIC INLINE void Chip_ENET_TXDisable(LPC_ENET_T *pENET)
 {
-	pENET->MAC_CONFIG &= ~MAC_CFG_TE;
+	pENET->MAC_CONFIG &= (uint32_t)~MAC_CFG_TE;
 }
 
 /**
@@ -567,7 +567,8 @@ STATIC INLINE void Chip_ENET_RXEnable(LPC_ENET_T *pENET)
  */
 STATIC INLINE void Chip_ENET_RXDisable(LPC_ENET_T *pENET)
 {
-	pENET->MAC_CONFIG &= ~MAC_CFG_RE;
+        PARAM_NOT_USED(pENET);
+	pENET->MAC_CONFIG &= (uint32_t)~MAC_CFG_RE;
 }
 
 /**
@@ -580,6 +581,7 @@ STATIC INLINE void Chip_ENET_RXDisable(LPC_ENET_T *pENET)
  */
 STATIC INLINE void Chip_ENET_RMIIEnable(LPC_ENET_T *pENET)
 {
+        PARAM_NOT_USED(pENET);
 	LPC_CREG->CREG6 |= 0x4;
 }
 
@@ -593,7 +595,8 @@ STATIC INLINE void Chip_ENET_RMIIEnable(LPC_ENET_T *pENET)
  */
 STATIC INLINE void Chip_ENET_MIIEnable(LPC_ENET_T *pENET)
 {
-	LPC_CREG->CREG6 &= ~0x7;
+        PARAM_NOT_USED(pENET);
+	LPC_CREG->CREG6 &= (uint32_t)~0x7;
 }
 
 /**

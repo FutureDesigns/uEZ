@@ -42,15 +42,9 @@
  *
  *  uEZ Processor Abstraction Layer
  */
-#include "Config.h"
-#include "uEZTypes.h"
-#include "uEZErrors.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /** List of processor type information */
+
+#include "Config.h"
 
 /** Defines for UEZ_PROCESSOR_CORE_TYPE */
 #define CORE_TYPE_UNDEFINED                     0
@@ -72,10 +66,117 @@ extern "C" {
 #define CORE_SUBTYPE_ARM7TDMI_S                 1
 // TODO add correct subtypes if we ever use this.
 
+#if (COMPILER_TYPE == IAR)
+#ifdef __ICCARM__
+     //Ensure the #include is only used by the compiler, and not the assembler.   
+#include "uEZTypes.h"
+#include "uEZErrors.h"
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+#endif
+
+#if (COMPILER_TYPE == GCC_ARM) // 
+#include "uEZTypes.h"
+#include "uEZErrors.h"
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+
+#if (COMPILER_TYPE == KEIL_UV) // TODO compiler not verified yet
+#include "uEZTypes.h"
+#include "uEZErrors.h"
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+
+#if (defined __CCRX__) // TODO compiler not verified yet
+#include "uEZTypes.h"
+#include "uEZErrors.h"
+#endif
+   
+#ifndef CURRENTLY_IN_IAR_ASM
+#define CURRENTLY_IN_IAR_ASM                    1
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*-------------------------------------------------------------------------*
  * Function Prototypes:
  *-------------------------------------------------------------------------*/
+  
+// min 4+ priority levels for CM0/CM0+, min 8+ levels for CM3/CM4
+   
+#if (CURRENTLY_IN_IAR_ASM == 1)
+#if (UEZ_PROCESSOR==NXP_LPC2478)
+#endif
+
+#if (UEZ_PROCESSOR==NXP_LPC1768)  // 32 priority levels
+#define __MPU_PRESENT             1         /*!< MPU present or not                               */
+#define __NVIC_PRIO_BITS          5         /*!< Number of Bits used for Priority Levels          */
+#define __Vendor_SysTickConfig    0         /*!< Set to 1 if different SysTick Config is used     */
+#endif
+
+#if (UEZ_PROCESSOR==RENESAS_H8SX_1668RF)
+#endif
+
+#if (UEZ_PROCESSOR == NXP_LPC4088)
+#ifdef CORE_M4 // 32 priority levels
+#define __CM4_REV                 0x0000            /*!< Cortex-M4 Core Revision                                               */
+#define __MPU_PRESENT                  1            /*!< MPU present or not                                                    */
+#define __NVIC_PRIO_BITS               5            /*!< Number of Bits used for Priority Levels                               */
+#define __Vendor_SysTickConfig         0            /*!< Set to 1 if different SysTick Config is used                          */
+#define __FPU_PRESENT                  1            /*!< FPU present or not                                                    */
+#endif
+
+#ifdef CORE_M3 // 32 priority levels
+#define __MPU_PRESENT             1         /*!< MPU present or not                               */
+#define __NVIC_PRIO_BITS          5         /*!< Number of Bits used for Priority Levels          */
+#define __Vendor_SysTickConfig    0         /*!< Set to 1 if different SysTick Config is used     */
+#endif  
+#endif
+  
+#if (UEZ_PROCESSOR==NXP_LPC1788) // 32 priority levels
+#define __MPU_PRESENT             1         /*!< MPU present or not                               */
+#define __NVIC_PRIO_BITS          5         /*!< Number of Bits used for Priority Levels          */
+#define __Vendor_SysTickConfig    0         /*!< Set to 1 if different SysTick Config is used     */
+#endif
+
+#if (UEZ_PROCESSOR==RENESAS_RX62N)
+#endif
+
+#if (UEZ_PROCESSOR==RENESAS_RX63N)
+#endif
+
+#if (UEZ_PROCESSOR==NXP_LPC1756)
+#endif
+
+#if (UEZ_PROCESSOR==STMICRO_STM32F105_7)
+#endif
+
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+#if defined CORE_M4 // 8 priority levels
+#define __CM4_REV                 0x0000            /*!< Cortex-M4 Core Revision                                               */
+#define __MPU_PRESENT                  1            /*!< MPU present or not                                                    */
+#define __NVIC_PRIO_BITS               3            /*!< Number of Bits used for Priority Levels                               */
+#define __Vendor_SysTickConfig         0            /*!< Set to 1 if different SysTick Config is used                          */
+#define __FPU_PRESENT                  1           /*!< FPU present or not                                                    */
+#define __FPU_USED                     1U           /*!< FPU used or not                                                       */
+#endif
+
+#if defined CORE_M0 || defined CORE_M0SUB // 4 priority levels
+#define __MPU_PRESENT             0                 /*!< MPU present or not                                                    */
+#define __NVIC_PRIO_BITS          2                 /*!< Number of Bits used for Priority Levels                               */
+#define __Vendor_SysTickConfig    0                 /*!< Set to 1 if different SysTick Config is used                          */
+#define __FPU_PRESENT             0                 /*!< FPU present or not                                                    */
+#endif
+#endif
+
+#if (UEZ_PROCESSOR == NXP_LPC546xx)
+#endif
+
+#endif
+  
+#if (CURRENTLY_IN_IAR_ASM == 0)
 /** NOTE: All processors MUST support these functions: */
 void WriteLE16U(volatile TUInt8 *pmem, TUInt16 val);
 void WriteBE16U(volatile TUInt8 *pmem, TUInt16 val);
@@ -103,7 +204,7 @@ TUInt32 ReadBE32U (volatile TUInt8 *pmem);
 #endif
 
 #if (UEZ_PROCESSOR==RENESAS_RX62N)
-    #if (COMPILER_TYPE==RenesasRX)
+    #if (COMPILER_TYPE==RENESASRX)
 		#include <Source/Processor/Renesas/RX62N/uEZProcessor_RX62N.h>
         #include <Source/Processor/Renesas/RX62N/RXToolset/iodefine.h>
         #include <machine.h>
@@ -111,7 +212,7 @@ TUInt32 ReadBE32U (volatile TUInt8 *pmem);
 #endif
 
 #if (UEZ_PROCESSOR==RENESAS_RX63N)
-    #if (COMPILER_TYPE==RenesasRX)
+    #if (COMPILER_TYPE==RENESASRX)
 		#include <Source/Processor/Renesas/RX63N/uEZProcessor_RX63N.h>
         #include <Source/Processor/Renesas/RX63N/RXToolset/iodefine.h>
         #include <machine.h>
@@ -134,6 +235,17 @@ TUInt32 ReadBE32U (volatile TUInt8 *pmem);
 #if (UEZ_PROCESSOR == NXP_LPC546xx)
 #include <Source/Processor/NXP/LPC546xx/uEZProcessor_LPC546xx.h>
 #endif
+
+#endif // currently in iar asm
+
+/*---------------------------------------------------------------------------*
+ * Macros for bsp delay:
+ *---------------------------------------------------------------------------*/
+#define nop()     NOP()//asm("nop")
+#define nops5()    nop();nop();nop();nop();nop()
+#define nops10()   nops5();nops5()
+#define nops50()   nops10();nops10();nops10();nops10();nops10()
+#define nops100()   nops50();nops50();
 
 #ifdef __cplusplus
 }

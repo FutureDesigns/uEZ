@@ -125,7 +125,8 @@
 #define SD_CMD8                   8     /* bcr  [31:0]  OCR        R3  */
 
 /* Application commands */
-#define SD_APP_SET_BUS_WIDTH      6     /* ac   [1:0]   bus width  R1   */
+#define SD_CMD6                   6     /* bcr  [31:0]  OCR        R1  */ // SwitchMode0, Access Mode-1, CMD Sys 2, drive str....
+#define SD_APP_SET_BUS_WIDTH      6     /* ac   [1:0]   bus width  R1   */ // ACMD6
 #define SD_APP_OP_COND           41     /* bcr  [31:0]  OCR        R1 (R4)  */
 #define SD_APP_SEND_SCR          51     /* adtc                    R1   */
 
@@ -342,6 +343,7 @@
 #define CMD(c, r)        ( ((c) &  CMD_MASK_CMD) | CMD_RESP((r)) )
 
 #define CMD_IDLE            CMD(MMC_GO_IDLE_STATE, 0) | CMD_BIT_LS    | CMD_BIT_INIT
+#define CMD_SD_SEND_SWITCH  CMD(SD_CMD6, 1)      | CMD_BIT_LS | CMD_BIT_APP
 #define CMD_SD_OP_COND      CMD(SD_APP_OP_COND, 1)      | CMD_BIT_LS | CMD_BIT_APP
 #define CMD_SD_SEND_IF_COND CMD(SD_CMD8, 1)      | CMD_BIT_LS
 #define CMD_MMC_OP_COND     CMD(MMC_SEND_OP_COND, 3)    | CMD_BIT_LS | CMD_BIT_INIT
@@ -362,7 +364,7 @@
 #define CMD_WRITE_MULTIPLE  CMD(MMC_WRITE_MULTIPLE_BLOCK, 1) | CMD_BIT_DATA | CMD_BIT_WRITE | CMD_BIT_AUTO_STOP
 
 
-/** @brief SDIO Interrupt status & mask register defines
+/** @brief 4357 MMC/SD/SDIO Interrupt status & mask register defines
  */
 #define MCI_INT_SDIO            (1 << 16)       /*!< SDIO interrupt */
 #define MCI_INT_EBE             (1 << 15)       /*!< End-bit error */
@@ -371,8 +373,8 @@
 #define MCI_INT_HLE             (1 << 12)       /*!< Hardware locked error */
 #define MCI_INT_FRUN            (1 << 11)       /*!< FIFO overrun/underrun error */
 #define MCI_INT_HTO             (1 << 10)       /*!< Host data starvation error */
-#define MCI_INT_DTO             (1 << 9)        /*!< Data timeout error */
-#define MCI_INT_RTO             (1 << 8)        /*!< Response timeout error */
+#define MCI_INT_DTO             (1 << 9)        /*!< Data read timeout (DRTO_BDS) */
+#define MCI_INT_RTO             (1 << 8)        /*!< Response timeout error (RTO_BAR) */
 #define MCI_INT_DCRC            (1 << 7)        /*!< Data CRC error */
 #define MCI_INT_RCRC            (1 << 6)        /*!< Response CRC error */
 #define MCI_INT_RXDR            (1 << 5)        /*!< RX data ready */

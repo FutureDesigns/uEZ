@@ -28,6 +28,7 @@
 #include <uEZ.h>
 #include <uEZFile.h>
 #include <uEZLCD.h>
+#include <uEZMemory.h>
 #include <uEZRTOS.h>
 #include <uEZTickCounter.h>
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
@@ -38,7 +39,6 @@
 #include <uEZKeypad.h>
 #include <uEZPlatform.h>
 #include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
-#include <uEZRTOS.h>
 #include "task.h"
 #include <Source/Library/Console/FDICmd/FDICmd.h>
 #include <HAL/Interrupt.h>
@@ -57,6 +57,8 @@
 #define MAX_VIDEO_HEIGHT    480
 #endif
 #define MAX_DISPLAY_FRAMES  2
+
+#define PRINT_VIDEO_STATISTICS 0
 
 /*-------------------------------------------------------------------------*
  * Types:
@@ -77,13 +79,21 @@ typedef struct {
     TBool iExit;
 } T_VideoPlayerWorkspace;
 
+#if (UEZBSP_SDRAM_SIZE > (8*1024*1024))
+#define FILE_SYSTEM_TABLE_BUFFER_SIZE (512*1024)
+uint32_t clmt[FILE_SYSTEM_TABLE_BUFFER_SIZE];// Cluster link map table buffer
+#else
+#define FILE_SYSTEM_TABLE_BUFFER_SIZE (4*1024)
+UEZ_PUT_SECTION(".IRAM", uint32_t clmt[FILE_SYSTEM_TABLE_BUFFER_SIZE]); // Cluster link map table buffer
+#endif
+
 /*-------------------------------------------------------------------------*
  * Globals:
  *-------------------------------------------------------------------------*/
 T_VideoInfo *G_pVideoInfo;
 static wavFileHeader G_WaveFile;
 
-void VideoPlayer_Open(T_VideoPlayerWorkspace *p_ws)
+T_uezError VideoPlayer_Open(T_VideoPlayerWorkspace *p_ws)
 {
     T_uezError error;
     TUInt32 length;
@@ -93,11 +103,17 @@ void VideoPlayer_Open(T_VideoPlayerWorkspace *p_ws)
         error = UEZFileGetLength(p_ws->iFile, &length);
         p_ws->iFrameCount = length / (G_pVideoInfo->iVideoHeight * G_pVideoInfo->iVideoWidth * 2);
         p_ws->iFrame = 0;
+        
+        clmt[0] = FILE_SYSTEM_TABLE_BUFFER_SIZE; // Set table size
+        // If not supported (disabled) or buffer is too small, we can just ignore the error return and it will read the file normally with slow seek.
+        // This will populate the buffer table with a sector map for faster seeking to avoid re-reading the table over and over again.
+        error = UEZFileSetTableBuffer(p_ws->iFile, &clmt[0]);
     } else if(error == UEZ_ERROR_NOT_FOUND) {
-        UEZFailureMsg("UEZFileOpen Failed: Video File Not Found!");
+        //UEZFailureMsg("UEZFileOpen Failed: Video File Not Found!");
     } else {
-        UEZFailureMsg("UEZFileOpen failed to open Video File!");
+        //UEZFailureMsg("UEZFileOpen failed to open Video File!");
     }
+    return error;
 }
 
 void VideoPlayer_Screen(T_VideoPlayerWorkspace *p_ws, TUInt8 aFrame) {
@@ -115,6 +131,13 @@ void VideoPlayer_Screen(T_VideoPlayerWorkspace *p_ws, TUInt8 aFrame) {
     swim_set_fill_color(&p_ws->iWin[aFrame], BLACK);
     swim_set_pen_color(&p_ws->iWin[aFrame], YELLOW);
     fontHeight = swim_get_font_height(&p_ws->iWin[aFrame]);
+    // T_VideoInfo.iTitle not printed on screen during video playback.
+
+    if(G_pVideoInfo->iTextLine1[0] == 0) { // check if both text strings are empty
+      if(G_pVideoInfo->iTextLine2[0] == 0) {
+        fontHeight = 0; // Make sure the video is centered if there is no text.
+      }
+    }
 
     if( (G_pVideoInfo->iVideoHeight + (fontHeight*6)) < DISPLAY_HEIGHT) {
 
@@ -148,7 +171,7 @@ UEZ_PUT_SECTION(".video", static TUInt8 G_videoBuffer[MAX_VIDEO_WIDTH*MAX_VIDEO_
 UEZ_PUT_SECTION(".video", static TUInt8 G_videoBuffer[4]); // dummy variable in case it tries to place memory
 #endif
 
-void VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
+T_uezError VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
 {
     T_uezError error;
     TUInt32 numRead, i;
@@ -156,19 +179,23 @@ void VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
 
     if( (DISPLAY_WIDTH == G_pVideoInfo->iVideoWidth) && (DISPLAY_HEIGHT == G_pVideoInfo->iVideoHeight) ) {
         error = UEZFileRead(p_ws->iFile, FRAME(p_ws->iHiddenFrame), (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2), &numRead);
-        if(error) { 
-            UEZFailureMsg("Frame Read Error");
+        if(error) {
+            return error;
+            //UEZFailureMsg("Frame Read Error");
         }
         if(numRead != (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2)) {
-            UEZFailureMsg("Invalid Frame Size");
+            return error;
+            //UEZFailureMsg("Invalid Frame Size");
         }
-    } else {
+    } else { // playing video that isn't full screen
         error = UEZFileRead(p_ws->iFile, (void *)G_videoBuffer, (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2), &numRead);
         if(error) {
-            UEZFailureMsg("Frame Read Error");
+            return error;
+            //UEZFailureMsg("Frame Read Error");
         }
         if(numRead != (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2)) {
-            UEZFailureMsg("Invalid Frame Size");
+            return error;
+            //UEZFailureMsg("Invalid Frame Size");
         }
 
         // Center the video
@@ -187,6 +214,7 @@ void VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
 
     p_ws->iHiddenFrame ^= 1;
     p_ws->iFrame++;
+    return UEZ_ERROR_NONE;
 }
 
 static TUInt32 G_totalSkipCount = 0;
@@ -318,7 +346,7 @@ void VideoPlayer_deprioritize_other_tasks(void)
 #endif
   
 #if(UEZ_PROCESSOR == NXP_LPC4357)
-  NVIC_SetPriority((IRQn_Type)14, 2+INTERRUPT_PRIORITY_HIGHEST);
+  InterruptSetPriority(TIMER2_IRQn, INTERRUPT_PRIORITY_HIGHEST);
 #endif
 }
 
@@ -362,7 +390,7 @@ void VideoPlayer_return_other_task_priorities(void)
 #endif
   
 #if(UEZ_PROCESSOR == NXP_LPC4357)
-  NVIC_SetPriority((IRQn_Type)14, 2+INTERRUPT_PRIORITY_HIGH);
+  InterruptSetPriority(TIMER2_IRQn, INTERRUPT_PRIORITY_HIGH);
 #endif
 }
 
@@ -376,6 +404,7 @@ void VideoPlayer(const T_choice *aChoice)
     T_uezQueue queue;
     T_uezInputEvent inputEvent;
     T_uezError error;
+    TUInt32 backlightLevel, aNumberBacklightLevels;
     TBool isAudioPlaying;
 #if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
@@ -390,9 +419,13 @@ void VideoPlayer(const T_choice *aChoice)
     //ws.iMSPerFrame = (1000 / G_pVideoInfo->iFPS);
     ws.iMSPerFrame = ((float)1000 / (float)G_pVideoInfo->iFPS);
 
-    printf("\r\nVideo FPS %d\n", G_pVideoInfo->iFPS);
+#if (PRINT_VIDEO_STATISTICS == 1)
+    printf("\r\nVideo FPS %u\n", G_pVideoInfo->iFPS);
+#endif
 
-    VideoPlayer_Open(&ws);
+    if(VideoPlayer_Open(&ws) != UEZ_ERROR_NONE){
+      return;
+    }
 
     UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue);
 #if UEZ_REGISTER
@@ -403,7 +436,12 @@ void VideoPlayer(const T_choice *aChoice)
 #endif
     UEZTSOpen("Touchscreen", &tsDevice, &queue);
     UEZLCDOpen("LCD", &ws.iLCD);
+    UEZLCDGetBacklightLevel(ws.iLCD, &backlightLevel, &aNumberBacklightLevels);
     VideoPlayer_deprioritize_other_tasks();
+    if(backlightLevel < 100) {
+      backlightLevel = 31;
+      UEZLCDBacklight(ws.iLCD, backlightLevel);
+    }
 
     // Clear both frames
     memset(FRAME(0), 0, DISPLAY_WIDTH*DISPLAY_HEIGHT*2);
@@ -421,19 +459,38 @@ void VideoPlayer(const T_choice *aChoice)
     if(G_WaveFile.iSampleRate>0) {
       ws.iSoundNextPartial = (float)(((float)100.0) / (float)(G_WaveFile.iSampleRate));
     }
+
     if(error == UEZ_ERROR_NONE)
         isAudioPlaying = ETrue;
     else
         isAudioPlaying = EFalse;
 
+
     while (!ws.iExit) {
 
-        VideoPlayer_DrawNextFrame(&ws);
-
-        if(isAudioPlaying) {
+        if(VideoPlayer_DrawNextFrame(&ws) == UEZ_ERROR_NONE) {
+          // keep going
+          if(isAudioPlaying) {
             VideoPlayer_SyncWithAudio(&ws);
-        } else {
+          } else {
             VideoPlayer_SyncWithTimer(&ws);
+          }
+        } else { // attempt to re-init SD card or just skip/exit if we fail
+          ws.iFrame++;
+          G_totalSkipCount+=1;
+          if (ws.iFrame == ws.iFrameCount) {
+              ws.iExit = ETrue;
+          }
+          // TODO finalize this, maybe only retry 5 times total then fail if we couldn't re-init.
+          //UEZPlatform_SDCard_Drive_Require(1);
+          //UEZFileOpen(G_pVideoInfo->iVideoPath, FILE_FLAG_READ_ONLY, &p_ws->iFile);
+          //UEZFileSeekPosition(ws.iFile, (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2 * ws.iFrame));
+
+          //if(isAudioPlaying) {
+              //VideoPlayer_SyncWithAudio(&ws);
+          //} else {
+            VideoPlayer_SyncWithTimer(&ws);
+          //}
         }
     
         if (UEZQueueReceive(queue, &inputEvent, 0) == UEZ_ERROR_NONE) {
@@ -445,11 +502,20 @@ void VideoPlayer(const T_choice *aChoice)
                 ws.iExit = ETrue;
             }
         }
+        
+        if(backlightLevel < 224) {
+            backlightLevel = backlightLevel + 32;
+            UEZLCDBacklight(ws.iLCD, backlightLevel);
+        }
 
-        if (ws.iFrame == ws.iFrameCount)
+        if (ws.iFrame == ws.iFrameCount) {
             ws.iExit = ETrue;
-    }
-    printf("Total Skip Count: %d out of %d total frames\r\n", G_totalSkipCount, ws.iFrameCount);
+        }
+    } // while (!ws.iExit)
+
+#if (PRINT_VIDEO_STATISTICS == 1)
+    printf("Total Skip Count: %u out of %u total frames\r\n", G_totalSkipCount, ws.iFrameCount);
+#endif
 
     UEZDACWAVStop();
     UEZFileClose(ws.iFile);

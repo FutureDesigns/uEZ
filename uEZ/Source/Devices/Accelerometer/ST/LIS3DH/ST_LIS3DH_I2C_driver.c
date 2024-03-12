@@ -259,8 +259,6 @@ T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ(
     aReading->iX = 0;
     aReading->iY = 0;
     aReading->iZ = 0;
-	
-    //return UEZ_ERROR_NOT_SUPPORTED;	 // TODO implement 15.16 signed
 
     // Allow only one transfer at a time
     error = UEZSemaphoreGrab(p->iSem, aTimeout);
@@ -273,7 +271,7 @@ T_uezError ST_Accelo_LIS3DH_I2C_ReadXYZ(
           aReading->iX = ICalc10Bit2G(accdata[2], accdata[1]);
           aReading->iY = ICalc10Bit2G(accdata[4], accdata[3]);
           aReading->iZ = ICalc10Bit2G(accdata[6], accdata[5]);
-      }		
+      }	
       UEZSemaphoreRelease(p->iSem);
     }
     return error;

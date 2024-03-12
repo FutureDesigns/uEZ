@@ -1,6 +1,5 @@
 #define BUILD_NUMBER                        1
 #define BUILD_DATE                          "08/23/2022"
-#define COMPILER_TYPE                       IAR
 #define UEZ_PROCESSOR                       $[sym manufacturer]_$[sym processor]
 $[ifdef uEZGUI_1788_43WQR]#define PROCESSOR_OSCILLATOR_FREQUENCY      120000000
 #define UEZ_DEFAULT_LCD_CONFIG              LCD_CONFIG_SHARP_LQ043T1DG28$[endif]$[SkipNewLine]
@@ -70,5 +69,6 @@ $[ifdef uEZGUI_4357_70WVN]#define PROCESSOR_OSCILLATOR_FREQUENCY      204000000
 #define UEZ_ENABLE_TCPIP_STACK              0
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
 #define UEZ_HTTP_SERVER                     0 // Web server that runs from microSD card HTTPROOT directory (INDEX.HTM)
+#define UEZ_AWS_IOT_CLIENT_DEMO             0
 
 #define INCLUDE_UEZ_RESOURCE_EXAMPLE        0 // Set to 1 to include uEZResource HIMG example

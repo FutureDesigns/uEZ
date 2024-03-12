@@ -132,6 +132,8 @@
 static T_uezDevice G_i2cBus;
 static TUInt8 G_i2cAddr;
 
+T_uezTask G_VCN4010_Task;
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -236,7 +238,7 @@ void TestVCNL4010Start(const char *aI2CName, TUInt8 aI2CAddr)
     UEZI2COpen(aI2CName, &G_i2cBus);
     G_i2cAddr = aI2CAddr;
     UEZTaskCreate(TestVCNL4010Task, "VCNL4010", UEZ_TASK_STACK_BYTES(512), 0,
-        UEZ_PRIORITY_NORMAL, 0);
+        UEZ_PRIORITY_NORMAL, &G_VCN4010_Task);
 }
 
 

@@ -34,6 +34,7 @@ Purpose     : Display controller initialization
 
 #include "GUI.h"
 #include <uEZ.h>
+#include "Source/uEZSystem/uEZHandles.h"
 
 /*********************************************************************
 *
@@ -42,7 +43,7 @@ Purpose     : Display controller initialization
 **********************************************************************
 */
 
-static T_uezSemaphore G_uez_emWin_sem;
+static T_uezSemaphore G_uez_emWin_sem = UEZ_NULL_HANDLE;
 
 static void uEZ_emWin_SignalEvent(void)
 {
@@ -72,6 +73,9 @@ void GUI_X_Config(void) {
   GUI_ALLOC_AssignMemory(GUI_pMem, GUI_MemSize);
   GUI_ALLOC_SetAvBlockSize(GUI_BLOCKSIZE);
 
+  if(G_uez_emWin_sem != UEZ_NULL_HANDLE) {
+      UEZSemaphoreDelete(G_uez_emWin_sem);
+  }
   UEZSemaphoreCreateBinary(&G_uez_emWin_sem);
   UEZSemaphoreRelease(G_uez_emWin_sem);
   GUI_SetSignalEventFunc(uEZ_emWin_SignalEvent);

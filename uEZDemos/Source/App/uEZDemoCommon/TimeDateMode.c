@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
+#include <uEZMemory.h>
 #include <Device/ADCBank.h>
 #include <Device/Temperature.h>
 #include <Device/RTC.h>
@@ -99,7 +100,7 @@ typedef struct {
     TUInt16 iBigDigitHeight;
     TUInt16 iBigWidthSlash;
     TUInt32 iMode; // 0 = Time, 1 = Date
-    TUInt32 iShowButtons;
+    TBool iShowButtons;
 } T_timeDateWorkspace;
 #define G_win (G_ws->iWin)
 
@@ -624,6 +625,7 @@ T_uezError error;
 
 void TimeDateMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
     const T_choice *p_choice;

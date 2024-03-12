@@ -270,6 +270,10 @@ void GUIDEMO_VScreen          (void);
 void GUIDEMO_WashingMachine   (void);
 void GUIDEMO_ZoomAndRotate    (void);
 
+
+// stop SPY
+int GUI_SPY_X_StopServer(void);
+
 /*********************************************************************
 *
 *       Externs

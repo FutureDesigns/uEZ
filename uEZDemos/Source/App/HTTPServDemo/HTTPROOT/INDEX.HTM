@@ -1,0 +1,51 @@
+<HTML><HEAD><META HTTP-EQUIV="REFRESH" CONTENT="5"></HEAD>
+<STYLE type="text/css">
+body {
+    font-family: Verdana,"Trebuchet MS", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #F0F0F0;
+    background-color: #000000 ;
+    margin: 1px;
+    width: 600px;
+}
+.button {
+    padding: 20px; 
+    margin: 4px; 
+    text-align: center; 
+    border: 1px solid white; 
+    vertical-align: bottom;
+}
+a:link {color: #808080};
+a:visited {color: #808080}; 
+a:active {color: #808080}; 
+a:hover {color: #808080};
+</STYLE>
+<BODY vlink="#808080" alink="#808080" link="#808080">
+<DIV style="height: 320px; border: 1px solid white; text-align: center">
+<p><img border="0" src="IMAGES/UEZ.PNG" ></p>
+  <DIV style="margin: 16px">Time: ${time}<BR>Date: ${date}</DIV>
+  <DIV class="button"><a href="javascript:document.location.reload();">Update</a></DIV>
+ </DIV>
+<table width="640" border=0>
+<td width="170" valign="top">
+<td align="left" width="100%">
+<h1><font face="Verdana"><span style="font-weight: 400"><font size="5">Speaker Demonstration</font></span> </font> </h1>
+<p><font size="2"><font face="Verdana"><b>Speaker Tone/Duration</b></font></p>
+<form name="input" METHOD="POST">
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#FFFFFF" width="35%">
+  <tr>
+    <td width="91%"><font face="Verdana" size="2">Tone Frequency (Hz)</font></td>
+    <td width="26%"><font face="Verdana"><INPUT NAME="freq" SIZE="4" MAXLENGTH="4" VALUE="1000"></font></td>
+  </tr>
+  <tr>
+    <td width="91%"><font face="Verdana" size="2">Duration (seconds)</font></td>
+    <td width="26%"><font face="Verdana"><INPUT NAME="duration" SIZE="4" MAXLENGTH="4" VALUE="2"></font></td>
+  </tr>
+</table>
+<p><font face="Verdana">
+<INPUT TYPE="submit" VALUE="Press for tone"> </font></p>
+</FORM>
+<p align="center"><font face="Verdana">
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt"><font face="Arial" size="3"><b>This is a demonstration webpage for the uEZ HTTP server. The uEZ HTTP server can not only serve web pages, but it can automatically replace variables in an HTML file with real-time updated information. The time and date display above is an example of this. If you change the time or date on the uEZGUI unit, it will update on this page automatically. The other neat feature of the web server is the ability to accept user input. This is demonstrated by the speaker demonstration above.
+</font></p></BODY></HTML>

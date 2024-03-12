@@ -79,10 +79,10 @@ typedef enum {
     INTERRUPT_PRIORITY_LOWEST=15
 } T_irqPriority ;
 
-#if (COMPILER_TYPE==CodeRed)
+#if (COMPILER_TYPE==CODERED)
 typedef TFPtr TISRFPtr;
 #endif
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
 typedef TFPtr TISRFPtr;
 #endif
 #if (COMPILER_TYPE==IAR)
@@ -91,10 +91,10 @@ typedef void (*TISRFPtr)(void);
 #if (COMPILER_TYPE==HEW)
 typedef TFPtr TISRFPtr;
 #endif
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 typedef TFPtr TISRFPtr;
 #endif
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
 typedef TFPtr TISRFPtr;
 #endif
 #if (COMPILER_TYPE==VisualC)
