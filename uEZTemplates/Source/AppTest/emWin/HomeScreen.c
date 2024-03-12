@@ -140,6 +140,9 @@ TBool G_USBFlash_inserted = EFalse;
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonRightTop(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
 		TS_NoiseDetect();
 	}
@@ -160,6 +163,9 @@ static TBool IHandleButtonRightTop(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonRightMiddle(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
 #if (UEZ_PROCESSOR == NXP_LPC1788)
 		// no slideshow on platforms without QSPI/OSPI
@@ -188,9 +194,14 @@ static TBool IHandleButtonRightMiddle(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         G_SDCard_inserted = Storage_PrintInfo('1');
+#if (UEZ_ENABLE_USB_HOST_STACK == 1)
         G_USBFlash_inserted = Storage_PrintInfo('0');
+#endif
         WindowManager_Show_Window(STORAGE_SCREEN);
     }
     return EFalse;
@@ -210,6 +221,9 @@ static TBool IHandleButtonRightBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleButtonLeftBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
           UEZPlatform_Watchdog_Require();
           T_uezDevice watchdog;
@@ -240,6 +254,7 @@ static TBool IHandleButtonLeftBottom(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static void IUpdateFields(WM_MESSAGE * pMsg)
 {
+     PARAM_NOT_USED(pMsg);
 
 }
 
@@ -315,29 +330,35 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
         break;
     case WM_TIMER:
         NCode = pMsg->Data.v;
-        if(G_Active){
-        
-        }
-        if (NCode == G_UpdateTimer) { // timer expired, enable the button
-          hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
-          ButtonEnablePresses(hItem);
+        if(WindowManager_GetCurrent_Window() == HOME_SCREEN) {
+          if(G_Active){
+            if (NCode == G_UpdateTimer) { // timer expired, enable the button
+              hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+              ButtonEnablePresses(hItem);
+            }        
+          }
         }
       break;
     case WM_POST_PAINT:
 		
         break;
     case WM_APP_GAINED_FOCUS:
-        G_Active = ETrue;
-        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
-        // Disable the button every time we switch to the screen
-        ButtonDisablePresses(hItem); // Use timer to enable button after timeout
-        WM_RestartTimer(G_UpdateTimer, BUTTON_ENABLE_TIME_MS);
+        WM_GetFocusedWindow();
+        if(WindowManager_GetCurrent_Window() == HOME_SCREEN) {
+          G_Active = ETrue;
+          hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+          // Disable the button every time we switch to the screen
+          ButtonDisablePresses(hItem); // Use timer to enable button after timeout
+          WM_RestartTimer(G_UpdateTimer, BUTTON_ENABLE_TIME_MS);
+        }
         break;
     case WM_APP_LOST_FOCUS:
-        G_Active = EFalse;
-        hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
-        // Disable the button every time we switch away from the screen.
-        ButtonDisablePresses(hItem);
+        if(WindowManager_GetCurrent_Window() == HOME_SCREEN) {
+          G_Active = EFalse;
+          hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_LEFT_BACK);
+          // Disable the button every time we switch away from the screen.
+          ButtonDisablePresses(hItem);
+        }
         break;
     default:
       WM_DefaultProc(pMsg);
@@ -355,7 +376,7 @@ static void _HomeScreenDialog(WM_MESSAGE *pMsg)
  *  @return                    The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN HomeScreen_Create()
+WM_HWIN HomeScreen_Create(void)
 {
     return GUI_CreateDialogBox(_iHomeScreenDialog, GUI_COUNTOF(_iHomeScreenDialog), &_HomeScreenDialog, 0,0,0);
 }

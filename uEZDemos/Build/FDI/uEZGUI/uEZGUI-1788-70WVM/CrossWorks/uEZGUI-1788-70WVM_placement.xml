@@ -38,9 +38,6 @@
     <!-- Reserved for Networking memory  -->
     <ProgramSection alignment="4" load="No" inputsections="*(.network .network.*)" name=".network"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:RAM)" >
@@ -53,7 +50,11 @@
     <ProgramSection alignment="4" load="No" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
     <ProgramSection alignment="4" load="No" size="__STACKSIZE__" name=".stack"/>
-    <ProgramSection alignment="4" load="No" size="__STACKSIZE_PROCESS__" name=".stack_process"/>
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
+    <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" load="No" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
   </MemorySegment>

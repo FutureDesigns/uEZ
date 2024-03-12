@@ -32,11 +32,12 @@
 #include "LPC17xx_40xx_MCI.h"
 #include "LPC17xx_40xx_GPIO.h"
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
-#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+#if ((COMPILER_TYPE==GCC_ARM) || (COMPILER_TYPE==KEIL_UV))
     #define MCI_MEMORY __attribute__((section(".mcimem")));
 #elif (COMPILER_TYPE==IAR)
     #define MCI_MEMORY @ ".mcimem"
@@ -432,6 +433,39 @@ T_uezError LPC17xx_40xx_MCI_Reset(void *aWorkspace)
     writeDelay();
 
     return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC17xx_40xx_MCI_IsCardInserted
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Check Card detect line of socket
+ * Inputs:
+ *      void *aWorkspace        -- MCI Workspace
+ * Outputs:
+ *      TBool              -- ETrue if card present
+ *---------------------------------------------------------------------------*/
+TBool LPC17xx_40xx_MCI_IsCardInserted(void * aWorkspace)
+{
+    T_LPC17xx_40xx_MCI_Workspace *p = (T_LPC17xx_40xx_MCI_Workspace *)aWorkspace;    
+    PARAM_NOT_USED(p);
+#if 0
+	if(p->iSdMmcPins.iCardDetect != GPIO_NONE) {
+		TBool read = UEZGPIORead(p->iSdMmcPins.iCardDetect);
+		UEZBSPDelayUS(20);
+		if (read == UEZGPIORead(p->iSdMmcPins.iCardDetect)){
+		  if(read == ETrue) {
+			return ETrue; // card present both reads
+		  }
+		}
+		// If we read 2 different values or card disconnected then card was removed at least momentarily.
+		return EFalse;
+	} else {
+		return ETrue;
+	}
+#else // not implemented
+    return ETrue;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -996,6 +1030,8 @@ const HAL_MCI LPC17xx_40xx_MCI_Interface = { {
 
     // uEZ 2.11.1
     LPC17xx_40xx_MCI_SetErrorCallback,
+    // uEZ 2.14
+    LPC17xx_40xx_MCI_IsCardInserted
 };
 
 /*---------------------------------------------------------------------------*

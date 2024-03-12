@@ -159,6 +159,7 @@ typedef struct {
 
 void TT_Exit2(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     G_ttExit = ETrue;
 }
 
@@ -208,7 +209,7 @@ void FCTL_Screen(T_uezDevice lcd)
  *---------------------------------------------------------------------------*/
 void FunctionalTestLoop(const T_choice *aChoice)
 {
-
+    PARAM_NOT_USED(aChoice);
     typedef struct {
         T_uezDevice iDevice;
         DEVICE_STREAM **iStream;

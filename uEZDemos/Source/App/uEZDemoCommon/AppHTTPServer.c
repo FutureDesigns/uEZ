@@ -55,21 +55,21 @@ static T_uezError IMainHTTPServerGetValue(
         if (strcmp(aVarName, "time") == 0) {
           if(TimeDate.iTime.iHour == 0){
             sprintf(line, "12:%02u:%02u AM\r\n",
-                TimeDate.iTime.iMinute, TimeDate.iTime.iSecond);
+                (uint32_t) TimeDate.iTime.iMinute, (uint32_t) TimeDate.iTime.iSecond);
           }else if (TimeDate.iTime.iHour < 12){
-            sprintf(line, "%02u:%02u:%02u AM\r\n", TimeDate.iTime.iHour,
-                TimeDate.iTime.iMinute, TimeDate.iTime.iSecond);
+            sprintf(line, "%02u:%02u:%02u AM\r\n", (uint32_t) TimeDate.iTime.iHour,
+               (uint32_t) TimeDate.iTime.iMinute, (uint32_t) TimeDate.iTime.iSecond);
           }else if (TimeDate.iTime.iHour == 12){
-            sprintf(line, "%02u:%02u:%02u PM\r\n", TimeDate.iTime.iHour,
-                TimeDate.iTime.iMinute, TimeDate.iTime.iSecond);
+            sprintf(line, "%02u:%02u:%02u PM\r\n", (uint32_t) TimeDate.iTime.iHour,
+                (uint32_t) TimeDate.iTime.iMinute, (uint32_t) TimeDate.iTime.iSecond);
           }else{
-            sprintf(line, "%02u:%02u:%02u PM\r\n", (TimeDate.iTime.iHour-12),
-                TimeDate.iTime.iMinute, TimeDate.iTime.iSecond);
+            sprintf(line, "%02u:%02u:%02u PM\r\n", (uint32_t) (TimeDate.iTime.iHour-12),
+                (uint32_t) TimeDate.iTime.iMinute, (uint32_t) TimeDate.iTime.iSecond);
           }
           return HTTPServerSetVar(aHTTPState, aVarName, line);
         } else if (strcmp(aVarName, "date") == 0) {
-          sprintf(line, "%02u/%02u/%04u\r\n", TimeDate.iDate.iMonth,
-                TimeDate.iDate.iDay, TimeDate.iDate.iYear);
+          sprintf(line, "%02u/%02u/%04u\r\n", (uint32_t) TimeDate.iDate.iMonth,
+                (uint32_t) TimeDate.iDate.iDay, (uint32_t) TimeDate.iDate.iYear);
           return HTTPServerSetVar(aHTTPState, aVarName, line);
         } else {
           return HTTPServerSetVar(aHTTPState, aVarName, "InsertVariableHere");
@@ -77,7 +77,7 @@ static T_uezError IMainHTTPServerGetValue(
     } else { // timedate failure
         return HTTPServerSetVar(aHTTPState, aVarName, "InsertVariableHere");
     }    
-    return UEZ_ERROR_NONE;
+    //return UEZ_ERROR_NONE;
 }
 /*---------------------------------------------------------------------------*
  * Routine:  IMainHTTPServerSetValue
@@ -93,6 +93,7 @@ static T_uezError IMainHTTPServerSetValue(
             const char *aValue)
 {
     static TUInt32 frequency = 1000;
+    PARAM_NOT_USED(aHTTPState);
 
     if (strcmp(aVarName, "freq") == 0) {    // Remember the last know frequency
         frequency = atoi(aValue);

@@ -28,6 +28,7 @@
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_LCDController.h>
 #include <uEZBSP.h>
 #include <HAL/Interrupt.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /* For using 120MHz main CPU clock the following are available in this driver:
  * Divider (X) 0-16, clock (Y) in MHz: 120000000/(X+2)/1000/1000=Y

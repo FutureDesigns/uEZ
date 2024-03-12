@@ -29,6 +29,7 @@
 #include <HAL/Interrupt.h>
 #include "LPC43xx_SD_MMC.h"
 #include "LPC43xx_GPIO.h"
+#include "LPC43xx_UtilityFuncs.h"
 #include "CMSIS/LPC43xx.h"
 #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
@@ -213,6 +214,8 @@ typedef struct {
     TUInt32 iSpeed;     // Speed of clock rate in Hz
 
     volatile TUInt8 sdio_wait_exit;
+    
+    T_LPC43xx_SD_MMC_Pins iSdMmcPins;
 } T_LPC43xx_SD_MMC_Workspace;
 
 T_LPC43xx_SD_MMC_Workspace *G_SD_MMCWorkspace;
@@ -293,8 +296,8 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
         }
     }
     if (LPC_SDMMC->RINTSTS & MCI_INT_CMD_DONE) {
-        //LPC_SDMMC->RINTSTS = MCI_INT_CMD_DONE; // Don't clear the flag
-        if (p->sdio_wait_exit != 0) {
+        //LPC_SDMMC->RINTSTS = MCI_INT_CMD_DONE; // Don't clear the flag so we can check it later
+        if (p->sdio_wait_exit != 0) { // only 0 when init workspace, 1 when int cleared or set to 2 here
             // Set this interrupt for SDIO commands
             p->sdio_wait_exit = 2;
         }
@@ -333,11 +336,11 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
           #endif
       }
       
-      if (LPC_SDMMC->RINTSTS & MCI_INT_RTO) { // Response timeout error
+      if (LPC_SDMMC->RINTSTS & MCI_INT_RTO) { // Response timeout error (RTO_BAR)
           DEBUG_PRINTF_FUNCTION("RTO");
       }
       
-      if (LPC_SDMMC->RINTSTS & MCI_INT_DTO) { // Data timeout error - Card has not sent data within the time-out period.
+      if (LPC_SDMMC->RINTSTS & MCI_INT_DTO) { // Data read timeout (DRTO_BDS) - Card has not sent data within the time-out period.
           DEBUG_PRINTF_FUNCTION("DTO");
       }
       
@@ -349,7 +352,7 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
           DEBUG_PRINTF_FUNCTION("FOV");
       }
       
-      if (LPC_SDMMC->RINTSTS & MCI_INT_HLE) { //  Hardware locked error
+      if (LPC_SDMMC->RINTSTS & MCI_INT_HLE) { //  Hardware locked write error
           DEBUG_PRINTF_FUNCTION("HLE");
       }
       
@@ -366,7 +369,8 @@ void LPC43xx_SD_MMC_ProcessInterrupt(T_LPC43xx_SD_MMC_Workspace *p)
       }
       if (LPC_SDMMC->IDSTS & (1 << 11)) { // 
           DEBUG_PRINTF_FUNCTION("HOR");
-      }      
+      }
+      // Note that non-errors aren't listed here, such as RTO/DTO/ACD, etc.
       
       if (temp & MCI_INT_DATA_OVER) { 
           // This possibly indicates command finished as the bit is never set on a real timeout
@@ -413,49 +417,6 @@ T_uezError LPC43xx_SD_MMC_InitializeWorkspace(void *aWorkspace)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  LPC43xx_SD_MMC_PowerOn
- *---------------------------------------------------------------------------*
- * Description:
- *      Have the SD_MMC power on the target
- * Inputs:
- *      void *aWorkspace        -- SD_MMC Workspace
- * Outputs:
- *      T_uezError              -- Error code
- *---------------------------------------------------------------------------*/
-T_uezError LPC43xx_SD_MMC_PowerOn(void *aWorkspace)
-{
-    // Turn on the power (if not already on), wait 10 ms minimum,
-    // and then enable the signals
-    LPC_SDMMC->PWREN = 0x01;
-    UEZTaskDelay(10);
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
- * Routine:  LPC43xx_SD_MMC_PowerOff
- *---------------------------------------------------------------------------*
- * Description:
- *      Have the SD_MMC power off the target
- * Inputs:
- *      void *aWorkspace        -- SD_MMC Workspace
- * Outputs:
- *      T_uezError              -- Error code
- *---------------------------------------------------------------------------*/
-T_uezError LPC43xx_SD_MMC_PowerOff(void *aWorkspace)
-{
-    LPC_SDMMC->INTMASK = 0;
-    LPC_SDMMC->CTRL   &= ~(1<<4);
-    LPC_SDMMC->CTRL = 1;
-    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
-
-    LPC_SDMMC->PWREN = 0x00;
-    LPC_SDMMC->CLKENA = 0;
-
-    return UEZ_ERROR_NONE;
-}
-
-/*---------------------------------------------------------------------------*
  * Routine:  LPC43xx_SD_MMC_Reset
  *---------------------------------------------------------------------------*
  * Description:
@@ -467,6 +428,15 @@ T_uezError LPC43xx_SD_MMC_PowerOff(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_SD_MMC_Reset(void *aWorkspace)
 {
+    T_LPC43xx_SD_MMC_Workspace *p = (T_LPC43xx_SD_MMC_Workspace *)aWorkspace;
+    
+    p->iCardDetect = GPIO_NONE;
+    p->iWriteProtect = GPIO_NONE;
+    p->iReceptionCompleteCallback = 0;
+    p->iTransmissionCompleteCallback = 0;
+    p->iRCA = 0;
+    p->sdio_wait_exit = 0;
+
     /* Software reset */
     LPC_SDMMC->BMOD = MCI_BMOD_SWR;
 
@@ -474,6 +444,13 @@ T_uezError LPC43xx_SD_MMC_Reset(void *aWorkspace)
     LPC_SDMMC->CTRL = MCI_CTRL_RESET | MCI_CTRL_FIFO_RESET | MCI_CTRL_DMA_RESET;
     while (LPC_SDMMC->CTRL & (MCI_CTRL_RESET | MCI_CTRL_FIFO_RESET | MCI_CTRL_DMA_RESET))
         {}
+
+    LPC_SDMMC->CTYPE = 0; // 1-bit mode to start
+    LPC_SDMMC->DBADDR = 0; // 
+    LPC_SDMMC->CLKDIV = 0; // 
+    LPC_SDMMC->BYTCNT = 0x200; //
+    LPC_SDMMC->CMDARG = 0; //
+    LPC_SDMMC->CMD = 0; //
 
     /* Internal DMA setup for control register */
     LPC_SDMMC->CTRL = MCI_CTRL_USE_INT_DMAC | MCI_CTRL_INT_ENABLE;
@@ -499,7 +476,252 @@ T_uezError LPC43xx_SD_MMC_Reset(void *aWorkspace)
     G_SD_CRC_error = 0;
     #endif
 
+    // Enable interrupts
+#ifdef CORE_M4
+    InterruptEnable(SDIO_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptEnable(M0_SDIO_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    //None
+#endif
     return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC43xx_SD_MMC_PowerOn
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Have the SD_MMC power on the target
+ * Inputs:
+ *      void *aWorkspace        -- SD_MMC Workspace
+ * Outputs:
+ *      T_uezError              -- Error code
+ *---------------------------------------------------------------------------*/
+T_uezError LPC43xx_SD_MMC_PowerOn(void *aWorkspace)
+{
+    T_LPC43xx_SD_MMC_Workspace *p = (T_LPC43xx_SD_MMC_Workspace *)aWorkspace;
+
+#if 0 // not implemented features so don't include the unused consts.
+    static const T_LPC43xx_SCU_ConfigList sd_pow[] = {
+            {GPIO_P1_8     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_POW   SD/MMC power monitor output.
+            {GPIO_P6_8     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_POW   SD/MMC power monitor output.
+            {GPIO_P6_15    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_POW   SD/MMC power monitor output.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_cd[] = {
+            {GPIO_P1_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
+            {GPIO_P6_7     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_wp[] = {
+            {GPIO_P6_29    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
+            {GPIO_P7_24    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
+    };
+#endif
+
+    // Recommend settings for EHS=0 for CMD/DAT and EHS=1 for clock from LPC435x/3x/2x/1x 11.20 SD/MMC.
+    static const T_LPC43xx_SCU_ConfigList sd_clk[] = {
+            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_FAST, SCU_EZI_DISABLE,SCU_ZIF_DISABLE)}, //SD_CLK   SD/MMC card clock.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_cmd[] = {
+            {GPIO_P1_9     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CMD   SD/MMC command signal.
+            {GPIO_P6_9     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CMD   SD/MMC command signal.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat0[] = {
+            {GPIO_P1_2     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT0  SD/MMC data bus line 0.
+            {GPIO_P6_3     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT0  SD/MMC data bus line 0.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat1[] = {
+            {GPIO_P1_3     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT1  SD/MMC data bus line 1.
+            {GPIO_P6_4     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT1  SD/MMC data bus line 1.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat2[] = {
+            {GPIO_P1_4     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT2  SD/MMC data bus line 2.
+            {GPIO_P6_5     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT2  SD/MMC data bus line 2.
+    };
+
+    static const T_LPC43xx_SCU_ConfigList sd_dat3[] = {
+            {GPIO_P1_5     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT3  SD/MMC data bus line 3.
+            {GPIO_P6_6     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT3  SD/MMC data bus line 3.
+    };
+    
+    // Disable interrupts
+#ifdef CORE_M4
+    InterruptDisable(SDIO_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptDisable(M0_SDIO_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    //None
+#endif
+
+    UEZGPIOUnlock(p->iSdMmcPins.iCMD);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT0);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT1);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT2);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT3);
+    UEZGPIOUnlock(p->iSdMmcPins.iCLK);
+    UEZGPIOUnlock(p->iSdMmcPins.iPOW);
+    //UEZGPIOUnlock(p->iSdMmcPins.iCardDetect);
+    //UEZGPIOUnlock(p->iSdMmcPins.iWriteProtect);
+
+    // Power is enabled before we switch the pins to peripheral mode.
+    // Manually turn SDcard power on (if not already on)
+    UEZGPIOSet(p->iSdMmcPins.iPOW);
+    //LPC_SDMMC->PWREN = 0x01; // not using function pin, using GPIO set below.
+
+    // SD spec says that ramp to 0.5V is up to 250ms, then 35ms ramp to 3.3V.
+    UEZTaskDelay(50); // MMC spec said to wait 35ms after power on before CMD
+    // We ramp on these uEZGUIs almost instantly, less than 20uS on this switch.
+
+    LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iCMD, sd_cmd, ARRAY_COUNT(sd_cmd));
+    LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iDAT0, sd_dat0, ARRAY_COUNT(sd_dat0));
+    LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iDAT1, sd_dat1, ARRAY_COUNT(sd_dat1));
+    LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iDAT2, sd_dat2, ARRAY_COUNT(sd_dat2));
+    LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iDAT3, sd_dat3, ARRAY_COUNT(sd_dat3));
+    LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iCLK, sd_clk, ARRAY_COUNT(sd_clk));
+    //LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iPOW, sd_pow, ARRAY_COUNT(sd_pow));
+    //LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iCardDetect, sd_cd, ARRAY_COUNT(sd_cd));
+    //LPC43xx_SCU_ConfigPinOrNone(p->iSdMmcPins.iWriteProtect, sd_wp, ARRAY_COUNT(sd_wp));
+
+    LPC43xx_SD_MMC_Reset((void *)p);
+    
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC43xx_SD_MMC_PowerOff
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Have the SD_MMC power off the target
+ * Inputs:
+ *      void *aWorkspace        -- SD_MMC Workspace
+ * Outputs:
+ *      T_uezError              -- Error code
+ *---------------------------------------------------------------------------*/
+T_uezError LPC43xx_SD_MMC_PowerOff(void *aWorkspace)
+{
+    LPC_SDMMC->INTMASK = 0;
+    LPC_SDMMC->CTRL   &= ~(MCI_CTRL_INT_ENABLE); // disables interrupts
+    //LPC_SDMMC->CTRL = 1; // would reset DMA if uncommented
+    LPC_SDMMC->RINTSTS = 0xFFFFFFFF;
+
+    LPC_SDMMC->PWREN = 0x00;
+    LPC_SDMMC->CLKENA = 0;
+
+    // Disable interrupts
+#ifdef CORE_M4
+    InterruptDisable(SDIO_IRQn);
+#endif
+#ifdef CORE_M0
+    InterruptDisable(M0_SDIO_IRQn);
+#endif
+#ifdef CORE_M0SUB
+    //None
+#endif
+    
+    T_LPC43xx_SD_MMC_Workspace *p = (T_LPC43xx_SD_MMC_Workspace *)aWorkspace;
+    TUInt32 value;
+    //dprintf("Reboot SD card\n");
+    // Set GPIOs low and hold power off to allow for proper power down then power up sequence.
+
+    UEZGPIOUnlock(p->iSdMmcPins.iCMD);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT0);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT1);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT2);
+    UEZGPIOUnlock(p->iSdMmcPins.iDAT3);
+    UEZGPIOUnlock(p->iSdMmcPins.iCLK);
+    UEZGPIOUnlock(p->iSdMmcPins.iPOW);
+    UEZGPIOUnlock(p->iSdMmcPins.iCardDetect);
+    //UEZGPIOUnlock(p->iSdMmcPins.iWriteProtect);
+    
+    value = ((p->iSdMmcPins.iCardDetect >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOSetMux(p->iSdMmcPins.iCardDetect, (p->iSdMmcPins.iCardDetect >> 8) >= 5 ? 4 : 0);
+    UEZGPIOControl(p->iSdMmcPins.iCardDetect, GPIO_CONTROL_SET_CONFIG_BITS, value);
+    UEZGPIOInput(p->iSdMmcPins.iCardDetect);
+    UEZGPIOControl(p->iSdMmcPins.iCardDetect, GPIO_CONTROL_ENABLE_INPUT_BUFFER, 0);
+
+    // Make sure that DAT0 does not draw power from MCU by setting low.
+    UEZGPIOOutput(p->iSdMmcPins.iDAT0); 
+    UEZGPIOSetMux(p->iSdMmcPins.iDAT0, (p->iSdMmcPins.iDAT0 >> 8) >= 5 ? 4 : 0);
+    value = ((p->iSdMmcPins.iDAT0 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(p->iSdMmcPins.iDAT0, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(p->iSdMmcPins.iDAT0);
+    // Make sure that DAT1 does not draw power from MCU by setting low.
+    UEZGPIOOutput(p->iSdMmcPins.iDAT1); 
+    UEZGPIOSetMux(p->iSdMmcPins.iDAT1, (p->iSdMmcPins.iDAT1 >> 8) >= 5 ? 4 : 0);
+    value = ((p->iSdMmcPins.iDAT1 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(p->iSdMmcPins.iDAT1, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(p->iSdMmcPins.iDAT1);
+    // Make sure that DAT2 does not draw power from MCU by setting low.
+    UEZGPIOOutput(p->iSdMmcPins.iDAT2); 
+    UEZGPIOSetMux(p->iSdMmcPins.iDAT2, (p->iSdMmcPins.iDAT2 >> 8) >= 5 ? 4 : 0);
+    value = ((p->iSdMmcPins.iDAT2 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(p->iSdMmcPins.iDAT2, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(p->iSdMmcPins.iDAT2);
+    // Make sure that DAT3 does not draw power from MCU by setting low.
+    UEZGPIOOutput(p->iSdMmcPins.iDAT3); 
+    UEZGPIOSetMux(p->iSdMmcPins.iDAT3, (p->iSdMmcPins.iDAT3 >> 8) >= 5 ? 4 : 0);
+    value = ((p->iSdMmcPins.iDAT3 >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(p->iSdMmcPins.iDAT3, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(p->iSdMmcPins.iDAT3);
+    // Make sure that CMD does not draw power from MCU by setting low.
+    UEZGPIOOutput(p->iSdMmcPins.iCMD); 
+    UEZGPIOSetMux(p->iSdMmcPins.iCMD, (p->iSdMmcPins.iCMD >> 8) >= 5 ? 4 : 0);
+    value = ((p->iSdMmcPins.iCMD >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(p->iSdMmcPins.iCMD, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(p->iSdMmcPins.iCMD);
+    // Make sure that CLK does not draw power from MCU by setting low.
+    // PC_0 does not have GPIO functionality. It has USB_ULPI_CLK, ENET_RX_CLK, LCD_CLK, SD_CLK, and ADC1_1
+    // This Pin DOES contribute to current draw even though no GPIO as pull-up resistor is still enabled at reset.
+    value = (1 << 3) | (1 << 4); // enable pull-down, disable pull-up, leave at reservered function
+    UEZGPIOControl(p->iSdMmcPins.iCLK, GPIO_CONTROL_SET_CONFIG_BITS, value); // verified that we later correctly disable both pull in require.
+
+    // First hold SD card power low for 200 ms to allow for full power down.
+    UEZGPIOOutput(p->iSdMmcPins.iPOW); 
+    UEZGPIOSetMux(p->iSdMmcPins.iPOW, (p->iSdMmcPins.iPOW >> 8) >= 5 ? 4 : 0);
+    value = ((p->iSdMmcPins.iPOW >> 8) & 0x7) >= 5 ? 4 : 0;
+    UEZGPIOControl(p->iSdMmcPins.iPOW, GPIO_CONTROL_SET_CONFIG_BITS, value);    
+    UEZGPIOClear(p->iSdMmcPins.iPOW);
+    UEZTaskDelay(200); // Power off delay, currently much longer than spec requires
+
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  LPC43xx_SD_MMC_IsCardInserted
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Check Card detect line of socket
+ * Inputs:
+ *      void *aWorkspace        -- SD_MMC Workspace
+ * Outputs:
+ *      TBool              -- ETrue if card present
+ *---------------------------------------------------------------------------*/
+TBool LPC43xx_SD_MMC_IsCardInserted(void * aWorkspace)
+{
+    T_LPC43xx_SD_MMC_Workspace *p = (T_LPC43xx_SD_MMC_Workspace *)aWorkspace;    
+    PARAM_NOT_USED(p);
+    if(p->iSdMmcPins.iCardDetect != GPIO_NONE) {
+      TBool read = UEZGPIORead(p->iSdMmcPins.iCardDetect);
+      UEZBSPDelayUS(20);
+      if (read == UEZGPIORead(p->iSdMmcPins.iCardDetect)){
+        if(read == ETrue) {
+          return ETrue; // card present both reads
+        }
+      }
+      // If we read 2 different values or card disconnected then card was removed at least momentarily.
+      return EFalse;
+    } else {
+      return ETrue;
+    }
 }
 
 static int32_t ISendCommand(uint32_t aCommand, uint32_t aArgument)
@@ -703,7 +925,7 @@ T_uezError ISetClockRate(
             return UEZ_ERROR_NONE; /* Closest speed is already set */
 
         }
-        /* disable clock */
+        // disable clock - clock must be disabled for minimum time before changing it.
         LPC_SDMMC->CLKENA = 0;
 
         /* User divider 0 */
@@ -782,14 +1004,18 @@ static uint32_t IIRQWait(T_LPC43xx_SD_MMC_Workspace *p)
 
     start = UEZTickCounterGet();
 
-    /* Wait for event, would be nice to have a timeout, but keep it  simple */
-    while (p->sdio_wait_exit != 2) {    
-        // Very fast wait time?
-        // Spinning....
-        if (UEZTickCounterGetDelta(start) >= 25) {
-            break; // from testing so far we basically never hit this
+    /* Wait for event, with timeout*/
+    while (p->sdio_wait_exit != 2) { // we only call from one place and interrupt can't reset this number.
+        // So if we already hit interrupt before reaching this function, we will just continue to status return below without going into loop. (this is what we want)
+        // Spinning.... Very fast wait time in microsecond range
+        if (UEZTickCounterGetDelta(start) >= 500) { // hit > 25 on samsung cards in video player. Our timing isn't very accurate and from SD spec 
+            break; // for CMD ACK response (say that we are "going to" do multiple block read) it is 64 cycles or 1.28us at 51MHz or 163.2us at 400Khz.
+            // If we had a separate accurate timer that doesn't get stopped by RTOS we could check 1ms timeout for initial command response.
+            // Per SD spec 3.01 table 4-51 SDHC/SDXC is max read access time of 100ms (for some large multiple block read).
+            // So we will always set above that here to account for our innacuracies. If we timeout on large delay we need to mark SD card non-inserted and try to re-init, as it should't be this long.
         }
         UEZTaskDelay(0); // force reschedule to allow quick background tasks to run, but don't delay.
+        // Any non-zero delay here would slowdown something like video player noticeably.
     }
 
     /* Get status and clear interrupts */
@@ -1025,7 +1251,7 @@ const HAL_SD_MMC LPC43xx_SD_MMC_Interface = { {
     LPC43xx_SD_MMC_InitializeWorkspace,
     sizeof(T_LPC43xx_SD_MMC_Workspace), },
 
-// v2.04
+    // v2.04
     LPC43xx_SD_MMC_PowerOn,
     LPC43xx_SD_MMC_PowerOff,
     LPC43xx_SD_MMC_Reset,
@@ -1037,7 +1263,9 @@ const HAL_SD_MMC LPC43xx_SD_MMC_Interface = { {
     LPC43xx_SD_MMC_SetCardType,
     LPC43xx_SD_MMC_SetBlockSize,
     LPC43xx_SD_MMC_PrepreExtCSDTransfer,
-    LPC43xx_SD_MMC_SetupErrorCallback
+    LPC43xx_SD_MMC_SetupErrorCallback,
+    // uEZ 2.14
+    LPC43xx_SD_MMC_IsCardInserted
 };
 
 /*---------------------------------------------------------------------------*
@@ -1048,59 +1276,19 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     T_halWorkspace *p_SD_MMC;
     T_LPC43xx_SD_MMC_Workspace *p;
 
-    static const T_LPC43xx_SCU_ConfigList sd_cd[] = {
-            {GPIO_P1_6     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
-            {GPIO_P6_7     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_CD    SD/MMC card detect input.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_pow[] = {
-            {GPIO_P1_8     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_POW   SD/MMC power monitor output.
-            {GPIO_P6_8     , SCU_NORMAL_DRIVE_DEFAULT(7)}, //SD_POW   SD/MMC power monitor output.
-            {GPIO_P6_15    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_POW   SD/MMC power monitor output.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_wp[] = {
-            {GPIO_P6_29    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
-            {GPIO_P7_24    , SCU_NORMAL_DRIVE_DEFAULT(5)}, //SD_WP    SD/MMC card write protect input.
-    };
-
-    // Recommend settings for EHS=0 for CMD/DAT and EHS=1 for clock from LPC435x/3x/2x/1x 11.20 SD/MMC.
-    static const T_LPC43xx_SCU_ConfigList sd_clk[] = {
-            {GPIO_PZ_Z_PC_0, SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_FAST, SCU_EZI_DISABLE,SCU_ZIF_DISABLE)}, //SD_CLK   SD/MMC card clock.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_cmd[] = {
-            {GPIO_P1_9     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CMD   SD/MMC command signal.
-            {GPIO_P6_9     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_CMD   SD/MMC command signal.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat0[] = {
-            {GPIO_P1_2     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT0  SD/MMC data bus line 0.
-            {GPIO_P6_3     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT0  SD/MMC data bus line 0.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat1[] = {
-            {GPIO_P1_3     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT1  SD/MMC data bus line 1.
-            {GPIO_P6_4     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT1  SD/MMC data bus line 1.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat2[] = {
-            {GPIO_P1_4     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT2  SD/MMC data bus line 2.
-            {GPIO_P6_5     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT2  SD/MMC data bus line 2.
-    };
-
-    static const T_LPC43xx_SCU_ConfigList sd_dat3[] = {
-            {GPIO_P1_5     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT3  SD/MMC data bus line 3.
-            {GPIO_P6_6     , SCU_NORMAL_DRIVE(7, SCU_EPD_DISABLE, SCU_EPUN_DISABLE,SCU_EHS_SLOW, SCU_EZI_ENABLE, SCU_ZIF_DISABLE)}, //SD_DAT3  SD/MMC data bus line 3.
-    };
-
-
     HAL_DEVICE_REQUIRE_ONCE();
 
     // Register SD_MMC Controller
     HALInterfaceRegister("SD_MMC",
             (T_halInterface *)&LPC43xx_SD_MMC_Interface, 0, &p_SD_MMC);
     p = (T_LPC43xx_SD_MMC_Workspace *)p_SD_MMC;
+
+    // set the pins from the platform assignment.
+    memcpy((void *)&p->iSdMmcPins, (void *)aPins, sizeof(p->iSdMmcPins)); 
+    // Currently card detect and write protect aren't implemented.
+    // Currently power control is just GPIO and could be probably.
+    // Currently we only support the non-GPIO CLK pin.
+    LPC43xx_SD_MMC_PowerOff(p); // set pins to GPIO mode and hold power off
 
     // Turn on the SD_MMC Controller
     G_SourceClkFrequency = UEZPlatform_GetPCLKFrequency(); //clock based on PCLK
@@ -1118,36 +1306,22 @@ void LPC43xx_SD_MMC_Require(const T_LPC43xx_SD_MMC_Pins *aPins)
     // Note that other newer LPC MCU families with this same register appear to have a different preferred number even for the same frequencies. (different range)
 
     // Drive delay minimum of 2 is required.    
-    LPC_SCU->SDDELAY = 0x2 | (3 << SCU_SDDELAY_DRV_DELAY_Pos); // This passes test with 34MHz read, 48MHz read/write, 51MHz read/write, and 25.5MHz read/write.
+    LPC_SCU->SDDELAY = (2 << SCU_SDDELAY_SAMPLE_DELAY_Pos) | (3 << SCU_SDDELAY_DRV_DELAY_Pos); // This passes test with 34MHz read, 48MHz read/write, 51MHz read/write, and 25.5MHz read/write.
 
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iCardDetect, sd_cd, ARRAY_COUNT(sd_cd));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iCMD, sd_cmd, ARRAY_COUNT(sd_cmd));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iDAT0, sd_dat0, ARRAY_COUNT(sd_dat0));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iDAT1, sd_dat1, ARRAY_COUNT(sd_dat1));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iDAT2, sd_dat2, ARRAY_COUNT(sd_dat2));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iDAT3, sd_dat3, ARRAY_COUNT(sd_dat3));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iPOW, sd_pow, ARRAY_COUNT(sd_pow));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iWriteProtect, sd_wp, ARRAY_COUNT(sd_wp));
-    LPC43xx_SCU_ConfigPinOrNone(aPins->iCLK, sd_clk, ARRAY_COUNT(sd_clk));
 
-    // Reset SD_MMC Registers
-    LPC43xx_SD_MMC_Reset((void *)p);
-
-    // Setup interrupt for the SD_MMC
-
+    // Setup interrupt for the SD_MMC, but don't enable it yet until we init everything.
 #ifdef CORE_M4
     InterruptRegister(SDIO_IRQn, LPC43xx_SD_MMC_Interrupt,
         INTERRUPT_PRIORITY_HIGH, "SD_MMC");
-    InterruptEnable(SDIO_IRQn);
 #endif
 #ifdef CORE_M0
     InterruptRegister(M0_SDIO_IRQn, LPC43xx_SD_MMC_Interrupt,
         INTERRUPT_PRIORITY_HIGH, "SD_MMC");
-    InterruptEnable(M0_SDIO_IRQn);
 #endif
 #ifdef CORE_M0SUB
     //None
 #endif
+    // Registers are reset and power is enabled on each init of SD card.
 }
 
 /*-------------------------------------------------------------------------*

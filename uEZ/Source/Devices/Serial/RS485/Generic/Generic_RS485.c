@@ -58,6 +58,7 @@ static void RS485_GenericHalfDuplex_MonitorDriveEnable(
                 T_uezTask aMyTask, 
                 void *aWorkspace);
 
+T_uezTask G_DriveEnable485Task;
 
 /*---------------------------------------------------------------------------*
  * Routine:  RS485_GenericHalfDuplex_InitializeWorkspace
@@ -232,7 +233,7 @@ T_uezError RS485_GenericHalfDuplex_Configure(
         128, 
         (void *)p, 
         UEZ_PRIORITY_HIGH, 
-        0);
+        &G_DriveEnable485Task);
 
 
     // Return last error

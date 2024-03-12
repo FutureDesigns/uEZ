@@ -169,7 +169,7 @@ _vectors_end:
 #endif
   // For the SRAM1 or 2 that is used on M4 select that section end here.
   // If the SRAM size is defined as 0, the segment end will be the start and you will fault.
-  ldr sp, =__SRAM1_segment_end__ 
+  ldr sp, =__SRAM2_segment_end__ 
   bl SystemInit
 #endif
 

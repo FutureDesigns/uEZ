@@ -40,7 +40,6 @@
       arm_linker_jtag_pad_post_ir="0"
       arm_linker_jtag_pad_pre_dr="1"
       arm_linker_jtag_pad_pre_ir="4"
-      arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
       arm_simulator_memory_simulation_filename="$(TargetsDir)/LPC4300/LPC4300SimulatorMemory.dll"
       arm_simulator_memory_simulation_parameter="LPC4357;$(SPIFI_SIZE:0);$(CS0_SIZE:0);$(CS1_SIZE:0);$(CS2_SIZE:0);$(CS3_SIZE:0)"
@@ -57,8 +56,8 @@
       build_remove_unused_symbols="Yes"
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
-      c_preprocessor_definitions="USE_PROCESS_STACK;CORE_M4;GCC_ARMCM4F;STARTUP_FROM_RESET;__THUMB;LWIP_2_0_x"
-      c_user_include_directories=".;../../../../../Source/App/uEZGUI_noSDRAM;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN;../../../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/LPCOpen;../../../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+      c_user_include_directories=".;../../../../../Source/App;../../../../../Source/App/uEZGUI_noSDRAM;../../../../../Source/App/GUICommon;../../../../../Source/App/uEZDemoCommon;../../../../../../uEZ;../../../../../../uEZ/Include;../../../../../../uEZ/Source/RTOS/FreeRTOS/include;../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN;../../../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/;../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../../../uEZ/Source/Library/Encryption/mbedtls/include;../../../../../../uEZ/Source/Library/Encryption/mbedtls;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;../../../../../../uEZ/Source/Library/LPCOpen;../../../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx"
       debug_register_definition_file="$(TargetsDir)/LPC4300/LPC4300_Peripherals.xml"
       debug_startup_completion_point="main"
       gcc_c_language_standard="c11"
@@ -136,7 +135,7 @@
       hidden="Yes" />
     <configuration
       Name="THUMB Flash Debug CLANG"
-      arm_assembler_variant="clang"
+      arm_assembler_variant="gcc"
       arm_compiler_variant="clang" />
     <configuration
       Name="THUMB Flash Debug-Trace"

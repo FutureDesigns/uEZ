@@ -34,7 +34,7 @@
 // TBD:  not here!
 #include <uEZRTOS.h>
 
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
 typedef volatile struct st_sci __evenaccess T_RX62N_SCI;
 #endif
 

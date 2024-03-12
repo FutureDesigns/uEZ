@@ -107,6 +107,8 @@ void LAFSetupButton(const T_LAFMapping *p, WM_HWIN hItem)
  *---------------------------------------------------------------------------*/
 void LAFSetupScrollbar(const T_LAFMapping *p, WM_HWIN hItem)
 {
+    PARAM_NOT_USED(p);
+    PARAM_NOT_USED(hItem);
     // Nothing currently
 }
 

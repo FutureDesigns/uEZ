@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------*
- * File:  UEZPlatformAPI.h
+ * File:  uEZPlatformAPI.h
  *-------------------------------------------------------------------------*
  * Description:
  *     
@@ -100,6 +100,9 @@ TUInt32 UEZPlatform_SerialGetDefaultBaud(void);
 TUInt32 UEZPlatform_MCI_DefaultFreq(void);
 TUInt32 UEZPlatform_MCI_TransferMode(void);
 
+// Monitoring
+TUInt32 UEZPlatform_5V_Monitor_Get_Raw_Reading(void);
+
 // Expansion
 TBool UEZPlatform_ExpansionBoardIsConnected(void);
 
@@ -117,7 +120,10 @@ void UEZPlatform_MemTest_StepE_Pass(void);
 void UEZPlatform_MemTest_StepF(void);
 void UEZPlatform_MemTest_StepF_Pass(void);
 
-//Reset
+// Flash programming
+void UEZPlatform_IAP_Require(void);
+
+// Reset
 void UEZPlatform_System_Reset(void);
 
 #ifdef __cplusplus

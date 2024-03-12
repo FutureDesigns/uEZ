@@ -24,6 +24,7 @@
 #include <Config.h>
 #include <uEZTypes.h>
 #include <uEZProcessor.h>
+#include <uEZGPIO.h>
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_GPIO.h>
 #include <stdio.h>

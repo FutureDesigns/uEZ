@@ -107,7 +107,11 @@ _vectors_end:
   reset_handler:
 
 #ifndef __NO_SYSTEM_INIT
-  ldr r0, =__SRAM2_segment_end__
+  // For the SRAM1 or 2 that is used on M0 select that section end here.
+  // If the SRAM size is defined as 0, the segment end will be the start and you will fault.
+  // In Crossworks projects it will always have _CM0SUB_ in the correct SRAM or SDRAM end name.
+  // Note that CMSUB isn't setup in map file yet.
+  ldr r0, =__SRAM1_CM0SUB_segment_end__
   mov sp, r0
   bl SystemInit
 #endif

@@ -127,6 +127,9 @@ static TBool G_Active = EFalse;
  /*---------------------------------------------------------------------------*/
 static TBool IHandleBack(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         WindowManager_Show_Window(HOME_SCREEN);
     }
@@ -214,7 +217,7 @@ static void _SensorDialog(WM_MESSAGE *pMsg)
  *  @return					The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN Sensor_Create()
+WM_HWIN Sensor_Create(void)
 {
     return GUI_CreateDialogBox(_iSensorDialog, GUI_COUNTOF(_iSensorDialog), &_SensorDialog, 0,0,0);
 }

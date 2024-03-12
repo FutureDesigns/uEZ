@@ -1,10 +1,10 @@
 #ifndef VIDEO_PLAYER_H
 #define VIDEO_PLAYER_H
 
-enum {
+typedef enum {
     VIDEO_TYPE_BIN,
     VIDEO_TYPE_FRAMES    
-}typedef T_VIDEO_TYPE;
+} T_VIDEO_TYPE;
 
 typedef struct {
     char iTitle[64];

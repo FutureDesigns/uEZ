@@ -145,7 +145,7 @@ TUInt8 *_framesMemoryptr = _framesMemory;
 /*---------------------------------------------------------------------------*
  * Macros:
  *---------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
+#if(COMPILER_TYPE==KEIL_UV)
 #define nop()      __nop()
 #else
 #define nop()     NOP()//asm("nop")
@@ -2127,7 +2127,7 @@ TUInt32 SUICallbackGetLCDBase()
 
 void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha aAlpha)
 {
-    static COLOR_T mask = ~((1<<10)|(1<<5)|(1<<0));
+    static COLOR_T mask = (COLOR_T)(~((1<<10)|(1<<5)|(1<<0)));
     COLOR_T *p = (COLOR_T *)aAddr;
 
     switch (aAlpha) {

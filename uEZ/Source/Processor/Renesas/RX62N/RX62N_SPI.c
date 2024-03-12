@@ -37,7 +37,7 @@
 /*---------------------------------------------------------------------------*
  * Types:
  *---------------------------------------------------------------------------*/
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
     typedef volatile struct st_rspi __evenaccess T_RX62N_SPI_Registers;
 #endif
 

@@ -59,6 +59,7 @@
 #include "Config.h"
 #include <uEZ.h>
 #include "uEZFile.h"
+#include <uEZMemory.h>
 #include <uEZDevice.h>
 #include <Device/FileSystem.h>
 #include <uEZDeviceTable.h>
@@ -1419,9 +1420,68 @@ T_uezError UEZFileMKFS(const char aDriveNum)
     // It should pick automaticlly the supported values.
     param.align = 0; 	/* Data area alignment (sector) */
     param.n_root = 0;	/* Number of root directory entries */
-    param.au_size = 0;	/* Cluster size (byte) */
+    //param.au_size = 0;	/* Cluster size default setting - Note: Too large for some cards, causes crash in video player!*/
+    param.au_size = 4096;	/* Cluster size (byte) - match default PC setting*/
 
     error = (*dfs)->MKFS(p_fs->iFSDeviceWorkspace, drivePath, &param);
+
+    IRelease();
+
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZFileSetTableBuffer
+ *---------------------------------------------------------------------------*/
+/**
+ *  Set the buffer pointer for fast seek. Buffer should be pre-init to length
+ *  (of buffer) then pass in the buffer after the file is open.
+ *
+ *  @param [in]    aFile              File to read bytes from
+ *
+ *  @param [in]    aBufPtr            pointer to buffer
+ *
+ *  @return        T_uezError          Error code
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *  #include <uEZFile.h>
+ *
+ *  T_uezFile file;
+ *  TUInt32 position = 100;
+ *  #define FILE_SYSTEM_TABLE_BUFFER_SIZE_A (16*1024)
+ *  uint32_t clmt[FILE_SYSTEM_TABLE_BUFFER_SIZE_A];// Cluster link map table buffer
+ *
+ *  if (UEZFileOpen("Filename.txt", FILE_FLAG_WRITE, &file) == UEZ_ERROR_NONE) {
+ *      // The file opened properly
+ *      clmt[0] = FILE_SYSTEM_TABLE_BUFFER_SIZE_A; // Set table size
+ *      UEZFileSetTableBuffer(file, &clmt[0]);
+ *
+ *      UEZFileSeekPosition(file, position); // Now we are fast seek
+ *      // Now at position 100
+ *  } else {
+ *      // An error occurred opening the file
+ *  }
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError UEZFileSetTableBuffer(T_uezFile aFile, TUInt32 * aBufPtr)
+{
+    T_mountedFS *p_fs;
+    DEVICE_FileSystem **dfs;
+    T_uezError error;
+    T_openFile *p_of;
+
+    IGrab();
+
+    // Get the open file link to this file
+    p_of = (T_openFile *)aFile;
+    p_fs = p_of->iFS;
+    dfs = (DEVICE_FileSystem **)p_fs->iFSDeviceWorkspace;
+
+    // Now do the read command
+    error = (*dfs)->SetTableBuffer(p_fs->iFSDeviceWorkspace, p_of->iFileHandle,
+        (DWORD *) aBufPtr);
 
     IRelease();
 

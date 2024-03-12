@@ -111,8 +111,8 @@ STATIC INLINE void Chip_CREG_SetFlashAcceleration(uint32_t Hz)
 {
 	uint32_t FAValue = Hz / 21510000;
 
-	LPC_CREG->FLASHCFGA = (LPC_CREG->FLASHCFGA & (~(0xF << 12))) | (FAValue << 12);
-	LPC_CREG->FLASHCFGB = (LPC_CREG->FLASHCFGB & (~(0xF << 12))) | (FAValue << 12);
+	LPC_CREG->FLASHCFGA = (LPC_CREG->FLASHCFGA & (uint32_t)(~(0xF << 12))) | (FAValue << 12);
+	LPC_CREG->FLASHCFGB = (LPC_CREG->FLASHCFGB & (uint32_t)(~(0xF << 12))) | (FAValue << 12);
 }
 
 /**
@@ -141,9 +141,9 @@ STATIC INLINE void Chip_CREG_SetFLASHAccess(CREG_FLASHTIM_T clks)
 	uint32_t tmpA, tmpB;
 
 	/* Don't alter lower bits */
-	tmpA = LPC_CREG->FLASHCFGA & ~(0xF << 12);
+	tmpA = LPC_CREG->FLASHCFGA & (uint32_t) ~(0xF << 12);
 	LPC_CREG->FLASHCFGA = tmpA | ((uint32_t) clks << 12);
-	tmpB = LPC_CREG->FLASHCFGB & ~(0xF << 12);
+	tmpB = LPC_CREG->FLASHCFGB & (uint32_t) ~(0xF << 12);
 	LPC_CREG->FLASHCFGB = tmpB | ((uint32_t) clks << 12);
 }
 
@@ -155,7 +155,7 @@ STATIC INLINE void Chip_CREG_SetFLASHAccess(CREG_FLASHTIM_T clks)
  */
 STATIC INLINE void Chip_CREG_EnableUSB0Phy(void)
 {
-	LPC_CREG->CREG0 &= ~(1 << 5);
+	LPC_CREG->CREG0 &= (uint32_t) ~(1 << 5);
 }
 
 /**
@@ -177,7 +177,7 @@ STATIC INLINE void Chip_CREG_DisableUSB0Phy(void)
  */
 STATIC INLINE void Chip_CREG_ConfigureBODaR(uint32_t BODVL, uint32_t BORVL)
 {
-	LPC_CREG->CREG0 = (LPC_CREG->CREG0 & ~((3 << 8) | (3 << 10))) | (BODVL << 8) | (BORVL << 10);
+	LPC_CREG->CREG0 = (LPC_CREG->CREG0 & (uint32_t)~((3 << 8) | (3 << 10))) | (BODVL << 8) | (BORVL << 10);
 }
 
 #if (defined(CHIP_LPC43XX) && defined(LPC_CREG))
@@ -188,7 +188,7 @@ STATIC INLINE void Chip_CREG_ConfigureBODaR(uint32_t BODVL, uint32_t BORVL)
  */
 STATIC INLINE void Chip_CREG_SetM0AppMemMap(uint32_t memaddr)
 {
-	LPC_CREG->M0APPMEMMAP = memaddr & ~0xFFF;
+	LPC_CREG->M0APPMEMMAP = memaddr & (uint32_t)~0xFFF;
 }
 
 /**
@@ -198,7 +198,7 @@ STATIC INLINE void Chip_CREG_SetM0AppMemMap(uint32_t memaddr)
  */
 STATIC INLINE void Chip_CREG_SetM0SubMemMap(uint32_t memaddr)
 {
-	LPC_CREG->M0SUBMEMMAP = memaddr & ~0xFFF;
+	LPC_CREG->M0SUBMEMMAP = memaddr & (uint32_t)~0xFFF;
 }
 
 /**

@@ -9,26 +9,45 @@
   <MemorySegment name="CRP1">
     <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
-  <MemorySegment name="FLASHA">
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.init .init.*)" name=".init"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.text .text.* .glue_7t .glue_7 .gnu.linkonce.t.* .gcc_except_table)" name=".text"/>
+  <MemorySegment name="$(FLASH_NAME:FLASH)">
+    <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
     <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.dtors.*))) KEEP (*(.dtors))" name=".dtors"/>
     <ProgramSection alignment="4" load="Yes" inputsections="KEEP (*(SORT(.ctors.*))) KEEP (*(.ctors))" name=".ctors"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata .rodata.* .gnu.linkonce.r.*)" name=".rodata"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
-    <ProgramSection alignment="4" load="Yes" runin=".fast_run" inputsections="*(.fast .fast.*)" name=".fast"/>
-    <ProgramSection alignment="4" load="Yes" runin=".data_run" inputsections="*(.data .data.* .gnu.linkonce.d.*)" name=".data"/>
+    <ProgramSection alignment="4" load="Yes" name=".text" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+  </MemorySegment>
+  <MemorySegment name="FLASHA">
+    <!-- Move data sections to a segment after the above (in this xml file) so we can split rodata and text. -->
+    <!-- This splitting is based on how Crossworks generates ld file from this xml file. -->
+    <ProgramSection alignment="4" load="Yes" name=".init" />
+    <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
+    <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast" />
+    <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
+    <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
+    <!-- constdata and conststring sections don't normally exist -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" name=".rodata" />
   </MemorySegment>
   <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
   <MemorySegment name="QSPI">
     <!-- Change individual files or folders's .text and .rodata sections to these for QSPI -->
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashResource .ExternalFlashResource.*)" name=".ExternalFlashResource" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashHeader .ExternalFlashHeader.*)" name=".ExternalFlashHeader" />
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashText .ExternalFlashText.*)"     name=".ExternalFlashText" />
+    <!-- Section name overrides on a per-file basis specified in the project file. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashText .ExternalFlashText.*)" name=".ExternalFlashText" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashRodata .ExternalFlashRodata.*)" name=".ExternalFlashRodata" />
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlash .ExternalFlash.*)" name=".ExternalFlash" />
+    <ProgramSection alignment="4" load="Yes" name=".ExternalFlash" />
+    <!-- Some common crypto algorithm files section names. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text.des* .text.ecp* .text.aria* .text.amellia* .text.chacha* .text.brainpool* .text.curve* .text.x255* .text.secp* .text.oid_* .text.dhm_* .text.mpi* .text.aes* .text.gcm* .text.ccm* .text.psa* .text.ssl* .text.tls* .text.x509* .text.eckey* .text.kw_*)" name=".EFlashTextCrypt" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata.des* .rodata.ecp* .rodata.aria* .rodata.amellia* .rodata.chacha* .rodata.brainpool* .rodata.curve* .rodata.x255* .rodata.secp* .rodata.oid_* .rodata.dhm_* .rodata.mpi* .rodata.aes* .rodata.gcm* .rodata.ccm* .rodata.psa* .rodata.ssl* .rodata.tls* .rodata.x509* .rodata.eckey* .rodata.kw_*)" name=".EFlashRodataCrypt" />
+    <!-- Some common network protocols files section names. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text.mbedtls* .text.pkcs* text.snmp* text.mib* text.MQTT* .text.HTTP* .text.IHTTP*  .text.dhcp*)" name=".EFlashText_mbed_pkcs_protocol" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata.mbedtls* .rodata.pkcs*  .rodata.snmp* .rodata.mib* .rodata.MQTT* .rodata.HTTP* .rodata.IHTTP* .rodata.dhcp*)" name=".EFlashRodata_mbed_pkcs_protocol" />
+    <!-- Some common emWin section names. -->
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.text.GUI* .text.LCD* .text.TREEVIEW* .text.MESSAGE* .text.acFont* .text.WIDGET* .text.RADIO* .text.CHECKBOX* .text.acGUI* )" name=".EFlashText_emWin" />
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.rodata.GUI* .rodata.LCD* .rodata.TREEVIEW* .rodata.MESSAGE* .rodata.acFont* .rodata.WIDGET* .rodata.RADIO* .rodata.CHECKBOX* .rodata.acGUI* )" name=".EFlashRodata_emWin" />
   </MemorySegment> 
   <MemorySegment name="SDRAM">
     <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
@@ -55,7 +74,8 @@
     <ProgramSection alignment="4" load="Yes" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack"/>
-    <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process"/>
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>    
   </MemorySegment>

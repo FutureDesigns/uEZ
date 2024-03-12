@@ -30,6 +30,7 @@
 #include <HAL/Interrupt.h>
 #include <Types/CAN.h>
 #include "LPC17xx_40xx_CAN.h"
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

@@ -45,6 +45,7 @@
  *-------------------------------------------------------------------------*/
 #include <HAL/EMAC.h>
 #include <Types/GPIO.h>
+#include <Config_Build.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -53,11 +54,27 @@
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+#ifndef EMAC_ENABLE_JUMBO_FRAME
+#define EMAC_ENABLE_JUMBO_FRAME  0
+#endif
+
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+// On this MCU it allows up to 9,018 bytes (9,022 for VLAN tagged frames) to come in, BUT
+// Per UM10503 28.7.6.3 Ethernet Descriptors it supports buffers up to 8 KB.
+// What this means is that the EMAC_ETH_MAX_FLEN plus the descriptor uint32s must be total less than 8192 bytes or it will fail.
+// Tested with known 9k compatible NICs and it was no go on this LPC with the existing DMA buffer mechanism.
+#define ETH_MTU           (8128)   /* Need to match the TCP_MSS in lwIP */
+
+#else // standard packet size only
+
 #define ETH_MTU           1500   /* Max. Ethernet Frame Size (Used by LwIP) */
-  
-#define EMAC_ETH_MAX_FLEN 1536      /* Max. Ethernet Frame Size          */
-#define ETH_FRAG_SIZE     EMAC_ETH_MAX_FLEN   /* Packet Fragment size 1536 Bytes   */
+
+#endif // EMAC_ENABLE_JUMBO_FRAME
+
+#define EMAC_ETH_MAX_FLEN (ETH_MTU+36)        /* Max. Ethernet Frame Size          */
+#define ETH_FRAG_SIZE     EMAC_ETH_MAX_FLEN   /* Packet Fragment Size Bytes        */
 #define ETH_MAX_FLEN      EMAC_ETH_MAX_FLEN   /* Max. Ethernet Frame Size          */
+
 
 typedef struct {
     T_uezGPIOPortPin iTX_EN;    // ENET_TX_ENn  (O)     Transmit data enable, active low

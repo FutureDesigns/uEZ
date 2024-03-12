@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V10.4.3
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.6.1
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -63,14 +65,14 @@
  * This macro accesses the co-routine ready lists and therefore must not be
  * used from within an ISR.
  */
-    #define prvAddCoRoutineToReadyQueue( pxCRCB )                                                                       \
-    {                                                                                                                   \
-        if( pxCRCB->uxPriority > uxTopCoRoutineReadyPriority )                                                          \
-        {                                                                                                               \
-            uxTopCoRoutineReadyPriority = pxCRCB->uxPriority;                                                           \
-        }                                                                                                               \
-        vListInsertEnd( ( List_t * ) &( pxReadyCoRoutineLists[ pxCRCB->uxPriority ] ), &( pxCRCB->xGenericListItem ) ); \
-    }
+    #define prvAddCoRoutineToReadyQueue( pxCRCB )                                                                               \
+    do {                                                                                                                        \
+        if( ( pxCRCB )->uxPriority > uxTopCoRoutineReadyPriority )                                                              \
+        {                                                                                                                       \
+            uxTopCoRoutineReadyPriority = ( pxCRCB )->uxPriority;                                                               \
+        }                                                                                                                       \
+        vListInsertEnd( ( List_t * ) &( pxReadyCoRoutineLists[ ( pxCRCB )->uxPriority ] ), &( ( pxCRCB )->xGenericListItem ) ); \
+    } while( 0 )
 
 /*
  * Utility to ready all the lists used by the scheduler.  This is called

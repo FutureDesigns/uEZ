@@ -274,6 +274,17 @@ T_uezError UEZFileSystemGetStorageInfo(
  */
 T_uezError UEZFileMKFS(const char aDriveNum);
 
+/**
+ *	Set the buffer to hold sector table mapping for improved seek performance.
+ *  Will prevent having to read the file tables repeatedly.
+ *
+ *	@param[in]	aFile				File to read bytes from
+ *	@param[out]	*aBufPtr	Pointer to buffer sector table
+ *
+ *	@return	T_uezError
+ */ 
+T_uezError UEZFileSetTableBuffer(T_uezFile aFile, TUInt32 * aBufPtr);
+
 #ifdef __cplusplus
 }
 #endif

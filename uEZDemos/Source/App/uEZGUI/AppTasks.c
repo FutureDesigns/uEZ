@@ -28,8 +28,9 @@
 #include <uEZToneGenerator.h>
 #include <uEZAudioMixer.h>
 #include "AppTasks.h"
+#include "lwipopts.h"
 #include <NVSettings.h>
-#include <HAL/GPIO.h>
+#include <uEZGPIO.h>
 #include <Config_Build.h>
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
 #include <uEZNetwork.h>
@@ -57,6 +58,8 @@ T_uezTask G_heartBeatTask;
  *---------------------------------------------------------------------------*/
 TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     UEZGPIOOutput(GPIO_HEARTBEAT_LED);
     UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);
 
@@ -103,18 +106,24 @@ T_uezError SetupTasks(void)
 #endif
 
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
+#if (LWIP_IPV6 == 1)
+#define IP6_APP_EXTRA_TASK_BYTES 256
+#else
+#define IP6_APP_EXTRA_TASK_BYTES 0
+#endif
+
     error = UEZTaskCreate(
                 (T_uezTaskFunction)NetworkStartup,
                 "NetStart",
                 
 #if(UEZ_PROCESSOR == NXP_LPC4357)
-                UEZ_TASK_STACK_BYTES(1536),
+                UEZ_TASK_STACK_BYTES(6144+IP6_APP_EXTRA_TASK_BYTES),
 #endif
 #if(UEZ_PROCESSOR == NXP_LPC4088)
-                UEZ_TASK_STACK_BYTES(1152),
+                UEZ_TASK_STACK_BYTES(6144+IP6_APP_EXTRA_TASK_BYTES),
 #endif
 #if(UEZ_PROCESSOR == NXP_LPC1788)
-                UEZ_TASK_STACK_BYTES(1024),
+                UEZ_TASK_STACK_BYTES(6144+IP6_APP_EXTRA_TASK_BYTES),
 #endif
                 (void *)0,
                 UEZ_PRIORITY_NORMAL,
@@ -140,6 +149,8 @@ T_uezError SetupTasks(void)
  *---------------------------------------------------------------------------*/
 TUInt32 SpkrTestContinuous(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     UEZTaskDelay(7500);
     for (;;)
     {

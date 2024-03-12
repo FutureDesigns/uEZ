@@ -254,7 +254,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         }
     break;
   case WM_PAINT:
-    Id    = WM_GetId(pMsg->hWinSrc);
+    //Id    = WM_GetId(pMsg->hWinSrc); // This causes a crash only on certain units?
     NCode = pMsg->Data.v;
     hItem = pMsg->hWin;
 
@@ -302,6 +302,8 @@ WM_HWIN CreateWindow(void) {
  /*---------------------------------------------------------------------------*/
 static TBool IHandleBack(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+    PARAM_NOT_USED(pMsg);
+    PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         WindowManager_Show_Window(HOME_SCREEN);
     }
@@ -322,6 +324,8 @@ static TBool IHandleBack(WM_MESSAGE * pMsg, int aNCode, int aID)
  /*---------------------------------------------------------------------------*/
 static TBool IHandleCapture(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+    PARAM_NOT_USED(pMsg);
+    PARAM_NOT_USED(aID);
     if (aNCode == WM_NOTIFICATION_RELEASED) {
         Storage_CaptureScreen(RADIO_GetValue(WM_GetDialogItem(pMsg->hWin, ID_RADIO_SELMED)));
     }
@@ -377,7 +381,7 @@ static TBool IHandleStorageTest(WM_MESSAGE * pMsg, int aNCode, int aID)
  *  @return                 The emWin Handle to this window
  */
  /*---------------------------------------------------------------------------*/
-WM_HWIN StorageWindow_Create()
+WM_HWIN StorageWindow_Create(void)
 {
     return GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), &_cbDialog, 0,0,0);
 }

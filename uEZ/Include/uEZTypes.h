@@ -48,12 +48,8 @@
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
-#include <stdint.h> /* for int types */
-#include <CMSIS/cmsis_compiler.h> /* for int types */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stdint.h> /* for int types and __WEAK type (only on IAR) */
+//#include <CMSIS/cmsis_compiler.h> // currently required for __WEAK on gcc. TODO we need non-ARM specific defines for USED, WEAK, etc.
 
 /** Default types for all compilers */
 typedef uint32_t TUInt32;
@@ -81,6 +77,8 @@ typedef volatile TInt8 TVInt8;
 typedef TUInt32 T_uezHandle;
 typedef T_uezHandle T_uezDevice;
 
+#include <uEZProcessor.h>
+
 /*-------------------------------------------------------------------------*
  * Macros:
  *-------------------------------------------------------------------------*/
@@ -90,13 +88,18 @@ typedef T_uezHandle T_uezDevice;
 #define CPUReg8(addr)       *((TVUInt8 *)(addr))
 #define UEZ_PARAMETER_NOT_USED(p) (void) ((p))
 
-#if (COMPILER_TYPE==RowleyARM) // TODO can probably remove rowley specific now
+#if (COMPILER_TYPE==GCC_ARM) // TODO can probably remove rowley specific now
     #define PARAM_NOT_USED(p)     (p)=(p)
     #define VARIABLE_NOT_USED(v)  (v)=(v)
 #else
     #define PARAM_NOT_USED(p) (void) ((p))
     #define VARIABLE_NOT_USED(v) (void) ((v))
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #ifdef __cplusplus
 }

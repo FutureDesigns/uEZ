@@ -19,6 +19,7 @@
  *
  *-------------------------------------------------------------------------*/
 #include <stdio.h>
+#include <string.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
 #include <uEZTS.h>
@@ -35,6 +36,7 @@
 #include <uEZLCD.h>
 #include <uEZAudioMixer.h>
 #include <uEZWatchdog.h>
+#include <VideoPlayer.h> // bootup video
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -62,6 +64,10 @@
 #define SPEAKER_RELIABILITY_TEST  0
 #define ACCELEROMETER_TEST        0
 
+#ifndef UEZ_AWS_IOT_CLIENT_DEMO
+#define UEZ_AWS_IOT_CLIENT_DEMO   0
+#endif
+
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
@@ -69,7 +75,7 @@ static SWIM_WINDOW_T G_mmWin;
 TUInt32 G_romChecksum;
 TBool G_romChecksumCalculated;
 
-#if TS_TEST_DEMO
+#if (TS_TEST_DEMO == 1)
 extern void TS_Test_Demo(const T_choice *aChoice);
 #endif
 void ResetDevice(const T_choice *p_choice);
@@ -82,8 +88,11 @@ static const T_appMenuEntry apps_menu_entries[] = {
     { "Accelerometer", AccelDemoMode, G_accelIcon, 0 },
     { "Time & Date", TimeDateMode, G_timeDateIcon, 0 },
     { "Temperature", TempMode, G_temperatureIcon, 0 },
-#if TS_TEST_DEMO 
+#if (TS_TEST_DEMO == 1)
     { "TSTest", TS_Test_Demo, G_temperatureIcon, 0 },
+#endif
+#if (UEZ_AWS_IOT_CLIENT_DEMO == 1)
+    { "MQTT Demo", emWin, G_MQTT_Logo, 0 },
 #endif
     { 0 },
 };
@@ -165,8 +174,9 @@ static const T_appMenu mainmenu = {
  * Outputs:
  *      TUInt32                   -- 32-bit additive checksum
  *---------------------------------------------------------------------------*/
-TUInt32 ROMChecksumCalculate()
+TUInt32 ROMChecksumCalculate(void)
 {
+    // First Flash Bank
 #if (UEZ_PROCESSOR != NXP_LPC4357)
     TUInt8 *p = (TUInt8 *)0x00000000;
 #else
@@ -175,9 +185,44 @@ TUInt32 ROMChecksumCalculate()
     TUInt32 checksum = 0;
     TUInt32 count;
 
-    for (count=32; count<0x7E000; count++) {
+    checksum += *(p);
+    for (count=0; count<0x80000; count++) {
         checksum += *(p++);
     }
+
+#if (UEZ_PROCESSOR != NXP_LPC4357)
+#else
+    UEZTaskDelay(1);
+    // Second Flash Bank
+    p = (TUInt8 *)0x1B000000;
+    checksum += *(p);
+    for (count=0; count<0x80000; count++) {
+        checksum += *(p++);
+    }
+#endif
+
+    UEZTaskDelay(1);
+#if (UEZ_PROCESSOR == NXP_LPC1788)
+    p = (TUInt8 *)0x80000000; // NOR Flash
+    checksum += *(p);
+    for (count=0; count<0x800000; count++) { // first 1 MB only for now
+        checksum += *(p++);
+    }
+#endif
+#if (UEZ_PROCESSOR == NXP_LPC4088)
+    p = (TUInt8 *)0x28000000; // QSPI
+    checksum += *(p);
+    for (count=0; count<0x800000; count++) { // first 1 MB only for now
+        checksum += *(p++);
+    }
+#endif
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+    p = (TUInt8 *)0x14000000; // QSPI
+    checksum += *(p);
+    for (count=0; count<0x800000; count++) { // first 1 MB only for now
+        checksum += *(p++);
+    }
+#endif
 
     return checksum; // Don't use this for anything important! Does not check the full memory size of the application!
 }
@@ -260,8 +305,9 @@ void TitleScreen(void)
 #if FAST_STARTUP
         sprintf(buffer, "CS:????");
 #else
-        while (!G_romChecksumCalculated)
+        while (!G_romChecksumCalculated) {
             UEZTaskDelay(10);
+        }
         /*sprintf(buffer, "CS:%08X", G_romChecksum); // TODO you can't actually see this.
         swim_set_font_transparency(&G_mmWin, 1);
         swim_put_text_xy(
@@ -293,6 +339,63 @@ void MainMenu(void)
         //UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 128);
 
 #if (!FAST_STARTUP)
+
+#if (APP_DEMO_ENABLE_STARTUP_VIDEO == 1)
+        // This is from title screen function, but we don't call it anymore
+        G_romChecksumCalculated = EFalse;
+        UEZTaskCreate(
+        (T_uezTaskFunction)CalcChecksumTask,
+        "Chksum",
+        UEZ_TASK_STACK_BYTES(512),
+        (void *)0,
+        UEZ_PRIORITY_NORMAL,
+        0);
+
+        TUInt16 i;
+        // Setup the info for the startup video.
+        T_VideoInfo videoInfo = { .iVideoPath = {"1:/BOOT/BOOT.BIN"},
+                                  .iAudioPath = {"1:/BOOT/BOOT.WAV"},
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+                                  .iFPS = 15,
+                                  .iVideoWidth = 536,
+                                  .iVideoHeight = 328,
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+                                  .iFPS = 15,
+                                  .iVideoWidth = 480,
+                                  .iVideoHeight = 272,
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+                                  .iFPS = 15,
+                                  .iVideoWidth = 480,
+                                  .iVideoHeight = 272,
+#endif
+                                  .iType = VIDEO_TYPE_BIN,
+                                  .iTitle = {0},
+                                  .iTextLine1 = {0},
+                                  .iTextLine2 = {0}};
+        T_choice videoChoice = {.iData = &videoInfo};
+        VideoPlayer(&videoChoice); // play the startup video, will automatically turn the brightness up to 255.
+
+        for (i=224; i>0; ) { // turn brightness down for fadeout
+            UEZLCDBacklight(lcd, i);
+            UEZTaskDelay(1);
+            i = i - 32;
+        }
+        UEZLCDBacklight(lcd, i);
+        // Clear the screen to black, we might be on second buffer so clear both.
+        memset(FRAME(0), 0, DISPLAY_WIDTH*DISPLAY_HEIGHT*2);
+        memset(FRAME(1), 0, DISPLAY_WIDTH*DISPLAY_HEIGHT*2);
+        // Now bring the backlight back on for the main menu like we normally do.
+        for (i=5; i<255; ){
+            UEZLCDBacklight(lcd, i);
+            UEZTaskDelay(1);
+            i= i + 5;
+        }
+        while (!G_romChecksumCalculated) {
+            UEZTaskDelay(10);
+        }
+#else
         // Clear the screen
         TitleScreen();
 	
@@ -303,6 +406,7 @@ void MainMenu(void)
         PlayAudio(783, 100);
         PlayAudio(659, 100);
         PlayAudio(523, 100);
+#endif
 
         // Force calibration?
 #if (SPEAKER_RELIABILITY_TEST == 0)
@@ -388,6 +492,7 @@ void MainMenu(void)
  *---------------------------------------------------------------------------*/
 void ResetDevice(const T_choice *p_choice)
 {
+    PARAM_NOT_USED(p_choice);
     UEZPlatform_Watchdog_Require();
     T_uezDevice watchdog;
 

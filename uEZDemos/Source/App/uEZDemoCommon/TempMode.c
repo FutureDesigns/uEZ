@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
+#include <uEZMemory.h>
 #include <Device/ADCBank.h>
 #include <Device/Temperature.h>
 #include <Device/RTC.h>
@@ -260,7 +261,7 @@ static void TMUpdate(T_timeDateWorkspace *G_ws)
     TInt32 i, f;
     char number[12];
 
-    // Now do the RTC
+    // Now do the temperature update in 15.16 degrees C
     if (UEZTemperatureRead(G_ws->iTemperature, &t) == UEZ_ERROR_NONE) {
         if (G_ws->iMode == 1) {
             // Convert to Fahrenheit
@@ -292,6 +293,7 @@ static void TMUpdate(T_timeDateWorkspace *G_ws)
 
 void TempMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
     static T_timeDateWorkspace *G_ws = NULL;

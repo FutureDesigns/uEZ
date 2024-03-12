@@ -18,16 +18,16 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-#include <Config.h>
-#include <uEZTypes.h>
-#include <uEZ.h>
-#include <uEZPlatform.h>
 #include <uEZProcessor.h>
+//#include <uEZ.h>
+
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.h>
-#include <uEZBSP.h>
-#include <uEZGPIO.h>
-#include <uEZLCD.h>
+//#include <uEZBSP.h>
+//#include <uEZGPIO.h>
 #include <HAL/Interrupt.h>
+//#include <uEZLCD.h>
+#include <uEZMemory.h>
+#include <uEZPlatform.h>
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
@@ -229,16 +229,18 @@ void CPUEnableInterrupts(void)
 //ToDo: remove these functions
 void LPC43xxPowerOn(TUInt32 bits)
 {
-    extern uint32_t G_LPC43xx_powerSetting;
-    G_LPC43xx_powerSetting |= (bits);
+    PARAM_NOT_USED(bits);
+    //extern uint32_t G_LPC43xx_powerSetting;
+    //G_LPC43xx_powerSetting |= (bits);
     // Note: this LPC doesn't have a PCONP type register, but older and newer LPCs do!
     //LPC_SC->PCONP = G_LPC43xx_powerSetting;
 }
 
 void LPC43xxPowerOff(TUInt32 bits)
 {
-    extern uint32_t G_LPC43xx_powerSetting;
-    G_LPC43xx_powerSetting &= ~(bits);
+    PARAM_NOT_USED(bits);
+    //extern uint32_t G_LPC43xx_powerSetting;
+    //G_LPC43xx_powerSetting &= ~(bits);
     // Note: this LPC doesn't have a PCONP type register, but older and newer LPCs do!
     //LPC_SC->PCONP = G_LPC43xx_powerSetting;
 }
@@ -395,6 +397,115 @@ void LPC43xxSetupInterCoreInterrupts(void){
 #ifdef CORE_M0SUB // TODO
 #endif
 }
+
+// Note that uEZBSP Delays are only accurate for around level 2 or medium optimization.
+// With no optimization it will be about double the time. So we will always optimize them.
+// For IAR application projects set the optimization level of this file to medium or high.
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSPDelayUS
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Use a delay loop to approximate the time to delay.
+ *      Should use UEZTaskDelayMS() when in a task instead.
+ *---------------------------------------------------------------------------*/
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelay1US(void)
+{
+#ifdef CORE_M4
+/* 	Measured to 1.004 microseconds GPIO switch time: (RTOS off)
+ *  -   Based on release build with high optimization speed setting, inline
+ *      small functions enabled, with GPIO on/off verified with a scope.
+ *      Use the following code for direct GPIO switching (example GPIO_P5_3):
+ *          LPC_GPIO_PORT->SET[5] = 8; 
+ *          UEZBSPDelay1US();        
+ *          LPC_GPIO_PORT->CLR[5] = 8; 
+ */
+#if 1 //( PROCESSOR_OSCILLATOR_FREQUENCY == 204000000)
+    nops100();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops10();
+    nop();
+    nop();
+    nop();
+    nop();
+#endif
+#if 0 // ( PROCESSOR_OSCILLATOR_FREQUENCY == 200000000) // TODO not validated yet.
+    nops100();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops10();
+    nop();
+#endif
+#endif
+
+#ifdef CORE_M0 // 
+// 	Measured to 1.005s from gcc build UEZBSPDelayMS(1000) call.
+#if 1 // ( PROCESSOR_OSCILLATOR_FREQUENCY == 204000000)
+    nops100();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops10();
+#endif
+#if 0 //( PROCESSOR_OSCILLATOR_FREQUENCY == 200000000) // TODO not validated yet.
+    nops100();
+    nops50();
+    nops10();
+    nops10();
+    nops10();
+    nops5();
+    nop();
+    nop();
+#endif
+#endif
+})
+
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelayUS(uint32_t aMicroseconds)
+{
+    while (aMicroseconds--)
+        UEZBSPDelay1US();
+})
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSPDelayMS
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Use a delay loop to approximate the time to delay.
+ *      Should use UEZTaskDelayMS() when in a task instead.
+ *---------------------------------------------------------------------------*/
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelay1MS(void)
+{    
+/* 	Measured to 1.000 milliseconds GPIO switch time: (RTOS off)
+ *  -   Based on release build with high optimization speed setting, inline
+ *      small functions enabled, with GPIO on/off verified with a scope.
+ *      Use the following code for direct GPIO switching (example GPIO_P5_3):
+ *          LPC_GPIO_PORT->SET[5] = 8; 
+ *          UEZBSPDelay1MS();        
+ *          LPC_GPIO_PORT->CLR[5] = 8; 
+ */  
+    TUInt32 i;
+
+    // Approximate delays here    
+    for (i = 0; i < 995; i++)
+        UEZBSPDelay1US();
+})
+
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelayMS(uint32_t aMilliseconds)
+{
+    while (aMilliseconds--) {
+        UEZBSPDelay1MS();
+    }
+})
 
 /*-------------------------------------------------------------------------*
  * End of File:  LPC4357_UtilityFuncs.c

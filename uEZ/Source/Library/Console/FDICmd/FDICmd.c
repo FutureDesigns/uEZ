@@ -43,6 +43,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <uEZStream.h>
 #include "FDICmd.h"
 

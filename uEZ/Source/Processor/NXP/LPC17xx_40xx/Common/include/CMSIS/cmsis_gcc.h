@@ -832,7 +832,7 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
  */
 __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
 {
-#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
 #if __has_builtin(__builtin_arm_get_fpscr) 
 // Re-enable using built-in when GCC has been fixed
@@ -858,7 +858,7 @@ __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
  */
 __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
 {
-#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+#if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
 #if __has_builtin(__builtin_arm_set_fpscr)
 // Re-enable using built-in when GCC has been fixed

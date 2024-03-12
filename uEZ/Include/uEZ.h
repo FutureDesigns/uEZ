@@ -52,7 +52,7 @@
 #include <Config.h>
 #include <uEZTypes.h>
 #include <uEZErrors.h>
-#include <uEZMemory.h>
+//#include <uEZMemory.h>
 #include <uEZTickCounter.h>
 #include <uEZRTOS.h>
 //#include <uEZLCD.h>

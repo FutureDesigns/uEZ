@@ -38,9 +38,9 @@
 #define _UEZPROCESSOR_LPC43xx_H_
 
 #include <Config.h>
-#include <CMSIS/LPC43xx.h>
+#include <CMSIS/LPC43xx.h> // It isn't possible to include this in IAR ASM
 #include <Types/GPIO.h>
-#include "LPC43xx_UtilityFuncs.h"
+//#include "LPC43xx_UtilityFuncs.h" // Don't include this as it will interfere with RTOS malloc
 #include "LPC43xx_EMAC.h"
 
 // Information about the processor
@@ -61,9 +61,10 @@
 //#define UEZ_PROCESSOR_CORE_SUBTYPE          CORE_SUBTYPE_NONE // Not used today
 #endif
 
-#define AHBSRAM0_BASE       0x20000000  // 16K: Ethernet descriptors/memory
-#define AHBSRAM1_BASE       0x20004000  // 16K: Ethernet memp in first 10K
-//      USB in last 6K
+// AHB bases for Ethernet/USB memory. Generally USB will go first as it requires more alignment
+#define AHBSRAM0_BASE       0x20000000  // 32K: usbhostsmem, then start of emacmem
+#define AHBSRAM1_BASE       0x20008000  // 16K: emacmem continues
+#define AHBSRAM2_BASE       0x2000C000  // 16K: emacmem continues or traceETB goes here
 
 // External processor speed
 #ifndef OSCILLATOR_CLOCK_FREQUENCY
@@ -98,38 +99,7 @@
 #define INTERRUPT_CHANNEL_ETHERNET  ENET_IRQn
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==CodeRed)
-#define     IRQ_ROUTINE(name)  void name(void) ;\
-                                void name(void)
-#define     IRQ_START()
-#define     IRQ_END()
-#define     IRQ_HANDLER(funcname, param) \
-                    IRQ_ROUTINE(funcname##_irq) \
-                    IRQ_START() \
-                    funcname(param);\
-                    IRQ_END()
-#define     __packed        __attribute__((packed))
-#define     INLINE          inline
-#define     IN_INTERNAL_RAM  // tbd
-#endif // (COMPILER_TYPE==CodeRed)
-
-// Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==RowleyARM)
-#define     IRQ_ROUTINE(name)  void name(void) ;\
-                                void name(void)
-#define     IRQ_START()
-#define     IRQ_END()
-#define     IRQ_HANDLER(funcname, param) \
-                    IRQ_ROUTINE(funcname##_irq) \
-                    IRQ_START() \
-                    funcname(param);\
-                    IRQ_END()
-#define     __packed        __attribute__((packed))
-#define INLINE inline __attribute__((always_inline))
-#define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
-#endif // (COMPILER_TYPE==RowleyARM)
-
-#if (COMPILER_TYPE==GCC)
+#if (COMPILER_TYPE==GCC_ARM)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -158,8 +128,7 @@
 #define     IN_INTERNAL_RAM  // tbd
 #endif // (COMPILER_TYPE==IAR)
 
-// Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -172,19 +141,15 @@
 #define     __packed        __attribute__((packed))
 #define     INLINE          __inline
 #define     IN_INTERNAL_RAM  // tbd
-#endif // (COMPILER_TYPE==Keil4)
+#endif // (COMPILER_TYPE==KEIL_UV)
 
-
-#if(COMPILER_TYPE == RowleyARM)
-	#define NOP() __NOP()
-#endif
-#if(COMPILER_TYPE == GCC)
+#if(COMPILER_TYPE == GCC_ARM)
 	#define NOP() __NOP()
 #endif
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
 #endif
-#if(COMPILER_TYPE == Keil4)
+#if(COMPILER_TYPE == KEIL_UV)
 	#define __NOP                             __nop
 	#define NOP()	__NOP
 #endif

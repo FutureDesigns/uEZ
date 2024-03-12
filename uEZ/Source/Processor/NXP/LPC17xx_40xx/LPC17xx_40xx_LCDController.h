@@ -44,6 +44,7 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <HAL/LCDController.h>
+#include <uEZGPIO.h>
 
 #ifdef __cplusplus
 extern "C" {

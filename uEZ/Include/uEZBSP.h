@@ -47,6 +47,64 @@
  */
 #include "Config.h"
 #include "uEZTypes.h"
+#include "uEZRTOS.h"
+
+/* ---------- Assembly-Language Function Inline Expansion Macros ---------- */
+#if defined (__IAR_SYSTEMS_ICC__)
+  #define PRAGMA(A) _Pragma(#A)
+#endif
+
+#if  defined(__GNUC__)
+// TODO inline ASM BSP
+
+#elif defined(__IAR_SYSTEMS_ICC__)
+// TODO inline ASM BSP
+#endif
+
+#define FDI_BSP_ASM_INTERNAL_USED(p)        ((void)(p));
+
+#if defined(__CDT_PARSER__) // hide in hopefully all eclipse parsers
+
+#define FDI_BSP_ASM_LINE(...)            /* none */
+#define FDI_BSP_ASM_LAB_NEXT(n)     /* none */
+#define FDI_BSP_ASM_LAB_PREV(n)     /* none */
+#define FDI_BSP_ASM_LAB(n_colon)    /* none */
+#define FDI_BSP_ASM_FUNC_BEGIN           /* none */
+#define FDI_BSP_ASM_FUNC_END             /* none */
+
+#else // not using parser
+
+#if defined(__GNUC__)
+
+#define _FDI_BSP_ASM(...)           #__VA_ARGS__
+#define FDI_BSP_ASM_LINE(...)       _FDI_BSP_ASM(__VA_ARGS__\n)
+#define FDI_BSP_ASM_LINE2(...)      #__VA_ARGS__
+#define FDI_BSP_ASM_LAB_NEXT(n)     n+
+#define FDI_BSP_ASM_LAB_PREV(n)     n-
+#define FDI_BSP_ASM_LAB(n_colon)    FDI_BSP_ASM_LINE(n_colon:)
+#define FDI_BSP_ASM_FUNC_BEGIN      __asm__ volatile (
+#define FDI_BSP_ASM_FUNC_END        );
+
+#elif defined(__IAR_SYSTEMS_ICC__)
+// For IAR the format should look as follows with required newlines inserted
+// at the end of each statemett inside of the quote marks.
+// IAR requires all statements in a single asm(); to find lables correctly.
+// asm("lN R20, 0x37 \n"     "looplabel: \n"     "RJMP looplabel \n");
+// You must keep this diag suppressed or it will trigger on every used line.
+#pragma diag_suppress=Pe007 // IAR will complain about the \n if you we don't suppress this one.
+#define _FDI_BSP_ASM(...)           #__VA_ARGS__
+#define FDI_BSP_ASM_LINE(...)       _FDI_BSP_ASM(__VA_ARGS__\n) 
+//#define FDI_BSP_ASM_LAB_NEXT(n)     _lab##n // TODO
+//#define FDI_BSP_ASM_LAB_PREV(n)     _lab##n // TODO
+#define FDI_BSP_ASM_LAB(n_colon)    FDI_BSP_ASM_LINE(n_colon:)
+#define FDI_BSP_ASM_FUNC_BEGIN      asm volatile(
+#define FDI_BSP_ASM_FUNC_END        );
+
+#endif
+
+#endif /* defined(__CDT_PARSER__) */
+
+/* ---------- Assembly-Language Function Inline Expansion Macros ---------- */
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,6 +126,11 @@ void UEZBSPDelayUS(uint32_t aMicroseconds);
 
 void uEZProcessorServicesInit(void);
 void uEZPlatformInit(void);
+
+#if (configGENERATE_RUN_TIME_STATS == 1)
+T_uezError UEZBSP_ConfigureTimerForRunTimeStats(void);
+configRUN_TIME_COUNTER_TYPE UEZBSP_GetGetRunTimeStatsCounter(void);
+#endif
 
 #ifdef __cplusplus
 }

@@ -26,9 +26,10 @@
 #if ( RTOS == SafeRTOS )
 #include <SafeRTOSConfig.h>
 #endif
-#if (COMPILER_TYPE == RowleyARM)
+#if (COMPILER_TYPE == GCC_ARM)
 #include <intrinsics.h>
 #endif
+#include <Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.h>
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -116,18 +117,8 @@ void InterruptRegister(
 #endif
 
     // Set the interrupt priority.
-#if (RTOS == SafeRTOS)
-	/* <<< WHIS >>> Assignment of interrupt levels is critical to the correct 
-	operation of UEZ and SafeRTOS. Interrupt.h defines levels between 0-15, 
-	whereas the LPC43xx has 32 interrupt levels. However all UEZ interrupts
-	use the semaphore release and therefore need to be greater than 
-	configSYSTEM_INTERRUPT_PRIORITY_LVL. configSYSTEM_INTERRUPT_PRIORITY_LVL is
-	defined as 16 so we can just add the uEZ priority to the RTOS threshold
-	to arrive a legal priority between 16 and 31. */
-    NVIC_SetPriority((IRQn_Type)aInterruptChannel, configSYSTEM_INTERRUPT_PRIORITY_LVL + aPriority);
-#else
-    NVIC_SetPriority((IRQn_Type)aInterruptChannel, 2+aPriority);
-#endif	
+    InterruptSetPriority(aInterruptChannel, aPriority);
+
     //NVIC_EnableIRQ((IRQn_Type)aInterruptChannel);
 }
 
@@ -365,6 +356,36 @@ TBool InterruptIsRegistered(TUInt32 aInterruptChannel)
     }
   
     return EFalse;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  InterruptSetPriority
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Change priority of a rgistered interrupt, respecting RTOS prio level.
+ * Inputs:
+ *      TUInt32 aInterruptChannel -- Channel of interrupt to register
+ *      T_irqPriority aPriority   -- Priority of interrupt. 
+ *---------------------------------------------------------------------------*/
+void InterruptSetPriority(
+        TUInt32 aInterruptChannel,        
+        T_irqPriority aPriority)
+{
+#if (RTOS == SafeRTOS)
+    // TODO clean this up and possibly move this SafeRTOS specific code out of here.
+    // TODO validate the correct priority number for SafeRTOS and this LPC.
+    // TODO remove the hardcoded priority level here and use defines in RTOS configs.
+	/* <<< WHIS >>> Assignment of interrupt levels is critical to the correct 
+	operation of UEZ and SafeRTOS. Interrupt.h defines levels between 0-15, 
+	whereas the LPC43xx has 8 interrupt levels. However all UEZ interrupts
+	use the semaphore release and therefore need to be greater than 
+	configSYSTEM_INTERRUPT_PRIORITY_LVL. configSYSTEM_INTERRUPT_PRIORITY_LVL is
+	defined as 16 so we can just add the uEZ priority to the RTOS threshold
+	to arrive a legal priority between 16 and 31. */
+    NVIC_SetPriority((IRQn_Type)aInterruptChannel, configSYSTEM_INTERRUPT_PRIORITY_LVL + aPriority);
+#else
+    NVIC_SetPriority((IRQn_Type)aInterruptChannel, 2+aPriority);
+#endif	
 }
 
 /*-------------------------------------------------------------------------*

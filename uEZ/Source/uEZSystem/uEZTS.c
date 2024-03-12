@@ -109,7 +109,7 @@ static T_tsDevice *G_tsDevices = 0;
 static T_uezSemaphore G_tsSem;
 
 // Task handle of touchscreen monitoring task
-T_uezTask G_tsMonitorTask; // want to be able to get task handle
+T_uezTask G_tsMonitorTask = NULL; // want to be able to get task handle
 
 // Declare static TS queues when not using dynamic memory allocation. 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
@@ -182,7 +182,7 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
         IUEZTSGrab();
         p = G_tsDevices;
         while (p) {
-            if (UEZTSGetReading(p->iDevice, &reading) == UEZ_ERROR_NONE)  {            
+            if (UEZTSGetReading(p->iDevice, &reading) == UEZ_ERROR_NONE)  {
                 if(reading.iFlags & TSFLAG_PEN_DOWN) {
                     UEZLCDScreensaverWake();
                     

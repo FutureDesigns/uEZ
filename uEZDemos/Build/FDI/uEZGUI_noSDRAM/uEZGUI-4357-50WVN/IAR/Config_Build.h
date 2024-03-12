@@ -1,6 +1,5 @@
 #define BUILD_NUMBER                        2
 #define BUILD_DATE                          "7/29/2016"
-#define COMPILER_TYPE                       IAR
 #define UEZ_PROCESSOR                       NXP_LPC4357
 #define PROCESSOR_OSCILLATOR_FREQUENCY      204000000
 #define OSCILLATOR_CLOCK_FREQUENCY          12000000

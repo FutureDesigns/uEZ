@@ -78,7 +78,7 @@ static void Chip_USB_PllSetup(void)
 
 void Chip_USB0_Init(void)
 {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB1 only off board USB
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Allow USB1 only off board USB
 #else
 
     //Chip_CREG_DisableUSB0Phy(); // Seems we don't need to disable existing clocks, but could if coming from some unknown state in bootloader.
@@ -101,7 +101,7 @@ void Chip_USB0_Init(void)
 
 void Chip_USB1_Init(void)
 {
-//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB0 only on board USB
+//#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Allow USB0 only on board USB
 //#else
 	/* Setup and enable the PLL */
 	Chip_USB_PllSetup();

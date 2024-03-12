@@ -352,6 +352,7 @@ static void TS_FT5306DE4_ApplyCalibration(
     v = DISPLAY_HEIGHT-1;
 #endif
   *newY = (TUInt32)y;
+  PARAM_NOT_USED(v);
 }
 
 /*---------------------------------------------------------------------------*

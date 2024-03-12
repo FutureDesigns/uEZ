@@ -64,7 +64,24 @@
 #define UEZ_GUI_PLATFORM_USE_SPI0_OVER_SSP  1
 
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
-
+#ifndef APP_MENU_ALLOW_TEST_MODE
+#define APP_MENU_ALLOW_TEST_MODE            0
+#endif
+#ifndef RENAME_INI
+#define RENAME_INI                          0
+#endif
+#ifndef LPC43XX_ENABLE_M0_CORES
+#define LPC43XX_ENABLE_M0_CORES             0
+#endif
+#ifndef UEZ_WIRELESS_PROGRAM_MODE
+#define UEZ_WIRELESS_PROGRAM_MODE           0
+#endif
+#ifndef UEZ_ENABLE_WIRELESS_NETWORK
+#define UEZ_ENABLE_WIRELESS_NETWORK         0
+#endif
+#ifndef UEZ_ENABLE_AUDIO_CODEC
+#define UEZ_ENABLE_AUDIO_CODEC              0
+#endif
 /*-------------------------------------------------------------------------*
  * Default Values:
  *-------------------------------------------------------------------------*/
@@ -114,7 +131,7 @@
 
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
-#define MAIN_TASK_STACK_SIZE        UEZ_TASK_STACK_BYTES(7*4096)
+#define MAIN_TASK_STACK_SIZE        UEZ_TASK_STACK_BYTES(8*4096)
 
 #define FAST_STARTUP                0
 

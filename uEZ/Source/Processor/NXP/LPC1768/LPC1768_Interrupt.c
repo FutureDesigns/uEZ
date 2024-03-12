@@ -24,7 +24,7 @@
 #include <CMSIS/LPC17xx.h>
 #include "uEZProcessor_LPC1768.h"
 
-#if (COMPILER_TYPE == RowleyARM)
+#if (COMPILER_TYPE == GCC_ARM)
 #include <intrinsics.h>
 #endif
 

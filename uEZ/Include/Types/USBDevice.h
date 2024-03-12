@@ -81,16 +81,10 @@ extern "C" {
 #define ENDPOINT_IS_IN(endp)                (endp & 0x80)
 #define ENDPOINT_INDEX(endp)                (endp & 0x7F)
 
-#if (COMPILER_TYPE==CodeRed)
+#if (COMPILER_TYPE==GCC_ARM)
 #define PACKED __attribute__ ((__packed__))
 #endif
-#if (COMPILER_TYPE==RowleyARM)
-#define PACKED __attribute__ ((__packed__))
-#endif
-#if (COMPILER_TYPE==Keil4)
-#define PACKED __attribute__ ((__packed__))
-#endif
-#if (COMPILER_TYPE==GCC)
+#if (COMPILER_TYPE==KEIL_UV)
 #define PACKED __attribute__ ((__packed__))
 #endif
 

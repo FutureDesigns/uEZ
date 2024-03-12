@@ -5,7 +5,7 @@
 #define COMPILER_TYPE               IAR
 #else
 #ifdef __GNUC__
-#define COMPILER_TYPE               RowleyARM
+#define COMPILER_TYPE               GCC_ARM
 #endif
 #endif
 // end uEZ Compiler define
@@ -29,6 +29,8 @@
 #define PCLK_FREQUENCY              UEZPlatform_GetPCLKFrequency()
 
 #define INTERRUPT_BASED_EMAC        1
+#define EMAC_ENABLE_JUMBO_FRAME     1 // set to 1 to enable jumbo frame support (see TCP_MSS for LPC specific size)
+#define LCD_BACKLIGHT_FREERTOS_TIMER 1 // use FreeRTOS timer for backlight turn on delay instead of MCU Timer0.
 
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY  1
@@ -61,7 +63,7 @@
 //  heap_2 is now considered legacy as the newer heap_4 implementation is preferred.
 //  Use heap_5 for dual heap.
 #ifndef FREERTOS_HEAP_SELECTION // Make sure the number 1-5 is set here.
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
 #define FREERTOS_HEAP_SELECTION         2 // default Heap for bootloader, less code space than 4.
 #else
 //#define FREERTOS_HEAP_SELECTION         4 // Need Heap 2, 4, 5 for heap monitoring. TODO
@@ -87,8 +89,10 @@
 // TODO see https://www.freertos.org/a00111.html#heap_5.
 #endif
 
+#define FREERTOS_TCP_BUFFER_SELECTION 1 // FreeRTOS TCP not setup but include this to prevent duplicate symbol
+
 #define ALLOW_LOCKING_XSPI_OTP 0 // set to 1 to allow sending WRSCUR command for 512/1024 byte hidden region in spifiLockOtp function.
 
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
 #define DISABLE_UEZ_FATAL_ERROR         1
 #endif

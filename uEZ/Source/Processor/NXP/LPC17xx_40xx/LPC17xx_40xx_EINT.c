@@ -27,6 +27,7 @@
 #include <uEZProcessor.h>
 #include <HAL/EINT.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_EINT.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

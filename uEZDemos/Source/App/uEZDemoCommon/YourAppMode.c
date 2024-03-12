@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZLCD.h>
+#include <uEZMemory.h>
 #include <Device/ADCBank.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
@@ -32,7 +33,6 @@
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 //#include <Source/Library/Graphics/SWIM/lpc_droidsansr76.h>
-#include <uEZLCD.h>
 #include <uEZKeypad.h>
 
 /*---------------------------------------------------------------------------*
@@ -96,7 +96,7 @@ T_YAMWorkspace *G_ws = NULL;
  *---------------------------------------------------------------------------*/
 static void YAMExit(const T_choice *aChoice);
 
-static void YAMScreen()
+static void YAMScreen(void)
 {
     T_pixelColor *pixels;
     T_region r;
@@ -199,10 +199,11 @@ static void YAMScreen()
 
 static void YAMExit(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     G_ws->iExit = ETrue;
 }
 
-static void YAMUpdate()
+static void YAMUpdate(void)
 {
     T_region r;
 
@@ -220,6 +221,7 @@ TUInt32 G_crash = 0;
 
 void YourAppMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
 #if UEZ_ENABLE_BUTTON_BOARD

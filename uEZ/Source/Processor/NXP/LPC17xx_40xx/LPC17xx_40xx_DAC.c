@@ -26,6 +26,7 @@
 #include <uEZTypes.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_DAC.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -84,10 +85,10 @@ T_uezError LPC17xx_40xx_DAC_Write(void *aWorkspace, TUInt32 aValue)
     aValue = (aValue << DACR_VALUE_BIT) & 0xFFC0;
 
     if (EFalse != p->iBias) {
-        // The settling time of the DAC is 2.5 µs and the maximum current is 350 µA.
+        // The settling time of the DAC is 2.5 us and the maximum current is 350 uA.
         aValue |= DACR_BIAS;
     } else {
-        //The settling time of the DAC is 1 µs max, and the maximum current is 700 µA.
+        //The settling time of the DAC is 1 us max, and the maximum current is 700 uA.
     }
 
     // Write modified value to the register.
@@ -123,12 +124,12 @@ T_uezError LPC17xx_40xx_DAC_WriteMilliVolt(void *aWorkspace, TUInt32 aMilliVolts
     aMilliVolts = (aMilliVolts << DACR_VALUE_BIT) & 0xFFC0;
 
     if (EFalse != p->iBias) {
-        // The settling time of the DAC is 2.5 µs
-        // and the maximum current is 350 µA.
+        // The settling time of the DAC is 2.5 us
+        // and the maximum current is 350 uA.
         aMilliVolts |= DACR_BIAS;
     } else {
-        // The settling time of the DAC is 1 µs max,
-        // and the maximum current is 700 µA.
+        // The settling time of the DAC is 1 us max,
+        // and the maximum current is 700 uA.
     }
 
     // Write modified value to the register.

@@ -87,6 +87,10 @@ static   int     _HaltTimeStart;
 static   int     _Halt;
 static   int     _Next;
 
+#if (GUIDEMO_USE_AUTO_BK && GUI_SUPPORT_MEMDEV)
+static GUI_MEMDEV_Handle   hMemStretch = 0;
+#endif
+
 /*********************************************************************
 *
 *       Static functions
@@ -282,7 +286,6 @@ static void _DrawBk(void) {
 */
 #if (GUIDEMO_USE_AUTO_BK && GUI_SUPPORT_MEMDEV)
 static void _DrawBkCircle(void) {
-  static GUI_MEMDEV_Handle   hMemStretch;
   GUI_MEMDEV_Handle          hMemGradient;
   GUI_MEMDEV_Handle          hMemCircle;
   GUI_MEMDEV_Handle          hMemOld;
@@ -1050,6 +1053,29 @@ void emWinDemo(void) {
 *       GUIDEMO_Main
 */
 void GUIDEMO_Main(void) {
+    // clear memory so demo doesn't crash being run a second time after GUI_Exit called
+    _GUIDemoConfig.Flags = 0; _GUIDemoConfig.apFunc = 0;
+#if GUI_WINSUPPORT
+    _hDialogControl = 0;
+    _hDialogInfo = 0;
+    _iDemoMinor = 0;
+#endif
+
+#if GUI_SUPPORT_MEMDEV
+    _Pressed = 0;
+#endif
+
+    _pfDrawBk = 0;
+    _iDemo = 0;
+    _HaltTime = 0;
+    _HaltTimeStart = 0;
+    _Halt = 0;
+    _Next = 0;
+
+#if (GUIDEMO_USE_AUTO_BK && GUI_SUPPORT_MEMDEV)
+    hMemStretch = 0;
+#endif
+
   #if GUI_WINSUPPORT
     FRAMEWIN_SKINFLEX_PROPS Framewin_Props;
   #endif

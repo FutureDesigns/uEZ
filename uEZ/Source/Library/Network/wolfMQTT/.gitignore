@@ -1,0 +1,86 @@
+# Object files
+*.o
+*.ko
+*.lo
+
+# Libraries
+*.lib
+*.a
+*.la
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# autoconf misc
+aclocal.m4
+lt*.m4
+*.cache
+config.*
+configure
+libtool
+libtool.m4
+*.log
+*.gz
+Makefile
+Makefile.in
+*.deps
+.dirstamp
+*.libs
+stamp-h
+src/stamp-h1
+build-aux/
+wolfmqtt-config
+aminclude.am
+
+# vim
+*.swp
+tags
+diff
+.vimrc
+
+# test output
+
+# scan-build
+client.plist
+
+# other
+Debug
+.vs
+*.aps
+*.sdf
+*.user
+*.opensdf
+*.trs
+firmware.bin
+wolfmqtt/options.h
+IDE/ARDUINO/wolfMQTT
+IDE/Microchip-Harmony/wolfmqtt_client/firmware/mqtt_client.X/dist/default/
+build/
+
+# examples
+examples/aws/awsiot
+examples/azure/azureiothub
+examples/firmware/fwclient
+examples/firmware/fwpush
+examples/mqttclient/mqttclient
+examples/mqttsimple/mqttsimple
+examples/nbclient/nbclient
+examples/sn-client/sn-client
+examples/sn-client/sn-client_qos-1
+examples/sn-client/sn-multithread
+examples/multithread/multithread
+examples/wiot/wiot
+
+# eclipse
+.cproject
+.project
+.settings
+

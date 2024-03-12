@@ -301,7 +301,7 @@ __packed struct  __iar_u32 { uint32_t v; };
   #define __get_CONTROL()             (__arm_rsr("CONTROL"))
   #define __get_FAULTMASK()           (__arm_rsr("FAULTMASK"))
 
-  #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+  #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
        (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
     #define __get_FPSCR()             (__arm_rsr("FPSCR"))
     #define __set_FPSCR(VALUE)        (__arm_wsr("FPSCR", (VALUE)))
@@ -502,7 +502,7 @@ __packed struct  __iar_u32 { uint32_t v; };
   #endif
 
 
-  #if (!((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+  #if (!((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
          (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     ))
     #define __get_FPSCR __cmsis_iar_get_FPSR_not_active
     #define __set_FPSCR __cmsis_iar_set_FPSR_not_active
@@ -559,7 +559,7 @@ __packed struct  __iar_u32 { uint32_t v; };
 
   #endif
 
-  #if (!((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+  #if (!((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1)) && \
          (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     ))
     #undef __get_FPSCR
     #undef __set_FPSCR

@@ -61,7 +61,7 @@ typedef struct {
 /*-------------------------------------------------------------------------*
  * Macros:
  *-------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
+#if(COMPILER_TYPE==KEIL_UV)
 #define nop()      __nop()
 #else
 #define nop()      NOP()//asm("nop")

@@ -78,7 +78,6 @@ void Network_lwIP_Configure(void *aWorkspace);
 void Network_lwIP_Create(const char *aName);
 
 extern const DEVICE_Network lwIP_Network_Interface;
-sys_thread_t tcpip_init(void (* initfunc)(void *), void *arg);
 
 #ifdef __cplusplus
 }

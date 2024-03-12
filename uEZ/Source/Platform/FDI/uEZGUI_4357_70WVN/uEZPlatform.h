@@ -40,6 +40,10 @@
     #define LPC43XX_ENABLE_M0_CORES  0 // Must set to 1 to enable cores at bootup. If second core project is missing it will fault.
 #endif
 
+#ifndef USE_RESISTIVE_TOUCH
+    #define USE_RESISTIVE_TOUCH                0
+#endif
+
 #ifndef UEZ_ENABLE_TOUCHSCREEN_CALIBRATION
   #if (USE_RESISTIVE_TOUCH == 1)
     #define UEZ_ENABLE_TOUCHSCREEN_CALIBRATION 1
@@ -120,10 +124,46 @@
 #define UEZBSP_NOR_FLASH                    UEZ_ENABLE_FLASH
 #define UEZBSP_NOR_FLASH_BASE_ADDRESS       UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS
 
-#include <lwipopts.h>
-
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
+#endif
+
+// default these to 0 for IAR warnings
+#ifndef CONFIG_LOW_LEVEL_TEST_CODE
+    #define CONFIG_LOW_LEVEL_TEST_CODE       0
+#endif
+#ifndef LIGHT_SENSOR_ENABLED
+    #define LIGHT_SENSOR_ENABLED       0
+#endif
+#ifndef SEC_TO_ENABLED
+    #define SEC_TO_ENABLED       0
+#endif
+#ifndef SEC_MC_ENABLED
+    #define SEC_MC_ENABLED       0
+#endif
+#ifndef UEZ_ENABLE_VIRTUAL_COM_PORT
+    #define UEZ_ENABLE_VIRTUAL_COM_PORT       0
+#endif
+#ifndef INCLUDE_EMWIN
+    #define INCLUDE_EMWIN       0
+#endif
+#ifndef UEZGUI_EXP_BRK_OUT
+    #define UEZGUI_EXP_BRK_OUT       0
+#endif
+#ifndef CONSOLE_USE_RTT0
+    #define CONSOLE_USE_RTT0       0
+#endif
+#ifndef DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1
+    #define DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1       0
+#endif
+#ifndef DISABLE_BACKLIGHT_PWM_UEZ_API
+    #define DISABLE_BACKLIGHT_PWM_UEZ_API       0
+#endif
+#ifndef UEZ_ENABLE_AUDIO_CODEC
+    #define UEZ_ENABLE_AUDIO_CODEC       0
+#endif
+#ifndef UEZ_ENABLE_LOOPBACK_TEST
+    #define UEZ_ENABLE_LOOPBACK_TEST       0
 #endif
 
 /*-------------------------------------------------------------------------*
@@ -155,6 +195,8 @@ typedef struct {
 #define GPIO_HEARTBEAT_LED          GPIO_P0_11
 
 #define GPIO_PERIPHERAL_RESET       GPIO_P7_0
+
+//#define GPIO_PSU_3VERR              GPIO_NONE // Keep this commented out until the pin exists or is used.
 
 // TODO add GPIOs on ALT PWR COM, PMOD here
  
@@ -249,6 +291,18 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
 void UEZPlatform_Console_ISPHeader_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART1_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART2_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART3_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
 void UEZPlatform_CRC0_Require(void);
 void UEZPlatform_DAC0_Require(void);
 void UEZPlatform_EEPROM_I2C_Require(void);
@@ -295,7 +349,7 @@ void UEZPlatform_USBHost_USB1_Serial_Require(void);
 void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
-
+void UEZPlatform_WirelessNetwork1_Require(void);
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);
 void UEZPlatform_Minimal_Require(void);

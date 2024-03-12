@@ -69,9 +69,9 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 
 /** Several transmitter power modes to allow */ 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {
@@ -82,9 +82,9 @@ typedef enum __attribute__ ((__packed__)) {
 } T_uezNetworkPower;
 
 /** Types of networks to configure between */ 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {
@@ -99,9 +99,9 @@ typedef enum __attribute__ ((__packed__)) {
 } T_uezNetworkType;
 
 /** Types of IBSS (peer to peer) network roles (create or join?) */ 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {
@@ -111,9 +111,9 @@ typedef enum __attribute__ ((__packed__)) {
     UEZ_NETWORK_IBSS_ROLE_NONE
 } T_uezNetworkIBSSRole;
 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {
@@ -150,9 +150,9 @@ typedef union {
 /** Network socket id (always non-zero, zero means bad socket) */
 typedef TUInt16 T_uezNetworkSocket;
 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {
@@ -162,9 +162,9 @@ typedef enum __attribute__ ((__packed__)) {
 /** TODO: UDP has not been tested! */
 } T_uezNetworkSocketType;
 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {
@@ -175,9 +175,9 @@ typedef enum __attribute__ ((__packed__)) {
     UEZ_NETWORK_SCAN_STATUS_COMPLETE,
 } T_uezNetworkScanStatus;
 
-#if ((COMPILER_TYPE==HEW) | (COMPILER_TYPE==RenesasRX))
+#if (COMPILER_TYPE==RENESASRX)
 typedef enum {
-#elif (COMPILER_TYPE==Keil4)
+#elif (COMPILER_TYPE==KEIL_UV)
 typedef enum {
 #else
 typedef enum __attribute__ ((__packed__)) {

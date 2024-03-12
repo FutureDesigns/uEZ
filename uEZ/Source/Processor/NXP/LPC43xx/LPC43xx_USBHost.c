@@ -32,14 +32,17 @@
 #include <uEZ.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_USBHost.h>
+#include "LPC43xx_UtilityFuncs.h"
 
-#warning "Remove"
+#warning "Remove this file from build."
 #include "CMSIS/LPC43xx.h"
+
+#if 0 // LPC open functions are used instead of this file.
 
 /*---------------------------------------------------------------------------*
  * Regions:
  *---------------------------------------------------------------------------*/
-#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+#if ((COMPILER_TYPE==GCC_ARM) || (COMPILER_TYPE==KEIL_UV))
     #define USBHOST_MEMORY __attribute__((section(".usbhostmem")));
 #elif (COMPILER_TYPE==IAR)
     #define USBHOST_MEMORY @ ".usbhostmem"
@@ -1315,6 +1318,9 @@ void LPC43xx_USBHost_PortB_Require(const T_LPC43xx_USBHost_Settings *aSettings)
     HALInterfaceRegister("USBHost:PortB",
             (T_halInterface *)&G_LPC43xx_USBHost_Interface_PortB, 0, 0);
 }
+
+#endif
+
 /*-------------------------------------------------------------------------*
  * End of File:  LPC43xx_USBHost.c
  *-------------------------------------------------------------------------*/

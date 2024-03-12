@@ -25,6 +25,7 @@
 #include <uEZ.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_CRC.h>
 #include <uEZProcessor.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

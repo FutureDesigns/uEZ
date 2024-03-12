@@ -1,6 +1,5 @@
 #define BUILD_NUMBER                        2
 #define BUILD_DATE                          "12/02/2013"
-#define COMPILER_TYPE                       RowleyARM
 #define UEZ_PROCESSOR                       NXP_LPC1788
 #define PROCESSOR_OSCILLATOR_FREQUENCY      120000000
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing

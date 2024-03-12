@@ -26,6 +26,7 @@
 #include <uEZProcessor.h>
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_GPDMA.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 // TBD:  not here!
 #include <uEZRTOS.h>
@@ -410,7 +411,7 @@ static void LPC43xx_GPDMA_Enable(void *aWorkspace)
     if (EFalse == InterruptIsRegistered(INTERRUPT_CHANNEL_GP_DMA)) {
         // Enable interrupt.
         InterruptRegister(INTERRUPT_CHANNEL_GP_DMA, (TISRFPtr)IGPDMA,
-            INTERRUPT_PRIORITY_NORMAL, "GPDMA");
+            INTERRUPT_PRIORITY_HIGH, "GPDMA");
         InterruptEnable(INTERRUPT_CHANNEL_GP_DMA);
     }
 

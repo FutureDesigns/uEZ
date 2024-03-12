@@ -70,7 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>9.30.1.50052</state>
+                    <state>9.32.1.54977</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -226,10 +226,11 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state>IAR_ARM_CM4F</state>
+                    
                     <state>CORE_M4</state>
                     <state>LWIP_2_0_x</state>
                     <state>DEBUG</state>
+                    <state>__FPU_PRESENT=1</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -265,7 +266,7 @@
                 </option>
                 <option>
                     <name>CCEnableRemarks</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
@@ -366,6 +367,8 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/Encryption/mbedtls</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>

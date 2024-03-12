@@ -52,6 +52,8 @@ static void Serial_GenericHalfDuplex_MonitorDriveEnable(
                 void *aWorkspace);
 
 
+T_uezTask G_DriveEnableTask;
+
 /*---------------------------------------------------------------------------*
  * Routine:  Serial_GenericHalfDuplex_InitializeWorkspace
  *---------------------------------------------------------------------------*
@@ -226,7 +228,7 @@ T_uezError Serial_GenericHalfDuplex_Configure(
         128, 
         (void *)p, 
         UEZ_PRIORITY_HIGH, 
-        0);
+        &G_DriveEnableTask);
 
 
     // Return last error

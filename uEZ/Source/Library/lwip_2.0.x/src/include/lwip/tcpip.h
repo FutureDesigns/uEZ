@@ -74,13 +74,14 @@ typedef void (*tcpip_callback_fn)(void *ctx);
 /* Forward declarations */
 struct tcpip_callback_msg;
 
-sys_thread_t   tcpip_init(tcpip_init_done_fn tcpip_init_done, void *arg);
+void   tcpip_init(tcpip_init_done_fn tcpip_init_done, void *arg);
 
 err_t  tcpip_inpkt(struct pbuf *p, struct netif *inp, netif_input_fn input_fn);
 err_t  tcpip_input(struct pbuf *p, struct netif *inp);
 
 err_t  tcpip_try_callback(tcpip_callback_fn function, void *ctx);
 err_t  tcpip_callback(tcpip_callback_fn function, void *ctx);
+err_t  tcpip_callback_wait(tcpip_callback_fn function, void *ctx);
 /**  @ingroup lwip_os
  * @deprecated use tcpip_try_callback() or tcpip_callback() instead
  */

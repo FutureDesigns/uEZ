@@ -27,6 +27,7 @@
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI.h>
 #include <uEZFile.h>
 #include "Calibration.h"
+#include "Config_Build.h"
 #include "Audio.h"
 #include <uEZLCD.h>
 #include <stdio.h>
@@ -118,7 +119,7 @@ void TS_NoiseDetectUpdateScreen(void) {
   if(flagF) {
     flagF = false;
     TS_clearNumber(13);
-    sprintf(bufferF, "%ux%u", currentReading.iX, currentReading.iY);
+    sprintf(bufferF, "%dx%d", currentReading.iX, currentReading.iY);
     swim_put_text_xy(&noiseDetectWin, bufferF, INDENTNUM, (13*noiseDetectFontHeight)); //coordinates
   }
   
@@ -220,6 +221,7 @@ void TS_NoiseDetectScreen(void) {
 *---------------------------------------------------------------------------*/
 void TS_NoiseDetectProcedure(T_pixelColor *aPixels, T_uezDevice ts) {    
   //T_uezError error;
+  PARAM_NOT_USED(aPixels);
   TS_NoiseDetectScreen(); // display screen
     
   while (1) {
@@ -278,9 +280,6 @@ void TS_NoiseDetect(void) {
     UEZQueueAddToRegistry( queue, "TS Noise Detect" );
 #else
     if (UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue) == UEZ_ERROR_NONE) {
-#if UEZ_REGISTER
-      UEZQueueSetName(queue, "TS_NoiseDetect", "\0");
-#endif
 #endif
       // Open up the touchscreen and pass in the queue to receive events
       if (UEZTSOpen("Touchscreen", &ts, &queue)==UEZ_ERROR_NONE)  {
@@ -297,7 +296,6 @@ void TS_NoiseDetect(void) {
 #endif
     }
   }
-  /*-------------------------------------------------------------------------*
-  * File:  TS_NoiseDetect.c
-  *-------------------------------------------------------------------------*/
-  
+/*-------------------------------------------------------------------------*
+ * File:  TS_NoiseDetect.c
+ *-------------------------------------------------------------------------*/

@@ -89,6 +89,10 @@
 #define UEZ_ENABLE_USB_HOST                 UEZ_ENABLE_USB_HOST_STACK
 #endif
 
+#ifndef UEZ_USB_HOST_DRIVE_NUMBER
+#define UEZ_USB_HOST_DRIVE_NUMBER             0
+#endif
+
 #define UEZ_GUI_PLATFORM_USE_SPI0_OVER_SSP  1
 
 #if (RTOS == FreeRTOS)
@@ -102,6 +106,44 @@
 #ifndef ACCEL_DEMO_ALLOW_ROTATE
 #define ACCEL_DEMO_ALLOW_ROTATE             0
 #endif
+
+#ifndef UEZ_ENABLE_TOUCH_SENSITIVITY_TEST
+#define UEZ_ENABLE_TOUCH_SENSITIVITY_TEST             0
+#endif
+
+#ifndef UEZ_ENABLE_TOUCHSCREEN_NOISE_TEST
+#define UEZ_ENABLE_TOUCHSCREEN_NOISE_TEST             0
+#endif
+#ifndef UEZGUI_EXP_DK_FCT_TEST
+#define UEZGUI_EXP_DK_FCT_TEST             0
+#endif
+
+#ifndef UEZ_DEMO_FCT
+#define UEZ_DEMO_FCT             0
+#endif
+#ifndef RENAME_INI
+#define RENAME_INI             0
+#endif
+#ifndef UEZ_SPEAKER_TEST
+#define UEZ_SPEAKER_TEST             0
+#endif
+#ifndef LPC43XX_ENABLE_M0_CORES
+#define LPC43XX_ENABLE_M0_CORES             0
+#endif
+#ifndef UEZ_ENABLE_I2S_AUDIO
+#define UEZ_ENABLE_I2S_AUDIO             0
+#endif
+#ifndef DKTS_BUTTON_SLIDE_SHOW_DEMO
+#define DKTS_BUTTON_SLIDE_SHOW_DEMO             0
+#endif
+#ifndef TS_TEST_DEMO
+#define TS_TEST_DEMO             0
+#endif
+
+#ifndef APP_DEMO_ENABLE_STARTUP_VIDEO
+#define APP_DEMO_ENABLE_STARTUP_VIDEO            0
+#endif
+
 /*-------------------------------------------------------------------------*
  * Default Values:
  *-------------------------------------------------------------------------*/
@@ -169,7 +211,7 @@
 #endif
 
 #if(UEZ_PROCESSOR == NXP_LPC4357)
-#define MAIN_TASK_STACK_SIZE        UEZ_TASK_STACK_BYTES(6*1024)
+#define MAIN_TASK_STACK_SIZE        UEZ_TASK_STACK_BYTES(7*1024)
 #else
 #define MAIN_TASK_STACK_SIZE        UEZ_TASK_STACK_BYTES(5*1024)
 #endif
@@ -208,7 +250,12 @@
 // 16+16+14+32+20+32+16+52+44+56+32+48+12+28+52+52+40+16+(17+38+7+5)*1024+80+20
 // +2*800*480*2 = 1,605,286 bytes
 //#define EMWIN_RAM_SIZE          0x00200000
-#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*1792) // 2 frames plus 1.75MB
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*3584) // Using emSPY the full GUI demo measured up to 4,962,076 memory usage on 800x480 lcd.
+#else
+#define EMWIN_RAM_SIZE          (FRAME_SIZE*2)+(1024*3584) // TODO figure out how much it actually uses on other units
+#endif
+
 // Note video player adds 1 more frame memory
 
 // Network Settings for future implementation

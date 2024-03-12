@@ -32,11 +32,12 @@
 #include <uEZ.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBHost.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Regions:
  *---------------------------------------------------------------------------*/
-#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+#if ((COMPILER_TYPE==GCC_ARM) || (COMPILER_TYPE==KEIL_UV))
     #define USBHOST_MEMORY __attribute__((section(".usbhostmem")));
 #elif (COMPILER_TYPE==IAR)
     #define USBHOST_MEMORY @ ".usbhostmem"

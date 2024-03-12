@@ -27,6 +27,7 @@
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_DAC.h>
 #include "LPC43xx_GPIO.h"
+#include "LPC43xx_UtilityFuncs.h"
 
 // No interrupts are setup in this driver, so no M0 specific support was added.
 

@@ -28,6 +28,7 @@
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
 #include "LPC17xx_40xx_IAP.h"
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

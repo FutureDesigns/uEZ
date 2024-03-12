@@ -972,13 +972,13 @@ static void RemoveCompletedQTD(uint8_t HostID, PHCD_QHD pQhd)
 	pQhd->FirstQtd = TdLink;
 	if(is_data_remain)
 	{
-		uint32_t pQtd; // TODO is this supposed to be the same variable as above? This seems to work ok with USB Host
-		QueueQTDs(HostID, (uint32_t* )&pQtd,(uint8_t*)PipeStreaming[HostID].BufferAddress,
+		uint32_t pQtd_2; // TODO is this supposed to be the same variable as above? This seems to work ok with USB Host
+		QueueQTDs(HostID, (uint32_t* )&pQtd_2,(uint8_t*)PipeStreaming[HostID].BufferAddress,
 				PipeStreaming[HostID].RemainBytes,
 				pQhd->Direction ? IN_TRANSFER : OUT_TRANSFER,
 				PipeStreaming[HostID].DataToggle);
-		pQhd->FirstQtd = Align32( (uint32_t) HcdQTD(HostID,(uint32_t)pQtd) );
-		pQhd->Overlay.NextQtd = (uint32_t) HcdQTD(HostID, (uint32_t)pQtd);
+		pQhd->FirstQtd = Align32( (uint32_t) HcdQTD(HostID,(uint32_t)pQtd_2) );
+		pQhd->Overlay.NextQtd = (uint32_t) HcdQTD(HostID, (uint32_t)pQtd_2);
 	}	
 }
 

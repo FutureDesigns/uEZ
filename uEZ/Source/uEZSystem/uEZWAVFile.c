@@ -60,6 +60,7 @@
 #include "uEZDevice.h"
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZMemory.h>
 #include <Device/AudioAmp.h>
 #include <Device/AudioCodec.h>
 #include <uEZAudioAmp.h>

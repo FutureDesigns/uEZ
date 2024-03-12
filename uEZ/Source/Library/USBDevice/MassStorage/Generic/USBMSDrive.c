@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZMemory.h>
 #include <Device/USBDevice.h>
 #include <Source/Library/USBDevice/MassStorage/Generic/USBMSDrive.h>
 #include <Device/MassStorage.h>

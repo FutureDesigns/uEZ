@@ -18,15 +18,17 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
-#include <Config.h>
-#include <uEZTypes.h>
-#include <uEZ.h>
-#include <uEZPlatform.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_UtilityFuncs.h>
-#include <uEZBSP.h>
-#include <uEZGPIO.h>
-#include <uEZLCD.h>
+//#include <Config.h>
+//#include <uEZTypes.h>
+//#include <uEZ.h>
+#include <uEZMemory.h>
+#include <HAL/Interrupt.h>
+#include <uEZPlatform.h>
+//#include <uEZBSP.h>
+//#include <uEZGPIO.h>
+//#include <uEZLCD.h>
 
 /*---------------------------------------------------------------------------*
  * Routine:  ReadLE32U
@@ -247,6 +249,83 @@ void LPC17xx_40xx_IOCON_ConfigPinOrNone(
     }
     UEZFailureMsg("Bad Pin");
 }
+
+// Note that uEZBSP Delays are only accurate for around level 2 or medium optimization.
+// With no optimization it will be about double the time. So we will always optimize them.
+// For IAR application projects set the optimization level of this file to medium or high.
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSPDelayUS
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Use a delay loop to approximate the time to delay.
+ *      Should use UEZTaskDelayMS() when in a task instead.
+ *---------------------------------------------------------------------------*/
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelay1US(void)
+{
+/* 	Measured to X.XXX microseconds GPIO switch time: (RTOS off)
+ *  -   Based on release build with high optimization speed setting, inline
+ *      small functions enabled, with GPIO on/off verified with a scope.
+ *      Use the following code for direct GPIO switching (example GPIO_P5_3):
+ *          LPC_GPIO_PORT->SET[5] = 8; 
+ *          UEZBSPDelay1US();        
+ *          LPC_GPIO_PORT->CLR[5] = 8; 
+ */
+ //Based on Flash Accelerator being on and Flash Access Time set to 6 CPU Cycles
+#if 1 //( PROCESSOR_OSCILLATOR_FREQUENCY == 120000000)
+    nops50();
+    nops50();
+    nop();
+    nop();
+    nop();
+    nop();
+#endif
+#if 0 // ( PROCESSOR_OSCILLATOR_FREQUENCY == 72000000)
+    // TODO not validated yet.    
+#endif
+})
+
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelayUS(uint32_t aMicroseconds)
+{
+    while (aMicroseconds--)
+        UEZBSPDelay1US();
+})
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZBSPDelayMS
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Use a delay loop to approximate the time to delay.
+ *      Should use UEZTaskDelayMS() when in a task instead.
+ *---------------------------------------------------------------------------*/
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelay1MS(void)
+{    
+/* 	Measured to X.XXX milliseconds GPIO switch time: (RTOS off)
+ *  -   Based on release build with high optimization speed setting, inline
+ *      small functions enabled, with GPIO on/off verified with a scope.
+ *      Use the following code for direct GPIO switching (example GPIO_P5_3):
+ *          LPC_GPIO_PORT->SET[5] = 8; 
+ *          UEZBSPDelay1MS();        
+ *          LPC_GPIO_PORT->CLR[5] = 8; 
+ */  
+    TUInt32 i;
+
+    // Approximate delays here    
+    for (i = 0; i < 650; i++)
+        UEZBSPDelay1US();
+})
+
+UEZ_FUNC_OPT(UEZ_OPT_LEVEL_MED,
+__WEAK void UEZBSPDelayMS(uint32_t aMilliseconds)
+{
+    while (aMilliseconds--) {
+        UEZBSPDelay1MS();
+    }
+})
+
 
 /*-------------------------------------------------------------------------*
  * End of File:  LPC1768_UtilityFuncs.c

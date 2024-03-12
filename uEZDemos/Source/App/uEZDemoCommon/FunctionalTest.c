@@ -667,7 +667,7 @@ void FuncTestTemperature(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButt
         else
             frac = v;
         frac = ((((TUInt32)(frac)) & 0xFFFF) >> 13) * 125;
-        sprintf(p->iLine, "Checking Temperature ... %d.%03d C", v>>16, frac);
+        sprintf(p->iLine, "Checking Temperature ... %d.%03d C", v>>16,  (int32_t)frac);
         aAPI->iTextLine(aData, 0, p->iLine);
         UEZTaskDelay(200);
 
@@ -681,13 +681,13 @@ void FuncTestTemperature(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButt
                 else
                     frac = v;
                 frac = ((((TUInt32)(frac)) & 0xFFFF) >> 13) * 125;
-                sprintf(p->iLine, "Checking Temperature ... %d.%03d C (COLD!)", v>>16, frac);
+                sprintf(p->iLine, "Checking Temperature ... %d.%03d C (COLD!)", v>>16, (int32_t)frac);
                 aAPI->iTextLine(aData, 0, p->iLine);
 
                 // Too cold!
                 aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                 aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
-                sprintf(aData->iResultValue, "%d.%03d C (COLD)", v>>16, frac);
+                sprintf(aData->iResultValue, "%d.%03d C (COLD)", v>>16,  (int32_t)frac);
             } else if (p->iMaxV > (40<<16)) {
                 v = p->iMaxV;
                 if (v < 0)
@@ -695,18 +695,18 @@ void FuncTestTemperature(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButt
                 else
                     frac = v;
                 frac = ((((TUInt32)(frac)) & 0xFFFF) >> 13) * 125;
-                sprintf(p->iLine, "Checking Temperature ... %d.%03d C (HOT!)", v>>16, frac);
+                sprintf(p->iLine, "Checking Temperature ... %d.%03d C (HOT!)", v>>16, (int32_t) frac);
                 aAPI->iTextLine(aData, 0, p->iLine);
 
                 // Too hot!
                 aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                 aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
-                sprintf(aData->iResultValue, "%d.%03d C (HOT)", v>>16, frac);
+                sprintf(aData->iResultValue, "%d.%03d C (HOT)", v>>16, (int32_t) frac);
             } else {
                 // Valid!
                 aAPI->iShowResult(aData, 0, TEST_RESULT_PASS, 0);
                 aAPI->iSetTestResult(aData, TEST_RESULT_PASS);
-                sprintf(aData->iResultValue, "%d.%03d C", v>>16, frac);
+                sprintf(aData->iResultValue, "%d.%03d C", v>>16, (int32_t) frac);
             }
         }
     }
@@ -846,6 +846,7 @@ exit:
 #if UEZBSP_SDRAM
 TUInt32 SDRAMMemoryTest(TUInt32 aSize)
 {
+    PARAM_NOT_USED(aSize);
     TUInt8 mem[100];
     TUInt8 prime;
     volatile TUInt8 *Base = (TUInt8 *)UEZBSP_SDRAM_BASE_ADDR;
@@ -896,6 +897,7 @@ exit:
 // This version messes up the screen to ensure uniqueness across the whole memory
 TUInt32 SDRAMMemoryTestExtensive(TUInt32 aSize)
 {
+    PARAM_NOT_USED(aSize);
     TUInt32 prime;
     volatile TUInt32 *Base = (TUInt32 *)UEZBSP_SDRAM_BASE_ADDR;
     volatile TUInt32 *Check = (TUInt32 *)UEZBSP_SDRAM_BASE_ADDR+0x10000;
@@ -1426,6 +1428,7 @@ TUInt32 NORFlashMemoryTest(
         T_uezDevice dev,
         TUInt32 aSize)
 {
+    PARAM_NOT_USED(aSize);
     T_uezError error;
 #if(UEZ_PROCESSOR != NXP_LPC4357)
 //    typedef struct {
@@ -1570,7 +1573,7 @@ void FuncTestFlash0(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
             aAPI->iShowResult(aData, 0, TEST_RESULT_PASS, 0);
             aAPI->iSetTestResult(aData, TEST_RESULT_PASS);
         } else {
-            sprintf(p->iLine, "  Error Code %d!", errorCode & 0x7FFF);
+            sprintf(p->iLine, "  Error Code %d!", (int32_t) errorCode & 0x7FFF);
             aAPI->iTextLine(aData, 2, p->iLine);
             aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
             aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -1846,15 +1849,15 @@ void FuncTestBacklightMonitor(const T_testAPI *aAPI, T_testData *aData, TUInt16 
                 percent = reading * 100 / 0x180;
                 percent1 = percent;
                 percent2 = 0;
-                sprintf(p->iLine, "Backlight Monitor (on: %d %%, off: %d %%)", percent1, percent2);
+                sprintf(p->iLine, "Backlight Monitor (on: %d %%, off: %d %%)", (int32_t) percent1, (int32_t) percent2);
                 aAPI->iTextLine(aData, 0, p->iLine);
-                sprintf(aData->iResultValue, "%d%% %d%%", percent1, percent2);
+                sprintf(aData->iResultValue, "%d%% %d%%", (int32_t) percent1, (int32_t) percent2);
 
                 // We'll be generous and allow +/- 20%
                 if ((percent < 80) || (percent > 120)) {
                     aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                     aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
-                    sprintf(aData->iResultValue, "%d%% (NOT ON)", percent1);
+                    sprintf(aData->iResultValue, "%d%% (NOT ON)",  (int32_t)percent1);
                 } else {
                     // Now turn off the LCD
                     UEZLCDOff(lcd);
@@ -1870,18 +1873,18 @@ void FuncTestBacklightMonitor(const T_testAPI *aAPI, T_testData *aData, TUInt16 
                     }
 
                     percent2 = percent;
-                    sprintf(p->iLine, "Backlight Monitor (on: %d %%, off: %d %%)", percent1, percent2);
+                    sprintf(p->iLine, "Backlight Monitor (on: %d %%, off: %d %%)", (int32_t) percent1, (int32_t) percent2);
                     aAPI->iTextLine(aData, 0, p->iLine);
-                    sprintf(aData->iResultValue, "%d%% %d%%", percent1, percent2);
+                    sprintf(aData->iResultValue, "%d%% %d%%", (int32_t) percent1, (int32_t) percent2);
 
                     if (percent > 50) {
                         aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
                         aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
-                        sprintf(aData->iResultValue, "%d%% (NOT OFF)", percent2);
+                        sprintf(aData->iResultValue, "%d%% (NOT OFF)", (int32_t) percent2);
                     } else {
                         aAPI->iShowResult(aData, 0, TEST_RESULT_PASS, 0);
                         aAPI->iSetTestResult(aData, TEST_RESULT_PASS);
-                        sprintf(aData->iResultValue, "%d%% %d%%", percent1, percent2);
+                        sprintf(aData->iResultValue, "%d%% %d%%", (int32_t) percent1, (int32_t) percent2);
                     }
                 }
             }
@@ -1894,6 +1897,9 @@ void FuncTestBacklightMonitor(const T_testAPI *aAPI, T_testData *aData, TUInt16 
 
 void FuncTestBacklightPWM(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 #if 0
   // char iLine[80];
   // UEZ_LCD_BACKLIGHT_PERIOD_COUNT 400000 max 100%
@@ -1918,8 +1924,8 @@ void FuncTestVoltageMonitor(const T_testAPI *aAPI, T_testData *aData, TUInt16 aB
 {
     typedef struct {
         char iLine[80];
-    } T_backlightTest;
-    T_backlightTest *p = (T_backlightTest *)aData->iData;
+    } T_5vMonitorTest;
+    T_5vMonitorTest *p = (T_5vMonitorTest *)aData->iData;
     T_uezDevice adc;
     T_uezError error;
     ADC_RequestSingle r;
@@ -1959,7 +1965,7 @@ void FuncTestVoltageMonitor(const T_testAPI *aAPI, T_testData *aData, TUInt16 aB
                 //   reading = (voltage / 5 V) * 0x3FF
                 //   percent = 100 * (reading / (0x3FF * 3.3V/5V))
                 percent = reading * 100 / 0x307;
-                sprintf(p->iLine, "Voltage Monitor (%d %%)", percent);
+                sprintf(p->iLine, "Voltage Monitor (%d %%)", (int32_t) percent);
                 aAPI->iTextLine(aData, 0, p->iLine);
                 // We'll be generous and allow +/- 20%
                 if ((percent < 80) || (percent > 120)) {
@@ -2755,8 +2761,8 @@ TUInt32 NORFlashFullMemoryTest(
     TUInt32 blockInRegion;
     TUInt32 offset;
     TUInt32 byteOffset;
-	int actualBlockSize;
-    int blockSize = 0;
+    uint32_t actualBlockSize = 0;
+    uint32_t blockSize = 0;
     unsigned char *pBlockMemory = 0;
 
 #if(UEZ_PROCESSOR != NXP_LPC4357)
@@ -2799,7 +2805,7 @@ TUInt32 NORFlashFullMemoryTest(
             int address = 0;
             int overallBlock = 0;
 
-            sprintf(p->iLine, "  passNumber %d", passNumber);
+            sprintf(p->iLine, "  passNumber %d", (int32_t) passNumber);
             aAPI->iTextLine(aData, 1, p->iLine);
 
             for (region = 0; region < info.iNumRegions; region++)
@@ -2807,7 +2813,7 @@ TUInt32 NORFlashFullMemoryTest(
 
 // Temporarily override this
 //info.iRegions[region].iNumEraseBlocks = 128-2;
-               sprintf(p->iLine, "  region %d", region);
+               sprintf(p->iLine, "  region %d", (int32_t) region);
                aAPI->iTextLine(aData, 1, p->iLine);
 
                // ensure that our memory is the correct size
@@ -2817,7 +2823,7 @@ TUInt32 NORFlashFullMemoryTest(
                     blockSize = actualBlockSize;
                     pBlockMemory = (unsigned char*)0xA0400000;
 
-                    sprintf(p->iLine, "  pBlockMemory %p, blockSize %d", pBlockMemory, blockSize);
+                    sprintf(p->iLine, "  pBlockMemory %p, blockSize %u", pBlockMemory, (uint32_t) blockSize);
                     aAPI->iTextLine(aData, 3, p->iLine);
                 }
 
@@ -2836,7 +2842,7 @@ TUInt32 NORFlashFullMemoryTest(
                     // perform the write if passNumber == 0 or the read/compare if passNumber == 1
                     if(passNumber == 0)
                     {
-                        sprintf(p->iLine, "  passNumber %d, overallBlock %d (WRITING)", passNumber, overallBlock);
+                        sprintf(p->iLine, "  passNumber %d, overallBlock %d (WRITING)", (int32_t) passNumber, (int32_t) overallBlock);
                         aAPI->iTextLine(aData, 1, p->iLine);
                         sprintf(aData->iResultValue, "0x%08X (Writing)", address);
 
@@ -2855,7 +2861,7 @@ TUInt32 NORFlashFullMemoryTest(
                             return 10057;
                     } else
                     {
-                        sprintf(p->iLine, "  passNumber %d, overallBlock %d (READING)", passNumber, overallBlock);
+                        sprintf(p->iLine, "  passNumber %d, overallBlock %d (READING)", (int32_t) passNumber, (int32_t) overallBlock);
                         aAPI->iTextLine(aData, 1, p->iLine);
                         sprintf(aData->iResultValue, "0x%08X (Reading)", address);
 
@@ -2867,8 +2873,8 @@ TUInt32 NORFlashFullMemoryTest(
                         {
                             if(pBlockMemory[byteOffset] != expectedValue)
                             {
-                                sprintf(p->iLine, "  overallBlock %d, byteOffset %d expected 0x%x, got 0x%x",
-                                        overallBlock, byteOffset, expectedValue, pBlockMemory[byteOffset]);
+                                sprintf(p->iLine, "  overallBlock %d, byteOffset %u expected 0x%x, got 0x%x",
+                                        overallBlock, (uint32_t) byteOffset, expectedValue, pBlockMemory[byteOffset]);
                                 aAPI->iTextLine(aData, 2, p->iLine);
                                 return 1025;
                             }
@@ -2916,7 +2922,7 @@ void FuncTestFullFlash0(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButto
             aAPI->iShowResult(aData, 0, TEST_RESULT_PASS, 0);
             aAPI->iSetTestResult(aData, TEST_RESULT_PASS);
         } else {
-            sprintf(p->iLine, "  Error Code %d!", errorCode & 0x7FFF);
+            sprintf(p->iLine, "  Error Code %d!", (int32_t) errorCode & 0x7FFF);
             aAPI->iTextLine(aData, 2, p->iLine);
             aAPI->iShowResult(aData, 0, TEST_RESULT_FAIL, 0);
             aAPI->iSetTestResult(aData, TEST_RESULT_FAIL);
@@ -3198,7 +3204,7 @@ void TestRemoveButtons(T_testData *aData, TUInt16 aButtonTypes)
     }
 
     // Remove those buttons from the logic
-    aData->iButtons &= ~aButtonTypes;
+    aData->iButtons &= (TUInt16) (~((TUInt32)aButtonTypes));
 }
 
 void TestTextLine(T_testData *aData, TUInt16 aLine, const char *aText)
@@ -3307,6 +3313,7 @@ const T_testAPI G_testAPI = {
  *---------------------------------------------------------------------------*/
 void FunctionalTest(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezInputEvent inputEvent;
     T_uezDevice ts;
     T_uezDevice lcd;

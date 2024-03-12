@@ -78,7 +78,7 @@
         #pragma segment=".tag"
     const T_programTag G_programTag  = {
     #endif
-    #if (COMPILER_TYPE==RowleyARM)
+    #if (COMPILER_TYPE==GCC_ARM)
     const T_programTag G_programTag __attribute__((section(".tag"))) = {
     #endif
         PROGRAM_TAG_SPECIAL_HEADER,

@@ -1,11 +1,13 @@
 /*
  * Author: Adam Dunkels <adam@sics.se>
+ * SPDX-FileCopyrightText: 2001 Swedish Institute of Computer Science
  *
+ * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef __LWIP_ARCH_PERF_H__
-#define __LWIP_ARCH_PERF_H__
+#ifndef __PERF_H__
+#define __PERF_H__
 
-#define PERF_START
-#define PERF_STOP(x)
+#define PERF_START    /* null definition */
+#define PERF_STOP(x)  /* null definition */
 
-#endif /* __LWIP_ARCH_PERF_H__ */
+#endif /* __PERF_H__ */

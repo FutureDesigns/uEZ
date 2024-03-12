@@ -64,7 +64,7 @@ static SWIM_WINDOW_T G_mmWin;
 TUInt32 G_romChecksum;
 TBool G_romChecksumCalculated;
 
-TUInt32 ROMChecksumCalculate()
+TUInt32 ROMChecksumCalculate(void)
 {
     TUInt8 *p = (TUInt8 *)0;
     TUInt32 checksum = 0;
@@ -149,7 +149,7 @@ static const T_appMenuEntry mainmenu_entries[] = {
 #if APP_DEMO_EMWIN
 { "emWin Demo", emWin, G_segger, 0 },
 #endif
-#if APP_DEMO_YOUR_APP
+#if (APP_DEMO_YOUR_APP == 1)
 { "Your App Here!", YourAppMode, G_questionIcon, 0 },
 #endif
 { 0 },
@@ -218,7 +218,7 @@ void TitleScreen(void)
 
         SUIShowPage0();
        
-#if FAST_STARTUP
+#ifdef FAST_STARTUP
         UEZLCDBacklight(lcd, 255);
 #else
         for (i=0; i<256; i++)  {
@@ -227,7 +227,7 @@ void TitleScreen(void)
         }
 #endif
         // Create checksum string
-#if FAST_STARTUP
+#ifdef FAST_STARTUP
         sprintf(buffer, "CS:????");
 #else
         while (!G_romChecksumCalculated)
@@ -264,7 +264,9 @@ void MainMenu(void)
         if (UEZLCDOpen("LCD", &lcd) == UEZ_ERROR_NONE)  {
             UEZLCDGetFrame(lcd, 0, (void **)&pixels);
             
-#if (!FAST_STARTUP)
+#ifdef FAST_STARTUP
+            UEZLCDBacklight(lcd, 255);
+#else
             // Clear the screen
             TitleScreen();
 #if 1
@@ -329,8 +331,7 @@ void MainMenu(void)
             Calibrate(CalibrateTestIfTouchscreenHeld());
 #endif
             UEZTaskDelay(1000);
-#else
-            UEZLCDBacklight(lcd, 255);
+
 #endif
 
         // Set the screen saver icon

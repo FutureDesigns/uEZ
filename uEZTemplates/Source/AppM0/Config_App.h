@@ -92,12 +92,26 @@
 #define UEZ_TASK_STACK_BYTES(x)             (x/sizeof(long))
 #endif
 
-#ifndef APP_MENU_ALLOW_TEST_MODE
-#define APP_MENU_ALLOW_TEST_MODE            1
+#ifndef UEZ_REGISTER // see UEZQueueSetName examples
+#define UEZ_REGISTER                        0
 #endif
-
-#ifndef ACCEL_DEMO_ALLOW_ROTATE
-#define ACCEL_DEMO_ALLOW_ROTATE             0
+#ifndef RENAME_INI
+#define RENAME_INI                          0
+#endif
+#ifndef APP_MENU_ALLOW_TEST_MODE
+#define APP_MENU_ALLOW_TEST_MODE            0
+#endif
+#ifndef LPC43XX_ENABLE_M0_CORES
+#define LPC43XX_ENABLE_M0_CORES             0
+#endif
+#ifndef UEZ_WIRELESS_PROGRAM_MODE
+#define UEZ_WIRELESS_PROGRAM_MODE           0
+#endif
+#ifndef UEZ_ENABLE_WIRELESS_NETWORK
+#define UEZ_ENABLE_WIRELESS_NETWORK         0
+#endif
+#ifndef UEZ_ENABLE_AUDIO_CODEC
+#define UEZ_ENABLE_AUDIO_CODEC              0
 #endif
 /*-------------------------------------------------------------------------*
  * Default Values:

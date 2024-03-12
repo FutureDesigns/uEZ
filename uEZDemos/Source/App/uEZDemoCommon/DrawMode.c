@@ -23,6 +23,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZLCD.h>
+#include <uEZMemory.h>
 #include <uEZFile.h>
 #include <string.h>
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
@@ -181,6 +182,7 @@ void DR_Screen(T_uezDevice lcd)
  *---------------------------------------------------------------------------*/
 static void DR_ChangeColor(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     G_drColorIndex++;
     if (G_drColorIndex >= NUM_COLOR_CHOICES)
         G_drColorIndex = 0;
@@ -477,6 +479,7 @@ static void DR_Save(const T_choice *aChoice)
  *---------------------------------------------------------------------------*/
 static void DR_Exit(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     G_drExit = 1;
 }
 
@@ -561,6 +564,7 @@ static void DrawBlockLine(TInt32 startX, TInt32 startY, TInt32 winX, TInt32 winY
  *---------------------------------------------------------------------------*/
 void DrawMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice lcd;
     T_uezDevice ts;
     static T_uezQueue queue = (TUInt32)NULL;

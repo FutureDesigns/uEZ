@@ -234,12 +234,12 @@ $[ifdef LPC1788]$[SkipNewLine]
           <state>CORE_M3</state> 
 $[endif]$[SkipNewLine]
 $[ifdef LPC4088]$[SkipNewLine]
-          <state>IAR_ARM_CM4F</state>
-          <state>CORE_M4</state> 
+          <state>CORE_M4</state>
+		  <state>__FPU_PRESENT=1</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[SkipNewLine]
-          <state>IAR_ARM_CM4F</state>
-          <state>CORE_M4</state> 
+          <state>CORE_M4</state>
+		  <state>__FPU_PRESENT=1</state>
 $[endif]$[SkipNewLine]
 				<state>LWIP_2_0_x</state>
                 <state>DEBUG</state>
@@ -397,7 +397,10 @@ $[ifdef LPC4357]$[SkipNewLine]
 		  <state>$PROJ_DIR$/../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx</state>
 $[endif]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/$[sym rtos]/portable/IAR/$[ifdef LPC1788]ARM_CM3$[endif]$[ifdef LPC4088]ARM_CM4F$[endif]$[ifdef LPC4357]ARM_CM4F$[endif]</state>
-          		  
+          		    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls</state>
+          		    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/Include</state>
@@ -700,6 +703,8 @@ $[ifdef LPC4357]$[SkipNewLine]
 $[endif]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/$[sym rtos]/portable/IAR/$[ifdef LPC1788]ARM_CM3$[endif]$[ifdef LPC4088]ARM_CM4F$[endif]$[ifdef LPC4357]ARM_CM4F$[endif]</state>
           		  
+          		    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/Include</state>
@@ -1362,12 +1367,12 @@ $[ifdef LPC1788]$[SkipNewLine]
           <state>CORE_M3</state> 
 $[endif]$[SkipNewLine]
 $[ifdef LPC4088]$[SkipNewLine]
-          <state>IAR_ARM_CM4F</state>
-          <state>CORE_M4</state> 
+          <state>CORE_M4</state>
+		  <state>__FPU_PRESENT=1</state>
 $[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[SkipNewLine]
-          <state>IAR_ARM_CM4F</state>
-          <state>CORE_M4</state> 
+          <state>CORE_M4</state>
+		  <state>__FPU_PRESENT=1</state>
 $[endif]$[SkipNewLine]
 				<state>LWIP_2_0_x</state>
                 <state>NDEBUG</state>
@@ -1526,6 +1531,8 @@ $[ifdef LPC4357]$[SkipNewLine]
 $[endif]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/$[sym rtos]/portable/IAR/$[ifdef LPC1788]ARM_CM3$[endif]$[ifdef LPC4088]ARM_CM4F$[endif]$[ifdef LPC4357]ARM_CM4F$[endif]</state>
           		  
+          		    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/Include</state>
@@ -1828,6 +1835,8 @@ $[ifdef LPC4357]$[SkipNewLine]
 $[endif]$[SkipNewLine]
           <state>$PROJ_DIR$/../../../../uEZ/Source/RTOS/$[sym rtos]/portable/IAR/$[ifdef LPC1788]ARM_CM3$[endif]$[ifdef LPC4088]ARM_CM4F$[endif]$[ifdef LPC4357]ARM_CM4F$[endif]</state>
           		  
+          		    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../uEZ/Source/Library/Encryption/mbedtls</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../uEZ/Source/Library/lwip_2.0.x/Include</state>
@@ -2796,9 +2805,6 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\FRAMEWIN_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\Global.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GRAPH.h</name>
                         </file>
                         <file>
@@ -2865,28 +2871,7 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUI_VNC.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_07X1.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_13700.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_13748.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_1611.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_6331.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_7529.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_BitPlains.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_CompactColor_16.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_DCache.h</name>
@@ -2904,22 +2889,10 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_FlexColor_Private.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Fujitsu_16.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Generic.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_GW7630_1.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_IST3088.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_IST3088_Private.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_L5F30919.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Lin.h</name>
@@ -2943,9 +2916,6 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_NoOpt_1_8.h</name>
                         </file>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_Page1bpp.h</name>
-                        </file>
-                        <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13748.h</name>
                         </file>
                         <file>
@@ -2956,9 +2926,6 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13781_Private.h</name>
-                        </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D13U11.h</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\GUIDRV_S1D15G00.h</name>
@@ -3140,9 +3107,6 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\WM_Intern.h</name>
                         </file>
-                        <file>
-                            <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Library\GUI\SEGGER\emWin\WM_Intern_ConfDep.h</name>
-                        </file>
                     </group>
                 </group>
             </group>
@@ -3171,13 +3135,6 @@ $[ifdef LPC4357]                  <name>$PROJ_DIR$\..\..\..\..\uEZ\Source\Librar
   </file>
   <file>
     <name>$PROJ_DIR$\$[sym project_name].icf</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\..\..\..\..\uEZ\Build\Generic\$[sym manufacturer]\$[sym processor]\$[sym rtos]\IAR\Debug-Trace\Exe\uEZ_$[sym manufacturer]_$[sym processor]_$[sym rtos]_IAR_Debug-Trace.a</name>
-    <excluded>
-      <configuration>Debug</configuration>
-      <configuration>Release</configuration>
-    </excluded>
   </file>
   <file>
     <name>$PROJ_DIR$\..\..\..\..\uEZ\Build\Generic\$[sym manufacturer]\$[sym processor]\$[sym rtos]\IAR\Debug\Exe\uEZ_$[sym manufacturer]_$[sym processor]_$[sym rtos]_IAR_Debug.a</name>

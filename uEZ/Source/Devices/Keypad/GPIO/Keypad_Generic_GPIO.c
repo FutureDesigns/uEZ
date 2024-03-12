@@ -20,6 +20,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZMemory.h>
 #include <uEZGPIO.h>
 #include "Keypad_Generic_GPIO.h"
 

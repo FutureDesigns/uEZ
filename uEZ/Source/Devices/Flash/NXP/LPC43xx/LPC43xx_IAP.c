@@ -48,6 +48,7 @@
 #include <uEZPlatform.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -1035,15 +1036,15 @@ T_uezError Flash_NXP_LPC43xx_GetBlockInfo(
     TUInt32 aOffset,
     T_FlashBlockInfo *aBlockInfo)
 {
-    //TODO: blocks are either 8 or 64KB
+    // Blocks are either 8 or 64KB
     if (aOffset < 0x10000) {
-        // 4K blocks
+        // 8K blocks (See UM1503 6.5 table 30 sector numbers in manual, referred to as sector size)
         aBlockInfo->iOffset = aOffset & 0xFFFFF000;
-        aBlockInfo->iSize = 0x1000;
+        aBlockInfo->iSize = 0x2000;
     } else {
-        // 32K blocks
-        aBlockInfo->iOffset = aOffset & 0xFFFF8000;
-        aBlockInfo->iSize = 0x8000;
+        // 64K blocks (referred to as sector size in manual)
+        aBlockInfo->iOffset = aOffset & 0xFFFF0000;
+        aBlockInfo->iSize = 0x10000;
     }
 
     return UEZ_ERROR_NONE;

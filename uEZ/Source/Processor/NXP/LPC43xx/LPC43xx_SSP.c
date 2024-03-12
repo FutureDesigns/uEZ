@@ -27,6 +27,7 @@
 #include <HAL/GPIO.h>
 #include <HAL/Interrupt.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_SSP.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Types:

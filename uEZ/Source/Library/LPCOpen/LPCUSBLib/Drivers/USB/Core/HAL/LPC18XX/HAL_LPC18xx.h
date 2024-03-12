@@ -51,6 +51,31 @@
 #else
         #define __BSS(x)    __attribute__((section(".usbhostmem"))) //Crossworks
 #endif
+
+#if defined(__ICCARM__)
+	#define __BSS_2(x)       @ ".usbhostmem2"
+#elif defined(__CC_ARM)
+	#define __BSS_2(x)
+#else
+        #define __BSS_2(x)    __attribute__((section(".usbhostmem2"))) //Crossworks
+#endif
+
+#if defined(__ICCARM__)
+	#define __BSS_3(x)       @ ".usbhostmem3"
+#elif defined(__CC_ARM)
+	#define __BSS_3(x)
+#else
+        #define __BSS_3(x)    __attribute__((section(".usbhostmem3"))) //Crossworks
+#endif
+
+#if defined(__ICCARM__)
+	#define __BSS_4(x)       @ ".usbhostmem4"
+#elif defined(__CC_ARM)
+	#define __BSS_4(x)
+#else
+        #define __BSS_4(x)    __attribute__((section(".usbhostmem4"))) //Crossworks
+#endif
+
 /* bit defines for DEVICEADDR register. */
 #define USBDEV_ADDR_AD  (1 << 24)
 #define USBDEV_ADDR(n)  (((n) & 0x7F) << 25)

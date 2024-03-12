@@ -166,6 +166,11 @@ void _isr_UEZTaskContextSwitch(void);
 #endif
 
 /*-------------------------------------------------------------------------*
+ * Section: Timers
+ *-------------------------------------------------------------------------*/
+T_uezError UEZConfigureTimerForRunTimeStats(void);
+
+/*-------------------------------------------------------------------------*
  * Section: Semaphores
  *-------------------------------------------------------------------------*/
 T_uezError UEZSemaphoreCreateBinary(T_uezSemaphore *aSemaphore);

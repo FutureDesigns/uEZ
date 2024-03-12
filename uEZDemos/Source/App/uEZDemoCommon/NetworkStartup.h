@@ -43,6 +43,8 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+#include <uEZ.h>
+#include <Types/Network.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,6 +62,10 @@ extern "C" {
  * Prototypes:
  *-------------------------------------------------------------------------*/
 TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams);
+T_uezError NetworkRestartPhy(T_uezDevice network);
+void NetworkStopApplications(T_uezDevice network);
+T_uezError NetworkReStartApplications(T_uezDevice network);
+T_uezDevice NetworkGetActiveDevice(TUInt8 Index);
 
 #ifdef __cplusplus
 }

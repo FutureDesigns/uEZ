@@ -106,9 +106,9 @@ T_uezTask G_mainTask;
 /*---------------------------------------------------------------------------*
  * Macros:
  *---------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
+#if(COMPILER_TYPE==KEIL_UV)
 #define nop()      __nop()
-#elif(COMPILER_TYPE==RowleyARM)
+#elif(COMPILER_TYPE==GCC_ARM)
 #include <intrinsics.h>
 #define nop()     __asm__("nop")
 #else
@@ -1483,7 +1483,7 @@ void SUICallbackSetLCDBase(void *aAddress)
 }
 #endif
 
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 __asm void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
 {
     /* Determine which stack was in use when the MPU fault occurred and extract

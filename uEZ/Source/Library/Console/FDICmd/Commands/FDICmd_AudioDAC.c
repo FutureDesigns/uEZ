@@ -24,6 +24,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZI2C.h>
+#include <uEZMemory.h>
 #include <Source/Library/Audio/DAC/uEZDACWAVFile.h>
 #include <Source/Library/Console/FDICmd/FDICmd.h>
 #include "FDICmd_AudioDAC.h"

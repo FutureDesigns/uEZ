@@ -183,6 +183,9 @@ static TUInt8 G_results_EXP_DK[50];
 // TODO: change nothing?
 void EXP_DK_FuncTestUSBHostA(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
      /*typedef struct {
      TUInt32 iStart;
      T_uezFile iFile;
@@ -262,6 +265,9 @@ void EXP_DK_FuncTestUSBHostA(const T_testAPI *aAPI, T_testData *aData, TUInt16 a
 // TODO: change to host detect on EXP_DK R2
 void EXP_DK_FuncTestUSBHostB(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
      /*    typedef struct {
      TUInt32 iStart;
      T_uezFile iFile;
@@ -340,6 +346,9 @@ void EXP_DK_FuncTestUSBHostB(const T_testAPI *aAPI, T_testData *aData, TUInt16 a
 // TODO: change for 4 bit using MCI in platform
 void EXP_DK_FuncTestMicroSDCard4bit(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
      /*   typedef struct {
      TUInt32 iStart;
      T_uezFile iFile;
@@ -411,38 +420,50 @@ void EXP_DK_FuncTestMicroSDCard4bit(const T_testAPI *aAPI, T_testData *aData, TU
 // TODO: change to ping other unit? 
 void EXP_DK_FuncTestEthernet(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 }
 
 
 // TODO: change to turn on 
 void EXP_DK_FuncTestI2C_C_D(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-     
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 }
 
 // TODO: change to turn on 
 void EXP_DK_FuncTestAudio(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 }
 
 // TODO: change to turn on 
 void EXP_DK_FuncTestHeadphone(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 }
 
 // TODO: change to turn on 
 void EXP_DK_FuncTestDALI(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 }
 
 // TODO: change to turn on speaker only on EXP-DK R2!
 void EXP_DK_FuncTestSpeaker(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButton)
 {
-     
+    PARAM_NOT_USED(aAPI);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aButton);
 }
 
 // finished
@@ -492,7 +513,7 @@ void EXP_DK_FuncTestALS(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButto
                // can print ambient and proximity on screen now
                if (p->iSubstep == 0) {
                     aAPI->iTextLine(aData, 2, "  Move your finger close to the sensor.");
-                    sprintf(p->iLine, "    Lux (%d), Proximity (%d)", p->ambient, p->proximity);
+                    sprintf(p->iLine, "    Lux (%u), Proximity (%u)", p->ambient, p->proximity);
                     aAPI->iTextLine(aData, 3, p->iLine);
                     if ((p->ambient < 150) && (p->proximity > 50000)) { // Looking for object closing in
                          aAPI->iShowResult(aData, 1, TEST_RESULT_PASS, 0);
@@ -500,7 +521,7 @@ void EXP_DK_FuncTestALS(const T_testAPI *aAPI, T_testData *aData, TUInt16 aButto
                     }
                } else {
                     aAPI->iTextLine(aData, 4, "  Move your finger away from to the sensor. ");
-                    sprintf(p->iLine, "    Lux (%d), Proximity (%d)",p->ambient,p->proximity);
+                    sprintf(p->iLine, "    Lux (%u), Proximity (%u)", p->ambient, p->proximity);
                     aAPI->iTextLine(aData, 5, p->iLine);
                     if ((p->ambient > 1200) && (p->proximity < 4000)) {       // Looking for object moving away
                          aAPI->iShowResult(aData, 1, TEST_RESULT_PASS, 0);
@@ -780,10 +801,10 @@ void EXP_DK_FuncTestButtonLED(const T_testAPI *aAPI, T_testData *aData, TUInt16 
           TUInt8 v;
           
           (*p->p_leds)->On(p->p_leds, (p->bits & 0x0F)<<4);
-          (*p->p_leds)->Off(p->p_leds, ((~p->bits) & 0x0F)<<4);
+          (*p->p_leds)->Off(p->p_leds, ((~((TUInt32)p->bits)) & 0x0F)<<4);
           (*p->p_buttons)->Read(p->p_buttons, &butbits);
           p->newv = butbits;
-          v = ~p->newv & p->oldv;
+          v = (~((TUInt32)p->newv)) & p->oldv;
           p->bits ^= v;
           p->oldv = p->newv;
           if (p->iSubstep == 0) {
@@ -868,14 +889,14 @@ void EXP_DK_FuncTestPotentiometer(const T_testAPI *aAPI, T_testData *aData, TUIn
           (*p->iADC)->RequestSingle(p->iADC, &p->iRequest);
           percent = ADCReading * 100 / 1024; // got ADCReading, convert to percent
           if (p->iSubstep == 0) {
-               sprintf(p->iLine, "  Move the Potentiometer to the left. (%d)", percent);
+               sprintf(p->iLine, "  Move the Potentiometer to the left. (%u)", percent);
                aAPI->iTextLine(aData, 1, p->iLine);
                if (percent < 3) {         // Looking for left scroll
                     aAPI->iShowResult(aData, 1, TEST_RESULT_PASS, 0);
                     p->iSubstep = 1;
                }
           } else {
-               sprintf(p->iLine, "  Move the Potentiometer to the right. (%d)", percent);
+               sprintf(p->iLine, "  Move the Potentiometer to the right. (%u)", percent);
                aAPI->iTextLine(aData, 2, p->iLine);
                if (percent > 97) {       // Looking for right scroll
                     aAPI->iShowResult(aData, 1, TEST_RESULT_PASS, 0);
@@ -1162,7 +1183,7 @@ void TestRemoveButtons_EXP_DK(T_testData *aData, TUInt16 aButtonTypes)
     }
 
     // Remove those buttons from the logic
-    aData->iButtons &= ~aButtonTypes;
+    aData->iButtons &= (TUInt16) (~((TUInt32)aButtonTypes));
 }
 
 
@@ -1273,6 +1294,7 @@ const T_testAPI G_testAPI_EXP_DK = {
 *---------------------------------------------------------------------------*/
 void FunctionalTest_EXP_DK(const T_choice *aChoice)
 {
+     PARAM_NOT_USED(aChoice);
      T_uezInputEvent inputEvent;
      T_uezDevice ts;
      T_uezDevice lcd;

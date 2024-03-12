@@ -163,6 +163,15 @@ typedef struct {
         const TCHAR* path,
         const MKFS_PARM* opt);
 
+   /**
+     * v2.14 Functions
+     */
+    // set the buffer used to speed up seek operations
+    T_uezError (*SetTableBuffer)(
+        void *aWorkspace,
+            TUInt32 aFileHandle,
+            DWORD* bufPtr);
+
 } DEVICE_FileSystem;
 
 #ifdef __cplusplus

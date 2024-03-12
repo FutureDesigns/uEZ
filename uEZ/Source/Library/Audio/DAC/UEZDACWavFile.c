@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <uEZ.h>
 #include <uEZDevice.h>
+#include <uEZMemory.h>
 #include <uEZDeviceTable.h>
 #include "Source/Devices/DAC/Generic/DAC_Generic.h"
 #include <HAL/Timer.h>
@@ -57,6 +58,9 @@
 #endif
 
 #define MONO                                (1)
+
+#define FILE_SYSTEM_TABLE_BUFFER_SIZE_AUDIO (4*1024)
+uint32_t clmtAudio[FILE_SYSTEM_TABLE_BUFFER_SIZE_AUDIO];// Cluster link map table buffer
 
 /*-------------------------------------------------------------------------*
  * Types:
@@ -254,6 +258,12 @@ T_uezError UEZDACWAVPlay(char* aFileName, wavFileHeader *aHeader)
         UEZSemaphoreGrab(G_DACFileWorkspace.iSem, UEZ_TIMEOUT_INFINITE);
 
         if(UEZFileOpen(aFileName, FILE_FLAG_READ_ONLY, &G_DACFileWorkspace.iFile) == UEZ_ERROR_NONE){
+        
+            clmtAudio[0] = FILE_SYSTEM_TABLE_BUFFER_SIZE_AUDIO; // Set table size
+            // If not supported (disabled) or buffer is too small, we can just ignore the error return and it will read the file normally with slow seek.
+            // This will populate the buffer table with a sector map for faster seeking to avoid re-reading the table over and over again.
+            error = UEZFileSetTableBuffer(G_DACFileWorkspace.iFile, &clmtAudio[0]);
+
             G_DACFileWorkspace.iFileOpen = ETrue;
             pos = IPopulateHeader(G_DACFileWorkspace.iFile, &G_DACFileWorkspace.iHeader);
             memcpy((void*)aHeader, (void*)&G_DACFileWorkspace.iHeader, sizeof(G_DACFileWorkspace.iHeader));

@@ -27,12 +27,12 @@ static T_uezSemaphore G_Sem;
  * Prototypes:
  *-------------------------------------------------------------------------*/
 
-static void IGrab()
+static void IGrab(void)
 {
     UEZSemaphoreGrab(G_Sem, UEZ_TIMEOUT_INFINITE);
 }
 
-static void IRelease()
+static void IRelease(void)
 {
     UEZSemaphoreRelease(G_Sem);
 }

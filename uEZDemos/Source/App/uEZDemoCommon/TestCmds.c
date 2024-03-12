@@ -21,8 +21,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include <uEZ.h>
-#if APP_MENU_ALLOW_TEST_MODE
+#if (APP_MENU_ALLOW_TEST_MODE == 1)
 #include <uEZStream.h>
 #include <uEZSPI.h>
 #include <Source/Library/Console/FDICmd/FDICmd.h>
@@ -54,6 +55,10 @@
 #define LOOPBACK_TEST_ERROR_STRING_LENGTH   (5)
 #define GPIO_TEST_RETRIES		    (3)
 
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  3
+#endif
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
@@ -78,7 +83,9 @@ int UEZGUICmdClock(void *aWorkspace, int argc, char *argv[]);
 #endif
 int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[]);
+#ifdef GPIO_PSU_3VERR
 int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[]);
+#endif
 int UEZGUICmdEEPROM(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdTemperature(void *aWorkspace, int argc, char *argv[]);
 int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[]);
@@ -175,7 +182,9 @@ static const T_consoleCmdEntry G_UEZGUICommands[] = {
 #endif
         { "GPIO", UEZGUICmdGPIO },
         { "5V", UEZGUICmd5V },
+#ifdef GPIO_PSU_3VERR
         { "3VERR", UEZGUICmd3VERR },
+#endif
         { "EEPROM", UEZGUICmdEEPROM },
         { "TEMP", UEZGUICmdTemperature },
 #if SEC_TO_ENABLED //Trusted Objects enabled
@@ -279,6 +288,9 @@ extern TUInt32 G_romChecksum;
 extern TBool G_romChecksumCalculated;
 int UEZGUICmdCRC(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     char message[20];
 
     if(argc == 1){
@@ -314,6 +326,9 @@ int UEZGUICmdCRC(void *aWorkspace, int argc, char *argv[])
  *---------------------------------------------------------------------------*/
 int UEZGUICmdGainSpan(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     if (argc == 1) {
         // No Parameters (other than command) cause CMD to pass
         FDICmdSendString(aWorkspace, "PASS: OK\n");
@@ -339,6 +354,9 @@ int UEZGUICmdGainSpan(void *aWorkspace, int argc, char *argv[])
  *---------------------------------------------------------------------------*/
 int UEZGUICmdGainSpanRun(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     if (argc == 1) {
         // No Parameters (other than command) cause CMD to pass
         FDICmdSendString(aWorkspace, "PASS: OK\n");
@@ -419,6 +437,7 @@ void UEZGUITestShowResult(
         TUInt16 aResult,
         TUInt32 aDelay)
 {
+    PARAM_NOT_USED(aLine);
     static const char *textResults[] = {
             "In Progress",
             "Done",
@@ -480,6 +499,9 @@ void UEZGUITestNextTest(T_testData *aData)
  *---------------------------------------------------------------------------*/
 int UEZGUICmdPing(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     (void) strupr;
     if (argc == 1) {
 #if UEZ_ENABLE_LCD
@@ -526,6 +548,9 @@ static void IUEZGUICmdRunTest(void *aWorkspace, void(*aMonitorFunction)(
  *---------------------------------------------------------------------------*/
 int UEZGUICmdSDRAM(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     //    TUInt32 start, end;
     TUInt32 type;
     T_testData testData;
@@ -550,6 +575,9 @@ int UEZGUICmdSDRAM(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdNOR(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     //    TUInt32 start, end;
     TUInt32 type;
     T_testData testData;
@@ -577,6 +605,9 @@ int UEZGUICmdNOR(void *aWorkspace, int argc, char *argv[])
 #include <uEZFlash.h>
 int UEZGUICmdSPIFI(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     TUInt32 i;
     T_uezDevice flash;
     T_uezError error;
@@ -645,6 +676,9 @@ extern T_uezTask G_DACAudioTask;
 
 int UEZGUICmdClock(void *aWorkspace, int argc, char *argv[])
 {    
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     char *p;
     (void) strupr;
 #if(UEZ_PROCESSOR == NXP_LPC4357)          
@@ -799,6 +833,9 @@ for(TUInt32 i  = 0; i < 10; i++) {
 }
 
 int UEZGUICmdGPIOArray(void *aWorkspace, int argc, char *argv[]) {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
   T_uezError uez_err = UEZ_ERROR_NONE;
 
   /* Set retries to 4 to get it to run up to 4 times (3 retries) */
@@ -978,6 +1015,9 @@ int UEZGUICmdGPIOArray(void *aWorkspace, int argc, char *argv[]) {
 
 int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     TUInt32 portA, pinA, portB, pinB, portC, pinC;
     //T_testData testData;
     extern HAL_GPIOPort **PortNumToPort(TUInt8 aPort);
@@ -1323,6 +1363,9 @@ int UEZGUICmdGPIO(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     T_testData testData;
 
     if (argc == 1) {
@@ -1335,21 +1378,20 @@ int UEZGUICmd5V(void *aWorkspace, int argc, char *argv[])
     return 0;
 }
 
+#ifdef GPIO_PSU_3VERR
 int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     // Read the GPIO for the 3VERR on P2_25 LPC1788_4088
-#if (UEZ_PROCESSOR != NXP_LPC4357)
-    T_uezGPIOPortPin gpioPin = GPIO_P2_25;
-#else
-    T_uezGPIOPortPin gpioPin = GPIO_P4_10;
-    TUInt32 value;
-#endif
-
+    T_uezGPIOPortPin gpioPin = GPIO_PSU_3VERR;
     TUInt32 reading;
 
 #if (UEZ_PROCESSOR != NXP_LPC4357)
     UEZGPIOSetMux(gpioPin, 0);
 #else
+    TUInt32 value;
     value = ((gpioPin >> 8) & 0x7) >= 5 ? 4 : 0;
     value |= SCU_EPD_DISABLE | SCU_EPUN_DISABLE | SCU_EHS_FAST | SCU_EZI_ENABLE | SCU_ZIF_ENABLE;
     UEZGPIOControl(gpioPin, GPIO_CONTROL_SET_CONFIG_BITS, value);
@@ -1367,9 +1409,13 @@ int UEZGUICmd3VERR(void *aWorkspace, int argc, char *argv[])
     }
     return 0;
 }
+#endif
 
 int UEZGUICmdEEPROM(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
 #if (UEZ_PROCESSOR != NXP_LPC4357)
     T_testData testData;
 #else
@@ -1411,6 +1457,9 @@ int UEZGUICmdEEPROM(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdTemperature(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     T_testData testData;
 
     if (argc == 1) {
@@ -1425,6 +1474,9 @@ int UEZGUICmdTemperature(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdSDCard(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     T_testData testData;
 
     if (argc == 1) {
@@ -1439,6 +1491,9 @@ int UEZGUICmdSDCard(void *aWorkspace, int argc, char *argv[])
 #if LIGHT_SENSOR_ENABLED
 int UEZGUICmdLightSensor(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     T_testData testData;
 
     if (argc == 1) {
@@ -1454,6 +1509,9 @@ int UEZGUICmdLightSensor(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdAccelerometer(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     T_testData testData;
 
     if (argc == 1) {
@@ -1469,6 +1527,9 @@ int UEZGUICmdAccelerometer(void *aWorkspace, int argc, char *argv[])
 #if UEZ_ENABLE_AUDIO_AMP
 int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
 #if 0
     T_testData testData;
     T_uezError error;
@@ -1506,6 +1567,9 @@ int UEZGUICmdAmplifier(void *aWorkspace, int argc, char *argv[])
 #if SEC_TO_ENABLED //Trusted Objects enabled
 int UEZGUICmdSETO(void *aWorkspace, int argc, char *argv[])
 {  
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     //T_uezError error;
     //TUInt32 value;
     //TUInt32 reading;
@@ -1562,6 +1626,9 @@ int UEZGUICmdSETO(void *aWorkspace, int argc, char *argv[])
 #if SEC_MC_ENABLED //Microchip enabled
 int UEZGUICmdSEMC(void *aWorkspace, int argc, char *argv[])
 {  
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     //T_uezError error;
     TUInt32 value;
     //TUInt32 reading;
@@ -1671,6 +1738,9 @@ int UEZGUICmdSEMC(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdReset(void *aWorkspace, int argc, char *argv[])
 {  
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     FDICmdSendString(aWorkspace, "PASS: OK\n");
     UEZTaskDelay(500);         
     UEZPlatform_System_Reset();
@@ -1679,6 +1749,9 @@ int UEZGUICmdReset(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     T_uezTimeDate td;
     T_uezTimeDate tdCompare;
     char *p;
@@ -1745,6 +1818,9 @@ int UEZGUICmdRTC(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
 #if(UEZ_PROCESSOR != NXP_LPC4357)
     T_testData testData;
 #else
@@ -1785,6 +1861,9 @@ int UEZGUICmdUSBPort1(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdUSBPort0(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
 #if(UEZ_PROCESSOR != NXP_LPC4357)
     T_testData testData;
 #endif
@@ -1831,6 +1910,9 @@ int UEZGUICmdBacklight(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdLCD(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     //    T_testData testData;
     //    testData.iLine = 0;
 
@@ -1848,6 +1930,9 @@ int UEZGUICmdLCD(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdTouchscreen(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     if (argc == 1) {
         TestModeSendCmd(TEST_MODE_TOUCHSCREEN);
     } else if (argc == 2) {
@@ -1866,6 +1951,9 @@ int UEZGUICmdTouchscreen(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdTouchscreenStatus(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     if (G_mmTestModeTouchscreenCalibrationBusy) {
         FDICmdSendString(aWorkspace, "BUSY\n");
     } else {
@@ -1879,6 +1967,9 @@ int UEZGUICmdTouchscreenStatus(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdTouchscreenClear(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     G_nonvolatileSettings.iNeedRecalibrate = ETrue;
     NVSettingsSave();
     FDICmdSendString(aWorkspace, "PASS: OK\n");
@@ -1887,6 +1978,9 @@ int UEZGUICmdTouchscreenClear(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdColor(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     TUInt32 red, green, blue;
     extern T_pixelColor G_mmTestModeColor;
 
@@ -1906,6 +2000,9 @@ int UEZGUICmdColor(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdVerbose(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     if (argc == 2) {
         if (FDICmdUValue(argv[1]))
             G_verbose = ETrue;
@@ -1920,6 +2017,9 @@ int UEZGUICmdVerbose(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdSpeaker(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     TUInt32 freq;
     T_uezDevice speaker;
     HAL_GPIOPort **p_gpio2 = 0;
@@ -1948,12 +2048,19 @@ int UEZGUICmdSpeaker(void *aWorkspace, int argc, char *argv[])
 #include <task.h>
 int UEZGUICmdTaskInfo(void *aWorkspace, int argc, char *argv[])
 {  
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
 	TaskStatus_t *pxTaskStatusArray;
 	volatile UBaseType_t uxArraySize, x;
-	uint32_t ulTotalRunTime;
+	configRUN_TIME_COUNTER_TYPE ulTotalRunTime;
         
 	// Take a snapshot of the number of tasks in case it changes while this function is executing.
 	uxArraySize = uxTaskGetNumberOfTasks();
+
+#if ((FREERTOS_HEAP_SELECTION==4) | (FREERTOS_HEAP_SELECTION==5))
+        printf(" Heap Free: %08u, Minimum Ever Free: %08u\n", (uint32_t) xPortGetFreeHeapSize(), (uint32_t) xPortGetMinimumEverFreeHeapSize());
+#endif
 
 	// Allocate a TaskStatus_t structure for each task. An array could be allocated statically at compile time.
 	pxTaskStatusArray = (TaskStatus_t *) pvPortMalloc( uxArraySize * sizeof( TaskStatus_t ) );
@@ -1963,7 +2070,7 @@ int UEZGUICmdTaskInfo(void *aWorkspace, int argc, char *argv[])
 		uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, &ulTotalRunTime );
 
 #if (configGENERATE_RUN_TIME_STATS == 1)
-		uint32_t  ulStatsAsPercentage; // Not reporting runtime currently
+		uint32_t  ulStatsAsPercentage; 
 		ulTotalRunTime /= 100UL; // For percentage calculations.
 #endif
 
@@ -1992,7 +2099,7 @@ int UEZGUICmdTaskInfo(void *aWorkspace, int argc, char *argv[])
 				break;
 			}
 			printf(", Prio: %02u, Base: %02u, ", (uint32_t) pxTaskStatusArray[x].uxCurrentPriority, (uint32_t) pxTaskStatusArray[x].uxBasePriority);
-			printf("Free Stack Remaining: %04u\n", pxTaskStatusArray[x].usStackHighWaterMark);
+			printf("Free Stack Remaining: %04u", (uint32_t) pxTaskStatusArray[x].usStackHighWaterMark);
 
 #if (configGENERATE_RUN_TIME_STATS == 1)
 			if( ulTotalRunTime > 0 ) {
@@ -2001,12 +2108,16 @@ int UEZGUICmdTaskInfo(void *aWorkspace, int argc, char *argv[])
 				ulStatsAsPercentage = pxTaskStatusArray[x].ulRunTimeCounter / ulTotalRunTime;
 
 				if( ulStatsAsPercentage > 0UL )	{
-					printf("%s\t\t%lu\t\t%lu%%\r\n", pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[ x ].ulRunTimeCounter, ulStatsAsPercentage );
+					//printf("%s\t\t%lu\t\t%lu%%\r\n", //pxTaskStatusArray[x].pcTaskName,
+                                        printf("\t\t%lu\t\t%lu%%\r", (unsigned long) pxTaskStatusArray[ x ].ulRunTimeCounter, (unsigned long)ulStatsAsPercentage );
 				} else {
 					// If the percentage is zero here then the task has consumed less than 1% of the total run time.
-					printf("%s\t\t%lu\t\t<1%%\r\n", pxTaskStatusArray[x].pcTaskName, pxTaskStatusArray[ x ].ulRunTimeCounter );
+					//printf("%s\t\t%lu\t\t<1%%\r\n", //pxTaskStatusArray[x].pcTaskName,
+                                        printf("\t\t%lu\t\t<1%%\r", (unsigned long) pxTaskStatusArray[ x ].ulRunTimeCounter );
 				}
 			}
+#else
+printf("\n");
 #endif
 		}
 		vPortFree( pxTaskStatusArray ); // The array is no longer needed, free the memory it consumes.
@@ -2024,6 +2135,9 @@ int UEZGUICmdTaskInfo(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdMACAddress(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     char mac[6];
     int macLen;
     char *p;
@@ -2094,6 +2208,9 @@ int UEZGUICmdMACAddress(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdIPAddress(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     char ip[4];
     int ipLen;
     char *p;
@@ -2153,6 +2270,9 @@ int UEZGUICmdIPAddress(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdIPGatewayAddress(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     char ip[4];
     int ipLen;
     char *p;
@@ -2212,6 +2332,9 @@ int UEZGUICmdIPGatewayAddress(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdIPMaskAddress(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     char ip[4];
     int ipLen;
     char *p;
@@ -2314,6 +2437,9 @@ void IWaitTouchscreen(void)
 #if (UEZ_ENABLE_LCD == 1)
 int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     extern T_pixelColor G_mmTestModeColor;
 
     if (argc == 1) {
@@ -2353,6 +2479,9 @@ int UEZGUICmdColorCycle(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdAlignmentBorder(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     extern T_pixelColor G_mmTestModeColor;
 
     if (argc == 1) {
@@ -2367,6 +2496,9 @@ int UEZGUICmdAlignmentBorder(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     TUInt32 I2CNumber;
     TUInt32 speed, numBytes, i;
     T_uezDevice I2C;
@@ -2419,7 +2551,7 @@ int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
             UEZI2CTransaction(I2C, &r);
 
             if(dataIn != dataOut) {
-                sprintf(printString, "\nTest Failed on byte %d\n", i);
+                sprintf(printString, "\nTest Failed on byte %d\n", (int32_t)i);
                 FDICmdSendString(aWorkspace, printString);
             }
         }
@@ -2435,6 +2567,9 @@ int UEZGUICmdI2CBang(void *aWorkspace, int argc, char *argv[])
 
 int UEZGUICmdEnd(void *aWorkspace, int argc, char *argv[])
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(argc);
+    PARAM_NOT_USED(argv);
     // Try to end test mode
     TestModeSendCmd(TEST_MODE_END);
     return 0;
@@ -2464,7 +2599,7 @@ T_uezError UEZGUITestCmdsInit(void)
     // Start FDI Cmd Console
     G_UEZGUIWorkspace = 0;
 #if (MAX_NUM_FRAMES > 0) // SDRAM is used
-error = FDICmdStart(stream, &G_UEZGUIWorkspace, 3072, G_UEZGUICommands);
+error = FDICmdStart(stream, &G_UEZGUIWorkspace, 4096, G_UEZGUICommands);
 #else // SDRAM not used, use smaller size
 error = FDICmdStart(stream, &G_UEZGUIWorkspace, 2560, G_UEZGUICommands);
 #endif    

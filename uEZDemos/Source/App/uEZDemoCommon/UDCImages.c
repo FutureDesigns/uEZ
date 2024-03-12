@@ -105,6 +105,7 @@
 #include "Images/Professional_Icons/ArrowDown.h"
 #include "Images/Professional_Icons/GainSpanLogo.h"
 #include "Images/Professional_Icons/VideoIcon.h"
+#include "Images/Professional_Icons/MQTT_Logo_64.h"
 #if SIMPLEUI_DOUBLE_SIZED_ICONS
 #include "Images/Professional_Icons/uEZLogoLarge.h"
 #else
@@ -137,8 +138,8 @@
 #include "Images/Professional_Icons128/QuestionIcon128.h"
 #include "Images/Professional_Icons128/TimeDateIcon128.h"
 #include "Images/Professional_Icons128/TemperatureIcon128.h"
-//#include "Images/Professional_Icons/RotatedBanner.h"
-//#include "Images/Professional_Icons/DownExit.h"
+#include "Images/Professional_Icons128/RotatedBanner.h"
+#include "Images/Professional_Icons128/DownExit.h"
 #include "Images/Professional_Icons128/YourAppWindow.h"
 #include "Images/Professional_Icons128/ContrastIcon128.h"
 #include "Images/Professional_Icons128/HourglassIcon.h"
@@ -153,6 +154,7 @@
 #include "Images/Professional_Icons128/GainSpanLogo.h"
 #include "Images/Professional_Icons128/uEZLogo.h"
 #include "Images/Professional_Icons128/VideoIcon128.h"
+#include "Images/Professional_Icons128/MQTT_Logo_128.h"
 #endif
 
 /*-------------------------------------------------------------------------*

@@ -42,13 +42,13 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.50a                                    *
+*       SystemView version: 3.52a                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
 File    : SEGGER_RTT.h
 Purpose : Implementation of SEGGER real-time transfer which allows
-          real-time communication on targets which support debugger 
+          real-time communication on targets which support debugger
           memory accesses while the CPU is running.
 Revision: $Rev: 25842 $
 ----------------------------------------------------------------------
@@ -74,7 +74,9 @@ Revision: $Rev: 25842 $
 #define SEGGER_SYSVIEW_SECTION ".rttbuf"
 #endif
 
+#ifndef SEGGER_RTT_ASM 
 #include "SEGGER_RTT_Conf.h"
+#endif
 
 /*********************************************************************
 *
@@ -112,6 +114,10 @@ Revision: $Rev: 25842 $
       #define _CORE_HAS_RTT_ASM_SUPPORT 1
       #define _CORE_NEEDS_DMB           1
       #define RTT__DMB() __asm volatile ("dmb\n" : : :);
+    #elif (defined(__ARM_ARCH_8_1M_MAIN__))       // Cortex-M85
+      #define _CORE_HAS_RTT_ASM_SUPPORT 1
+      #define _CORE_NEEDS_DMB           1
+      #define RTT__DMB() __asm volatile ("dmb\n" : : :);
     #else
       #define _CORE_HAS_RTT_ASM_SUPPORT 0
     #endif
@@ -142,6 +148,10 @@ Revision: $Rev: 25842 $
       #define _CORE_HAS_RTT_ASM_SUPPORT 1
       #define _CORE_NEEDS_DMB           1
       #define RTT__DMB() __asm volatile ("dmb\n" : : :);
+    #elif (defined __ARM_ARCH_8_1M_MAIN__)        // Cortex-M85
+      #define _CORE_HAS_RTT_ASM_SUPPORT 1
+      #define _CORE_NEEDS_DMB           1
+      #define RTT__DMB() __asm volatile ("dmb\n" : : :);
     #elif ((defined __ARM_ARCH_7A__) || (defined __ARM_ARCH_7R__))  // Cortex-A/R 32-bit ARMv7-A/R
       #define _CORE_NEEDS_DMB           1
       #define RTT__DMB() __asm volatile ("dmb\n" : : :);
@@ -165,6 +175,10 @@ Revision: $Rev: 25842 $
       #define _CORE_NEEDS_DMB           1
       #define RTT__DMB() __asm volatile ("dmb\n" : : :);
     #elif (defined __ARM_ARCH_8M_MAIN__)          // Cortex-M33
+      #define _CORE_HAS_RTT_ASM_SUPPORT 1
+      #define _CORE_NEEDS_DMB           1
+      #define RTT__DMB() __asm volatile ("dmb\n" : : :);
+    #elif (defined __ARM_ARCH_8_1M_MAIN__)        // Cortex-M85
       #define _CORE_HAS_RTT_ASM_SUPPORT 1
       #define _CORE_NEEDS_DMB           1
       #define RTT__DMB() __asm volatile ("dmb\n" : : :);
@@ -304,7 +318,7 @@ Revision: $Rev: 25842 $
 // Down-channel 2: Unused
 //
 #ifndef   SEGGER_RTT_MAX_NUM_DOWN_BUFFERS
-#define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS           (2)     // Max. number of down-buffers (H->T) available on this target  (Default: 3)
+#define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS           (3)     // Max. number of down-buffers (H->T) available on this target  (Default: 3)
 #endif
 
 //#include <SEGGER_RTT_SYSVIEW_Config.h>
@@ -314,12 +328,18 @@ Revision: $Rev: 25842 $
 #define DEBUG_RTT_WriteString(...) do { if (true) SEGGER_RTT_WriteString(__VA_ARGS__); } while (0)
 #define DEBUG_RTT_Write(...) do { if (true) SEGGER_RTT_Write(__VA_ARGS__); } while (0)
 #define DEBUG_RTT_Printf(...) do { if (true) SEGGER_RTT_printf(__VA_ARGS__); } while (0)
+#define DEBUG_RTT_Printf0(...) do { if (true) SEGGER_RTT_printf_0(__VA_ARGS__); } while (0)
+#define DEBUG_RTT_Printf1(...) do { if (true) SEGGER_RTT_printf_1(__VA_ARGS__); } while (0)
+#define DEBUG_RTT_Printf2(...) do { if (true) SEGGER_RTT_printf_2(__VA_ARGS__); } while (0)
 #else // when not enabled the functions are not called
 #define DEBUG_RTT_SetTerminal(...) do { if (false) SEGGER_RTT_SetTerminal(__VA_ARGS__); } while (0)
 #define DEBUG_RTT_TerminalOut(...) do { if (false) SEGGER_RTT_TerminalOut(__VA_ARGS__); } while (0)
 #define DEBUG_RTT_WriteString(...) do { if (false) SEGGER_RTT_WriteString(__VA_ARGS__); } while (0)
 #define DEBUG_RTT_Write(...) do { if (false) SEGGER_RTT_Write(__VA_ARGS__); } while (0)
 #define DEBUG_RTT_Printf(...) do { if (false) SEGGER_RTT_printf(__VA_ARGS__); } while (0)
+#define DEBUG_RTT_Printf0(...) do { if (false) SEGGER_RTT_printf_0(__VA_ARGS__); } while (0)
+#define DEBUG_RTT_Printf1(...) do { if (false) SEGGER_RTT_printf_1(__VA_ARGS__); } while (0)
+#define DEBUG_RTT_Printf2(...) do { if (false) SEGGER_RTT_printf_2(__VA_ARGS__); } while (0)
 #endif
 
 // These functions require a return value
@@ -383,7 +403,7 @@ typedef struct {
             unsigned SizeOfBuffer;  // Buffer size in bytes. Note that one byte is lost, as this implementation does not fill up the buffer in order to avoid the problem of being unable to distinguish between full and empty.
   volatile  unsigned WrOff;         // Position of next item to be written by host. Must be volatile since it may be modified by host.
             unsigned RdOff;         // Position of next item to be read by target (down-buffer).
-            unsigned Flags;         // Contains configuration flags. Flags[31:24] are used for validity check and must be zero. Flags[23:2] are reserved for future use. Flags[1:0] = RTT operating mode. 
+            unsigned Flags;         // Contains configuration flags. Flags[31:24] are used for validity check and must be zero. Flags[23:2] are reserved for future use. Flags[1:0] = RTT operating mode.
 } SEGGER_RTT_BUFFER_DOWN;
 
 //
@@ -449,7 +469,7 @@ unsigned     SEGGER_RTT_GetBytesInBuffer        (unsigned BufferIndex);
 //
 // Function macro for performance optimization
 //
-#define      SEGGER_RTT_HASDATA(n)       (((SEGGER_RTT_BUFFER_DOWN*)((char*)&_SEGGER_RTT.aDown[n] + SEGGER_RTT_UNCACHED_OFF))->WrOff - ((SEGGER_RTT_BUFFER_DOWN*)((char*)&_SEGGER_RTT.aDown[n] + SEGGER_RTT_UNCACHED_OFF))->RdOff)
+#define      SEGGER_RTT_HASDATA(n)       (((SEGGER_RTT_BUFFER_DOWN*)((uintptr_t)&_SEGGER_RTT.aDown[n] + SEGGER_RTT_UNCACHED_OFF))->WrOff - ((SEGGER_RTT_BUFFER_DOWN*)((char*)&_SEGGER_RTT.aDown[n] + SEGGER_RTT_UNCACHED_OFF))->RdOff)
 
 #if RTT_USE_ASM
   #define SEGGER_RTT_WriteSkipNoLock  SEGGER_RTT_ASM_WriteSkipNoLock
@@ -466,7 +486,7 @@ unsigned     SEGGER_RTT_ReadUpBufferNoLock      (unsigned BufferIndex, void* pDa
 unsigned     SEGGER_RTT_WriteDownBuffer         (unsigned BufferIndex, const void* pBuffer, unsigned NumBytes);
 unsigned     SEGGER_RTT_WriteDownBufferNoLock   (unsigned BufferIndex, const void* pBuffer, unsigned NumBytes);
 
-#define      SEGGER_RTT_HASDATA_UP(n)    (((SEGGER_RTT_BUFFER_UP*)((char*)&_SEGGER_RTT.aUp[n] + SEGGER_RTT_UNCACHED_OFF))->WrOff - ((SEGGER_RTT_BUFFER_UP*)((char*)&_SEGGER_RTT.aUp[n] + SEGGER_RTT_UNCACHED_OFF))->RdOff)   // Access uncached to make sure we see changes made by the J-Link side and all of our changes go into HW directly
+#define      SEGGER_RTT_HASDATA_UP(n)    (((SEGGER_RTT_BUFFER_UP*)((uintptr_t)&_SEGGER_RTT.aUp[n] + SEGGER_RTT_UNCACHED_OFF))->WrOff - ((SEGGER_RTT_BUFFER_UP*)((char*)&_SEGGER_RTT.aUp[n] + SEGGER_RTT_UNCACHED_OFF))->RdOff)   // Access uncached to make sure we see changes made by the J-Link side and all of our changes go into HW directly
 
 /*********************************************************************
 *
@@ -483,8 +503,12 @@ int     SEGGER_RTT_TerminalOut        (unsigned char TerminalId, const char* s);
 *
 **********************************************************************
 */
-int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...);
+int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...); // This allows selecting buffer index.
 int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
+// For direct printf replacement, uses the DEBUG_RTT_PrintfX defined above
+int SEGGER_RTT_printf_0(const char * sFormat, ...); // This uses only buffer index 0.
+int SEGGER_RTT_printf_1(const char * sFormat, ...); // This uses only buffer index 1.
+int SEGGER_RTT_printf_2(const char * sFormat, ...); // This uses only buffer index 2.
 
 #ifdef __cplusplus
   }

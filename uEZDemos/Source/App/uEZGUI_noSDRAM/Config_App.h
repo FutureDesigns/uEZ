@@ -102,6 +102,13 @@
 #ifndef ACCEL_DEMO_ALLOW_ROTATE
 #define ACCEL_DEMO_ALLOW_ROTATE             0
 #endif
+#ifndef USE_RESISTIVE_TOUCH
+#define USE_RESISTIVE_TOUCH             0
+#endif
+#ifndef UEZ_ENABLE_AUDIO_CODEC
+#define UEZ_ENABLE_AUDIO_CODEC             0
+#endif
+
 /*-------------------------------------------------------------------------*
  * Default Values:
  *-------------------------------------------------------------------------*/

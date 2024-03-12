@@ -28,7 +28,11 @@
 #include <uEZRTOS.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_USBDeviceController.h>
 #include <uEZGPIO.h>
+#include "LPC43xx_UtilityFuncs.h"
 
+#warning "Remove this file from build."
+
+#if 0 // LPC open functions are used instead of this file.
 /*-------------------------------------------------------------------------*
  * USB Registers:
  *-------------------------------------------------------------------------*/
@@ -1206,6 +1210,8 @@ void LPC43xx_USBDevice_PortB_Require(
     LPC43xx_IOCON_ConfigPinOrNone(aSettings->iUP_LED, pinsUP_LED2,
             ARRAY_COUNT(pinsUP_LED2));
 }
+
+#endif
 
 /*-------------------------------------------------------------------------*
  * End of File:  USBDev.c

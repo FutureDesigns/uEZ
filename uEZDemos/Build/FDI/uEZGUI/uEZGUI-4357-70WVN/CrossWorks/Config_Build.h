@@ -1,6 +1,5 @@
 #define BUILD_NUMBER                        2
 #define BUILD_DATE                          "7/29/2016"
-#define COMPILER_TYPE                       RowleyARM
 #define UEZ_PROCESSOR                       NXP_LPC4357
 #define PROCESSOR_OSCILLATOR_FREQUENCY      204000000
 #define OSCILLATOR_CLOCK_FREQUENCY          12000000
@@ -18,9 +17,9 @@
 #define LPC43XX_ENABLE_M0_CORES             0 // 1 to start M0 core. Should program M0 app first.
 
 #ifdef NDEBUG
-#define UEZ_REGISTER              	        0
+#define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER              	        1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        1  //Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #define UEZ_ENABLE_LOOPBACK_TEST            0 // set to 1 to allow loopback test to run
@@ -29,7 +28,7 @@
 #define UEZ_ENABLE_TCPIP_STACK              0
 #define USB_PORT_A_HOST_ENABLED             0
 #else
-#define UEZ_ENABLE_TCPIP_STACK              0
+#define UEZ_ENABLE_TCPIP_STACK              1
 #define USB_PORT_A_HOST_ENABLED             1
 #endif
 
@@ -46,18 +45,20 @@
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
-#define UEZ_BASIC_WEB_SERVER                0
+#define UEZ_BASIC_WEB_SERVER                UEZ_ENABLE_TCPIP_STACK
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
+#define UEZ_AWS_IOT_CLIENT_DEMO             0
+#define UEZ_NETWORK_DEMOS                   0
 
 // Expansion Options, set to 1 to enable an expansion board
 #define UEZGUI_EXPANSION_DEVKIT             0 //not currently supported on 50WMN
 #define UEZ_ENABLE_BUTTON_BOARD             0 // Turn on for button board
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
-#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS
-//#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS_LARGE (requires either QSPI flash or both 512KB banks onboard flash)
-#define SIMPLEUI_DOUBLE_SIZED_ICONS         1 // 2 to 1 icons
+//#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS
+#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS_LARGE // (requires either QSPI flash or both 512KB banks onboard flash)
+#define SIMPLEUI_DOUBLE_SIZED_ICONS         0 // 2 to 1 icons
 
 // Modify the default accelerometer demo settings
 #define ACCEL_DEMO_SWAP_XY                  0
@@ -69,6 +70,7 @@
 #define APP_DEMO_APPS                       1
 #define APP_DEMO_SLIDESHOW                  1
 #define APP_DEMO_VIDEO_PLAYER               1
+#define APP_DEMO_ENABLE_STARTUP_VIDEO       0
 
 #define INCLUDE_EMWIN                       1
 #define APP_DEMO_EMWIN                      INCLUDE_EMWIN

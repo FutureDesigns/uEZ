@@ -65,6 +65,7 @@
 #include <uEZ.h>
 #include <uEZINI.h>
 #include <uEZFile.h>
+#include <uEZMemory.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:

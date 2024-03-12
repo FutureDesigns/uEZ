@@ -300,6 +300,9 @@ static T_keyboardMapping *G_keypadCurrentMapping = G_keyboardMappingUppercase;
  *---------------------------------------------------------------------------*/
 static void setNewButtonText(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
      T_keyboardMapping *p = G_keypadCurrentMapping;
      WM_HWIN hitem;
          
@@ -374,6 +377,9 @@ static TBool IKeyboardHandleSymbol(WM_MESSAGE * pMsg, int aNCode, int aID)
  *---------------------------------------------------------------------------*/
 static TBool IKeyboardHandleBack(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     if(G_textBoxIndex){
         G_textBoxIndex--;
         G_textBox[G_textBoxIndex] = '\0';
@@ -396,6 +402,9 @@ static TBool IKeyboardHandleBack(WM_MESSAGE * pMsg, int aNCode, int aID)
  *---------------------------------------------------------------------------*/
 static TBool IKeyboardHandleEnter(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     G_enteringData = EFalse;
     G_textBox[G_textBoxIndex+1] = '\0';
     GUI_EndDialog(pMsg->hWin, 1);
@@ -416,6 +425,9 @@ static TBool IKeyboardHandleEnter(WM_MESSAGE * pMsg, int aNCode, int aID)
  *---------------------------------------------------------------------------*/
 static TBool IKeyboardHandleCancel(WM_MESSAGE * pMsg, int aNCode, int aID)
 {
+     PARAM_NOT_USED(pMsg);
+     PARAM_NOT_USED(aNCode);
+     PARAM_NOT_USED(aID);
     KeyboardClose();
     return ETrue;
 }

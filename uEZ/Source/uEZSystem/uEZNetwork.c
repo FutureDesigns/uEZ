@@ -1052,21 +1052,6 @@ T_uezError UEZNetworkResolveAddress(
     return (*p)->ResolveAddress((void *)p, aString, aAddr);
 }
 
-T_uezError UEZNetworkInfrastructureConfigure(
-    T_uezDevice aNetworkDevice,
-    T_uezNetworkSettings *aSettings)
-{
-    T_uezError error;
-    DEVICE_Network **p;
-
-    error = UEZDeviceTableGetWorkspace(aNetworkDevice,
-        (T_uezDeviceWorkspace **)&p);
-    if (error)
-        return error;
-
-    return (*p)->InfrastructureConfigure((void *)p, aSettings);
-}
-
 T_uezError UEZNetworkInfrastructureBringUp(T_uezDevice aNetworkDevice)
 {
     T_uezError error;
@@ -1091,6 +1076,19 @@ T_uezError UEZNetworkInfrastructureTakeDown(T_uezDevice aNetworkDevice)
         return error;
 
     return (*p)->InfrastructureTakeDown((void *)p);
+}
+
+T_uezError UEZNetworkInfrastructureRestart(T_uezDevice aNetworkDevice)
+{
+    T_uezError error;
+    DEVICE_Network **p;
+
+    error = UEZDeviceTableGetWorkspace(aNetworkDevice,
+        (T_uezDeviceWorkspace **)&p);
+    if (error)
+        return error;
+
+    return (*p)->InfrastructureRestart((void *)p);
 }
 
 T_uezError UEZNetworkGetConnectionInfo(T_uezDevice aNetworkDevice,

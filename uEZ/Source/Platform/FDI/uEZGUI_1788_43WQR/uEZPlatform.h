@@ -58,6 +58,10 @@ extern "C" {
  *-------------------------------------------------------------------------*/
 #define UEZ_PROCESSOR                       NXP_LPC1788
 
+#ifndef USE_RESISTIVE_TOUCH
+    #define USE_RESISTIVE_TOUCH                1
+#endif
+
 #ifndef UEZ_ENABLE_TOUCHSCREEN_CALIBRATION
   #if (USE_RESISTIVE_TOUCH == 1)
     #define UEZ_ENABLE_TOUCHSCREEN_CALIBRATION 1
@@ -153,10 +157,46 @@ extern "C" {
     #define UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS  UEZBSP_NOR_FLASH_BASE_ADDRESS
 #endif
 
-#include <lwipopts.h>
-
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
+#endif
+
+// default these to 0 for IAR warnings
+#ifndef CONFIG_LOW_LEVEL_TEST_CODE
+    #define CONFIG_LOW_LEVEL_TEST_CODE       0
+#endif
+#ifndef LIGHT_SENSOR_ENABLED
+    #define LIGHT_SENSOR_ENABLED       0
+#endif
+#ifndef SEC_TO_ENABLED
+    #define SEC_TO_ENABLED       0
+#endif
+#ifndef SEC_MC_ENABLED
+    #define SEC_MC_ENABLED       0
+#endif
+#ifndef UEZ_ENABLE_VIRTUAL_COM_PORT
+    #define UEZ_ENABLE_VIRTUAL_COM_PORT       0
+#endif
+#ifndef DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1
+    #define DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1       0
+#endif
+#ifndef INCLUDE_EMWIN
+    #define INCLUDE_EMWIN       0
+#endif
+#ifndef UEZGUI_EXP_BRK_OUT
+    #define UEZGUI_EXP_BRK_OUT       0
+#endif
+#ifndef CONSOLE_USE_RTT0
+    #define CONSOLE_USE_RTT0       0
+#endif
+#ifndef DISABLE_BACKLIGHT_PWM_UEZ_API
+    #define DISABLE_BACKLIGHT_PWM_UEZ_API       0
+#endif
+#ifndef UEZ_ENABLE_AUDIO_CODEC
+    #define UEZ_ENABLE_AUDIO_CODEC       0
+#endif
+#ifndef UEZ_ENABLE_LOOPBACK_TEST
+    #define UEZ_ENABLE_LOOPBACK_TEST       0
 #endif
 
 /*-------------------------------------------------------------------------*
@@ -185,6 +225,8 @@ typedef struct {
 
 // LED pin(s)
 #define GPIO_HEARTBEAT_LED          GPIO_P1_13
+
+#define GPIO_PSU_3VERR              GPIO_P2_25
 
 // TODO add GPIOs on ALT PWR COM, PMOD here
 
@@ -412,7 +454,7 @@ void UEZPlatform_USBHost_PortA_Require(void);
 void UEZPlatform_USBHost_PortB_Require(void);
 void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
-TBool UEZPlatform_Host_Port_B_Detect();
+TBool UEZPlatform_Host_Port_B_Detect(void);
 void UEZPlatform_ButtonBoard_Require(void);
 void UEZPlatform_WiFiProgramMode(TBool runMode);
 

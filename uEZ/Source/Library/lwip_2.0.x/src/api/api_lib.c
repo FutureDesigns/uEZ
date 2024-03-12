@@ -75,6 +75,10 @@
 
 #include <string.h>
 
+#if defined ( __ICCARM__ )
+  #pragma diag_suppress=Pe2330
+#endif
+
 #define API_MSG_VAR_REF(name)               API_VAR_REF(name)
 #define API_MSG_VAR_DECLARE(name)           API_VAR_DECLARE(struct api_msg, name)
 #define API_MSG_VAR_ALLOC(name)             API_VAR_ALLOC(struct api_msg, MEMP_API_MSG, name, ERR_MEM)
@@ -323,7 +327,7 @@ netconn_bind(struct netconn *conn, const ip_addr_t *addr, u16_t port)
    * and NETCONN_FLAG_IPV6_V6ONLY is 0, use IP_ANY_TYPE to bind
    */
   if ((netconn_get_ipv6only(conn) == 0) &&
-      ip_addr_cmp(addr, IP6_ADDR_ANY)) {
+      ip_addr_eq(addr, IP6_ADDR_ANY)) {
     addr = IP_ANY_TYPE;
   }
 #endif /* LWIP_IPV4 && LWIP_IPV6 */
@@ -1260,13 +1264,13 @@ netconn_join_leave_group_netif(struct netconn *conn,
  *
  * @param name a string representation of the DNS host name to query
  * @param addr a preallocated ip_addr_t where to store the resolved IP address
- * @param dns_addrtype IP address type (IPv4 / IPv6)
  * @return ERR_OK: resolving succeeded
  *         ERR_MEM: memory error, try again later
  *         ERR_ARG: dns client not initialized or invalid hostname
  *         ERR_VAL: dns server response was invalid
  */
 #if LWIP_IPV4 && LWIP_IPV6
+/** @param dns_addrtype IP address type (IPv4 / IPv6) */
 err_t
 netconn_gethostbyname_addrtype(const char *name, ip_addr_t *addr, u8_t dns_addrtype)
 #else
@@ -1364,4 +1368,9 @@ netconn_thread_cleanup(void)
 }
 #endif /* LWIP_NETCONN_SEM_PER_THREAD */
 
+#if defined ( __ICCARM__ )
+#pragma diag_default=Pe2330
+#endif
+
 #endif /* LWIP_NETCONN */
+

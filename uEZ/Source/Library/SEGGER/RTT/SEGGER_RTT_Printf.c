@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.50a                                    *
+*       SystemView version: 3.52a                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -504,6 +504,40 @@ int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
   va_end(ParamList);
   return r;
 }
+
+// forced buffer 0, can substitute for normal printf.
+int SEGGER_RTT_printf_0(const char * sFormat, ...) {
+  int r;
+  va_list ParamList;
+
+  va_start(ParamList, sFormat);
+  r = SEGGER_RTT_vprintf(0, sFormat, &ParamList);
+  va_end(ParamList);
+  return r;
+}
+
+// forced buffer 1, can substitute for normal printf.
+int SEGGER_RTT_printf_1(const char * sFormat, ...) {
+  int r;
+  va_list ParamList;
+
+  va_start(ParamList, sFormat);
+  r = SEGGER_RTT_vprintf(1, sFormat, &ParamList);
+  va_end(ParamList);
+  return r;
+}
+
+// forced buffer 1, can substitute for normal printf.
+int SEGGER_RTT_printf_2(const char * sFormat, ...) {
+  int r;
+  va_list ParamList;
+
+  va_start(ParamList, sFormat);
+  r = SEGGER_RTT_vprintf(2, sFormat, &ParamList);
+  va_end(ParamList);
+  return r;
+}
+
 #else // when not enabled use dummy functions
 int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList) {
 	(void) BufferIndex;

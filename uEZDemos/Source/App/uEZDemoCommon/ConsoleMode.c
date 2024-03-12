@@ -347,6 +347,7 @@ void CO_Screen(T_uezDevice lcd)
  *---------------------------------------------------------------------------*/
 void CO_Exit(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     G_coExit = 1;
 }
 
@@ -364,13 +365,15 @@ void CO_Exit(const T_choice *aChoice)
 #if (UEZ_ENABLE_TCPIP_STACK)
 static TUInt32 BasicTCPServer(T_uezTask aMyTask, void *aParams)
 {  	
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     struct sockaddr_in BindInfo;
     struct sockaddr_in rem;
     char c;
     unsigned int len;		
     char command[80];
     char line[80];
-    int clen=0;
+    uint32_t clen=0;
     TBool forever = ETrue;
     TBool needPrompt = EFalse;
     const char banner[] = PROJECT_NAME " " VERSION_AS_TEXT "\r\n";
@@ -470,6 +473,7 @@ static TUInt32 BasicTCPServer(T_uezTask aMyTask, void *aParams)
  *---------------------------------------------------------------------------*/
 void ConsoleMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice lcd;
     T_uezDevice ts;
     static T_uezQueue queue = (TUInt32)NULL;

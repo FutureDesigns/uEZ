@@ -64,6 +64,7 @@
  *  @endcode
  */
 
+#include <uEZ.h>
 #include "Config.h"
 #include "HAL/HAL.h"
 #include "Device/SPIBus.h"

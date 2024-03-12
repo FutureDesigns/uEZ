@@ -46,6 +46,7 @@
 #include <uEZBSP.h>
 #include <uEZGPIO.h>
 #include <Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Options:
@@ -68,7 +69,7 @@
 /*---------------------------------------------------------------------------*
  * Regions:
  *---------------------------------------------------------------------------*/
-#if ((COMPILER_TYPE==RowleyARM) || (COMPILER_TYPE==Keil4))
+#if ((COMPILER_TYPE==GCC_ARM) || (COMPILER_TYPE==KEIL_UV))
     #define EMAC_MEMORY __attribute__((section(".emacmem")));
 #elif (COMPILER_TYPE==IAR)
     #define EMAC_MEMORY @ ".emacmem"
@@ -79,9 +80,18 @@
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+/* EMAC Memory Buffer configuration for 14.252K Ethernet RAM. */
+#define NUM_TX_FRAG 2//         /* Num.of TX Fragments 2*2036=  4.072kB */
+#define NUM_RX_FRAG 5//         /* Num.of RX Fragments 5*2036= 10.180kB */
+
+#else
+
 /* EMAC Memory Buffer configuration for 15.1K Ethernet RAM. */
-#define NUM_RX_FRAG         8           /* Num.of RX Fragments 8*1536= 12.0kB */
 #define NUM_TX_FRAG         2           /* Num.of TX Fragments 2*1536= 3.0kB */
+#define NUM_RX_FRAG         8           /* Num.of RX Fragments 8*1536= 12.0kB */
+
+#endif
 
 /* EMAC variables located in 16K Ethernet SRAM */
 #define RX_DESC_BASE        ((TUInt32)&G_emacMemory) //.emacmem RAM to be placed in AHBSRAM0 or 1
@@ -281,7 +291,12 @@
 #define PD_POWER_DOWN       0x80000000  /* Power Down MAC                    */
 
 /* RX Descriptor Control Word */
-#define RCTRL_SIZE          0x000007FF  /* Buffer size mask                  */
+
+//#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+//#define RCTRL_SIZE          0x00003FFF  /* Buffer size mask up to 8191       */
+//#else
+#define RCTRL_SIZE          0x000007FF  /* Buffer size mask up to 2047       */
+//#endif
 #define RCTRL_INT           0x80000000  /* Generate RxDone Interrupt         */
 
 /* RX Status Hash CRC Word */
@@ -289,7 +304,14 @@
 #define RHASH_DA            0x001FF000  /* Hash CRC for Destination Address  */
 
 /* RX Status Information Word */
-#define RINFO_SIZE          0x000007FF  /* Data size in bytes                */
+
+
+//#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+//#define RINFO_SIZE          0x00001FFF  /* Data size in bytes up to 8192     */
+//#else
+#define RINFO_SIZE          0x000007FF  /* Data size in bytes up to 2047     */
+//#endif
+
 #define RINFO_CTRL_FRAME    0x00040000  /* Control Frame                     */
 #define RINFO_VLAN          0x00080000  /* VLAN Frame                        */
 #define RINFO_FAIL_FILT     0x00100000  /* RX Filter Failed                  */
@@ -309,7 +331,12 @@
                             RINFO_LEN_ERR   | RINFO_ALIGN_ERR | RINFO_OVERRUN)
 
 /* TX Descriptor Control Word */
-#define TCTRL_SIZE          0x000007FF  /* Size of data buffer in bytes      */
+
+//#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+//#define TCTRL_SIZE          0x00003FFF  /* Data size in bytes up to 8192     */
+//#else
+#define TCTRL_SIZE          0x000007FF  /* Data size in bytes up to 2047     */
+//#endif
 #define TCTRL_OVERRIDE      0x04000000  /* Override Default MAC Registers    */
 #define TCTRL_HUGE          0x08000000  /* Enable Huge Frame                 */
 #define TCTRL_PAD           0x10000000  /* Pad short Frames to 64 bytes      */
@@ -391,6 +418,9 @@ typedef struct {
     T_LPC17xx_40xx_EMAC_Settings iPinSettings;
     T_mdioBitBangSettings iMDIOSettings;
     TBool iIsDetected;
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    TUInt16 iPhyTimeoutDetect;
+#endif
 } T_LPC17xx_40xx_EMAC_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -480,7 +510,7 @@ static T_uezError IEMACConfigPHY_National(T_LPC17xx_40xx_EMAC_Workspace *p)
 
     // Wait to complete Auto_Negotiation.
     for (timeout = 0; timeout < 10; timeout++) {
-        UEZBSPDelayMS(100);
+        UEZTaskDelay(100);
         regv = IPHYRead(p, PHY_REG_BMSR);
         if (regv & 0x0020) {
             // Autonegotiation Complete.
@@ -492,7 +522,7 @@ static T_uezError IEMACConfigPHY_National(T_LPC17xx_40xx_EMAC_Workspace *p)
     if (error == UEZ_ERROR_NONE) {
         error = UEZ_ERROR_TIMEOUT;
         for (timeout = 0; timeout < 10; timeout++) {
-            UEZBSPDelayMS(100);
+            UEZTaskDelay(100);
             regv = IPHYRead(p, PHY_REG_STS);
             if (regv & 0x0001) {
                 // Link is on.
@@ -551,7 +581,7 @@ static T_uezError IEMACConfigPHY_Micrel(T_LPC17xx_40xx_EMAC_Workspace *p)
 #if DEBUG_LPC17xx_40xx_EMAC_STARTUP
         printf(".");
 #endif
-        UEZBSPDelayMS(100);
+        UEZTaskDelay(100);
         regv = IPHYRead(p, PHY_REG_BMSR);
         if (regv & (BMSR_AUTO_DONE | BMSR_LINK_ESTABLISHED)) {
             // Autonegotiation Complete.
@@ -676,13 +706,26 @@ void ILPC17xx_40xx_EMAC_InitTxDescriptors(void)
  *---------------------------------------------------------------------------*/
 T_uezError LPC17xx_40xx_EMAC_InitializeWorkspace(void *aWorkspace)
 {
-    //    T_LPC17xx_40xx_EMAC_Workspace *p = (T_LPC17xx_40xx_EMAC_Workspace *)aWorkspace;
+    T_LPC17xx_40xx_EMAC_Workspace *p = (T_LPC17xx_40xx_EMAC_Workspace *)aWorkspace;
 
     // Nothing in this case
     G_LPC17xx_40xx_EMAC = aWorkspace;
     G_LPC17xx_40xx_EMAC->iIsDetected = EFalse;
+    (void) p;
+
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    p->iPhyTimeoutDetect = 0;
+#endif
 
     return UEZ_ERROR_NONE;
+}
+
+TUInt16* LPC17xx_40xx_EMAC_GetPhyTimeoutCounter(void) {
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+  return &G_LPC17xx_40xx_EMAC->iPhyTimeoutDetect;
+#else
+  return 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -790,7 +833,7 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     LPC17xx_40xxPowerOn(0x40000000);
 
     // Delay a small amount
-    UEZBSPDelayMS(1);
+    UEZTaskDelay(1);
 
     // Reset all EMAC internal modules.
     // TBD: Should we use rx and tx flow control since we might be running too slow
@@ -800,7 +843,7 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     LPC_EMAC->Command = CR_REG_RES | CR_TX_RES | CR_RX_RES;
 
     // A short delay after reset.
-    UEZBSPDelayMS(1);
+    UEZTaskDelay(1);
 
     // Initialize MAC control registers.
     LPC_EMAC->MAC1 = MAC1_PASS_ALL;
@@ -812,7 +855,7 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     // host clock divided by 28, no suppress preamble, no scan increment
     // TBD: Should this be calculated at run time?
     LPC_EMAC->MCFG = 0x801C;
-    UEZBSPDelayMS(1);
+    UEZTaskDelay(1);
 
     // Apply a reset
     LPC_EMAC->MCFG = 0x0018;
@@ -825,7 +868,7 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     // RMII setting, at power-on, default set to 100.
     LPC_EMAC->SUPP = SUPP_SPEED;
 
-    UEZBSPDelayMS(500);
+    UEZTaskDelay(500);
 
     // Find the PHY address
     for (addr = 0; addr < 16; addr++) {
@@ -844,7 +887,7 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
 
     /* Put the Phy in reset mode */
     IPHYWrite(p, PHY_REG_BMCR, 0x8000);
-    UEZBSPDelayMS(1);
+    UEZTaskDelay(1);
 
     // Wait for hardware reset to end.
     // We try 100 times with a 10 ms delay for a complete
@@ -852,7 +895,7 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     retry = 3;
     do {
         for (timeout = 0; timeout < 100; timeout++) {
-            UEZBSPDelayMS(10);
+            UEZTaskDelay(10);
             regv = IPHYRead(p, PHY_REG_BMCR);
             if (!(regv & 0x8000)) {
                 // Reset complete
@@ -934,8 +977,14 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     // Reset all interrupts
     LPC_EMAC->IntClear = 0xFFFF;
 
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)    
+    // Enable Jumber Frame (bit 2, Huge Frame Enable)
+    LPC_EMAC->MAC2 |= MAC2_HUGE_FRM_EN;
+#endif
+
     /* Enable receive and transmit mode of MAC Ethernet core */
     LPC_EMAC->Command |= (CR_RX_EN | CR_TX_EN);
+
     LPC_EMAC->MAC1 |= MAC1_REC_EN;
 
     return error;
@@ -1153,6 +1202,11 @@ static void LPC17xx_40xx_EMAC_ProcessInterrupt(void)
             p->iReceiveCallback(p->iReceiveCallbackWorkspace);
         }
     }
+    
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    p->iPhyTimeoutDetect = 0;
+#endif
+
     // Clear any interrupts that triggered this code
     LPC_EMAC->IntClear = status;
 }
@@ -1240,7 +1294,10 @@ const HAL_EMAC G_LPC17xx_40xx_EMAC_Interface = {
     // uEZ v1.10
     LPC17xx_40xx_EMAC_EnableReceiveInterrupt,
     LPC17xx_40xx_EMAC_DisableReceiveInterrupt,
-
+    // uEZ v2.14
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    LPC17xx_40xx_EMAC_GetPhyTimeoutCounter,
+#endif
 };
 
 /*---------------------------------------------------------------------------*

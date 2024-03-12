@@ -55,7 +55,7 @@ extern "C" {
 #define UEZ_PROCESSOR_CORE_MODE                 CORE_MODE_THUMB
 #define UEZ_PROCESSOR_CORE_SUBTYPE              CORE_SUBTYPE_NONE
 
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
 #define __TARGET_PROCESSOR                      LPC1768
 #endif
 
@@ -77,7 +77,7 @@ extern "C" {
 #define UEZ_MAX_IRQ_CHANNELS      35    // 0 - 34
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==CodeRed)
+#if (COMPILER_TYPE==CODERED)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -90,10 +90,10 @@ extern "C" {
 #define     __packed        __attribute__((packed))
 #define     INLINE          inline
 #define     IN_INTERNAL_RAM  // tbd
-#endif // (COMPILER_TYPE==CodeRed)
+#endif // (COMPILER_TYPE==CODERED)
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -106,7 +106,7 @@ extern "C" {
 #define     __packed        __attribute__((packed))
 #define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
-#endif // (COMPILER_TYPE==RowleyARM)
+#endif // (COMPILER_TYPE==GCC_ARM)
 
 #if (COMPILER_TYPE==IAR)
 #define     IRQ_ROUTINE(name)  void name(void)
@@ -123,7 +123,7 @@ extern "C" {
 #endif // (COMPILER_TYPE==IAR)
 
 // Macros for defining an interrupt context switch
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
 #define     IRQ_START()
@@ -136,7 +136,7 @@ extern "C" {
 #define     __packed        __attribute__((packed))
 #define     INLINE          __inline
 #define     IN_INTERNAL_RAM  // tbd
-#endif // (COMPILER_TYPE==Keil4)
+#endif // (COMPILER_TYPE==KEIL_UV)
 
 #define Fpclk	(PROCESSOR_OSCILLATOR_FREQUENCY / 2)
 
@@ -144,13 +144,13 @@ extern "C" {
 
 #define PCLK_FREQUENCY  UEZPlatform_GetPCLKFrequency()
 
-#if(COMPILER_TYPE == RowleyARM)
+#if(COMPILER_TYPE == GCC_ARM)
 	#define NOP() __NOP()
 #endif
 #if (COMPILER_TYPE==IAR)
     #define NOP() __no_operation()
 #endif
-#if(COMPILER_TYPE == Keil4)
+#if(COMPILER_TYPE == KEIL_UV)
 	#define __NOP       __nop
 	#define NOP()	__NOP
 #endif

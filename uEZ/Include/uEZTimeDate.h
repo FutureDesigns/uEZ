@@ -124,6 +124,8 @@ void UEZTimeDateSubtractDuration(
  */
 T_uezError UEZTimeDateIsValid(const T_uezTimeDate *aResetTimeDate);
 
+extern T_uezTimeDate G_aBuildTimeDate;
+
 #ifdef __cplusplus
 }
 #endif

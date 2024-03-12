@@ -60,10 +60,7 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
-#if (COMPILER_TYPE==CodeRed)
-#endif
-
-#if (COMPILER_TYPE==RowleyARM)
+#if (COMPILER_TYPE==GCC_ARM)
 //defined also in uEZProcessor_ files
 #define INLINE inline __attribute__((always_inline))
 #endif
@@ -72,10 +69,10 @@ extern "C" {
 #define INLINE      inline
 #endif
 
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 #endif
 
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
 #define INLINE      __inline
 #endif
 

@@ -27,6 +27,7 @@
 #include "AppTasks.h"
 #include <NVSettings.h>
 #include <HAL/GPIO.h>
+#include <uEZGPIO.h>
 #include "Source/Library/Web/BasicWeb/BasicWEB.h"
 #include <NetworkStartup.h>
 #include <AppHTTPServer.h>
@@ -45,6 +46,8 @@
  *---------------------------------------------------------------------------*/
 TUInt32 Heartbeat(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     UEZGPIOOutput(GPIO_HEARTBEAT_LED);
     UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);
 

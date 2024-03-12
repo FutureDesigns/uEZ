@@ -20,6 +20,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZDeviceTable.h>
+#include <uEZMemory.h>
 #include <Device/ExternalInterrupt.h>
 #include "Keypad_NXP_I2C_PCA9555.h"
 

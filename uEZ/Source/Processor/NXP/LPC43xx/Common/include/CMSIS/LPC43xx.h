@@ -240,7 +240,8 @@ typedef enum {
 #define __MPU_PRESENT                  1            /*!< MPU present or not                                                    */
 #define __NVIC_PRIO_BITS               3            /*!< Number of Bits used for Priority Levels                               */
 #define __Vendor_SysTickConfig         0            /*!< Set to 1 if different SysTick Config is used                          */
-#define __FPU_PRESENT                  1            /*!< FPU present or not                                                    */
+#define __FPU_PRESENT                  1           /*!< FPU present or not                                                    */
+#define __FPU_USED                     1U           /*!< FPU used or not                                                       */
 
 #include "core_cm4.h"                               /*!< Cortex-M4 processor and core peripherals                              */
 #endif
@@ -254,6 +255,9 @@ typedef enum {
 
 #include "core_cm0.h"                               /*!< Cortex-M4 processor and core peripherals                              */
 #endif
+
+// Make sure to bring in the FPU defines into, core_cmX.h will bring in cmsis_compiler.h.
+// In some cases  == 1 will be treated differently than == 1U so make it match.
 
 /** @} */ /* End of group Configuration_of_CMSIS */
 #include "system_LPC43xx.h"                         /*!< LPC43xx System                                                        */

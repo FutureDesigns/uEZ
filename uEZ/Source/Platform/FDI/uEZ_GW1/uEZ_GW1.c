@@ -124,7 +124,7 @@ static TUInt32 G_USBHostDriveNumber = 0xFF;
 /*---------------------------------------------------------------------------*
  * Macros:
  *---------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
+#if(COMPILER_TYPE==KEIL_UV)
 #define nop()      __nop()
 #else
 #define nop()     NOP()//asm("nop")
@@ -1663,7 +1663,7 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
  *  @return         int32_t
  */
 /*---------------------------------------------------------------------------*/
-#if (COMPILER_TYPE==Keil4)
+#if (COMPILER_TYPE==KEIL_UV)
 __asm void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
     tst lr, #4
     ite eq

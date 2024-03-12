@@ -356,7 +356,7 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
     error = UEZ_LPCUSBLib_Require();
 
     if (aUnitAddress == 0) {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB1 only off board usb
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Allow USB1 only off board usb
 #else
         // Ensure the interrupt is registers for USB0
 #ifdef CORE_M4
@@ -376,7 +376,7 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
 #endif
 #endif
     } else {
-//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER // Allow USB0 only onboard usb
+//#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Allow USB0 only onboard usb
 //#else
         // Ensure the interrupt is registers for USB1
 #ifdef CORE_M4
@@ -405,14 +405,14 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
 
     // Note that we probably call this function multiple times when it should be called only once so we shouldn't shut off clocks here.
     if (aUnitAddress == 0) {
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER  // Allow USB1 only off board USB
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Allow USB1 only off board USB
 #else
         //USB_Disable(0, USB_MODE_Host);
         Chip_USB0_Init();
         USB_Init(0, USB_MODE_Host);
 #endif
     } else {
-//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER  // Allow USB0 only on board USB
+//#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)  // Allow USB0 only on board USB
 //#else
         //USB_Disable(1, USB_MODE_Host);
         Chip_USB1_Init();
@@ -420,7 +420,7 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
 //#endif
     }
 
-#ifdef DISABLE_FEATURES_FOR_BOOTLOADER   // Allow USB1 only off board USB
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)   // Allow USB1 only off board USB
     HAL_USBForceFullSpeed(aUnitAddress, 1); // Force the full speed USB1 port
 #else
     
@@ -438,7 +438,7 @@ T_uezError UEZ_LPCUSBLib_Host_Require(int32_t aUnitAddress, T_LPCUSBLib_Host_Cal
     }
 #endif
 
-//#ifdef DISABLE_FEATURES_FOR_BOOTLOADER   // Allow USB0 only onboard USB
+//#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)   // Allow USB0 only onboard USB
     //HAL_USBForceFullSpeed(aUnitAddress, 0); // Force the full speed USB0 port
 //#endif
 

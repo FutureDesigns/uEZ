@@ -28,8 +28,10 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-#include <Config.h>
+//#include <Config.h>
 
+// Get prio bits, mpu present, core type, fpu present, and maybe even systick settings from MCU header.
+#include <uEZProcessor.h> // Avoid including UtilityFuncs.h as it leads to malloc redefine!
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -42,14 +44,13 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
-/* Select the RTOS timer here: 
+// Select the RTOS timer here: 
 // Platform specific
 
 // Set USING_TICK_SUPRESSION to 1 to run with tickless idle mode for lower power.
-#define USING_TICK_SUPRESSION		1 // TODO not tested in any included ports yet
+#define USING_TICK_SUPRESSION		0 // TODO not tested in any included ports yet
 
-#define configUSE_PREEMPTION		1
-#define configUSE_TICKLESS_IDLE		USING_TICK_SUPRESSION*/
+#define configUSE_TICKLESS_IDLE		USING_TICK_SUPRESSION
 
 #ifndef configCPU_CLOCK_HZ
     #define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) PROCESSOR_OSCILLATOR_FREQUENCY )
@@ -71,6 +72,7 @@
 #define configQUEUE_REGISTRY_SIZE	30 // Allow a few named queue entries
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_PREEMPTION		1
+#define configLIST_VOLATILE         volatile
 
 #define configMAX_PRIORITIES		( 7 )
 
@@ -80,18 +82,16 @@
 
 #ifdef DEBUG // Debug Build Unique Settings
 
-#define configUSE_IDLE_HOOK			0
+#define configUSE_IDLE_HOOK			0 // TODO we may need this enabled for some things?
 #define configUSE_TICK_HOOK			0
-
-//#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() // TODO
-//#define portGET_RUN_TIME_COUNTER_VALUE  // TODO
 
 #define configUSE_MALLOC_FAILED_HOOK		1
 
 // See the comment at end of file for description of each setting.
 //#define configCHECK_FOR_STACK_OVERFLOW	1
 #define configCHECK_FOR_STACK_OVERFLOW		2
-#define INCLUDE_uxTaskGetStackHighWaterMark	1
+#define INCLUDE_uxTaskGetStackHighWaterMark	1 //watermark2 is same but for configurable configSTACK_DEPTH_TYPE, we use default value
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 0 // leave off for task inspection in debugger
 
 #else // Release Build Unique Settings
    
@@ -101,6 +101,13 @@
 #define configUSE_MALLOC_FAILED_HOOK		0 // For release build we should know that we aren't overflowing at boot-up.
 #define configCHECK_FOR_STACK_OVERFLOW		0
 #define INCLUDE_uxTaskGetStackHighWaterMark	0
+
+#ifdef CORE_M0
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 0 // see portmacro, this port doesn't have optimizated task selection
+#else
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1 // will interfer with task inspection tools
+#endif
+
 #endif /* #ifdef DEBUG */
 
 /* Software timer definitions - only included when timer module is enabled. */
@@ -117,8 +124,12 @@
   #define configTIMER_QUEUE_LENGTH	5
   #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
 #else
-    #define configUSE_TIMERS		0 // uEZ never used this in FreeRTOS
-    #define configTIMER_INDEX                   1    // 0=Timer0 or 1=Timer1
+  #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Disable some features for smaller bootloader projects.
+    #define configUSE_TIMERS            0
+  #else
+    #define configUSE_TIMERS		1 // Use starting in 2.14 demos
+  #endif
+    #define configTIMER_INDEX           1    // 0=Timer0 or 1=Timer1
     #define configTIMER_TASK_PRIORITY	( 3 )
     #define configTIMER_QUEUE_LENGTH	5
     #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
@@ -133,7 +144,7 @@
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#if (DISABLE_FEATURES_FOR_BOOTLOADER==1) // Disable some features for smaller bootloader projects.
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Disable some features for smaller bootloader projects.
     #define INCLUDE_vTaskDelete                 1
     #define INCLUDE_xTaskDelayUntil             0
     #define INCLUDE_xTaskGetSchedulerState      1
@@ -145,11 +156,42 @@ to exclude the API function. */
     #define INCLUDE_uxTaskPriorityGet           0
     #define INCLUDE_xTaskGetCurrentTaskHandle	0
     #define INCLUDE_xTaskGetHandle              0
+
+    #define configSUPPORT_STATIC_ALLOCATION     1
+    #define configUSE_C_RUNTIME_TLS_SUPPORT     0
 #endif
 
-#ifndef INCLUDE_pxTaskGetStackStart 
-    #define INCLUDE_pxTaskGetStackStart         1
+
+#ifndef configSUPPORT_STATIC_ALLOCATION
+    #define configSUPPORT_STATIC_ALLOCATION     1
 #endif
+
+#ifndef configSUPPORT_DYNAMIC_ALLOCATION
+    #define configSUPPORT_DYNAMIC_ALLOCATION    1
+#endif
+
+#ifndef configUSE_C_RUNTIME_TLS_SUPPORT
+    #define configUSE_C_RUNTIME_TLS_SUPPORT     0 // TODO
+#endif
+
+#if ( configUSE_C_RUNTIME_TLS_SUPPORT == 1 )
+    #ifndef configTLS_BLOCK_TYPE
+      #define configTLS_BLOCK_TYPE // TODO
+    #endif
+
+    #ifndef configINIT_TLS_BLOCK
+      #define configINIT_TLS_BLOCK // TODO
+    #endif
+
+    #ifndef configSET_TLS_BLOCK
+      #define configSET_TLS_BLOCK // TODO
+    #endif
+
+    #ifndef configDEINIT_TLS_BLOCK
+      #define configDEINIT_TLS_BLOCK // TODO
+    #endif
+#endif
+
 #ifndef INCLUDE_vTaskPrioritySet
     #define INCLUDE_vTaskPrioritySet            1
 #endif
@@ -180,10 +222,6 @@ to exclude the API function. */
 #ifndef INCLUDE_xTaskGetSchedulerState
     #define INCLUDE_xTaskGetSchedulerState      1
 #endif
-#ifndef INCLUDE_xTaskGetIdleTaskHandle  
-    #define INCLUDE_xTaskGetIdleTaskHandle      1
-#endif
-
 
 #if (COMPILER_TYPE == IAR)
 #ifdef __ICCARM__  //Ensure the following is only used by the compiler, and not the assembler.
@@ -235,87 +273,57 @@ likely to catch stack overflows but is still not guaranteed to catch all overflo
     //#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled(); // new application specific call
 #else // disable the freeRTOS assert (defned in FreeRTOSConfig.h to empty by default)    
 #endif
-
-// We cannot include //#include <uEZProcessor.h> here so we must set Priobits manually per MCU if needed!
-
+      
+#ifdef __NVIC_PRIO_BITS    /* Use the system definition, if there is one */
+    #define configPRIO_BITS       __NVIC_PRIO_BITS // Can be vender/MCU specific
+#else // Let us FORCE using the __NVIC_PRIO_BITS to avoid mismatch.
+    #error Missing prio bits define!
+#endif
+     
 /* The interrupt priority used by the kernel itself for the tick interrupt and
 the pended interrupt.  This would normally be the lowest priority. */
-//#define configKERNEL_INTERRUPT_PRIORITY         1
 
 /* The maximum interrupt priority from which FreeRTOS API calls can be made.
 Interrupts that use a priority above this will not be effected by anything the
 kernel is doing. */
-//#define configMAX_SYSCALL_INTERRUPT_PRIORITY    4
 
-#ifdef CORE_M0
-    /* Use the system definition, if there is one */
-    #ifdef __NVIC_PRIO_BITS
-        #define configPRIO_BITS       __NVIC_PRIO_BITS // Cccan be vender specific
-    #else
-        #define configPRIO_BITS       2        // min 4+ priority levels for CM0/CM0+
-    #endif
-
-    /* The lowest priority. */
-    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
+#ifdef CORE_M0    
+    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) ) /* The lowest priority. */
     /* Priority 5, or 160 as only the top three bits are implemented. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #ifndef configMINIMAL_STACK_SIZE
     #define configMINIMAL_STACK_SIZE	( ( unsigned short )128 )
+    #define configUSE_TASK_FPU_SUPPORT            0
 #endif
 #endif
 
 #ifdef CORE_M3
-    /* Use the system definition, if there is one */
-    #ifdef __NVIC_PRIO_BITS
-        #define configPRIO_BITS       __NVIC_PRIO_BITS
-    #else
-        #define configPRIO_BITS       5        /* 32 priority levels */ // TODO Cortex-M3 is minimum 3, so make this 3 if specific number not known
-    #endif
-
-    /* The lowest priority. */
-    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
+    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) ) /* The lowest priority. */
     /* Priority 5, or 160 as only the top three bits are implemented. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #ifndef configMINIMAL_STACK_SIZE
     #define configMINIMAL_STACK_SIZE	( ( unsigned short )128 ) // 100 still ok?
+    #define configUSE_TASK_FPU_SUPPORT            0
 #endif
 #endif
 
 #ifdef CORE_M4
-    /* Use the system definition, if there is one */
-    #ifdef __NVIC_PRIO_BITS
-        #define configPRIO_BITS       __NVIC_PRIO_BITS
-    #else       
-        #if (UEZ_PROCESSOR == NXP_LPC4357)      //CS, LPC43xx not setup properly
-          #define configPRIO_BITS       3        /* 8 priority levels */
-        #else
-          #define configPRIO_BITS       5        /* 32 priority levels */ // TODO Cortex-M4 is minimum 3, so make this 3 if specific number not known
-        #endif
-    #endif
-
-    /* The lowest priority. */
-    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
+    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) ) /* The lowest priority. */
     /* Priority 5, or 160 as only the top three bits are implemented. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #ifndef configMINIMAL_STACK_SIZE
     #define configMINIMAL_STACK_SIZE	( ( unsigned short )128 )
 #endif
+    #define configUSE_TASK_FPU_SUPPORT            1
 #endif
 
 #ifdef CORE_M33
-    /* Use the system definition, if there is one */
-    #ifdef __NVIC_PRIO_BITS
-        #define configPRIO_BITS       __NVIC_PRIO_BITS
-    #else       
-        #error Missing prio bits define!
-    #endif
-
-    /* The lowest priority. */
-    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) )
+    #define configKERNEL_INTERRUPT_PRIORITY     ( 31 << (8 - configPRIO_BITS) ) /* The lowest priority. */
     /* Priority 5, or 160 as only the top three bits are implemented. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #ifndef configMINIMAL_STACK_SIZE
     #define configMINIMAL_STACK_SIZE	( ( unsigned short )192 )
+    #define configUSE_TASK_FPU_SUPPORT            1
 #endif
 #endif
 
@@ -323,14 +331,13 @@ kernel is doing. */
 
 #include "SEGGER_RTT_SYSVIEW_Config.h"
 
-
 #ifdef DEBUG // Debug Build Unique Settings
+
 #ifndef configUSE_TRACE_FACILITY
   #define configUSE_TRACE_FACILITY	        1 // needed for vTaskList
 #endif
-
 #ifndef configGENERATE_RUN_TIME_STATS
-  #define configGENERATE_RUN_TIME_STATS		0 // TODO
+  #define configGENERATE_RUN_TIME_STATS		1 // 
 #endif
 
 #else // Release Build Unique Settings
@@ -338,30 +345,48 @@ kernel is doing. */
 #ifndef configUSE_TRACE_FACILITY
  #define configUSE_TRACE_FACILITY      0
 #endif
-
 #ifndef configGENERATE_RUN_TIME_STATS
-#define configGENERATE_RUN_TIME_STATS 0
+ #define configGENERATE_RUN_TIME_STATS 0
 #endif
 
 #endif /* #ifdef DEBUG */
+
+#if (configUSE_TRACE_FACILITY == 1)
+#define configUSE_STATS_FORMATTING_FUNCTIONS    1
+#else
+
+#define configUSE_STATS_FORMATTING_FUNCTIONS    0
+#endif
+
+#if (configGENERATE_RUN_TIME_STATS == 1)
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS  UEZConfigureTimerForRunTimeStats
+#define portGET_RUN_TIME_COUNTER_VALUE          UEZGetRunTimeStatsCounter
+#endif
 
 #ifdef FREERTOS_PLUS_TRACE
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
-
-#define INCLUDE_eTaskGetState			                        1
+// Force these RTOS options on for Systemview, otherwise optional.
+#define INCLUDE_eTaskGetState                                   1
 #define INCLUDE_xTaskGetIdleTaskHandle                          1
 #define INCLUDE_pxTaskGetStackStart                             1
 
+#if (COMPILER_TYPE == GCC_ARM) 
+#ifdef __clang__ // include in case CLANG needs special treatment
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
+      
 #if (COMPILER_TYPE == IAR)
 #ifdef __ICCARM__  
      //Ensure the #include is only used by the compiler, and not the assembler.
      #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
 #endif
 #endif
-
-#if (COMPILER_TYPE == RowleyARM) // 
+      
+#if (COMPILER_TYPE == KEIL_UV) // TODO compiler not verified yet
      #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
 #endif
 
@@ -369,22 +394,19 @@ kernel is doing. */
      #include <Source/Library/SEGGER//SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
 #endif
 
-#if (COMPILER_TYPE == HEW) // TODO compiler not verified yet
-     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+#endif
 #endif
 
-#if (COMPILER_TYPE == Keil4) // TODO compiler not verified yet
-     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
+
+#ifndef INCLUDE_pxTaskGetStackStart 
+    #define INCLUDE_pxTaskGetStackStart         1
+#endif
+#ifndef INCLUDE_eTaskGetState
+    #define INCLUDE_eTaskGetState               1
+#endif
+#ifndef INCLUDE_xTaskGetIdleTaskHandle  
+    #define INCLUDE_xTaskGetIdleTaskHandle      1
 #endif
 
-#if (COMPILER_TYPE == GCC) // TODO compiler not verified yet
-#ifdef __clang__ // include in case CLANG needs special treatment
-     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
-#endif
-     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
-#endif
-
-#endif
-#endif
 
 #endif /* FREERTOS_CONFIG_H */

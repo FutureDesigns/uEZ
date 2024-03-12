@@ -28,6 +28,7 @@
 #include <uEZRTOS.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_USBDeviceController.h>
 #include <uEZGPIO.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * USB Registers:
@@ -312,6 +313,7 @@ static void LPC17xx_40xx_USBDev_EndpointInterruptsEnable(
                 void *aWorkspace,
                 TUInt8 aEndpoint)
 {
+    PARAM_NOT_USED(aWorkspace);
     TUInt32 aIndex = IEndpointToIndex(aEndpoint);
 
     // Enable interrupts for this endpoint
@@ -333,6 +335,7 @@ static void LPC17xx_40xx_USBDev_EndpointInterruptsDisable(
                 void *aWorkspace,
                 TUInt8 aEndpoint)
 {
+    PARAM_NOT_USED(aWorkspace);
     TUInt32 aIndex = IEndpointToIndex(aEndpoint);
 
     // Disable interrupts for this endpoint

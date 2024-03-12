@@ -26,6 +26,7 @@
 #include <HAL/GPIO.h>
 #include <uEZBSP.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_PWM.h>
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Types:

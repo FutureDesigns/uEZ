@@ -24,21 +24,22 @@
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <Device/ADCBank.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
 //#include <uEZTimeDate.h>
 #include <uEZLCD.h>
+#include <uEZPlatform.h>
 #include "uEZDemoCommon.h"
 #include <Source/Library/Graphics/SWIM/lpc_helvr10.h>
 #include <Source/Library/Graphics/SWIM/lpc_winfreesystem14x16.h>
 #include <Source/Library/ScreenSaver/BouncingLogoSS.h>
 #include <Types/InputEvent.h>
-#if UEZ_ENABLE_LIGHT_SENSOR
+#if (LIGHT_SENSOR_ENABLED == 1)
 #include "uEZRTOS.h"
 #include <Source/Devices/Light Sensor/ROHM/BH1721FVC/Light_Sensor_BH1721FVC.h>
 #endif
-#include <uEZLCD.h>
 #include <uEZKeypad.h>
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -416,6 +417,7 @@ static void BCMUpdate(T_brightnessControlWorkspace *G_ws)
 
 void BrightnessControlMode(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice ts;
     static T_uezQueue queue = NULL;
     static T_brightnessControlWorkspace *G_ws = NULL;
@@ -424,7 +426,7 @@ void BrightnessControlMode(const T_choice *aChoice)
 #if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
-#if UEZ_ENABLE_LIGHT_SENSOR
+#if (LIGHT_SENSOR_ENABLED == 1)
     TUInt32 levelCurrent = 1, levelPrevious = 0;
     T_uezDevice ls;
     DEVICE_LightSensor **p;
@@ -449,7 +451,7 @@ void BrightnessControlMode(const T_choice *aChoice)
 	G_ws = UEZMemAlloc(sizeof(*G_ws));
 #endif
 
-#if UEZ_ENABLE_LIGHT_SENSOR
+#if (LIGHT_SENSOR_ENABLED == 1)
     UEZTaskSuspend(G_lightSensorTask);
 #endif    
     if (!G_ws)
@@ -516,7 +518,7 @@ void BrightnessControlMode(const T_choice *aChoice)
                             }
                         }
                         ChoicesUpdateByReading(&G_win, G_ws->iChoices, &inputEvent);
-#if UEZ_ENABLE_LIGHT_SENSOR
+#if (LIGHT_SENSOR_ENABLED == 1)
                         if (lightSensorActive){
                             levelCurrent = (*p)->GetLevel((void *)p);
                             if(levelCurrent == 0xFFFFFFFF){ //ligh sensor no longer resonding
@@ -559,7 +561,7 @@ void BrightnessControlMode(const T_choice *aChoice)
 #ifndef NO_DYNAMIC_MEMORY_ALLOC	
         UEZQueueDelete(queue);
 #endif
-#if UEZ_ENABLE_LIGHT_SENSOR
+#if (LIGHT_SENSOR_ENABLED == 1)
         (*p)->Close((void *)p);
         UEZTaskResume(G_lightSensorTask);
 #endif

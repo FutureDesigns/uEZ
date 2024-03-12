@@ -26,6 +26,7 @@
  *---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <uEZDeviceTable.h>
 #include "Generic_USBHost.h"
 

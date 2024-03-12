@@ -24,10 +24,12 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <uEZProcessor.h>
+#include <uEZMemory.h>
 #include <uEZBSP.h>
 #include <stdint.h>
 #include "LPC17xx_40xx_ExternalBus.h"
 #include "LPC17xx_40xx_SDRAM.h"
+#include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*-------------------------------------------------------------------------*
  * Constants:

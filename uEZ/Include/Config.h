@@ -1,9 +1,6 @@
 /*-------------------------------------------------------------------------*
-* File:  <FILE_NAME.h>
-*-------------------------------------------------------------------------*
-* Description:
-*         <DESCRIPTION>
- *-------------------------------------------------------------------------*/
+* File:  <Config.h>
+*-------------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
 * uEZ(r) - Copyright (C) 2007-2015 Future Designs, Inc.
@@ -48,22 +45,21 @@
 #define __CONFIG_H
 
 #define UEZ_VERSION_MAJOR           2
-#define UEZ_VERSION_MINOR           13
-#define UEZ_VERSION_STRING          "2.13.100"
-#define UEZ_VERSION_DATE            "12/05/2022" /** MM/DD/YYYY */
+#define UEZ_VERSION_MINOR           14
+#define UEZ_VERSION_STRING          "2.14.000"
+#define UEZ_VERSION_DATE            "12/05/2023" /** MM/DD/YYYY */
 
 /*-------------------------------------------------------------------------*
  * Option: Compiler
  *-------------------------------------------------------------------------*/
 /** List of Compilers */
-#define RowleyARM                   1
+#define GCC_ARM                     1
 #define IAR                         2
-#define CodeRed                     3
-#define HEW                         4
-#define Keil4                       5
-#define RenesasRX                   6
-#define VisualC                     7
-#define GCC                         8
+#define KEIL_UV                     3
+#define RENESASRX                   4
+#define RENESASRX_GCC               5
+#define VisualC                     6
+
 // Hopefully we don't need to differentiate between GCC and Clang
 // So for right now don't use the CLANG define here, but use #ifdef __clang__ 
 // for any compatibility issues that crop up.
@@ -73,8 +69,32 @@
 #define FreeRTOS                    1
 #define SafeRTOS                    2
 
+/*-------------------------------------------------------------------------*
+ * Option: Processor
+ *-------------------------------------------------------------------------*/
+/** List of processor types */
+#define NXP_LPC2478                             1
+#define NXP_LPC1768                             2
+#define RENESAS_H8SX_1668RF                     3
+#define NXP_LPC1788                             4  // actively supported/tested
+#define RENESAS_RX62N                           5
+#define STMICRO_STM32F105_7                     6
+#define NXP_LPC1756                             7
+#define RENESAS_RX63N                           8
+#define NXP_LPC4088                             9  // actively supported/tested
+#define NXP_LPC4357                             10 // actively supported/tested
+#define NXP_LPC546xx                            11
+
 /** Include any specific compile options for this build */
 #include <Config_Build.h>
+
+#ifndef DISABLE_FEATURES_FOR_BOOTLOADER
+#define DISABLE_FEATURES_FOR_BOOTLOADER         0
+#endif
+
+#ifndef FREERTOS_PLUS_TRACE
+//
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -94,13 +114,20 @@ extern "C" {
 #error "An RTOS must be defined."
 #endif
 
-#ifdef __CODE_RED
-#define COMPILER_TYPE CodeRed
+/** Select compiler */
+// TODO add defines for Renesas RX
+#ifndef COMPILER_TYPE
+//#define COMPILER_TYPE               0
+
+// uEZ Compiler define
+#ifdef __IAR_SYSTEMS_ICC__
+#define COMPILER_TYPE               IAR
+#else
+#ifdef __GNUC__
+#define COMPILER_TYPE               GCC_ARM
+#endif
 #endif
 
-/** Select compiler */
-#ifndef COMPILER_TYPE
-#define COMPILER_TYPE               RowleyARM
 #endif
 
 /** Get the application's configuration and requirements for the
@@ -118,22 +145,6 @@ extern "C" {
 #define RELEASE_DATE            UEZ_VERSION_DATE
 #endif
 
-/*-------------------------------------------------------------------------*
- * Option: Processor
- *-------------------------------------------------------------------------*/
-/** List of processor types */
-#define NXP_LPC2478                             1
-#define NXP_LPC1768                             2
-#define RENESAS_H8SX_1668RF                     3
-#define NXP_LPC1788                             4  // actively supported/tested
-#define RENESAS_RX62N                           5
-#define STMICRO_STM32F105_7                     6
-#define NXP_LPC1756                             7
-#define RENESAS_RX63N                           8
-#define NXP_LPC4088                             9  // actively supported/tested
-#define NXP_LPC4357                             10 // actively supported/tested
-#define NXP_LPC546xx                            11
-
 // Select processor:
 #ifndef UEZ_PROCESSOR
 #error "UEZ_PROCESSOR must be defined!"
@@ -145,7 +156,7 @@ extern "C" {
 #ifndef UEZ_NUM_HANDLES
 #define UEZ_NUM_HANDLES           150
 #endif
-
+  
 #ifdef __cplusplus
 }
 #endif

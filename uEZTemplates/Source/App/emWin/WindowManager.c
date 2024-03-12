@@ -38,6 +38,7 @@
 #include "Create_Window_Functions.h"
 #include "../TimeDate_Callbacks.h"
 #include "../Sensor_Callbacks.h"
+#include "Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/MQTT_Callbacks.h"
      
 /*---------------------------------------------------------------------------*
  * Memory placement section:
@@ -62,12 +63,16 @@ static GUI_PID_STATE G_State;
 #define BACKLIGHT_TIMEOUT   30000 //300 seconds
 #define BACKLIGHT_TIMEOUT_ENABLED  0
 
+extern T_uezTask G_tsMonitorTask;
+
 #define EMWIN_BASE_ADDRESS (TUInt32) _emWinMemoryptr //Keep this define for now
 
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
 WM_HWIN G_SystemWindows[NUM_WINDOWS];
+static TUInt8 G_CurrentWindow = 0;
+
 // backlight management examples
 static TUInt8 G_backlightLevel = 0;
 #if (BACKLIGHT_TIMEOUT_ENABLED == 1)
@@ -91,7 +96,11 @@ void WindowManager_Create_All_Active_Windows(void)
         Sensor_Initialize();
     	G_SystemWindows[HOME_SCREEN] = HomeScreen_Create();
     	G_SystemWindows[TIMEDATE_SCREEN] = TimeDate_Create();
-    	G_SystemWindows[SENSOR_SCREEN] = Sensor_Create();        
+    	G_SystemWindows[SENSOR_SCREEN] = Sensor_Create();
+#if(UEZ_AWS_IOT_CLIENT_DEMO == 1)
+    	G_SystemWindows[MQTT_SCREEN] = MQTT_Create();
+#else
+#endif
         //TODO add new window creation function here.
     }
 }
@@ -101,7 +110,7 @@ void WindowManager_Get_Touch( GUI_PID_STATE *aState)
     if (WM_TochSem == 0){
         UEZSemaphoreCreateBinary(&WM_TochSem);
     }
-    UEZSemaphoreGrab(WM_TochSem, UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(WM_TochSem, 500);
     GUI_PID_GetState(&G_State);
     memcpy((void*)aState, (void*)&G_State, sizeof(GUI_PID_STATE));
     UEZSemaphoreRelease(WM_TochSem);
@@ -142,6 +151,8 @@ static U32 _TouchTask(T_uezTask aMyTask, void *aParameters)
 
     (void)aMyTask;
     (void)aParameters;
+    
+    UEZTaskPrioritySet(G_tsMonitorTask, UEZ_PRIORITY_NORMAL);
 
     while (1) {
         if (_RequestExit == 1) {
@@ -226,6 +237,7 @@ T_uezError WindowManager_Start_emWin(void)
     //static TBool init = EFalse;
     //if (!init) {    
           memset((void *)UEZPlatform_GetBaseAddress(), 0x0, LCD_FRAMES_SIZE);
+          memset((void *)EMWIN_BASE_ADDRESS, 0x0, EMWIN_RAM_SIZE);
           //init = ETrue;
     //}
             
@@ -257,7 +269,11 @@ T_uezError WindowManager_Start_emWin(void)
 
     // Create touch task
     if (UEZTaskCreate((T_uezTaskFunction)_TouchTask, "TouchTask", 1100, 0,
-            UEZ_PRIORITY_VERY_HIGH, &hTouchTask) != UEZ_ERROR_NONE) {
+    
+            UEZ_PRIORITY_NORMAL,
+            //UEZ_PRIORITY_HIGH,
+            //UEZ_PRIORITY_VERY_HIGH,
+             &hTouchTask) != UEZ_ERROR_NONE) {
         UEZFailureMsg("Main: Could not start TouchTask!");
     }
 
@@ -344,6 +360,7 @@ static void WindowManager_Hide_Other_Windows(TUInt8 aWindow)
             if(G_SystemWindows[i]){
                 WM_SendMessageNoPara(G_SystemWindows[i], WM_APP_LOST_FOCUS);
                 WM_HideWindow(G_SystemWindows[i]);
+                G_CurrentWindow = aWindow;
             }
         }
         i++;
@@ -370,6 +387,23 @@ void WindowManager_Show_Window(TUInt8 aWindow)
 }
 
 /*---------------------------------------------------------------------------*
+ * Routine: WindowManager_GetCurrent_Window
+ *---------------------------------------------------------------------------*/
+/** Returns the index of the current window from 0 to NUM_WINDOWS.
+ *  Multiple windows can run void XXXX_Dialog(WM_MESSAGE *pMsg) when not 
+ *  focused on that window, so use this restrict behavior to when the window is
+ *  really active (or not active).
+ *
+ *  @return                 Index of current window
+ */
+ /*---------------------------------------------------------------------------*/
+TUInt8 WindowManager_GetCurrent_Window(void)
+{
+  return G_CurrentWindow;
+}
+
+
+/*---------------------------------------------------------------------------*
  * Routine: WindowManager_UpdateCommonElements
  *---------------------------------------------------------------------------*/
 /** Function used to set the common UI elements across all screens.
@@ -379,8 +413,8 @@ void WindowManager_Show_Window(TUInt8 aWindow)
  /*---------------------------------------------------------------------------*/
 void WindowManager_UpdateCommonElements(T_CommonMode aMode)
 {
+    PARAM_NOT_USED(aMode);
 
-   
 }
 
 /*---------------------------------------------------------------------------*
@@ -441,7 +475,8 @@ static U8 sscount = 0;
 static TUInt32 sstick = 0;
 
 static void _WriteByte2File(U8 Data, void * p)
-{	
+{
+  PARAM_NOT_USED(p);
   TUInt32 numWritten;
   ssBuffer[ssindex++]=Data;
   if(ssindex==sizeof(ssBuffer)) {

@@ -1,0 +1,19 @@
+# vim:ft=automake
+# included from Top Level Makefile.am
+# All paths should be given relative to the root
+
+include scripts/broker_test/include.am
+
+if BUILD_EXAMPLES
+dist_noinst_SCRIPTS += scripts/client.test \
+                       scripts/firmware.test \
+                       scripts/azureiothub.test \
+                       scripts/awsiot.test \
+                       scripts/nbclient.test
+# WIOT test broker disabled 31MAY2021
+#                      scripts/wiot.test
+if BUILD_MULTITHREAD
+dist_noinst_SCRIPTS += scripts/multithread.test
+endif
+
+endif

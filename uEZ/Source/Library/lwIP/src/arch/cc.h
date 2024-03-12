@@ -23,7 +23,7 @@ typedef uint32_t    mem_ptr_t;
 typedef int32_t sys_prot_t;
 
 /* Define (sn)printf formatters for these lwIP types */
-#if (COMPILER_TYPE==RenesasRX)
+#if (COMPILER_TYPE==RENESASRX)
 	#define U16_F "u"
 	#define S16_F "d"
 	#define X16_F "x"

@@ -39,6 +39,7 @@
  */
 #include "Config.h"
 #include "uEZ.h"
+#include <uEZMemory.h>
 #include "uEZHandles.h"
 #include <uEZGPIO.h>
 #ifdef FREERTOS_PLUS_TRACE

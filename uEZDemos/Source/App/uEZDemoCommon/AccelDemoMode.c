@@ -263,6 +263,7 @@ void AC_Screen(T_uezDevice lcd)
  *---------------------------------------------------------------------------*/
 static void AC_Exit(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     G_acExit = ETrue;
 }
 
@@ -319,6 +320,7 @@ void IEraseBall(void)
  *---------------------------------------------------------------------------*/
 static void AC_UpdateBall(TInt32 aDelta, T_uezDevice aLCD)
 {
+    PARAM_NOT_USED(aLCD);
     TInt32 diffX, diffY;
     TInt32 x, y;
     AccelerometerReading reading;

@@ -36,7 +36,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <uEZ.h>
+#include <uEZMemory.h>
 #include <uEZFile.h>
+#include <Config_Build.h>
 #if ( RTOS == FreeRTOS)
 #include <Source/RTOS/FreeRTOS/include/task.h>
 #endif
@@ -79,12 +81,11 @@ extern T_uezError VFileClose(T_uezFile aFile);
 #define VFileClose UEZFileClose
 #endif
 
+T_uezTask G_HttpServerTask = NULL;
+
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
  *---------------------------------------------------------------------------*/
-/* The size of the buffer in which the dynamic WEB page is created. */
-#define MAX_PAGE_SIZE           1024
-
 /* Standard GET response. */
 #define HTTP_OK                 "HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n"
 
@@ -111,27 +112,85 @@ extern T_uezError VFileClose(T_uezFile aFile);
 #define DEBUG_HTTP_SERVER           	  0
 #endif
 
-// Stack size of the HTTP Server
-#ifndef WEB_SERVER_STACK_SIZE
-#define WEB_SERVER_STACK_SIZE  UEZ_TASK_STACK_BYTES(2048)
-#endif
-
 // Displayed version number of the HTTP Server
 #ifndef WEB_SERVER_REPORT_VERSION
 #define WEB_SERVER_REPORT_VERSION         0
 #endif
-		
-#define MAX_LINE_LENGTH           256 // Max length of message to send/receive per packet
+
+// Stack size of the HTTP Server
+#ifndef WEB_SERVER_STACK_SIZE
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define WEB_SERVER_STACK_SIZE  UEZ_TASK_STACK_BYTES(2816)
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+#define WEB_SERVER_STACK_SIZE  UEZ_TASK_STACK_BYTES(2816)
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+#define WEB_SERVER_STACK_SIZE  UEZ_TASK_STACK_BYTES(2816) // can be slightly less for M3
+#endif
+#endif
+
+// Currently max line length and write buffer need to be equal or we will read out of bounds.
+// Increasing both leads to significantly better performance.
+// Make sure to keep line length and write buffer size multiples of 4.
+#if(UEZ_PROCESSOR == NXP_LPC4357)
 #define MAX_HTTP_VERSION          30  // Supported version of HTTP advertised by the server
 #define MAX_HTTP_CONTENT_TYPE     120 // Type of content supplied from the HTTP Server
 #define MAX_HTTP_CONTENT_BOUNDARY 80  // Content boundary of the HTTP Server
 #define MAX_VAR_NAME_LENGTH       20  // Maximum length of variable name
-#define HTTP_WRITE_BUFFER_SIZE    256 // Max length of write buffer size
+#define HTTP_READ_BUFFER_SIZE     768 // Max length of read buffer size
+
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+#define MAX_LINE_LENGTH           8128 // Max length of message to send/receive per packet
+#else
+#define MAX_LINE_LENGTH           1024 // Max length of message to send/receive per packet
+#endif
+
+#define HTTP_WRITE_BUFFER_SIZE    MAX_LINE_LENGTH // Max length of write buffer size
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+#define MAX_HTTP_VERSION          30  // Supported version of HTTP advertised by the server
+#define MAX_HTTP_CONTENT_TYPE     120 // Type of content supplied from the HTTP Server
+#define MAX_HTTP_CONTENT_BOUNDARY 80  // Content boundary of the HTTP Server
+#define MAX_VAR_NAME_LENGTH       20  // Maximum length of variable name
+#define HTTP_READ_BUFFER_SIZE     768 // Max length of read buffer size
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+#define MAX_LINE_LENGTH           2000 // Max length of message to send/receive per packet
+#else
+#define MAX_LINE_LENGTH           1024 // Max length of message to send/receive per packet
+#endif
+
+#define HTTP_WRITE_BUFFER_SIZE    MAX_LINE_LENGTH // Max length of write buffer size
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+#define MAX_HTTP_VERSION          30  // Supported version of HTTP advertised by the server
+#define MAX_HTTP_CONTENT_TYPE     120 // Type of content supplied from the HTTP Server
+#define MAX_HTTP_CONTENT_BOUNDARY 80  // Content boundary of the HTTP Server
+#define MAX_VAR_NAME_LENGTH       20  // Maximum length of variable name
+#define HTTP_READ_BUFFER_SIZE     768 // Max length of read buffer size
+#if(EMAC_ENABLE_JUMBO_FRAME == 1)
+#define MAX_LINE_LENGTH           2000 // Max length of message to send/receive per packet
+#else
+#define MAX_LINE_LENGTH           1024 // Max length of message to send/receive per packet
+#endif
+
+#define HTTP_WRITE_BUFFER_SIZE    MAX_LINE_LENGTH // Max length of write buffer size
+#endif
+
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define E_FLASH_START_ADDRESS     0x14000000
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC4088)
+#define E_FLASH_START_ADDRESS     0x28000000
+#endif
+#if(UEZ_PROCESSOR == NXP_LPC1788)
+#define E_FLASH_START_ADDRESS     0x80000000
+#endif
 
 #if DEBUG_HTTP_SERVER
 	#define dprintf printf
 #else
-	#if (COMPILER_TYPE == RenesasRX)
+	#if (COMPILER_TYPE == RENESASRX)
     	void dprintf(const char * temp, ...);
 		void dprintf(const char * temp, ...){
 			; // do nothing	
@@ -150,32 +209,35 @@ typedef struct _T_httpStateVar {
     char *iValue;
 } T_httpStateVar;
 
-typedef struct {
-    int32_t iSocket; //Lwip socket, -1 if not active
-    TUInt8 iReceiveBuffer[768]; // standard demo takes around 520 bytes of POST before seeing both variables. 
-    TUInt32 iReceiveIndex;
-    TUInt32 iReceiveLength;
-    TUInt32 iLength;
-    TUInt8 iLine[MAX_LINE_LENGTH + 1];
-    TUInt32 iFirstLineLength;
-    TUInt8 iFirstLine[MAX_LINE_LENGTH + 1];
-    TUInt8 iHTTPVersion[MAX_HTTP_VERSION + 1];
-    TUInt8 iVarName[MAX_VAR_NAME_LENGTH + 1];
-    TUInt32 iContentLength;
-    T_HTTPCallbackGetVarFunc iGetFunc;
-    T_HTTPCallbackSetVarFunc iSetFunc;
-    T_httpStateVar *iVarList;
-    TUInt8 iWriteBuffer[HTTP_WRITE_BUFFER_SIZE];
-    TUInt32 iWriteLen;
-    TUInt8 iContentType[MAX_HTTP_CONTENT_TYPE+1];
-    TUInt8 iContentBoundary[MAX_HTTP_CONTENT_BOUNDARY+1];
-    const char *iDrivePrefix;
-} T_httpState;
+PACK_STRUCT_BEGIN
+typedef ATTR_IAR_PACKED struct {
+    PACK_STRUCT_FIELD(int32_t iSocket); //Lwip socket, -1 if not active
+    PACK_STRUCT_FIELD(TUInt8 iReceiveBuffer[HTTP_READ_BUFFER_SIZE]); // standard demo takes around 520 bytes of POST before seeing both variables.
+    PACK_STRUCT_FIELD(TUInt8 iWriteBuffer[HTTP_WRITE_BUFFER_SIZE]);
+    PACK_STRUCT_FIELD(TUInt8 iLine[MAX_LINE_LENGTH + 1]);
+    PACK_STRUCT_FIELD(TUInt8 iDummyA[3]);
+    PACK_STRUCT_FIELD(TUInt8 iFirstLine[MAX_LINE_LENGTH + 1]);
+    PACK_STRUCT_FIELD(TUInt32 iReceiveIndex);
+    PACK_STRUCT_FIELD(TUInt32 iReceiveLength);
+    PACK_STRUCT_FIELD(TUInt32 iLength);
+    PACK_STRUCT_FIELD(TUInt32 iFirstLineLength);
+    PACK_STRUCT_FIELD(TUInt8 iHTTPVersion[MAX_HTTP_VERSION + 1]);
+    PACK_STRUCT_FIELD(TUInt8 iVarName[MAX_VAR_NAME_LENGTH + 1]);
+    PACK_STRUCT_FIELD(TUInt32 iContentLength);
+    PACK_STRUCT_FIELD(T_HTTPCallbackGetVarFunc iGetFunc);
+    PACK_STRUCT_FIELD(T_HTTPCallbackSetVarFunc iSetFunc);
+    PACK_STRUCT_FIELD(T_httpStateVar *iVarList);
+    PACK_STRUCT_FIELD(TUInt32 iWriteLen);
+    PACK_STRUCT_FIELD(TUInt8 iContentType[MAX_HTTP_CONTENT_TYPE+1]);
+    PACK_STRUCT_FIELD(TUInt8 iContentBoundary[MAX_HTTP_CONTENT_BOUNDARY+1]);
+    PACK_STRUCT_FIELD(const char *iDrivePrefix);
+} PACK_STRUCT_STRUCT T_httpState;
+PACK_STRUCT_END
 
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
-static uint8_t writesTillDelay = 5;
+//static uint8_t writesTillDelay = 5; // should no longer need
 
 
 /*---------------------------------------------------------------------------*
@@ -552,6 +614,7 @@ static void IHTTPParameter(
 
 }
 
+#if 0 // If you don't have working per thread semaphores we need delays to not crash.
 static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
 {
     T_uezError error;
@@ -615,6 +678,49 @@ static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
     return error;
 }
 
+#else
+static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
+{
+    T_uezError error;
+    int32_t sent;
+    DEBUG_SV_Print("FS");
+
+#if LWIP_NETCONN_SEM_PER_THREAD // It appears that per thread semaphore fixes this crashing issue and a 1ms delay is not needed, but call 0 delay to allow a switch.
+#else
+    UEZTaskDelay(1); // Will crash if flushstart debug code is not running, testing delay fix
+#endif
+    
+#if DEBUG_HTTP_SERVER
+    uint32_t start;
+    start = UEZTickCounterGet();
+    dprintf("FlushStart: %d (%d)\n", start, aState->iWriteLen);
+#endif
+    sent = send(aState->iSocket, aState->iWriteBuffer, aState->iWriteLen, 0);
+    aState->iWriteLen = 0;    
+#if DEBUG_HTTP_SERVER
+    dprintf("FlushEnd: %d\n", UEZTickCounterGet()-start);
+    start--;
+#endif
+    // TODO check a flag here and UEZTaskDelay(0) until ready.
+    DEBUG_SV_Print("FE");
+    if(sent < 0) {
+#if LWIP_NETCONN_SEM_PER_THREAD
+#else
+        UEZTaskDelay(1); // Will crash if flushend debug code is not running, testing delay fix
+#endif
+        error = UEZ_ERROR_TIMEOUT;
+    } else {
+#if LWIP_NETCONN_SEM_PER_THREAD
+#else
+        //UEZTaskDelay(0); // Will crash if flushend debug code is not running, testing delay fix
+#endif
+        error = UEZ_ERROR_NONE;
+    }
+
+    return error;
+}
+#endif
+
 static T_uezError IHTTPWriteByte(T_httpState *aState, TUInt8 aByte)
 {
     T_uezError error = UEZ_ERROR_NONE;
@@ -635,7 +741,7 @@ static T_uezError IHTTPWrite(
 {
     TUInt32 i;
     T_uezError error = UEZ_ERROR_NONE;
-    writesTillDelay--;
+    //writesTillDelay--;
 
     for (i=0; i<aLength; i++) {
         error = IHTTPWriteByte(aState, aData[i]);
@@ -648,10 +754,10 @@ static T_uezError IHTTPWrite(
         error = IHTTPWriteFlush(aState, EFalse);
 
     DEBUG_SV_Print("WE");    
-    if(writesTillDelay == 0) {
+    /*if(writesTillDelay == 0) {
       //UEZTaskDelay(1);
       writesTillDelay = 5;
-    }
+    }*/
     return error;
 }
 
@@ -1140,6 +1246,37 @@ static T_uezError IHTTPGet(T_httpState *aState)
     IHTTPParameter(aState->iFirstLine, aState->iFirstLineLength, 2,
         aState->iHTTPVersion);
 
+    if (strcmp((char *)aState->iLine + prefixLen, "/E.FLASH") == 0) {
+        totalLengthLeft = 16*1024*1024; // total file length
+        dprintf("\r\nFetching file: %s (size %d)\r\n", aState->iLine, totalLengthLeft);        
+        mimeType = IDetermineMimeTypeFromFilename("0");
+
+            IHTTPOutputHeader(aState, 200, "OK", mimeType, totalLengthLeft);
+            // If there is a function to parse the vars in a HTML file,
+            // we now use the previously parsed vars and data to output
+            TUInt32 currentFilePosition = E_FLASH_START_ADDRESS;
+            do { // Read a section
+              if(totalLengthLeft <= MAX_LINE_LENGTH) { // end
+                memcpy((void*) block, (void*) currentFilePosition, totalLengthLeft);
+                moreToCome = EFalse;
+                // Write a section
+                if (IHTTPWrite(aState, (char *)block, totalLengthLeft, moreToCome) != UEZ_ERROR_NONE){
+                  break;
+                }                
+                totalLengthLeft = 0;
+              } else {
+                memcpy((void*) block, (void*) currentFilePosition, MAX_LINE_LENGTH);
+                currentFilePosition += MAX_LINE_LENGTH;
+                totalLengthLeft -= MAX_LINE_LENGTH; // subtract how many bytes were read
+                moreToCome = ETrue;
+                // Write a section
+                if (IHTTPWrite(aState, (char *)block, MAX_LINE_LENGTH, moreToCome) != UEZ_ERROR_NONE){
+                  break;
+                }
+              }
+            } while (moreToCome == ETrue);
+    } else {
+
     // Filename we need to get is now in aState->iFirstLine.
     // Let's see if the file can be opened
 #if (ENABLE_HTML_QUESTION_IN_URL == 1) // added to  allow ? etc on url line
@@ -1200,13 +1337,13 @@ static T_uezError IHTTPGet(T_httpState *aState)
                       printf("Retry attempt %u", (TUInt32)tries);
                       
                     }
-                    UEZTaskDelay(500);
+                    UEZTaskDelay(50);
                     VFileClose(file);
-                    UEZTaskDelay(100);
+                    UEZTaskDelay(10);
                     VFileOpen((char *)aState->iLine, FILE_FLAG_READ_ONLY, &file);
-                    UEZTaskDelay(100);
+                    UEZTaskDelay(10);
                     UEZFileSeekPosition(file, currentFilePosition);
-                    UEZTaskDelay(100);
+                    UEZTaskDelay(10);
                   } else { // no error
                     break;
                   }
@@ -1238,6 +1375,8 @@ static T_uezError IHTTPGet(T_httpState *aState)
     } else {
         // File does NOT exist
         IHTTPReportError(aState, 404, "Not Found", HTTP_MSG_NOT_FOUND);
+    }
+
     }
 
     // Stop here
@@ -1308,9 +1447,9 @@ static T_uezError IHTTPProcessURLEncodedFormData(T_httpState *aState)
     TUInt8 mode = 0;
     TUInt32 varNameLength = 0;
     TUInt32 dataLength = 0;
-    TUInt8 ch;
+    TUInt8 ch = 0;
     T_uezError error = UEZ_ERROR_NONE;
-    //UNUSED(ch);
+    PARAM_NOT_USED(ch);
 
     for (i = 0; i <= aState->iContentLength; i++) {
         if (i == aState->iContentLength) {
@@ -1915,10 +2054,11 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
     (void)&IHTTPParseFileForVars;
     (void)&IHTTPOutputParsedFile;
 
-
     //sockets_stresstest_init_client("192.168.25.158",80);
 
     dprintf("HTTPServer: Starting\n");
+
+    lwip_socket_thread_init(); // initialize per thread semaphore if used
 
     socket_fd = socket(PF_INET, SOCK_STREAM, 0);
     if (socket_fd >= 0) {
@@ -1951,10 +2091,11 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
                                         "0:/HTTPROOT");
                         close(accept_fd);
                     }
-                }
-            }
-        }
+                } // for
+            } // listen
+        } // bind
     }
+    lwip_socket_thread_cleanup(); // clean up semaphores
     while (1) {
         // Sit here doing nothing
         // TODO: Need better response/handling
@@ -1962,7 +2103,7 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
         DEBUG_SV_PrintE("HTTPServer: Task failed!"); // example error
         UEZTaskDelay(5000);
     }
-#if ((COMPILER_TYPE!=Keil4) && (COMPILER_TYPE != IAR))
+#if ((COMPILER_TYPE!=KEIL_UV) && (COMPILER_TYPE != IAR))
     return 0;
 #endif
 }
@@ -1987,18 +2128,11 @@ TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
 T_uezError WebServerStart(T_httpServerParameters *aParams)
 {
     return UEZTaskCreate((T_uezTaskFunction)HTTPServer, "WebSrv",
+                WEB_SERVER_STACK_SIZE,
+                (void *)aParams,
 #if(UEZ_PROCESSOR == NXP_LPC4357)
-                WEB_SERVER_STACK_SIZE+UEZ_TASK_STACK_BYTES(512),
-#endif
-#if(UEZ_PROCESSOR == NXP_LPC4088)
-                WEB_SERVER_STACK_SIZE+UEZ_TASK_STACK_BYTES(128), // TODO retest
-#endif
-#if(UEZ_PROCESSOR == NXP_LPC1788)
-                WEB_SERVER_STACK_SIZE+UEZ_TASK_STACK_BYTES(0), // TODO retest
-#endif
-        (void *)aParams,
-#if(UEZ_PROCESSOR == NXP_LPC4357)
-                UEZ_PRIORITY_HIGH,
+                //UEZ_PRIORITY_HIGH,
+                UEZ_PRIORITY_NORMAL,
 #endif
 #if(UEZ_PROCESSOR == NXP_LPC4088)
                 UEZ_PRIORITY_NORMAL,
@@ -2006,7 +2140,7 @@ T_uezError WebServerStart(T_httpServerParameters *aParams)
 #if(UEZ_PROCESSOR == NXP_LPC1788)
                 UEZ_PRIORITY_NORMAL,
 #endif
-         0);
+         &G_HttpServerTask);
 }
 /** @} */
 /*-------------------------------------------------------------------------*

@@ -70,7 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>9.30.1.50052</state>
+                    <state>9.32.1.54977</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -264,7 +264,7 @@
                 </option>
                 <option>
                     <name>CCEnableRemarks</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCDiagSuppress</name>
@@ -362,6 +362,8 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\uEZ\Source\RTOS\FreeRTOS\portable\IAR\ARM_CM3</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/Encryption/mbedtls</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>

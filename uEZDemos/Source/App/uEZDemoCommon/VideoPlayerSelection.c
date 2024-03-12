@@ -84,6 +84,7 @@ static void VideoPlayerSelectAction(const T_choice *aChoice)
 
 static void VideoPlayerSelectScrollUp(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     if(G_topFileIndex > 0) {
         G_topFileIndex--;
 
@@ -94,6 +95,7 @@ static void VideoPlayerSelectScrollUp(const T_choice *aChoice)
 
 static void VideoPlayerSelectScrollDown(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     if((G_topFileIndex+5) < G_ws->iNumVideos) {
         G_topFileIndex++;
 
@@ -198,7 +200,7 @@ static void VideoPlayerSelectChoices(void)
         // Setup new choice
         p->iLeft = rline.iLeft;
         p->iTop = rline.iTop;
-        p->iRight = rline.iRight-33;
+        p->iRight = rline.iRight-(VIDEO_ICON_WIDTH+1);
         p->iBottom = rline.iBottom;
         p->iText = G_ws->iVideos[i].iTitle;
         p->iAction = VideoPlayerSelectAction;
@@ -234,10 +236,10 @@ static void VideoPlayerSelectChoices(void)
     if (count < G_ws->iNumVideos) {
         // Need to be able to scroll
         RegionShrink(&rbottom, 1);
-        p->iLeft = G_ws->iChoiceBox.iRight-33;
+        p->iLeft = G_ws->iChoiceBox.iRight-(VIDEO_ICON_WIDTH+1);
         p->iRight = G_ws->iChoiceBox.iRight-1;
         p->iTop = G_ws->iChoiceBox.iTop+1;
-        p->iBottom = G_ws->iChoiceBox.iTop+33;
+        p->iBottom = G_ws->iChoiceBox.iTop+(VIDEO_ICON_HEIGHT+1);
         p->iText = "";
         p->iAction = VideoPlayerSelectScrollUp;
         p->iIcon = G_arrowUp;
@@ -249,9 +251,9 @@ static void VideoPlayerSelectChoices(void)
 	// Now add the down button
     if (count < G_ws->iNumVideos) {
         RegionShrink(&rbottom, 1);
-        p->iLeft = G_ws->iChoiceBox.iRight-33;
+        p->iLeft = G_ws->iChoiceBox.iRight-(VIDEO_ICON_WIDTH+1);
         p->iRight = G_ws->iChoiceBox.iRight-1;
-        p->iTop = G_ws->iChoiceBox.iBottom-33;
+        p->iTop = G_ws->iChoiceBox.iBottom-(VIDEO_ICON_HEIGHT+1);
         p->iBottom = G_ws->iChoiceBox.iBottom-1;
         p->iText = "";
         p->iAction = VideoPlayerSelectScrollDown;
@@ -358,7 +360,7 @@ T_uezError AudioPlayerSelectionLoad(TUInt32 aDrive)
     G_topFileIndex = 0;
     G_ws->iNumVideos = 0;
 
-    sprintf(filename, "%d:/VIDEOS.INI" , aDrive);
+    sprintf(filename, "%u:/VIDEOS.INI" , aDrive);
     if(UEZINIOpen(filename, &ini) == UEZ_ERROR_NONE){
 
         for(i=0; i<MAX_VIDEOS; i++) {
@@ -432,6 +434,7 @@ T_uezError AudioPlayerSelectionLoad(TUInt32 aDrive)
  *---------------------------------------------------------------------------*/
 void VideoPlayerSelection(const T_choice *aChoice)
 {
+    PARAM_NOT_USED(aChoice);
     T_uezDevice lcd;
     T_uezQueue queue;
     T_uezDevice ts;

@@ -43,7 +43,8 @@
     <ProgramSection alignment="4" load="No" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
     <ProgramSection alignment="4" size="__STACKSIZE__" load="No" name=".stack"/>
-    <ProgramSection alignment="4" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process"/>
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
 

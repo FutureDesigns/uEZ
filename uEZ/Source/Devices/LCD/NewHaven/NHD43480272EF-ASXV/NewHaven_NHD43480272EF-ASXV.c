@@ -25,6 +25,7 @@
 #include "NewHaven_NHD43480272EF-ASXV.h"
 #include <uEZGPIO.h>
 #include <uEZTimer.h>
+#include <timers.h>
 #include <uEZPlatformAPI.h>
 #include "uEZPlatform.h"
 
@@ -70,7 +71,11 @@ typedef struct {
     TUInt32 iResetGPIOBit;
     T_uezSemaphore iVSyncSem;
     T_uezDevice itimer;
+#if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+    TimerCallbackFunction_t icallback;
+#else
     T_uezTimerCallback icallback;
+#endif
     volatile TBool itimerDone;
 } T_NHD43480272EF_ASXVWorkspace;
 
@@ -78,6 +83,10 @@ typedef struct {
  * Globals:
  *---------------------------------------------------------------------------*/
 static T_LCDControllerSettings LCD_NHD43480272EF_ASXV_settings;
+#if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+static TimerHandle_t lcdBacklightDelayTimer = NULL;
+#else
+#endif
 
 static const T_LCDControllerSettings LCD_NHD43480272EF_ASXV_params16bit = {
     LCD_ADVANCED_TFT,
@@ -433,8 +442,6 @@ static T_uezError LCD_NHD43480272EF_ASXV_SetBacklightLevel(void *aW, TUInt32 aLe
     return (*p->iBacklight)->SetRatio(p->iBacklight, level);
 }
 
-#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
-#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272EF_ASXV_MSTimerStart
  *---------------------------------------------------------------------------*
@@ -443,6 +450,28 @@ static T_uezError LCD_NHD43480272EF_ASXV_SetBacklightLevel(void *aW, TUInt32 aLe
  * Inputs:
 *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
 *---------------------------------------------------------------------------*/
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
+ #if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+static T_uezError LCD_NHD43480272EF_ASXV_MSTimerStart(void *aW, float milliseconds) {
+  T_NHD43480272EF_ASXVWorkspace *p = (T_NHD43480272EF_ASXVWorkspace *)aW;
+  p->itimerDone = EFalse; // set to true when timer finishes
+
+  if (lcdBacklightDelayTimer == NULL) {
+     lcdBacklightDelayTimer = xTimerCreate("BL_Timer",
+                     pdMS_TO_TICKS( milliseconds ), // The timer period in ticks, must be greater than 0.                     
+                     pdFALSE, ( void * ) 0, 
+                     p->icallback);
+  }
+  if (lcdBacklightDelayTimer != NULL) {
+     if( xTimerStart( lcdBacklightDelayTimer, pdMS_TO_TICKS( milliseconds ) ) == pdPASS ) {
+        return UEZ_ERROR_NONE;
+     } else {} // failed to start timer
+  }
+
+  return UEZ_ERROR_OUT_OF_MEMORY;
+}
+ #else
 static T_uezError LCD_NHD43480272EF_ASXV_MSTimerStart(void *aW, float milliseconds){
   T_NHD43480272EF_ASXVWorkspace *p = (T_NHD43480272EF_ASXVWorkspace *)aW;
   T_uezError error = UEZ_ERROR_NONE;
@@ -455,13 +484,12 @@ static T_uezError LCD_NHD43480272EF_ASXV_MSTimerStart(void *aW, float millisecon
     error = UEZTimerSetTimerMode(p->itimer, TIMER_MODE_CLOCK);
     error = UEZTimerReset(p->itimer);
     UEZTimerEnable(p->itimer);
-  }  
+  }
   return error;
 }
+ #endif
 #endif
 
-#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
-#else
 /*---------------------------------------------------------------------------*
  * Routine:  LCD_NHD43480272EF_ASXV_TimerCallback
  *---------------------------------------------------------------------------*
@@ -471,11 +499,23 @@ static T_uezError LCD_NHD43480272EF_ASXV_MSTimerStart(void *aW, float millisecon
  * Inputs:
  *      T_uezTimerCallback *aCallbackWorkspace  -- Workspace 
  *---------------------------------------------------------------------------*/
+#if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+#else
+ #if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+static void LCD_NHD43480272EF_ASXV_TimerCallback( TimerHandle_t xTimer ) {
+    //p->itimerDone = ETrue;
+        /* Do not use a block time if calling a timer API function
+        from a timer callback function, as doing so could cause a
+        deadlock! */
+    xTimerStop( xTimer, 0 );
+}
+ #else
 static void LCD_NHD43480272EF_ASXV_TimerCallback(T_uezTimerCallback *aCallbackWorkspace){
   T_NHD43480272EF_ASXVWorkspace *p = aCallbackWorkspace->iData;
   p->itimerDone = ETrue;
-  UEZTimerClose(p->itimer);    
+  UEZTimerClose(p->itimer);
 }
+ #endif
 #endif
 
 /*---------------------------------------------------------------------------*
@@ -496,10 +536,15 @@ static T_uezError LCD_NHD43480272EF_ASXV_On(void *aW) {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
       UEZTaskDelay(167);
 #else
-      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {          
+ #if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+      LCD_NHD43480272EF_ASXV_MSTimerStart(p, 167.0); // minimum 167ms timer
+      do{UEZTaskDelay(1);}while (xTimerIsTimerActive( lcdBacklightDelayTimer ) != pdFALSE); // wait for timer to finish, there will be a small task delay of a few hundred uS
+ #else
+      if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) {
          LCD_NHD43480272EF_ASXV_MSTimerStart(p, 167.0); // minimum 167ms timer
          while (p->itimerDone == EFalse){;} // wait for timer before continuing
       }
+ #endif
 #endif
       (*p->iBacklight)->On(p->iBacklight); // turn backlight on 
       LCD_NHD43480272EF_ASXV_SetBacklightLevel(p, p->iBacklightLevel); // Turn back on to the remembered level
@@ -525,10 +570,15 @@ static T_uezError LCD_NHD43480272EF_ASXV_Off(void *aW) {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
       UEZTaskDelay(167);
 #else
+  #if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+      LCD_NHD43480272EF_ASXV_MSTimerStart(p, 167.0); // minimum 167ms timer
+      do{UEZTaskDelay(1);}while (xTimerIsTimerActive( lcdBacklightDelayTimer ) != pdFALSE); // wait for timer to finish, there will be a small task delay of a few hundred uS
+  #else
       if (UEZTimerOpen("Timer0", &p->itimer) == UEZ_ERROR_NONE) { 
         LCD_NHD43480272EF_ASXV_MSTimerStart(p, 167.0); // minimum 167ms timer
         while (p->itimerDone == EFalse){;} // wait for timer to finish, there will be a small task delay of a few hundred uS
       }
+  #endif
 #endif
     }    
     (*p->iLCDController)->Off(p->iLCDController); // turn off LCD
@@ -555,13 +605,16 @@ static T_uezError LCD_NHD43480272EF_ASXV_Open(void *aW)
     TUInt32 i;
     
 #if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
-  
 #else
+ #if (LCD_BACKLIGHT_FREERTOS_TIMER==1)
+    p->icallback = LCD_NHD43480272EF_ASXV_TimerCallback;
+ #else
     p->icallback.iTimer = p->itimer; // Setup callback information for timer
     p->icallback.iMatchRegister = 1;
     p->icallback.iTriggerSem = 0;
     p->icallback.iCallback = LCD_NHD43480272EF_ASXV_TimerCallback;
     p->icallback.iData = p;
+ #endif
 #endif
 
     p->aNumOpen++;

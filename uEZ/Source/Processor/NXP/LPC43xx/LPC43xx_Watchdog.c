@@ -26,6 +26,7 @@
 #include <uEZ.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_Watchdog.h>
+#include "LPC43xx_UtilityFuncs.h"
 
 // No interrupts are setup in this driver, so no M0 specific support was added.
 // Currently the driver only supports reseting the chip.
@@ -52,7 +53,7 @@ typedef struct {
 /*-------------------------------------------------------------------------*
  * Macros:
  *-------------------------------------------------------------------------*/
-#if(COMPILER_TYPE==Keil4)
+#if(COMPILER_TYPE==KEIL_UV)
 #define nop()      __nop()
 #else
 #define nop()      NOP()//asm("nop")
