@@ -1,6 +1,10 @@
 #!/bin/sh
+
+# Change to current path of the script
+dir="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+cd "$dir"
 # /opt/SEGGER/JLink is default symlink dir of new SEGGER releases
-/opt/SEGGER/JLink/JLinkExe -CommanderScript "LPC54608.jlink"
+/opt/SEGGER/JLink/JLinkExe -CommanderScript "LPC54608.jlink" > JLink.log
 if [ $? = "0" ]
  then
 	exit 0

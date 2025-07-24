@@ -32,6 +32,8 @@
 #include <Config_Build.h>
 #include <sys/socket.h>
 
+#include <Source/Library/SEGGER/RTT/SEGGER_RTT.h> // rtt debug usage
+
 /*---------------------------------------------------------------------------*
  * Memory placement section:
  *---------------------------------------------------------------------------*/
@@ -49,7 +51,7 @@
 
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
 TBool G_networkDown = EFalse;
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 #include "Source/Library/Web/BasicWeb/BasicWEB.h"
 #include "AppHTTPServer.h"
@@ -67,11 +69,19 @@ extern T_uezTask G_BasicWebTask;
 #define UEZ_AWS_IOT_CLIENT_DEMO  0
 #endif
 
-static uint32_t G_NetworkDevices[3] = {0};
+#define MAX_NETWORK_INDEXES 3
+static uint32_t G_NetworkDevices[MAX_NETWORK_INDEXES] = {0};
+static TUInt8 G_Index = 0;
+//#if (UEZ_AWS_IOT_CLIENT_DEMO == 1)
+uint8_t CurrentNetworkIndexUsedAsPrimaryInterface;
+//#endif
 
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
+static TBool IScanGetNetworkName(
+    void *aCallbackWorkspace,
+    T_uezNetworkInfo *aNetworkInfo);
 
 /*-------------------------------------------------------------------------*
  * Wireless:
@@ -81,6 +91,7 @@ extern void INetworkConfigureWirelessConnection(T_uezDevice network);
 extern void INetworkConfigureWirelessAccessPoint(T_uezDevice network);
 extern void UEZPlatform_WirelessNetwork0_Require(void); // This should be in platform file header.
 extern void UEZPlatform_WirelessNetwork1_Require(void); // This should be in platform file header.
+static TBool IScanGetNetworkName(void *aCallbackWorkspace, T_uezNetworkInfo *aNetworkInfo);
 void INetworkConfigureWirelessConnection(T_uezDevice network)
 {
     T_uezNetworkSettings network_settings = { UEZ_NETWORK_TYPE_INFRASTRUCTURE,
@@ -239,7 +250,7 @@ void INetworkConfigureWirelessAccessPoint(T_uezDevice network)
 void INetworkConfigureWiredConnection(T_uezDevice network)
 {
     T_uezNetworkSettings network_settings = {
-        UEZ_NETWORK_TYPE_INFRASTRUCTURE,
+        UEZ_NETWORK_TYPE_WIRED,
 
     /* -------------- General Network configuration ---------------- */
     // MAC Address (if not hardware defined)
@@ -312,6 +323,28 @@ void INetworkConfigureWiredConnection(T_uezDevice network)
     UEZNetworkConfigureInfrastructure(network, &network_settings);
 }
 
+void AddNetworkDevicehandle(uint32_t networkDevice)
+{
+    if(G_NetworkDevices[G_Index] == 0) {
+      G_NetworkDevices[G_Index] = networkDevice;
+      printf("Added Network Device Index %u\n", G_Index);
+    }
+    if(G_Index < MAX_NETWORK_INDEXES) {
+      G_Index++;
+    }
+}
+
+void RemoveNetworkDevicehandle(uint32_t networkDevice)
+{
+    for(uint8_t i = 0; i < MAX_NETWORK_INDEXES; i++) {
+      if(G_NetworkDevices[i] == networkDevice) {
+        G_NetworkDevices[i] = 0;        
+        printf("Removed Network Device Index %u\n", i);
+        break;
+      }
+    }
+    //G_Index
+}
 
 /*-------------------------------------------------------------------------*
  * Common NetworkStartup:
@@ -320,14 +353,29 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 {
     PARAM_NOT_USED(aMyTask);
     PARAM_NOT_USED(aParams);
-    TUInt8 Index = 0;
-    UEZTaskDelay(5000); // allow for bootup logo/video to finish and reach main menu first.
+     (void)IScanGetNetworkName;
+
+#if (UEZ_ENABLE_WIRED_NETWORK == 1)
+    TBool gotWiredIP = EFalse;
+#endif      
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+    TBool gotWirelessIP = EFalse;
+#endif
+
+    //UEZTaskDelay(5000); // allow for bootup logo/video to finish and reach main menu first.
 #if (UEZ_ENABLE_WIRELESS_NETWORK == 1) || (UEZ_ENABLE_WIRED_NETWORK == 1)
 #if 1//LWIP_DHCP && UEZ_ENABLE_WIRELESS_NETWORK
-    TBool wait = ETrue;
+    TBool waitForeverForIP = EFalse;
     T_uezNetworkStatus status;
 #endif
     T_uezError error = UEZ_ERROR_NONE;
+    
+#if (UEZ_ENABLE_WIRED_NETWORK == 1)
+    T_uezError errorWired = UEZ_ERROR_NONE;
+#endif
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+    T_uezError errorWireless = UEZ_ERROR_NONE;
+#endif
 #endif
 
 #if (UEZ_ENABLE_WIRED_NETWORK == 1)
@@ -339,37 +387,34 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 
     // First, get the Wired Network connection
     UEZPlatform_WiredNetwork0_Require();
-    error = UEZNetworkOpen("WiredNetwork0", &wired_network);
-    if (error)
+    errorWired = UEZNetworkOpen("WiredNetwork0", &wired_network);
+    if (errorWired)
         UEZFailureMsg("NetworkStartup: Wired failed to start");
 
     // Configure the type of network desired
     INetworkConfigureWiredConnection(wired_network);
 
     // Bring up the infrastructure
-    error = UEZNetworkInfrastructureBringUp(wired_network);
+    errorWired = UEZNetworkInfrastructureBringUp(wired_network);
 
     // At this point if using lwip the lwip task has been created along with a DHCP task.
 
     // If no problem bringing up the infrastructure, join the network
-    if (!error) {
-        error = UEZNetworkJoin(wired_network, "lwIP", 0, 5000);
+    if (!errorWired) {
+        errorWired = UEZNetworkJoin(wired_network, "lwIP", 0, 5000);
     }
 
     // Let the last messages through (debug only)
     //UEZTaskDelay(1000);
 
     // Report the result
-    if (error) {
+    if (errorWired) {
         printf("Bringing up wired network: **FAILED** (error = %d)\n", error);
-        if(error == 4) {
+        if(errorWired == 4) {
             printf("Increase Project Heap Memory\n");
         }
         return 1;
-    } else {
-        printf("Bringing up wired network: Done\n");
-        G_NetworkDevices[Index++] = wired_network;
-    }
+    } 
 #endif // if wired
 
 #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
@@ -382,8 +427,8 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 
     // First, get the Wireless Network connection
     UEZPlatform_WirelessNetwork1_Require();
-    error = UEZNetworkOpen("WirelessNetwork1", &wireless_network);
-    if (error) {
+    errorWireless = UEZNetworkOpen("WirelessNetwork1", &wireless_network);
+    if (errorWireless) {
         // UEZFailureMsg("NetworkStartup: Wireless failed to start");
          wirelessStarted = 0;
     } else {
@@ -396,72 +441,135 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
         //INetworkConfigureWirelessConnection(wireless_network);
 
         // Bring up the infrastructure
-        error = UEZNetworkInfrastructureBringUp(wireless_network);
+        errorWireless = UEZNetworkInfrastructureBringUp(wireless_network);
 
         // If no problem bringing up the infrastructure, join the network
-        if (!error)
-            error = UEZNetworkJoin(wireless_network, "uEZ", "fdifdifdiFDI", 5000);
-
-        // Let the last messages through (debug only)
-        //UEZTaskDelay(1000);
+        if (!errorWireless) {
+            error = UEZNetworkJoin(wireless_network, "PutWiFiSsidHere", "PutWiFiPassphraseHere", 5000);
+        }
     }
-
-    // Report the result
-    if (error) {
+    if (errorWireless) {
         printf("Bringing up wireless network: **FAILED** (error = %d)\n", error);
-    } else {
-        printf("Bringing up wireless network: Done\n");
-        G_NetworkDevices[Index++] = wireless_network;
     }
 #endif // if wireless
     
+    
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+    if (!errorWireless) {
+        printf("Bringing up wireless network: Done\n");
+        AddNetworkDevicehandle(wireless_network);
+    }
+#endif // if wireless
+#if (UEZ_ENABLE_WIRED_NETWORK == 1)
+    if (!errorWired) {
+        printf("Bringing up wired network: Done\n");
+        AddNetworkDevicehandle(wired_network);
+    }
+#endif // if wired
+
+
   // ----------------------------------------------------------------------
   // Now we can start web server, modbus, or do DHCP related things here.
   // ----------------------------------------------------------------------
 
 #if (UEZ_ENABLE_TCPIP_STACK == 1) // TODO fix DHCP for runtime on or static settings
-#if 1//LWIP_DHCP && UEZ_ENABLE_WIRELESS_NETWORK
-
-    TBool G_DHCP_Task_Has_IP = EFalse;
+    
+    TBool G_DHCP_Task_Has_IP = EFalse; // Currently this DHCP task is only for lwip Ethernet
     (void) G_DHCP_Task_Has_IP;
-    #if (UEZ_ENABLE_WIRED_NETWORK == 1)
-    while(wait){
-        UEZNetworkGetStatus(wired_network, &status);
 
-        if(status.iIPAddr.v4[0] != 0){
-            wait = EFalse;
-            printf("IP Addr: %d.%d.%d.%d\n",
-                    status.iIPAddr.v4[0],
-                    status.iIPAddr.v4[1],
-                    status.iIPAddr.v4[2],
-                    status.iIPAddr.v4[3]);
-        }
-        UEZTaskDelay(1000);
-    }
-    #endif
-    #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
-    while(wait){
-        UEZNetworkGetStatus(wireless_network, &status);
+    if(waitForeverForIP == ETrue) { // go through all interfaces one by one until they all have an IP
+      #if (UEZ_ENABLE_WIRED_NETWORK == 1)
+       while(gotWiredIP == EFalse) {
+          UEZTaskDelay(500);
+          UEZNetworkGetStatus(wired_network, &status);
+          if(status.iIPAddr.v4[0] != 0) {
+              printf("Wired IP Addr: %d.%d.%d.%d\n",
+                      status.iIPAddr.v4[0],
+                      status.iIPAddr.v4[1],
+                      status.iIPAddr.v4[2],
+                      status.iIPAddr.v4[3]);
+              gotWiredIP = ETrue;
+          }
+      }
+      #endif
+      #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+       while(gotWirelessIP == EFalse) {
+          UEZTaskDelay(500);
+          UEZNetworkGetStatus(wireless_network, &status);
+          if(status.iIPAddr.v4[0] != 0) {
+              printf("Wireless IP Addr: %d.%d.%d.%d\n",
+                      status.iIPAddr.v4[0],
+                      status.iIPAddr.v4[1],
+                      status.iIPAddr.v4[2],
+                      status.iIPAddr.v4[3]);
+              gotWirelessIP = ETrue;
+          }
+      }
+      #endif
+    } else { // 10 second timeout wait (not counting how long the getstatus blocks)
+      for(uint8_t triesForIP = 0; triesForIP < 20; triesForIP++) {
+      UEZTaskDelay(500);
+      #if (UEZ_ENABLE_WIRED_NETWORK == 1)
+          if(gotWiredIP == EFalse) {
+                UEZNetworkGetStatus(wired_network, &status);
+                if(status.iIPAddr.v4[0] != 0) {
+                    printf("Wired IP Addr: %d.%d.%d.%d\n",
+                            status.iIPAddr.v4[0],
+                            status.iIPAddr.v4[1],
+                            status.iIPAddr.v4[2],
+                            status.iIPAddr.v4[3]);
+                    gotWiredIP = ETrue;
+                }
+          }
+      #endif
+      #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+          if(gotWirelessIP == EFalse) {
+              UEZNetworkGetStatus(wireless_network, &status);
+              if(status.iIPAddr.v4[0] != 0) {
+                  printf("Wireless IP Addr: %d.%d.%d.%d\n",
+                          status.iIPAddr.v4[0],
+                          status.iIPAddr.v4[1],
+                          status.iIPAddr.v4[2],
+                          status.iIPAddr.v4[3]);
+                  gotWirelessIP = ETrue;
+              }
+          }
+      #endif
+      }
 
-        if(status.iIPAddr.v4[0] != 0){
-            wait = EFalse;
-            printf("IP Addr: %d.%d.%d.%d\n",
-                    status.iIPAddr.v4[0],
-                    status.iIPAddr.v4[1],
-                    status.iIPAddr.v4[2],
-                    status.iIPAddr.v4[3]);
-        }
-        UEZTaskDelay(1000);
-    }
-    #endif
-#endif // if 1
+
+#if (UEZ_ENABLE_WIRED_NETWORK == 1)
+      if(gotWiredIP == EFalse) {
+        printf("No Wired IP address or cable unplugged.\n");
+        //RemoveNetworkDevicehandle(wired_network); // Ethernet can be plugged in later and get an IP address
+      }
+#endif      
+#if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
+      if(gotWirelessIP == EFalse) {
+        printf("No Wireless IP address.\n");
+         // Will need to trigger AP connection again with new params or set static IP as it most likely won't magically start working later.
+        RemoveNetworkDevicehandle(wireless_network);
+      }
+#endif
+
+    } // end timeout wait
 #endif // if enable tcpip
 
-//ModbusTCPIPTask_Start();
+    for(uint8_t j = (MAX_NETWORK_INDEXES-1); j >=0; j--) {
+      if(G_NetworkDevices[j] != 0) {
+        CurrentNetworkIndexUsedAsPrimaryInterface = j;
+        break;
+      }
+    }
+
+    /* Can be used for testing */
+    //error = UEZNetworkScan(wireless_network, 0, NULL, IScanGetNetworkName, NULL, 10000);
+    
+    //ModbusTCPIPTask_Start();
 
 #if (UEZ_HTTP_SERVER == 1)
     #if (UEZ_ENABLE_WIRED_NETWORK == 1)
-      //App_HTTPServerStart(wired_network);
+      App_HTTPServerStart(wired_network);
     #endif
     #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
     if (wirelessStarted)
@@ -488,13 +596,8 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 #endif
 
 #if (UEZ_AWS_IOT_CLIENT_DEMO == 1)
-  #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
-    error = AWSIoTClientStart(wireless_network);
-  #else
-    #if (UEZ_ENABLE_WIRED_NETWORK == 1)      
-      error = AWSIoTClientStart(wired_network);
-    #endif
-  #endif
+    printf("Starting MQTT Using Interface index %u\n", CurrentNetworkIndexUsedAsPrimaryInterface);
+    error = AWSIoTClientStart(G_NetworkDevices[CurrentNetworkIndexUsedAsPrimaryInterface]);
 #endif
 
   // --------------------------------------------------------------------------------------------------------
@@ -540,6 +643,27 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 #endif
 #endif
 
+#if (UEZ_AWS_IOT_CLIENT_DEMO == 1)
+    if(AWSIoTClientMonitorIsMQTTRunning() == EFalse) { // MQTT task was terminated, restart on diff network if exists
+      uint8_t k;
+      if(CurrentNetworkIndexUsedAsPrimaryInterface == 0) {
+        k = (MAX_NETWORK_INDEXES-1);
+      } else {
+        k = CurrentNetworkIndexUsedAsPrimaryInterface-1;
+      }
+      
+      for(int8_t i = k; i >=0; i--) {
+        if(G_NetworkDevices[i] != 0) {
+          CurrentNetworkIndexUsedAsPrimaryInterface = i; break;
+        }
+      }
+      
+      printf("Switching MQTT Interface to index %u\n", CurrentNetworkIndexUsedAsPrimaryInterface);
+      UEZTaskDelay(1000);
+      error = AWSIoTClientMqttRestart(G_NetworkDevices[CurrentNetworkIndexUsedAsPrimaryInterface]);
+    }
+#endif
+
         if(G_networkDown == ETrue) {
 #if (UEZ_ENABLE_WIRED_NETWORK == 1)
          error = NetworkRestartPhy(wired_network);
@@ -549,13 +673,39 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     //return 0;
 }
 
+static TBool IScanGetNetworkName(
+    void *aCallbackWorkspace,
+    T_uezNetworkInfo *aNetworkInfo)
+{
+    char buffer[96];
+    snprintf(buffer, 96, "%32s\t%02x:%02x:%02x:%02x:%02x:%02x\t%16s\t%10d\t%10u\n", aNetworkInfo->iName, 
+                                              aNetworkInfo->iBSSID[0],
+                                              aNetworkInfo->iBSSID[1],
+                                              aNetworkInfo->iBSSID[2],
+                                              aNetworkInfo->iBSSID[3],
+                                              aNetworkInfo->iBSSID[4],
+                                              aNetworkInfo->iBSSID[5],
+                                              (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_OPEN) ? "OPEN"
+                                                : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA) ? "WPA"
+                                                : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA2) ? "WPA2"
+                                                : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WEP) ? "WEP"
+                                                : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA_ENTERPRISE) ? "WPA ENTERPRISE"
+                                                : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA2_ENTERPRISE) ? "WPA2 ENTERPRISE"
+                                                : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_UNKNOWN) ? "UNKNOWN"
+                                                : "UNKNOWN", 
+                                              aNetworkInfo->iRSSILevel,
+                                              aNetworkInfo->iChannel);
+    DEBUG_RTT_Write(0, buffer, strlen(buffer));
+    return ETrue;
+}
+
 T_uezError NetworkRestartPhy(T_uezDevice network)
 {
   T_uezError error = UEZNetworkInfrastructureRestart(network);
 
   // If no problem bringing up the infrastructure, join the network
   if (!error) {
-      error = UEZNetworkJoin(network, "lwIP", 0, 5000);
+      //error = UEZNetworkJoin(network, "lwIP", 0, 5000); // not needed for ethernet, but may be needed for wifi someday
   }
 
   // Report the result
@@ -574,19 +724,19 @@ void NetworkStopApplications(T_uezDevice network)
 {
     PARAM_NOT_USED(network);
 #if (UEZ_HTTP_SERVER == 1)
-    if(G_HttpServerTask != NULL) { // May need to restart higher level tasks if stuck in queue.
-      UEZTaskDelete(G_HttpServerTask);
+    if(G_HttpServerTask != NULL) { // restarting not supported on this task yet, only restart the PHY
+      //UEZTaskDelete(G_HttpServerTask);
     }
 #endif
 
 #if (UEZ_BASIC_WEB_SERVER == 1)
-    if(G_BasicWebTask != NULL) { // May need to restart higher level tasks if stuck in queue.
-      UEZTaskDelete(G_BasicWebTask);
+    if(G_BasicWebTask != NULL) { // restarting not supported on this task yet, only restart the PHY
+      //UEZTaskDelete(G_BasicWebTask);
     }
 #endif
 
 #if (UEZ_AWS_IOT_CLIENT_DEMO == 1)    
-      AWSIoTClientStop();
+      AWSIoTClientStop(); // AWS demo does support restarting, but for a PHY reset it shouldn't be needed to restart it.
 #endif
 
 }
@@ -596,19 +746,19 @@ T_uezError NetworkReStartApplications(T_uezDevice network)
   T_uezError error = UEZ_ERROR_NONE;
      #if (UEZ_HTTP_SERVER == 1)
         #if (UEZ_ENABLE_WIRED_NETWORK == 1)
-          App_HTTPServerStart(network);
+          //App_HTTPServerStart(network); // restarting not supported on this task yet, only restart the PHY
         #endif
         #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
         //if (wirelessStarted)
-            App_HTTPServerStart(network);
+            //App_HTTPServerStart(network); // restarting not supported on this task yet, only restart the PHY
         #endif
     #endif
     #if (UEZ_BASIC_WEB_SERVER == 1)
-        error = BasicWebStart(network);
+        //error = BasicWebStart(network); // restarting not supported on this task yet, only restart the PHY
         if (error) {
-            printf("Problem starting BasicWeb! (Error=%d)\n", error);
+            //printf("Problem starting BasicWeb! (Error=%d)\n", error);
         } else {
-            printf("BasicWeb Restarted\n");
+            //printf("BasicWeb Restarted\n");
         }
     #endif
 
@@ -617,6 +767,12 @@ T_uezError NetworkReStartApplications(T_uezDevice network)
 #endif
 
     return error;
+}
+
+
+T_uezDevice NetworkGetPrimaryDevice(void) 
+{
+  return G_NetworkDevices[CurrentNetworkIndexUsedAsPrimaryInterface];
 }
 
 T_uezDevice NetworkGetActiveDevice(TUInt8 Index)

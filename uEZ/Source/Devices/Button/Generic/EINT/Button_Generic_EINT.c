@@ -20,11 +20,14 @@
  *-------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <uEZ.h>
 #include <Device/ButtonBank.h>
 #include <Device/I2CBus.h>
 #include "Button_Generic_EINT.h"
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
+#include <Types/EINT.h>
+#include <uEZEINT.h>
 
 /*---------------------------------------------------------------------------*
  * Constants:

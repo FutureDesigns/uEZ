@@ -44,12 +44,19 @@
   </MemorySegment>
 
   <MemorySegment name="SDRAM_CM0">
-    <ProgramSection alignment="4" load="No" size="__HEAPSIZE__" name=".heap"/>
-    <!-- Reserved for Networking memory  -->
+    <!-- Placeholders  -->
+    <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
+    <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
+    <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.network .network.*)" name=".network"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
+    <!-- Keep Heap last so we can auto-size it. -->
+    <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
 
   <MemorySegment name="SRAM1_CM0">

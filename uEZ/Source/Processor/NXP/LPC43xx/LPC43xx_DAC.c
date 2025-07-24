@@ -154,6 +154,7 @@ T_uezError LPC43xx_DAC_WriteMilliVolt(void *aWorkspace, TUInt32 aMilliVolts)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_DAC_Read(void *aWorkspace, TUInt32 *aValue)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Read value from DAC register, disable BIAS and reserved bits.
     *aValue = (LPC_DAC->CR & 0xFFC0) >> DACR_VALUE_BIT;
 

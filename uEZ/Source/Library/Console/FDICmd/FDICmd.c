@@ -50,14 +50,17 @@
 /*---------------------------------------------------------------------------*
  * Globals
  *---------------------------------------------------------------------------*/
+// strupr not available or standardized across all compilers, so use custom implementation with unique name
+static void strupr_cmd(char *string);
 
-static void strupr(char *string)
+static void strupr_cmd(char *string)
 {
     while (*string)  {
         *string = toupper(*string);
         string++;
     }
 }
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  FDICmdUValue
@@ -352,7 +355,7 @@ int32_t FDICmdProcessCmd(void *aWorkspace, const char *aCmd)
                     break;
             }
         } else {
-            if (isspace(*p))  {
+            if (isspace((unsigned char)*p))  {
                 // Got a space
                 // Zero out spaces as we move
                 // to the next line
@@ -391,7 +394,7 @@ int32_t FDICmdProcessCmd(void *aWorkspace, const char *aCmd)
     // Do we have any arguments?
     if (argc)  {
         // Find the matching command (case insensitive)
-        strupr(argv[0]);
+        strupr_cmd(argv[0]);
         cmd = IFindCommand(aWorkspace, argv[0]);
         if (cmd)  {
             // Run the command
@@ -431,6 +434,7 @@ TUInt32 FDICmdTask(T_uezTask aMyTask, void *aWorkspace)
     T_FDICmdWorkspace *p = (T_FDICmdWorkspace *)aWorkspace;
     char c;
     TUInt32 numRead;
+    PARAM_NOT_USED(aMyTask);
 
     // Run until told to stop
     while (!p->iStop)  {

@@ -50,6 +50,7 @@ Purpose     : GUI API include file
 #include "GUI_ConfDefaults.h"
 #include "GUI_Type.h"
 #include "GUI_Version.h"
+#include <math.h>
 
 #if defined(__cplusplus)
 extern "C" {     /* Make sure we have C-declarations in C++ programs */

@@ -36,7 +36,7 @@
 
 static xSemaphoreHandle G_startingTaskReady;
 static xSemaphoreHandle G_semTask;
-UEZ_PUT_SECTION(".data", static TBool G_isRTOSRunning = EFalse);
+static UEZ_PUT_SECTION(".data", TBool G_isRTOSRunning = EFalse);
 
 #if (configGENERATE_RUN_TIME_STATS == 1)
 #endif
@@ -528,6 +528,7 @@ T_uezError UEZSemaphoreCreateMutex(
         // Handle is allocated
         // Try to allocate a semaphore from the base RTOS
         // (NOTE: aPriority is NOT used with FreeRTOS)
+        PARAM_NOT_USED(aPriority);
         sem = xSemaphoreCreateMutex();
         if (sem == NULL)  {
             // Semaphore did not get created.  Clean up
@@ -578,6 +579,7 @@ T_uezError UEZSemaphoreSetName(T_uezSemaphore aSemaphore, char *pcSemaphoreName,
     char data[50];
     char interface[20];
 #endif
+    PARAM_NOT_USED(aInterfaceName);
 
     error = uEZHandleGet(aSemaphore, &ulHandleType, (TUInt32 *)&Semaphore, 0, 0);
 
@@ -707,6 +709,7 @@ T_uezError UEZSemaphoreCreateRecursiveMutex(
         // Handle is allocated
         // Try to allocate a semaphore from the base RTOS
         // (NOTE: aPriority is NOT used with FreeRTOS)
+        PARAM_NOT_USED(aPriority);
         sem = xSemaphoreCreateRecursiveMutex();
         if (sem == NULL)  {
             // Semaphore did not get created.  Clean up
@@ -845,6 +848,7 @@ T_uezError UEZQueueSetName( T_uezQueue aQueue, char *pcQueueName, const char* aI
     char data[50];
     char interface[20];
 #endif
+    PARAM_NOT_USED(aInterfaceName);
 
     error = uEZHandleGet(aQueue, &ulHandleType, (TUInt32 *)&Queue, 0, 0);
 

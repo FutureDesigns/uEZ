@@ -1,7 +1,74 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="$[sym project_name]" target="8" version="2">
+
+  <configuration Name="Debug_Heap3" hidden="Yes"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration Name="Release_Heap3" hidden="Yes"
+    inherited_configurations="THUMB;Flash;Release" />
+
+  <configuration Name="Debug_Heap4"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration Name="Release_Heap4"
+    inherited_configurations="THUMB;Flash;Release" />
+  <configuration Name="Release-Bootload"
+    inherited_configurations="THUMB;Flash;Release;Release_Heap4;Bootload" />
+
+  <configuration Name="Debug_CLANG"
+    inherited_configurations="THUMB;Flash;Debug;Debug_Heap4;CLANG" />
+  <configuration Name="Debug_CLANG-Bootload"
+    inherited_configurations="THUMB;Flash;Debug;Debug_Heap4;CLANG;Bootload" />
+
   <project Name="$[sym project_name]">
-  <configuration Name="Common" 
+
+    <configuration Name="THUMB"
+      Platform="ARM"
+      arm_instruction_set="THUMB"
+      arm_target_monitor_mode_debug="Yes"
+      arm_library_instruction_set="THUMB"
+      c_preprocessor_definitions="__THUMB" />
+
+    <configuration Name="CLANG"
+      arm_assembler_variant="gcc"
+      arm_compiler_variant="clang" />
+
+    <configuration Name="Debug"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="DEBUG"
+      gcc_debugging_level="Level 3"
+      gcc_optimization_level="None" />
+
+    <configuration Name="Release"
+      build_debug_information="No"
+      c_preprocessor_definitions="NDEBUG"
+      gcc_debugging_level="Level 1"
+      gcc_optimization_level="Level 1" />
+
+    <configuration Name="Debug_Heap4"
+      c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+    <configuration Name="Release_Heap4"
+      c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+    <configuration Name="Release-Bootload" />
+
+    <configuration Name="Bootload"
+$[ifdef LPC1788]
+      linker_section_placement_macros="CRP1_KEEP=No;"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+$[endif]
+$[ifdef LPC4088]
+      linker_section_placement_macros="CRP1_KEEP=No;"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+$[endif]
+$[ifdef LPC4357]
+      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=Yes"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000120;FLASHA_START=0x1A010220"
+$[endif] />
+
+  <configuration Name="Common"
 $[ifdef LPC4357]
       Placement="Flash A"
 $[endif]
@@ -28,15 +95,15 @@ $[endif]
       arm_assembler_variant="gcc"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
-      arm_keep_preprocessor_output="Yes"
+      arm_keep_preprocessor_output="No"
 $[ifdef LPC1788]
-      arm_linker_heap_size="4000000"
+      arm_linker_heap_size="3500000"
 $[endif]
 $[ifdef LPC4088]
-      arm_linker_heap_size="5000000"
+      arm_linker_heap_size="3500000"
 $[endif]        
 $[ifdef LPC4357]
-      arm_linker_heap_size="15000000"
+      arm_linker_heap_size="10000000"
 $[endif]
 $[ifdef LPC4357]          
       arm_linker_jtag_pad_post_dr="0"
@@ -67,6 +134,7 @@ $[ifdef LPC4357]
       arm_target_loader_default_loader="Flash"
       arm_target_loader_parameter="12000000"
 $[endif]
+      asm_generate_listing_file="Yes"
       batch_build_configurations="Debug_Heap4;Release_Heap4"
       build_output_directory="$(Configuration)"
       build_output_file_name="$(OutDir)/$(ProjectName).elf"
@@ -74,13 +142,13 @@ $[endif]
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
 $[ifdef LPC1788]
-      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M3"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M3"
 $[endif]      
 $[ifdef LPC4088]
-      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
 $[endif]
 $[ifdef LPC4357]
-	  c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+	  c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
 $[endif]
       c_user_include_directories=".;$[SkipNewLine]
 ../../../.;../../../Source/AppTest/;$[SkipNewLine]
@@ -228,189 +296,61 @@ $[ifdef LPC4357]
       arm_target_loader_can_unlock_all="No"
       arm_target_loader_can_unlock_range="No"
       arm_target_loader_reset_after_download="No"
-      hidden="Yes" />	
-$[endif]	
-    <file file_name="Config_Build.h" />
-    <folder Name="Source">
-      <folder Name="Scripts">
-        <folder Name="Compilers">
-          <folder Name="CrossWorks">
-            <folder Name="FreeRTOS">
-          $[ifdef LPC1788]
-              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM3.js">
-          $[endif]
-		  $[ifdef LPC4088]
-              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
-          $[endif]
-		  $[ifdef LPC546X]
-              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
-          $[endif]
-		  $[ifdef LPC4357]
-              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
-          $[endif]
-                <configuration Name="Common" file_type="Threads Script" />
-              </file>
-            </folder>
-          </folder>
+      hidden="Yes" />
+$[endif]
+
+    <folder Name="AppTest">
+      <folder Name="emWin">
+        <folder Name="Fonts">
+          <file file_name="../../../Source/AppTest/emWin/Fonts/Fonts.h" />
         </folder>
-      </folder>
-      <folder Name="Platform">
-        <folder Name="FDI">
-          <folder Name="$[sym platform]">
-            <file file_name="../../../../uEZ/Source/Platform/FDI/$[sym platform]/$[sym platform].c"/>
-            <file file_name="../../../../uEZ/Source/Platform/FDI/$[sym platform]/uEZPlatform.h"/>
-            <file file_name="../../../../uEZ/Source/Platform/FDI/$[sym platform]/uEZPlatformTest.c"/>
-          </folder>
-        </folder>
-      </folder>
-      <folder Name="Processor">
-        <folder Name="NXP">
-          $[ifdef LPC1788]
-		  <folder Name="LPC17xx_40xx">
-			  <folder Name="CMSIS">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm3.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
-			  </folder>
-			  <folder Name="GCC">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Startup.s" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
-					<configuration Name="Common" file_type="Target Script" />
-				  </file>
-			  </folder>		  
-          </folder>
-          $[endif]
-		  $[ifdef LPC4088]
-		  <folder Name="LPC17xx_40xx">
-			  <folder Name="CMSIS">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm4.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm4_simd.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
-			  </folder>
-			  <folder Name="GCC">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Startup.s" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
-					<configuration Name="Common" file_type="Target Script" />
-				  </file>
-			  </folder>		  
-          </folder>
-          $[endif]
-		  $[ifdef LPC546X]
-		  <folder Name="LPC546XX">
-			  <folder Name="CMSIS">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_common_tables.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_const_structs.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_math.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cm4.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cm4_simd.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cmFunc.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cmInstr.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/LPC54608.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/system_LPC54608.c" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/system_LPC54608.h" />
-			  </folder>
-			  <folder Name="GCC">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/thumb_crt0.s" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/LPC546xx_Startup.s" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/LPC546xx_Target.js">
-					<configuration Name="Common" file_type="Target Script" />
-				  </file>
-			  </folder>		  
-          </folder>
-          $[endif]
-          $[ifdef LPC4357]
-		  <folder Name="CMSIS">
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_common_tables.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_const_structs.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_math.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0plus.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4_simd.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmFunc.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmInstr.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/LPC43xx.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.c" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.h" />
-          </folder>
-          <folder Name="GCC">
-			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/thumb_crt0.s" />
-			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/LPC4300_Startup.s" />
-			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/LPC4300_Target.js">
-				<configuration Name="Common" file_type="Target Script" />
-			  </file>
-          </folder>
-		  $[endif]
-        </folder>
-      </folder>
-      <folder Name="Library">
-          <folder Name="StreamIO">
-            <folder Name="StdInOut">
-              <folder Name="CrossWorks">
-                <file file_name="../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
-              </folder>
-            </folder>
-          </folder>
-        <folder Name="uEZ">
-          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug.a">
-            <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap4-Bootload" build_exclude_from_build="Yes"/>
-            <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
-            <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
+        <folder Name="Graphics">
+          <file file_name="../../../Source/AppTest/emWin/Graphics/Graphics.h" />
+          <file file_name="../../../Source/AppTest/emWin/Graphics/logo.c" />
+          <file file_name="../../../Source/AppTest/emWin/Graphics/1.c">
+            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
           </file>
-          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Release/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Release.a">
-            <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
-            <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
-            <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap4-Bootload" build_exclude_from_build="Yes"/>
+          <file file_name="../../../Source/AppTest/emWin/Graphics/2.c">
+            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
           </file>
-          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug_Heap4/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug_Heap4.a">
-            <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
-            <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap4-Bootload" build_exclude_from_build="Yes"/>
-            <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
+          <file file_name="../../../Source/AppTest/emWin/Graphics/3.c">
+            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
           </file>
-          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Release_Heap4/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Release_Heap4.a">
-            <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
-            <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
-            <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
+          <file file_name="../../../Source/AppTest/emWin/Graphics/4.c">
+            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
+          </file>
+          <file file_name="../../../Source/AppTest/emWin/Graphics/5.c">
+            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
           </file>
         </folder>
-        <folder Name="SEGGER">
-          <folder Name="emWin">
-          $[ifdef LPC1788]
-            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M3.a"/>
-          $[endif]
-          $[ifdef LPC4088]
-            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M4F.a" />
-          $[endif]		  
-          $[ifdef LPC4357]
-            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M4F.a" />
-            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M0P.a">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-            </file>
-          $[endif]
-          </folder>
-        </folder>
+        <file file_name="../../../Source/AppTest/emWin/Create_Window_Functions.h" />
+        <file file_name="../../../Source/AppTest/emWin/WindowManager.c" />
+        <file file_name="../../../Source/AppTest/emWin/WindowManager.h" />
+        <file file_name="../../../Source/AppTest/emWin/Keypad.c" />
+        <file file_name="../../../Source/AppTest/emWin/Keyboard.c" />
+        <file file_name="../../../Source/AppTest/emWin/Keyboard.h" />
+        <file file_name="../../../Source/AppTest/emWin/Keypad.h" />
+        <file file_name="../../../Source/AppTest/emWin/HomeScreen.c" />
+        <file file_name="../../../Source/AppTest/emWin/LookAndFeel.c" />
+        <file file_name="../../../Source/AppTest/emWin/LookAndFeel.h" />
+        <file file_name="../../../Source/AppTest/emWin/StorageWindow.c" />
+        <file file_name="../../../Source/AppTest/emWin/SlideShow_EFlash.c" />
       </folder>
+      <file file_name="../../../Source/AppTest/App_RTOS.c" />
+      <file file_name="../../../Source/AppTest/Audio.c" />
+      <file file_name="../../../Source/AppTest/main.c" />
+      <file file_name="../../../Source/AppTest/NVSettings.c" />
+      <file file_name="../../../Source/AppTest/NetworkStartup.c" />
+      <file file_name="../../../Source/AppTest/Calibration.c" />
+      <file file_name="../../../Source/AppTest/Calibration.h" />
+      <file file_name="../../../Source/AppTest/Audio.h" />
+      <file file_name="../../../Source/AppTest/Config_App.h" />
+      <file file_name="../../../Source/AppTest/NetworkStartup.h" />
+      <file file_name="../../../Source/AppTest/NVSettings.h" />
+      <file file_name="../../../Source/AppTest/TSNoiseDetect.c" />
+      <file file_name="../../../Source/AppTest/TSNoiseDetect.h" />
+      <file file_name="../../../Source/AppTest/Storage_Callbacks.c" />
+      <file file_name="../../../Source/AppTest/Storage_Callbacks.h" />
     </folder>
     <folder Name="Include">
       <folder Name="Device">
@@ -561,134 +501,186 @@ $[endif]
       <file file_name="../../../../uEZ/Include/uEZWAVFile.h" />
       <file file_name="../../../../uEZ/Include/unistd.h" />
     </folder>
-    <folder Name="AppTest">
-      <folder Name="emWin">
-        <folder Name="Fonts">
-          <file file_name="../../../Source/AppTest/emWin/Fonts/Fonts.h" />
+    <folder Name="Source">
+      <folder Name="Library">
+        <folder Name="SEGGER">
+          <folder Name="emWin">
+          $[ifdef LPC1788]
+            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M3.a"/>
+          $[endif]
+          $[ifdef LPC4088]
+            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M4F.a" />
+          $[endif]		  
+          $[ifdef LPC4357]
+            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M4F.a" />
+          $[endif]
+          </folder>
         </folder>
-        <folder Name="Graphics">
-          <file file_name="../../../Source/AppTest/emWin/Graphics/Graphics.h" />
-          <file file_name="../../../Source/AppTest/emWin/Graphics/logo.c" />
-          <file file_name="../../../Source/AppTest/emWin/Graphics/1.c">
-            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
+          <folder Name="StreamIO">
+            <folder Name="StdInOut">
+              <folder Name="CrossWorks">
+                <file file_name="../../../../uEZ/Source/Library/StreamIO/StdInOut/CrossWorks/StdInOut_CrossWorks.c" />
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="uEZ">
+          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug.a">
+            <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release-Bootload" build_exclude_from_build="Yes"/>
+            <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
+            <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
           </file>
-          <file file_name="../../../Source/AppTest/emWin/Graphics/2.c">
-            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
+          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Release/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Release.a">
+            <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
+            <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
+            <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release-Bootload" build_exclude_from_build="Yes"/>
           </file>
-          <file file_name="../../../Source/AppTest/emWin/Graphics/3.c">
-            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
+          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug_Heap4/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug_Heap4.a">
+            <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
+            <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release-Bootload" build_exclude_from_build="Yes"/>
+            <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
           </file>
-          <file file_name="../../../Source/AppTest/emWin/Graphics/4.c">
-            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
-          </file>
-          <file file_name="../../../Source/AppTest/emWin/Graphics/5.c">
-            <configuration Name="Common" default_const_section=".ExternalFlashRodata" />
+          <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Release_Heap4/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Release_Heap4.a">
+            <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
+            <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
+            <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
           </file>
         </folder>
-        <file file_name="../../../Source/AppTest/emWin/Create_Window_Functions.h" />
-        <file file_name="../../../Source/AppTest/emWin/WindowManager.c" />
-        <file file_name="../../../Source/AppTest/emWin/WindowManager.h" />
-        <file file_name="../../../Source/AppTest/emWin/Keypad.c" />
-        <file file_name="../../../Source/AppTest/emWin/Keyboard.c" />
-        <file file_name="../../../Source/AppTest/emWin/Keyboard.h" />
-        <file file_name="../../../Source/AppTest/emWin/Keypad.h" />
-        <file file_name="../../../Source/AppTest/emWin/HomeScreen.c" />
-        <file file_name="../../../Source/AppTest/emWin/LookAndFeel.c" />
-        <file file_name="../../../Source/AppTest/emWin/LookAndFeel.h" />
-        <file file_name="../../../Source/AppTest/emWin/StorageWindow.c" />
-        <file file_name="../../../Source/AppTest/emWin/SlideShow_EFlash.c" />
       </folder>
-      <file file_name="../../../Source/AppTest/App_RTOS.c" />
-      <file file_name="../../../Source/AppTest/Audio.c" />
-      <file file_name="../../../Source/AppTest/main.c" />
-      <file file_name="../../../Source/AppTest/NVSettings.c" />
-      <file file_name="../../../Source/AppTest/NetworkStartup.c" />
-      <file file_name="../../../Source/AppTest/Calibration.c" />
-      <file file_name="../../../Source/AppTest/Calibration.h" />
-      <file file_name="../../../Source/AppTest/Audio.h" />
-      <file file_name="../../../Source/AppTest/Config_App.h" />
-      <file file_name="../../../Source/AppTest/NetworkStartup.h" />
-      <file file_name="../../../Source/AppTest/NVSettings.h" />
-      <file file_name="../../../Source/AppTest/TSNoiseDetect.c" />
-      <file file_name="../../../Source/AppTest/TSNoiseDetect.h" />
-      <file file_name="../../../Source/AppTest/Storage_Callbacks.c" />
-      <file file_name="../../../Source/AppTest/Storage_Callbacks.h" />
+      <folder Name="Platform">
+        <folder Name="FDI">
+          <folder Name="$[sym platform]">
+            <file file_name="../../../../uEZ/Source/Platform/FDI/$[sym platform]/$[sym platform].c"/>
+            <file file_name="../../../../uEZ/Source/Platform/FDI/$[sym platform]/uEZPlatform.h"/>
+            <file file_name="../../../../uEZ/Source/Platform/FDI/$[sym platform]/uEZPlatformTest.c"/>
+          </folder>
+        </folder>
+      </folder>
+      <folder Name="Processor">
+        <folder Name="NXP">
+          $[ifdef LPC1788]
+		  <folder Name="LPC17xx_40xx">
+			  <folder Name="CMSIS">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm3.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
+			  </folder>
+			  <folder Name="GCC">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Startup.s" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
+					<configuration Name="Common" file_type="Target Script" />
+				  </file>
+			  </folder>
+          </folder>
+          $[endif]
+		  $[ifdef LPC4088]
+		  <folder Name="LPC17xx_40xx">
+			  <folder Name="CMSIS">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm4.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm4_simd.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
+			  </folder>
+			  <folder Name="GCC">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Startup.s" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
+					<configuration Name="Common" file_type="Target Script" />
+				  </file>
+			  </folder>		  
+          </folder>
+          $[endif]
+		  $[ifdef LPC546X]
+		  <folder Name="LPC546XX">
+			  <folder Name="CMSIS">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_common_tables.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_const_structs.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_math.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cm4.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cm4_simd.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cmFunc.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cmInstr.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/LPC54608.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/system_LPC54608.c" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/system_LPC54608.h" />
+			  </folder>
+			  <folder Name="GCC">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/thumb_crt0.s" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/LPC546xx_Startup.s" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/LPC546xx_Target.js">
+					<configuration Name="Common" file_type="Target Script" />
+				  </file>
+			  </folder>		  
+          </folder>
+          $[endif]
+          $[ifdef LPC4357]
+		  <folder Name="CMSIS">
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_common_tables.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_const_structs.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_math.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0plus.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4_simd.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmFunc.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmInstr.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/LPC43xx.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.c" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.h" />
+          </folder>
+          <folder Name="GCC">
+			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/thumb_crt0.s" />
+			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/LPC4300_Startup.s" />
+			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/LPC4300_Target.js">
+				<configuration Name="Common" file_type="Target Script" />
+			  </file>
+          </folder>
+		  $[endif]
+        </folder>
+      </folder>
+      <folder Name="Scripts">
+        <folder Name="Compilers">
+          <folder Name="CrossWorks">
+            <folder Name="FreeRTOS">
+          $[ifdef LPC1788]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM3.js">
+          $[endif]
+		  $[ifdef LPC4088]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
+          $[endif]
+		  $[ifdef LPC546X]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
+          $[endif]
+		  $[ifdef LPC4357]
+              <file file_name="../../../../uEZ/Source/Scripts/Compilers/CrossWorks/FreeRTOS/threads_CM4F.js">
+          $[endif]
+                <configuration Name="Common" file_type="Threads Script" />
+              </file>
+            </folder>
+          </folder>
+        </folder>
+      </folder>
     </folder>
-    <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes" />
-    <configuration
-      Name="Release"
-      build_debug_information="No"
-$[ifdef LPC4357]
-$[endif]
-      c_preprocessor_definitions="NDEBUG"
-      gcc_debugging_level="Level 1"
-      gcc_optimization_level="Level 1" />
-    <configuration
-      Name="Bootload"
-$[ifdef LPC1788]
-      linker_section_placement_macros="CRP1_KEEP=No;"
-      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
-$[endif]
-$[ifdef LPC4088]
-      linker_section_placement_macros="CRP1_KEEP=No;"
-      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
-$[endif]
-$[ifdef LPC4357]
-      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=Yes"
-      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000120;FLASHA_START=0x1A010220"
-$[endif]
-    />
-    <configuration
-      Name="Debug"
-$[ifdef LPC4357]
-$[endif]
-      build_debug_information="Yes"
-      c_preprocessor_definitions="DEBUG"
-      gcc_debugging_level="Level 3"
-      gcc_optimization_level="None" />
+    <file file_name="Config_Build.h" />
   </project>
-  <configuration
-    Name="THUMB"
-    Platform="ARM"
-    arm_instruction_set="THUMB"
-    arm_target_monitor_mode_debug="Yes"
-    arm_library_instruction_set="THUMB"
-    hidden="Yes" />
-  <configuration Name="Flash" hidden="Yes" />
-  <configuration Name="Debug" hidden="Yes" />
-  <configuration Name="Release" hidden="Yes" />
-  <configuration
-    Name="Debug_Heap3"
-    inherited_configurations="THUMB;Flash;Debug"
-$[ifdef LPC4357]
-$[endif] />
-  <configuration
-    Name="Release_Heap3"
-    inherited_configurations="THUMB;Flash;Release"
-$[ifdef LPC4357]
-$[endif] />
-  <configuration
-    Name="Debug_Heap4"
-    inherited_configurations="THUMB;Flash;Debug"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4"
-$[ifdef LPC4357]
-$[endif] />
-  <configuration
-    Name="Release_Heap4"
-    inherited_configurations="THUMB;Flash;Release"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4"
-$[ifdef LPC4357]
-$[endif] />
-  <configuration
-    Name="Release_Heap3-Bootload"
-    inherited_configurations="THUMB;Flash;Release;Bootload" />
-  <configuration
-    Name="Release_Heap4-Bootload"
-    inherited_configurations="THUMB;Flash;Release;Bootload"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
 $[ifdef LPC1788]
     <import file_name="../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks.hzp" />
 $[endif]

@@ -242,6 +242,15 @@
  */
 #define CMD55_RCA(n)            (((uint32_t) (n & 0xFFFF) ) << 16)
 
+// SD version 4.0 and above SD mode commands for extension registers
+// CMD48: Read Extension Register Single Block Command
+// CMD58: Read Extension Register Multi-Block Command
+// 00000h-001FFh Extension Register Page 0: 512-byte
+// CMD 48 is read the same the as CMD17 or CMD_READ_SINGLE, and 49 the same as the multiple block read.
+#define MMC_READ_SINGLE_BLOCK_EXT    48     /* adtc [31:0]  data addr  R1  */
+#define MMC_READ_MULTIPLE_BLOCK_EXT  58     /* adtc [31:0]  data addr  R1  */
+
+
 /**
  * @brief ACMD41 command definitions
  */
@@ -358,6 +367,8 @@
 #define CMD_SEND_STATUS     CMD(MMC_SEND_STATUS, 1)
 #define CMD_READ_SINGLE     CMD(MMC_READ_SINGLE_BLOCK, 1) | CMD_BIT_DATA
 #define CMD_READ_MULTIPLE   CMD(MMC_READ_MULTIPLE_BLOCK, 1) | CMD_BIT_DATA | CMD_BIT_AUTO_STOP
+#define CMD_READ_SINGLE_EXT CMD(MMC_READ_SINGLE_BLOCK_EXT, 1) | CMD_BIT_DATA
+#define CMD_READ_MULT_EXT   CMD(MMC_READ_MULTIPLE_BLOCK_EXT, 1) | CMD_BIT_DATA | CMD_BIT_AUTO_STOP
 #define CMD_SD_SET_WIDTH    CMD(SD_APP_SET_BUS_WIDTH, 1) | CMD_BIT_APP
 #define CMD_STOP            CMD(MMC_STOP_TRANSMISSION, 1) | CMD_BIT_BUSY
 #define CMD_WRITE_SINGLE    CMD(MMC_WRITE_BLOCK, 1) | CMD_BIT_DATA | CMD_BIT_WRITE

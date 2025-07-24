@@ -26,7 +26,7 @@
 #ifndef LPC_SWIM_FONT_H
 #define LPC_SWIM_FONT_H
 
-#include "lpc_types.h"
+//#include "lpc_types.h"
 #include "lpc_swim.h"
 
 #if defined (__cplusplus)

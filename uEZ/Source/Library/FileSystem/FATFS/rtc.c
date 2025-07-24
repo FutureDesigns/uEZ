@@ -69,7 +69,7 @@ BOOL rtc_settime (const RTC *rtc)
 
 DWORD get_fattime (void)
 {
-	RTC rtc = {0, 0, 0, 0, 0, 0};
+	RTC rtc = {0, 0, 0, 0, 0, 0, 0};
 
 	rtc_gettime(&rtc);
 

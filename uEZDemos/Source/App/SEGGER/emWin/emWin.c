@@ -60,6 +60,8 @@ extern WM_HWIN MQTT_Create(void);
 #define UEZ_AWS_IOT_CLIENT_DEMO  0
 #endif
 
+#define USING_EMWIN_DEMO_ON_HEAP 1
+
 #if (INCLUDE_EMWIN == 1)
 WM_HWIN G_SystemWindows[NUM_WINDOWS];
 static TUInt8 G_CurrentWindow = 0;
@@ -91,11 +93,15 @@ T_uezTask          G_hTouchTask = (T_uezTask )NULL;
 */
 // See platform file for general LCD framebuffer static allocation.
 
+#if(USING_EMWIN_DEMO_ON_HEAP == 1)
+TUInt8 *_emWinMemoryptr = 0;//_emWinMemory;
+#define EMWIN_BASE_ADDRESS (TUInt32) _emWinMemoryptr // Use define for simplification
+#else
 //Allocate emWin memory (general purpose GUI memory plus additional LCD frames memory)
 UEZ_PUT_SECTION(".emWin", static TUInt8 _emWinMemory [EMWIN_RAM_SIZE]);
-TUInt8 *_emWinMemoryptr = _emWinMemory;
+#define EMWIN_BASE_ADDRESS (TUInt32) &_emWinMemory  // Use define for simplification
+#endif
 
-#define EMWIN_BASE_ADDRESS (TUInt32) _emWinMemoryptr //Keep this define for now
 
 
 /*********************************************************************
@@ -197,12 +203,22 @@ void emWin(const T_choice *aChoice) {
 
   (void)aChoice;
   (void) runDemoScreenTillHomeExit;
+
+#if(USING_EMWIN_DEMO_ON_HEAP == 1)
+  _emWinMemoryptr = UEZMemAlloc(EMWIN_RAM_SIZE);
+  if(_emWinMemoryptr == 0) {
+    return;
+  } else {
+  }
+  
   // Keep various memory location declarations from optimizing out
   ((TUInt8 volatile *)_emWinMemoryptr)[0] = _emWinMemoryptr[0];
+#else
+#endif
     
   // Assign memory left to emWin memory (emWin section only)
-  GUI_pMem    = (U32*)EMWIN_BASE_ADDRESS;
-  GUI_MemSize = (EMWIN_RAM_SIZE);
+    GUI_pMem    = (U32*)EMWIN_BASE_ADDRESS;
+    GUI_MemSize = (EMWIN_RAM_SIZE);
 
     //Initialize the memory and start emWin
     
@@ -235,12 +251,16 @@ void emWin(const T_choice *aChoice) {
   //
 #if EMWIN_LOAD_ONCE
   if(G_emWinLoaded == EFalse) {
+  #if GUI_WINSUPPORT
     WM_SetCreateFlags(WM_CF_MEMDEV);  // Enable memory devices
+  #endif
     GUI_Init();
     WM_SetDesktopColor(GUI_BLACK);
     //GUI_MULTIBUF_Config(1);
     GUI_MULTIBUF_Config(2);
+  #if GUI_WINSUPPORT
     WM_MULTIBUF_Enable(1);
+  #endif
     G_emWinLoaded = ETrue;
   }
 #else
@@ -304,6 +324,11 @@ void emWin(const T_choice *aChoice) {
         // Close touch screen and emwin
         //
         WindowManager_Close_emWin();
+        
+#if(USING_EMWIN_DEMO_ON_HEAP == 1)
+        UEZMemFree((void *)EMWIN_BASE_ADDRESS);
+#else
+#endif
         init = EFalse;
       }
       UEZQueueDelete(_hTSQueue);
@@ -329,15 +354,15 @@ TUInt32 UEZEmWinGetRAMAddr(void)
 {
      static TBool init = EFalse;
      if (!init) {
-          memset((void *)EMWIN_BASE_ADDRESS, 0x00, EMWIN_RAM_SIZE);
-          init = ETrue;
+         memset((void *)EMWIN_BASE_ADDRESS, 0x00, EMWIN_RAM_SIZE);
+         init = ETrue;
      }
-     return EMWIN_BASE_ADDRESS;
+     return (TUInt32) EMWIN_BASE_ADDRESS;
 }
 
 TUInt32 UEZEmWinGetRAMSize(void)
 {
-return EMWIN_RAM_SIZE;;
+    return EMWIN_RAM_SIZE;
 }
 
 /*---------------------------------------------------------------------------*

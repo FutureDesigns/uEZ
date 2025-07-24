@@ -1,10 +1,10 @@
 <!DOCTYPE Board_Memory_Definition_File>
 <Root name="LPC4357">
   <!-- 32KB SRAM section -->
-  <MemorySegment start="0x10000000" name="SRAM1" size="0x8000-$(SRAM1_CM0_SIZE:0)" access="Read/Write" />
+  <MemorySegment start="0x10000000" name="SRAM1" size="0x8000-$(SRAM1_CM0_SIZE:0)" access="Read/Write" end_symbol="SRAM1_END" />
   <MemorySegment start="0x10000000+0x8000-$(SRAM1_CM0_SIZE:0x8000/2)" name="SRAM1_CM0" size="$(SRAM1_CM0_SIZE:0)" access="Read/Write" />
   <!-- 40KB SRAM section (not directly after SRAM1) -->
-  <MemorySegment start="0x10080000" name="SRAM2" size="0xa000-$(SRAM2_CM0_SIZE:0xa000/2)" access="Read/Write" />
+  <MemorySegment start="0x10080000" name="SRAM2" size="0xa000-$(SRAM2_CM0_SIZE:0xa000/2)" access="Read/Write" end_symbol="SRAM2_END" />
   <MemorySegment start="0x10080000+0xa000-$(SRAM2_CM0_SIZE:0xa000/2)" name="SRAM2_CM0" size="$(SRAM2_CM0_SIZE:0xa000/2)" access="Read/Write" />
   
   <!-- Built-in factory ROM that contains things like USB/QSPI/IAP functions. -->
@@ -49,8 +49,8 @@
   </MemorySegment>
 
   <!-- 1st SDRAM section used with 16MB part. Use DYCS0_SIZE variable to increase size instead of editing this file. -->
-  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />
-  <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" />  
+  <MemorySegment start="0x28000000" name="$(DYCS0_NAME:DYCS0)" size="$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" end_symbol="SDRAM_END"/>
+  <MemorySegment start="0x28000000+$(DYCS0_SIZE:0)-$(SDRAM_CM0_SIZE:0)" name="$(DYCS0_NAME:DYCS0)_CM0" size="$(SDRAM_CM0_SIZE:0)" access="$(DYCS0_ACCESS:Read/Write)" end_symbol="SDRAM_END_CM0"/>
   <!-- Second SDRAM section not currently used. -->
   <MemorySegment start="0x30000000" name="$(DYCS1_NAME:DYCS1)" size="$(DYCS1_SIZE:0)-$(DYCS0_CM1_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />
   <MemorySegment start="0x30000000+$(DYCS1_SIZE:0)-$(DYCS1_CM0_SIZE:0)" name="$(DYCS1_NAME:DYCS1)_CM0" size="$(DYCS1_CM0_SIZE:0)" access="$(DYCS1_ACCESS:Read/Write)" />

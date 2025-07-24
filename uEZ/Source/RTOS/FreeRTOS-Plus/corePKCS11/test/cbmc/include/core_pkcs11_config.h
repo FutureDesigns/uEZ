@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -24,7 +24,7 @@
 
 /**
  * @file aws_pkcs11_config.h
- * @brief PCKS#11 config options.
+ * @brief PKCS#11 config options.
  */
 
 

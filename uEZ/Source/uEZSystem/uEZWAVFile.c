@@ -75,7 +75,7 @@
 T_uezFile file;
 TUInt32 numBytesRead, numBytesRead2 = 1;
 TInt32 *wav, *wav2;
-TUInt32 index;
+static TUInt32 G_Index;
 TInt8 volume;
 TBool flag = ETrue, read1 = EFalse, read2 = ETrue;
 T_uezDevice amp;
@@ -215,33 +215,35 @@ void i2sCallBack(void *aCallbackWorkspace,
     TUInt16 i = 0;
     TInt32 *p;
 
+    PARAM_NOT_USED(aCallbackWorkspace);
+
     if (numSamples == 4) {
         if (flag) {
-            p = wav+index;
+            p = wav+G_Index;
         } else {
-            p = wav2+index;
+            p = wav2+G_Index;
         }
         samples[i+0] = p[0];
         samples[i+1] = p[1];
         samples[i+2] = p[2];
         samples[i+3] = p[3];
-        index += 4;
+        G_Index += 4;
     } else {
         for( i = 0; i < numSamples; i++)
         {
             if(flag)
             {
-                samples[i] = wav[index++];
+                samples[i] = wav[G_Index++];
             }
             else
             {
-                samples[i] = wav2[index++];
+                samples[i] = wav2[G_Index++];
             }
         }
     }
-    if (index >= (DATA_TO_READ /4))
+    if (G_Index >= (DATA_TO_READ /4))
     {
-        index = 0;
+        G_Index = 0;
         if(flag) read1 = ETrue;
         if(!flag) read2 = ETrue;
         flag = !flag;
@@ -287,7 +289,7 @@ T_uezError UEZWAVPlayFile(char* fileName)
     readNextBlock(wav2, &numBytesRead2);
     read1 = 0;
     read2 = 0;
-    index = 0;
+    G_Index = 0;
     flag = ETrue;
 
     UEZTaskCreate((T_uezTaskFunction)UEZStartWAV, "Player", 4096, 0,
@@ -455,7 +457,7 @@ T_uezError UEZWAVChangeFile(char* newFile)
     readNextBlock(wav2, &numBytesRead2);
     read1 = 0;
     read2 = 0;
-    index = 0;
+    G_Index = 0;
     flag = ETrue;
     playStatus = ETrue;
     UEZTaskResume(G_playerTask);

@@ -2,19 +2,7 @@
  *  UDP proxy: emulate an unreliable UDP connection for DTLS testing
  *
  *  Copyright The Mbed TLS Contributors
- *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
 /*
@@ -23,7 +11,6 @@
  * example of good general usage.
  */
 
-#define MBEDTLS_ALLOW_PRIVATE_ACCESS
 
 #include "mbedtls/build_info.h"
 
@@ -496,7 +483,7 @@ typedef struct {
 } packet;
 
 /* Print packet. Outgoing packets come with a reason (forward, dupl, etc.) */
-void print_packet(const packet *p, const char *why)
+static void print_packet(const packet *p, const char *why)
 {
 #if defined(MBEDTLS_TIMING_C)
     if (why == NULL) {
@@ -540,7 +527,7 @@ typedef enum {
 static inject_clihlo_state_t inject_clihlo_state;
 static packet initial_clihlo;
 
-int send_packet(const packet *p, const char *why)
+static int send_packet(const packet *p, const char *why)
 {
     int ret;
     mbedtls_net_context *dst = p->dst;
@@ -629,13 +616,13 @@ int send_packet(const packet *p, const char *why)
 static size_t prev_len;
 static packet prev[MAX_DELAYED_MSG];
 
-void clear_pending(void)
+static void clear_pending(void)
 {
     memset(&prev, 0, sizeof(prev));
     prev_len = 0;
 }
 
-void delay_packet(packet *delay)
+static void delay_packet(packet *delay)
 {
     if (prev_len == MAX_DELAYED_MSG) {
         return;
@@ -644,7 +631,7 @@ void delay_packet(packet *delay)
     memcpy(&prev[prev_len++], delay, sizeof(packet));
 }
 
-int send_delayed()
+static int send_delayed(void)
 {
     uint8_t offset;
     int ret;
@@ -676,9 +663,9 @@ int send_delayed()
 static unsigned char held[2048] = { 0 };
 #define HOLD_MAX 2
 
-int handle_message(const char *way,
-                   mbedtls_net_context *dst,
-                   mbedtls_net_context *src)
+static int handle_message(const char *way,
+                          mbedtls_net_context *dst,
+                          mbedtls_net_context *src)
 {
     int ret;
     packet cur;

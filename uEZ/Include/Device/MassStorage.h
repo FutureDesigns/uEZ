@@ -59,6 +59,7 @@
 #include <uEZTypes.h>
 #include <uEZDevice.h>
 #include <Types/TimeDate.h>
+#include <Types/File.h> // for common T_msSizeInfo only
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,12 +72,6 @@ typedef TUInt32 T_msStatus;
     #define MASS_STORAGE_STATUS_NEED_INIT       (1<<0)
     #define MASS_STORAGE_STATUS_NO_MEDIUM       (1<<1)
     #define MASS_STORAGE_STATUS_WRITE_PROTECTED (1<<2)
-
-typedef struct {
-    TUInt32 iNumSectors;
-    TUInt32 iSectorSize;
-    TUInt32 iBlockSize; /**< num sectors per block */
-} T_msSizeInfo;
 
 typedef struct {
     // Header

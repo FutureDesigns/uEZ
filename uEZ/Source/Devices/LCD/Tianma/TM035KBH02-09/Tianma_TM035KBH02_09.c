@@ -21,7 +21,7 @@
 #include <uEZ.h>
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
 #include <uEZSPI.h>
 #include "Tianma_TM035KBH02_09.h"
 #include <uEZDeviceTable.h>
@@ -541,7 +541,7 @@ static T_uezError LCD_TM035KBH02_09_Open(void *aW)
   T_TM035KBH02_09Workspace *p = (T_TM035KBH02_09Workspace *)aW;
   HAL_LCDController **plcdc;
   T_uezError error = UEZ_ERROR_NONE;
-  TUInt32 i;
+  //TUInt32 i;
 
   p->icallback.iTimer = p->itimer; // Setup callback information for itimer
     p->icallback.iData = p;

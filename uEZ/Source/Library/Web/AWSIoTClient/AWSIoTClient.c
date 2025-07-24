@@ -75,17 +75,18 @@ TUInt8 gRespString[1024] = "";
  *---------------------------------------------------------------------------*/
 extern void vShadowDeviceTask(void *pvParameters);
 extern void vShadowUpdateTask(void *pvParameters);
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 TaskHandle_t G_ShadowUpdateTask = NULL;
 TaskHandle_t G_ShadowDeviceTask = NULL;
 TaskHandle_t G_MqttTask = NULL;
+TUInt8 isDemoRunning = 0;
 
 /*---------------------------------------------------------------------------*
  * Routine:  AWSIoTClientStartUpTask (this requires large stack size)
  *---------------------------------------------------------------------------*/
 //void AWSIoTClientStartUpTask( void * pvParameters )
-void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
+TUInt32 AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
 {
     //BaseType_t xStatus = pdFAIL;
     ( void ) aTask;
@@ -93,8 +94,8 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
     ( void ) pvParameters;
     TBool isRtcRecentlySet = EFalse;
     
-    gNetwork = (T_uezDevice) pvParameters; //aNetwork;
-    if(G_lwipTask != NULL) {
+    T_uezDevice aNetwork = (T_uezDevice) pvParameters;
+    if(G_lwipTask != (sys_thread_t) NULL) {
       lwip_socket_thread_init(); // if lwip init make sure to init per thread objects
     }
 
@@ -114,9 +115,11 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
         
       if(isRtcRecentlySet == EFalse) {
         DEBUG_RTT_Printf(0, "Manually registering an NTP server in case DHCP doesn't set one.\n");
-        sntp_register_named_server(1, "pool.ntp.org"); // second server entry, in case DHCP populates entry 0.
-        UEZTaskDelay(30000); // Need time to allow for RTC to be set from server. LPC4357 takes over 10 seconds to set the time.
-        stop_sntp_server();
+        if(G_lwipTask != (sys_thread_t) NULL) {
+            sntp_register_named_server(1, "pool.ntp.org"); // second server entry, in case DHCP populates entry 0.
+            UEZTaskDelay(30000); // Need time to allow for RTC to be set from server. LPC4357 takes over 10 seconds to set the time.
+            stop_sntp_server();
+        }
 
         if(UEZTimeDateGet(&rtc_new_td) == UEZ_ERROR_NONE) {
             TUInt8 difference =  UEZTimeDateCompare(&rtc_set_td, &rtc_new_td);
@@ -132,6 +135,7 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
          DEBUG_RTT_Printf(0, "RTC was recently set or DHCP NTP is working.\n");
       }
     }
+    isDemoRunning = 1; // time inited
 
     memset(&G_AWSIoTClient_Workspace, 0, sizeof(G_AWSIoTClient_Workspace));
 
@@ -159,7 +163,7 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
     /* A simple example to demonstrate key and certificate provisioning in
      * microcontroller flash using PKCS#11 interface. This should be replaced
      * by production ready key provisioning mechanism. */
-    CK_RV ret_prov = vDevModeKeyProvisioning();
+    CK_RV ret_prov = vDevModeKeyProvisioning(); // currently needs to be run once only
     if (ret_prov != CKR_OK)
     {
         DEBUG_RTT_Printf(0, "AWSIoTClientStart::vDevModeKeyProvisioning failed, ret_prov=%d\n", ret_prov);
@@ -167,6 +171,8 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
         __BKPT(0);
     }
     vTaskDelay(1);
+    
+    isDemoRunning = 2; // storage inited
 
     /* AG: Network is already initialized at this point */
 #if 0
@@ -192,7 +198,7 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
 
     if (xResult == pdPASS)
     {
-        xResult = xMQTTAgentInit(appmainMQTT_AGENT_TASK_STACK_SIZE, appmainMQTT_AGENT_TASK_PRIORITY, &G_MqttTask);
+        xResult = xMQTTAgentInit(appmainMQTT_AGENT_TASK_STACK_SIZE, appmainMQTT_AGENT_TASK_PRIORITY, aNetwork, &G_MqttTask);
     }
 
     if (xResult == pdPASS)
@@ -211,8 +217,11 @@ void AWSIoTClientStartUpTask( T_uezTask aTask, void *pvParameters )
     {
         DEBUG_RTT_Printf(0, "AWSIoTClientStart::xTaskCreate failed!\n");
         __BKPT(0);
+    } else {
+      isDemoRunning = 3; // full demo inited
     }
 
+    return 0;
     // Exit task and free up memory from this "run-once" task.
 }
 
@@ -223,36 +232,103 @@ T_uezError AWSIoTClientStart(T_uezDevice aNetwork)
 {
 #if 0
    return xTaskCreate( AWSIoTClientStartUpTask,
-                       "InitAWS",
-                       2048,
-                       (void *) aNetwork,
-                       appmainMQTT_AGENT_TASK_PRIORITY,
-                       NULL );
+              "InitAWS",
+              2048,
+              (void *) aNetwork,
+              appmainMQTT_AGENT_TASK_PRIORITY,
+              NULL );
 #else
-   return UEZTaskCreate(
-                (T_uezTaskFunction)AWSIoTClientStartUpTask,
-                "InitAWS",                
-                UEZ_TASK_STACK_BYTES(8192),
-                (void *)aNetwork,
-                UEZ_PRIORITY_NORMAL,
-                NULL); //&G_awsStartupTask);
+   return UEZTaskCreate((T_uezTaskFunction)AWSIoTClientStartUpTask,
+              "InitAWS",                
+              UEZ_TASK_STACK_BYTES(8192),
+              (void *)aNetwork,
+              UEZ_PRIORITY_NORMAL,
+              NULL); //&G_awsStartupTask);
 #endif
 }
 
-T_uezError AWSIoTClientStop(void)
+
+TBool AWSIoTClientMonitorIsMQTTRunning(void)
+{
+  MQTTAgentState_t currentState = xGetMQTTAgentState();
+
+  if(isDemoRunning == 3) {
+    if(currentState == MQTT_AGENT_STATE_CONNECTED) {
+      AWSIoTClientResumeShadowTasks();
+      isDemoRunning = 4;
+      return ETrue;
+    }    
+    if(currentState == MQTT_AGENT_STATE_NONE) {
+    }
+    if(currentState == MQTT_AGENT_STATE_INITIALIZED) {
+    }
+    if(currentState == MQTT_AGENT_STATE_DISCONNECTED) {
+    }
+    if(currentState == MQTT_AGENT_STATE_TERMINATED) {
+      AWSIoTClientPauseShadowTasks();
+      vTaskDelay(50); // allow task to be fully freed
+      G_MqttTask = NULL; // FreeRTOS won't detete the global handle ptr that we pass in, only the actual TCB.
+    }
+    
+    if(G_MqttTask != NULL) {
+      return ETrue;
+    } else {
+      return EFalse;
+    }
+  } else if (isDemoRunning == 4) {
+    if(currentState == MQTT_AGENT_STATE_CONNECTED) {
+      return ETrue;
+    }
+    if(currentState == MQTT_AGENT_STATE_TERMINATED) {
+      isDemoRunning = 3;
+      AWSIoTClientPauseShadowTasks();
+      vTaskDelay(50); // allow task to be fully freed
+      G_MqttTask = NULL; // FreeRTOS won't detete the global handle ptr that we pass in, only the actual TCB.
+    }
+    if(G_MqttTask != NULL) {
+      return ETrue;
+    } else {
+      return EFalse;
+    }
+  } else { // demo not init yet
+    if(isDemoRunning < 3) { // wait for full startup
+      return ETrue;
+    }
+    return ETrue;
+  }
+}
+
+T_uezError AWSIoTClientPauseShadowTasks(void)
 {
   vTaskSuspend(G_ShadowUpdateTask);
   vTaskSuspend(G_ShadowDeviceTask);
-  vTaskSuspend(G_MqttTask);
+  return UEZ_ERROR_NONE;
+}
+
+T_uezError AWSIoTClientResumeShadowTasks(void)
+{
+  vTaskResume(G_ShadowDeviceTask);
+  vTaskResume(G_ShadowUpdateTask);
   return UEZ_ERROR_NONE;
 }
 
 T_uezError AWSIoTClientRestart(void)
 {
   vTaskResume(G_MqttTask);
-  vTaskResume(G_ShadowDeviceTask);
-  vTaskResume(G_ShadowUpdateTask);
+  AWSIoTClientResumeShadowTasks();
   return UEZ_ERROR_NONE;
+}
+
+T_uezError AWSIoTClientStop(void)
+{ 
+  AWSIoTClientPauseShadowTasks();
+  vTaskSuspend(G_MqttTask);
+  return UEZ_ERROR_NONE;
+}
+
+BaseType_t AWSIoTClientMqttRestart(T_uezDevice aNetwork)
+{
+  return xMQTTAgentInit(appmainMQTT_AGENT_TASK_STACK_SIZE, appmainMQTT_AGENT_TASK_PRIORITY, aNetwork, &G_MqttTask);
 }
 
 /*-------------------------------------------------------------------------*

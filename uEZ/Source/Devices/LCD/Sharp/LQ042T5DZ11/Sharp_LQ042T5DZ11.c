@@ -21,7 +21,7 @@
 #include <uEZ.h>
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
-#include <UEZSPI.h>
+#include <uEZSPI.h>
 #include "Sharp_LQ042T5DZ11.h"
 #include "uEZPlatform.h"
 

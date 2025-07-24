@@ -51,9 +51,10 @@
 /*---------------------------------------------------------------------------*/
 int32_t UEZCmdWiFiPrg(void *aWorkspace, int32_t argc, char *argv[])
 {
+    PARAM_NOT_USED(argv);
     if (argc == 1) {
         FDICmdPrintf(aWorkspace, "PASS: Entering WiFi pass-through programming mode...\n");
-        UEZPlatform_WiFiProgramMode();
+        UEZPlatform_WiFiProgramMode(true);
     } else {
         FDICmdSendString(aWorkspace,
             "FAIL: Incorrect parameters.\nUSAGE: WiFiPrg\n");
@@ -64,6 +65,7 @@ int32_t UEZCmdWiFiPrg(void *aWorkspace, int32_t argc, char *argv[])
 
 int32_t UEZCmdWiFiRun(void *aWorkspace, int32_t argc, char *argv[])
 {
+    PARAM_NOT_USED(argv);
     if (argc == 1) {
         FDICmdPrintf(aWorkspace, "PASS: Entering WiFi pass-through run mode...\n");
         UEZPlatform_WiFiRunMode();

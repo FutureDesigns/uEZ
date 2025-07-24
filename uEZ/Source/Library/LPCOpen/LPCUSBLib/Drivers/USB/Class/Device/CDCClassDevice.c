@@ -363,11 +363,13 @@ static int32_t CDC_Device_getchar_Blocking(FILE* Stream)
 
 void CDC_Device_Event_Stub(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo)
 {
-
+  (void)(CDCInterfaceInfo);
 }
 
 void CDC_Device_Event_Stub2(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo, const uint8_t Duration)
 {
+  (void)(CDCInterfaceInfo);
+  (void)(Duration);
 }
 #endif
 

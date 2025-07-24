@@ -7,11 +7,7 @@
   <MemorySegment start="0x000002FC" name="CRP1" size="0x4" access="ReadOnly" /> <!-- CRP Region A -->
   <MemorySegment start="$(FLASHA_START:0x0)" name="FLASHA" size="$(FLASH_SIZE:0)-$(FLASHA_START:0x0)" access="ReadOnly" />  
   <!-- NOR, then SDRAM, registers, etc. Change SDRAM size and NOR size using variables not here. -->
-  <MemorySegment size="0x00800000" access="Read/Write" start="0xA0000000" name="SDRAM"/>
-  <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM"/>
-  <MemorySegment size="0x4000" access="Read/Write" start="0x20000000" name="AHBSRAM0"/>
-  <MemorySegment size="0x4000" access="Read/Write" start="0x20004000" name="AHBSRAM1"/>
-  <MemorySegment size="0x8000" access="Read/Write" start="0x20000000" name="AHBSRAM"/>
+  <MemorySegment size="$(SDRAM_SIZE:0)" access="Read/Write" start="0xA0000000" name="SDRAM" end_symbol="SDRAM_END"/>
   <MemorySegment size="0x1000" access="Read/Write" start="0x00200000" name="EEPROM">
     <RegisterGroup start="0x00200000" name="EEPROM">
       <Register start="0x00200000+0x080" size="0x4" name="EECMD">
@@ -60,6 +56,10 @@
       </Register>
     </RegisterGroup>
   </MemorySegment>
+  <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM" end_symbol="SRAM1_END"/>
+  <MemorySegment size="0x4000" access="Read/Write" start="0x20000000" name="AHBSRAM0"/>
+  <MemorySegment size="0x4000" access="Read/Write" start="0x20004000" name="AHBSRAM1"/>
+  <MemorySegment size="0x8000" access="Read/Write" start="0x20000000" name="AHBSRAM"/>
   <MemorySegment size="0x80000" access="Read/Write" start="0x40000000" name="APB0 Peripherals">
     <RegisterGroup start="0x40000000" name="WWDT">
       <Register start="+0x00" size="0x4" name="WDMOD">

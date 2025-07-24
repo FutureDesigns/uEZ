@@ -41,7 +41,7 @@
 #include <stdio.h>
 #include <string.h> /* for sprintf(), strstr(), strlen() , strtok() and strcpy()  */
 //#include <stdlib.h> // causes re-defined errors in Crossworks
-#include <ctype.h>
+//#include <ctype.h>
 #include "GainSpan_Config.h"
 #include "GainSpan_SPI.h"
 #include "GainSpan_CmdLib.h"
@@ -151,6 +151,7 @@ void IGainSpan_CmdLib_EndIncomingData()
 
 bool GainSpan_IO_IsDataReady(uint8_t channel)
 {
+    PARAM_NOT_USED(channel);
     return UEZGPIORead(G_GSCmdLibSettings.iDataReadyIO) ? true : false;
 }
 
@@ -183,6 +184,7 @@ bool GainSpan_SPI_Transfer(
     void (*callback)(void))
 {
     T_uezError error;
+    PARAM_NOT_USED(channel);
 
     G_GSSPIRequest = G_GSSPITemplate;
     G_GSSPIRequest.iDataMOSI = send_buffer;
@@ -204,6 +206,7 @@ bool GainSpan_SPI_TransferPolled(
 {
     T_uezError error;
 
+    PARAM_NOT_USED(channel);
     G_GSSPIRequest = G_GSSPITemplate;
     G_GSSPIRequest.iDataMOSI = send_buffer;
     G_GSSPIRequest.iDataMISO = receive_buffer;
@@ -216,6 +219,7 @@ bool GainSpan_SPI_TransferPolled(
 
 bool GainSpan_SPI_IsBusy(uint8_t channel)
 {
+    PARAM_NOT_USED(channel);
     return UEZSPIIsBusy(G_GSSPI);
 }
 /*---------------------------------------------------------------------------*

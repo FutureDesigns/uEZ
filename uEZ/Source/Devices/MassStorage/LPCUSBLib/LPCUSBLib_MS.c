@@ -235,6 +235,7 @@ static T_uezError MassStorage_LPCUSBLib_Init(void *aWorkspace, TUInt32 aAddress)
     T_LPCUSBLib_MS_Workspace *p = (T_LPCUSBLib_MS_Workspace *)aWorkspace;
     USB_ClassInfo_MS_Host_t *hDisk = p->hDisk;
 
+    PARAM_NOT_USED(aAddress);
     // Cannot initialize an unconnected device
     if (!p->iIsConnected)
         return UEZ_ERROR_NOT_AVAILABLE;
@@ -403,6 +404,7 @@ static T_uezError MassStorage_LPCUSBLib_Sync(void *aWorkspace)
 {
 //    T_LPCUSBLib_MS_Workspace *p = (T_LPCUSBLib_MS_Workspace *)aWorkspace;
 //    USB_ClassInfo_MS_Host_t *hDisk = p->hDisk;
+    PARAM_NOT_USED(aWorkspace);
 
     // Just always report done, we are not caching anywhere
     return UEZ_ERROR_NONE;
@@ -463,6 +465,8 @@ static T_uezError MassStorage_LPCUSBLib_GetSizeInfo(
  *---------------------------------------------------------------------------*/
 static T_uezError MassStorage_LPCUSBLib_SetPower(void *aWorkspace, TBool aOn)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aOn);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -479,6 +483,8 @@ static T_uezError MassStorage_LPCUSBLib_SetPower(void *aWorkspace, TBool aOn)
  *---------------------------------------------------------------------------*/
 static T_uezError MassStorage_LPCUSBLib_SetLock(void *aWorkspace, TBool aLock)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aLock);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -517,6 +523,7 @@ static T_uezError MassStorage_LPCUSBLib_SetSoftwareWriteProtect(
  *---------------------------------------------------------------------------*/
 static T_uezError MassStorage_LPCUSBLib_Eject(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -537,6 +544,9 @@ static T_uezError MassStorage_LPCUSBLib_MiscControl(
             TUInt32 aControlCode,
             void *aBuffer)
 {
+    PARAM_NOT_USED(aWorkspace);
+    (void)(aControlCode);
+    (void)(aBuffer);
 //    T_LPCUSBLib_MS_Workspace *p = (T_LPCUSBLib_MS_Workspace *)aWorkspace;
     return UEZ_ERROR_ILLEGAL_OPERATION;
 }
@@ -649,18 +659,25 @@ static void IEVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 static void IEVENT_USB_Host_Error(const uint8_t corenum, const uint8_t ErrorCode)
 {
   //printf("Host Error\r\n");
+  (void)(corenum);
+  (void)(ErrorCode);
 }
 static void IEVENT_USB_Enum_Failed(const uint8_t corenum, const uint8_t ErrorCode, const uint8_t SubErrorCode)
 {
   //printf("Enum Failed\r\n");
+  (void)(corenum);
+  (void)(ErrorCode);
+  (void)(SubErrorCode);
 }
 static void IEVENT_USB_Unattached(const uint8_t corenum)
 {
   //printf("USB Unattached\r\n");
+  (void)(corenum);
 }
 static void IEVENT_USB_Attached(const uint8_t corenum)
 {
   //printf("USB Attached\r\n");
+  (void)(corenum);
 }
 
 /*---------------------------------------------------------------------------*

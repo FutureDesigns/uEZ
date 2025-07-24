@@ -3,19 +3,7 @@
  *  (meant to be used with config-suite-b.h or config-ccm-psk-tls1_2.h)
  *
  *  Copyright The Mbed TLS Contributors
- *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
 #include "mbedtls/build_info.h"
@@ -82,7 +70,7 @@ const char psk_id[] = "Client_identity";
 #endif
 
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
-/* This is tests/data_files/test-ca2.crt, a CA using EC secp384r1 */
+/* This is framework/data_files/test-ca2.crt, a CA using EC secp384r1 */
 const unsigned char ca_cert[] = {
     0x30, 0x82, 0x02, 0x52, 0x30, 0x82, 0x01, 0xd7, 0xa0, 0x03, 0x02, 0x01,
     0x02, 0x02, 0x09, 0x00, 0xc1, 0x43, 0xe2, 0x7e, 0x62, 0x43, 0xcc, 0xe8,
@@ -175,8 +163,16 @@ int main(void)
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
     mbedtls_x509_crt_init(&ca);
 #endif
-
     mbedtls_entropy_init(&entropy);
+
+#if defined(MBEDTLS_USE_PSA_CRYPTO)
+    psa_status_t status = psa_crypto_init();
+    if (status != PSA_SUCCESS) {
+        ret = MBEDTLS_ERR_SSL_HW_ACCEL_FAILED;
+        goto exit;
+    }
+#endif /* MBEDTLS_USE_PSA_CRYPTO */
+
     if (mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy,
                               (const unsigned char *) pers, strlen(pers)) != 0) {
         ret = ctr_drbg_seed_failed;
@@ -262,7 +258,6 @@ int main(void)
 
 exit:
     mbedtls_net_free(&server_fd);
-
     mbedtls_ssl_free(&ssl);
     mbedtls_ssl_config_free(&conf);
     mbedtls_ctr_drbg_free(&ctr_drbg);
@@ -270,6 +265,9 @@ exit:
 #if defined(MBEDTLS_X509_CRT_PARSE_C)
     mbedtls_x509_crt_free(&ca);
 #endif
+#if defined(MBEDTLS_USE_PSA_CRYPTO)
+    mbedtls_psa_crypto_free();
+#endif /* MBEDTLS_USE_PSA_CRYPTO */
 
     mbedtls_exit(ret);
 }

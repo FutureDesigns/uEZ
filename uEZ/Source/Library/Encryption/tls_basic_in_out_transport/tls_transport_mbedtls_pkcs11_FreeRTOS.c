@@ -1,5 +1,5 @@
 /*
- * FreeRTOS V202111.00
+ * FreeRTOS V202411.00
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  * Copyright 2022 NXP
  *
@@ -31,7 +31,7 @@
  * mbedTLS.
  */
  
-// from transport_mbedtls_pkcs11.h AWS example
+// from transport_mbedtls_pkcs11.c AWS example
 
 /**************************************************/
 /******* DO NOT CHANGE the following order ********/
@@ -60,18 +60,27 @@
 //#include <uEZ.h>
 #include "uEZNetwork.h"
 
-#define MBEDTLS_ALLOW_PRIVATE_ACCESS
-
-#include "mbedtls/private_access.h"
+#ifndef MBEDTLS_ALLOW_PRIVATE_ACCESS
+    #define MBEDTLS_ALLOW_PRIVATE_ACCESS
+    #include "mbedtls/private_access.h"
+#endif /* MBEDTLS_ALLOW_PRIVATE_ACCESS */
 
 /* Standard includes. */
 #include <string.h>
+
+#ifdef MBEDTLS_PSA_CRYPTO_C
+    /* MbedTLS PSA Includes */
+    #include "psa/crypto.h"
+    #include "psa/crypto_values.h"
+#endif /* MBEDTLS_PSA_CRYPTO_C */
+
+#include "mbedtls/debug.h"
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 
 /* MbedTLS Bio TCP sockets wrapper include. */
-#include "mbedtls_bio_tcp_sockets_wrapper.h" // TODO use this to switch between Wi-Fi/Cellualr/Ethernet, Lwip/FreeRTOSTCP usign the same function names.
+#include "mbedtls_bio_tcp_sockets_wrapper.h" // TODO use this to switch between Wi-Fi/Cellualr/Ethernet, lwIP/FreeRTOSTCP using the same function names.
 
 /* TLS transport header. */
 //#include "transport_mbedtls_pkcs11.h" // version for FreeRTOS_TCP
@@ -86,6 +95,10 @@
 #include "../../../corePKCS11/source/include/core_pkcs11.h" //#include "Source/RTOS/FreeRTOS-Plus/corePKCS11/source/include/core_pkcs11.h"
 #include "../../../corePKCS11/source/dependency/3rdparty/pkcs11/pkcs11.h" //#include "Source/RTOS/FreeRTOS-Plus/corePKCS11/source/dependency/3rdparty/pkcs11/pkcs11.h"
 #include "../../../corePKCS11/source/include/core_pki_utils.h" //#include "Source/RTOS/FreeRTOS-Plus/corePKCS11/source/include/core_pki_utils.h"
+
+#ifndef FORCE_TLS_12_EVEN_IF_13_SUPPORTED
+#define FORCE_TLS_12_EVEN_IF_13_SUPPORTED   0 // set to 1 to disable TLS 1.3 even if included in the software.
+#endif
 
 /*-----------------------------------------------------------*/
 
@@ -226,7 +239,6 @@ static int32_t privateKeySigningCallback( void * pvContext,
                                           const unsigned char * pucHash,
                                           size_t xHashLen,
                                           unsigned char * pucSig,
-                                          size_t xSigLen,
                                           size_t * pxSigLen,
                                           int32_t ( * piRng )( void *,
                                                                unsigned char *,
@@ -297,11 +309,11 @@ static void sslContextInit( SSLContext_t * pSslContext )
     configASSERT( pSslContext != NULL );
 
     // These 5 just set configs to all 0. Can only setup debug or params AFTER them.
-    mbedtls_ssl_config_init(&(pSslContext->config));
-    mbedtls_x509_crt_init(&(pSslContext->rootCa));
-    mbedtls_pk_init( &( pSslContext->privKey ) );
-    mbedtls_x509_crt_init(&(pSslContext->clientCert));
-    mbedtls_ssl_init(&(pSslContext->context));
+    mbedtls_ssl_config_init( &( pSslContext->config ) );
+    mbedtls_x509_crt_init( &( pSslContext->rootCa ) );
+    mbedtls_pk_init( &( pSslContext->privKey ) ); // FDI adds this init to clear to 0
+    mbedtls_x509_crt_init( &( pSslContext->clientCert ) );
+    mbedtls_ssl_init( &( pSslContext->context ) );
     
     // setup/activate debug
     //mbedtls_debug_set_threshold(3); // 0=off,1=ERR,2=state,3=info,4=verbose
@@ -326,6 +338,7 @@ static void sslContextFree( SSLContext_t * pSslContext )
     //mbedtls_entropy_free( &( pSslContext->entropyContext ) );
     //mbedtls_ctr_drbg_free( &( pSslContext->ctrDrgbContext ) );
     mbedtls_ssl_config_free( &( pSslContext->config ) );
+    mbedtls_psa_crypto_free(); // clear psa memory
 
     mbedtls_pk_free( &( pSslContext->privKey ) );
 
@@ -372,6 +385,20 @@ static TlsTransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
         returnStatus = TLS_TRANSPORT_INSUFFICIENT_MEMORY;
     }
 
+    #ifdef MBEDTLS_PSA_CRYPTO_C
+        mbedtlsError = psa_crypto_init();
+
+        if( mbedtlsError != PSA_SUCCESS )
+        {
+            LogError( ( "Failed to initialize PSA Crypto implementation: %s", ( int ) mbedtlsError ) );
+            returnStatus = TLS_TRANSPORT_INVALID_PARAMETER;
+        }
+        else
+        {
+            LogDebug( ( "Initialized the PSA Crypto Engine" ) );
+        }
+    #endif /* MBEDTLS_PSA_CRYPTO_C */
+
     if( returnStatus == TLS_TRANSPORT_SUCCESS )
     {
         /* Set up the certificate security profile, starting from the default value. */
@@ -388,14 +415,14 @@ static TlsTransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
 
         /* Set SSL authmode and the RNG context. */
         mbedtls_ssl_conf_authmode( &( pTlsTransportParams->sslContext.config ),
-                                   MBEDTLS_SSL_VERIFY_REQUIRED );
+                                   MBEDTLS_SSL_VERIFY_REQUIRED ); // TLS 1.3 needs required.
         mbedtls_ssl_conf_rng( &( pTlsTransportParams->sslContext.config ),
                               generateRandomBytes,
                               &pTlsTransportParams->sslContext );
         mbedtls_ssl_conf_cert_profile( &( pTlsTransportParams->sslContext.config ),
                                        &( pTlsTransportParams->sslContext.certProfile ) );
         vTaskDelay(1);
-        /*mbedtls_ssl_conf_verify(mbedtls_ssl_config *conf,
+        /*mbedtls_ssl_conf_verify(mbedtls_ssl_config *conf, // TODO not part of newer versions
                              int (*f_vrfy)(void *, mbedtls_x509_crt *, int, uint32_t *),
                              void *p_vrfy);
          vTaskDelay(1);*/
@@ -479,6 +506,11 @@ static TlsTransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
     vTaskDelay(1);
     if( returnStatus == TLS_TRANSPORT_SUCCESS )
     {
+
+#if(FORCE_TLS_12_EVEN_IF_13_SUPPORTED == 1) // can override and turn off TLS 1.3 at run time. A config switch could be made in a GUI or demo.
+        mbedtls_ssl_conf_max_tls_version(&( pTlsTransportParams->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_2);
+#endif
+        
         /* Initialize the mbed TLS secured connection context. */
         mbedtlsError = mbedtls_ssl_setup( &( pTlsTransportParams->sslContext.context ),
                                           &( pTlsTransportParams->sslContext.config ) );
@@ -548,7 +580,6 @@ static TlsTransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
         }
     #endif /* ifdef MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
 
-
     if( returnStatus == TLS_TRANSPORT_SUCCESS )
     {
         /* Perform the TLS handshake. */
@@ -558,15 +589,23 @@ static TlsTransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
             mbedtlsError = mbedtls_ssl_handshake( &( pTlsTransportParams->sslContext.context ) );
             vTaskDelay(100); // longer delay after long handshake time
         } while( ( mbedtlsError == MBEDTLS_ERR_SSL_WANT_READ ) ||
-                 ( mbedtlsError == MBEDTLS_ERR_SSL_WANT_WRITE ) );
+                 ( mbedtlsError == MBEDTLS_ERR_SSL_WANT_WRITE ) ||
+                 ( mbedtlsError == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET ) ); // TLS 1.3 needs this non-fatal error
 
         if( mbedtlsError != 0 )
         {
-            LogError( ( "Failed to perform TLS handshake: mbedTLSError= %s : %s.",
-                        mbedtlsHighLevelCodeOrDefault( mbedtlsError ),
-                        mbedtlsLowLevelCodeOrDefault( mbedtlsError ) ) );
+            if( mbedtlsError == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET )
+            {
+                LogDebug( ( "Received a MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET return code from mbedtls_ssl_handshake." ) );
+            }
+            else
+            {
+                LogError( ( "Failed to perform TLS handshake: mbedTLSError= %s : %s.",
+                            mbedtlsHighLevelCodeOrDefault( mbedtlsError ),
+                            mbedtlsLowLevelCodeOrDefault( mbedtlsError ) ) );
 
-            returnStatus = TLS_TRANSPORT_HANDSHAKE_FAILED;
+                returnStatus = TLS_TRANSPORT_HANDSHAKE_FAILED;
+            }
         }
     }
 
@@ -613,17 +652,12 @@ static CK_RV readCertificateIntoContext( SSLContext_t * pSslContext,
     CK_RV xResult = CKR_OK;
     CK_ATTRIBUTE xTemplate = { 0 };
     CK_OBJECT_HANDLE xCertObj = 0;
-    size_t labelLength = strlen(pcLabelName);
-
-    if (labelLength > pkcs11configMAX_LABEL_LENGTH)
-    {
-        labelLength = pkcs11configMAX_LABEL_LENGTH;
-    }
 
     /* Get the handle of the certificate. */
     xResult = xFindObjectWithLabelAndClass( pSslContext->xP11Session,
-                                            (char *)pcLabelName,
-                                            labelLength,
+                                            ( char * ) pcLabelName,
+                                            strnlen( pcLabelName,
+                                                     pkcs11configMAX_LABEL_LENGTH ),
                                             xClass,
                                             &xCertObj );
 
@@ -736,17 +770,11 @@ static CK_RV initializeClientKeys( SSLContext_t * pxCtx,
 
     if( CKR_OK == xResult )
     {
-        size_t labelLength = strlen(pcLabelName);
-
-        if (labelLength > pkcs11configMAX_LABEL_LENGTH)
-        {
-            labelLength = pkcs11configMAX_LABEL_LENGTH;
-        }
-
         /* Get the handle of the device private key. */
         xResult = xFindObjectWithLabelAndClass( pxCtx->xP11Session,
-                                                (char *)pcLabelName,
-                                                labelLength,
+                                                ( char * ) pcLabelName,
+                                                strnlen( pcLabelName,
+                                                         pkcs11configMAX_LABEL_LENGTH ),
                                                 CKO_PRIVATE_KEY,
                                                 &pxCtx->xP11PrivateKey );
     }
@@ -754,7 +782,7 @@ static CK_RV initializeClientKeys( SSLContext_t * pxCtx,
     if( ( CKR_OK == xResult ) && ( pxCtx->xP11PrivateKey == CK_INVALID_HANDLE ) )
     {
         xResult = CK_INVALID_HANDLE;
-        LogError( ( "Could not find private key." ) );
+        LogError( ( "Could not find private key: %s", pcLabelName ) );
     }
 
     if( xResult == CKR_OK )
@@ -812,7 +840,7 @@ TlsTransportStatus_t TLS_FreeRTOS_Connect( NetworkContext_t * pNetworkContext,
         pTlsTransportParams = pNetworkContext->pParams;
 
         /* Initialize tcpSocket. */
-        pTlsTransportParams->tcpSocket = NULL;
+        pTlsTransportParams->tcpSocket = (T_uezNetworkSocket) 0;
 
         socketStatus = mbedtls_bio_socket_connect(( pTlsTransportParams),//pNetworkContext,
                                             pHostName,
@@ -849,7 +877,7 @@ TlsTransportStatus_t TLS_FreeRTOS_Connect( NetworkContext_t * pNetworkContext,
           if ((pTlsTransportParams != NULL) && (pTlsTransportParams->tcpSocket > 0))
           {
             mbedtls_bio_socket_delete(pTlsTransportParams);
-            pTlsTransportParams->tcpSocket = NULL;
+            pTlsTransportParams->tcpSocket = (T_uezNetworkSocket) 0;
           }
         }
     }
@@ -943,8 +971,14 @@ int32_t TLS_FreeRTOS_recv( NetworkContext_t * pNetworkContext,
 
         if( ( tlsStatus == MBEDTLS_ERR_SSL_TIMEOUT ) ||
             ( tlsStatus == MBEDTLS_ERR_SSL_WANT_READ ) ||
-            ( tlsStatus == MBEDTLS_ERR_SSL_WANT_WRITE ) )
+            ( tlsStatus == MBEDTLS_ERR_SSL_WANT_WRITE ) ||
+            ( tlsStatus == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET ) )
         {
+            if( tlsStatus == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET )
+            {
+                LogDebug( ( "Received a MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET return code from mbedtls_ssl_read." ) );
+            }
+
             LogDebug( ( "Failed to read data. However, a read can be retried on this error. "
                         "mbedTLSError= %s : %s.",
                         mbedtlsHighLevelCodeOrDefault( tlsStatus ),
@@ -959,6 +993,7 @@ int32_t TLS_FreeRTOS_recv( NetworkContext_t * pNetworkContext,
             LogError( ( "Failed to read data: mbedTLSError= %s : %s.",
                         mbedtlsHighLevelCodeOrDefault( tlsStatus ),
                         mbedtlsLowLevelCodeOrDefault( tlsStatus ) ) );
+            mbedtls_bio_socket_disconnect(pTlsTransportParams);
         }
         else
         {
@@ -1002,8 +1037,14 @@ int32_t TLS_FreeRTOS_send( NetworkContext_t * pNetworkContext,
 
         if( ( tlsStatus == MBEDTLS_ERR_SSL_TIMEOUT ) ||
             ( tlsStatus == MBEDTLS_ERR_SSL_WANT_READ ) ||
-            ( tlsStatus == MBEDTLS_ERR_SSL_WANT_WRITE ) )
+            ( tlsStatus == MBEDTLS_ERR_SSL_WANT_WRITE ) ||
+            ( tlsStatus == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET ) )
         {
+            if( tlsStatus == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET )
+            {
+                LogDebug( ( "Received a MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET return code from mbedtls_ssl_write." ) );
+            }
+
             LogDebug( ( "Failed to send data. However, send can be retried on this error. "
                         "mbedTLSError= %s : %s.",
                         mbedtlsHighLevelCodeOrDefault( tlsStatus ),
@@ -1018,6 +1059,7 @@ int32_t TLS_FreeRTOS_send( NetworkContext_t * pNetworkContext,
             LogError( ( "Failed to send data:  mbedTLSError= %s : %s.",
                         mbedtlsHighLevelCodeOrDefault( tlsStatus ),
                         mbedtlsLowLevelCodeOrDefault( tlsStatus ) ) );
+            mbedtls_bio_socket_disconnect(pTlsTransportParams);
         }
         else
         {

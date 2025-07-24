@@ -178,8 +178,11 @@
 /  the file names to read. The maximum possible length of the read file name depends
 /  on character encoding. When LFN is not enabled, these options have no effect. */
 
-
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
 #define FF_FS_RPATH		0
+#else
+#define FF_FS_RPATH		2
+#endif
 /* This option configures support for relative path.
 /
 /   0: Disable relative path and remove related functions.

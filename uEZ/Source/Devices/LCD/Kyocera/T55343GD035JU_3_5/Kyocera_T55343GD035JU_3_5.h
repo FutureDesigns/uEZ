@@ -44,7 +44,7 @@
  * Includes:
  *-------------------------------------------------------------------------*/
 #include <Device/LCD.h>
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
 
 #ifdef __cplusplus
 extern "C" {

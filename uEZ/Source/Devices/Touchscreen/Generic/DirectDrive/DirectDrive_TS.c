@@ -168,17 +168,21 @@ T_uezError TS_DirectDrive_Configure(
 	
 	// Open up the ADC's
     error = UEZADCOpen(aConfig->iXL.iADCName, &p->iADC_XL);
-    if (error)
+    if (error) {
         return error;
+    }
     error = UEZADCOpen(aConfig->iXR.iADCName, &p->iADC_XR);
-    if (error)
+    if (error) {
         return error;
-	error = UEZADCOpen(aConfig->iYU.iADCName, &p->iADC_YU);
-    if (error)
+    }
+    error = UEZADCOpen(aConfig->iYU.iADCName, &p->iADC_YU);
+    if (error) {
         return error;
+    }
     error = UEZADCOpen(aConfig->iYD.iADCName, &p->iADC_YD);
-    if (error)
+    if (error) {
         return error;
+    }
 
     return UEZ_ERROR_NONE;
 }
@@ -482,19 +486,19 @@ static T_uezError TS_DirectDrive_CalibrateEnd(void *aWorkspace)
         for (i=0; i<p->iNumCalibratePoints; i++)  {
 
             // Find range of inputs
-            if (p->iCalibrateReadingsTaken[i].iX < minIX) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX < minIX) {
                 minIX = p->iCalibrateReadingsTaken[i].iX;
                 minOX = p->iCalibrateReadingsExpected[i].iX;
             }
-            if (p->iCalibrateReadingsTaken[i].iX > maxIX) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX > maxIX) {
                 maxIX = p->iCalibrateReadingsTaken[i].iX;
                 maxOX = p->iCalibrateReadingsExpected[i].iX;
             }
-            if (p->iCalibrateReadingsTaken[i].iY < minIY) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY < minIY) {
                 minIY = p->iCalibrateReadingsTaken[i].iY;
                 minOY = p->iCalibrateReadingsExpected[i].iY;
             }
-            if (p->iCalibrateReadingsTaken[i].iY > maxIY) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY > maxIY) {
                 maxIY = p->iCalibrateReadingsTaken[i].iY;
                 maxOY = p->iCalibrateReadingsExpected[i].iY;
             }
@@ -514,6 +518,15 @@ static T_uezError TS_DirectDrive_CalibrateEnd(void *aWorkspace)
 
         p->iHaveCalibration = ETrue;
 
+        // Check to see if this is valid calibration data
+        // (should have a resolution of at least 5 bits per pixel output
+        // using 10 bit ADCs).
+        // This check doesn't catch everything but will help catch
+        // most of the bogus readings (such as all the same points)
+        if ((p->iPenXScaleBottom < p->iPenXScaleTop * 32)
+                || (p->iPenYScaleBottom < p->iPenYScaleTop * 32)) {
+            return UEZ_ERROR_OUT_OF_RANGE;
+        }
     } else {
         return UEZ_ERROR_NOT_ENOUGH_DATA;
     }
@@ -606,6 +619,31 @@ void Touchscreen_DirectDrive_Create(
             aConfig);
 }
 
+static T_uezError TS_DirectDrive_WaitForTouch(
+        void *aWorkspace,
+        TUInt32 aTimeout)
+{
+    T_TS_DirectDrive_Workspace *p = (T_TS_DirectDrive_Workspace *)aWorkspace;
+    T_uezError error;
+    //TUInt32 sense;
+
+    PARAM_NOT_USED(aTimeout);
+
+    // Grab the touch screen
+    error = UEZSemaphoreGrab(p->iSem, 100);
+    if (error)
+            return error;
+
+    // TODO make this function real if we ever need it.
+
+    // Done waiting
+    UEZSemaphoreRelease(p->iSem);
+
+    // Return a timeout, error, or positive results
+    //return error;
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -628,6 +666,8 @@ const DEVICE_TOUCHSCREEN Touchscreen_DirectDrive_Interface = {
     TS_DirectDrive_CalibrateEnd,
 
     TS_DirectDrive_SetTouchDetectSensitivity,
+
+    TS_DirectDrive_WaitForTouch,
 };
 
 /*-------------------------------------------------------------------------*

@@ -304,6 +304,7 @@ __WEAK void LPC43xx_M0_APP_ProcessInterrupt(T_LPC43xx_M0_APP_Workspace *p)
 
     // Clear any interrupts processed by this interrupt
     //LPC_->INTCLR = flags; // No flags on this ISR
+    PARAM_NOT_USED(p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -327,6 +328,7 @@ __WEAK void LPC43xx_M4_CORE_ProcessInterrupt(T_LPC43xx_M4_CORE_Workspace *p)
 
     // Clear any interrupts processed by this interrupt
     //LPC_->INTCLR = flags; // No flags on this ISR
+    PARAM_NOT_USED(p);
 }
 
 /*---------------------------------------------------------------------------*
@@ -421,7 +423,7 @@ __WEAK void UEZBSPDelay1US(void)
  *          UEZBSPDelay1US();        
  *          LPC_GPIO_PORT->CLR[5] = 8; 
  */
-#if 1 //( PROCESSOR_OSCILLATOR_FREQUENCY == 204000000)
+#if 0 //( PROCESSOR_OSCILLATOR_FREQUENCY == 204000000)
     nops100();
     nops50();
     nops10();
@@ -432,6 +434,10 @@ __WEAK void UEZBSPDelay1US(void)
     nop();
     nop();
     nop();
+#else // This has smaller code size, measured to roughly 1.015us using heartbeat toggle
+    for(uint32_t i = 0; i < 46; i++) {
+        nop();
+    }
 #endif
 #if 0 // ( PROCESSOR_OSCILLATOR_FREQUENCY == 200000000) // TODO not validated yet.
     nops100();

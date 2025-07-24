@@ -64,6 +64,21 @@ static u32_t enginetime = 0;
 /* In this implementation engineboots is volatile. In a real world application this value should be stored in non-volatile memory.*/
 static u32_t engineboots = 0;
 
+#if 0
+#if defined(__arm__) || defined(__REDLIB__)
+size_t strnlen(const char *s, size_t maxLength)
+{
+    size_t length = 0;
+    while ((length <= maxLength) && (*s))
+    {
+        s++;
+        length++;
+    }
+    return length;
+}
+#endif
+#endif
+
 /**
  * @brief   Get the user table entry for the given username.
  *

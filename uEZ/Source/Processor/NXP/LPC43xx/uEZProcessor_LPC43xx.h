@@ -109,10 +109,12 @@
                     IRQ_START() \
                     funcname(param);\
                     IRQ_END()
+#ifndef   __packed
 #define     __packed        __attribute__((packed))
+#endif
 #define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
-#endif // (COMPILER_TYPE==GCC)
+#endif // (COMPILER_TYPE==GCC_ARM)
 
 #if (COMPILER_TYPE==IAR)
 #define     IRQ_ROUTINE(name)  void name(void)

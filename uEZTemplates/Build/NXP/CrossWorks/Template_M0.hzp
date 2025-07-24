@@ -1,33 +1,55 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="$[sym project_name]" target="8" version="2">
-  <configuration Name="Debug" hidden="Yes" />
-  <configuration Name="Flash" hidden="Yes" />
-  <configuration Name="Release" hidden="Yes" />
-  <configuration
-    Name="THUMB"
-    Platform="ARM"
-    arm_instruction_set="THUMB"
-    arm_library_instruction_set="THUMB"
-    hidden="Yes" />
-  <configuration
-    Name="Debug_Heap3_M0"
-    hidden="Yes"
+
+  <configuration Name="Debug_Heap3_M0" hidden="Yes"
     inherited_configurations="THUMB;Flash;Debug" />
-  <configuration
-    Name="Release_Heap3_M0"
-    hidden="Yes"
+  <configuration Name="Release_Heap3_M0" hidden="Yes"
     inherited_configurations="THUMB;Flash;Release"/>
-  <configuration
-    Name="Debug_Heap4_M0"
-    inherited_configurations="THUMB;Flash;Debug"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
-  <configuration
-    Name="Release_Heap4_M0"
-    inherited_configurations="THUMB;Flash;Release"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+  <configuration Name="Debug_Heap4_M0"
+    inherited_configurations="THUMB;Flash;Debug"/>
+  <configuration Name="Release_Heap4_M0"
+    inherited_configurations="THUMB;Flash;Release"/>
+
+  <configuration Name="Debug_CLANG_M0"
+    inherited_configurations="THUMB;Flash;Debug;Debug_Heap4_M0;CLANG" />
+
   <project Name="$[sym project_name]">
-    <configuration
-      Name="Common"
+
+    <configuration Name="THUMB"
+      Platform="ARM"
+      arm_instruction_set="THUMB"
+      arm_target_monitor_mode_debug="Yes"
+      arm_library_instruction_set="THUMB"
+      c_preprocessor_definitions="__THUMB" />
+
+    <configuration Name="CLANG"
+      arm_assembler_variant="gcc"
+      arm_compiler_variant="clang" />
+
+    <configuration Name="Debug"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="DEBUG"
+      gcc_debugging_level="Level 3"
+      gcc_optimization_level="None" />
+
+    <configuration Name="Release"
+      build_debug_information="No"
+      c_preprocessor_definitions="NDEBUG"
+      gcc_debugging_level="Level 1"
+      gcc_optimization_level="Level 1" />
+
+  <configuration Name="Debug_Heap3_M0" hidden="Yes" />
+
+  <configuration Name="Release_Heap3_M0" hidden="Yes" />
+
+  <configuration Name="Debug_Heap4_M0"
+    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+  <configuration Name="Release_Heap4_M0"
+    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+  <configuration Name="Common"
       Placement="Flash A"
       Target="LPC4357"
       arm_architecture="v6M"
@@ -57,13 +79,14 @@
       arm_target_loader_applicable_loaders="Flash"
       arm_target_loader_default_loader="Flash"
       arm_target_loader_parameter="12000000"
-      batch_build_configurations="Debug_Heap4;Release_Heap4"
+      asm_generate_listing_file="Yes"
+      batch_build_configurations="Debug_CLANG_M0;Debug_Heap4_M0;Release_Heap4_M0"
       build_output_directory="$(Configuration)"
       build_output_file_name="$(OutDir)/$(ProjectName).elf"
       build_remove_unused_symbols="Yes"
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
-      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M0"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M0"
       c_user_include_directories=".;$[SkipNewLine]
 ../../../.;../../../Source/AppM0/;$[SkipNewLine]
 ../../../../uEZ;$[SkipNewLine]
@@ -103,8 +126,7 @@ $[ifdef LPC4357]$[endif]$[SkipNewLine]
       target_script_file="$(TargetsDir)/LPC4300/LPC4300_Target.js"
       target_trace_initialize_script="EnableTrace(&quot;$(TraceInterfaceType)&quot;)" />
 
-    <configuration
-      Name="EMC"
+    <configuration Name="EMC"
       arm_target_flash_loader_file_path="$(TargetsDir)/LPC4300/Release/EMC_Loader.elf"
       arm_target_loader_can_lock_all="No"
       arm_target_loader_can_lock_range="No"
@@ -112,8 +134,8 @@ $[ifdef LPC4357]$[endif]$[SkipNewLine]
       arm_target_loader_can_unlock_range="No"
       arm_target_loader_reset_after_download="No"
       hidden="Yes" />
-    <configuration
-      Name="Flash"
+
+    <configuration Name="Flash"
       Placement="Flash A"
       arm_target_flash_loader_file_path="$(TargetsDir)/LPC4300/Release/Loader.elf"
       arm_target_loader_applicable_loaders="Flash"
@@ -127,21 +149,10 @@ $[ifdef LPC4357]$[endif]$[SkipNewLine]
       c_preprocessor_definitions="__FLASH_BUILD"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
       linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM" />
+    
     <configuration Name="RAM" Placement="RAM" />
-    <configuration
-      Name="Release"
-      build_debug_information="No"
-      c_preprocessor_definitions="NDEBUG"
-      gcc_debugging_level="Level 1"
-      gcc_optimization_level="Level 1" />
-    <configuration
-      Name="Debug"
-      build_debug_information="Yes"
-      c_preprocessor_definitions="DEBUG"
-      gcc_debugging_level="Level 3"
-      gcc_optimization_level="None" />
-    <configuration
-      Name="SPIFI"
+    
+    <configuration Name="SPIFI"
       arm_target_flash_loader_file_path="$(TargetsDir)/LPC4300/Release/SPIFI_Loader.elf"
       arm_target_loader_can_lock_all="No"
       arm_target_loader_can_lock_range="No"
@@ -149,7 +160,7 @@ $[ifdef LPC4357]$[endif]$[SkipNewLine]
       arm_target_loader_can_unlock_range="No"
       arm_target_loader_reset_after_download="No"
       hidden="Yes" />
-    <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes" />
+
     <folder Name="AppM0">
       <file file_name="../../../Source/AppM0/App_RTOS.c" />
       <file file_name="../../../Source/AppM0/AppTasks.c" />

@@ -90,6 +90,7 @@
 #if (defined __CCRX__) // TODO compiler not verified yet
 #include "uEZTypes.h"
 #include "uEZErrors.h"
+#define CURRENTLY_IN_IAR_ASM                    0
 #endif
    
 #ifndef CURRENTLY_IN_IAR_ASM

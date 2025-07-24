@@ -74,9 +74,23 @@ typedef struct {
     TVInt32 *iIST;      /*!< Pin Interrupt Status register */
 
     TUInt32 iConfiguredInterrupts;
+
+#ifdef CORE_M4
     TUInt32 iInterruptNumber[8];
     TUInt8 iInterruptName[8][10];
     T_GPIO_Interrupt iInterrupt[8];
+#endif
+#ifdef CORE_M0 // TODO
+    TUInt32 iInterruptNumber[1];
+    TUInt8 iInterruptName[1][10];
+    T_GPIO_Interrupt iInterrupt[1];
+#endif
+#ifdef CORE_M0SUB // TODO
+    TUInt32 iInterruptNumber[1];
+    TUInt8 iInterruptName[1][10];
+    T_GPIO_Interrupt iInterrupt[1];
+#endif
+
 }T_LPC43xx_GPIO_Interrupt_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -102,10 +116,10 @@ static T_LPC43xx_GPIO_Interrupt_Workspace G_Interrupt_Workspace = {
     (TVInt32 *)&LPC_GPIO_PIN_INT->RISE,
     (TVInt32 *)&LPC_GPIO_PIN_INT->FALL,
     (TVInt32 *)&LPC_GPIO_PIN_INT->IST,
-    0,
+    0, // iConfiguredInterrupts
 
 #ifdef CORE_M4
-    {
+    { // iInterruptNumber
         PIN_INT0_IRQn,  /*!<  32  PIN_INT0 */
         PIN_INT1_IRQn,  /*!<  33  PIN_INT1 */
         PIN_INT2_IRQn,  /*!<  34  PIN_INT2 */
@@ -115,7 +129,7 @@ static T_LPC43xx_GPIO_Interrupt_Workspace G_Interrupt_Workspace = {
         PIN_INT6_IRQn,  /*!<  38  PIN_INT6 */
         PIN_INT7_IRQn,  /*!<  39  PIN_INT7 */
     },
-    {
+    { // iInterruptName
         "PIN_INT0",
         "PIN_INT1",
         "PIN_INT2",
@@ -125,24 +139,39 @@ static T_LPC43xx_GPIO_Interrupt_Workspace G_Interrupt_Workspace = {
         "PIN_INT6",
         "PIN_INT7",
     },
+    { // iInterrupt
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+    }
 #endif
 #ifdef CORE_M0 // TODO
-    {
+    { // iInterruptNumber
         M0_PIN_INT4_IRQn,  /*!<  36  PIN_INT4 */
     },
-    {
+    { // iInterruptName
         "PIN_INT4",
     },
+    { // iInterrupt
+        {0, 0, 0, 0},
+    }
 #endif
 #ifdef CORE_M0SUB // TODO
-    {
+    { // iInterruptNumber
         M0S_PIN_INT5_IRQn,  /*!<  37  PIN_INT5 */
     },
-    {
+    { // iInterruptName
         "PIN_INT5",
     },
+    { // iInterrupt
+        {0, 0, 0, 0},
+    }
 #endif
-
 };
 
 const LPC43xx_GPIO_PortInfo GPIO_LPC43xx_Port0_PortInfo
@@ -732,9 +761,9 @@ T_uezError LPC43xx_GPIO_PortZ_InitializeWorkspace(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_GPIO_Configure(void *aWorkspace, TUInt32 aUsablePins)
 {
-    //    T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
-
+    PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aUsablePins);
+    //    T_LPC43xx_GPIO_Workspace *p = (T_LPC43xx_GPIO_Workspace *)aWorkspace;
 
     return UEZ_ERROR_NONE;
 }
@@ -753,6 +782,8 @@ T_uezError LPC43xx_GPIO_Configure(void *aWorkspace, TUInt32 aUsablePins)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_GPIO_Activate(void *aWorkspace, TUInt32 aPortPins)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
     // Defunc function
     return UEZ_ERROR_NONE;
 }
@@ -770,6 +801,8 @@ T_uezError LPC43xx_GPIO_Activate(void *aWorkspace, TUInt32 aPortPins)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_GPIO_Deactivate(void *aWorkspace, TUInt32 aPortPins)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
     // Defunc function
     return UEZ_ERROR_NONE;
 }
@@ -1103,6 +1136,7 @@ T_uezError LPC43xx_GPIO_ConfigureInterruptCallback(
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     T_GPIO_Interrupt *p = (T_GPIO_Interrupt *)&G_Interrupt_Workspace.iInterrupt[G_Interrupt_Workspace.iConfiguredInterrupts];
 
     if(G_Interrupt_Workspace.iConfiguredInterrupts == 8){
@@ -1138,7 +1172,9 @@ T_uezError LPC43xx_GPIO_ConfigureInterruptCallback_NotSupported(
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aInterruptCallback);PARAM_NOT_USED(aInterruptCallbackWorkspace);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInterruptCallback);
+    PARAM_NOT_USED(aInterruptCallbackWorkspace);
     PARAM_NOT_USED(aPortPins);
 
     // No IRQs on these
@@ -1184,6 +1220,7 @@ T_uezError LPC43xx_GPIO_EnableInterrupts(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
+    PARAM_NOT_USED(aWorkspace);
     TUInt32 i;
 
     //Find the interrupt in the workspace
@@ -1225,6 +1262,7 @@ T_uezError LPC43xx_GPIO_DisableInterrupts(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
+    PARAM_NOT_USED(aWorkspace);
     TUInt32 i;
 
     //Find the interrupt in the workspace
@@ -1259,6 +1297,7 @@ T_uezError LPC43xx_GPIO_DisableInterrupts(
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_GPIO_ClearInterrupts(void *aWorkspace, TUInt32 aPortPins)
 {
+    PARAM_NOT_USED(aWorkspace);
     TUInt32 i;
 
     //Find the interrupt in the workspace

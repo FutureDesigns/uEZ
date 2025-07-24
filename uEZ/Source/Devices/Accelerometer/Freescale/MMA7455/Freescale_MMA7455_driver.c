@@ -278,6 +278,8 @@ T_uezError Accelerometer_Freescale_MMA7455_I2C_GetInfo(
         void *aWorkspace,
         AccelerometerInfo *aInfo)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInfo);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -389,6 +391,9 @@ T_uezError Accelerometer_Freescale_MMA7455_I2C_ReadXYZ_Float(
         AccelerometerReadingFloat *aReading,
         TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aTimeout);
+    PARAM_NOT_USED(aWorkspace);
+
     /*T_uezError error;
 	T_Accelerometer_Freescale_MMA7455_I2C_Workspace *p =
         (T_Accelerometer_Freescale_MMA7455_I2C_Workspace *)aWorkspace;*/

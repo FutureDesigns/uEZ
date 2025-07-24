@@ -335,6 +335,9 @@ void GenericBulkBulkInComplete(
         TUInt8 aEndpoint,
         T_USBEndpointStatus aStatus)
 {
+  PARAM_NOT_USED(aWorkspace);
+  PARAM_NOT_USED(aEndpoint);
+  PARAM_NOT_USED(aStatus);
 }
 
 /*-------------------------------------------------------------------------*
@@ -357,6 +360,8 @@ TBool GenericBulkHandleClassRequest(
                 TUInt8 **aData)
 {
     PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aLength);
+    PARAM_NOT_USED(aData);
 
     switch (aSetup->iRequest) {
         default:

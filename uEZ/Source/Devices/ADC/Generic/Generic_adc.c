@@ -58,6 +58,7 @@ static void IADC_Generic_CaptureComplete(
             void *aWorkspace, 
             ADC_RequestSingle *aRequest)
 {
+    PARAM_NOT_USED(aRequest);
     T_ADC_Generic_Workspace *p = (T_ADC_Generic_Workspace *)aWorkspace;
 
     // Release the waiting caller

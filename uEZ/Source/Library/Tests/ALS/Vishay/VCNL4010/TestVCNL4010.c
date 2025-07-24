@@ -186,6 +186,8 @@ TUInt32 TestVCNL4010FCT(const char *aI2CName, TUInt8 aI2CAddr,
 
 TUInt32 TestVCNL4010Task(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     TUInt8 cmd[2];
     TUInt8 data[4];
     TUInt32 ambient;

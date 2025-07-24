@@ -561,6 +561,10 @@ T_uezError Lumex_SO2004DSR_Control(
     }
     */
     // If we got here, the control was valid, but it could not be supported
+
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInstruction);
+    PARAM_NOT_USED(aInstructionData);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 

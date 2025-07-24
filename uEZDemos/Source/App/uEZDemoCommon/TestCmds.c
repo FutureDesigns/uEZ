@@ -56,7 +56,7 @@
 #define GPIO_TEST_RETRIES		    (3)
 
 #ifndef FREERTOS_HEAP_SELECTION
-#define FREERTOS_HEAP_SELECTION  3
+#define FREERTOS_HEAP_SELECTION  4
 #endif
 
 /*-------------------------------------------------------------------------*

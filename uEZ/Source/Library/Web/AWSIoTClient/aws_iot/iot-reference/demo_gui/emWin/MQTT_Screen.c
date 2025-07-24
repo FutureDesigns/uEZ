@@ -42,6 +42,7 @@
 #include <Config_Build.h>
 #include <sys/socket.h>
 
+#include <mbedtls_config.h> // for checking enabled options for GUI display
 #include "Source/Library/Web/AWSIoTClient/AWSIoTClient.h"
 #include "Source/Library/Encryption/mbedtls/port/uez_mbedtls.h"
 #include "Source/Library/Web/AWSIoTClient/aws_dev_mode_key_provisioning.h"
@@ -105,9 +106,10 @@
 #define ID_TEXT_CLIENT_ID   ID_TEXT_21
 #define ID_TEXT_CLIENT_REC    ID_TEXT_22
 
-#define ID_UPDATE_TIMER         (GUI_ID_USER + 0x1B)
-#define ID_UPDATE_TIMER_SLOW    (GUI_ID_USER + 0x1C)
-#define ID_UPDATE_TIMER_FAST    (GUI_ID_USER + 0x1D)
+#define ID_UPDATE_TIMER_FAST    (GUI_ID_USER + 0x1B)
+#define ID_UPDATE_TIMER         (GUI_ID_USER + 0x1C)
+#define ID_UPDATE_TIMER_SLOW    (GUI_ID_USER + 0x1D)
+#define ID_UPDATE_TIMER_SLOWER  (GUI_ID_USER + 0x1E)
 
 #if(UEZ_DEFAULT_LCD == LCD_RES_WVGA)
 #define SPACING                 (10)
@@ -137,9 +139,10 @@
 #define TEXT_XPOS(n)            (SPACING + (n * (SPACING + TEXT_XSIZE)))
 #define TEXT_YPOS(n)            (((WINDOW_YSIZE - TITLE_TEXT_YSIZE)/2 - (TEXT_YSIZE/2)) + ( n * (TEXT_YSIZE + SPACING)))
 
-#define UPDATE_TIME_MS          (250)
-#define UPDATE_TIME_MS_SLOW     (10000)
 #define UPDATE_TIME_MS_FAST     (50)
+#define UPDATE_TIME_MS          (250)
+#define UPDATE_TIME_MS_SLOW     (2500)
+#define UPDATE_TIME_MS_SLOWER   (10000)
 
 #define GRAPHA_MAX_NUM_DATA_OBJ  3
 #define GRAPHB_MAX_NUM_DATA_OBJ  3
@@ -198,18 +201,20 @@
  * Prototypes:
  *---------------------------------------------------------------------------*/
 // timer callbacks
+static void IUpdateFields_Fast(WM_MESSAGE * pMsg);
 static void IUpdateFields(WM_MESSAGE * pMsg);
 static void IUpdateFields_Slow(WM_MESSAGE * pMsg);
-static void IUpdateFields_Fast(WM_MESSAGE * pMsg);
+static void IUpdateFields_Slower(WM_MESSAGE * pMsg);
 // update GUI elements
 static void IPrintIpConfiguration(WM_MESSAGE *pMsg);
 static void IPrintIpConnecting(WM_MESSAGE *pMsg);
 // button callbacks
 //static TBool IHandleBack(WM_MESSAGE * pMsg, int aNCode, int aID);
 
+static WM_HTIMER G_UpdateTimer_Fast = 0;
 static WM_HTIMER G_UpdateTimer = 0;
 static WM_HTIMER G_UpdateTimer_Slow = 0;
-static WM_HTIMER G_UpdateTimer_Fast = 0;
+static WM_HTIMER G_UpdateTimer_Slower = 0;
 static TUInt8 G_CurrentImage = 0;
 
 // read these text strings into the GUI to update labels
@@ -224,11 +229,16 @@ extern char G_CurrentShadowReportTouch;
 extern char G_CurrentShadowReportClientT;
 
 extern T_uezTask G_tsMonitorTask;
-extern TBool G_DHCP_Task_Has_IP;
+//extern TBool G_DHCP_Task_Has_IP;
+TBool G_DHCP_Task_Has_IP = EFalse;
 static TBool G_GUI_Has_Displayed_IP = EFalse;
 
 static GRAPH_Handle  G_GraphHandle[2];
 static GRAPH_DATA_Handle G_GraphDataHandleA[GRAPHA_MAX_NUM_DATA_OBJ];
+
+static T_uezNetworkStatus G_ActiveInterfaceStatus = {0};
+
+T_uezDevice previousDevice = 0;
 
 //static GRAPH_SCALE_Handle G_Graph_H_Scale;
 //static GRAPH_SCALE_Handle G_Graph_V_Scale;
@@ -271,13 +281,13 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect, "Client Token:", ID_TEXT_10, 62, 373, 133, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "Version:", ID_TEXT_11, 102, 407, 93, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "Buzzer:", ID_TEXT_12, 116, 441, 79, 24, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "IP Address:", ID_TEXT_13, 5, 34, 110, 24, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "      IP Address:", ID_TEXT_13, 5, 34, 170, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "", ID_TEXT_14, 200, 237, 190, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "", ID_TEXT_15, 200, 135, 200, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "", ID_TEXT_16, 200, 407, 160, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "", ID_TEXT_17, 200, 373, 160, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "", ID_TEXT_18, 200, 441, 150, 24, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "   .   .   .   ", ID_TEXT_19, 120, 34, 165, 24, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "   .   .   .   ", ID_TEXT_19, 180, 34, 165, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "00/00/2024 00:00:00 PM GMT", ID_TEXT_20, 553, 5, 245, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "Client ID:", ID_TEXT_21, 10, 271, 185, 24, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "", ID_TEXT_22, 200, 272, 160, 24, 0, 0x0, 0 },
@@ -298,7 +308,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 /** Active Flag, tell the dialog when it receives messages that the screen is in the foreground*/
 static TBool G_Active = EFalse;
 T_uezTimeDate G_CurrentTime;
-static char G_widget_buf[36];    
+static char G_widget_buf[36];
 
 static void IPrintIpConfiguration(WM_MESSAGE *pMsg)
 {
@@ -314,6 +324,43 @@ static void IPrintIpConnecting(WM_MESSAGE *pMsg)
 {
     TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_CONNECTED), "Connecting to AWS...");
     TEXT_SetTextColor(WM_GetDialogItem(pMsg->hWin, ID_TEXT_CONNECTED), GUI_MAKE_COLOR(0x00FFFF00));
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine: IUpdateFields_Slow
+ *---------------------------------------------------------------------------*/
+/** Update slow fields on the scren
+ *      
+ *  @param [in] pMsg	    WM_MESSAGE structure used by emWin to
+ *							to handle screen information.
+ */
+ /*---------------------------------------------------------------------------*/
+static void IUpdateFields_Slow(WM_MESSAGE * pMsg)
+{
+#if (UEZ_ENABLE_TCPIP_STACK == 1)
+  T_uezDevice activeDevice = NetworkGetPrimaryDevice();
+#else
+  T_uezDevice activeDevice = 0;
+#endif
+
+    if (activeDevice != previousDevice) { // force update on screen, and wait till next cycle to get ip
+        G_DHCP_Task_Has_IP = EFalse;
+        G_GUI_Has_Displayed_IP = EFalse;
+        previousDevice = activeDevice;
+        return;
+    }
+    if (activeDevice != 0) {
+      UEZNetworkGetStatus(activeDevice, &G_ActiveInterfaceStatus);
+      if (G_ActiveInterfaceStatus.iIPAddr.v4[0] != 0) {
+        G_DHCP_Task_Has_IP = ETrue;
+      } else {
+        G_DHCP_Task_Has_IP = EFalse;
+        G_GUI_Has_Displayed_IP = EFalse;
+      }
+    } else {
+        G_DHCP_Task_Has_IP = EFalse;
+        G_GUI_Has_Displayed_IP = EFalse;
+    }
 }
 
 /*---------------------------------------------------------------------------*
@@ -347,7 +394,12 @@ static void IUpdateFields(WM_MESSAGE *pMsg) {
 
   if (G_GUI_Has_Displayed_IP == ETrue) {
     if (xGetMQTTAgentState() == MQTT_AGENT_STATE_CONNECTED) {
+#ifdef MBEDTLS_SSL_PROTO_TLS1_3
+      TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_CONNECTED), "Connected - TLS 1.3");
+#else
       TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_CONNECTED), "Connected - TLS 1.2");
+#endif
+
       TEXT_SetTextColor(WM_GetDialogItem(pMsg->hWin, ID_TEXT_CONNECTED), GUI_MAKE_COLOR(0x0000FF00));
     } else {
       IPrintIpConnecting(pMsg);
@@ -358,23 +410,20 @@ static void IUpdateFields(WM_MESSAGE *pMsg) {
     }
   } else { // not displaed yet
     if (G_DHCP_Task_Has_IP == ETrue) {
-      T_uezNetworkStatus status = {0};
-      T_uezDevice activeDevice = NetworkGetActiveDevice(1); // query second device first
-      if (activeDevice != 0) {
-        UEZNetworkGetStatus(activeDevice, &status);
-      } else { // check first device
-        activeDevice = NetworkGetActiveDevice(0);
-        if (activeDevice != 0) {
-          UEZNetworkGetStatus(activeDevice, &status);
-        }
-      }
+      // checked for ip in a slower update fields routine 
 
-      if (status.iIPAddr.v4[0] != 0) {
+      if (G_ActiveInterfaceStatus.iIPAddr.v4[0] != 0) {
         snprintf(G_widget_buf, 32, "%d.%d.%d.%d\n",
-            status.iIPAddr.v4[0], status.iIPAddr.v4[1],
-            status.iIPAddr.v4[2], status.iIPAddr.v4[3]);
+            G_ActiveInterfaceStatus.iIPAddr.v4[0], G_ActiveInterfaceStatus.iIPAddr.v4[1],
+            G_ActiveInterfaceStatus.iIPAddr.v4[2], G_ActiveInterfaceStatus.iIPAddr.v4[3]);
         TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPCURR), G_widget_buf);
-        // TEXT_SetTextColor(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPCURR), GUI_MAKE_COLOR(0x00FFFF00));
+        TEXT_SetTextColor(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPCURR), GUI_MAKE_COLOR(0x00FFFF00));
+
+        if(G_ActiveInterfaceStatus.iInfo.iNetworkType == UEZ_NETWORK_TYPE_WIRED) {
+          TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPADDR), "Wired IP Address:");
+        } else {
+          TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPADDR), "Wi-Fi IP Address:");
+        }
 
         WM_ShowWindow(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPADDR));
         WM_ShowWindow(WM_GetDialogItem(pMsg->hWin, ID_TEXT_IPCURR));
@@ -419,15 +468,15 @@ static void IUpdateFields_Fast(WM_MESSAGE * pMsg)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine: IUpdateFields_Slow
+ * Routine: IUpdateFields_Slower
  *---------------------------------------------------------------------------*/
-/** Update slow fields on the scren
+/** Update slower fields on the screen (changing icons
  *      
  *  @param [in] pMsg	    WM_MESSAGE structure used by emWin to
  *							to handle screen information.
  */
  /*---------------------------------------------------------------------------*/
-static void IUpdateFields_Slow(WM_MESSAGE * pMsg)
+static void IUpdateFields_Slower(WM_MESSAGE * pMsg)
 {
     if(G_CurrentImage == 0) {
       IMAGE_SetBitmap(WM_GetDialogItem(pMsg->hWin, ID_IMAGE_0), &bmiotQrCode);
@@ -751,6 +800,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
                 IUpdateFields(pMsg);
             }
         }
+        if (NCode == G_UpdateTimer_Slower) {
+            WM_RestartTimer(G_UpdateTimer_Slower, UPDATE_TIME_MS_SLOWER);
+            if(G_Active){
+                IUpdateFields_Slower(pMsg);
+            }
+        }        
         if (NCode == G_UpdateTimer_Slow) {
             WM_RestartTimer(G_UpdateTimer_Slow, UPDATE_TIME_MS_SLOW);
             if(G_Active){

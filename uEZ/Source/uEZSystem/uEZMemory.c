@@ -182,7 +182,7 @@ static void ICheckAll(void)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void *UEZMemAlloc(TUInt32 aSize)
+void *UEZMemAlloc(size_t aSize)
 {
 #if UEZ_MEM_CHECK_MEMORY
     T_checkMemHeader *p; 
@@ -350,8 +350,10 @@ void UEZMemInit(void)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-void *UEZMemRealloc(void *aMemory, TUInt32 aSize)
+void *UEZMemRealloc(void *aMemory, size_t aSize)
 {
+    PARAM_NOT_USED(aMemory);
+    PARAM_NOT_USED(aSize);
     // TBD:
     return 0;
 }

@@ -84,6 +84,8 @@ typedef struct {
     TInt32 iPenYScaleTop;
     TInt32 iPenYScaleBottom;
 
+    T_uezSemaphore iSem;
+
     TInt32 iLastX;
     TInt32 iLastY;
     T_uezTSFlags iLastTouch;
@@ -110,6 +112,8 @@ void TS_ST1232_InterruptISR(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
+    PARAM_NOT_USED(aType);
+    PARAM_NOT_USED(aPortPins);
     T_ST1232Workspace *p = (T_ST1232Workspace *)aInterruptHandlerWorkspace;
     _isr_UEZSemaphoreRelease(p->iSemWaitForTouch);
 }
@@ -232,6 +236,7 @@ static void TS_ST1232_ApplyCalibration(
         TUInt32 *newX,
         TUInt32 *newY)
 {
+    PARAM_NOT_USED(p);
 #if 0
     TInt32 v;
 	
@@ -531,6 +536,50 @@ T_uezError Touchscreen_ST1232_Create(const char *aName,
     return error;
 }
 
+static T_uezError TS_ST1232_SetTouchDetectSensitivity(
+        void *aWorkspace,
+        TUInt16 aLowLevel,
+        TUInt16 aHighLevel)
+{
+  T_ST1232Workspace *p = (T_ST1232Workspace *)aWorkspace;
+
+  PARAM_NOT_USED(p);
+  PARAM_NOT_USED(aLowLevel);
+  PARAM_NOT_USED(aHighLevel);
+    //UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    // Shift down the sensitivity to be a 10 bit reading
+    // then multiply by the number of readings.
+    //p->iTDSLow = (aLowLevel>>6)*NUM_SAMPLES_PER_READING;
+    //p->iTDSHigh = (aHighLevel>>6)*NUM_SAMPLES_PER_READING;
+    //UEZSemaphoreRelease(p->iSem);
+
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+static T_uezError TS_ST1232_WaitForTouch(
+        void *aWorkspace,
+        TUInt32 aTimeout)
+{
+  T_ST1232Workspace *p = (T_ST1232Workspace *)aWorkspace;
+    T_uezError error;
+    //TUInt32 sense;
+
+    PARAM_NOT_USED(aTimeout);
+
+    // Grab the touch screen
+    error = UEZSemaphoreGrab(p->iSem, 100);
+    if (error)
+            return error;
+
+    // TODO make this function real if we ever need it.
+
+    // Done waiting
+    UEZSemaphoreRelease(p->iSem);
+
+    // Return a timeout, error, or positive results
+    //return error;
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -551,6 +600,10 @@ const DEVICE_TOUCHSCREEN Touchscreen_ST1232_Interface = {
         TS_ST1232_CalibrateStart,
         TS_ST1232_CalibrateAdd,
         TS_ST1232_CalibrateEnd,
+
+        TS_ST1232_SetTouchDetectSensitivity,
+
+        TS_ST1232_WaitForTouch,
 } ;
 
 /*-------------------------------------------------------------------------*

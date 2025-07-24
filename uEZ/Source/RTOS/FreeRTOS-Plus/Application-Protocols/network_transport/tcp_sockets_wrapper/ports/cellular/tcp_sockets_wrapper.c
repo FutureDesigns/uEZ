@@ -1,6 +1,6 @@
 /*
- * FreeRTOS V202212.01
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS V202411.00
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -349,6 +349,10 @@ static BaseType_t prvNetworkRecvCellular( const cellularSocketWrapper_t * pCellu
     {
         retRecvLength = ( BaseType_t ) recvLength;
     }
+    else if( socketStatus == CELLULAR_SOCKET_CLOSED )
+    {
+        retRecvLength = TCP_SOCKETS_ERRNO_ECLOSED;
+    }
     else
     {
         LogError( ( "prvNetworkRecv failed %d", socketStatus ) );
@@ -534,7 +538,7 @@ static BaseType_t prvCellularSocketRegisterCallback( CellularSocketHandle_t cell
 
         if( socketStatus != CELLULAR_SUCCESS )
         {
-            LogError( ( "Failed to SocketRegisterSocketOpenCallbac. Socket status %d.", socketStatus ) );
+            LogError( ( "Failed to SocketRegisterSocketOpenCallback. Socket status %d.", socketStatus ) );
             retRegCallback = TCP_SOCKETS_ERRNO_ERROR;
         }
     }

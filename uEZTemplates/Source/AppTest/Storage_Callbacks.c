@@ -248,7 +248,7 @@ TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
                   IPrintF("File Open Error: %s\n", fileName);
               }
             }
-            UEZTaskDelay(10); // delay to allow user interface to still be responsive to allow user to stop test
+            UEZTaskDelay(50); // delay to allow user interface to still be responsive to allow user to stop test
         }
 
         for (U16 i = 0; i < testIterations; i++) {
@@ -276,7 +276,7 @@ TUInt32 SDTask(T_uezTask aMyTask, void *aParams)
                   IPrintF("File Open Error: %s\n", fileName);
               }
             }
-            UEZTaskDelay(10); // delay to allow user interface to still be responsive to allow user to stop test
+            UEZTaskDelay(50); // delay to allow user interface to still be responsive to allow user to stop test
         }
             
         IPrintF("\nEnd file test\n");
@@ -365,7 +365,7 @@ void  IPrintF(const char *msg, ...)
   va_list args;
   va_start(args, msg);
   vsprintf(buffer, msg, args);
-  printf(buffer);
+  printf("%s", buffer);
   if(G_hMultiedit != 0){
     if((uint32_t) MULTIEDIT_GetTextSize(G_hMultiedit) > (STORAGE_ME_BUFF_SIZE-sizeof(buffer))) {
       MULTIEDIT_SetText(G_hMultiedit, buffer);
@@ -373,6 +373,7 @@ void  IPrintF(const char *msg, ...)
     } else {
       MULTIEDIT_AddText(G_hMultiedit, buffer);
     }
+    UEZTaskDelay(20);
   }
   va_end(args);
 }
@@ -491,7 +492,14 @@ T_uezError uEZFormatDrive(char driveLetter) {
       return UEZ_ERROR_FAIL;// Error closing file
     }
   } else {
-     return UEZ_ERROR_FAIL; // Error opening file
+    if(UEZToneGeneratorOpen("Speaker", &tone) == UEZ_ERROR_NONE) {
+       UEZToneGeneratorPlayTone(tone, TONE_GENERATOR_HZ(1000), 25);
+       UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+       UEZToneGeneratorClose(tone);
+    }
+    
+    IPrintF("Could not open a file!\n");
+    return UEZ_ERROR_FAIL; // Error opening file
   }
   return UEZ_ERROR_NONE;
 }

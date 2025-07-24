@@ -331,8 +331,10 @@ T_uezError GenericBulk_Stream_Control(
         TUInt32 aControl,
         void *aControlData)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aControl);
+    PARAM_NOT_USED(aControlData);
     //T_GenericBulk_Stream_Workspace *p = (T_GenericBulk_Stream_Workspace *)aWorkspace;
-
     // If we got here, the control was valid, but it could not be supported
     return UEZ_ERROR_NOT_SUPPORTED;
 }

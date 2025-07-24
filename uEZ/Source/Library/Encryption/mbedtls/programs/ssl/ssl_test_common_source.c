@@ -9,28 +9,16 @@
  *  This file is meant to be #include'd and cannot be compiled separately.
  *
  *  Copyright The Mbed TLS Contributors
- *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
-void eap_tls_key_derivation(void *p_expkey,
-                            mbedtls_ssl_key_export_type secret_type,
-                            const unsigned char *secret,
-                            size_t secret_len,
-                            const unsigned char client_random[32],
-                            const unsigned char server_random[32],
-                            mbedtls_tls_prf_types tls_prf_type)
+static void eap_tls_key_derivation(void *p_expkey,
+                                   mbedtls_ssl_key_export_type secret_type,
+                                   const unsigned char *secret,
+                                   size_t secret_len,
+                                   const unsigned char client_random[32],
+                                   const unsigned char server_random[32],
+                                   mbedtls_tls_prf_types tls_prf_type)
 {
     eap_tls_keys *keys = (eap_tls_keys *) p_expkey;
 
@@ -48,13 +36,13 @@ void eap_tls_key_derivation(void *p_expkey,
     keys->tls_prf_type = tls_prf_type;
 }
 
-void nss_keylog_export(void *p_expkey,
-                       mbedtls_ssl_key_export_type secret_type,
-                       const unsigned char *secret,
-                       size_t secret_len,
-                       const unsigned char client_random[32],
-                       const unsigned char server_random[32],
-                       mbedtls_tls_prf_types tls_prf_type)
+static void nss_keylog_export(void *p_expkey,
+                              mbedtls_ssl_key_export_type secret_type,
+                              const unsigned char *secret,
+                              size_t secret_len,
+                              const unsigned char client_random[32],
+                              const unsigned char server_random[32],
+                              mbedtls_tls_prf_types tls_prf_type)
 {
     char nss_keylog_line[200];
     size_t const client_random_len = 32;
@@ -118,13 +106,13 @@ exit:
 }
 
 #if defined(MBEDTLS_SSL_DTLS_SRTP)
-void dtls_srtp_key_derivation(void *p_expkey,
-                              mbedtls_ssl_key_export_type secret_type,
-                              const unsigned char *secret,
-                              size_t secret_len,
-                              const unsigned char client_random[32],
-                              const unsigned char server_random[32],
-                              mbedtls_tls_prf_types tls_prf_type)
+static void dtls_srtp_key_derivation(void *p_expkey,
+                                     mbedtls_ssl_key_export_type secret_type,
+                                     const unsigned char *secret,
+                                     size_t secret_len,
+                                     const unsigned char client_random[32],
+                                     const unsigned char server_random[32],
+                                     mbedtls_tls_prf_types tls_prf_type)
 {
     dtls_srtp_keys *keys = (dtls_srtp_keys *) p_expkey;
 
@@ -143,8 +131,8 @@ void dtls_srtp_key_derivation(void *p_expkey,
 }
 #endif /* MBEDTLS_SSL_DTLS_SRTP */
 
-int ssl_check_record(mbedtls_ssl_context const *ssl,
-                     unsigned char const *buf, size_t len)
+static int ssl_check_record(mbedtls_ssl_context const *ssl,
+                            unsigned char const *buf, size_t len)
 {
     int my_ret = 0, ret_cr1, ret_cr2;
     unsigned char *tmp_buf;
@@ -207,7 +195,7 @@ cleanup:
     return my_ret;
 }
 
-int recv_cb(void *ctx, unsigned char *buf, size_t len)
+static int recv_cb(void *ctx, unsigned char *buf, size_t len)
 {
     io_ctx_t *io_ctx = (io_ctx_t *) ctx;
     size_t recv_len;
@@ -235,8 +223,8 @@ int recv_cb(void *ctx, unsigned char *buf, size_t len)
     return (int) recv_len;
 }
 
-int recv_timeout_cb(void *ctx, unsigned char *buf, size_t len,
-                    uint32_t timeout)
+static int recv_timeout_cb(void *ctx, unsigned char *buf, size_t len,
+                           uint32_t timeout)
 {
     io_ctx_t *io_ctx = (io_ctx_t *) ctx;
     int ret;
@@ -260,7 +248,7 @@ int recv_timeout_cb(void *ctx, unsigned char *buf, size_t len,
     return (int) recv_len;
 }
 
-int send_cb(void *ctx, unsigned char const *buf, size_t len)
+static int send_cb(void *ctx, unsigned char const *buf, size_t len)
 {
     io_ctx_t *io_ctx = (io_ctx_t *) ctx;
 
@@ -304,22 +292,22 @@ int send_cb(void *ctx, unsigned char const *buf, size_t len)
 #endif
 
 uint16_t ssl_sig_algs_for_test[] = {
-#if defined(MBEDTLS_HAS_ALG_SHA_512_VIA_MD_OR_PSA_BASED_ON_USE_PSA)
+#if defined(MBEDTLS_MD_CAN_SHA512)
     MBEDTLS_SSL_SIG_ALG(MBEDTLS_SSL_HASH_SHA512)
 #endif
-#if defined(MBEDTLS_HAS_ALG_SHA_384_VIA_MD_OR_PSA_BASED_ON_USE_PSA)
+#if defined(MBEDTLS_MD_CAN_SHA384)
     MBEDTLS_SSL_SIG_ALG(MBEDTLS_SSL_HASH_SHA384)
 #endif
-#if defined(MBEDTLS_HAS_ALG_SHA_256_VIA_MD_OR_PSA_BASED_ON_USE_PSA)
+#if defined(MBEDTLS_MD_CAN_SHA256)
     MBEDTLS_SSL_SIG_ALG(MBEDTLS_SSL_HASH_SHA256)
 #endif
-#if defined(MBEDTLS_HAS_ALG_SHA_224_VIA_MD_OR_PSA_BASED_ON_USE_PSA)
+#if defined(MBEDTLS_MD_CAN_SHA224)
     MBEDTLS_SSL_SIG_ALG(MBEDTLS_SSL_HASH_SHA224)
 #endif
-#if defined(MBEDTLS_RSA_C) && defined(MBEDTLS_HAS_ALG_SHA_256_VIA_MD_OR_PSA_BASED_ON_USE_PSA)
+#if defined(MBEDTLS_RSA_C) && defined(MBEDTLS_MD_CAN_SHA256)
     MBEDTLS_TLS1_3_SIG_RSA_PSS_RSAE_SHA256,
-#endif /* MBEDTLS_RSA_C && MBEDTLS_SHA256_C */
-#if defined(MBEDTLS_HAS_ALG_SHA_1_VIA_MD_OR_PSA_BASED_ON_USE_PSA)
+#endif /* MBEDTLS_RSA_C && MBEDTLS_MD_CAN_SHA256 */
+#if defined(MBEDTLS_MD_CAN_SHA1)
     /* Allow SHA-1 as we use it extensively in tests. */
     MBEDTLS_SSL_SIG_ALG(MBEDTLS_SSL_HASH_SHA1)
 #endif
@@ -331,8 +319,8 @@ uint16_t ssl_sig_algs_for_test[] = {
 /** Functionally equivalent to mbedtls_x509_crt_verify_info, see that function
  *  for more info.
  */
-int x509_crt_verify_info(char *buf, size_t size, const char *prefix,
-                         uint32_t flags)
+static int x509_crt_verify_info(char *buf, size_t size, const char *prefix,
+                                uint32_t flags)
 {
 #if !defined(MBEDTLS_X509_REMOVE_INFO)
     return mbedtls_x509_crt_verify_info(buf, size, prefix, flags);
@@ -364,7 +352,8 @@ int x509_crt_verify_info(char *buf, size_t size, const char *prefix,
 }
 #endif /* MBEDTLS_X509_CRT_PARSE_C */
 
-void mbedtls_print_supported_sig_algs(void)
+#if defined(MBEDTLS_SSL_HANDSHAKE_WITH_CERT_ENABLED)
+static void mbedtls_print_supported_sig_algs(void)
 {
     mbedtls_printf("supported signature algorithms:\n");
     mbedtls_printf("\trsa_pkcs1_sha256 ");
@@ -385,3 +374,4 @@ void mbedtls_print_supported_sig_algs(void)
     mbedtls_printf("ecdsa_sha1\n");
     mbedtls_printf("\n");
 }
+#endif /* MBEDTLS_SSL_HANDSHAKE_WITH_CERT_ENABLED */

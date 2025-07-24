@@ -181,7 +181,7 @@ T_uezError Generic_BacklightPWMControlled_SetRatio(void *aW, TUInt16 aRatio)
 
     error = BacklightPWMControlled_SetPWMLevel(p, delta);    
     if (error == UEZ_ERROR_NONE) {
-        if (delta == p->iPWMLowPeriod) {
+        if (delta == (long) p->iPWMLowPeriod) {
             p->iIsOn = EFalse;
             p->iPWMLastOnSetting = delta;
         } else {

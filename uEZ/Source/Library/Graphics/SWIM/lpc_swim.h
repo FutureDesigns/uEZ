@@ -28,15 +28,15 @@
 #ifndef LPC_SWIM_H
 #define LPC_SWIM_H
 
+#include <Config.h> // gets LCD selection from Config_Build.h
+
 #ifndef UEZ_LIBRARY
-#include <Config_Build.h>
 #include <Device/LCD/Config_LCD.h>
 #endif
    
-#include <Config.h>
-#include <uEZLCD.h>
+//#include <uEZLCD.h>
 
-#include "lpc_types.h"
+//#include "lpc_types.h"
 #include "lpc_fonts.h"
 #include "lpc_colors.h"
 
@@ -46,7 +46,7 @@ extern "C"
 #endif
    
 // Move this here (instead of SimpleUI_Types.h) to prevent some of the circular includes.
-#include <uEZTypes.h>
+//#include <uEZTypes.h> // this will get included above already
 
 #if (UEZ_LCD_COLOR_DEPTH==UEZLCD_COLOR_DEPTH_8_BIT) // 8-bit pixels
 //#pragma message("       T_pixelColor is TUInt8.")

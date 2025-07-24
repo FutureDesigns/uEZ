@@ -59,6 +59,8 @@ bool Endpoint_ConfigureEndpoint_Prv(uint8_t corenum,
 									const uint8_t UECFG0XData,
 									const uint8_t UECFG1XData)
 {
+  (void)(UECFG0XData);
+  (void)(UECFG1XData);
 #if defined(CONTROL_ONLY_DEVICE) || defined(ORDERED_EP_CONFIG)
 	Endpoint_SelectEndpoint(corenum, Number);
 	Endpoint_EnableEndpoint();

@@ -27,7 +27,7 @@
 #include <SafeRTOSConfig.h>
 #endif
 #if (COMPILER_TYPE == GCC_ARM)
-#include <intrinsics.h>
+//#include <intrinsics.h> // not available in MCUXpresso, don't use.
 #endif
 #include <Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.h>
 
@@ -56,7 +56,8 @@ static T_irqHandleStruct G_isrArray[UEZ_MAX_IRQ_CHANNELS];
 void InterruptFatalError(void)
 {
     // Disable all interrupts
-    __disable_interrupt();
+    __disable_irq(); // uses cpsi intrisics from common CMSIS files
+    //CPUDisableInterrupts() // use MSR basepri intrinsics
     
     while(1)  {
         //TBD: Report error in some form
@@ -98,6 +99,7 @@ void InterruptRegister(
         T_irqPriority aPriority,
         const char * const aName)
 {
+    (void)(aName);
     T_irqHandleStruct *p;
 
     // Reject attempts to allocate more ISRs than available

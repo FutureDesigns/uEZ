@@ -56,7 +56,7 @@
 
 
 #ifndef FREERTOS_HEAP_SELECTION
-#define FREERTOS_HEAP_SELECTION  3
+#define FREERTOS_HEAP_SELECTION  4
 #endif
 
 #ifndef __HEAP_SIZE__

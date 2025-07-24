@@ -57,6 +57,8 @@ typedef struct {
     HAL_Timer **iTimer;
     TUInt32 iReleaseTimeCPUCycles;
     TUInt32 iDriveTimeMS;
+
+    T_uezSemaphore iSemEmpty;
 } T_RS485_Generic_Timer_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -87,6 +89,8 @@ T_uezError RS485_Generic_Timer_InitializeWorkspace(void *aW)
     p->iNumOpen = 0;
     p->iDriveEnablePort = 0;
     p->iCountdown = 0;
+    UEZSemaphoreCreateBinary(&p->iSemEmpty);
+    UEZSemaphoreGrab(p->iSemEmpty,  0);
 
     // Then create a semaphore to limit the number of accessors
     error = UEZSemaphoreCreateBinary(&p->iSem);
@@ -180,6 +184,7 @@ static void ISerialGeneric_TimerCallbackTransmitEmpty(
     } else {
         // No more data to send
         p->iTxBusy = EFalse;
+        _isr_UEZSemaphoreRelease(p->iSemEmpty);
 
         // Set the time it takes until we get a match
         (*p->iTimer)->SetMatchRegister(p->iTimer, 0,
@@ -248,6 +253,11 @@ T_uezError RS485_Generic_Timer_Configure(
     p->iReleaseTimeCPUCycles = aReleaseTimeCPUCycles;
     p->iDriveTimeMS = aDriveTimeMS;
     p->iCountdown = 0;
+
+#if UEZ_REGISTER
+    UEZSemaphoreSetName(p->iSemEmpty, "Empty", (*(p->iSerial))->iInterface.iName);
+    UEZSemaphoreSetName(p->iSemEmpty, "Serial", (*(p->iSerial))->iInterface.iName);
+#endif
 
     // Create queue to hold sending data
     error = UEZQueueCreate(aQueueSendSize, 1, &p->iQueueSend);
@@ -470,6 +480,7 @@ T_uezError RS485_Generic_Timer_Write(
 
             // Declare transmit busy
             p->iTxBusy = ETrue;
+            UEZSemaphoreGrab(p->iSemEmpty, 0);
             p->iDidOutput = ETrue;
             error = (*p->iSerial)->OutputByte((T_halWorkspace *)p->iSerial,
                 *aData);
@@ -569,6 +580,35 @@ T_uezError RS485_Generic_Timer_Create(
         aSettings->iDriveTime);
 }
 
+
+T_uezError RS485_Generic_Timer_Flush(void *aWorkspace)
+{
+    // Decrement use count.  Are we done?
+  T_RS485_Generic_Timer_Workspace *p = (T_RS485_Generic_Timer_Workspace *)aWorkspace;
+    T_uezError error = UEZ_ERROR_NONE;
+
+    // Send bytes one at a time
+    UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+
+    // Don't let interrupts occur while we do this one
+    (*p->iSerial)->Deactivate((T_halWorkspace *)p->iSerial);
+
+    // Are we currently busy sending data?
+    if (p->iTxBusy) {
+        (*p->iSerial)->Activate((T_halWorkspace *)p->iSerial);
+        // Yes, busy, wait for it to flush
+        error = UEZSemaphoreGrab(p->iSemEmpty, UEZ_TIMEOUT_INFINITE);
+    } else {
+        (*p->iSerial)->Activate((T_halWorkspace *)p->iSerial);
+        // Transmit is not busy yet.  But we're about to be
+    }
+
+    UEZSemaphoreRelease(p->iSem);
+
+    // Report final error
+    return error;
+}
+
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -587,7 +627,8 @@ const DEVICE_STREAM RS485_Generic_Timer_Stream_Interface = {
     RS485_Generic_Timer_Control,
     RS485_Generic_Timer_Read,
     RS485_Generic_Timer_Write,
-    // TODO: Need RS485_Generic_Timer_Flush!
+
+    RS485_Generic_Timer_Flush, // TODO: test, copied from other generic
 };
 
 /*-------------------------------------------------------------------------*

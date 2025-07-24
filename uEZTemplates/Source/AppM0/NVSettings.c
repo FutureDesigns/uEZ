@@ -169,6 +169,7 @@ T_uezError NVSettingsGetMACAddress(TUInt8 *aMACAddress)
 
 void *UEZEMACGetMACAddr(TUInt32 aUnitNumber)
 {
+    PARAM_NOT_USED(aUnitNumber);
     extern T_nonvolatileSettings G_nonvolatileSettings;
     return G_nonvolatileSettings.iMACAddr;
 }
@@ -217,35 +218,35 @@ T_uezError uEZFormatDrive(char driveLetter) {
 
     sprintf(buff, "Device Formated:\n");
     UEZFileWrite(file, buff, strlen(buff), &numWritten);
-    printf(buff);
+    printf("%s",buff);
 
     T_msSizeInfo aDeviceInfo;
     if (UEZFileSystemGetStorageInfo(drivePath, &aDeviceInfo) == UEZ_ERROR_NONE) {
-        sprintf(buff, "Storage Medium Report:\n  Sectors: %u\n", aDeviceInfo.iNumSectors);           
+        sprintf(buff, "Storage Medium Report:\n  Sectors: %u\n", (unsigned int) aDeviceInfo.iNumSectors);
         UEZFileWrite(file, buff, strlen(buff), &numWritten);
-        printf(buff);
+        printf("%s",buff);
 
         sprintf(buff, "  Sector Size: %u\n  Block Size: %u\n",
-            aDeviceInfo.iSectorSize, aDeviceInfo.iBlockSize);
+          (unsigned int) aDeviceInfo.iSectorSize, (unsigned int) aDeviceInfo.iBlockSize);
         UEZFileWrite(file, buff, strlen(buff), &numWritten);
-        printf(buff);
+        printf("%s",buff);
     }
 
     T_uezFileSystemVolumeInfo aFSInfo;
     if (UEZFileSystemGetVolumeInfo(drivePath, &aFSInfo) == UEZ_ERROR_NONE) {
         sprintf(buff, "File System Report:\n");
         UEZFileWrite(file, buff, strlen(buff), &numWritten);
-        printf(buff);
+        printf("%s",buff);
 
         sprintf(buff, "  Bytes Per Sector: %u\n  Sectors Per Cluster: %u\n", 
-            aFSInfo.iBytesPerSector, aFSInfo.iSectorsPerCluster);
+          (unsigned int) aFSInfo.iBytesPerSector, (unsigned int) aFSInfo.iSectorsPerCluster);
         UEZFileWrite(file, buff, strlen(buff), &numWritten);
-        printf(buff);
+        printf("%s",buff);
 
         sprintf(buff, "  Num Clusters Total: %u\n  Num Clusters Free: %u\n",
-            aFSInfo.iNumClustersTotal, aFSInfo.iNumClustersFree);
+          (unsigned int) aFSInfo.iNumClustersTotal, (unsigned int) aFSInfo.iNumClustersFree);
         UEZFileWrite(file, buff, strlen(buff), &numWritten);
-        printf(buff);
+        printf("%s",buff);
     }
 
     if (UEZFileClose(file) != UEZ_ERROR_NONE) {             

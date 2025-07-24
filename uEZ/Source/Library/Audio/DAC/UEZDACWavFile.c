@@ -506,7 +506,7 @@ T_uezError UEZDACWAVConfig(const char* aTimer)
                 if(error == UEZ_ERROR_NONE){
                     error = (*G_DACFileWorkspace.iTimer)->SetMatchCallback(G_DACFileWorkspace.iTimer,
                                                                            0,
-                                                                           (T_HALTimer_Callback)&playDACAudio,
+                                                                           (T_HALTimer_Callback)&playDACAudio, //
                                                                            &G_DACFileWorkspace);
                 }
 
@@ -592,6 +592,7 @@ static T_HALTimer_Callback playDACAudio(void * workspace)
     TUInt32 v;
     TUInt16 r;
 
+    PARAM_NOT_USED(workspace);
     if(!G_DACFileWorkspace.iPause){
         if (!G_DACFileWorkspace.iPlayFromMem) {
             if (G_DACFileWorkspace.iUseBuffer1) { // if use buffer1
@@ -736,6 +737,8 @@ static void DACAudioTask(void)
 //used with Play buffer
 static TUInt32 MuteTask(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     UEZSemaphoreGrab(G_DACFileWorkspace.iStopSem, UEZ_TIMEOUT_INFINITE);
     UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
     return 1;

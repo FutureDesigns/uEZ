@@ -54,7 +54,7 @@ typedef struct {
     TUInt32 iReceiveEnableReleaseCountdown;
 } T_RS485_GenericHalfDuplex_Workspace;
 
-static void RS485_GenericHalfDuplex_MonitorDriveEnable(
+static TUInt32 RS485_GenericHalfDuplex_MonitorDriveEnable(
                 T_uezTask aMyTask, 
                 void *aWorkspace);
 
@@ -495,10 +495,11 @@ T_uezError RS485_GenericHalfDuplex_Control(
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
-static void RS485_GenericHalfDuplex_MonitorDriveEnable(
+static TUInt32 RS485_GenericHalfDuplex_MonitorDriveEnable(
                 T_uezTask aMyTask, 
                 void *aWorkspace)
 {
+    PARAM_NOT_USED(aMyTask);
     T_RS485_GenericHalfDuplex_Workspace *p = 
         (T_RS485_GenericHalfDuplex_Workspace *)aWorkspace;
     T_serialStatusByte status;
@@ -602,6 +603,9 @@ static void RS485_GenericHalfDuplex_MonitorDriveEnable(
             UEZSemaphoreRelease(p->iSem);
         }
     }
+#ifdef __GNUC__
+    return 0;
+#endif
 }
 
 T_uezError RS485_GenericHalfDuplex_Create(

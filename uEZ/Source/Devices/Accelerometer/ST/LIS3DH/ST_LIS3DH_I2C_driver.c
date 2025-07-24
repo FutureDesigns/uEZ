@@ -128,6 +128,8 @@ T_uezError ST_Accelo_LIS3DH_I2C_GetInfo(
         void *aWorkspace,
         AccelerometerInfo *aInfo)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInfo);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 

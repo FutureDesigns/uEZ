@@ -660,6 +660,8 @@ socket_example_test(void* arg)
 void socket_examples_init(void)
 {
   int addr_ok;
+  (void)(addr_ok);
+  (void)(cmpbuf);
 #if LWIP_IPV6
   IP_SET_TYPE_VAL(dstaddr, IPADDR_TYPE_V6);
   addr_ok = ip6addr_aton(SOCK_TARGET_HOST6, ip_2_ip6(&dstaddr));

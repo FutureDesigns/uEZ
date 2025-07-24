@@ -44,7 +44,7 @@ static void IEnsureInit(void)
   }
 }
 
-#if FF_USE_LFN == 3	/* Dynamic memory allocation */ // TODO not tested yet
+#if (FF_USE_LFN == 3)	/* Dynamic memory allocation on heap */ // TODO not tested yet
 
 #include <stdlib.h>		/* with POSIX API */
 /*------------------------------------------------------------------------*/
@@ -111,7 +111,6 @@ T_uezError FATFS_RegisterMassStorageDevice(
                                            TUInt32 aSlot,
                                            DEVICE_MassStorage **aMS)
 {
-  char message[10];
   IEnsureInit();
   if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
     return UEZ_ERROR_OUT_OF_RANGE;
@@ -120,16 +119,29 @@ T_uezError FATFS_RegisterMassStorageDevice(
     return UEZ_ERROR_NOT_AVAILABLE;
   
   G_fatfsMassStorageDevices[aSlot] = aMS;
-  //    f_mount(aSlot, &G_fatfs[aSlot]);
-  sprintf(message, "%u:", aSlot);
-  f_mount(G_fatfs+aSlot, message, 1);
+
+#if ((FF_LFN_UNICODE == 1) && (FF_LFN_UNICODE == 1)) // WCHAR
+#error Must setup uint16_t wide character mount and pathnames in diskio! Not tested!
+#endif
+#if ((FF_LFN_UNICODE == 1) && (FF_LFN_UNICODE == 3)) // DWORD
+#error Must setup DWORD character mount and pathnames in diskio! Not tested!
+#endif
+
+#if 1 //(DISABLE_FEATURES_FOR_BOOTLOADER == 1)
+  // We only support the 1 byte ascii drive letter, so use this smaller implementation.
+  TCHAR driveLetter = aSlot + 0x30;
+  TCHAR drivePath[3] = {driveLetter,':',0};
+#else
+  char drivePath[6]; // sprintf takes up more code space, and it takes up extra if you also have snprintf
+  sprintf(drivePath, "%u:", aSlot);
+#endif  
+  f_mount(G_fatfs+aSlot, drivePath, 1); // char drivePath only works with FF_USE_LFN=0 or Unicode UTF-8
   
   return UEZ_ERROR_NONE;
 }
 
 T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
 {
-  char message[10];
   IEnsureInit();
   if (aSlot >= FATFS_MAX_MASS_STORAGE_DEVICES)
     return UEZ_ERROR_OUT_OF_RANGE;
@@ -138,8 +150,16 @@ T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
   if (G_fatfsMassStorageDevices[aSlot] == 0)
     return UEZ_ERROR_NONE;
   
-  sprintf(message, "%u:", aSlot);
-  f_mount(G_fatfs+aSlot, message, 0);
+#if 1 // (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
+  // We only support the 1 byte ascii drive letter, so use this smaller implementation.
+  TCHAR driveLetter = aSlot + 0x30;
+  TCHAR drivePath[3] = {driveLetter,':',0};
+#else
+  char drivePath[6]; // sprintf takes up more code space, and it takes up extra if you also have snprintf
+  sprintf(drivePath, "%u:", aSlot);
+#endif
+  f_mount(G_fatfs+aSlot, drivePath, 0); // char drivePath only works with FF_USE_LFN=0 or Unicode UTF-8
+
   // Clear the slot for the next drive
   memset(G_fatfs+aSlot, 0, sizeof(G_fatfs[aSlot]));
   

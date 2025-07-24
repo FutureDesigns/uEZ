@@ -48,9 +48,25 @@
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.h>
 #include "emWin/WindowManager.h"
+#include <uEZMemory.h>
 #include "Calibration.h"
 
 #include <HAL/GPIO.h>
+#include <uEZGPIO.h>
+
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  4
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
+#endif
 
 #define HEARTBEAT_BLINK_DELAY			 250
 
@@ -184,6 +200,7 @@ void MainTask(void)
     UEZTaskCreate(Heartbeat, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 
     //UEZTaskCreate(FakeScore, "FakeScore", 256, (void *)0, UEZ_PRIORITY_NORMAL, 0);
+    (void)FakeScore;
 
 #if UEZ_ENABLE_USB_DEVICE_STACK
     if (G_usbIsDevice) {

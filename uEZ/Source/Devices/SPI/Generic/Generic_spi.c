@@ -224,6 +224,7 @@ static void ISPI_Generic_CompleteCallback(
     void *aWorkspace,
     SPI_Request *aRequest)
 {
+    PARAM_NOT_USED(aRequest);
     T_SPI_Generic_Workspace *p = (T_SPI_Generic_Workspace *)aWorkspace;
 
     // The transfer is complete, report we are done (still in the IRQ!)

@@ -1,11 +1,11 @@
 # Static code analysis for corePKCS11 library
 This directory is made for the purpose of statically testing the MISRA C:2012 compliance of corePKCS11 using
-[Synopsys Coverity](https://www.synopsys.com/software-integrity/security-testing/static-analysis-sast.html) static analysis tool.
+[Synopsys Coverity](https://www.blackduck.com/static-analysis-tools-sast/coverity.html) static analysis tool.
 To that end, this directory provides a [configuration file](https://github.com/FreeRTOS/corePKCS11/blob/main/tools/coverity/misra.config) to use when
 building a binary for the tool to analyze.
 
 > **Note**
-For generating the report as outlined below, we have used Coverity version 2018.09.
+For generating the report as outlined below, we have used Coverity version 2023.6.1.
 
 For details regarding the suppressed violations in the report (which can be generated using the instructions described below), please
 see the [MISRA.md](https://github.com/FreeRTOS/corePKCS11/blob/main/MISRA.md) file.
@@ -31,7 +31,7 @@ Go to the root directory of the library and run the following commands in termin
   ~~~
 2. Create the build files using CMake in a `build` directory
   ~~~
-  cmake -B build -S test
+  cmake -B build -S test -DCOV_ANALYSIS=1
   ~~~
 3. Go to the build directory and copy the coverity configuration file
   ~~~
@@ -62,7 +62,7 @@ Go to the root directory of the library and run the following commands in termin
 For your convenience the commands above are below to be copy/pasted into a UNIX command friendly terminal.
  ~~~
  cov-configure --force --compiler cc --comptype gcc;
- cmake -B build -S test;
+ cmake -B build -S test -DCOV_ANALYSIS=1;
  cd build/;
  cov-build --emit-complementary-info --dir cov-out make coverity_analysis;
  cd cov-out/

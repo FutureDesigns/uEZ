@@ -411,6 +411,11 @@ T_uezError Lumex_SO2004DSR_Read(
             TUInt32 *aNumBytesRead,
             TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aNumBytes);
+    PARAM_NOT_USED(aNumBytesRead);
+    PARAM_NOT_USED(aTimeout);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -438,6 +443,9 @@ T_uezError Lumex_SO2004DSR_Write(
             TUInt32 *aNumBytesWritten,
             TUInt32 aTimeout)
 {
+
+    PARAM_NOT_USED(aTimeout);
+
     // Decrement use count.  Are we done?
     T_Lumex_SO2004DSR_Workspace *p = (T_Lumex_SO2004DSR_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
@@ -483,6 +491,8 @@ T_uezError Lumex_SO2004DSR_Control(
             void *aInstructionData)
 {
     T_Lumex_SO2004DSR_Workspace *p = (T_Lumex_SO2004DSR_Workspace *)aWorkspace;
+    PARAM_NOT_USED(p);
+    PARAM_NOT_USED(aInstructionData);
 
     // Process the command
     switch (aInstruction)  {
@@ -498,11 +508,13 @@ T_uezError Lumex_SO2004DSR_Control(
  * Device Interface table:
  *---------------------------------------------------------------------------*/
 const DEVICE_STREAM Lumex_SO2004DSR_Stream_Interface = {
-    // Generic device interface
-    "CharDisplay:Lumex:SO2004DSR",
-    0x0100,
-    Lumex_SO2004DSR_InitializeWorkspace,
-    sizeof(T_Lumex_SO2004DSR_Workspace),
+    {
+      // Generic device interface
+      "CharDisplay:Lumex:SO2004DSR",
+      0x0100,
+      Lumex_SO2004DSR_InitializeWorkspace,
+      sizeof(T_Lumex_SO2004DSR_Workspace),
+    },
 
     // Functions
     Lumex_SO2004DSR_Open,

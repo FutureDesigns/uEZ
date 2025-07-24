@@ -174,7 +174,7 @@ T_uezError UEZLCDOff(T_uezDevice aLCDDevice);
  *
  *	@return		T_uezError
  */	
-__WEAK T_uezError UEZLCDBacklight(
+T_uezError UEZLCDBacklight(
             T_uezDevice aLCDDevice, 
             TUInt32 aLevel);
 						

@@ -40,12 +40,12 @@
 
 #define UEZ_PROCESSOR                       NXP_LPC4357
 
-#ifndef USE_RESISTIVE_TOUCH
-    #define USE_RESISTIVE_TOUCH                0
-#endif
-
 #ifndef LPC43XX_ENABLE_M0_CORES
     #define LPC43XX_ENABLE_M0_CORES  0 // Must set to 1 to enable cores at bootup. If second core project is missing it will fault.
+#endif
+
+#ifndef USE_RESISTIVE_TOUCH
+    #define USE_RESISTIVE_TOUCH                0
 #endif
 
 #ifndef UEZ_ENABLE_TOUCHSCREEN_CALIBRATION
@@ -301,6 +301,18 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
 void UEZPlatform_Console_ISPHeader_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART0_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART1_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART2_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
+void UEZPlatform_FullDuplex_UART3_Require(
+        TUInt32 aWriteBufferSize,
+        TUInt32 aReadBufferSize);
 void UEZPlatform_CRC0_Require(void);
 void UEZPlatform_DAC0_Require(void);
 void UEZPlatform_EEPROM_I2C_Require(void);
@@ -347,6 +359,7 @@ void UEZPlatform_USBHost_USB1_Serial_Require(void);
 void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
+void UEZPlatform_WirelessNetwork1_Require(void);
 
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);

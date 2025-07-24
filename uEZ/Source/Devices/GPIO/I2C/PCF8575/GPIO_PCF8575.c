@@ -127,6 +127,7 @@ T_uezError GPIO_PCF8575_Configure(void *aWorkspace, TUInt32 aUsablePins)
 {
     //    T_GPIO_PCF8575_Workspace *p = (T_GPIO_PCF8575_Workspace *)aWorkspace;
 
+    PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aUsablePins);
 
     return UEZ_ERROR_NOT_SUPPORTED;
@@ -372,7 +373,9 @@ T_uezError GPIO_PCF8575_DisableInterrupts_NotSupported(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aPortPins);PARAM_NOT_USED(aType);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
+    PARAM_NOT_USED(aType);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -380,7 +383,8 @@ T_uezError GPIO_PCF8575_ClearInterrupts_NotSupported(
         void *aWorkspace,
         TUInt32 aPortPins)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aPortPins);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -390,7 +394,10 @@ T_uezError GPIO_PCF8575_ConfigureInterruptCallback_NotSupported(
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aInterruptCallback);PARAM_NOT_USED(aInterruptCallbackWorkspace);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
+    PARAM_NOT_USED(aInterruptCallback);
+    PARAM_NOT_USED(aInterruptCallbackWorkspace);
 
     // No IRQs on these
     return UEZ_ERROR_NOT_SUPPORTED;

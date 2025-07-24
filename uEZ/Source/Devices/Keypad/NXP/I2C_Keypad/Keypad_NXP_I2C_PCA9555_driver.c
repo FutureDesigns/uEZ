@@ -454,7 +454,7 @@ static TBool Keypad_NXP_PCA9555_Callback(
  *      T_uezTask aMyTask           -- This task
  *      void *aParameters           -- Passed in workspace
  *---------------------------------------------------------------------------*/
-static void Keypad_NXP_I2C_PCA9555_Monitor(
+static TUInt32 Keypad_NXP_I2C_PCA9555_Monitor(
         T_uezTask aMyTask, 
         void *aParameters)
 {
@@ -525,6 +525,9 @@ static void Keypad_NXP_I2C_PCA9555_Monitor(
             IRelease(p);
         }
     }
+#ifdef __GNUC__
+    return 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*
@@ -616,6 +619,8 @@ T_uezError Keypad_NXP_PCA9555_Configure(
         const char *aExternalInterruptsName,
         TUInt8 aExternalInterruptChannel)
 {
+  (void)(aExternalInterruptsName);
+  PARAM_NOT_USED(aExternalInterruptChannel);
     T_Keypad_NXP_I2C_PCA9555_Workspace *p = 
         (T_Keypad_NXP_I2C_PCA9555_Workspace *)aWorkspace;
     

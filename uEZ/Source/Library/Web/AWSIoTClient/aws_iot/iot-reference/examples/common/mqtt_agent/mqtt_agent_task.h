@@ -61,15 +61,17 @@ typedef void (* IncomingPubCallback_t )( void * pvIncomingPublishCallbackContext
  * @brief Starts the MQTT agent task.
  * MQTT agent task calls MQTTAgent_CommandLoop(), until MQTTAgent_Terminate()
  * is called. If an error occurs in the command loop, then it will reconnect the
- * TCP and MQTT connections.
+ * TCP and MQTT connections. The task will exit on failure, and can be restarted on a new network interface.
  *
  * @param[in] uxStackSize Stack size for MQTT agent task.
  * @param[in] uxPriority Priority of MQTT agent task.
+ * @param[in] aNetwork network device handle to use.
  * @param[in] pxCreatedTask task handle.
  */
 BaseType_t xMQTTAgentInit( configSTACK_DEPTH_TYPE uxStackSize,
-                           UBaseType_t uxPriority, TaskHandle_t * const pxCreatedTask );
-
+                           UBaseType_t uxPriority,
+                           T_uezDevice aNetwork,
+                           TaskHandle_t * const pxCreatedTask );
 
 /**
  * @brief Get the current state of MQTT agent.
@@ -127,6 +129,5 @@ BaseType_t xAddMQTTTopicFilterCallback( const char * pcTopicFilter,
 void vRemoveMQTTTopicFilterCallback( const char * pcTopicFilter,
                                      uint16_t usTopicFilterLength );
 
-extern T_uezDevice gNetwork;
 
 #endif /* ifndef _MQTT_AGENT_TASK_H_ */

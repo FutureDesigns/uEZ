@@ -97,6 +97,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_InitializeWorkspace(void *aW)
 T_uezError Flash_NXP_LPC_SPIFI_M4_Open(void *aWorkspace)
 {
     // Nothing to do
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 
@@ -116,6 +117,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_Open(void *aWorkspace)
 T_uezError Flash_NXP_LPC_SPIFI_M4_Close(void *aWorkspace)
 {
     // Nothing to do
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 
@@ -309,6 +311,9 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_QueryReg(
         TUInt32 aReg,
         TUInt32 *aValue)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aReg);
+    PARAM_NOT_USED(aValue);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -355,6 +360,7 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_GetBlockInfo(
         TUInt32 aOffset,
         T_FlashBlockInfo *aBlockInfo)
 {
+    PARAM_NOT_USED(aOffset);
     T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
 
     aBlockInfo->iOffset = 0;

@@ -667,6 +667,8 @@ T_uezError LPC43xx_GPDMA_LastSingleRequest(
  *---------------------------------------------------------------------------*/
 static TBool LPC43xx_GPDMA_IsValidAddress(TUInt32 aAddr)
 {
+
+    PARAM_NOT_USED(aAddr);
     // On the LPC43xx, all addresses are valid
     return ETrue;
 }

@@ -20,7 +20,7 @@
 extern void CRYPTO_ConfigureThreading(void);
 #endif
 
-#//warning "TODO: Implement hardware-specific stuff"
+//#//warning "TODO: Implement hardware-specific stuff"
 #if 0
 #include "fsl_common.h"
 #else
@@ -6566,6 +6566,9 @@ void vHwMonitorentropyTask(void *pvParameters)
   T_uezDevice acc_device;
   DEVICE_Accelerometer **G_accel0;
   AccelerometerReading reading;
+
+  PARAM_NOT_USED(pvParameters);
+
   G_Entroy_Index = UEZTickCounterGet();
 
   // char number[12];
@@ -6629,6 +6632,8 @@ int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t 
   uint8_t *pData = (uint8_t *)output;
   size_t dataSize = len;
   uint32_t i, j;
+
+  PARAM_NOT_USED(data);
 
   do {
     /* Read Entropy.*/
@@ -6824,10 +6829,27 @@ static void CRYPTO_ConfigureThreadingMcux(void)
                               mcux_mbedtls_mutex_unlock);
 }
 
-#include <time.h>
+// Include both of these before the below define checks and include that before time.h
+#include <stdint.h>
+#include <stdlib.h>
+//#include <stdbool.h> /* for int types */
+
+#ifndef _CLOCK_T_ // Rowley Runtime
+  //#undef __CLOCK_T_DEFINED // not needed or used in Rowley yet
+#else // Standard GCC runtime
+  #ifndef __machine_clock_t_defined
+    #define __machine_clock_t_defined
+    typedef       _CLOCK_T_       clock_t;
+    #define __clock_t_defined
+    #define _CLOCK_T_DECLARED
+  #endif
+#endif
+
+#include <time.h> // TODO can we include time.h yet on IAR and does it work?
 #include <sys/time.h> // uez has own timeval definition
 #include <uEZTimeDate.h>
 
+// get time in seconds since epoc
 time_t get_system_rtc_time_t( time_t *arg )
 {  
   struct tm current_time_val;
@@ -6852,6 +6874,25 @@ time_t get_system_rtc_time_t( time_t *arg )
   } else {
     return (time_t)(-1);
   }
+}
+
+#include <unistd.h>
+// get milliseconds time since epoc - untested so far
+mbedtls_ms_time_t mbedtls_ms_time(void)
+{
+    time_t ret;
+    //mbedtls_ms_time_t current_ms;
+
+    ret = get_system_rtc_time_t(NULL);
+    if (ret) {
+        return ret * 1000;
+    } else {
+        return 1000;
+    }
+    
+    //struct timespec tv;
+    //current_ms = tv.tv_sec;
+    //return current_ms*1000 + tv.tv_nsec / 1000000;
 }
 
 #endif /* defined(MBEDTLS_MCUX_FREERTOS_THREADING_ALT) */

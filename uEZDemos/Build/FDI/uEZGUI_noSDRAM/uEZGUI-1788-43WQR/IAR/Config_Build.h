@@ -8,9 +8,9 @@
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
 #ifdef NDEBUG
-#define UEZ_REGISTER              			0
+#define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER              			1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        1 // Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #define UEZ_ENABLE_LOOPBACK_TEST            1 // set to 1 to allow loopback test to run
@@ -28,8 +28,8 @@
 #define UEZ_ENABLE_USB_DEVICE_STACK         1
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     0
-#define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
-#define UEZ_BASIC_WEB_SERVER                UEZ_ENABLE_TCPIP_STACK
+#define UEZ_ENABLE_WIRED_NETWORK            0
+#define UEZ_BASIC_WEB_SERVER                0
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
 
@@ -44,3 +44,14 @@
 #define ACCEL_DEMO_ALLOW_ROTATE             0
 
 #define APP_MENU_ALLOW_TEST_MODE            1
+
+#define UEZ_SLIDESHOW_NAME                  "uEZGUI-1788-43WQR"
+
+/* ----- Constants for Functional Test ----- */
+#define UEZ_SPEAKER_TEST                    1 // set to 1 for FCT build
+#define UEZ_SPEAKER_TEST_HZ                 500
+/* ----------------------------------------- */
+
+// TODO add FCT specifc speaker test flag for certain uezguis
+
+#define FREERTOS_HEAP_SELECTION 4

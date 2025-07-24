@@ -145,6 +145,7 @@ T_uezError ToneGenerator_Generic_Timer_Create(
         const char *aName,
         const T_ToneGenerator_Generic_Timer_Settings *aSettings)
 {
+    PARAM_NOT_USED(aName);
     T_ToneGenerator_Generic_Timer_Workspace *p;
     //T_halWorkspace *p_Timer;
     T_uezError error;
@@ -182,6 +183,7 @@ T_uezError ToneGenerator_Generic_Timer_Create(
  *---------------------------------------------------------------------------*/
 T_uezError ToneGenerator_Generic_Timer_Open(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Do nothing
     return UEZ_ERROR_NONE;
 }
@@ -196,6 +198,7 @@ T_uezError ToneGenerator_Generic_Timer_Open(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError ToneGenerator_Generic_Timer_Close(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Do nothing
     return UEZ_ERROR_NONE;
 }

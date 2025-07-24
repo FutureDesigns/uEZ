@@ -42,7 +42,7 @@
 /* Macros: */
 /** These macros used to declare a variable in a defined section (ex: USB RAM section). */
 #ifdef __CODE_RED
-	#include <cr_section_macros.h>
+	//#include <cr_section_macros.h> // keep existing USB RAM setup
 #endif
 /* Chip Includes: */
 #if defined(__LPC18XX__) || defined(__LPC43XX__)

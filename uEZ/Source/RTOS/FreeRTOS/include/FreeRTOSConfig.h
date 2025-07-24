@@ -28,10 +28,12 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-//#include <Config.h>
-
+// All includes must guard against IAR ASM including uEZTypes, etc.
+// Also retreive CURRENTLY_IN_IAR_ASM from uEZProcessor that we can use it below for function definitions.
 // Get prio bits, mpu present, core type, fpu present, and maybe even systick settings from MCU header.
 #include <uEZProcessor.h> // Avoid including UtilityFuncs.h as it leads to malloc redefine!
+#include <uEZPlatformAPI.h> // We only need this in RTOS for UEZPlatform_ProcessorGetFrequency() currently.
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -44,11 +46,13 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
-// Select the RTOS timer here: 
-// Platform specific
+// Select the RTOS timer here which is platform specific. Some platforms won't have tick suppression support.
+// If available we almost always want to use default Cortex-M Systick.
+// When not available (RX, Cortex-M0, etc) use a timer manually setup.
+// When other timers used need to make sure they are properly shutdown where needed.
 
 // Set USING_TICK_SUPRESSION to 1 to run with tickless idle mode for lower power.
-#define USING_TICK_SUPRESSION		0 // TODO not tested in any included ports yet
+#define USING_TICK_SUPRESSION		0 // partially tested on CM4 port
 
 #define configUSE_TICKLESS_IDLE		USING_TICK_SUPRESSION
 
@@ -59,7 +63,8 @@
 #define configTICK_RATE_HZ		( ( TickType_t ) 1000 )
 #ifndef configTOTAL_HEAP_SIZE
  // Default size, should be overriden in application project. Many GUI projects require larger heap.
-   #define configTOTAL_HEAP_SIZE        ( ( size_t ) (( 3000 * 1024 ) - 64))
+   //#define configTOTAL_HEAP_SIZE        ( ( size_t ) (( 3000 * 1024 ) - 64)) // This hardcodes the max size variables in library builds.
+   #define configTOTAL_HEAP_SIZE        (( size_t ) APPLICATION_HEAP_SIZE ) // use platform function to allow per unit change
 #endif
 #ifndef configMAX_TASK_NAME_LEN
     #define configMAX_TASK_NAME_LEN     ( 16 )
@@ -67,9 +72,10 @@
 #define configUSE_16_BIT_TICKS		0
 #define configIDLE_SHOULD_YIELD		1
 #define configUSE_MUTEXES		1
+#define INCLUDE_xQueueGetMutexHolder    1
 #define configUSE_RECURSIVE_MUTEXES	1
 #define configUSE_COUNTING_SEMAPHORES   1
-#define configQUEUE_REGISTRY_SIZE	30 // Allow a few named queue entries
+#define configQUEUE_REGISTRY_SIZE	30 // Allow a few named entries - The queue registry is for locate-by-name for kernel aware debuggers.
 #define configUSE_APPLICATION_TASK_TAG	0
 #define configUSE_PREEMPTION		1
 #define configLIST_VOLATILE         volatile
@@ -112,22 +118,30 @@
 
 /* Software timer definitions - only included when timer module is enabled. */
 #if (USING_TICK_SUPRESSION == 1)
-	#define configUSE_TIMERS		0
+	#define configUSE_TIMERS		1 // Use starting in 2.14 demos
+        #define configTIMER_INDEX               1// 0=Timer0 or 1=Timer1
+        #define configTIMER_TASK_PRIORITY       ( 3 )
+        #define configTIMER_QUEUE_LENGTH        5
+        #define configTIMER_TASK_STACK_DEPTH    ( configMINIMAL_STACK_SIZE )
 #else
 
 #ifdef FREERTOS_PLUS_TRACE
   #define configUSE_TRACE_FACILITY            1
   #define configUSE_TIMERS                    1
+  #define INCLUDE_xTimerPendFunctionCall 1
   #define SELECTED_PORT PORT_ARM_CortexM
   #define configTIMER_INDEX                   1    // 0=Timer0 or 1=Timer1
   #define configTIMER_TASK_PRIORITY	( 3 )
   #define configTIMER_QUEUE_LENGTH	5
   #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
+//#include <Include/trcKernelPort.h> // TODO need to update FreeRTOS-Plus-Trace to be able to use this again, but we don't have license.
 #else
   #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // Disable some features for smaller bootloader projects.
     #define configUSE_TIMERS            0
+    #define INCLUDE_xTimerPendFunctionCall 0
   #else
     #define configUSE_TIMERS		1 // Use starting in 2.14 demos
+    #define INCLUDE_xTimerPendFunctionCall 1
   #endif
     #define configTIMER_INDEX           1    // 0=Timer0 or 1=Timer1
     #define configTIMER_TASK_PRIORITY	( 3 )
@@ -135,11 +149,6 @@
     #define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE )
 #endif
 #endif /* USING_TICK_SUPRESSION */
-
-
-#ifdef FREERTOS_PLUS_TRACE
-//#include <Include/trcKernelPort.h> // TODO need to update FreeRTOS-Plus-Trace to be able to use this again, but we don't have license.
-#endif
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
@@ -222,25 +231,18 @@ to exclude the API function. */
 #ifndef INCLUDE_xTaskGetSchedulerState
     #define INCLUDE_xTaskGetSchedulerState      1
 #endif
-
-#if (COMPILER_TYPE == IAR)
-#ifdef __ICCARM__  //Ensure the following is only used by the compiler, and not the assembler.
-
+   
+#if (CURRENTLY_IN_IAR_ASM == 0) // We can't include this in IAR ASM
 /* The configPRE_SLEEP_PROCESSING() and configPOST_SLEEP_PROCESSING() macros
 allow the application writer to add additional code before and after the MCU is
 placed into the low power state respectively.  The implementations provided in
 this demo can be extended to save even more power - for example the analog
 input used by the low power demo could be switched off in the pre-sleep macro
 and back on again in the post sleep macro. */
-void vPreSleepProcessing( unsigned long xExpectedIdleTime );
+void vPreSleepProcessing( unsigned long xModifiableIdleTime );
 void vPostSleepProcessing( unsigned long xExpectedIdleTime );
-#define configPRE_SLEEP_PROCESSING( xExpectedIdleTime ) vPreSleepProcessing( xExpectedIdleTime );
+#define configPRE_SLEEP_PROCESSING( xModifiableIdleTime ) vPreSleepProcessing( xModifiableIdleTime );
 #define configPOST_SLEEP_PROCESSING( xExpectedIdleTime ) vPostSleepProcessing( xExpectedIdleTime );
-
-// New to FreeRTOS 7.
-extern void vAssertCalled( void );
-
-#endif
 #endif
 
 /* configCHECK_FOR_STACK_OVERFLOW settings: 0, 1, or 2
@@ -374,7 +376,6 @@ kernel is doing. */
 
 #if (COMPILER_TYPE == GCC_ARM) 
 #ifdef __clang__ // include in case CLANG needs special treatment
-     #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
 #endif
      #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW_FreeRTOS.h>
 #endif
@@ -406,6 +407,23 @@ kernel is doing. */
 #endif
 #ifndef INCLUDE_xTaskGetIdleTaskHandle  
     #define INCLUDE_xTaskGetIdleTaskHandle      1
+#endif
+
+#define configSTATS_BUFFER_MAX_LENGTH            0x1FFF
+#define configNUM_THREAD_LOCAL_STORAGE_POINTERS    1 // enable for lwip per thread sem
+
+#ifndef USE_PROCESS_STACK  
+    #define USE_PROCESS_STACK      0
+#endif
+
+#if (USE_PROCESS_STACK == 1) // MPU port selected, (portUSING_MPU_WRAPPERS is set in portmacro header)
+#define configUSE_MPU_WRAPPERS_V1    0 // default is using wrapper V2, set to 1 to use V1
+#define configSYSTEM_CALL_STACK_SIZE 4096
+#define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY    1
+#define configPROTECTED_KERNEL_OBJECT_POOL_SIZE  128
+#define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS    0 // set to 1 for better security
+//#define configENABLE_HEAP_PROTECTOR              1
+//#define configKERNEL_PROVIDED_STATIC_MEMORY      1
 #endif
 
 

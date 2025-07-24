@@ -8,25 +8,15 @@ implemented by fixed codes.
 """
 
 # Copyright The Mbed TLS Contributors
-# SPDX-License-Identifier: Apache-2.0
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
 import sys
 import re
 import os
 import textwrap
 import argparse
-from mbedtls_dev import build_tree
+
+import framework_scripts_path # pylint: disable=unused-import
+from mbedtls_framework import build_tree
 
 
 def remove_c_comments(string):
@@ -209,24 +199,18 @@ class EnumDefinition:
                     continue
                 member = field.strip().split()[0]
                 translation_table.append(
-                    '{space}[{member}] = "{member}",'.format(member=member,
-                                                             space=' '*8)
+                    '{space}case {member}:\n{space}    return "{member}";'
+                    .format(member=member, space=' '*8)
                 )
 
         body = textwrap.dedent('''\
             const char *{name}_str( {prototype} in )
             {{
-                const char * in_to_str[]=
-                {{
+                switch (in) {{
             {translation_table}
-                }};
-
-                if( in > ( sizeof( in_to_str )/sizeof( in_to_str[0]) - 1 ) ||
-                    in_to_str[ in ] == NULL )
-                {{
-                    return "UNKNOWN_VALUE";
+                    default:
+                        return "UNKNOWN_VALUE";
                 }}
-                return in_to_str[ in ];
             }}
                     ''')
         body = body.format(translation_table='\n'.join(translation_table),
@@ -346,7 +330,7 @@ class NamedGroupDefinition:
             {translation_table}
                 }};
 
-                return "UNKOWN";
+                return "UNKNOWN";
             }}''')
         body = body.format(translation_table='\n'.join(translation_table))
         return body
@@ -362,19 +346,8 @@ OUTPUT_C_TEMPLATE = '''\
  */
 /*
  *  Copyright The Mbed TLS Contributors
- *  SPDX-License-Identifier: Apache-2.0
+ *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
  */
 
 #include "common.h"

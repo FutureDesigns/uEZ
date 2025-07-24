@@ -43,6 +43,7 @@ extern void BSODStart(const char *aLine);
 
 void FatalError(const char *aLine)
 {
+  (void)(aLine);
 #ifdef DISABLE_UEZ_FATAL_ERROR
     (void) aLine;
     UEZPlatform_System_Reset();

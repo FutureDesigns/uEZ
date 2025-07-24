@@ -4,6 +4,7 @@
     <MemorySegment name="FLASHA0">
     <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>  
   <MemorySegment name="$(FLASH_NAME:FLASH)">
@@ -19,6 +20,7 @@
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
     <ProgramSection alignment="4" load="Yes" name=".ARM.extab" address_symbol="__extab_start" end_symbol="__extab_end" />
+    <ProgramSection alignment="4" load="Yes" name=".text" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashResource .ExternalFlashResource.*)" name=".ExternalFlashResource" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashHeader .ExternalFlashHeader.*)" name=".ExternalFlashHeader" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.ExternalFlashText .ExternalFlashText.*)" name=".ExternalFlashText" />
@@ -33,7 +35,6 @@
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashB .constFlashB.*)" name=".constFlashB"/>
   </MemorySegment>
   <MemorySegment name="FLASHB">
-    <ProgramSection alignment="4" load="Yes" name=".text" />
   </MemorySegment>
   <MemorySegment name="FLASHB_CM0">
     <!-- Can place Cortex-M0 code here. -->
@@ -61,22 +62,23 @@
     <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" load="No" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
-
-    <!-- For this application we moved the below sections from SDRAM to internal RAM. Most are gone or really small now. -->
-    <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
-    <!-- Reserved for emWin memory  -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
-    <!-- Reserved for Networking memory  -->
-    <ProgramSection alignment="4" inputsections="*(.network .network.*)" name=".network"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
     <ProgramSection alignment="4" load="No" name=".tbss" />
+
+    <!-- For this application we moved the below sections from SDRAM to internal RAM. Most are gone or really small now. -->
+    <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
+    <ProgramSection alignment="4" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
+    <!-- Reserved for emWin memory  -->
+    <ProgramSection alignment="4" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
+    <!-- Reserved for Networking memory  -->
+    <ProgramSection alignment="4" inputsections="*(.network .network.*)" name=".network"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
   </MemorySegment>
   <MemorySegment name="SRAM2">
-    <ProgramSection alignment="4" load="No" size="__HEAPSIZE__" name=".heap"/>
+    <!-- Keep Heap last so we can auto-size it. -->
+    <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
   
   <!-- Note that AHB section defines are different from the IAR project which is split into 3 sections. -->
@@ -94,7 +96,7 @@
   </MemorySegment>
   
   <MemorySegment name="CRP1">
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
   <MemorySegment name="CRP2">
     <ProgramSection alignment="4" load="Yes" inputsections="*(.crp2 .crp2*)" name=".crp2" address_symbol="__crp2_start" end_symbol="__crp2_end" />

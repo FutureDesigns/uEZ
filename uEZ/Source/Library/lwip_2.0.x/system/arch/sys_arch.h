@@ -103,16 +103,16 @@ extern "C" {
 #define archMESG_QUEUE_LENGTH	( 15 )
 #define archPOST_BLOCK_TIME_MS	( ( unsigned portLONG ) 10000 )
   
-extern T_uezTask G_lwipTask;
-
 //typedef T_uezSemaphore sys_sem_t;
 //typedef T_uezSemaphore sys_mutex_t;
 //typedef T_uezQueue sys_mbox_t;
-typedef T_uezTask sys_thread_t; // use uEZ task, but not uEZ semaphores
+//typedef T_uezTask sys_thread_t; // older uEZ used uEZ task, but not uEZ semaphores
 
-typedef SemaphoreHandle_t sys_sem_t; // use FreeRTOS semaphores, but not direct task API
+typedef xTaskHandle sys_thread_t; // use FreeRTOS task type to avoid mismatch
+typedef SemaphoreHandle_t sys_sem_t; // use FreeRTOS semaphores
 typedef SemaphoreHandle_t sys_mutex_t;
-//typedef TaskHandle_t sys_thread_t;
+
+extern sys_thread_t G_lwipTask; // Our task handle is now the chosen typedef, whichever one it is.
 
 typedef struct sys_mbox_s {
   QueueHandle_t os_mbox;

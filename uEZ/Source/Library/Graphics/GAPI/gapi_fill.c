@@ -482,8 +482,11 @@ gapiResp_type LCDBMPCopyXlate( BMP_type const *const s, BMP_type *const d, sI16 
     sI32 dLineInc, dPixelInc, dPixelIndex, dLineIndex;    
     UEZ_PARAMETER_NOT_USED(dLineIndex);
     UEZ_PARAMETER_NOT_USED(dPixelIndex);
+    UEZ_PARAMETER_NOT_USED(dLineInc);
+    UEZ_PARAMETER_NOT_USED(dPixelInc);
     switch (Mode & 0xF)
     {
+      default:
       case 0x00:   /* row start, pixel start,   PixelInc,   LineInc NO BMP_CX_FLIPY, NO BMP_CX_FLIPX, BMP_CX_ROT_0   */
       case 0x0E:   /*         0,           0,          1,       dW,    BMP_CX_FLIPY,    BMP_CX_FLIPX, BMP_CX_ROT_180 */
         pdRaster.p16 += (0 * (sI32)dbiWidth) + (sI32)0;
@@ -543,7 +546,6 @@ gapiResp_type LCDBMPCopyXlate( BMP_type const *const s, BMP_type *const d, sI16 
 
     {
       sI16 RowIndex, PixelIndex;
-
       for (RowIndex = 0; RowIndex<Height; RowIndex++, psRaster.p16+=sbiWidth, pdRaster.p16+=dLineInc)
       {
         PIXEL_16bpp_type *pS = psRaster.p16, *pD = pdRaster.p16;

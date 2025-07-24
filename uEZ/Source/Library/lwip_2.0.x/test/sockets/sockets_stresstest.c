@@ -126,6 +126,7 @@ check_test_data(const void *buf, size_t buf_len_bytes)
   u16_t i, chk, chk_rx, len_rx;
   
   LWIP_UNUSED_ARG(chk_rx);
+  LWIP_UNUSED_ARG(chk);
 
   LWIP_ASSERT("buffer too short", buf_len_bytes >= 4);
   len_rx = (((u16_t)p[0]) << 8) | p[1];

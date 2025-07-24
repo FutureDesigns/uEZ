@@ -385,6 +385,7 @@ T_uezError UEZFileSystemUnmount(const char * const aMountPoint)
 /*---------------------------------------------------------------------------*/
 static T_uezError IFindMountFS(const char * const aName, T_mountedFS **p_fs)
 {
+    (void)(aName);
     // For this early version, we will only use the first mount
     if (!G_mounts)
         return UEZ_ERROR_NOT_AVAILABLE;

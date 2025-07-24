@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -59,6 +59,7 @@ typedef portSTACK_TYPE   StackType_t;
 typedef long             BaseType_t;
 typedef unsigned long    UBaseType_t;
 
+
 #if ( configTICK_TYPE_WIDTH_IN_BITS == TICK_TYPE_WIDTH_16_BITS )
     typedef uint16_t     TickType_t;
     #define portMAX_DELAY              ( TickType_t ) 0xffff
@@ -85,10 +86,21 @@ typedef unsigned long    UBaseType_t;
 extern void vPortYield( void );
 #define portNVIC_INT_CTRL     ( ( volatile uint32_t * ) 0xe000ed04 )
 #define portNVIC_PENDSVSET    0x10000000
-#define portYIELD()                                 vPortYield()
-//#define portEND_SWITCHING_ISR( xSwitchRequired )    if( xSwitchRequired ) *( portNVIC_INT_CTRL ) = portNVIC_PENDSVSET
-#define portEND_SWITCHING_ISR( xSwitchRequired ) { if( xSwitchRequired ) { traceISR_EXIT_TO_SCHEDULER(); portNVIC_INT_CTRL = portNVIC_PENDSVSET; } else { traceISR_EXIT(); } } // SystemView
-#define portYIELD_FROM_ISR( x )                     portEND_SWITCHING_ISR( x )
+#define portYIELD()                vPortYield()
+#define portEND_SWITCHING_ISR( xSwitchRequired )         \
+    do                                                   \
+    {                                                    \
+        if( xSwitchRequired != pdFALSE )                 \
+        {                                                \
+            traceISR_EXIT_TO_SCHEDULER();                \
+            *( portNVIC_INT_CTRL ) = portNVIC_PENDSVSET; \
+        }                                                \
+        else                                             \
+        {                                                \
+            traceISR_EXIT();                             \
+        }                                                \
+    } while( 0 )
+#define portYIELD_FROM_ISR( x )    portEND_SWITCHING_ISR( x )
 /*-----------------------------------------------------------*/
 
 

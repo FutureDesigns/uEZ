@@ -73,11 +73,17 @@ extern TBool G_SDCard_inserted;
 extern TBool G_USBFlash_inserted;
 
 #ifndef FREERTOS_HEAP_SELECTION
-#define FREERTOS_HEAP_SELECTION  3
+#define FREERTOS_HEAP_SELECTION  4
 #endif
 
-#ifndef __HEAP_SIZE__
-#define __HEAP_SIZE__ 5000000
+#if (defined __GNUC__) // GCC
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+#elif (defined __CC_ARM) // ARM RealView Compiler
+#else
+#endif
+
+#ifndef __HEAP_SIZE__  
+    #define __HEAP_SIZE__ 3500000 // mininmum size before auto expansion to end of RAM, higher on most uEZGUIs
 #endif
 
 #if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))

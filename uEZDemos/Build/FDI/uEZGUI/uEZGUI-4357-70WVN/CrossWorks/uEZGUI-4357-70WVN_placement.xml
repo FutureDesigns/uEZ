@@ -4,6 +4,7 @@
   <MemorySegment name="FLASHA0">
     <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:FLASH)">
@@ -25,6 +26,7 @@
     <!-- constdata and conststring sections don't normally exist -->
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
     <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" inputsections="*(.privileged_data .privileged_data.*)" name=".privileged_data"/>
   </MemorySegment>
   <MemorySegment name="FLASHA_CM0">
     <!-- Can place Cortex-M0 code here at the end of flash A, start offset in increments of 64KB. Adjust using FLASHA_CM0_SIZE -->
@@ -69,14 +71,18 @@
     <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
     <!-- Reserved for emWin memory  -->
     <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
-    <ProgramSection alignment="4" load="No" size="__HEAPSIZE__" name=".heap"/>
     <!-- Reserved for Networking memory  -->
     <ProgramSection alignment="4" load="No" inputsections="*(.network .network.*)" name=".network"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
+    <!-- Keep Heap last so we can auto-size it. -->
+    <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
 
   <!-- Pick entire 40KB SRAM2 for CM4 and entire 32KB SRAM1 for CM0 -->
@@ -91,8 +97,6 @@
     <ProgramSection alignment="4" load="No" name=".non_init" />
     <ProgramSection alignment="4" load="No" name=".tdata_run" />
     <ProgramSection alignment="8" size="__STACKSIZE__" load="No" name=".stack" />
-    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
-    <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
     <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. -->
     <ProgramSection alignment="4" load="No" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>

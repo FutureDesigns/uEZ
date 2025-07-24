@@ -30,12 +30,10 @@
   #pragma diag_suppress=Pe223
 #endif
 
-#include <time.h>
-#include <sys/time.h> // uez has own timeval definition
+#include "arch/sntp_uEZ.h"
 
 #include "lwip/opt.h"
 #include "lwip/apps/sntp.h"
-#include "arch/sntp_uEZ.h"
 #include "lwip/netif.h"
 #include <uEZTimeDate.h>
 
@@ -50,8 +48,10 @@ void sntp_set_system_time(uint32_t sec)
 
   // convert seconds to tm struct. Typical MCU RTCs don't support microsecond time setting in RTC.
 #if defined(_WIN32) || defined(WIN32) || defined ( __ICCARM__ )
-  localtime_s(&current_time_val, &current_time);
-#else
+  //localtime_s(&current_time_val, &current_time);
+  struct tm *t = localtime((time_t *)&(current_time)); // This specifically is working in IAR
+  memcpy(&current_time_val, t, sizeof(struct tm));  
+#else // GCC, newlib, etc.
   localtime_r(&current_time, &current_time_val);
 #endif
 
@@ -99,7 +99,7 @@ void get_system_time_tv(struct timeval *tv)
   tv->tv_usec = 0;
 }
 
-void sntp_example_init(void)
+void sntp_example_init(void) // note that uez initialization routines will already start sntp
 {
   LOCK_TCPIP_CORE();
   sntp_setoperatingmode(SNTP_OPMODE_POLL);

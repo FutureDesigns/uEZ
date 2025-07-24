@@ -8,8 +8,8 @@
   <MemorySegment start="$(FLASHA_START:0x0)" name="FLASHA" size="$(FLASH_SIZE:0)-$(FLASHA_START:0x0)" access="ReadOnly" />  
   <!-- QSPI, then SDRAM, registers, etc. Change SDRAM size and QSPI size using variables not here. -->
   <MemorySegment  start="$(QSPI_START:0)" size="$(QSPI_SIZE:0)" access="ReadOnly"name="QSPI"/>
-  <MemorySegment size="$(SDRAM_SIZE:0)" access="Read/Write" start="0xA0000000" name="SDRAM"/>
-  <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM"/>
+  <MemorySegment size="$(SDRAM_SIZE:0)" access="Read/Write" start="0xA0000000" name="SDRAM" end_symbol="SDRAM_END"/>
+  <MemorySegment size="0x10000" access="Read/Write" start="0x10000000" name="RAM" end_symbol="SRAM1_END"/>
   <MemorySegment size="0x4000" access="Read/Write" start="0x20000000" name="AHBSRAM0"/>
   <MemorySegment size="0x4000" access="Read/Write" start="0x20004000" name="AHBSRAM1"/>
   <MemorySegment size="0x8000" access="Read/Write" start="0x20000000" name="AHBSRAM"/>      
@@ -60,7 +60,7 @@
         <BitField name="PROG1_SET_ST" start="28" size="1"/>
       </Register>
     </RegisterGroup>
-  </MemorySegment>                                                                     
+  </MemorySegment>
   
   <!-- This part from Crossworks 4.10 V1.32 LPC Pack -->
   <MemorySegment size="0x40000000" access="Read/Write" start="0x40000000" name="Peripherals">

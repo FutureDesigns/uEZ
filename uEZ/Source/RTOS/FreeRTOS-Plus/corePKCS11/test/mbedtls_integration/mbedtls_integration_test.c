@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -29,17 +29,17 @@
 #define MBEDTLS_ALLOW_PRIVATE_ACCESS
 
 /* PKCS includes. */
-#include "../../source/include/core_pki_utils.h"
+#include "core_pki_utils.h"
 #include "core_pkcs11_config.h"
-#include "../../source/include/core_pkcs11.h"
+#include "core_pkcs11.h"
 #include "core_pkcs11_test_config.h"
 
 /* Logging includes. */
-#include "../include/logging_levels.h"
-#include "../include/logging_stack.h"
+#include "logging_levels.h"
+#include "logging_stack.h"
 
 /* Test includes. */
-//#include "unity.h"
+#include "unity.h"
 
 /* mbedTLS includes. */
 #include "mbedtls/sha256.h"
@@ -182,7 +182,7 @@ static int lWrapPkParseKey( mbedtls_pk_context * pxMbedContext,
  *
  * @param pcInput[in]        Pointer to PEM object
  * @param xLen[in]           Length of PEM object
- * @param pucOutput[out]     Pointer to buffer where DER oboject will be placed
+ * @param pucOutput[out]     Pointer to buffer where DER object will be placed
  * @param pxOlen[in/out]     Pointer to length of DER buffer.  This value is updated
  *                          to contain the actual length of the converted DER object.
  *
@@ -954,7 +954,7 @@ static void commonValidateCredentialStorageRSA( const char * pPrivateKeyLabel,
     TEST_ASSERT_EQUAL_MEMORY_MESSAGE( expectedCertInDer, template.pValue, template.ulValueLen, "GetAttributeValue returned incorrect data for RSA certificate" );
 
     /* Check that the private key cannot be retrieved. */
-    template.type = CKA_PRIVATE_EXPONENT;
+    template.type = CKA_VALUE;
     template.pValue = keyComponent;
     template.ulValueLen = sizeof( keyComponent );
     result = globalFunctionList->C_GetAttributeValue( globalSession, privateKeyHandle, &template, 1 );

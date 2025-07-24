@@ -201,6 +201,8 @@ static T_uezError LPC43xx_PWM_SetMatchRegister(
         TBool aDoCounterReset,
         TBool aDoStop)
 {
+    PARAM_NOT_USED(aDoCounterReset);
+    PARAM_NOT_USED(aDoStop);
     T_LPC43xx_PWM_Workspace *p = (T_LPC43xx_PWM_Workspace *)aWorkspace;
     T_LPC43xx_PWM_Registers *r = p->iReg;
 
@@ -234,6 +236,7 @@ static T_uezError LPC43xx_PWM_EnableSingleEdgeOutput(
         void *aWorkspace,
         TUInt8 aMatchRegister)
 {
+    PARAM_NOT_USED(aMatchRegister);
     T_LPC43xx_PWM_Workspace *p = (T_LPC43xx_PWM_Workspace *)aWorkspace;
 
     // Set to single output mode
@@ -261,6 +264,7 @@ static T_uezError LPC43xx_PWM_DisableOutput(
         void *aWorkspace,
         TUInt8 aMatchRegister)
 {
+    PARAM_NOT_USED(aMatchRegister);
     T_LPC43xx_PWM_Workspace *p = (T_LPC43xx_PWM_Workspace *)aWorkspace;
 
     // Disable output
@@ -286,6 +290,10 @@ static T_uezError LPC43xx_PWM_SetMatchCallback(
         void (*aCallback)(void *),
         void *aCallbackWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aMatchRegister);
+    PARAM_NOT_USED(aCallback);
+    PARAM_NOT_USED(aCallbackWorkspace);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 

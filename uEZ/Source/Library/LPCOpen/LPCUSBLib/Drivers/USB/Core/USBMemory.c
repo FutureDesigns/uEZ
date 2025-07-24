@@ -98,6 +98,7 @@ void USB_Memory_Init(uint32_t Memory_Pool_Size)
 
 uint8_t* USB_Memory_Alloc(uint32_t size, uint32_t num_aligned_bytes)
 {
+        (void)(num_aligned_bytes);
 	PMemBlockInfo freeBlock=NULL, newBlock, blk_ptr = NULL;
 	PMemBlockInfo head = (PMemBlockInfo) USB_Mem_Buffer;
 

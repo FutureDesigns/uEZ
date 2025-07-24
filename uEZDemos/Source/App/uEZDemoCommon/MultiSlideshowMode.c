@@ -42,6 +42,17 @@
  *---------------------------------------------------------------------------*/
 #define MAX_CHOICES       10
 
+#if SIMPLEUI_DOUBLE_SIZED_ICONS
+#define ARROW_ICON_HEIGHT 64
+#define ARROW_ICON_WIDTH 64
+#elif (UEZ_ICONS_SET == ICONS_SET_PROFESSIONAL_ICONS_LARGE)
+#define ARROW_ICON_HEIGHT 64
+#define ARROW_ICON_WIDTH 64
+#else
+#define ARROW_ICON_HEIGHT 32
+#define ARROW_ICON_WIDTH 32
+#endif
+
 typedef struct {
     SWIM_WINDOW_T iWin;
     T_slideshowList iSlideshowList;
@@ -56,6 +67,7 @@ typedef struct {
 
 static T_MSMWorkspace *G_ws;
 #define G_win           (G_ws->iWin)
+static TUInt8 G_topFileIndex;
 
 static void MSMSetupChoices(void);
 static void MSMDraw(void);
@@ -67,6 +79,28 @@ static void SlideshowAction(const T_choice *p_choice)
     MultiSlideshowScreen(G_ws->iLCD);
     MSMSetupChoices();
     MSMDraw();
+}
+
+static void SlideshowSelectScrollUp(const T_choice *aChoice)
+{
+    PARAM_NOT_USED(aChoice);
+    if(G_topFileIndex > 0) {
+        G_topFileIndex--;
+
+        MSMSetupChoices();
+        MSMDraw();
+    }
+}
+
+static void SlideshowSelectScrollDown(const T_choice *aChoice)
+{
+    PARAM_NOT_USED(aChoice);
+    if((G_topFileIndex+5) < G_ws->iSlideshowList.iCount) {
+        G_topFileIndex++;
+
+        MSMSetupChoices();
+        MSMDraw();
+    }
 }
 
 static void SlideshowOptionDraw(const T_choice *p_choice)
@@ -123,8 +157,9 @@ static void MSMSetupChoices(void)
     T_region rbottom;
     TUInt16 fontHeight;
     TUInt16 lineHeight;
-    TUInt16 i;
+    TUInt16 i = 0;
     T_choice *p = G_ws->iChoices;
+    int count = 0;
 
     r.iLeft = 0;
     r.iTop = 0;
@@ -134,18 +169,20 @@ static void MSMSetupChoices(void)
     swim_set_font(&G_win, &APP_DEMO_DEFAULT_FONT);
     fontHeight = swim_get_font_height(&G_win);
 
-    RegionShrink(&r, 10);
+    RegionShrink(&r, 5);
 
     RegionSplitFromBottom(&r, &rbottom, 4+fontHeight+2+EXIT_BUTTON_HEIGHT, 2);
     rlist = r;
 
     G_ws->iChoiceBox = rlist;
     RegionShrink(&rlist, 2);
+
     lineHeight = fontHeight+4;
     if (lineHeight < SLIDESHOW_ICON_HEIGHT+4)
         lineHeight = SLIDESHOW_ICON_HEIGHT+4;
 
-    for (i=0; i<MAX_CHOICES-1; i++, p++) {
+    for (i=G_topFileIndex; i<MAX_CHOICES-1; i++, p++) {
+
         if (i>=G_ws->iSlideshowList.iCount)
             break;
 
@@ -159,7 +196,7 @@ static void MSMSetupChoices(void)
         // Setup new choice
         p->iLeft = rline.iLeft;
         p->iTop = rline.iTop;
-        p->iRight = rline.iRight;
+        p->iRight = rline.iRight-(ARROW_ICON_WIDTH+1);;
         p->iBottom = rline.iBottom;
         p->iText = G_ws->iSlideshowList.iList[i].iName;
         p->iAction = SlideshowAction;
@@ -167,7 +204,16 @@ static void MSMSetupChoices(void)
         p->iData = &G_ws->iSlideshowList.iList[i];
         p->iDraw = SlideshowOptionDraw;
         G_ws->iChoiceBox.iBottom = rline.iBottom+2;
+        
+        count++;
     }
+
+    /*
+    // Added to make sure window goes to the bottom even if list is too small
+    while ((1+rlist.iBottom - rlist.iTop)>=(lineHeight+1)) {
+        RegionSplitFromTop(&rlist, &rline, lineHeight, 1);
+    }
+    */
 
     // Now add the back button
     RegionShrink(&rbottom, 1);
@@ -180,9 +226,40 @@ static void MSMSetupChoices(void)
     p->iIcon = G_exitIcon;
     p->iData = 0;
     p->iDraw = 0; // Use default
+    p++;
+
+    	// Now add the up button (but only if needed)
+    if (count < G_ws->iSlideshowList.iCount) {
+        // Need to be able to scroll
+        RegionShrink(&rbottom, 1);
+        p->iLeft = G_ws->iChoiceBox.iRight-(ARROW_ICON_WIDTH+1);
+        p->iRight = G_ws->iChoiceBox.iRight-1;
+        p->iTop = G_ws->iChoiceBox.iTop+1;
+        p->iBottom = G_ws->iChoiceBox.iTop+(ARROW_ICON_HEIGHT+1);
+        p->iText = "";
+        p->iAction = SlideshowSelectScrollUp;
+        p->iIcon = G_arrowUp;
+        p->iData = 0;
+        p->iDraw = 0;
+        p++;
+    }
+
+	// Now add the down button
+    if (count < G_ws->iSlideshowList.iCount) {
+        RegionShrink(&rbottom, 1);
+        p->iLeft = G_ws->iChoiceBox.iRight-(ARROW_ICON_WIDTH+1);
+        p->iRight = G_ws->iChoiceBox.iRight-1;
+        p->iTop = G_ws->iChoiceBox.iBottom-(ARROW_ICON_HEIGHT+1);
+        p->iBottom = G_ws->iChoiceBox.iBottom-1;
+        p->iText = "";
+        p->iAction = SlideshowSelectScrollDown;
+        p->iIcon = G_arrowDown;
+        p->iData = 0;
+        p->iDraw = 0;
+        p++;
+    }
 
     // Next entry is the end of choices marker
-    p++;
     p->iText = 0; // end of list marker
 }
 
@@ -239,8 +316,8 @@ static void MultiSlideshowScreen(T_uezDevice lcd)
     T_pixelColor *pixels;
 
     SUIHidePage0();
-
     UEZLCDGetFrame(lcd, 0, (void **)&pixels);
+
     swim_window_open(
         &G_win,
         DISPLAY_WIDTH,
@@ -254,6 +331,7 @@ static void MultiSlideshowScreen(T_uezDevice lcd)
         YELLOW,
         RGB(0, 0, 0),
         RED);
+
     swim_set_font(&G_win, &APP_DEMO_DEFAULT_FONT);
     swim_set_title(&G_win, "uEZ(tm) MultiSlideshow Demonstration", BLUE);
     swim_set_pen_color(&G_win, YELLOW);

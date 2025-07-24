@@ -21,7 +21,7 @@
 #include <uEZ.h>
 #include <HAL/LCDController.h>
 #include <HAL/GPIO.h>
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
 #include <uEZSPI.h>
 #include "Kyocera_T55343GD035JU_3_5.h"
 #include <uEZDeviceTable.h>
@@ -545,7 +545,7 @@ static T_uezError LCD_T55343GD035JU_3_5_Open(void *aW)
   T_T55343GD035JU_3_5Workspace *p = (T_T55343GD035JU_3_5Workspace *)aW;
   HAL_LCDController **plcdc;
   T_uezError error = UEZ_ERROR_NONE;
-  TUInt32 i;
+  //TUInt32 i;
 
   p->icallback.iTimer = p->itimer; // Setup callback information for itimer
     p->icallback.iData = p;

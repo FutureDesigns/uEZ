@@ -4,6 +4,7 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="FLASHA0">
     <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="CRP1">
@@ -43,14 +44,16 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
     <!-- Reserved for emWin memory  -->
     <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
-    <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
     <!-- Reserved for Networking memory  -->
     <ProgramSection alignment="4" inputsections="*(.network .network.*)" name=".network"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
+    <!-- Keep Heap last so we can auto-size it. -->
+    <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:RAM)" >
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
@@ -81,6 +84,7 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="FLASHA0">
     <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="CRP1">
@@ -120,14 +124,16 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
     <!-- Reserved for emWin memory  -->
     <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
-    <ProgramSection alignment="4" size="__HEAPSIZE__" load="No" name=".heap"/>
     <!-- Reserved for Networking memory  -->
     <ProgramSection alignment="4" inputsections="*(.network .network.*)" name=".network"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
+    <!-- Keep Heap last so we can auto-size it. -->
+    <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
   <MemorySegment name="RAM">
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
@@ -159,6 +165,7 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   <MemorySegment name="FLASHA0">
     <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)" />
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
+    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:FLASH)">
@@ -224,14 +231,16 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
     <!-- Reserved for emWin memory  -->
     <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
-    <ProgramSection alignment="4" load="No" size="__HEAPSIZE__" name=".heap"/>
     <!-- Reserved for Networking memory  -->
     <ProgramSection alignment="4" load="No" inputsections="*(.network .network.*)" name=".network"/>
+    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
     <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
     <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
+    <!-- Keep Heap last so we can auto-size it. -->
+    <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
 
   <!-- Pick entire 40KB SRAM2 for CM4 and entire 32KB SRAM1 for CM0 -->

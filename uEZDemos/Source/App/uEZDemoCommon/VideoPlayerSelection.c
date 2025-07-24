@@ -150,7 +150,6 @@ static void VideoPlayerSelectOptionDraw(const T_choice *p_choice)
         p_choice->iText,
         rtext.iLeft,
         rtext.iTop);
-
 }
 
 static void VideoPlayerSelectChoices(void)
@@ -321,7 +320,6 @@ static void VideoPlayerSelectScreen(T_uezDevice lcd)
     T_pixelColor *pixels;
 
     SUIHidePage0();
-
     UEZLCDGetFrame(lcd, 0, (void **)&pixels);
 
     swim_window_open(

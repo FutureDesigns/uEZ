@@ -480,6 +480,8 @@ T_uezError Network_GainSpan_Join(
     const char *aJoinPassword,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aTimeout);
+
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
     ATLIBGS_MSG_ID_E r;
@@ -1165,6 +1167,7 @@ T_uezError Network_GainSpan_SocketWrite(
     ATLIBGS_MSG_ID_E r;
 
     PARAM_NOT_USED(aTimeout);
+    PARAM_NOT_USED(aFlush);
 
     if ((aSocket == 0) || (aSocket > NETWORK_GAINSPAN_NUM_SOCKETS))
         return UEZ_ERROR_HANDLE_INVALID;
@@ -1219,6 +1222,7 @@ T_uezError Network_GainSpan_AuxControl(
     TUInt32 aAuxCommand,
     void *aAuxData)
 {
+    PARAM_NOT_USED(aAuxData);
     T_Network_GainSpan_Workspace *p = (T_Network_GainSpan_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
 
@@ -1363,6 +1367,9 @@ T_uezError Network_GainSpan_GetConnectionInfo(void *aWorkspace,
 		T_uezNetworkSocket aSocket,
 		T_uEZNetworkConnectionInfo *aConnection)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aSocket);
+    PARAM_NOT_USED(aConnection);
 	return UEZ_ERROR_NOT_AVAILABLE;
 }
 
@@ -1370,6 +1377,7 @@ static void INetwork_Gainspan_ParseReceived(T_Network_GainSpan_Workspace *p, uin
 {
     int32_t s;
     ATLIBGS_TCPMessage msg;
+    PARAM_NOT_USED(aCID);
 
     // Parse the data in the receive buffer
     AtLibGs_ParseTCPData(p->iReceived, p->iReceivedCount, &msg);
@@ -1445,7 +1453,7 @@ const DEVICE_Network GainSpan_Network_Interface = { {
     Network_GainSpan_InfrastructureBringUp,
     Network_GainSpan_InfrastructureTakeDown,
 
-    //uEZ v2.07
+    // uEZ v2.07
     Network_GainSpan_GetConnectionInfo,
 };
 

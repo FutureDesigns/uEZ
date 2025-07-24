@@ -31,10 +31,12 @@
 #include <uEZGPIO.h>
 #include <uEZMemory.h>
 #include <uEZStream.h>
+#include <uEZTimeDate.h>
 #include "Source/uEZSystem/uEZHandles.h"
 #include "Network_ESPWROOM32.h"
 #include "timers.h"
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
+#include "build_time.h"
 
 /*-------------------------------------------------------------------------*
  * Menu callbacks:
@@ -50,6 +52,7 @@ static void ESPWROOM32_ResolveDomainHandler(T_ESPWROOM32_ATCmdArgs *pArgs);
 #if ESPWROOM32_BUFFER_ON_MODULE
 static void ESPWROOM32_ReceiveDataHandler(T_ESPWROOM32_ATCmdArgs *pArgs);
 #endif
+static void ESPWROOM32_ReceiveSntpTimeHandler(T_ESPWROOM32_ATCmdArgs *pArgs);
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
@@ -112,6 +115,11 @@ const T_ESPWROOM32_ATCmd G_ESPWROOM32_ATCmdResp[] =
         .context  = NULL
     },
 #endif
+    {
+        .command  = (uint8_t*)"+CIPSNTPTIME:",
+        .callback = ESPWROOM32_ReceiveSntpTimeHandler,
+        .context  = NULL
+    },
 };
 
 const T_ESPWROOM32_ATCmdMenu G_ESPWROOM32_RootMenu =
@@ -123,6 +131,7 @@ const T_ESPWROOM32_ATCmdMenu G_ESPWROOM32_RootMenu =
 const char DisableECHO[]            = "ATE0\r\n";
 const char GetVersionInfo[]         = "AT+GMR\r\n";
 const char ListSupportedCommands[]  = "AT+CMD?\r\n";
+const char ScanAP[]                 = "AT+CWLAP\r\n";
 const char SetWiFiMode[]            = "AT+CWMODE";
 const char EnableMultiConnection[]  = "AT+CIPMUX=1\r\n";
 const char NoShowRemoteIP[]         = "AT+CIPDINFO=0\r\n";
@@ -142,6 +151,9 @@ const char SocketSend[]             = "AT+CIPSENDEX";
 const char SocketRecv[]             = "AT+CIPRECVDATA";
 #endif
 const char SetReceiveMode[]         = "AT+CIPRECVMODE";
+const char SetSnmpModeServer[]      = "AT+CIPSNTPCFG";
+const char SetSnmpInterval[]        = "AT+CIPSNTPINTV";
+const char GetSnmpTime[]            = "AT+CIPSNTPTIME?";
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -165,7 +177,9 @@ typedef struct
     TUInt8                              iRXNetworkPacketIndex;
     TUInt8                              *pInputBufferLast;
     T_ESPWROOM32_TXMode                 iTransmissionMode;
+    TUInt8                              iScanIndex;
     TUInt8                              iMaxScanIndex;
+    T_ESPWROOM32_WifiScan               *pScanResult;
     TUInt8                              iPacketIndex;
     T_ESPWROOM32_Packet                 iATInterfacePacket[ESPWROOM32_MAX_AP_NUM_IN_SCAN];
     T_ESPWROOM32_ATCmdMenu const        *pRootMenu;
@@ -184,7 +198,11 @@ typedef struct
     TUInt32                             iCurrentIPAddress;
     TUInt32                             iCurrentGateway;
     TUInt32                             iCurrentMask;
+    //T_uezTimeDate                       iCurrentSntpTime;
     T_uezNetworkAddr                    iResolvedAddr;
+    T_uezNetworkInfo                    iInfo; // TODO use the rest of this
+    T_uezNetworkJoinStatus              iJoinStatus; // TODO use this
+    T_uezNetworkScanStatus              iScanStatus; // TODO use this
     T_ESPWROOM32_StationStatus          iStationStatus;
     TInt32                              iListeningConnectionList[ESPWROOM32_SOCKET_MAX_CONNECTIONS];
     TInt32                              iListeningConnectionIndex;
@@ -201,6 +219,8 @@ typedef struct
     TaskHandle_t                        iCurrentTask;
     T_uezTask                           iATCmdRespTask;
     T_uezTask                           iRXTask;
+    T_uezTask                           iAddressTimeTask;
+    T_uezSemaphore                      iSem;
     T_uezSemaphore                      iTXDoneSem;
     T_uezSemaphore                      iRXDoneSem;
     T_uezSemaphore                      iCmdDoneSem;
@@ -220,7 +240,10 @@ static T_Network_ESPWROOM32_Workspace *G_ESPWROOM32_Workspace;
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
+T_uezError Network_ESPWROOM32_Close(void *aWorkspace);
+
 /* Internal */
+
 static T_uezError   ESPWROOM32_Configure(void *aWorkspace, 
                                          const T_ESPWROOM32_Network_UARTSettings *aSettings);
 static TInt32       ESPWROOM32_CheckForMatch(TUInt8 const * pTest, TUInt8 const * const pRef);
@@ -228,6 +251,8 @@ static T_uezError   ESPWROOM32_ATCmdCallback(T_ESPWROOM32_ATCmdMenu const * cons
                                              TUInt8 const * pInput,
                                              TUInt32 const bytes);
 static void         ESPWROOM32_RemoveQuotations(char * str_in, char * str_out);
+static void         ESPWROOM32_StringToInteger(char * str_in, uint8_t * str_out);
+static uint8_t      ESPWROOM32_ASCIIToHex(char ch);
 
 /* AT Command Functions */
 static T_uezError   ESPWROOM32_AT_DisableEcho( void );
@@ -236,7 +261,7 @@ static T_uezError   ESPWROOM32_AT_ListSupportedCommands( void );
 static T_uezError   ESPWROOM32_AT_SetWIFIMode( void );
 static T_uezError   ESPWROOM32_AT_EnableMultiConnections( void );
 static T_uezError   ESPWROOM32_AT_DataWithoutRemoteAddress( void );
-static T_uezError   ESPWROOM32_AT_ConnectToAP( void );
+static T_uezError   ESPWROOM32_AT_ConnectToAP(const char *aJoinName, const char *aJoinPassword);
 static T_uezError   ESPWROOM32_AT_EnableDHCP( void );
 static T_uezError   ESPWROOM32_AT_IPAddressGet( void );
 static T_uezError   ESPWROOM32_AT_ResolveDomain( const char * aDomain, T_uezNetworkAddr * aAddr );
@@ -251,12 +276,17 @@ static T_uezError   ESPWROOM32_AT_SocketReceiveFrom( T_uezNetworkSocket aSocket,
 #else
 static T_uezError   ESPWROOM32_AT_SocketReceiveFrom( T_uezNetworkSocket aSocket, void *aData, TUInt32 aNumBytes, TUInt32 aTimeout );
 #endif
+static T_uezError   ESPWROOM32_AT_ScanAP(T_ESPWROOM32_WifiScan * pScan, uint8_t * pCnt, TUInt32 aTimeout );
+static T_uezError   ESPWROOM32_AT_SntpServerSetup(TInt32 aTimeZone, const char * aServerA, const char * aServerB, const char * aServerC);
+static T_uezError   ESPWROOM32_AT_SntpIntervalSetup(TUInt32 aInterval);
+static T_uezError   ESPWROOM32_AT_SntpGetTime(void);
 
 /* Timer or Task Callbacks */
 static void         ESPWROOM32_ResponseTimeoutHandler( TimerHandle_t pxTimer );
 static void         ESPWROOM32_SocketStatusHandler( TimerHandle_t pxTimer );
 TUInt32             ESPWROOM32_ATCmdRespHandler(T_uezTask aMyTask, void *aParams);
 TUInt32             ESPWROOM32_RXHandler(T_uezTask aMyTask, void *aParams);
+TUInt32             ESPWROOM32_AddressTimeHandler(T_uezTask aMyTask, void *aParams);
 
 /*---------------------------------------------------------------------------*
  * Routine:  Network_ESPWROOM32_InitializeWorkspace
@@ -278,7 +308,9 @@ T_uezError Network_ESPWROOM32_InitializeWorkspace(void *aWorkspace)
     p->iRXNetworkPacketIndex = 0;
     p->pInputBufferLast = 0;
     p->iTransmissionMode = ESPWROOM32_TX_MODE_NORMAL;
+    p->iScanIndex = 0;
     p->iMaxScanIndex = 0;
+    p->pScanResult = NULL;
     p->iPacketIndex = 0;
     memset(p->iATInterfacePacket, 0, sizeof(p->iATInterfacePacket));
     p->pRootMenu = &G_ESPWROOM32_RootMenu;
@@ -301,6 +333,7 @@ T_uezError Network_ESPWROOM32_InitializeWorkspace(void *aWorkspace)
     p->iCurrentIPAddress = 0;
     p->iCurrentGateway = 0;
     p->iCurrentMask = 0;
+    //memset(&p->iCurrentSntpTime, 0, sizeof(p->iCurrentSntpTime));
     memset(&p->iResolvedAddr, 0, sizeof(p->iResolvedAddr));
     p->iStationStatus = (T_ESPWROOM32_StationStatus) 0;
     memset(&p->iListeningConnectionList, 0, sizeof(p->iListeningConnectionList));
@@ -320,6 +353,13 @@ T_uezError Network_ESPWROOM32_InitializeWorkspace(void *aWorkspace)
     p->pCmdBuffer = 0;
     p->iCmdBufferIndex = 0;
 
+    if(UEZ_ERROR_NONE == error)
+    {
+      error = UEZSemaphoreCreateBinary(&p->iSem);
+#if UEZ_REGISTER
+      UEZSemaphoreSetName(p->iSem, "ESP32Sem", "\0");
+#endif
+    }
 
     if(UEZ_ERROR_NONE == error)
     {
@@ -401,21 +441,7 @@ T_uezError Network_ESPWROOM32_InitializeWorkspace(void *aWorkspace)
 
     if(UEZ_ERROR_NONE != error)
     {
-        UEZTaskDelete(G_ESPWROOM32_Workspace->iRXTask);
-        UEZTaskDelete(G_ESPWROOM32_Workspace->iATCmdRespTask);
-        xTimerDelete(p->iSocketStatusTimer, 0);
-        xTimerDelete(p->iResponseTimer, 0);
-        UEZQueueDelete(p->iRXDataQueue);
-        UEZSemaphoreDelete(p->iAcceptSem);
-        UEZSemaphoreDelete(p->iSocketConnectionUpdateSem);
-        UEZSemaphoreDelete(p->iATCmdMutex);
-        UEZSemaphoreDelete(p->iCmdDoneSem);
-        UEZSemaphoreDelete(p->iTXDoneSem);
-        UEZSemaphoreDelete(p->iRXDoneSem);
-#if 0
-        UEZMemFree(p->pInputBuffer);
-        p->pInputBuffer = 0;
-#endif
+      Network_ESPWROOM32_Close(p);
     }
     else
     {
@@ -434,8 +460,8 @@ T_uezError Network_ESPWROOM32_Open(void *aWorkspace)
     TaskHandle_t taskHandle;
     TUInt8 data[6] = { 0 };
 
-    T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
-    p->iCurrentTask = xTaskGetCurrentTaskHandle();    
+    T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;    
+    p->iCurrentTask = xTaskGetCurrentTaskHandle();
 
     UEZStreamOpen(p->iUARTSettings.iUARTDeviceName, &p->iUART);
 
@@ -481,6 +507,21 @@ T_uezError Network_ESPWROOM32_Open(void *aWorkspace)
 #endif
 #endif
 
+    // Reasonable default sntp settings for UTC time and 24 hour interval check.
+    // If no servers are set sntp will still activate with default servers (in other countries)
+    ESPWROOM32_AT_SntpServerSetup(0, "0.pool.ntp.org","time.google.com", "");
+    ESPWROOM32_AT_SntpIntervalSetup((60*60*24)); // module has own RTC battery, and won't check at every startup.
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        error = UEZTaskCreate((T_uezTaskFunction)ESPWROOM32_AddressTimeHandler, 
+                          "ESPWROOM32 Address Task", 
+                          ESPWROOM32_ADD_THREAD_STACK_SIZE, 
+                          aWorkspace, 
+                          ESPWROOM32_ADD_THREAD_PRIORITY, 
+                          &p->iAddressTimeTask);
+    }
+
     if(UEZ_ERROR_NONE == error)
     {
         p->iOpen = true;
@@ -495,13 +536,31 @@ T_uezError Network_ESPWROOM32_Open(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError Network_ESPWROOM32_Close(void *aWorkspace)
 {
-    T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
+    //T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
 
-    /* TODO: Implement based on `???` */
-
-    DEBUG_RTT_Printf(0, "Network_ESPWROOM32_Close not implemented!\n");
-
-    __BKPT(0);
+    DEBUG_RTT_Printf(0, "Network_ESPWROOM32_Close not fully implemented!\n");
+    
+    UEZTaskDelete(G_ESPWROOM32_Workspace->iRXTask);
+    UEZTaskDelete(G_ESPWROOM32_Workspace->iATCmdRespTask);
+    if(G_ESPWROOM32_Workspace->iAddressTimeTask != 0){
+      UEZTaskDelete(G_ESPWROOM32_Workspace->iAddressTimeTask);
+    }
+    xTimerDelete(p->iSocketStatusTimer, 0);
+    xTimerDelete(p->iResponseTimer, 0);
+    UEZQueueDelete(p->iRXDataQueue);
+    UEZSemaphoreDelete(p->iAcceptSem);
+    UEZSemaphoreDelete(p->iSocketConnectionUpdateSem);
+    UEZSemaphoreDelete(p->iATCmdMutex);
+    UEZSemaphoreDelete(p->iCmdDoneSem);
+    UEZSemaphoreDelete(p->iTXDoneSem);
+    UEZSemaphoreDelete(p->iRXDoneSem);
+    UEZSemaphoreDelete(p->iSem);
+#if 0
+    UEZMemFree(p->pInputBuffer);
+    p->pInputBuffer = 0;
+#endif
 
     return error;
 }
@@ -517,13 +576,56 @@ T_uezError Network_ESPWROOM32_Scan(
     void *aCallbackWorkspace,
     TUInt32 aTimeout)
 {
-    T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
+    PARAM_NOT_USED(aChannelNumber);
+    PARAM_NOT_USED(aScanSSID);
+    PARAM_NOT_USED(aCallbackWorkspace);
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
+   
+    T_ESPWROOM32_WifiScan scan_results[ESPWROOM32_AP_SCAN_MAX_COUNT] = { 0 };
+    uint8_t scan_count = ESPWROOM32_AP_SCAN_MAX_COUNT;
 
-    /* TODO: Implement based on `???` */
+    error = ESPWROOM32_AT_ScanAP(scan_results, &scan_count, aTimeout);
+    if(UEZ_ERROR_NONE != error)
+    {
+        DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_Join::ESPWROOM32_AT_ConnectToAP, error=%d\n", error);
+    }
 
-    DEBUG_RTT_Printf(0, "Network_ESPWROOM32_Scan not implemented!\n");
+    for(uint8_t scan_index = 0; scan_index < p->iScanIndex; scan_index++)
+    {
+        T_uezNetworkInfo networkInfo;
+        snprintf(networkInfo.iName, UEZ_NETWORK_INFO_NAME_LENGTH, "%s", scan_results[scan_index].ssid);
+        snprintf(networkInfo.iBSSID, ATLIBGS_BSSID_MAX_LENGTH, "%s", scan_results[scan_index].bssid);
+        networkInfo.iRSSILevel = (TInt32)scan_results[scan_index].rssi;
+        switch(scan_results[scan_index].security)
+        {
+            case ESPWROOM32_SECURITY_OPEN:
+                networkInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_OPEN;
+            break;
 
-    __BKPT(0);
+            case ESPWROOM32_SECURITY_WEP:
+                networkInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WEP;
+            break;
+
+            case ESPWROOM32_SECURITY_WPA_PSK:
+                networkInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WPA;
+            break;
+
+            case ESPWROOM32_SECURITY_WPA2_PSK:
+                networkInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WPA2;
+            break;
+
+            case ESPWROOM32_SECURITY_WPA_WPA2_PSK:
+                networkInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_WPA2;
+            break;
+
+            default:
+                networkInfo.iSecurityMode = UEZ_NETWORK_SECURITY_MODE_UNKNOWN;
+            break;
+        }
+        networkInfo.iChannel = scan_results[scan_index].channel;
+        aCallback(NULL, &networkInfo);
+    }
 
     return error;
 }
@@ -537,13 +639,17 @@ T_uezError Network_ESPWROOM32_Join(
     const char *aJoinPassword,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aTimeout);
+
     T_uezError error = UEZ_ERROR_NONE;
 
-    error = ESPWROOM32_AT_ConnectToAP();
+    error = ESPWROOM32_AT_ConnectToAP(aJoinName, aJoinPassword);
     if(UEZ_ERROR_NONE != error)
     {
         DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_Join::ESPWROOM32_AT_ConnectToAP, error=%d\n", error);
     }
+    // At this point if we call get time it always returns Jan 1 0 minutes. Wait till after IP.
 
     return error;
 }
@@ -557,19 +663,31 @@ T_uezError Network_ESPWROOM32_GetStatus(
 {
     T_uezError error = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
+    UNUSED(error);
 
-    error = ESPWROOM32_AT_IPAddressGet();
-    if(UEZ_ERROR_NONE != error)
-    {
-        DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_GetStatus::ESPWROOM32_AT_IPAddressGet, error=%d\n", error);
-    }
-    else
-    {
-        aStatus->iIPAddr.v4[0] = (p->iCurrentIPAddress >> 24) & 0xFF;
-        aStatus->iIPAddr.v4[1] = (p->iCurrentIPAddress >> 16) & 0xFF;
-        aStatus->iIPAddr.v4[2] = (p->iCurrentIPAddress >> 8) & 0xFF;
-        aStatus->iIPAddr.v4[3] = p->iCurrentIPAddress & 0xFF;
-    }
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
+    
+    aStatus->iInfo = p->iInfo; // only type is reported todo
+    aStatus->iJoinStatus = p->iJoinStatus; // not used yet
+    aStatus->iScanStatus = p->iScanStatus; // not used yet
+
+    aStatus->iIPAddr.v4[0] = (p->iCurrentIPAddress >> 24) & 0xFF;
+    aStatus->iIPAddr.v4[1] = (p->iCurrentIPAddress >> 16) & 0xFF;
+    aStatus->iIPAddr.v4[2] = (p->iCurrentIPAddress >> 8) & 0xFF;
+    aStatus->iIPAddr.v4[3] = p->iCurrentIPAddress & 0xFF;
+
+    aStatus->iSubnetMask.v4[0] = (p->iCurrentMask >> 24) & 0xFF;
+    aStatus->iSubnetMask.v4[1] = (p->iCurrentMask >> 16) & 0xFF;
+    aStatus->iSubnetMask.v4[2] = (p->iCurrentMask >> 8) & 0xFF;
+    aStatus->iSubnetMask.v4[3] = p->iCurrentMask & 0xFF;
+    
+    aStatus->iGatewayAddress.v4[0] = (p->iCurrentGateway >> 24) & 0xFF;
+    aStatus->iGatewayAddress.v4[1] = (p->iCurrentGateway >> 16) & 0xFF;
+    aStatus->iGatewayAddress.v4[2] = (p->iCurrentGateway >> 8) & 0xFF;
+    aStatus->iGatewayAddress.v4[3] = p->iCurrentGateway & 0xFF;
+    
+    //memcpy(aStatus->iCurrentSntpTime, p->iCurrentSntpTime, sizeof(T_uezTimeDate));
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -667,13 +785,19 @@ T_uezError Network_ESPWROOM32_SocketBind(
     T_uezNetworkAddr *aAddr,
     TUInt16 aPort)
 {
-    T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
+    PARAM_NOT_USED(aPort);
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
 
-    /* TODO: Implement based on `???` */
+    /* TODO: test with non-zero bind address */
 
-    DEBUG_RTT_Printf(0, "Network_ESPWROOM32_SocketBind not implemented!\n");
-
-    __BKPT(0);
+    if(aSocket < ESPWROOM32_SOCKET_MAX_CONNECTIONS) {
+        p->iSocket[aSocket].bindAddr = *aAddr;
+        //p->iSocket[aSocket].port     = aPort; // real port will get set on connect later
+    } else {
+      DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_SocketBind, out of socket range!\n");
+      return UEZ_ERROR_OUT_OF_RANGE;
+    }
 
     return error;
 }
@@ -685,6 +809,8 @@ T_uezError Network_ESPWROOM32_SocketListen(
     void *aWorkspace,
     T_uezNetworkSocket aSocket)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aSocket);
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     /* TODO: Implement based on `???` */
@@ -705,6 +831,11 @@ T_uezError Network_ESPWROOM32_SocketAccept(
     T_uezNetworkSocket *aCreatedSocket,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aTimeout);
+    PARAM_NOT_USED(aListenSocket);
+    PARAM_NOT_USED(aCreatedSocket);
+
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     /* TODO: Implement based on `???` */
@@ -723,9 +854,30 @@ T_uezError Network_ESPWROOM32_SocketClose(
     void *aWorkspace,
     T_uezNetworkSocket aSocket)
 {
+    PARAM_NOT_USED(aWorkspace);
     T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
 
-    error = ESPWROOM32_AT_SocketClose(aSocket);
+    if(aSocket < ESPWROOM32_SOCKET_MAX_CONNECTIONS) {
+        error = ESPWROOM32_AT_SocketClose(aSocket);
+        p->iSocket[aSocket].protocolType = ESPWROOM32_SOCKET_PROTOCOL_TYPE_RAW;
+        p->iSocket[aSocket].connectionType = ESPWROOM32_SOCKET_CONNECTION_TYPE_DISCONNECT;
+        p->iSocket[aSocket].errorCode = ESPWROOM32_SOCKET_ERROR_CODE_NONE;
+        p->iSocket[aSocket].tcpKeepAlive = false;
+        memset ((char *) &p->iSocket[aSocket].networkAddr, 0,
+                                  sizeof(p->iSocket[aSocket].networkAddr));
+        p->iSocket[aSocket].status = NULL;
+        if(p->iSocket[aSocket].linkID != -1) { // check if existing or already removed before downcount
+          p->iSocket[aSocket].linkID = -1;
+          if(p->iSocketCount > 0) {
+            p->iSocketCount--;
+          }
+        }
+    } else {
+      DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_SocketClose, out of socket range!\n");
+      return UEZ_ERROR_OUT_OF_RANGE;
+    }
+
     if(UEZ_ERROR_NONE != error)
     {
         DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_SocketClose::ESPWROOM32_AT_SocketClose, error=%d\n", error);
@@ -741,9 +893,30 @@ T_uezError Network_ESPWROOM32_SocketDelete(
     void *aWorkspace,
     T_uezNetworkSocket aSocket)
 {
+    PARAM_NOT_USED(aWorkspace);
     T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
 
-    error = ESPWROOM32_AT_SocketClose(aSocket);
+    if(aSocket < ESPWROOM32_SOCKET_MAX_CONNECTIONS) {
+      error = ESPWROOM32_AT_SocketClose(aSocket);
+      p->iSocket[aSocket].protocolType = ESPWROOM32_SOCKET_PROTOCOL_TYPE_RAW;
+      p->iSocket[aSocket].connectionType = ESPWROOM32_SOCKET_CONNECTION_TYPE_DISCONNECT;
+      p->iSocket[aSocket].errorCode = ESPWROOM32_SOCKET_ERROR_CODE_NONE;
+      p->iSocket[aSocket].tcpKeepAlive = false;
+      memset ((char *) &p->iSocket[aSocket].networkAddr, 0,
+                                sizeof(p->iSocket[aSocket].networkAddr));
+      p->iSocket[aSocket].status = NULL;
+      if(p->iSocket[aSocket].linkID != -1) { // check if existing or already removed before downcount
+          p->iSocket[aSocket].linkID = -1;
+          if(p->iSocketCount > 0) {
+            p->iSocketCount--;
+          }
+      }
+    } else {
+      DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_SocketDelete, out of socket range!\n");
+      return UEZ_ERROR_OUT_OF_RANGE;
+    }
+
     if(UEZ_ERROR_NONE != error)
     {
         DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_SocketDelete::ESPWROOM32_AT_SocketClose, error=%d\n", error);
@@ -805,6 +978,7 @@ T_uezError Network_ESPWROOM32_SocketWrite(
     TBool aFlush,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aFlush);
     T_uezError error = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
 
@@ -830,6 +1004,9 @@ T_uezError Network_ESPWROOM32_AuxControl(
     TUInt32 aAuxCommand,
     void *aAuxData)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aAuxCommand);
+    PARAM_NOT_USED(aAuxData);
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     /* TODO: Implement based on `esp_socket_recv` */
@@ -846,6 +1023,9 @@ T_uezError Network_ESPWROOM32_AuxControl(
  *---------------------------------------------------------------------------*/
 T_uezError Network_ESPWROOM32_Leave(void *aWorkspace, TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aTimeout);
+
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     /* TODO: Implement based on `???` */
@@ -865,6 +1045,7 @@ T_uezError Network_ESPWROOM32_ResolveAddress(
     const char *aName,
     T_uezNetworkAddr *aAddr)
 {
+    PARAM_NOT_USED(aWorkspace);
     T_uezError error = UEZ_ERROR_NONE;
 
     error = ESPWROOM32_AT_ResolveDomain(aName, aAddr);
@@ -885,6 +1066,7 @@ T_uezError Network_ESPWROOM32_InfrastructureConfigure(
 {
     T_uezError error = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
+    p->iInfo.iNetworkType = aSettings->iNetworkType;
 
     p->iProvMode = ESPWROOM32_MODE_STATION;
     memset(&p->iProvInfo, 0, sizeof(p->iProvInfo));
@@ -952,6 +1134,7 @@ T_uezError Network_ESPWROOM32_InfrastructureBringUp(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError Network_ESPWROOM32_InfrastructureTakeDown(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     /* TODO: Implement based on `???` */
@@ -970,6 +1153,9 @@ T_uezError Network_ESPWROOM32_GetConnectionInfo(void *aWorkspace,
 		T_uezNetworkSocket aSocket,
 		T_uEZNetworkConnectionInfo *aConnection)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aSocket);
+    PARAM_NOT_USED(aConnection);
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     /* TODO: Implement based on `???` */
@@ -1093,6 +1279,39 @@ static void ESPWROOM32_RemoveQuotations(char * str_in, char * str_out)
 
     str_out[j] = '\0';
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_StringToInteger
+ *---------------------------------------------------------------------------*/
+static void ESPWROOM32_StringToInteger(char * str_in, uint8_t * str_out)
+{
+    int i=1;
+    for(int j=0; j<6; j++)
+    {
+        str_out[j] = (uint8_t)((ESPWROOM32_ASCIIToHex(str_in[i])<<4) + ESPWROOM32_ASCIIToHex(str_in[i+1]));
+        i+=3;
+    }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_ASCIIToHex
+ *---------------------------------------------------------------------------*/
+static uint8_t ESPWROOM32_ASCIIToHex(char ch)
+{
+    uint8_t num=0;
+
+    if (ch >= 'a' && ch <= 'f')
+    {
+        num = (uint8_t)(ch-'W');
+    }
+    else if (ch >= '0' && ch <= '9')
+    {
+        num = (uint8_t)(ch-'0');
+    }
+
+    return num;
+}
+
 
 /*---------------------------------------------------------------------------*
  * Routine:  ESPWROOM32_ModuleStatusHandler
@@ -1247,18 +1466,59 @@ static void ESPWROOM32_NetworkStatusHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
  *---------------------------------------------------------------------------*/
 static void ESPWROOM32_ScanSSIDHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
 {
-    T_uezError error = UEZ_ERROR_NONE;
-
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
-    UNUSED(p);
-    UNUSED(error);
 
-    /* TODO: Implement based on `scan_ssid_handler` */
+    char AT_RESPONSE[100];
+    char *str;
+    T_ESPWROOM32_SecurityType security_mode;
+    uint8_t ssid_string[32];
+    uint8_t bssid_string[20];
+    int rssi;
+
+    if(p->iScanIndex < p->iMaxScanIndex)
+    {
+        memset ((char *) &ssid_string, 0, sizeof(ssid_string));
+        (void) memset ((char *) &p->pScanResult[p->iScanIndex], 0, sizeof(p->pScanResult[p->iScanIndex]));
+        strncpy(AT_RESPONSE,(const char*)pArgs->pRemainingString + 1, pArgs->bytes);
+
+        str = (char *)strtok(AT_RESPONSE,",");
+        security_mode = (T_ESPWROOM32_SecurityType)atoi(str);
+        switch (security_mode)
+        {
+            case ESPWROOM32_SECURITY_OPEN:
+            case ESPWROOM32_SECURITY_WEP:
+            case ESPWROOM32_SECURITY_WPA_PSK:
+            case ESPWROOM32_SECURITY_WPA2_PSK:
+                p->pScanResult[p->iScanIndex].security =  security_mode;
+            break;
+            default:
+            break;
+
+        }
+
+        str = (char *)strtok(NULL,",");
+        strncpy((char *)ssid_string, str, strlen((char *)str));
+        ESPWROOM32_RemoveQuotations((char *)ssid_string, (char *) &p->pScanResult[p->iScanIndex].ssid);
+
+        str = (char *)strtok(NULL,",");
+        rssi = atoi(str);
+        p->pScanResult[p->iScanIndex].rssi = (uint8_t)abs(rssi);
+
+        str = (char *)strtok(NULL,",");
+        strncpy((char *)bssid_string, str, strlen((char *)str));
+        ESPWROOM32_StringToInteger((char *)bssid_string, (uint8_t *) &p->pScanResult[p->iScanIndex].bssid);
+
+        str = (char *)strtok(NULL,")");
+        p->pScanResult[p->iScanIndex].channel = (uint8_t)atoi(str);
+    }
+
+    p->iScanIndex++;
+
+    if(p->iScanIndex == p->iMaxScanIndex)
+    {
+        UEZSemaphoreRelease(p->iCmdDoneSem);
+    }
     
-    DEBUG_RTT_Printf(0, "ESPWROOM32_ScanSSIDHandler not implemented!\n");
-
-    __BKPT(0);
-
     return;// error;
 }
 
@@ -1267,6 +1527,7 @@ static void ESPWROOM32_ScanSSIDHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
  *---------------------------------------------------------------------------*/
 static void ESPWROOM32_GetMACHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
 {
+    PARAM_NOT_USED(pArgs);
     T_uezError error = UEZ_ERROR_NONE;
 
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
@@ -1303,7 +1564,8 @@ static void ESPWROOM32_ReceiveSendingDataHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
  *---------------------------------------------------------------------------*/
 static void ESPWROOM32_QueryStationConnectionHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
 {
-    T_uezError error = UEZ_ERROR_NONE;
+    PARAM_NOT_USED(pArgs);
+    T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     UNUSED(p);
@@ -1313,7 +1575,8 @@ static void ESPWROOM32_QueryStationConnectionHandler(T_ESPWROOM32_ATCmdArgs *pAr
     
     DEBUG_RTT_Printf(0, "ESPWROOM32_QueryStationConnectionHandler not implemented!\n");
 
-    __BKPT(0);
+    //__BKPT(0);
+    //return error;
 }
 
 /*---------------------------------------------------------------------------*
@@ -1368,6 +1631,41 @@ static void ESPWROOM32_ReceiveDataHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
 #endif
 
 /*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_ReceiveSntpTimeHandler
+ *---------------------------------------------------------------------------*/
+static void ESPWROOM32_ReceiveSntpTimeHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
+{
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
+    T_uezError error = UEZ_ERROR_NONE;
+    T_uezTimeDate currentSntpTime;
+    UNUSED(p);
+    UNUSED(error);
+    DEBUG_RTT_Printf(0, "ESPWROOM32_ReceiveSntpTimeHandle\n");
+    
+    char ATResponse[100]; //+CIPSNTPTIME:Mon Oct 18 20:12:27 2021
+    char *str;
+
+    strncpy(ATResponse,(const char*)pArgs->pRemainingString, pArgs->bytes);
+    str = strtok(ATResponse," ");
+    str = strtok(NULL," ");
+     
+    // ignore day of week
+    currentSntpTime.iDate.iMonth = (TUInt8) CHECK_STRING_MONTH(str); // start from 1
+    str = strtok(NULL," ");
+    currentSntpTime.iDate.iDay = ((TUInt8) atoi(str));
+
+    str = strtok(NULL," ");
+    UEZTimeParse(&currentSntpTime.iTime, str);
+
+    str = strtok(NULL," ");
+    currentSntpTime.iDate.iYear = ((TUInt16) atoi(str))-1900;
+    
+    UEZTimeDateSet(&currentSntpTime);
+
+    UEZSemaphoreRelease(p->iCmdDoneSem);
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  ESPWROOM32_DisableATEcho
  *---------------------------------------------------------------------------*/
 static T_uezError ESPWROOM32_AT_DisableEcho( void )
@@ -1376,6 +1674,7 @@ static T_uezError ESPWROOM32_AT_DisableEcho( void )
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
     
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1405,6 +1704,7 @@ static T_uezError ESPWROOM32_AT_DisableEcho( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1418,6 +1718,7 @@ static T_uezError ESPWROOM32_AT_GetVersionInfo( void )
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
     
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1447,6 +1748,7 @@ static T_uezError ESPWROOM32_AT_GetVersionInfo( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1460,6 +1762,7 @@ static T_uezError ESPWROOM32_AT_ListSupportedCommands( void )
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
     
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1489,6 +1792,7 @@ static T_uezError ESPWROOM32_AT_ListSupportedCommands( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1503,6 +1807,7 @@ static T_uezError ESPWROOM32_AT_SetWIFIMode( void )
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[16]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1547,6 +1852,7 @@ static T_uezError ESPWROOM32_AT_SetWIFIMode( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1560,6 +1866,7 @@ static T_uezError ESPWROOM32_AT_EnableMultiConnections( void )
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1589,6 +1896,7 @@ static T_uezError ESPWROOM32_AT_EnableMultiConnections( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1602,6 +1910,7 @@ static T_uezError ESPWROOM32_AT_DataWithoutRemoteAddress( void )
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1631,6 +1940,7 @@ static T_uezError ESPWROOM32_AT_DataWithoutRemoteAddress( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1638,13 +1948,14 @@ static T_uezError ESPWROOM32_AT_DataWithoutRemoteAddress( void )
 /*---------------------------------------------------------------------------*
  * Routine:  ESPWROOM32_AT_ConnectToAP
  *---------------------------------------------------------------------------*/
-static T_uezError   ESPWROOM32_AT_ConnectToAP( void )
+static T_uezError   ESPWROOM32_AT_ConnectToAP(const char *aJoinName, const char *aJoinPassword)
 {
     T_uezError error = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
-    char Connection_command[64]={'\0'};
+    char Connection_command[100]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1654,7 +1965,7 @@ static T_uezError   ESPWROOM32_AT_ConnectToAP( void )
         p->iCommand     = ESPWROOM32_AT_CMD_INDEX_CWJAP;
         p->iCurrentTask = xTaskGetCurrentTaskHandle();    
 
-        sprintf(Connection_command,"%s=\x22%s\x22,\x22%s\x22\r\n#",SetProvInStation, ESPWROOM32_SSID, ESPWROOM32_PW);
+        sprintf(Connection_command,"%s=\x22%s\x22,\x22%s\x22\r\n#",SetProvInStation, aJoinName, aJoinPassword);
 
         pOutData = strtok(Connection_command,"#");
         OutLength = strlen((char *)pOutData);
@@ -1670,12 +1981,13 @@ static T_uezError   ESPWROOM32_AT_ConnectToAP( void )
     if(UEZ_ERROR_NONE == error)
     {
         DEBUG_RTT_Printf(0, "\n%s", pOutData);
-        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 500);
+        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 5000);
         if(pdFAIL == notify)
         {
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1690,6 +2002,7 @@ static T_uezError ESPWROOM32_AT_EnableDHCP( void )
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[20]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -1734,6 +2047,7 @@ static T_uezError ESPWROOM32_AT_EnableDHCP( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1748,6 +2062,7 @@ static T_uezError ESPWROOM32_AT_IPAddressGet( void )
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[20]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     p->iCmdBufferIndex = 0;
     p->pCmdBuffer = UEZMemAlloc(ESPWROOM32_MAX_PACKET_WINDOW);
@@ -1818,6 +2133,7 @@ static T_uezError ESPWROOM32_AT_IPAddressGet( void )
     UEZMemFree(p->pCmdBuffer);
     p->pCmdBuffer = 0;
     p->iRXIsData = false;
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -1832,6 +2148,7 @@ static T_uezError ESPWROOM32_AT_ResolveDomain( const char * aDomain, T_uezNetwor
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[80]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     p->iCmdBufferIndex = 0;
     p->pCmdBuffer = UEZMemAlloc(ESPWROOM32_MAX_PACKET_WINDOW);
@@ -1892,6 +2209,7 @@ static T_uezError ESPWROOM32_AT_ResolveDomain( const char * aDomain, T_uezNetwor
     p->pCmdBuffer = 0;
     p->iRXIsData = false;
 
+    UEZSemaphoreRelease(p->iSem);
     return error;
 }
 
@@ -1906,10 +2224,18 @@ static T_uezError ESPWROOM32_AT_ClientSocketCreate( T_uezNetworkSocket aSocket )
     TUInt32 OutLength = 0;
     char Connection_command[64]={'\0'};
     char ip_add[20]={'\0'};
+    TUInt32 KeepAliveValue;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     if(p->iSocket[aSocket].linkID == -1)
     {
         error = UEZ_ERROR_INVALID_PARAMETER;
+    }
+    if(p->iSocket[aSocket].tcpKeepAlive)
+    {
+        KeepAliveValue = 7200;
+    } else {
+        KeepAliveValue = 0;
     }
 
     if(UEZ_ERROR_NONE == error)
@@ -1920,34 +2246,27 @@ static T_uezError ESPWROOM32_AT_ClientSocketCreate( T_uezNetworkSocket aSocket )
                                               (uint8_t) (p->iSocket[aSocket].networkAddr.v4[2]),
                                               (uint8_t) (p->iSocket[aSocket].networkAddr.v4[3]));
 
+        // TODO to implement socket bind (non-zero) add the local IP parameter at the end of the connection command.
+        // p->iSocket[aSocket].bindAddr
         switch(p->iSocket[aSocket].protocolType)
         {
             case ESPWROOM32_SOCKET_PROTOCOL_TYPE_STREAM:
-                if(p->iSocket[aSocket].tcpKeepAlive)
-                {
-                    sprintf(Connection_command, "%s=%i,%s,%s,%u,%d\r\n#", ClientSocketCreate,
+                sprintf(Connection_command, "%s=%i,%s,%s,%u,%d\r\n#", ClientSocketCreate,
                             (uint8_t)(p->iSocket[aSocket].linkID), TypeTCP,
-                            ip_add, (uint32_t) p->iSocket[aSocket].port, 7200);
-                }
-                else
-                {
-                    sprintf(Connection_command,"%s=%i,%s,%s,%u,%d\r\n#", ClientSocketCreate,
-                            (uint8_t)(p->iSocket[aSocket].linkID), TypeTCP,
-                            ip_add, (uint32_t) p->iSocket[aSocket].port, 0);
-                }
+                            ip_add, (uint32_t) p->iSocket[aSocket].port, KeepAliveValue);
 
                 break;
 
             case ESPWROOM32_SOCKET_PROTOCOL_TYPE_DGRAM:
-                sprintf(Connection_command,"%s=%i,%s,%s,%u\r\n#", ClientSocketCreate,
-                                        (uint8_t)(p->iSocket[aSocket].linkID), TypeUDP,
-                                        ip_add, (uint32_t) p->iSocket[aSocket].port);
+                sprintf(Connection_command,"%s=%i,%s,%s,%u,%d\r\n#", ClientSocketCreate,
+                            (uint8_t)(p->iSocket[aSocket].linkID), TypeUDP,
+                            ip_add, (uint32_t) p->iSocket[aSocket].port, KeepAliveValue);
                 break;
 
             case ESPWROOM32_SOCKET_PROTOCOL_TYPE_SSL:
-                sprintf(Connection_command,"%s=%i,%s,%s,%u\r\n#",ClientSocketCreate,
-                                        (uint8_t)(p->iSocket[aSocket].linkID), TypeSSL,
-                                        ip_add, (uint32_t) p->iSocket[aSocket].port);
+                sprintf(Connection_command,"%s=%i,%s,%s,%u,%d\r\n#",ClientSocketCreate,
+                            (uint8_t)(p->iSocket[aSocket].linkID), TypeSSL,
+                            ip_add, (uint32_t) p->iSocket[aSocket].port, KeepAliveValue);
                 break;
 
             default:
@@ -1987,12 +2306,13 @@ static T_uezError ESPWROOM32_AT_ClientSocketCreate( T_uezNetworkSocket aSocket )
 
     if(UEZ_ERROR_NONE == error)
     {
-        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 500);
+        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 1000);
         if(pdFAIL == notify)
         {
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -2006,6 +2326,7 @@ static T_uezError ESPWROOM32_AT_GetConnectionStatus( void )
     T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     void * pOutData = 0;
     TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     p->iCmdBufferIndex = 0;
     p->pCmdBuffer = UEZMemAlloc(ESPWROOM32_MAX_PACKET_WINDOW);
@@ -2058,6 +2379,7 @@ static T_uezError ESPWROOM32_AT_GetConnectionStatus( void )
     UEZMemFree(p->pCmdBuffer);
     p->pCmdBuffer = 0;
     p->iRXIsData = false;
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -2072,6 +2394,7 @@ static T_uezError ESPWROOM32_AT_SocketSetReceiveMode( void )
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[64]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -2104,6 +2427,7 @@ static T_uezError ESPWROOM32_AT_SocketSetReceiveMode( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -2118,6 +2442,7 @@ static T_uezError ESPWROOM32_AT_SocketClose( T_uezNetworkSocket aSocket )
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[20]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     DEBUG_RTT_Printf(0, "\r\nESPWROOM32_AT_SocketClose\r\n");
 
@@ -2151,6 +2476,7 @@ static T_uezError ESPWROOM32_AT_SocketClose( T_uezNetworkSocket aSocket )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -2165,6 +2491,7 @@ static T_uezError ESPWROOM32_AT_SocketAbort( void )
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[20]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
     if(UEZ_ERROR_NONE == error)
@@ -2196,6 +2523,7 @@ static T_uezError ESPWROOM32_AT_SocketAbort( void )
             error = UEZ_ERROR_TIMEOUT;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -2210,6 +2538,7 @@ static T_uezError ESPWROOM32_AT_SocketSendTo( T_uezNetworkSocket aSocket, void *
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[32]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     if(aNumBytes > p->iMaxESPPacketSize)
     {
@@ -2232,7 +2561,10 @@ static T_uezError ESPWROOM32_AT_SocketSendTo( T_uezNetworkSocket aSocket, void *
 
         if(aSocket != 0)
         {
-            __BKPT(0);
+            if(aSocket > 1)
+            {
+              __BKPT(0);
+            }
         }
 
         sprintf(Connection_command,"%s=%i,%u\r\n#", SocketSend, aSocket, aNumBytes);
@@ -2346,6 +2678,7 @@ static T_uezError ESPWROOM32_AT_SocketSendTo( T_uezNetworkSocket aSocket, void *
 
     UEZMemFree(p->pCmdBuffer);
     p->pCmdBuffer = 0;
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
@@ -2361,6 +2694,7 @@ static T_uezError ESPWROOM32_AT_SocketReceiveFrom( T_uezNetworkSocket aSocket, v
     void * pOutData = 0;
     TUInt32 OutLength = 0;
     char Connection_command[32]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     p->iCmdBufferIndex = 0;
     p->pCmdBuffer = UEZMemAlloc(ESPWROOM32_MAX_PACKET_WINDOW);
@@ -2462,6 +2796,7 @@ static T_uezError ESPWROOM32_AT_SocketReceiveFrom( T_uezNetworkSocket aSocket, v
     UEZMemFree(p->pCmdBuffer);
     p->pCmdBuffer = 0;
     p->iRXIsData = false;
+    UEZSemaphoreRelease(p->iSem);
 
     return error;    
 }
@@ -2474,6 +2809,7 @@ static T_uezError ESPWROOM32_AT_SocketReceiveFrom( T_uezNetworkSocket aSocket, v
     TInt16                          total_length    = 0;
     T_networkPacket                 *packet         = NULL;
     T_networkPacket                 *next_packet    = NULL;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 #if 0
     void * pOutData = 0;
     TUInt32 OutLength = 0;
@@ -2546,16 +2882,272 @@ static T_uezError ESPWROOM32_AT_SocketReceiveFrom( T_uezNetworkSocket aSocket, v
             packet->iNextNetworkPacket = NULL;
         }
     }
+    UEZSemaphoreRelease(p->iSem);
 
     return error;
 }
 #endif
 
 /*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_AT_ScanAP
+ *---------------------------------------------------------------------------*/
+static T_uezError ESPWROOM32_AT_ScanAP(T_ESPWROOM32_WifiScan * pScan, uint8_t * pCnt, TUInt32 aTimeout )
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
+    void * pOutData = 0;
+    TUInt32 OutLength = 0;
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
+
+    TUInt8 requestedScanCount = *pCnt;
+    if(requestedScanCount > ESPWROOM32_AP_SCAN_MAX_COUNT)
+    {
+        error = UEZ_ERROR_ABORTED;
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        p->iCmdBufferIndex = 0;
+        p->pCmdBuffer = UEZMemAlloc(ESPWROOM32_MAX_PACKET_WINDOW);
+        if(NULL == p->pCmdBuffer)
+        {
+            error = UEZ_ERROR_OUT_OF_MEMORY;
+        }
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        p->iRXIndex     = 0;
+        p->iRXIsData    = true;
+        p->iCommand     = ESPWROOM32_AT_CMD_INDEX_CWLAP;
+        p->iCurrentTask = xTaskGetCurrentTaskHandle();  
+        p->iScanIndex   = 0;  
+        p->pScanResult  = pScan;
+
+        pOutData = (void *) ScanAP;
+        OutLength = sizeof(ScanAP)-1;
+ 
+        error = UEZStreamWrite(p->iUART, 
+                               pOutData, 
+                               OutLength, 
+                               NULL, 
+                               500);
+        UEZSemaphoreRelease(p->iATCmdMutex);
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        xTimerChangePeriod(p->iResponseTimer, 3000, 0);
+        xTimerStart(p->iResponseTimer, 0);
+
+        DEBUG_RTT_Printf(0, "%s\n", pOutData);
+        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, aTimeout);
+        if(pdFAIL == notify)
+        {
+            error = UEZ_ERROR_TIMEOUT;
+        }
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        error = UEZSemaphoreGrab(p->iCmdDoneSem, aTimeout);
+    }
+
+    *pCnt = (*pCnt < p->iMaxScanIndex ? *pCnt : p->iMaxScanIndex);
+
+    UEZMemFree(p->pCmdBuffer);
+    p->pCmdBuffer = 0;
+    p->iRXIsData = false;
+    UEZSemaphoreRelease(p->iSem);
+
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_AT_SntpServerSetup
+ *---------------------------------------------------------------------------*/
+static T_uezError   ESPWROOM32_AT_SntpServerSetup(TInt32 aTimeZone, const char * aServerA, const char * aServerB, const char * aServerC)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
+    void * pOutData = 0;
+    TUInt32 OutLength = 0;
+    char Sntmp_command[128]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
+
+    snprintf(Sntmp_command, 128, "%s=1,%i,\x22%s\x22", SetSnmpModeServer, aTimeZone, aServerA);
+
+    if(strlen(aServerB) > 5){
+      strcat(Sntmp_command, ",\x22");
+      strncat(Sntmp_command, aServerB,24);
+      strcat(Sntmp_command, "\x22");
+    }
+    if(strlen(aServerC) > 5){
+      strcat(Sntmp_command, ",\x22");
+      strncat(Sntmp_command, aServerC,24);
+      strcat(Sntmp_command, "\x22");
+    }
+    strcat(Sntmp_command, "\r\n#");
+
+    error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
+    if(UEZ_ERROR_NONE == error)
+    {
+        p->iRXIndex     = 0;
+        p->iRXIsData    = false;
+        p->iCommand     = ESPWROOM32_AT_CMD_INDEX_CIPSNTPCFG;
+        p->iCurrentTask = xTaskGetCurrentTaskHandle();    
+
+        pOutData = strtok(Sntmp_command,"#");
+        OutLength = strlen((char *)pOutData);
+
+        error = UEZStreamWrite(p->iUART, 
+                               pOutData, 
+                               OutLength, 
+                               NULL, 
+                               500);
+        UEZSemaphoreRelease(p->iATCmdMutex);
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {   
+        DEBUG_RTT_Printf(0, "\n%s", pOutData);
+        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 500);
+        if(pdFAIL == notify)
+        {
+            error = UEZ_ERROR_TIMEOUT;
+        }
+    }
+    UEZSemaphoreRelease(p->iSem);
+
+    return error;
+}
+/*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_AT_SntpIntervalSetup
+ *---------------------------------------------------------------------------*/
+static T_uezError   ESPWROOM32_AT_SntpIntervalSetup(TUInt32 aInterval)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
+    void * pOutData = 0;
+    TUInt32 OutLength = 0;
+    char Sntmp_command[32]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
+
+    sprintf(Sntmp_command, "%s=%u\r\n#", SetSnmpInterval, aInterval);
+
+    error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
+    if(UEZ_ERROR_NONE == error)
+    {
+        p->iRXIndex     = 0;
+        p->iRXIsData    = false;
+        p->iCommand     = ESPWROOM32_AT_CMD_INDEX_CIPSNTPINTV;
+        p->iCurrentTask = xTaskGetCurrentTaskHandle();    
+
+        pOutData = strtok(Sntmp_command,"#");
+        OutLength = strlen((char *)pOutData);
+
+        error = UEZStreamWrite(p->iUART, 
+                               pOutData, 
+                               OutLength, 
+                               NULL, 
+                               500);
+        UEZSemaphoreRelease(p->iATCmdMutex);
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        DEBUG_RTT_Printf(0, "\n%s", pOutData);
+        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 500);
+        if(pdFAIL == notify)
+        {
+            error = UEZ_ERROR_TIMEOUT;
+        }
+    }
+    UEZSemaphoreRelease(p->iSem);
+
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_AT_SntpGetTime
+ *---------------------------------------------------------------------------*/
+static T_uezError   ESPWROOM32_AT_SntpGetTime(void)
+{
+    T_uezError error = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
+    void * pOutData = 0;
+    TUInt32 OutLength = 0;
+    char Sntp_command[32]={'\0'};
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
+
+    p->iCmdBufferIndex = 0;
+    p->pCmdBuffer = UEZMemAlloc(100);
+    if(NULL == p->pCmdBuffer)
+    {
+        error = UEZ_ERROR_OUT_OF_MEMORY;
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        error = UEZSemaphoreGrab(p->iATCmdMutex, 500);
+    }
+    if(UEZ_ERROR_NONE == error)
+    {
+        p->iRXIndex     = 0;
+        p->iRXIsData    = true;
+        p->iCommand     = ESPWROOM32_AT_CMD_INDEX_CIPSNTPTIME;
+        p->iCurrentTask = xTaskGetCurrentTaskHandle();
+
+        sprintf(Sntp_command, "%s\r\n#", GetSnmpTime);
+
+        pOutData = strtok(Sntp_command,"#");
+        OutLength = strlen((char *)pOutData);
+
+        error = UEZStreamWrite(p->iUART, 
+                               pOutData, 
+                               OutLength, 
+                               NULL, 
+                               500);
+        UEZSemaphoreRelease(p->iATCmdMutex);
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        xTimerChangePeriod(p->iResponseTimer, 200, 0);
+        xTimerStart(p->iResponseTimer, 0);
+
+        DEBUG_RTT_Printf(0, "%s\n", pOutData);
+        BaseType_t notify = xTaskNotifyWait(0, 0, NULL, 500);
+        if(pdFAIL == notify)
+        {
+            error = UEZ_ERROR_TIMEOUT;
+        }
+    }
+
+    if(UEZ_ERROR_NONE == error)
+    {
+        error = UEZSemaphoreGrab(p->iCmdDoneSem, 1000);
+    }
+
+    UEZMemFree(p->pCmdBuffer);
+    p->pCmdBuffer = 0;
+    p->iRXIsData = false;
+    UEZSemaphoreRelease(p->iSem);
+
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
  * Routine:  ESPWROOM32_ResponseTimeoutHandler
  *---------------------------------------------------------------------------*/
 static void ESPWROOM32_ResponseTimeoutHandler( TimerHandle_t pxTimer )
 {
+    PARAM_NOT_USED(pxTimer);
     T_uezError                      error   = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace  *p      = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
 
@@ -2577,6 +3169,8 @@ static void ESPWROOM32_ResponseTimeoutHandler( TimerHandle_t pxTimer )
 static void ESPWROOM32_SocketStatusHandler( TimerHandle_t pxTimer )
 {
     T_uezError error = UEZ_ERROR_NONE;
+
+    PARAM_NOT_USED(pxTimer);
 
     T_Network_ESPWROOM32_Workspace  *p = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
 
@@ -2600,7 +3194,9 @@ static void ESPWROOM32_SocketStatusHandler( TimerHandle_t pxTimer )
                 memset ((char *) &p->iSocket[i].networkAddr, 0,
                                         sizeof(p->iSocket[i].networkAddr));
                p->iSocket[i].status = NULL;
-               p->iSocketCount--;
+               if(p->iSocketCount > 0) {
+                    p->iSocketCount--;
+               }
                UEZSemaphoreRelease(p->iSocketConnectionUpdateSem); // TODO: Create socket_connection_update_semaphore
                return;
             }
@@ -2662,6 +3258,8 @@ TUInt32 ESPWROOM32_ATCmdRespHandler(T_uezTask aMyTask, void *aParams)
     TUInt8                          length      = 0;
 
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
 
     p = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
 
@@ -2731,6 +3329,7 @@ TUInt32 ESPWROOM32_ATCmdRespHandler(T_uezTask aMyTask, void *aParams)
                     if(p->iCommand == ESPWROOM32_AT_CMD_INDEX_CWLAP)
                     {
                         p->iMaxScanIndex = p->iPacketIndex;
+                        //DEBUG_RTT_Printf(0, "\niMaxScanIndex set to %d\n", p->iMaxScanIndex);
                     }
 
                     for(strIndex = 0; strIndex < p->iPacketIndex; strIndex++)
@@ -2773,7 +3372,9 @@ TUInt32 ESPWROOM32_RXHandler(T_uezTask aMyTask, void *aParams)
     UNUSED(taskHandle);
     UNUSED(str);
     UNUSED(p);
-    
+
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
     UNUSED(ESPWROOM32_AT_ListSupportedCommands);
     UNUSED(ESPWROOM32_AT_GetVersionInfo);
 
@@ -2989,10 +3590,15 @@ TUInt32 ESPWROOM32_RXHandler(T_uezTask aMyTask, void *aParams)
                             p->iPacketIndex++;
 
                             //DEBUG_RTT_Printf(0, "\niSizeOfResponse=%d\n", p->iSizeOfResponse);
-                            //DEBUG_RTT_Printf(0, "\niPacketIndex=%d\n", p->iPacketIndex);
+                            //DEBUG_RTT_Printf(0, "iPacketIndex=%d\n", p->iPacketIndex);
                         }
                         p->iSizeOfResponse = (uint16_t)(p->iSizeOfResponse + p->iRXIndex);
                         p->iRXIndex = 0;
+                        //DEBUG_RTT_Printf(0, "\np->iRXIndex=0\n", p->iPacketIndex);
+                    }
+                    else
+                    {
+                        //DEBUG_RTT_Printf(0, "\ndata = 0x%2x, p->iRXIndex = %d\n", data, p->iRXIndex);
                     }
                 }
             }
@@ -3062,6 +3668,51 @@ TUInt32 ESPWROOM32_RXHandler(T_uezTask aMyTask, void *aParams)
             }
         }
     }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ESPWROOM32_AddressTimeHandler
+ *---------------------------------------------------------------------------*/
+TUInt32 ESPWROOM32_AddressTimeHandler(T_uezTask aMyTask, void *aParams)
+{
+    T_uezError                      error       = UEZ_ERROR_NONE;
+    T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;    
+
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
+    UEZTaskDelay(3000);
+
+    while(1)
+    {
+      while( // while no address assigned
+        p->iCurrentIPAddress  == 0
+      ) {
+            UEZTaskDelay(1000);
+
+            error = ESPWROOM32_AT_IPAddressGet();
+            if(UEZ_ERROR_NONE != error)
+            {
+                DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_GetStatus::ESPWROOM32_AT_IPAddressGet, error=%d\n", error);
+            }
+            else
+            { // subnet mask and gateway? todo?
+              if(p->iCurrentIPAddress  != 0) {
+                UEZTaskDelay(5000);
+                error = ESPWROOM32_AT_SntpGetTime();
+                if(UEZ_ERROR_NONE != error)
+                {
+                    DEBUG_RTT_Printf(0, "Failed Network_ESPWROOM32_GetStatus::ESPWROOM32_AT_SntpGetTime, error=%d\n", error);
+                }
+              }
+            }
+       } // while no address
+       UEZTaskDelay(2500); // check ip status and try to renew every 2.5 seconds on new conection
+    } // end wile forever    
+    
+#ifdef __IAR_SYSTEMS_ICC__
+#else
+return 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*

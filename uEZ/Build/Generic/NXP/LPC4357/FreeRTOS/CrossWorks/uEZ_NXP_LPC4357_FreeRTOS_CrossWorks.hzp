@@ -2,8 +2,11 @@
 <solution Name="uEZ_NXP_LPC4357_FreeRTOS_CrossWorks" target="8" version="2">
   <configuration Name="Debug" inherited_configurations="THUMB;M4F" />
   <configuration
-    Name="Debug CLANG"
-    inherited_configurations="THUMB;Debug;M4F" />
+    Name="Debug_CLANG"
+    inherited_configurations="THUMB;Debug;Debug_Heap4;M4F;CLANG" />
+    <configuration
+    Name="Release_CLANG"
+    inherited_configurations="THUMB;Release;Release_Heap4;M4F;CLANG" />
   <configuration
     Name="Debug-Trace"
     inherited_configurations="THUMB;Debug;M4F" />
@@ -13,10 +16,14 @@
   <configuration
     Name="Debug_Heap4_M0"
     inherited_configurations="THUMB;Debug;M0" />
+  <configuration
+    Name="Debug_Heap4_M4_MPU"
+    inherited_configurations="THUMB;Debug;M4_MPU" />
   <configuration Name="Debug_M0" inherited_configurations="THUMB;M0" />
-  <configuration Name="M0" hidden="Yes" />
-  <configuration Name="M4F" hidden="Yes" />
   <configuration Name="Release" inherited_configurations="THUMB;M4F" />
+  <configuration
+    Name="Release_for_bootloader"
+    inherited_configurations="THUMB;Release;M4F" />
   <configuration
     Name="Release_Heap4"
     inherited_configurations="THUMB;Release;M4F" />
@@ -30,25 +37,18 @@
   <configuration
     Name="ReleaseOptSize_M0"
     inherited_configurations="THUMB;M0" />
-  <configuration
-    Name="THUMB"
-    Platform="ARM"
-    arm_instruction_set="THUMB"
-    arm_library_instruction_set="THUMB"
-    c_preprocessor_definitions="__THUMB"
-    hidden="Yes" />
   <project Name="uEZ_NXP_LPC4357_FreeRTOS_CrossWorks">
     <configuration
       Name="Common"
       arm_compiler_variant="gcc"
       arm_debugIO_Implementation="None"
       arm_link_debugio_type="None"
-      batch_build_configurations="Debug_Heap4;Debug_Heap4_M0;Release_Heap4;Release_Heap4_M0"
+      batch_build_configurations="Debug_CLANG;Debug_Heap4;Debug_Heap4_M0;Release_for_bootloader;Release_Heap4;Release_CLANG;Release_Heap4_M0"
       build_output_directory="$(Configuration)"
       build_output_file_name="$(OutDir)/$(ProjectName)_$(Configuration)$(LIB)"
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
-      c_preprocessor_definitions="STARTUP_FROM_RESET;__FLASH_BUILD;UEZ_LIBRARY;LWIP_2_0_x;__GNUC__=12"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;__FLASH_BUILD;UEZ_LIBRARY;LWIP_2_0_x"
       c_user_include_directories=".;../;../../../../../../.;../../../../../../Include;../../../../../../Source/RTOS/FreeRTOS/include;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/include;../../../../../../Source/Processor/NXP/LPC43xx;../../../../../../Source/Processor/NXP/LPC43xx/GCC;../../../../../../Source/Processor/NXP/LPC43xx/Common/include;../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS;../../../../../../Source/Library/Encryption/pkcs11-helper/include;../../../../../../Source/Library/Encryption/mbedtls/include;../../../../../../Source/Library/Encryption/mbedtls;../../../../../../Source/Library/lwip_2.0.x/src/include;../../../../../../Source/Library/lwip_2.0.x/src;../../../../../../Source/Library/lwip_2.0.x/Include;../../../../../../Source/Library/lwip_2.0.x/src/include/ipv4;../../../../../../Source/Library/lwip_2.0.x/system;../../../../../../Source/Library/lwip_2.0.x/system/arch;../../../../../../Source/Library/GUI/SEGGER/emWin;../../../../../../Source/Library/LPCOpen;../../../../../../Source/Library/LPCOpen/chip_18xx_43xx;../../../../../../Source/Platform/emWin/Inc;../../../../../../Source/Platform/emWin/Config;../../../../../../Source/Library/Encryption/wolfSSL;../../../../../../Source/Library/Encryption/wolfSSL/wolfssl;../../../../../../Source/Library/Encryption/wolfSSL/ctaocrypt;../../../../../../Source/Library/Encryption/wolfSSL/cyassl/openssl;../../../../../../Source/Library/Network/wolfMQTT/"
       clang_gnu_version="12.3.1"
       compiler_color_diagnostics="Yes"
@@ -69,19 +69,20 @@
       gcc_debugging_level="Level 3"
       gcc_optimization_level="Debug" />
     <configuration
-      Name="Debug CLANG"
+      Name="CLANG"
       arm_assembler_variant="gcc"
-      arm_compiler_variant="clang"
-      gcc_debugging_level="Level 3"
-      gcc_optimization_level="Level 1" />
+      arm_compiler_variant="clang" />
     <configuration
       Name="Debug-Trace"
-      c_preprocessor_definitions="FREERTOS_PLUS_TRACE" />
+      c_preprocessor_definitions="FREERTOS_PLUS_TRACE;FREERTOS_HEAP_SELECTION=4" />
     <configuration
       Name="Debug_Heap4"
       c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
     <configuration
       Name="Debug_Heap4_M0"
+      c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+    <configuration
+      Name="Debug_Heap4_M4_MPU"
       c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
     <configuration
       Name="Debug_M0"
@@ -100,8 +101,21 @@
       arm_interwork="No"
       arm_target_device_name="LPC4357_M0"
       arm_target_monitor_mode_debug="Yes"
-      c_preprocessor_definitions="__FPU_PRESENT=0;CORE_M0;GCC_ARMCM0"
+      c_preprocessor_definitions="__FPU_PRESENT=0;CORE_M0"
       c_user_include_directories="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM0" />
+    <configuration
+      Name="M4_MPU"
+      Target="LPC4357"
+      arm_architecture="v7EM"
+      arm_core_type="Cortex-M4"
+      arm_fp_abi="Hard"
+      arm_fpu_type="FPv4-SP-D16"
+      arm_gcc_target="arm-unknown-eabi"
+      arm_interwork="No"
+      arm_target_device_name="LPC4357_M4"
+      arm_target_monitor_mode_debug="Yes"
+      c_preprocessor_definitions="__FPU_PRESENT=1;CORE_M4;USE_PROCESS_STACK"
+      c_user_include_directories="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU" />
     <configuration
       Name="M4F"
       Target="LPC4357"
@@ -122,6 +136,13 @@
       gcc_debugging_level="Level 3"
       gcc_optimization_level="Level 1" />
     <configuration
+      Name="Release_for_bootloader"
+      arm_library_optimization="Small"
+      arm_math_errno="Yes"
+      c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=2;DISABLE_FILESYSTEM_FORMAT_SUPPORT=1;DISABLE_FEATURES_FOR_BOOTLOADER=1"
+      gcc_disable_function_inlining="No"
+      gcc_optimization_level="Level 1" />
+    <configuration
       Name="Release_Heap4"
       c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
     <configuration
@@ -135,15 +156,21 @@
       gcc_optimization_level="Level 1" />
     <configuration
       Name="ReleaseOptForSize"
-      c_preprocessor_definitions="NDEBUG"
+      c_preprocessor_definitions="NDEBUG;FREERTOS_HEAP_SELECTION=4"
       gcc_debugging_level="Level 1"
       gcc_optimization_level="Optimize For Size" />
     <configuration
       Name="ReleaseOptSize_M0"
       build_debug_information="No"
-      c_preprocessor_definitions="NDEBUG"
+      c_preprocessor_definitions="NDEBUG;FREERTOS_HEAP_SELECTION=4"
       gcc_debugging_level="Level 1"
       gcc_optimization_level="Optimize For Size" />
+    <configuration
+      Name="THUMB"
+      Platform="ARM"
+      arm_instruction_set="THUMB"
+      arm_library_instruction_set="THUMB"
+      c_preprocessor_definitions="__THUMB" />
     <folder Name="Include">
       <folder Name="Device">
         <folder Name="LCD">
@@ -247,6 +274,7 @@
       <file file_name="../../../../../../Include/lwipopts.h" />
       <file file_name="../../../../../../Include/lwippools.h" />
       <file file_name="../../../../../../Include/mbedtls_config.h" />
+      <file file_name="../../../../../../Include/mbedtls_crypto_config.h" />
       <file file_name="../../../../../../Include/netdb.h" />
       <file file_name="../../../../../../Include/pack_struct_end.h" />
       <file file_name="../../../../../../Include/pack_struct_start.h" />
@@ -365,6 +393,9 @@
           </folder>
         </folder>
         <folder Name="Backlight">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <folder Name="BacklightOWMControlled">
               <file file_name="../../../../../../Source/Devices/Backlight/Generic/BacklightPWMControlled/BacklightPWM.h" />
@@ -386,6 +417,9 @@
           </folder>
         </folder>
         <folder Name="CRC">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/CRC/Generic/CRC_Generic.c" />
             <file file_name="../../../../../../Source/Devices/CRC/Generic/CRC_Generic.h" />
@@ -402,6 +436,9 @@
           </folder>
         </folder>
         <folder Name="EEPROM">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="I2C">
             <file file_name="../../../../../../Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C.h" />
             <file file_name="../../../../../../Source/Devices/EEPROM/Generic/I2C/EEPROM16_Generic_I2C_driver.c" />
@@ -416,19 +453,29 @@
           </folder>
         </folder>
         <folder Name="ExternalInterrupt">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/ExternalInterrupt/Generic/ExternalInterrupt_Generic.c" />
             <file file_name="../../../../../../Source/Devices/ExternalInterrupt/Generic/ExternalInterrupt_Generic.h" />
           </folder>
         </folder>
         <folder Name="FLASH">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="NXP">
             <folder Name="LPC43xx">
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.c" />
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC43xx/LPC43xx_IAP.h" />
             </folder>
             <folder Name="LPC_SPIFI_M4F">
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4.h" />
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/Flash_NXP_LPC_SPIFI_M4_driver.c" />
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_api.h" />
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_chiphw.h" />
+              <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_dev.h" />
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_dev_common.c" />
               <file file_name="../../../../../../Source/Devices/Flash/NXP/LPC_SPIFI_M4F/spifilib_fam_standard_cmd.c" />
             </folder>
@@ -458,6 +505,9 @@
           </folder>
         </folder>
         <folder Name="I2C">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/I2C/Generic/Generic_i2c.c" />
           </folder>
@@ -483,6 +533,9 @@
           </folder>
         </folder>
         <folder Name="LCD">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="DigitalImage">
             <folder Name="FG050720DSSWDG01">
               <file file_name="../../../../../../Source/Devices/LCD/DigitalImage/FG050720DSSWDG01/LCD_DigitalImage_FG050720DSSWDG01.c" />
@@ -493,6 +546,10 @@
             <folder Name="DLC0430BCP12RF">
               <file file_name="../../../../../../Source/Devices/LCD/DLC/DLC0430BCP12RF/DLC0430BCP12RF.c" />
               <file file_name="../../../../../../Source/Devices/LCD/DLC/DLC0430BCP12RF/DLC0430BCP12RF.h" />
+            </folder>
+            <folder Name="DLC0430DCP15RF">
+              <file file_name="../../../../../../Source/Devices/LCD/DLC/DLC0430DCP15RF/DLC0430DCP15RF.c" />
+              <file file_name="../../../../../../Source/Devices/LCD/DLC/DLC0430DCP15RF/DLC0430DCP15RF.h" />
             </folder>
           </folder>
           <folder Name="Generic">
@@ -621,6 +678,9 @@
           </folder>
         </folder>
         <folder Name="Mass Storage">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="LPCUSBLib">
             <file file_name="../../../../../../Source/Devices/MassStorage/LPCUSBLib/LPCUSBLib_MS.c" />
             <file file_name="../../../../../../Source/Devices/MassStorage/LPCUSBLib/LPCUSBLib_MS.h" />
@@ -646,11 +706,17 @@
           </folder>
         </folder>
         <folder Name="PWM">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/PWM/Generic/Generic_PWM.c" />
           </folder>
         </folder>
         <folder Name="ResourceCache">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <folder Name="DirectAccess">
               <file file_name="../../../../../../Source/Devices/ResourceCache/Generic/DirectAccess/ResourceCache_DirectAccess.c" />
@@ -659,6 +725,9 @@
           </folder>
         </folder>
         <folder Name="RTC">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/RTC/Generic/generic_rtc.c" />
           </folder>
@@ -669,9 +738,18 @@
           </folder>
         </folder>
         <folder Name="Serial">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/Serial/Generic/uEZSerialGeneric.c" />
             <file file_name="../../../../../../Source/Devices/Serial/Generic/uEZSerialGenericHalfDuplex.c" />
+          </folder>
+          <folder Name="LPCUSBLib">
+            <folder Name="SerialHost_FTDI">
+              <file file_name="../../../../../../Source/Devices/Serial/LPCUSBLib/SerialHost_FTDI/Stream_LPCUSBLib_SerialHost_FTDI.c" />
+              <file file_name="../../../../../../Source/Devices/Serial/LPCUSBLib/SerialHost_FTDI/Stream_LPCUSBLib_SerialHost_FTDI.h" />
+            </folder>
           </folder>
           <folder Name="RS485">
             <folder Name="Generic">
@@ -686,6 +764,17 @@
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/SPI/Generic/Generic_spi.c" />
             <file file_name="../../../../../../Source/Devices/SPI/Generic/Generic_SPI.h" />
+          </folder>
+        </folder>
+        <folder Name="Stream">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
+          <folder Name="LPCUSBLib">
+            <folder Name="SerialHost">
+              <file file_name="../../../../../../Source/Devices/Stream/LPCUSBLib/SerialHost/Stream_LPCUSBLib_SerialHost.c" />
+              <file file_name="../../../../../../Source/Devices/Stream/LPCUSBLib/SerialHost/Stream_LPCUSBLib_SerialHost.h" />
+            </folder>
           </folder>
         </folder>
         <folder Name="Temperature">
@@ -722,6 +811,9 @@
           </folder>
         </folder>
         <folder Name="Touchscreen">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <folder Name="FourWireTouchResist">
               <file file_name="../../../../../../Source/Devices/Touchscreen/Generic/FourWireTouchResist/FourWireTouchResist_TS.c" />
@@ -741,11 +833,17 @@
           </folder>
         </folder>
         <folder Name="USB Host">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/USBHost/Generic/Generic_USBHost.c" />
           </folder>
         </folder>
         <folder Name="Watchdog">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/Watchdog/Generic/Watchdog_Generic_driver.c" />
           </folder>
@@ -784,6 +882,7 @@
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/asn1write.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/base64.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/bignum.h" />
+                <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/block_cipher.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/build_info.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/camellia.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/ccm.h" />
@@ -814,7 +913,6 @@
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/gcm.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/hkdf.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/hmac_drbg.h" />
-                <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/legacy_or_psa.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/lms.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/md.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/md5.h" />
@@ -845,7 +943,6 @@
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/ssl_cookie.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/ssl_ticket.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/threading.h" />
-                <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/threading_alt.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/timing.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/version.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/mbedtls/x509.h" />
@@ -857,13 +954,13 @@
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/build_info.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_adjust_auto_enabled.h" />
+                <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_adjust_config_dependencies.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_adjust_config_key_pair_types.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_adjust_config_synonyms.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_builtin_composites.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_builtin_key_derivation.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_builtin_primitives.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_compat.h" />
-                <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_config.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_driver_common.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_driver_contexts_composites.h" />
                 <file file_name="../../../../../../Source/Library/Encryption/mbedtls/include/psa/crypto_driver_contexts_key_derivation.h" />
@@ -893,11 +990,14 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_core.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_core.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_internal.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_mod.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_mod.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_mod_raw.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_mod_raw.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bignum_mod_raw_invasive.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/block_cipher.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/block_cipher_internal.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/bn_mul.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/camellia.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ccm.c" />
@@ -913,9 +1013,10 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/constant_time.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/constant_time_impl.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/constant_time_internal.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/constant_time_invasive.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ctr.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ctr_drbg.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/debug.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/debug_internal.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/des.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/dhm.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecdh.c" />
@@ -923,9 +1024,7 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecjpake.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecp.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecp_curves.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecp_curves_new.c">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-              </file>
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecp_curves_new.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecp_internal_alt.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ecp_invasive.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/entropy.c" />
@@ -933,8 +1032,6 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/entropy_poll.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/error.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/gcm.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/hash_info.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/hash_info.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/hkdf.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/hmac_drbg.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/lmots.c" />
@@ -959,6 +1056,7 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/padlock.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/pem.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/pk.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/pk_ecc.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/pk_internal.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/pk_wrap.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/pk_wrap.h" />
@@ -979,17 +1077,12 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_client.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_core.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_core_common.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_driver_wrappers.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_driver_wrappers.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_driver_wrappers_no_static.c">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-              </file>
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_driver_wrappers_no_static.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_driver_wrappers_no_static.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_ecp.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_ecp.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_ffdh.c">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-              </file>
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_ffdh.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_ffdh.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_hash.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/psa_crypto_hash.h" />
@@ -1015,14 +1108,14 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/rsa.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/rsa_alt_helpers.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/rsa_alt_helpers.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/rsa_internal.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/sha1.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/sha256.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/sha3.c">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-              </file>
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/sha3.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/sha512.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ssl_cache.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ssl_ciphersuites.c" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ssl_ciphersuites_internal.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ssl_client.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ssl_client.h" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/ssl_cookie.c" />
@@ -1049,9 +1142,8 @@
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509_crl.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509_crt.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509_csr.c" />
-              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509write.c">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-              </file>
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509_internal.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509write.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509write_crt.c" />
               <file file_name="../../../../../../Source/Library/Encryption/mbedtls/library/x509write_csr.c" />
             </folder>
@@ -1198,8 +1290,8 @@
               </file>
             </folder>
             <folder Name="wolfssl">
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/aes.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/aes.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/aes.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/arc4.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/asn.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/asn1.h" />
@@ -1211,12 +1303,12 @@
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/blake2.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/bn.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/buffer.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/camellia.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/camellia.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/camellia.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/chacha.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/chacha20_poly1305.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/cmac.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/cmac.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/cmac.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/cms.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/coding.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/compat_types.h" />
@@ -1230,11 +1322,11 @@
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/curve448.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/des.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/des3.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/dh.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/dh.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/dh.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/dilithium.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/dsa.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/dsa.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/dsa.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ec.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ec25519.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ec448.h" />
@@ -1242,10 +1334,10 @@
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/eccsi.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ecdh.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ecdsa.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ed25519.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/ed25519.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ed448.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ed25519.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/ed448.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ed448.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/engine.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/err.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/error-crypt.h" />
@@ -1259,22 +1351,22 @@
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/ge_448.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/ge_operations.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/hash.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/hmac.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/hmac.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/hmac.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/hpke.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/include.am" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/include.am" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/include.am" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/integer.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/kdf.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/kdf.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/kdf.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/kyber.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/lhash.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/logging.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/md2.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/md4.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/md4.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/md5.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/md4.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/md5.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/md5.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/mem_track.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/memory.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/misc.h" />
@@ -1289,36 +1381,36 @@
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ossl_typ.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/pem.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/pkcs11.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/pkcs12.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/pkcs12.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/pkcs7.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/pkcs12.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/pkcs7.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/pkcs7.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/poly1305.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/pwdbased.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/rand.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/random.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/rc2.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/rc4.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ripemd.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/ripemd.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/rsa.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ripemd.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/rsa.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/rsa.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sakke.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/selftest.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/settings.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/sha.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sha.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/sha.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sha256.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/sha3.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sha3.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/sha3.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sha512.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/signature.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/siphash.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sp.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sp_int.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/sphincs.h" />
-              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/srp.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/wolfcrypt/srp.h" />
+              <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/srp.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ssl.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/ssl23.h" />
               <file file_name="../../../../../../Source/Library/Encryption/wolfSSL/wolfssl/openssl/stack.h" />
@@ -1341,6 +1433,9 @@
           </folder>
         </folder>
         <folder Name="FileSystem">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="FATFS">
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/00history.txt" />
             <file file_name="../../../../../../Source/Library/FileSystem/FATFS/00readme.txt" />
@@ -1358,6 +1453,9 @@
           </folder>
         </folder>
         <folder Name="Graphics">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="GAPI" />
           <folder Name="SWIM">
             <file file_name="../../../../../../Source/Library/Graphics/SWIM/droidsansr32.c" />
@@ -1394,6 +1492,9 @@
           </folder>
         </folder>
         <folder Name="GUI">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="FDI">
             <folder Name="SimpleUI">
               <file file_name="../../../../../../Source/Library/GUI/FDI/SimpleUI/SimpleUI.h" />
@@ -1539,6 +1640,9 @@
         </folder>
         <folder Name="LPCOpen">
           <configuration Name="M0" build_exclude_from_build="No" />
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="chip_18xx_43xx">
             <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/chip_18xx_43xx.c" />
             <file file_name="../../../../../../Source/Library/LPCOpen/chip_18xx_43xx/clock_18xx_43xx.c" />
@@ -1651,6 +1755,9 @@
           </folder>
         </folder>
         <folder Name="lwIP2.0">
+          <configuration
+            Name="Release_for_bootloader"
+            build_exclude_from_build="Yes" />
           <folder Name="contrib">
             <folder Name="addons">
               <folder Name="ipv6_static_routing">
@@ -2030,6 +2137,14 @@
               <file file_name="../../../../../../Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.h" />
             </folder>
           </folder>
+          <folder Name="lwip-ftpd">
+            <file file_name="../../../../../../Source/Library/Network/lwip-ftpd/ftpd.c" />
+            <file file_name="../../../../../../Source/Library/Network/lwip-ftpd/ftpd.h" />
+            <file file_name="../../../../../../Source/Library/Network/lwip-ftpd/LICENSE" />
+            <file file_name="../../../../../../Source/Library/Network/lwip-ftpd/README.md" />
+            <file file_name="../../../../../../Source/Library/Network/lwip-ftpd/vfs.c" />
+            <file file_name="../../../../../../Source/Library/Network/lwip-ftpd/vfs.h" />
+          </folder>
           <folder Name="PHY">
             <folder Name="MDIOBitBang">
               <file file_name="../../../../../../Source/Library/Network/PHY/MDIOBitBang/MDIOBitBang.c" />
@@ -2116,6 +2231,9 @@
           </folder>
         </folder>
         <folder Name="uEZFailure">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <file file_name="../../../../../../Source/Library/uEZFailure/FatalError.c" />
           <file file_name="../../../../../../Source/Library/uEZFailure/uEZFailure.c" />
         </folder>
@@ -2199,6 +2317,7 @@
             <file file_name="../../../../../../Source/Platform/emWin/Config/LCDConf.h" />
           </folder>
           <folder Name="Inc" />
+          <file file_name="../../../../../../Source/Platform/emWin/GUI_SPY_X_StartServer.c" />
           <file file_name="../../../../../../Source/Platform/emWin/GUI_X_uEZ.c" />
         </folder>
       </folder>
@@ -2206,6 +2325,9 @@
         <folder Name="NXP">
           <folder Name="LPC43xx">
             <folder Name="CMSIS">
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_common_tables.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_const_structs.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_math.h" />
@@ -2213,7 +2335,6 @@
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/cmsis_armclang_ltm.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/cmsis_compiler.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/cmsis_gcc.h" />
-              <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/cmsis_iccarm.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/cmsis_version.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0.h" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0plus.h" />
@@ -2229,6 +2350,9 @@
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.h" />
             </folder>
             <folder Name="GCC">
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
               <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/GCC/LPC4300_CM0_Startup.s">
                 <configuration Name="Common" build_exclude_from_build="Yes" />
               </file>
@@ -2267,33 +2391,55 @@
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_GPDMA.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_GPIO.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_GPIO.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_HALInit.c" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_I2C.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_I2C.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_I2S.c">
               <configuration Name="M0" build_exclude_from_build="No" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_I2S.h" />
-            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Interrupt.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Interrupt.c">
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Level 1" />
+            </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_LCDController.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_LCDController.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_MCI.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PLL.c">
               <configuration Name="M0" build_exclude_from_build="Yes" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PLL.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PWM.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_PWM.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_RTC.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_RTC.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SD_MMC.c">
@@ -2306,22 +2452,38 @@
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SDRAM.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Serial.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Serial.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SSP.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_SSP.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Timer.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Timer.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_USBDeviceController.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_USBHost.h" />
-            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.c" />
+            <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.c">
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
+            </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_UtilityFuncs.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Watchdog.c">
               <configuration Name="M0" build_exclude_from_build="No" />
+              <configuration
+                Name="Release_for_bootloader"
+                gcc_optimization_level="Optimize For Size" />
             </file>
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/LPC43xx_Watchdog.h" />
             <file file_name="../../../../../../Source/Processor/NXP/LPC43xx/uEZProcessor_LPC43xx.h" />
@@ -2330,6 +2492,9 @@
       </folder>
       <folder Name="RTOS">
         <folder Name="FreeRTOS">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Optimize For Size" />
           <folder Name="include">
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/atomic.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/croutine.h" />
@@ -2338,7 +2503,10 @@
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/list.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/message_buffer.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/mpu_prototypes.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/mpu_syscall_numbers.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/mpu_wrappers.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/newlib-freertos.h" />
+            <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/picolibc-freertos.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/portable.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/projdefs.h" />
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/queue.h" />
@@ -2351,14 +2519,27 @@
             <file file_name="../../../../../../Source/RTOS/FreeRTOS/include/timers.h" />
           </folder>
           <folder Name="portable">
+            <folder Name="Common">
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/Common/mpu_wrappers.c" />
+              <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/Common/mpu_wrappers_v2.c" />
+            </folder>
             <folder Name="GCC">
               <folder Name="ARM_CM0">
+                <configuration Name="M4_MPU" build_exclude_from_build="Yes" />
                 <configuration Name="M4F" build_exclude_from_build="Yes" />
                 <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM0/port.c" />
                 <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM0/portmacro.h" />
               </folder>
+              <folder Name="ARM_CM4_MPU">
+                <configuration Name="M0" build_exclude_from_build="Yes" />
+                <configuration Name="M4F" build_exclude_from_build="Yes" />
+                <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU/mpu_wrappers_v2_asm.c" />
+                <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU/port.c" />
+                <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU/portmacro.h" />
+              </folder>
               <folder Name="ARM_CM4F">
                 <configuration Name="M0" build_exclude_from_build="Yes" />
+                <configuration Name="M4_MPU" build_exclude_from_build="Yes" />
                 <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F/port.c" />
                 <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" />
               </folder>
@@ -2370,14 +2551,35 @@
               <file file_name="../../../../../../Source/RTOS/FreeRTOS/portable/MemMang/heap_5.c" />
             </folder>
           </folder>
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/CMakeLists.txt" />
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/croutine.c" />
-          <file file_name="../../../../../../Source/RTOS/FreeRTOS/event_groups.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/event_groups.c">
+            <configuration
+              Name="Release_for_bootloader"
+              build_exclude_from_build="Yes" />
+          </file>
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/GitHub-FreeRTOS-Kernel-Home.url" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/History.txt" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/LICENSE.md" />
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/list.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/manifest.yml" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/MISRA.md" />
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/queue.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/Quick_Start_Guide.url" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/README.md" />
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/readme.txt" />
-          <file file_name="../../../../../../Source/RTOS/FreeRTOS/stream_buffer.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/sbom.spdx" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/stream_buffer.c">
+            <configuration
+              Name="Release_for_bootloader"
+              build_exclude_from_build="Yes" />
+          </file>
           <file file_name="../../../../../../Source/RTOS/FreeRTOS/tasks.c" />
-          <file file_name="../../../../../../Source/RTOS/FreeRTOS/timers.c" />
+          <file file_name="../../../../../../Source/RTOS/FreeRTOS/timers.c">
+            <configuration
+              Name="Release_for_bootloader"
+              build_exclude_from_build="Yes" />
+          </file>
         </folder>
         <folder Name="FreeRTOS-Plus">
           <configuration Name="Release" gcc_optimization_level="Level 1" />
@@ -2848,6 +3050,9 @@
         </file>
       </folder>
       <folder Name="uEZSystem">
+        <configuration
+          Name="Release_for_bootloader"
+          gcc_optimization_level="Optimize For Size" />
         <file file_name="../../../../../../Source/uEZSystem/HAL.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZAccelerometer.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZADC.c" />
@@ -2869,20 +3074,32 @@
         <file file_name="../../../../../../Source/uEZSystem/uEZHandles.h" />
         <file file_name="../../../../../../Source/uEZSystem/uEZHID.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZI2C.c" />
-        <file file_name="../../../../../../Source/uEZSystem/uEZINI.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZINI.c">
+          <configuration
+            Name="Release_for_bootloader"
+            gcc_optimization_level="Level 1" />
+        </file>
         <file file_name="../../../../../../Source/uEZSystem/uEZInit.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZKeypad.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZLCD.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZLEDBank.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZMemory.c" />
-        <file file_name="../../../../../../Source/uEZSystem/uEZNetwork.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZNetwork.c">
+          <configuration
+            Name="Release_for_bootloader"
+            build_exclude_from_build="Yes" />
+        </file>
         <file file_name="../../../../../../Source/uEZSystem/uEZPWM.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZRandom.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZResourceCache.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZSPI.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZStream.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZTemperature.c" />
-        <file file_name="../../../../../../Source/uEZSystem/uEZTimeDate.c" />
+        <file file_name="../../../../../../Source/uEZSystem/uEZTimeDate.c">
+          <configuration
+            Name="Release_for_bootloader"
+            build_exclude_from_build="Yes" />
+        </file>
         <file file_name="../../../../../../Source/uEZSystem/uEZTimer.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZToneGenerator.c" />
         <file file_name="../../../../../../Source/uEZSystem/uEZTS.c" />

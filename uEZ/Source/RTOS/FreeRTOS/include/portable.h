@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -33,15 +33,17 @@
 #ifndef PORTABLE_H
 #define PORTABLE_H
 
-#include <stdint.h> /* for int types and __WEAK type */
-
 /* Each FreeRTOS port has a unique portmacro.h header file.  Originally a
  * pre-processor definition was used to ensure the pre-processor found the correct
  * portmacro.h file for the port being used.  That scheme was deprecated in favour
  * of setting the compiler's include path such that it found the correct
  * portmacro.h file - removing the need for the constant and allowing the
  * portmacro.h file to be located anywhere in relation to the port being used.
- */
+ * Purely for reasons of backward compatibility the old method is still valid, but
+ * to make it clear that new projects should not use it, support for the port
+ * specific constants has been moved into the deprecated_definitions.h header
+ * file. */
+//#include "deprecated_definitions.h"
 
 /* If portENTER_CRITICAL is not defined then including deprecated_definitions.h
  * did not result in a portmacro.h header file being included - and it should be
@@ -198,7 +200,7 @@ size_t xPortGetMinimumEverFreeHeapSize( void ) PRIVILEGED_FUNCTION;
  *
  * This hook function is called when allocation failed.
  */
-    void vApplicationMallocFailedHook( void ); /*lint !e526 Symbol not defined as it is an application callback. */
+    void vApplicationMallocFailedHook( void );
 #endif
 
 /*
@@ -243,6 +245,21 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
     BaseType_t xPortIsAuthorizedToAccessBuffer( const void * pvBuffer,
                                                 uint32_t ulBufferLength,
                                                 uint32_t ulAccessRequested ) PRIVILEGED_FUNCTION;
+#endif
+
+/**
+ * @brief Checks if the calling task is authorized to access the given kernel object.
+ *
+ * @param lInternalIndexOfKernelObject The index of the kernel object in the kernel
+ *                                     object handle pool.
+ *
+ * @return pdTRUE if the calling task is authorized to access the kernel object,
+ *         pdFALSE otherwise.
+ */
+#if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) )
+
+    BaseType_t xPortIsAuthorizedToAccessKernelObject( int32_t lInternalIndexOfKernelObject ) PRIVILEGED_FUNCTION;
+
 #endif
 
 /* *INDENT-OFF* */

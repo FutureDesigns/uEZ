@@ -74,7 +74,7 @@ static const BMP_type BMP_header={
 {0x12, 0x0B, 0x00, 0x00},     /* biYPixelsPerMeter[4]:      0x00000B12 <2834 pixel/m, 72 pixel/inch */
 {0x00, 0x00, 0x00, 0x00},     /* biClrUsed[4]:              0x00000000 <0 index colors used>        */
 {0x00, 0x00, 0x00, 0x00},     /* biClrImportant[4]:         0x00000000 <0 index colors important>   */
-{{0x00, 0xF8, 0x00, 0x00}}    /* Table_type biColorTable[4]:           <Bit field RGB definition>   */        
+{{{0x00, 0xF8, 0x00, 0x00}}}    /* Table_type biColorTable[4]:           <Bit field RGB definition>   */
 };
 
 PACK_STRUCT_BEGIN
@@ -87,7 +87,7 @@ PACK_STRUCT_END
 
 volatile unsigned long G_debugValue;
 
-static void INLINE WordWrite(tWordWrite const *const input, uI32 *output)
+INLINE static void WordWrite(tWordWrite const *const input, uI32 *output)
 {
   ((tWordWrite *)output)->b[0] = input->b[0];
   ((tWordWrite *)output)->b[1] = input->b[1];

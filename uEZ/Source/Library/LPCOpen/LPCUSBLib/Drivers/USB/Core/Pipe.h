@@ -294,7 +294,8 @@
 
 		static inline void Pipe_ResetPipe(const uint8_t corenum, const uint8_t PipeNumber)
 		{
-			PipeInfo[corenum][pipeselected[corenum]].StartIdx = PipeInfo[corenum][pipeselected[corenum]].ByteTransfered = 0;
+		    (void)(PipeNumber);
+		    PipeInfo[corenum][pipeselected[corenum]].StartIdx = PipeInfo[corenum][pipeselected[corenum]].ByteTransfered = 0;
 		}
 
 		/** Enables the currently selected pipe so that data can be sent and received through it to and from
@@ -356,7 +357,9 @@
 		static inline void Pipe_SetPipeToken(const uint8_t Token) ATTR_DEPRECATED ATTR_ALWAYS_INLINE;
 
 		static inline void Pipe_SetPipeToken(const uint8_t Token)
-		{}
+		{
+		    (void)(Token);
+		}
 
 		/** Configures the currently selected pipe to allow for an unlimited number of IN requests. */
 		static inline void Pipe_SetInfiniteINRequests(void) ATTR_DEPRECATED ATTR_ALWAYS_INLINE;
@@ -374,7 +377,9 @@
 		static inline void Pipe_SetFiniteINRequests(const uint8_t TotalINRequests) ATTR_DEPRECATED ATTR_ALWAYS_INLINE;
 
 		static inline void Pipe_SetFiniteINRequests(const uint8_t TotalINRequests)
-		{}
+		{
+		    (void)(TotalINRequests);
+		}
 
 		/**
 		 * @brief  Determines if the currently selected pipe is configured.
@@ -412,6 +417,7 @@
 		static inline void Pipe_SetInterruptPeriod(const uint8_t Milliseconds)
 		{
 			// TODO implement later
+		        (void)(Milliseconds);
 		}
 
 		/**
@@ -437,6 +443,7 @@
 
 		static inline bool Pipe_HasPipeInterrupted(const uint8_t PipeNumber)
 		{
+		        (void)(PipeNumber);
 			return false;				// TODO implement later
 		}
 
@@ -1032,7 +1039,8 @@
 
 		static inline uint8_t Pipe_BytesToEPSizeMask(const uint16_t Bytes)
 		{
-			return 0;				// implement later
+		    (void)(Bytes);
+		    return 0;				// implement later
 		}
 
 		/* Function Prototypes: */

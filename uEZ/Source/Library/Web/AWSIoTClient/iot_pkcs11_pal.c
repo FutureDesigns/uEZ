@@ -218,6 +218,7 @@ CK_OBJECT_HANDLE PKCS11_PAL_SaveObject( CK_ATTRIBUTE_PTR pxLabel,
 CK_OBJECT_HANDLE PKCS11_PAL_FindObject( CK_BYTE_PTR pxLabel,
                                         CK_ULONG usLength )
 {
+    (void)(usLength);
     CK_OBJECT_HANDLE xHandle = eInvalidHandle;
     char * pcFileName = NULL;
     uint8_t * pFile = NULL;

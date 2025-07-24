@@ -389,7 +389,9 @@
 		static inline void USB_Host_SetDeviceAddress(const uint8_t Address) ATTR_ALWAYS_INLINE;
 
 		static inline void USB_Host_SetDeviceAddress(const uint8_t Address)
-		{}
+		{
+		    (void)(Address);
+		}
 
 		/* Enums: */
 		/** Enum defines error codes returned by \ref USB_Host_WaitMS()

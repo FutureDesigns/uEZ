@@ -114,7 +114,7 @@ extern void FuncTestPageHit(void);
 void UEZGetTaskInfo(char* aBuffer, char* aLineBuffer);
 #endif
 
-T_uezTask G_BasicWebTask = NULL;
+T_uezTask G_BasicWebTask = (T_uezTask) NULL;
 
 /*---------------------------------------------------------------------------*
  * Routine:  IBasicWebProcessConnection
@@ -207,7 +207,7 @@ Priority    Stack Size    TaskName<br>\
 /**
  *	Task for BasicWebServer
  */ 
-void BasicWEBServerTask(T_uezTask aMyTask, void *aParameters)
+TUInt32 BasicWEBServerTask(T_uezTask aMyTask, void *aParameters)
 {
     T_uezNetworkSocket socket;
     T_uezNetworkSocket newSocket;
@@ -227,7 +227,7 @@ void BasicWEBServerTask(T_uezTask aMyTask, void *aParameters)
         for (;;) {
             /* Wait for connection. */
             UEZNetworkSocketAccept(aNetwork, socket, &newSocket,
-                    UEZ_TIMEOUT_INFINITE);
+                    1000); //UEZ_TIMEOUT_INFINITE);
 
             /* Service connection. */
             if (newSocket) {
@@ -242,6 +242,9 @@ void BasicWEBServerTask(T_uezTask aMyTask, void *aParameters)
         // Sit here doing nothing
         UEZTaskDelay(1000);
     }
+#ifdef __GNUC__
+    return 0;
+#endif
 }
 /**
  *	The function that implements the WEB server task.

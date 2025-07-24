@@ -17,6 +17,7 @@
 #include "WM.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 //uEZ and Application Includes
 #include "Config_Build.h"

@@ -150,6 +150,7 @@ T_uezError IWiFiBlastStart(void)
 /*---------------------------------------------------------------------------*/
 int32_t UEZCmdWiFiBlast(void *aWorkspace, int32_t argc, char *argv[])
 {
+    PARAM_NOT_USED(argv);
     T_uezError error;
 
     if (argc == 1) {

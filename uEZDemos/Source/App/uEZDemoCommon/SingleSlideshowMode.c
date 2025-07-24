@@ -75,6 +75,8 @@
 #define SLIDESHOW_EVENT_DRIVEN_CONTROL      1
 #endif
 
+#define SLIDESHOW_FRAME_3_5_ON_HEAP         1 // set to 1 to use heap memory
+
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
@@ -354,6 +356,14 @@ static void SSMSetupChoices(void)
     p->iText = 0;
 }
 
+#if (SLIDESHOW_FRAME_3_5_ON_HEAP == 1)
+TUInt8 *_frameReadBufMemoryptr = 0;
+TUInt8 *_frameReadBufMemoryptrAligned = 0;
+#define SLIDE_READ_BUF_BASE_ADDRESS (TUInt32) _frameReadBufMemoryptrAligned // Use define for simplification
+#else
+#define SLIDE_READ_BUF_BASE_ADDRESS (TUInt32) FRAME(2) // Use define for simplification
+#endif
+
 /*---------------------------------------------------------------------------*
  * Routine:  SingleSlideshowScreen
  *---------------------------------------------------------------------------*
@@ -465,8 +475,15 @@ static T_uezError IDoLoad(TUInt32 aSlideNum, TUInt32 aFrame, TBool *aAbortFlag)
 
     //printf("Load: %s (%d, %d)\n", filename, SLIDESHOW_PREFETCH_AHEAD, SLIDESHOW_PREFETCH_BEHIND);
     // Use the LoadPicture routine
+
+#if(SLIDESHOW_FRAME_3_5_ON_HEAP == 1)
+  uint8_t * tempFrameAddress = (uint8_t *) (SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(aFrame-0)));
+      if (SUILoadPictureAddress(filename, tempFrameAddress, aAbortFlag, (TUInt8 *)(SLIDE_READ_BUF_BASE_ADDRESS + (MAX_NUM_FRAMES-0)*FRAME_SIZE)))
+        return UEZ_ERROR_CANCELLED;
+#else
     if (SUILoadPicture(filename, aFrame, aAbortFlag, ((TUInt8 *)LCD_FRAMES_END + 0x1)))
         return UEZ_ERROR_CANCELLED;
+#endif
 
     return UEZ_ERROR_NONE;
 }
@@ -520,8 +537,19 @@ static void SSMDrawSlide(TBool aDoAnimate)
 
     // Show the current slide loaded
     SUIHidePage0();
-    SUICopyFast32((TUInt32 *)FRAME(0), (TUInt32 *)FRAME(G_ws->iDrawFrame),
+
+    if(G_ws->iDrawFrame > 1) {
+#if(SLIDESHOW_FRAME_3_5_ON_HEAP == 1)
+      SUICopyFast32((TUInt32 *)FRAME(0), (TUInt32 *) (SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(G_ws->iDrawFrame-0))),
             FRAME_SIZE);
+#else
+      SUICopyFast32((TUInt32 *)FRAME(0), (TUInt32 *)FRAME(G_ws->iDrawFrame),
+            FRAME_SIZE);
+#endif
+    } else if(G_ws->iDrawFrame == 0) {
+      SUICopyFast32((TUInt32 *)FRAME(0), (TUInt32 *)FRAME(G_ws->iDrawFrame),
+            FRAME_SIZE);
+    }
 
     // Now draw the gadgets if we have any
     if (G_ws->iShowPanel) {
@@ -558,7 +586,17 @@ static void SSMDrawSlide(TBool aDoAnimate)
             SUIShowPage0FancyUp();
             G_ws->iAnimateUp = EFalse;
         } else if (G_ws->iAnimateDown) {
+        #if(SLIDESHOW_FRAME_3_5_ON_HEAP == 1)
+            if(G_ws->iDrawFrame == (MAX_NUM_FRAMES-1)) { // end wraparound
+              SUICopyFast32((uint8_t *)SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(G_ws->iDrawFrame+1)), (uint8_t *)SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(G_ws->iDrawFrame-1)),FRAME_SIZE);
+            }
+            if(G_ws->iDrawFrame == (0)) { // beginning wraparound
+              SUICopyFast32((uint8_t *)SLIDE_READ_BUF_BASE_ADDRESS - (FRAME_SIZE), (uint8_t *)SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(4)),FRAME_SIZE);
+            }
+            SUIShowPage0FancyDownAddress((uint8_t *)SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(G_ws->iDrawFrame-1)),(uint8_t *)SLIDE_READ_BUF_BASE_ADDRESS + (FRAME_SIZE*(G_ws->iDrawFrame-0))); // down            
+        #else
             SUIShowPage0FancyDown(); // down
+        #endif
             G_ws->iAnimateDown = EFalse;
         } else {
             SUIShowPage0();
@@ -830,6 +868,18 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
     else
         G_ws->iOldFormat = EFalse;
 
+#if(SLIDESHOW_FRAME_3_5_ON_HEAP == 1)
+    _frameReadBufMemoryptr = UEZMemAlloc(FRAME_SIZE*(MAX_NUM_FRAMES+2)+(UEZ_LCD_DISPLAY_WIDTH*3)+0x1000);
+    if(_frameReadBufMemoryptr == 0) {
+      return;
+    } else {
+    TUInt32 temp = (TUInt32) _frameReadBufMemoryptr+FRAME_SIZE;
+      _frameReadBufMemoryptrAligned = (TUInt8 *) ((temp + 0xFFF) & 0xFFFFF000);
+    }
+#else
+  // No need to init this file buffer memory
+#endif
+
     G_ws->iLoadTask = 0;
     if (UEZTaskCreate(SSMLoadTask, "SSMLoad", UEZ_TASK_STACK_BYTES(2560), 0,
             UEZ_PRIORITY_LOW, &G_ws->iLoadTask) != UEZ_ERROR_NONE)
@@ -1016,6 +1066,11 @@ void SingleSlideshowMode(T_slideshowDefinition *aDef)
         UEZQueueDelete(G_ws->iSlideReady);
     UEZMemFree(G_ws);
     G_ws = 0;
+
+#if(SLIDESHOW_FRAME_3_5_ON_HEAP == 1)
+    UEZMemFree(_frameReadBufMemoryptr);
+#else
+#endif
 }
 
 TUInt32 SingleSlideshowGetSlideNum(void)

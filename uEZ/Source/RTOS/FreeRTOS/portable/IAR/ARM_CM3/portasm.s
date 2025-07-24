@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -26,7 +26,6 @@
  *
  */
 
-#define SEGGER_RTT_ASM      // Used to control processed input from header file
 #include <FreeRTOSConfig.h>
 
     RSEG    CODE:CODE(2)

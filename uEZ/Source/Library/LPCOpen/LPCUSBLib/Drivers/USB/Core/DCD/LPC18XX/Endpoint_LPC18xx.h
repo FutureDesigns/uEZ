@@ -339,7 +339,9 @@ bool Endpoint_ConfigureEndpoint_Prv(uint8_t corenum,
 static inline void Endpoint_ResetEndpoint(const uint8_t EndpointNumber) ATTR_ALWAYS_INLINE;
 
 static inline void Endpoint_ResetEndpoint(const uint8_t EndpointNumber)
-{}
+{
+  (void)(EndpointNumber);
+}
 
 /**
  *  @brief  Enables the currently selected endpoint so that data can be sent and received through it to

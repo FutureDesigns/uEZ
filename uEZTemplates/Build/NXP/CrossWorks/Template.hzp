@@ -1,7 +1,82 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="$[sym project_name]" target="8" version="2">
+
+  <configuration Name="Debug_Heap3" hidden="Yes"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration Name="Release_Heap3" hidden="Yes"
+    inherited_configurations="THUMB;Flash;Release" />
+  <configuration Name="Release_Heap3-Bootload" hidden="Yes"
+    inherited_configurations="THUMB;Flash;Release;Bootload" />
+
+  <configuration Name="Debug_Heap4"
+    inherited_configurations="THUMB;Flash;Debug" />
+  <configuration Name="Release_Heap4"
+    inherited_configurations="THUMB;Flash;Release" />
+  <configuration Name="Release-Bootload"
+    inherited_configurations="THUMB;Flash;Release;Release_Heap4;Bootload" />
+
+  <configuration Name="Debug_CLANG"
+    inherited_configurations="THUMB;Flash;Debug;Debug_Heap4;CLANG" />
+  <configuration Name="Debug_CLANG-Bootload"
+    inherited_configurations="THUMB;Flash;Debug;Debug_Heap4;CLANG;Bootload" />
+
   <project Name="$[sym project_name]">
-  <configuration Name="Common" 
+
+    <configuration Name="THUMB"
+      Platform="ARM"
+      arm_instruction_set="THUMB"
+      arm_target_monitor_mode_debug="Yes"
+      arm_library_instruction_set="THUMB"
+      c_preprocessor_definitions="__THUMB" />
+
+    <configuration Name="CLANG"
+      arm_assembler_variant="gcc"
+      arm_compiler_variant="clang" />
+
+    <configuration Name="Debug"
+      build_debug_information="Yes"
+      c_preprocessor_definitions="DEBUG"
+      gcc_debugging_level="Level 3"
+      gcc_optimization_level="Level 1" />
+
+    <configuration Name="Release"
+      build_debug_information="No"
+      c_preprocessor_definitions="NDEBUG"
+      gcc_debugging_level="Level 1"
+      gcc_optimization_level="Level 1" />
+
+  <configuration Name="Debug_Heap3" hidden="Yes" />
+
+  <configuration Name="Release_Heap3" hidden="Yes" />
+
+  <configuration Name="Release_Heap3-Bootload" hidden="Yes"/>
+
+  <configuration Name="Debug_Heap4"
+    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+  <configuration Name="Release_Heap4"
+    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+
+  <configuration Name="Release-Bootload" />
+
+   <configuration Name="Bootload"
+$[ifdef LPC1788]
+      linker_section_placement_macros="CRP1_KEEP=No;"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+$[endif]
+$[ifdef LPC4088]
+      linker_section_placement_macros="CRP1_KEEP=No;"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+$[endif]
+$[ifdef LPC4357]
+      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=Yes"
+      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
+      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000120;FLASHA_START=0x1A010220"
+$[endif] />
+
+  <configuration Name="Common"
 $[ifdef LPC4357]
       Placement="Flash A"
 $[endif]
@@ -28,15 +103,15 @@ $[endif]
       arm_assembler_variant="gcc"
       arm_gcc_target="arm-unknown-eabi"
       arm_interwork="No"
-      arm_keep_preprocessor_output="Yes"
+      arm_keep_preprocessor_output="No"
 $[ifdef LPC1788]
-      arm_linker_heap_size="4000000"
+      arm_linker_heap_size="3500000"
 $[endif]
 $[ifdef LPC4088]
-      arm_linker_heap_size="5000000"
+      arm_linker_heap_size="3500000"
 $[endif]        
 $[ifdef LPC4357]
-      arm_linker_heap_size="15000000"
+      arm_linker_heap_size="10000000"
 $[endif]
 $[ifdef LPC4357]          
       arm_linker_jtag_pad_post_dr="0"
@@ -67,6 +142,7 @@ $[ifdef LPC4357]
       arm_target_loader_default_loader="Flash"
       arm_target_loader_parameter="12000000"
 $[endif]
+      asm_generate_listing_file="Yes"
       batch_build_configurations="Debug_Heap4;Release_Heap4"
       build_output_directory="$(Configuration)"
       build_output_file_name="$(OutDir)/$(ProjectName).elf"
@@ -74,13 +150,13 @@ $[endif]
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
 $[ifdef LPC1788]
-      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M3"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M3"
 $[endif]      
 $[ifdef LPC4088]
-      c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
 $[endif]
 $[ifdef LPC4357]
-	  c_preprocessor_definitions="STARTUP_FROM_RESET;__GNUC__=12;__THUMB;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+	  c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
 $[endif]
       c_user_include_directories=".;$[SkipNewLine]
 ../../../.;../../../Source/App/;$[SkipNewLine]
@@ -230,8 +306,9 @@ $[ifdef LPC4357]
       arm_target_loader_reset_after_download="No"
       hidden="Yes" />
 $[endif]
+
     <folder Name="App">
-      <folder Name="demo_gui">
+      <folder Name="demo_gui_AWS">
         <folder Name="emWin">
           <folder Name="Graphics">
             <file file_name="../../../../uEZ/Source/Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui/emWin/Graphics/ConvertGraphics.bat" />
@@ -271,6 +348,8 @@ $[endif]
         <file file_name="../../../Source/App/emWin/WindowManager.h" />
       </folder>
       <file file_name="../../../Source/App/App_RTOS.c" />
+      <file file_name="../../../Source/App/AppHTTPServer.c" />
+      <file file_name="../../../Source/App/AppHTTPServer.h" />
       <file file_name="../../../Source/App/Audio.c" />
       <file file_name="../../../Source/App/Audio.h" />
       <file file_name="../../../Source/App/Calibration.c" />
@@ -449,9 +528,6 @@ $[endif]
           $[endif]		  
           $[ifdef LPC4357]
             <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M4F.a" />
-            <file file_name="../../../../uEZ/Source/Library/GUI/SEGGER/emWin/Libraries/NXP/GCC/emWin_GCC_M0P.a">
-                <configuration Name="Common" build_exclude_from_build="Yes" />
-            </file>
           $[endif]
           </folder>
         </folder>
@@ -466,7 +542,7 @@ $[endif]
           <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug.a">
             <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
 			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap4-Bootload" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release-Bootload" build_exclude_from_build="Yes"/>
             <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
             <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
           </file>
@@ -474,13 +550,13 @@ $[endif]
             <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
             <configuration Name="Debug_Heap4" build_exclude_from_build="Yes"/>
             <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap4-Bootload" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release-Bootload" build_exclude_from_build="Yes"/>
           </file>
           <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Debug_Heap4/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Debug_Heap4.a">
             <configuration Name="Debug_Heap3" build_exclude_from_build="Yes"/>
             <configuration Name="Release_Heap3" build_exclude_from_build="Yes"/>
 			      <configuration Name="Release_Heap3-Bootload" build_exclude_from_build="Yes"/>
-			      <configuration Name="Release_Heap4-Bootload" build_exclude_from_build="Yes"/>
+			      <configuration Name="Release-Bootload" build_exclude_from_build="Yes"/>
             <configuration Name="Release_Heap4" build_exclude_from_build="Yes"/>
           </file>
           <file file_name="../../../../uEZ/Build/Generic/NXP/$[sym processor]/FreeRTOS/CrossWorks/Release_Heap4/uEZ_NXP_$[sym processor]_FreeRTOS_CrossWorks_Release_Heap4.a">
@@ -521,7 +597,7 @@ $[endif]
 				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
 					<configuration Name="Common" file_type="Target Script" />
 				  </file>
-			  </folder>		  
+			  </folder>
           </folder>
           $[endif]
 		  $[ifdef LPC4088]
@@ -619,90 +695,7 @@ $[endif]
       </folder>
     </folder>
     <file file_name="Config_Build.h" />
-    <configuration Name="THUMB" arm_target_monitor_mode_debug="Yes" />
-    <configuration
-      Name="Release"
-      build_debug_information="No"
-$[ifdef LPC4357]
-      debug_additional_load_file="$(ProjectDir)/Release_Heap4_M0/$(ProjectName).hex"
-$[endif]
-      c_preprocessor_definitions="NDEBUG"
-      gcc_debugging_level="Level 1"
-      gcc_optimization_level="Level 1" />
-    <configuration
-      Name="Bootload"
-$[ifdef LPC1788]
-      linker_section_placement_macros="CRP1_KEEP=No;"
-      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
-$[endif]
-$[ifdef LPC4088]
-      linker_section_placement_macros="CRP1_KEEP=No;"
-      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
-$[endif]
-$[ifdef LPC4357]
-      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=Yes"
-      c_preprocessor_definitions="DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000120;FLASHA_START=0x1A010220"
-$[endif]
-    />
-    <configuration
-      Name="Debug"
-$[ifdef LPC4357]
-      debug_additional_load_file="$(ProjectDir)/Debug_Heap4_M0/$(ProjectName).hex"
-$[endif]
-      build_debug_information="Yes"
-      c_preprocessor_definitions="DEBUG"
-      gcc_debugging_level="Level 3"
-      gcc_optimization_level="None" />
   </project>
-  <configuration
-    Name="THUMB"
-    Platform="ARM"
-    arm_instruction_set="THUMB"
-    arm_target_monitor_mode_debug="Yes"
-    arm_library_instruction_set="THUMB"
-    hidden="Yes" />
-  <configuration Name="Flash" hidden="Yes" />
-  <configuration Name="Debug" hidden="Yes" />
-  <configuration Name="Release" hidden="Yes" />
-  <configuration
-    Name="Debug_Heap3"
-    hidden="Yes"
-    inherited_configurations="THUMB;Flash;Debug"
-$[ifdef LPC4357]
-    pre_build_command="$(StudioDir)/bin/$(StudioBuildToolExeName) -verbose -threadnum 4 -config &quot;Debug_M0&quot; $(ProjectDir)/$(ProjectName)_M0.hzp"
-$[endif] />
-  <configuration
-    Name="Release_Heap3"
-    hidden="Yes"
-    inherited_configurations="THUMB;Flash;Release"
-$[ifdef LPC4357]
-    pre_build_command="$(StudioDir)/bin/$(StudioBuildToolExeName) -verbose -threadnum 4 -config &quot;Release_M0&quot; $(ProjectDir)/$(ProjectName)_M0.hzp"
-$[endif] />
-  <configuration
-    Name="Debug_Heap4"
-    inherited_configurations="THUMB;Flash;Debug"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4"
-$[ifdef LPC4357]
-    pre_build_command="$(StudioDir)/bin/$(StudioBuildToolExeName) -verbose -threadnum 4 -config &quot;$(Configuration)_M0&quot; $(ProjectDir)/$(ProjectName)_M0.hzp"
-$[endif] />
-  <configuration
-    Name="Release_Heap4"
-    inherited_configurations="THUMB;Flash;Release"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4"
-$[ifdef LPC4357]
-    pre_build_command="$(StudioDir)/bin/$(StudioBuildToolExeName) -verbose -threadnum 4 -config &quot;$(Configuration)_M0&quot; $(ProjectDir)/$(ProjectName)_M0.hzp"
-$[endif] />
-  <configuration
-    Name="Release_Heap3-Bootload"
-    hidden="Yes"
-    inherited_configurations="THUMB;Flash;Release;Bootload" />
-  <configuration
-    Name="Release_Heap4-Bootload"
-    inherited_configurations="THUMB;Flash;Release;Bootload"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
 $[ifdef LPC1788]
     <import file_name="../../../../uEZ/Build/Generic/NXP/LPC1788/FreeRTOS/CrossWorks/uEZ_NXP_LPC1788_FreeRTOS_CrossWorks.hzp" />
 $[endif]

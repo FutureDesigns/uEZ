@@ -158,7 +158,7 @@ static CK_RV prvProvisionPrivateECKey(CK_SESSION_HANDLE xSession,
 
     pxD = pvPortMalloc(EC_D_LENGTH);
 
-    if ((pxD == NULL))
+    if (pxD == NULL)
     {
         xResult = CKR_HOST_MEMORY;
     }
@@ -944,6 +944,7 @@ static CK_RV prvGetProvisionedState(CK_SESSION_HANDLE xSession, ProvisionedState
  * certificate enrollment for onboard crypto hardware (i.e. if available). */
 static void prvWriteHexBytesToConsole(char *pcDescription, uint8_t *pucData, uint32_t ulDataLength)
 {
+    (void)(pcDescription);
 #define BYTES_TO_DISPLAY_PER_ROW 16
     char pcByteRow[1 + (BYTES_TO_DISPLAY_PER_ROW * 2) + (BYTES_TO_DISPLAY_PER_ROW / 2)];
     char *pcNextChar    = pcByteRow;

@@ -209,7 +209,7 @@
  *
  */
 #ifndef MQTT_SEND_TIMEOUT_MS
-    #define MQTT_SEND_TIMEOUT_MS    ( 20000U )
+    #define MQTT_SEND_TIMEOUT_MS    ( 5000U )
 #endif
 
 #ifdef MQTT_SEND_RETRY_TIMEOUT_MS

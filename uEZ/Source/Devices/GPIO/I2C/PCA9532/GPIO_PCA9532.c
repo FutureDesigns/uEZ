@@ -140,6 +140,7 @@ T_uezError GPIO_PCA9532_Configure(void *aWorkspace, TUInt32 aUsablePins)
 {
     //    T_GPIO_PCA9532_Workspace *p = (T_GPIO_PCA9532_Workspace *)aWorkspace;
 
+    PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aUsablePins);
 
     return UEZ_ERROR_NOT_SUPPORTED;
@@ -199,9 +200,8 @@ T_uezError GPIO_PCA9532_Deactivate(void *aWorkspace, TUInt32 aPortPins)
  *---------------------------------------------------------------------------*/
 T_uezError GPIO_PCA9532_SetOutputMode(void *aWorkspace, TUInt32 aPortPins)
 {
+    PARAM_NOT_USED(aPortPins);
     T_GPIO_PCA9532_Workspace *p = (T_GPIO_PCA9532_Workspace *)aWorkspace;
-
-
 
     return IGPIO_PCA9532_Write(p);
 }
@@ -219,10 +219,9 @@ T_uezError GPIO_PCA9532_SetOutputMode(void *aWorkspace, TUInt32 aPortPins)
  *---------------------------------------------------------------------------*/
 T_uezError GPIO_PCA9532_SetInputMode(void *aWorkspace, TUInt32 aPortPins)
 {
+    PARAM_NOT_USED(aPortPins);
     T_GPIO_PCA9532_Workspace *p = (T_GPIO_PCA9532_Workspace *)aWorkspace;
     
-
-
     return IGPIO_PCA9532_Write(p);
 }
 
@@ -243,7 +242,7 @@ T_uezError GPIO_PCA9532_Set(void *aWorkspace, TUInt32 aPortPins)
     TUInt8 i = 0, bit = 0;
 
     for(i = 0; i < 32; i++){
-        if(aPortPins == (1<<i)){
+        if(aPortPins == (TUInt32)(1<<i)) {
             break;
         }
         bit++;
@@ -318,7 +317,7 @@ T_uezError GPIO_PCA9532_Clear(void *aWorkspace, TUInt32 aPortPins)
     TUInt8 i = 0, bit = 0;
 
     for(i = 0; i < 32; i++){
-        if(aPortPins == (1<<i)){
+        if(aPortPins == (TUInt32)(1<<i)) {
             break;
         }
         bit++;
@@ -494,7 +493,9 @@ T_uezError GPIO_PCA9532_DisableInterrupts_NotSupported(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aPortPins);PARAM_NOT_USED(aType);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
+    PARAM_NOT_USED(aType);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -502,7 +503,8 @@ T_uezError GPIO_PCA9532_ClearInterrupts_NotSupported(
         void *aWorkspace,
         TUInt32 aPortPins)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aPortPins);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aPortPins);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -512,7 +514,10 @@ T_uezError GPIO_PCA9532_ConfigureInterruptCallback_NotSupported(
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aInterruptCallback);PARAM_NOT_USED(aInterruptCallbackWorkspace);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInterruptCallback);
+    PARAM_NOT_USED(aInterruptCallbackWorkspace);
+    PARAM_NOT_USED(aPortPins);
 
     // No IRQs on these
     return UEZ_ERROR_NOT_SUPPORTED;

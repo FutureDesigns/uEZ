@@ -194,8 +194,8 @@ static void _InitController(unsigned LayerIndex) {
   //
   // Set display size and video-RAM address
   //
-  LCD_SetSizeEx (XSIZE_PHYS, YSIZE_PHYS, LayerIndex);
-  LCD_SetVSizeEx(VXSIZE_PHYS, VYSIZE_PHYS, LayerIndex);
+  LCD_SetSizeEx (LayerIndex, XSIZE_PHYS, YSIZE_PHYS);
+  LCD_SetVSizeEx(LayerIndex, VXSIZE_PHYS, VYSIZE_PHYS);
   LCD_SetVRAMAddrEx(LayerIndex, (void*)VRAM_ADDR);
 }
 
@@ -213,6 +213,8 @@ static void _CopyBuffer(int32_t LayerIndex, int32_t IndexSrc, int32_t IndexDst) 
   U32 BufferSize;
   U32 AddrSrc;
   U32 AddrDst;
+
+  PARAM_NOT_USED(LayerIndex);
 
   //
   // Calculate the size of one frame buffer
@@ -245,6 +247,8 @@ static void _CopyBuffer(int32_t LayerIndex, int32_t IndexSrc, int32_t IndexDst) 
 *
 */
 void LCD_X_Config(void) {
+   GUI_DEVICE * pDevice;
+
   #if USE_MULTIBUF
     //
     // Initialize multibuffering
@@ -256,7 +260,8 @@ void LCD_X_Config(void) {
   //
   // Set display driver and color conversion for 1st layer
   //
-  GUI_DEVICE_CreateAndLink((void*)DISPLAY_DRIVER, (void *)COLOR_CONVERSION, 0, 0);
+  pDevice = GUI_DEVICE_CreateAndLink((void*)DISPLAY_DRIVER, (void *)COLOR_CONVERSION, 0, 0);
+  PARAM_NOT_USED(pDevice);
   #if USE_MULTIBUF
     //
     // Set custom callback function for copy operation
@@ -303,7 +308,7 @@ void LCD_X_Config(void) {
 *     -1 - Command not handled
 *      0 - Ok
 */
-int32_t LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
+int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
   int32_t r;
 
   (void)LayerIndex;

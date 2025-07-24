@@ -93,9 +93,6 @@ extern "C" {
 #define INTERRUPT_CHANNEL_ETHERNET  ENET_IRQn
 
 // Macros for defining an interrupt context switch
-
-
-// Macros for defining an interrupt context switch
 #if (COMPILER_TYPE==GCC_ARM)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
@@ -106,7 +103,9 @@ extern "C" {
                     IRQ_START() \
                     funcname(param);\
                     IRQ_END()
+#ifndef   __packed
 #define     __packed        __attribute__((packed))
+#endif
 #define INLINE inline __attribute__((always_inline))
 #define     IN_INTERNAL_RAM  __attribute__((section(".IRAM")))
 #endif // (COMPILER_TYPE==GCC_ARM)
@@ -125,7 +124,6 @@ extern "C" {
 #define     IN_INTERNAL_RAM  // tbd
 #endif // (COMPILER_TYPE==IAR)
 
-// Macros for defining an interrupt context switch
 #if (COMPILER_TYPE==KEIL_UV)
 #define     IRQ_ROUTINE(name)  void name(void) ;\
                                 void name(void)
@@ -140,7 +138,6 @@ extern "C" {
 #define     INLINE          __inline
 #define     IN_INTERNAL_RAM  // tbd
 #endif // (COMPILER_TYPE==KEIL_UV)
-
 
 #if(COMPILER_TYPE == GCC_ARM)
 	#define NOP() __NOP()
