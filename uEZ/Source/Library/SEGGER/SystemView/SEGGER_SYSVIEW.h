@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2024 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.52a                                    *
+*       SystemView version: 3.54                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -52,6 +52,7 @@ Revision: $Rev: 28768 $
 */
 
 // Get latest version and pre-patched RTOS example here:
+// FreeRTOS is now pre-patched, but need to match supported FreeRTOS version with Sytemview version
 // https://www.segger.com/downloads/jlink/systemview_target_src
 
 #ifndef SEGGER_SYSVIEW_H

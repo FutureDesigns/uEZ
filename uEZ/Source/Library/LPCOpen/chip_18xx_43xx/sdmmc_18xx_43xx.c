@@ -493,12 +493,14 @@ uint32_t Chip_SDMMC_Acquire(LPC_SDMMC_T *pSDMMC, mci_card_struct *pcardinfo)
 /* Get the device size of SD/MMC card (after enumeration) */
 int32_t Chip_SDMMC_GetDeviceSize(LPC_SDMMC_T *pSDMMC)
 {
+        PARAM_NOT_USED(pSDMMC);
 	return g_card_info->card_info.device_size;
 }
 
 /* Get the number of blocks in SD/MMC card (after enumeration) */
 int32_t Chip_SDMMC_GetDeviceBlocks(LPC_SDMMC_T *pSDMMC)
 {
+        PARAM_NOT_USED(pSDMMC);
 	return g_card_info->card_info.blocknr;
 }
 

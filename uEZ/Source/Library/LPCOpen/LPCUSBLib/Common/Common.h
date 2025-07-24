@@ -222,6 +222,7 @@ PRAGMA_ALWAYS_INLINE
 			static inline void SetGlobalInterruptMask(const uint_reg_t GlobalIntState) ATTR_ALWAYS_INLINE;
 			static inline void SetGlobalInterruptMask(const uint_reg_t GlobalIntState)
 			{
+			        (void)(GlobalIntState);
 				GCC_MEMORY_BARRIER();
 				// TODO #warning SetGlobalInterruptMask() is not implemented under ARCH_LPC.			
 				GCC_MEMORY_BARRIER();

@@ -41,6 +41,8 @@ uint8_t Endpoint_Discard_Stream(uint8_t corenum,
 								uint16_t Length,
 								uint16_t *const BytesProcessed)
 {
+        (void)(Length);
+        (void)(BytesProcessed);
 	uint32_t i;
 	for (i = 0; i < Length; i++)
 		Endpoint_Discard_8(corenum);
@@ -51,6 +53,8 @@ uint8_t Endpoint_Null_Stream(uint8_t corenum,
 							 uint16_t Length,
 							 uint16_t *const BytesProcessed)
 {
+        (void)(Length);
+        (void)(BytesProcessed);
 	uint32_t i;
 
 	while ( !Endpoint_IsINReady(corenum) ) {	/*-- Wait until ready --*/		
@@ -66,6 +70,8 @@ uint8_t Endpoint_Write_Stream_LE(uint8_t corenum,
 								 uint16_t Length,
 								 uint16_t *const BytesProcessed)
 {
+        (void)(Length);
+        (void)(BytesProcessed);
 	uint16_t i;
 
 	while ( !Endpoint_IsINReady(corenum) ) {	/*-- Wait until ready --*/
@@ -82,6 +88,9 @@ uint8_t Endpoint_Write_Stream_BE(uint8_t corenum,
 								 uint16_t Length,
 								 uint16_t *const BytesProcessed)
 {
+        (void)(Buffer);
+        (void)(Length);
+        (void)(BytesProcessed);
 	uint16_t i;
 
 	for (i = 0; i < Length; i++)
@@ -94,6 +103,8 @@ uint8_t Endpoint_Read_Stream_LE(uint8_t corenum,
 								uint16_t Length,
 								uint16_t *const BytesProcessed)
 {
+        (void)(Length);
+        (void)(BytesProcessed);
 	uint16_t i;
 	if (endpointselected[corenum] == ENDPOINT_CONTROLEP) {
 		if (usb_data_buffer_size[corenum] == 0) {
@@ -119,7 +130,10 @@ uint8_t Endpoint_Read_Stream_BE(void *const Buffer,
 								uint16_t Length,
 								uint16_t *const BytesProcessed)
 {
-	return ENDPOINT_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return ENDPOINT_RWSTREAM_NoError;
 }
 
 #endif
@@ -138,7 +152,9 @@ uint8_t Endpoint_Write_Control_Stream_LE(uint8_t corenum, const void *const Buff
 uint8_t Endpoint_Write_Control_Stream_BE(const void *const Buffer,
 										 uint16_t Length)
 {
-	return ENDPOINT_RWCSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  return ENDPOINT_RWCSTREAM_NoError;
 }
 
 uint8_t Endpoint_Read_Control_Stream_LE(uint8_t corenum, void *const Buffer,
@@ -153,7 +169,9 @@ uint8_t Endpoint_Read_Control_Stream_LE(uint8_t corenum, void *const Buffer,
 uint8_t Endpoint_Read_Control_Stream_BE(void *const Buffer,
 										uint16_t Length)
 {
-	return ENDPOINT_RWCSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  return ENDPOINT_RWCSTREAM_NoError;
 }
 
 #endif

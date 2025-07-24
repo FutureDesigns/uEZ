@@ -266,6 +266,7 @@ static T_uezError HID_Generic_ConnectedCheckMatch(
 
 T_uezError HID_Generic_Disconnected(void *aWorkspace, TUInt8 aDeviceAddress)
 {
+    PARAM_NOT_USED(aDeviceAddress);
     T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
     IGrab();
     p->iIsConnected = EFalse;
@@ -278,6 +279,8 @@ T_uezError HID_Generic_Open(
     TUInt16 aVenderID,
     TUInt16 aProductID)
 {
+    PARAM_NOT_USED(aProductID);
+    PARAM_NOT_USED(aVenderID);
     T_uezError error;
     T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
 
@@ -330,6 +333,7 @@ T_uezError HID_Generic_Write(
     TUInt32 *aNumWritten,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aNumWritten);
     T_Generic_HID_Workspace *p = (T_Generic_HID_Workspace *)aWorkspace;
     T_uezError error;
 

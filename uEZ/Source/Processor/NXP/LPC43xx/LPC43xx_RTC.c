@@ -102,6 +102,7 @@ T_uezError LPC43xx_RTC_InitializeWorkspace(void *aWorkspace)
 *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_RTC_Get(void *aWorkspace, T_uezTimeDate *aTimeDate)
 {
+  PARAM_NOT_USED(aWorkspace);
   TUInt32 d, t;
 
   if ((LPC_RTC->CCR & RTC_CCR_CLKEN_Msk) == RTC_CCR_CLKEN_Msk) { // RTC is enabled

@@ -98,6 +98,10 @@ uint16_t NoGetDescriptor(uint8_t corenum,
                           const uint8_t wIndex,
                           const void** const DescriptorAddress)
 {
+    PARAM_NOT_USED(corenum);
+    (void)(wValue);
+    (void)(wIndex);
+    (void)(DescriptorAddress);
     return NO_DESCRIPTOR;
 }
 
@@ -250,6 +254,8 @@ T_uezError UEZ_LPCUSBLib_Device_Require(int32_t aUnitAddress, T_LPCUSBLib_Device
 
 TUInt32 LPCUSBLIB_USBDeviceMonitor(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     int32_t activity;
 //static int32_t count = 0;
     if (G_usbDevWait == 0) {
@@ -318,6 +324,8 @@ void EVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 
 TUInt32 LPCUSBLIB_USBHostMonitor(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     int32_t activity;
     if (G_usbHostWait == 0) {
         UEZSemaphoreCreateCounting(&G_usbHostWait, 1, 1);

@@ -248,6 +248,8 @@ T_uezError ST_Accelerometer_ADXL345_GetInfo(
     void *aWorkspace,
     AccelerometerInfo *aInfo)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInfo);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -297,6 +299,8 @@ T_uezError ST_Accelerometer_ADXL345_ReadXYZ_Float(
     AccelerometerReadingFloat *aReading,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aTimeout);
     aReading->iX = 0;
     aReading->iY = 0;
     aReading->iZ = 0;

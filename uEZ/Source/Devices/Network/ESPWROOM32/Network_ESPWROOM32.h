@@ -59,15 +59,21 @@ extern "C" {
 #define ESPWROOM32_AT_CMD_THREAD_STACK_SIZE (1024)
 #define ESPWROOM32_AT_CMD_THREAD_PRIORITY   (UEZ_PRIORITY_VERY_HIGH)
 #define ESPWROOM32_AT_CMD_MUTEX_PRIORITY    (UEZ_PRIORITY_CRITICAL)
-#define ESPWROOM32_MAX_PACKET_WINDOW        (4096)
+#define ESPWROOM32_ADD_THREAD_STACK_SIZE    (1024)
+#define ESPWROOM32_ADD_THREAD_PRIORITY      (UEZ_PRIORITY_LOW)
+
+#define ESPWROOM32_MAX_PACKET_WINDOW        (32768) // Match lwip TCP window and AWS TCP Window
 #define ESPWROOM32_MAX_PACKETS_IN_POOL      (8)
-#define ESPWROOM32_RESPONSE_TIMEOUT         (1000)
+#define ESPWROOM32_RESPONSE_TIMEOUT         (7500)
 #define ESPWROOM32_SOCKET_STATUS_DELAY      (50)
 #define ESPWROOM32_MAX_AP_NUM_IN_SCAN       (10)
-#define ESPWROOM32_AT_RX_SIZE               (64)
+#define ESPWROOM32_AT_RX_SIZE               (128)
 #define ESPWROOM32_SOCKET_MAX_CONNECTIONS   (5)
 #define ESPWROOM32_SSID                     ("iot_2.4")
 #define ESPWROOM32_PW                       ("fdi_cloud")
+#define ESPWROOM32_SSID_LENGTH              (32U)
+#define ESPWROOM32_MAC_ADDR_LENGTH          (6U)
+#define ESPWROOM32_AP_SCAN_MAX_COUNT        (30)
 
 #define ESPWROOM32_BUFFER_ON_MODULE         (1)
 
@@ -107,6 +113,9 @@ typedef enum E_ESPWROOM32_ATCommandIndex
     ESPWROOM32_AT_CMD_INDEX_CIPRECVDATA,
     ESPWROOM32_AT_CMD_INDEX_GMR,
     ESPWROOM32_AT_CMD_INDEX_CMD,
+    ESPWROOM32_AT_CMD_INDEX_CIPSNTPCFG,
+    ESPWROOM32_AT_CMD_INDEX_CIPSNTPINTV,
+    ESPWROOM32_AT_CMD_INDEX_CIPSNTPTIME,
 } T_ESPWROOM32_ATCommandIndex;
 
 typedef struct ST_networkPacket
@@ -208,6 +217,7 @@ typedef struct ST_ESPWROOM32_Socket
     T_uezNetworkAddr                    networkAddr;
     TUInt16                             port;
     TBool                               tcpKeepAlive;
+    T_uezNetworkAddr                    bindAddr;
 } T_ESPWROOM32_Socket;
 
 typedef enum E_ESPWROOM32_StationStatus
@@ -218,6 +228,52 @@ typedef enum E_ESPWROOM32_StationStatus
     ESPWROOM32_STATION_STATUS_TCP_UDP_SOCKET_DISCONNECTED   = 4,
     ESPWROOM32_STATION_STATUS_DISCONNECTED                  = 5
 } T_ESPWROOM32_StationStatus;
+
+typedef enum E_ESPWROOM32_InterfaceHWMode
+{
+    ESPWROOM32_INTERFACE_HW_MODE_11A,        ///< 802.11a 
+    ESPWROOM32_INTERFACE_HW_MODE_11B,        ///< 802.11b 
+    ESPWROOM32_INTERFACE_HW_MODE_11G,        ///< 802.11g 
+    ESPWROOM32_INTERFACE_HW_MODE_11N         ///< 802.11n 
+} T_ESPWROOM32_InterfaceHWMode;
+
+typedef enum E_ESPWROOM32_SecurityType{
+    ESPWROOM32_SECURITY_OPEN            = 0,
+    ESPWROOM32_SECURITY_WEP             = 1, ///< WEP is not supported by ESP WROOM32 FW
+    ESPWROOM32_SECURITY_WPA_PSK         = 2,
+    ESPWROOM32_SECURITY_WPA2_PSK        = 3,
+    ESPWROOM32_SECURITY_WPA_WPA2_PSK    = 4
+} T_ESPWROOM32_SecurityType;
+
+typedef enum E_ESPWROOM32_EncryptionType
+{
+    ESPWROOM32_ENCRYPTION_TYPE_AUTO     = 0,     ///< Automatic selection of encryption protocol. 
+    ESPWROOM32_ENCRYPTION_TYPE_TKIP     = 1,     ///< Temporal Key Integrity Protocol. Used by WPA. 
+    ESPWROOM32_ENCRYPTION_TYPE_CCMP     = 2,     ///< CTR mode with CBC-MAC Protocol. Used by WPA2
+    ESPWROOM32_ENCRYPTION_TYPE_WEP      = 3,     ///< WEP mode. Used by WEP
+    ESPWROOM32_ENCRYPTION_TYPE_NONE     = 4      ///< No Encryption. Used by Open Security type
+} T_ESPWROOM32_EncryptionType;
+
+typedef enum E_ESPWROOM32_BSSType
+{
+    ESPWROOM32_BSS_TYPE_INFRASTRUCTURE  = 0, ///< Infrastructure network
+    ESPWROOM32_BSS_TYPE_ADHOC           = 1, ///< 802.11 ad-hoc IBSS network
+    ESPWROOM32_BSS_TYPE_ANY             = 2, ///< Either infrastructure or ad-hoc network
+    ESPWROOM32_BSS_TYPE_UNKNOWN         = -1 ///< BSS type is unknown
+} T_ESPWROOM32_BSSType;
+
+typedef struct ST_ESPWROOM32_WifiScan
+{
+    T_ESPWROOM32_InterfaceHWMode    hw_mode;                            ///< Hardware mode 802.11a/b/g/n
+    TUInt8                          rssi;                               ///< Signal Strength
+    TUInt8                          ssid[ESPWROOM32_SSID_LENGTH];       ///< SSID name
+    TUInt8                          bssid[ESPWROOM32_MAC_ADDR_LENGTH];  ///< Basic Service Set Identification (i.e. MAC address of Access Point)
+    TUInt8                          channel;                            ///< Radio channel that the AP beacon was received on
+    T_ESPWROOM32_SecurityType       security;                           ///< Security type
+    T_ESPWROOM32_EncryptionType     encryption;                         ///< Encryption type
+    T_ESPWROOM32_BSSType            bss_type;                           ///< Network type
+} T_ESPWROOM32_WifiScan;
+
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/

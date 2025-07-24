@@ -194,6 +194,7 @@ T_uezError ToneGenerator_Generic_PWM_Create(
         const char *aName,
         const T_ToneGenerator_Generic_PWM_Settings *aSettings)
 {
+    PARAM_NOT_USED(aName);
     T_uezDeviceWorkspace *p;
     T_halWorkspace *p_pwm;
     T_uezError error;
@@ -234,6 +235,7 @@ T_uezError ToneGenerator_Generic_PWM_Create(
  *---------------------------------------------------------------------------*/
 T_uezError ToneGenerator_Generic_PWM_Open(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Do nothing
     return UEZ_ERROR_NONE;
 }
@@ -248,6 +250,7 @@ T_uezError ToneGenerator_Generic_PWM_Open(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError ToneGenerator_Generic_PWM_Close(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Do nothing
     return UEZ_ERROR_NONE;
 }

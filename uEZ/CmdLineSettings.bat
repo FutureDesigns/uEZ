@@ -1,10 +1,10 @@
 :iar_set
 @ if defined IARBUILD goto cross_set 
-@   set IARBUILD="C:\Program Files\IAR Systems\Embedded Workbench 8.11\common\bin\iarbuild"
+@   set IARBUILD="C:\iar\ewarm-9.60.3\common\bin\iarbuild"
 
 :cross_set
 @ if defined CROSSBUILD goto keil_set
-@   set CROSSBUILD="C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 4.10\bin\crossbuild.exe"
+@   set CROSSBUILD="C:\Program Files\Rowley Associates Limited\CrossWorks for ARM 5.10\bin\crossbuild.exe"
 
 :keil_set
 @ if defined KEILUV4 goto hew_set

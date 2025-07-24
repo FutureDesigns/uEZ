@@ -109,7 +109,7 @@ static T_tsDevice *G_tsDevices = 0;
 static T_uezSemaphore G_tsSem;
 
 // Task handle of touchscreen monitoring task
-T_uezTask G_tsMonitorTask = NULL; // want to be able to get task handle
+T_uezTask G_tsMonitorTask = (T_uezTask) NULL; // want to be able to get task handle
 
 // Declare static TS queues when not using dynamic memory allocation. 
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
@@ -169,12 +169,15 @@ static T_uezInputEvent IConvertTSReadingToInputEvent(T_uezTSReading *p_aReading)
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
-static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
+static TUInt32 IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
 {
     T_tsDevice *p;
     T_tsQueue *pq;
     T_uezTSReading reading;
     T_uezInputEvent inputEvent;
+
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParams);
 
     UEZTaskDelay(100);
 	
@@ -209,6 +212,9 @@ static void IUEZTSMonitorTouchscreensTask(T_uezTask aMyTask, void *aParams)
         IUEZTSRelease();
         UEZTaskDelay(10); // TODO implement variable for touch rate
     }
+#ifdef __GNUC__
+    return 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*

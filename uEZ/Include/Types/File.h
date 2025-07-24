@@ -117,6 +117,12 @@ typedef struct {
     TUInt32 iNumClustersFree;
 } T_uezFileSystemVolumeInfo;
 
+typedef struct {
+    TUInt32 iNumSectors;
+    TUInt32 iSectorSize;
+    TUInt32 iBlockSize; /**< num sectors per block */
+} T_msSizeInfo;
+
 #ifdef __cplusplus
 }
 #endif

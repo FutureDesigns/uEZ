@@ -599,6 +599,7 @@ static TUInt32 LPC43xx_SSP_TransferInOut(
  *---------------------------------------------------------------------------*/
 static void LPC43xx_SSP_Stop(void *aWorkspace, SPI_Request *aRequest)
 {
+    PARAM_NOT_USED(aWorkspace);
     ISSPEnd(aRequest);
 }
 

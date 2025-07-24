@@ -175,6 +175,7 @@ void SUIFillRect(
     int32_t y2,
     T_pixelColor color)
 {
+    (void)(pixels);
     int32_t y;
     int32_t len = 1 + x2 - x1;
 
@@ -387,7 +388,160 @@ int32_t SUILoadPicture(
                 }
                 SUIRenderRGBRaster(aPage, 0, (height - 1 - (y++)), width,
                     p_raster);
-                if (y == height)
+                if ( (TUInt32) y == height)
+                    break;
+                // No errors, keep going
+                loadLeft -= blockSize;
+            }
+        }
+
+        UEZFileClose(file);
+    } else {
+        error = 1;
+    }
+
+    return error;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  SUIShowPage0FancyDownAddress
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Scroll from page 0 to page aBufferAddrFB2 bringing page 2 back into view, but
+ *      then swap it all over to page 0
+ *      Scrolls in at 1 ms per screen raster.
+ *---------------------------------------------------------------------------*/
+void SUIShowPage0FancyDownAddress(TUInt8 *aBufferAddrFB1, TUInt8 *aBufferAddrFB2)
+{
+    TUInt32 start, end, diff;
+    const TUInt32 height = G_SUISettings.iWindow.ypsize;
+    const TUInt32 width = G_SUISettings.iWindow.xpsize;
+    const TUInt32 frame_buffer_size = height * width;
+    T_pixelColor * const fb = G_SUISettings.iWindow.fb;
+    T_pixelColor * const fb1 = (T_pixelColor *)aBufferAddrFB1;
+
+    // Copy page 0 to page aBufferAddr first
+    SUICopyFast32((void *)aBufferAddrFB2, (void *)fb,
+        sizeof(*fb) * frame_buffer_size);
+
+    start = UEZTickCounterGet();
+    while (1) {
+        end = UEZTickCounterGet();
+        diff = ((end - start) * height) / 240;
+        if (diff >= height)
+            break;
+        SUICallbackSetLCDBase((void *)(fb1 + ((height - 1 + diff) * width)));
+        UEZTaskDelay(1);
+    }
+
+    // Jump back to page 0
+    SUIShowPage0();
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  SUIRenderRGBRasterAddress
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Draw a number of pixels on the screen at the given location,
+ *      the length of pixels, and the rgb data.  RGB data is stored
+ *      in byte triples in R, G, B order.
+ * Inputs:
+ *      TUInt8 aBufferAddr          -- Address of graphics to draw to
+ *      TUInt16 x                   -- x position from left
+ *      TUInt16 y                   -- y position from top
+ *      TUInt16 aNumPixels          -- Nubmer of pixels to draw
+ *      TUInt8 *aRGB                -- RGB triples memory
+ * Outputs:
+ *      TUInt16                     -- raw pixel format of screen.
+ *---------------------------------------------------------------------------*/
+void SUIRenderRGBRasterAddress(
+    TUInt8 *aBufferAddr,
+    TUInt16 x,
+    TUInt16 y,
+    TUInt16 aNumPixels,
+    TUInt8 *aRGB)
+{
+    // Copy the window pages into our own working space (so we can change
+    // the page without affecting anyone else)
+    SWIM_WINDOW_T win = G_SUISettings.iWindow;
+
+    COLOR_T * tempFb = win.fb;
+    //swim_driver_set_page(&win, aPage);
+    // Move to the next page
+    win.fb = (COLOR_T *) aBufferAddr;
+    //win->page = page;
+
+    // Render the pixels, one at a time
+    while (aNumPixels--) {
+        swim_driver_put_pixel(&win, x++, y,
+            SUICallbackRGBConvert(aRGB[2], aRGB[1], aRGB[0]));
+        aRGB += 3;
+    }
+    win.fb = tempFb; // set framebuffer back to normal
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  SUILoadPictureAddress
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Load a picture from the given file and store at the given page.
+ *      The file is assumed to be in Targa uncompressed format and
+ *      is the same size as the page.
+ * Inputs:
+ *      char *aPicture              -- Name of file to use
+ *      TUInt8 aBufferAddr          -- Address to load the file into
+ *      TBool *aAbortFlag           -- Pointer to flag.  If 0, then ignored.
+ *                                        Loads while flag is EFalse, else
+ *                                        stops
+ * Outputs:
+ *      int32_t                         -- 1 if error, 2 if aborted, else 0
+ *---------------------------------------------------------------------------*/
+int32_t SUILoadPictureAddress(
+    char *aPicture,
+    TUInt8 *aBufferAddr,
+    TBool *aAbortFlag,
+    TUInt8 *aLoadAddr)
+{
+    T_uezFile file;
+    TUInt32 num;
+    int32_t y = 0;
+    int32_t error = 0;
+    TUInt32 loadLeft;
+    TUInt32 blockSize;
+    TUInt8 *p_raster;
+    TUInt8 header[18];
+    const TUInt32 height = G_SUISettings.iWindow.ypsize;
+    const TUInt32 width = G_SUISettings.iWindow.xpsize;
+
+    if (UEZFileOpen(aPicture, FILE_FLAG_READ_ONLY, &file) == UEZ_ERROR_NONE) {
+        if (UEZFileRead(file, header, 18, &num) != UEZ_ERROR_NONE) {
+            // Problem!  Stop here!
+            error = 1;
+        }
+        if (!error) {
+            loadLeft = (3 * width * height);
+            p_raster = aLoadAddr;
+            while (loadLeft) {
+                // Do we need to abort?
+                if (aAbortFlag) {
+                    if (*aAbortFlag != EFalse) {
+                        error = 2;
+                        break;
+                    }
+                }
+                if (loadLeft > 3 * width)
+                    blockSize = 3 * width;
+                else
+                    blockSize = loadLeft;
+                if (UEZFileRead(file, p_raster, blockSize, &num)
+                    != UEZ_ERROR_NONE) {
+                    // Problem!  Stop here!
+                    error = 1;
+                    break;
+                }
+                SUIRenderRGBRasterAddress(aBufferAddr, 0, (height - 1 - (y++)), width,
+                    p_raster);
+                if ( (TUInt32) y == height)
                     break;
                 // No errors, keep going
                 loadLeft -= blockSize;

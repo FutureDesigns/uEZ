@@ -44,7 +44,7 @@
 #define NET_TP_PORT        ( 5001 )
 
 static char G_sendBuffer[1400*1];
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 
 static void INetworkThroughputProcessConnection(
@@ -150,7 +150,7 @@ void NetworkThroughputServerTask(void)
     PARAM_NOT_USED(addr);
     (void) INetworkThroughputWrite;
 
-    if(G_lwipTask != NULL) {
+    if(G_lwipTask != (sys_thread_t) NULL) {
       lwip_socket_thread_init(); // if lwip init make sure to init per thread objects
     }
 

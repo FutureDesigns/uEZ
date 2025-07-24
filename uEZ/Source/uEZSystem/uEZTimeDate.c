@@ -64,7 +64,7 @@
  *  @endcode
  */
 #include <uEZ.h>
-#include <ctype.h>
+//#include <ctype.h>
 #include <string.h>
 #include "Config.h"
 #include "HAL/HAL.h"
@@ -73,6 +73,10 @@
 #include <uEZDeviceTable.h>
 #include <uEZTimeDate.h>
 #include <build_time.h>
+
+// remove ctype dependency
+#define _in_range(c, lo, up)  ((TUInt8)(c) >= (lo) && (TUInt8)(c) <= (up))
+#define isdigit(c)           _in_range((c), '0', '9')
 
 /*-------------------------------------------------------------------------*
  * Internal data:

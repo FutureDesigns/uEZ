@@ -217,7 +217,7 @@ struct MQTTAgentCommandContext
 };
 
 extern MQTTAgentContext_t xGlobalMqttAgentContext;
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 /*-----------------------------------------------------------*/
 
@@ -1377,6 +1377,7 @@ void vShadowDeviceTask( void * pvParameters )
     BaseType_t xNotifyStatus = pdFALSE;
     uint32_t ulNotifiedValue = 0;
     T_uezDevice speaker;
+    MQTTAgentState_t currentMqttTaskState = MQTT_AGENT_STATE_NONE;
 
     /* Setup touchscreen queue to get touch events */
     T_uezError error = UEZDeviceTableFind("Speaker", &speaker);
@@ -1385,7 +1386,7 @@ void vShadowDeviceTask( void * pvParameters )
         LogError( ( "Failed to find speaker!") );
     }
     
-    if(G_lwipTask != NULL) {
+    if(G_lwipTask != (sys_thread_t) NULL) {
       lwip_socket_thread_init(); // if lwip init make sure to init per thread objects
     }
 
@@ -1444,7 +1445,18 @@ void vShadowDeviceTask( void * pvParameters )
                                                  ( shadowexampleUPDATE_DELTA_EVENT ),
                                                  &ulNotifiedValue,
                                                  portMAX_DELAY );
-
+                
+                // If we run when MQTT task is gone we will fault on assert, so at minimum try to avoid running here.
+                currentMqttTaskState = xGetMQTTAgentState();
+                while (currentMqttTaskState != MQTT_AGENT_STATE_CONNECTED) {
+                    // TODO do something else here?
+                    vTaskDelay(500);
+                    currentMqttTaskState = xGetMQTTAgentState();
+                    while (currentMqttTaskState == MQTT_AGENT_STATE_TERMINATED) {
+                        vTaskDelay(2000);
+                        currentMqttTaskState = xGetMQTTAgentState();
+                    }
+                }
                 if( xNotifyStatus == pdTRUE )
                 {
                     if( ( ulNotifiedValue & shadowexampleUPDATE_DELTA_EVENT ) != 0 )

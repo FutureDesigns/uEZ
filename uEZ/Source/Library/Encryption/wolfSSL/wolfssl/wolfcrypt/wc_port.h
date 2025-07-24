@@ -1004,6 +1004,22 @@ WOLFSSL_ABI WOLFSSL_API int wolfCrypt_Cleanup(void);
     #define WOLFSSL_GMTIME
 #else
     /* default */
+
+// Include both of these before the below define checks and include that before time.h
+#include <stdint.h>
+#include <stdlib.h>
+
+#ifndef _CLOCK_T_ // Rowley Runtime
+  //#undef __CLOCK_T_DEFINED // not needed or used in Rowley yet
+#else // Standard GCC runtime
+  #ifndef __machine_clock_t_defined
+    #define __machine_clock_t_defined
+    typedef       _CLOCK_T_       clock_t;
+    #define __clock_t_defined
+    #define _CLOCK_T_DECLARED
+  #endif
+#endif
+
     /* uses complete <time.h> facility */
     #include <time.h>
     #if defined(HAVE_SYS_TIME_H)

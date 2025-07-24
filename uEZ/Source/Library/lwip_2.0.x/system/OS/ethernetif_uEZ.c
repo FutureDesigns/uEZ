@@ -135,7 +135,7 @@
 /* EMAC interrupt controller related definition */
 #define EMAC_INT_RXDONE		0x01 << 3
 
-T_uezTask G_EthernetIfTask = NULL;
+T_uezTask G_EthernetIfTask =  (T_uezTask) NULL;
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -165,7 +165,7 @@ static struct netif *xNetIf = NULL;
  * Prototypes:
  *---------------------------------------------------------------------------*/
 //static void  ethernetif_input(struct netif *netif);
-static void ethernetif_input(T_uezTask, void *);
+static TUInt32 ethernetif_input(T_uezTask, void *);
 #if INTERRUPT_BASED_EMAC
 static void lwIP_EMAC_ReceiveCallback(void *aWorkspace);
 #endif
@@ -254,7 +254,7 @@ static void low_level_init(struct netif *netif)
     }
 #endif
 
-    if(G_EthernetIfTask != NULL) { // don't create duplicate task if restarting interface
+    if(G_EthernetIfTask != (T_uezTask) NULL) { // don't create duplicate task if restarting interface
       UEZTaskDelete(G_EthernetIfTask);
     }
 
@@ -297,6 +297,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     struct pbuf *q;
     err_t xReturn = ERR_OK;
     int32_t txsize = 0;
+
+    (void)(netif);
 
 #if ETH_PAD_SIZE
     pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
@@ -450,7 +452,7 @@ static struct pbuf* low_level_input(struct netif *netif)
  *      struct netif *netif         -- lwIP network interface structure for
  *                                      for this ethernetif.
  *---------------------------------------------------------------------------*/
-static void ethernetif_input(T_uezTask aTask, void *pvParameters)
+static TUInt32 ethernetif_input(T_uezTask aTask, void *pvParameters)
 {
     struct pbuf *p;
     ( void ) aTask;
@@ -471,6 +473,9 @@ static void ethernetif_input(T_uezTask aTask, void *pvParameters)
             }
         } while (p != NULL);
     }
+#ifdef __GNUC__
+    return 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*

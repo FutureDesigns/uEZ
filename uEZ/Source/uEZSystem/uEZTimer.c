@@ -152,6 +152,8 @@ T_uezError UEZTimerOpen(const char *aTimerName, T_uezDevice *aTimer)
 /*---------------------------------------------------------------------------*/
 T_uezError UEZTimerClose(T_uezDevice aTimer)
 {
+    PARAM_NOT_USED(aTimer);
+
     // Nothing currently
     return UEZ_ERROR_NONE;
 }

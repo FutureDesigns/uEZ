@@ -389,6 +389,7 @@ Return value:   none
 ***********************************************************************************/
 static sI32 AlphaLine_04_16(const pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 count, uI16 const *const ct, const uI16 tr)
 {
+  (void)(tr);
   uI08 const *ps = psr.p08 + (sPosX/2);
   PIXEL_16bpp_type *pd = pdr.p16 + dPosX;
 
@@ -429,6 +430,7 @@ Return value:   number of source bytes used
 ***********************************************************************************/
 static sI32 AlphaLine_04rle_16(const pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 Width, uI16 const *const ct, const uI16 tr)
 {
+  (void)(tr);
   uI08 const *ps = psr.p08;
   sI16 IndexW = 0;
 
@@ -554,6 +556,7 @@ Return value:   none
 ***********************************************************************************/
 static sI32 AlphaLine_08_16(const pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 count, uI16 const *const ct, const uI16 tr)
 {
+  (void)(tr);
   uI08 const *ps = psr.p08 + sPosX;
   PIXEL_16bpp_type *pd = pdr.p16 + dPosX;
 
@@ -577,6 +580,7 @@ Return value:   number of source bytes used
 ***********************************************************************************/
 static sI32 AlphaLine_08rle_16(const pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 Width, uI16 const *const ct, const uI16 tr)
 {
+  (void)(tr);
   uI08 const *ps = psr.p08;
   sI16 IndexW = 0;
 
@@ -724,6 +728,7 @@ Return value:   none
 //lint -e{715} suppress ct not used
 static sI32 CopyLine_16_16(const pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 count, uI16 const *const ct, const uI16 tr)
 {
+  (void)(ct);
   PIXEL_16bpp_type const *ps = psr.p16 + sPosX;
   PIXEL_16bpp_type *pd = pdr.p16 + dPosX;
 
@@ -746,6 +751,7 @@ static sI32 CopyLine_16_16(const pRaster_type psr, const sI16 sPosX, pRaster_typ
 
 static sI32 CopyLine_16_16_Flip(const pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 count, uI16 const *const ct, const uI16 tr)
 {
+  (void)(ct);
   uI08 const *ps = psr.p08 + (sPosX * 2);
   uI08 *pd = pdr.p08 + (dPosX * 2);
 
@@ -792,6 +798,7 @@ Return value:   none
 //lint -e{715} suppress ct not used
 static sI32 CopyLine_24_16(pRaster_type psr, const sI16 sPosX, pRaster_type pdr, const sI16 dPosX, sI16 count, uI16 const *const ct, const uI16 tr)
 {
+  (void)(ct);
   PIXEL_16bpp_type *pd = pdr.p16 + dPosX;
 
   uI16 pixel16;

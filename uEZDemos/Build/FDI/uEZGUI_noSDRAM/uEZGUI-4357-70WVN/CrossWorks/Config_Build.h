@@ -17,9 +17,9 @@
 #define LPC43XX_ENABLE_M0_CORES             0 // 1 to start M0 core. Should program M0 app first.
 
 #ifdef NDEBUG
-#define UEZ_REGISTER              	        0
+#define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER              	        0  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        0 // Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #define UEZ_ENABLE_LOOPBACK_TEST            1 // set to 1 to allow loopback test to run
@@ -39,12 +39,12 @@
 #define USB_PORT_B_HOST_DETECT_ENABLED      0 // Too difficult to fit USB SW in 40KB heap
 
 #define UEZ_ENABLE_USB_DEVICE_STACK         0 // No demo that is usuable in non-GUI build
-#define COMPILE_OPTION_USB_SDCARD_DISK      0//UEZ_ENABLE_USB_DEVICE_STACK
-#define UEZ_ENABLE_VIRTUAL_COM_PORT         UEZ_ENABLE_USB_DEVICE_STACK
+#define COMPILE_OPTION_USB_SDCARD_DISK      0//UEZ_ENABLE_USB_DEVICE_STACK // not working yet
+#define UEZ_ENABLE_VIRTUAL_COM_PORT         UEZ_ENABLE_USB_DEVICE_STACK // 
 
 // Choose one when TCP/IP stack is enabled
-#define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK
-#define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
+#define UEZ_HTTP_SERVER                     0
+#define UEZ_ENABLE_WIRED_NETWORK            0
 #define UEZ_BASIC_WEB_SERVER                0
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
@@ -56,3 +56,5 @@
 #define APP_MENU_ALLOW_TEST_MODE            1
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-4357-70WVN"
+
+#define FREERTOS_HEAP_SELECTION 4

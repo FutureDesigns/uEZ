@@ -50,6 +50,7 @@ bool Pipe_ConfigurePipe(const uint8_t corenum,
 						const uint16_t Size,
 						const uint8_t Banks)
 {
+        (void)(Banks);
 	if ( HCD_STATUS_OK == HcdOpenPipe(corenum,				/* HostID */
 									  (( Type == EP_TYPE_CONTROL) &&
 									   ( USB_HostState[corenum] <
@@ -96,7 +97,8 @@ void Pipe_ClearPipes(void)
 
 bool Pipe_IsEndpointBound(const uint8_t EndpointAddress)
 {
-	return false;
+    (void)(EndpointAddress);
+    return false;
 }
 
 uint8_t Pipe_WaitUntilReady(const uint8_t corenum)

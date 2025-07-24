@@ -144,6 +144,7 @@ static T_uezError TS_FourWireTouchResist_WaitForTouch(
  *---------------------------------------------------------------------------*/
 static void ISettleIO(T_TS_FourWireTouchResist_Workspace *p)
 {
+    PARAM_NOT_USED(p);
     UEZTaskDelay(1);
 }
 
@@ -242,6 +243,8 @@ void TS_FourWireTouchResistCallback(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
+    PARAM_NOT_USED(aType);
+    PARAM_NOT_USED(aPortPins);
     T_TS_FourWireTouchResist_Workspace *p =
             (T_TS_FourWireTouchResist_Workspace *) aW;
 

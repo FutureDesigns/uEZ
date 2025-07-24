@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -26,6 +26,7 @@
 #include "core_pkcs11_config.h" // Use this one from the newer default config, and to avoid using 2 different versions.
 #include "include/core_pkcs11_config_defaults.h"
 #include "include/core_pkcs11.h"
+#include "dependency/3rdparty/pkcs11/pkcs11t.h" //#include "pkcs11t.h"
 
 /* C runtime includes. */
 #include <stdio.h>
@@ -38,35 +39,6 @@
  *
  * This file contains wrapper functions for common PKCS #11 operations.
  */
-
-/*-----------------------------------------------------------*/
-
-/** @brief Open a PKCS #11 Session.
- *
- *  \param[out] pxSession   Pointer to the session handle to be created.
- *  \param[out] xSlotId     Slot ID to be used for the session.
- *
- *  \return CKR_OK or PKCS #11 error code. (PKCS #11 error codes are positive).
- */
-static CK_RV prvOpenSession( CK_SESSION_HANDLE * pxSession,
-                             CK_SLOT_ID xSlotId )
-{
-    CK_RV xResult;
-    CK_FUNCTION_LIST_PTR pxFunctionList;
-
-    xResult = C_GetFunctionList( &pxFunctionList );
-
-    if( ( xResult == CKR_OK ) && ( pxFunctionList != NULL ) && ( pxFunctionList->C_OpenSession != NULL ) )
-    {
-        xResult = pxFunctionList->C_OpenSession( xSlotId,
-                                                 CKF_SERIAL_SESSION | CKF_RW_SESSION,
-                                                 NULL, /* Application defined pointer. */
-                                                 NULL, /* Callback function. */
-                                                 pxSession );
-    }
-
-    return xResult;
-}
 
 /*-----------------------------------------------------------*/
 
@@ -173,6 +145,10 @@ CK_RV xInitializePKCS11( void )
     {
         xResult = pxFunctionList->C_Initialize( &xInitArgs );
     }
+    else
+    {
+        xResult = CKR_DEVICE_ERROR;
+    }
 
     return xResult;
 }
@@ -189,26 +165,27 @@ CK_RV xInitializePkcs11Token( void )
     CK_FLAGS xTokenFlags = 0;
     CK_TOKEN_INFO_PTR pxTokenInfo = NULL;
 
-    xResult = C_GetFunctionList( &pxFunctionList );
-
-    if( ( pxFunctionList == NULL ) || ( pxFunctionList->C_GetTokenInfo == NULL ) || ( pxFunctionList->C_InitToken == NULL ) )
-    {
-        xResult = CKR_FUNCTION_FAILED;
-    }
-
-    if( xResult == CKR_OK )
-    {
-        xResult = xInitializePKCS11();
-    }
+    xResult = xInitializePKCS11();
 
     if( ( xResult == CKR_OK ) || ( xResult == CKR_CRYPTOKI_ALREADY_INITIALIZED ) )
     {
         xResult = xGetSlotList( &pxSlotId, &xSlotCount );
     }
 
-    if( ( xResult == CKR_OK ) &&
-        ( NULL != pxFunctionList->C_GetTokenInfo ) &&
-        ( NULL != pxFunctionList->C_InitToken ) )
+    if( xResult == CKR_OK )
+    {
+        xResult = C_GetFunctionList( &pxFunctionList );
+
+        if( xResult == CKR_OK )
+        {
+            if( ( pxFunctionList == NULL ) || ( pxFunctionList->C_GetTokenInfo == NULL ) || ( pxFunctionList->C_InitToken == NULL ) )
+            {
+                xResult = CKR_FUNCTION_FAILED;
+            }
+        }
+    }
+
+    if( xResult == CKR_OK )
     {
         /* Check if the token requires further initialization. */
         /* MISRA Ref 11.5.1 [Void pointer assignment] */
@@ -266,11 +243,19 @@ CK_RV xInitializePkcs11Session( CK_SESSION_HANDLE * pxSession )
     CK_FUNCTION_LIST_PTR pxFunctionList = NULL;
     CK_ULONG xSlotCount = 0;
 
-    xResult = C_GetFunctionList( &pxFunctionList );
-
     if( pxSession == NULL )
     {
         xResult = CKR_ARGUMENTS_BAD;
+    }
+
+    if( xResult == CKR_OK )
+    {
+        xResult = C_GetFunctionList( &pxFunctionList );
+
+        if( ( xResult == CKR_OK ) && ( pxFunctionList == NULL ) )
+        {
+            xResult = CKR_FUNCTION_FAILED;
+        }
     }
 
     /* Initialize the module. */
@@ -291,19 +276,30 @@ CK_RV xInitializePkcs11Session( CK_SESSION_HANDLE * pxSession )
     }
 
     /* Open a PKCS #11 session. */
-    if( ( xResult == CKR_OK ) && ( pxSlotId != NULL ) && ( xSlotCount >= 1UL ) )
+    if( ( xResult == CKR_OK ) && ( xSlotCount >= 1UL ) )
     {
         /* We will take the first slot available.
          * If your application has multiple slots, insert logic
          * for selecting an appropriate slot here.
          */
-        xResult = prvOpenSession( pxSession, pxSlotId[ 0 ] );
+        if( pxFunctionList->C_OpenSession != NULL )
+        {
+            xResult = pxFunctionList->C_OpenSession( pxSlotId[ 0 ],
+                                                     CKF_SERIAL_SESSION | CKF_RW_SESSION,
+                                                     NULL, /* Application defined pointer. */
+                                                     NULL, /* Callback function. */
+                                                     pxSession );
+        }
+        else
+        {
+            xResult = CKR_FUNCTION_FAILED;
+        }
 
         /* Free the memory allocated by xGetSlotList. */
         pkcs11configPKCS11_FREE( pxSlotId );
     }
 
-    if( ( xResult == CKR_OK ) && ( pxFunctionList != NULL ) && ( pxFunctionList->C_Login != NULL ) )
+    if( ( xResult == CKR_OK ) && ( pxFunctionList->C_Login != NULL ) )
     {
         xResult = pxFunctionList->C_Login( *pxSession,
                                            CKU_USER,
@@ -394,7 +390,7 @@ CK_RV vAppendSHA256AlgorithmIdentifierSequence( const uint8_t * puc32ByteHashedM
     if( xResult == CKR_OK )
     {
         ( void ) memcpy( puc51ByteHashOidBuffer, pucOidSequence, sizeof( pucOidSequence ) );
-        ( void ) memcpy( &puc51ByteHashOidBuffer[ sizeof( pucOidSequence ) ], puc32ByteHashedMessage, 32 );
+        ( void ) memcpy( &( puc51ByteHashOidBuffer[ sizeof( pucOidSequence ) ] ), puc32ByteHashedMessage, 32 );
     }
 
     return xResult;

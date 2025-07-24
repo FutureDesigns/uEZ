@@ -47,6 +47,7 @@ static T_halWorkspace *G_emacWS;
 
 portBASE_TYPE Init_EMAC(unsigned short PHYType)
 {
+  PARAM_NOT_USED(PHYType);
     T_uezError error;
     extern T_uezError SetupEMAC(void);
 
@@ -74,6 +75,7 @@ unsigned short StartReadFrame(void)
 
 portLONG lEMACSend( portCHAR *pcFrom, unsigned portLONG ulLength, portLONG lEndOfFrame )
 {
+    PARAM_NOT_USED(lEndOfFrame);
     G_emac->RequestSend(G_emacWS);
     /* Copy the header into the Tx buffer. */
     G_emac->CopyToFrame(G_emacWS, pcFrom, ulLength);
@@ -179,6 +181,7 @@ void EndReadFrame(void)
 #ifndef sio_open
 sio_fd_t sio_open(u8_t a)
 {
+    PARAM_NOT_USED(a);
     return 0;
 }
 #endif
@@ -186,13 +189,16 @@ sio_fd_t sio_open(u8_t a)
 #ifndef sio_send
 void sio_send(u8_t a, sio_fd_t b)
 {
+  PARAM_NOT_USED(a);
+  PARAM_NOT_USED(b);
 }
 #endif
 
 #ifndef sio_recv
 u8_t sio_recv(sio_fd_t c)
 {
-    return 0;
+  PARAM_NOT_USED(c);
+  return 0;
 }
 #endif
 

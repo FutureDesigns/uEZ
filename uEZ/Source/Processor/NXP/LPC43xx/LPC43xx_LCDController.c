@@ -480,6 +480,8 @@ T_uezError LPC43xx_LCDController_SetBacklightLevel(
         void *aWorkspace,
         TUInt32 aLevel)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aLevel);
     // Not handled here in this LCD Controller
     return UEZ_ERROR_NOT_SUPPORTED;
 }
@@ -502,6 +504,7 @@ T_uezError LPC43xx_LCDController_SetBaseAddr(
         TUInt32 aBaseAddress,
         TBool aSync)
 {
+    PARAM_NOT_USED(aSync);
     T_workspace *p = (T_workspace *)aWorkspace;
 
     p->iBaseAddress = aBaseAddress;

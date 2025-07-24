@@ -350,6 +350,7 @@ void UEZPlatform_Watchdog_Require(void);
 void UEZPlatform_WiredNetwork0_Require(void);
 void UEZPlatform_WirelessNetwork0_Require(void);
 void UEZPlatform_WirelessNetwork1_Require(void);
+
 void UEZPlatform_Standard_Require(void);
 void UEZPlatform_Full_Require(void);
 void UEZPlatform_Minimal_Require(void);

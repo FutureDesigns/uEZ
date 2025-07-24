@@ -1,18 +1,6 @@
 /*
  *  Copyright The Mbed TLS Contributors
- *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  */
 
 #include <errno.h>
@@ -204,7 +192,7 @@ typedef enum {
     TYPE_STATUS,
 } signed_value_type;
 
-int process_signed(signed_value_type type, long min, long max, char **argp)
+static int process_signed(signed_value_type type, long min, long max, char **argp)
 {
     for (; *argp != NULL; argp++) {
         char buffer[200];
@@ -243,7 +231,7 @@ typedef enum {
     TYPE_KEY_USAGE,
 } unsigned_value_type;
 
-int process_unsigned(unsigned_value_type type, unsigned long max, char **argp)
+static int process_unsigned(unsigned_value_type type, unsigned long max, char **argp)
 {
     for (; *argp != NULL; argp++) {
         char buffer[200];

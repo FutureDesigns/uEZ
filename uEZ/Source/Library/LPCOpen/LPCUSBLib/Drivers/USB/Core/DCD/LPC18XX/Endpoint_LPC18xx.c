@@ -164,6 +164,7 @@ void HAL_Reset(uint8_t corenum)
 bool Endpoint_ConfigureEndpoint(uint8_t corenum, const uint8_t Number, const uint8_t Type,
 								const uint8_t Direction, const uint16_t Size, const uint8_t Banks)
 {
+  (void)(Banks);
 	uint8_t * ISO_Address;
 	volatile DeviceQueueHead * pdQueueHead;
 	uint32_t PhyEP = 2 * Number + (Direction == ENDPOINT_DIR_OUT ? 0 : 1);
@@ -554,6 +555,8 @@ void DcdIrqHandler(uint8_t corenum)
 
 uint32_t Dummy_EPGetISOAddress(uint32_t EPNum, uint32_t *last_packet_size)
 {
+        PARAM_NOT_USED(EPNum);
+        PARAM_NOT_USED(last_packet_size);
 	return (uint32_t) iso_buffer;
 }
 
@@ -572,6 +575,8 @@ void Dummy_EVENT_USB_Device_TransferComplete(int32_t logicalEP, int32_t xfer_in)
 	 * If xfer_in zero then the endpoint it OUT
 	 * else ep is IN.
 	 **/
+  PARAM_NOT_USED(logicalEP);
+  PARAM_NOT_USED(xfer_in);
 }
 // #endif
 

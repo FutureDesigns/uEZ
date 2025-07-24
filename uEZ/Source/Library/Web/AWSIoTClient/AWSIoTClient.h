@@ -62,7 +62,7 @@
  * higher than other MQTT application tasks, so that the agent can drain the queue
  * as work is being produced.
  */
-#define appmainMQTT_AGENT_TASK_STACK_SIZE (2048*9)// match what Renesas RA demo uses until proven we can use less.
+#define appmainMQTT_AGENT_TASK_STACK_SIZE (2048*10)// match what Renesas RA demo uses until proven we can use less.
 #define appmainMQTT_AGENT_TASK_PRIORITY   (tskIDLE_PRIORITY+UEZ_PRIORITY_NORMAL)
 
 /*-------------------------------------------------------------------------*
@@ -70,8 +70,14 @@
  *-------------------------------------------------------------------------*/
 /* The function that implements the AWS IoT Client Task. */
 T_uezError AWSIoTClientStart(T_uezDevice aNetwork);
+BaseType_t AWSIoTClientMqttRestart(T_uezDevice aNetwork);
+TBool AWSIoTClientMonitorIsMQTTRunning(void);
+
+//
 T_uezError AWSIoTClientStop(void);
 T_uezError AWSIoTClientRestart(void);
+T_uezError AWSIoTClientPauseShadowTasks(void);
+T_uezError AWSIoTClientResumeShadowTasks(void);
 
 #endif // AWS_IOT_CLIENT_H_
 /*-------------------------------------------------------------------------*

@@ -139,6 +139,7 @@ void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
   *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
 
+#if (configUSE_TIMERS == 1)
 void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
                                          StackType_t ** ppxTimerTaskStackBuffer,
                                          uint32_t * pulTimerTaskStackSize)
@@ -163,6 +164,8 @@ void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
 }
 #endif
 
+#endif
+
 /*-----------------------------------------------------------*/
 #if (configCHECK_FOR_STACK_OVERFLOW > 0)
 void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
@@ -174,10 +177,10 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 	//softReset();
         
         // from UEZHalt();
-        RTOS_ENTER_CRITICAL();
-        while (1) {
-            UEZBSP_FatalError(9);
-        }
+       // RTOS_ENTER_CRITICAL();
+       // while (1) {
+      //      UEZBSP_FatalError(9);
+       // }
 
 	/* Run time stack overflow checking is performed if
 	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook	function is
@@ -250,13 +253,13 @@ volatile unsigned long ul = 0;
 	taskEXIT_CRITICAL();
 }
 
-void vPreSleepProcessing( unsigned long ulExpectedIdleTime )
+void vPreSleepProcessing( unsigned long xModifiableIdleTime )
 {
 	/* Called by the kernel before it places the MCU into a sleep mode because
 	configPRE_SLEEP_PROCESSING() is #defined to vPreSleepProcessing(). */
 
 	/* Avoid compiler warnings about the unused parameter. */
-	( void ) ulExpectedIdleTime;
+	( void ) xModifiableIdleTime;
 
 	/* Is the MCU about to enter deep sleep mode or software standby mode? */
 	/*if(  == 0 ) {

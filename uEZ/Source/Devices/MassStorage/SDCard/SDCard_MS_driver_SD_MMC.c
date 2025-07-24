@@ -154,6 +154,7 @@ typedef struct {
 /*---------------------------------------------------------------------------*
  * Prototypes:
  *---------------------------------------------------------------------------*/
+
 /* Get card's current state (idle, transfer, program, etc.) */
 static TInt32 ISDMMC_GetState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 {
@@ -311,8 +312,16 @@ static void IProcessCSD(T_MassStorage_SDCard_SD_MMC_Workspace *p)
         /* See section 5.3.3 CSD Register (CSD Version 2.0) of SD2.0 spec  an explanation for the calculation of these values */
         c_size = IGetBits(48, 69, p->iCSD) + 1;
         p->iBlockNum = (c_size << 10);  /* 512 byte blocks assumed */
-    }
-    else {
+
+        // TODO read extended CSD on SD cards and do something with it as needed.
+
+        // send EXT_CSD command 48
+        /*(*p->iSD_MMC)->PrepreExtCSDTransfer(p->iSD_MMC, (TUInt8 *)&p->iExtCSD, MMC_SECTOR_SIZE);
+        status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_READ_SINGLE_EXT, 0, 0 | MCI_INT_DATA_OVER, response);
+        if ((status & SD_INT_ERROR) == 0) {
+        }*/
+
+    } else { // MMC card not SD card. Note that this whole path is untested so far.
         /* See section 5.3 of the 4.1 revision of the MMC specs for  an explanation for the calculation of these values */
         c_size = IGetBits(62, 73, p->iCSD);
         c_size_mult = IGetBits(47, 49, p->iCSD);
@@ -335,18 +344,16 @@ static void IProcessCSD(T_MassStorage_SDCard_SD_MMC_Workspace *p)
 
             /* send EXT_CSD command */
             (*p->iSD_MMC)->PrepreExtCSDTransfer(p->iSD_MMC, (TUInt8 *)&p->iExtCSD, MMC_SECTOR_SIZE);
-            status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SEND_EXT_CSD, 0, 0 | MCI_INT_DATA_OVER, response);
+            status = (*p->iSD_MMC)->ExecuteCommand(p->iSD_MMC, CMD_SEND_EXT_CSD, 0, 0 | MCI_INT_DATA_OVER, response); // wrong command being sent or it doesn't match the SD card command?
             if ((status & SD_INT_ERROR) == 0) {
                 /* check EXT_CSD_VER is greater than 1.1 */
                 if ((p->iExtCSD[48] & 0xFF) > 1) {
                     /* bytes 212:215 represent sec count */
                     p->iBlockNum = p->iExtCSD[53];
-
                 }
-
             }
         }
-    }
+    } // end MMC card
 }
 
 /*---------------------------------------------------------------------------*
@@ -394,6 +401,26 @@ static int32_t ISetTransState(T_MassStorage_SDCard_SD_MMC_Workspace *p)
     return 0;
 }
 
+/*
+Company 	MID 	 OEMID 	Brands
+Panasonic 	0x000001 PA 	Panasonic
+Toshiba 	0x000002 TM 	Toshiba
+SanDisk 	0x000003 SD/PT 	SanDisk
+Samsung 	0x00001b SM 	ProGrade, Samsung
+AData           0x00001d AD 	AData
+Phison          0x000027 PH 	AgfaPhoto, Delkin, Integral, Lexar, Patriot, PNY, Polaroid, Sony, Verbatim
+Lexar           0x000028 BE 	Lexar, PNY, ProGrade
+Silicon Power 	0x000031 SP 	Silicon Power
+Kingston 	0x000041 42 	Kingston
+Kingston 	0x000045 SD 	ATeam
+Transcend 	0x000074 JE/J`  Transcend
+Patriot 	0x000076 	Patriot
+Sony            0x000082 JT 	Gobe, Sony
+                0x00009c SO 	Angelbird (V60), Hoodman
+                0x00009c BE 	Angelbird (V90)
+Toshiba 	0x00009F TI 	Toshiba industial? (Kingston labled)
+*/
+
 /*---------------------------------------------------------------------------*
  * Routine:  ISetCardParams
  *---------------------------------------------------------------------------*
@@ -428,7 +455,7 @@ static int32_t ISetCardParams(T_MassStorage_SDCard_SD_MMC_Workspace *p,
 #endif
 
     if ((p->iCardType & CARD_TYPE_SD) == 0) { // not SD card, CMD6 not supported?
-    } else { // SD card
+    } else { // SD card supports CMD6
         // Only SD V1.10 and above supports CMD6 (2004). Maybe SD V1.10 could be supported, but we won't test and would need to hunt down old full size sd card to test it.
         // For eMMC modules need to check if type 1 MMC
         // Set mode switch to 50MHz (high-speed mode) here, can change clock after 8 clock cycles after end of status data. (Switch Function Command)
@@ -455,11 +482,53 @@ static int32_t ISetCardParams(T_MassStorage_SDCard_SD_MMC_Workspace *p,
         }
     }
 
-    if(ahighSpeedModeAllowed == ETrue) {
-      // Per SD spec SD V2.00 and above (all microSD cards, all SDHC+ cards) will suppor the 50Mhz high speed mode. In this driver normally it is slightly less than 51MHz. (20ns clock time)
-      status = (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK); // Now full speed is set//UEZPlatform_MCI_DefaultFreq());
-      if (status != 0) {
-          return -1;
+    // check the CID and CSD info somewhere and uses it to set allowed modes.
+    TUInt16 MANF_ID =     IGetBits(120, 127, (TUInt32 *) p->iCID);
+    TUInt16 OEM_ID =      IGetBits(104, 119, (TUInt32 *) p->iCID); // In debugger you can see this as iCID[14] iCID[13] using character view for ASCII.
+    //uint64_t PROD_NAME =   IGetBits(64, 103, (TUInt32 *) p->iCID);
+    //TUInt16 PROD_REV =    IGetBits(56, 63, (TUInt32 *) p->iCID);
+    TUInt16 PROD_SN =     IGetBits(24, 55, (TUInt32 *) p->iCID);
+
+    // These aren't useful in CSD 2.0, they are fixed numbers:
+    //TUInt16 TRAN_SPEED =  IGetBits(96, 103, p->iCSD);
+    //TUInt16 CCC =         IGetBits(84, 95, p->iCSD);
+    //TUInt16 READ_BL_LEN = IGetBits(80, 83, p->iCSD);
+
+    (void)OEM_ID;
+    (void)PROD_SN; // TODO add application example or reading the card SN in the application, but avoid increasing code size for API.
+    
+    // Check unsupported cards
+    if(MANF_ID == 0x03) { // Sandisk cards are compatible and across temp range
+      //G_MMC_HighSpeedModeAllowed = ETrue; 
+    } else
+    if(MANF_ID == 0x27) { // Phison
+      //G_MMC_HighSpeedModeAllowed = ETrue; 
+    } else
+    if(MANF_ID == 0x1B) { // Samsung cards are compatible and across temp range
+      //G_MMC_HighSpeedModeAllowed = ETrue; 
+    } else
+    if(MANF_ID == 0x41) { // Something in the init state diagram is not correct for Kingston cards and they will get into a state where they stop responding.
+      G_MMC_HighSpeedModeAllowed = EFalse; 
+    } else
+    if(MANF_ID == 0x45) { // Ateam
+      G_MMC_HighSpeedModeAllowed = EFalse; // not compatible?
+    } else
+    if(MANF_ID == 0x02) { // Some Kingston cards show up as Toshiba, with "TM" OEM identifier
+      G_MMC_HighSpeedModeAllowed = EFalse; 
+    } else
+    if(MANF_ID == 0x9F) { // Some Kingston cards show up as Toshiba, with "TI" OEM identifier for Toshiba Industrial
+      G_MMC_HighSpeedModeAllowed = EFalse; 
+    } else { // can force other untested cards into non-SDHC interface mode
+      //G_MMC_HighSpeedModeAllowed = EFalse;
+    }
+
+    if(G_MMC_HighSpeedModeAllowed != EFalse) {
+      if(ahighSpeedModeAllowed == ETrue) {
+        // Per SD spec SD V2.00 and above (all microSD cards, all SDHC+ cards) will suppor the 50Mhz high speed mode. In this driver normally it is slightly less than 51MHz. (20ns clock time)
+        status = (*p->iSD_MMC)->SetClockRate(p->iSD_MMC, MMC_MAX_READ_CLOCK); // Now full speed is set//UEZPlatform_MCI_DefaultFreq());
+        if (status != 0) {
+            return -1;
+        }
       }
     }
 
@@ -476,6 +545,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
     uint32_t command = 0;
     uint32_t response[4];
 
+    PARAM_NOT_USED(aAddress);
     // Deference the workspace
     T_MassStorage_SDCard_SD_MMC_Workspace *p = (T_MassStorage_SDCard_SD_MMC_Workspace *)aWorkspace;
 
@@ -603,7 +673,7 @@ static T_uezError SDCard_MS_SD_MMC_Init(void *aWorkspace, TUInt32 aAddress)
                 // Set High Capacity bit
                 ocr |= OCR_HC_CCS;
                 // fall thru to next switch statement
-
+                // fall through
             case 4: /* Assign OCR */
                 tries = SET_OP_RETRIES;
                 ocr &= OCR_VOLTAGE_RANGE_MSK | OCR_HC_CCS; /* Mask for the bits we care about */
@@ -1380,6 +1450,8 @@ static T_uezError SDCard_MS_SD_MMC_GetSizeInfo(
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SD_MMC_SetPower(void *aWorkspace, TBool aOn)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aOn);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -1397,6 +1469,8 @@ static T_uezError SDCard_MS_SD_MMC_SetPower(void *aWorkspace, TBool aOn)
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SD_MMC_SetLock(void *aWorkspace, TBool aLock)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aLock);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -1442,6 +1516,9 @@ static T_uezError SDCard_MS_SD_MMC_MiscControl(
     TUInt32 aControlCode,
     void *aBuffer)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aControlCode);
+    PARAM_NOT_USED(aBuffer);
     return UEZ_ERROR_ILLEGAL_OPERATION;
 }
 
@@ -1458,6 +1535,7 @@ static T_uezError SDCard_MS_SD_MMC_MiscControl(
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SD_MMC_Eject(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 

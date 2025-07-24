@@ -543,6 +543,7 @@ T_uezError MassStorage_USB_Configure(
 static T_uezError MassStorage_USB_Init(void *aWorkspace, TUInt32 aAddress)
 {
     T_MSUSB_Workspace *p = (T_MSUSB_Workspace *)aWorkspace;
+    PARAM_NOT_USED(aAddress);
 
     // Cannot initialize an unconnected device
     if (!p->iIsConnected)
@@ -742,6 +743,7 @@ static T_uezError MassStorage_USB_Write(
 
 static T_uezError MassStorage_USB_Sync(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
 //    T_MSUSB_Workspace *p = (T_MSUSB_Workspace *)aWorkspace;
 
     // Just always report done, we are not caching anywhere
@@ -810,11 +812,15 @@ static T_uezError MassStorage_USB_GetSizeInfo(
 
 static T_uezError MassStorage_USB_SetPower(void *aWorkspace, TBool aOn)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aOn);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
 static T_uezError MassStorage_USB_SetLock(void *aWorkspace, TBool aLock)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aLock);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -831,6 +837,7 @@ static T_uezError MassStorage_USB_SetSoftwareWriteProtect(
 
 static T_uezError MassStorage_USB_Eject(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -839,6 +846,9 @@ static T_uezError MassStorage_USB_MiscControl(
             TUInt32 aControlCode,
             void *aBuffer)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aControlCode);
+    PARAM_NOT_USED(aBuffer);
 //    T_MSUSB_Workspace *p = (T_MSUSB_Workspace *)aWorkspace;
     return UEZ_ERROR_ILLEGAL_OPERATION;
 }

@@ -1,7 +1,7 @@
 @ECHO off
 REM Change to current path of batch script
 cd /d %~dp0
-"C:\Program Files (x86)\SEGGER\JLink\JLink.exe" -CommanderScript "LPC1788.jlink" > JLink.log.txt
+"C:\Program Files (x86)\SEGGER\JLink\JLink.exe" -CommanderScript "LPC1788.jlink" > JLink.log
 REM JLink.exe only has two values for ERRORLEVEL: 0 and 1
 REM see https://wiki.segger.com/J-Link_Commander#JLink.exe_return_value
 
@@ -15,7 +15,7 @@ ECHO Check that the Segger J-Link is connected to the USB Port
 ECHO     and the ready light is solid Green
 ECHO Check that the Segger J-Link is connected to the unit
 ECHO
-more JLink.log.txt
+more JLink.log
 pause
 exit 1
 :END

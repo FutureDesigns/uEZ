@@ -72,6 +72,8 @@ extern "C" {
     TInt32 iPenYScaleTop;
     TInt32 iPenYScaleBottom;
 
+    T_uezSemaphore iSem;
+
     TInt32 iLastX;
     TInt32 iLastY;
     T_uezTSFlags iLastTouch;

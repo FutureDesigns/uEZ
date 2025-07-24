@@ -114,6 +114,7 @@ static T_uezError IGPIO_PCF8574T_Read(T_GPIO_PCF8574T_Workspace *p, TUInt8 *aV)
  *---------------------------------------------------------------------------*/
 T_uezError GPIO_PCF8574T_Configure(void *aWorkspace, TUInt32 aUsablePins)
 {
+    PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aUsablePins);
 
     return UEZ_ERROR_NOT_SUPPORTED;
@@ -381,7 +382,10 @@ T_uezError GPIO_PCF8574T_ConfigureInterruptCallback_NotSupported(
         T_gpioInterruptHandler aInterruptCallback,
         void *aInterruptCallbackWorkspace)
 {
-    PARAM_NOT_USED(aWorkspace);PARAM_NOT_USED(aInterruptCallback);PARAM_NOT_USED(aInterruptCallbackWorkspace);
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aInterruptCallback);
+    PARAM_NOT_USED(aInterruptCallbackWorkspace);
+    PARAM_NOT_USED(aPortPins);
 
     // No IRQs on these
     return UEZ_ERROR_NOT_SUPPORTED;

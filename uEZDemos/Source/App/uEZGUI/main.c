@@ -65,7 +65,7 @@ static TBool G_OnBoardUSBIsHost = EFalse;
 #endif
 
 #ifndef FREERTOS_HEAP_SELECTION
-#define FREERTOS_HEAP_SELECTION  3
+#define FREERTOS_HEAP_SELECTION  4
 #endif
 
 #ifndef __HEAP_SIZE__
@@ -79,7 +79,7 @@ static TBool G_OnBoardUSBIsHost = EFalse;
 #if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
 // In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
 // Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
-UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]); // actual size checked by RTOS is UEZPlatform_GetApplicationHeapSize()
 #endif
 
 #if ((FREERTOS_HEAP_SELECTION==5))

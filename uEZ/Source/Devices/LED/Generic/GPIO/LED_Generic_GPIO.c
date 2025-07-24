@@ -184,6 +184,9 @@ T_uezError LED_Generic_GPIO_Blink(
     TUInt32 aBlinkReg,
     TUInt32 aLEDs)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aBlinkReg);
+    PARAM_NOT_USED(aLEDs);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -206,6 +209,10 @@ T_uezError LED_Generic_GPIO_SetBlinkRate(
     TUInt32 aPeriod,
     TUInt8 aDutyCycle)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aBlinkReg);
+    PARAM_NOT_USED(aPeriod);
+    PARAM_NOT_USED(aDutyCycle);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 

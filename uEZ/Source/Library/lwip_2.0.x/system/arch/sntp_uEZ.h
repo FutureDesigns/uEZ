@@ -34,8 +34,25 @@
 extern "C" {
 #endif
 
+// Include both of these before the below define checks and include that before time.h
 #include <stdint.h>
-#include <time.h>
+#include <stdlib.h>
+//#include <stdbool.h> /* for int types */
+
+#ifndef _CLOCK_T_ // Rowley Runtime
+  //#undef __CLOCK_T_DEFINED // not needed or used in Rowley yet
+#else // Standard GCC runtime
+  #ifndef __machine_clock_t_defined
+    #define __machine_clock_t_defined
+    typedef       _CLOCK_T_       clock_t;
+    #define __clock_t_defined
+    #define _CLOCK_T_DECLARED
+  #endif
+#endif
+
+#include <time.h> // TODO can we include time.h yet on IAR and does it work?
+
+#include <sys/time.h> // uEZ has own timeval definition
 
 // Platform specific function to set the RTC.
 void sntp_set_system_time(uint32_t sec);

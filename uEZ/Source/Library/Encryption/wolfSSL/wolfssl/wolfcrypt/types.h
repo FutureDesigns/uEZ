@@ -1406,29 +1406,34 @@ typedef struct w64wrapper {
     #endif
 
     #if defined(__GNUC__) && __GNUC__ > 5
-        #define PRAGMA_GCC_DIAG_PUSH _Pragma("GCC diagnostic push")
-        #define PRAGMA_GCC(str) _Pragma(str)
-        #define PRAGMA_GCC_DIAG_POP _Pragma("GCC diagnostic pop")
-        #define PRAGMA_DIAG_PUSH PRAGMA_GCC_DIAG_PUSH
-        #define PRAGMA(str) PRAGMA_GCC(str)
-        #define PRAGMA_DIAG_POP PRAGMA_GCC_DIAG_POP
-    #else
-        #define PRAGMA_GCC_DIAG_PUSH
-        #define PRAGMA_GCC(str)
-        #define PRAGMA_GCC_DIAG_POP
-    #endif
-
-    #ifdef __clang__
+      #ifdef __clang__
         #define PRAGMA_CLANG_DIAG_PUSH _Pragma("clang diagnostic push")
         #define PRAGMA_CLANG(str) _Pragma(str)
         #define PRAGMA_CLANG_DIAG_POP _Pragma("clang diagnostic pop")
         #define PRAGMA_DIAG_PUSH PRAGMA_CLANG_DIAG_PUSH
         #define PRAGMA(str) PRAGMA_CLANG(str)
         #define PRAGMA_DIAG_POP PRAGMA_CLANG_DIAG_POP
-    #else
+
+        // for gcc compatibility
+        #define PRAGMA_GCC_DIAG_PUSH PRAGMA_CLANG_DIAG_PUSH
+        #define PRAGMA_GCC_DIAG_POP PRAGMA_CLANG_DIAG_POP
+        #define PRAGMA_GCC(str) //_Pragma(str)
+      #else // gcc only
         #define PRAGMA_CLANG_DIAG_PUSH
         #define PRAGMA_CLANG(str)
         #define PRAGMA_CLANG_DIAG_POP
+
+        #define PRAGMA_GCC_DIAG_PUSH _Pragma("GCC diagnostic push")
+        #define PRAGMA_GCC(str) _Pragma(str)
+        #define PRAGMA_GCC_DIAG_POP _Pragma("GCC diagnostic pop")
+        #define PRAGMA_DIAG_PUSH PRAGMA_GCC_DIAG_PUSH
+        #define PRAGMA(str) PRAGMA_GCC(str)
+        #define PRAGMA_DIAG_POP PRAGMA_GCC_DIAG_POP
+      #endif      
+    #else // not gcc
+        #define PRAGMA_GCC_DIAG_PUSH
+        #define PRAGMA_GCC(str)
+        #define PRAGMA_GCC_DIAG_POP
     #endif
 
     #ifndef PRAGMA_DIAG_PUSH

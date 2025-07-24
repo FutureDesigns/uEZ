@@ -24,12 +24,29 @@
 #include <uEZTypes.h>
 #include <uEZProcessor.h>
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_RTC.h>
+#include <uEZTimeDate.h>
 #include "LPC17xx_40xx_UtilityFuncs.h"
 
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
 #define RTC_VALID_MARKER        0xAA55DCCD
+
+#define RTC_ENABLE_CALIBRATION  1 // If passed in aCalibrationValue is 0 it won't have any affect.
+
+#if (RTC_ENABLE_CALIBRATION == 1)
+#define RTC_CCR_BITMASK         (0x00000003) // CCR register mask
+#else
+#define RTC_CCR_BITMASK         (0x00000013) // CCR register mask
+#endif
+
+#define RTC_CCR_CLKEN_Pos                     0                                                       /*!< RTC CCR: CLKEN Position                 */
+#define RTC_CCR_CLKEN_Msk                     (0x01UL << RTC_CCR_CLKEN_Pos)                           /*!< RTC CCR: CLKEN Mask                     */
+#define RTC_CCR_CTCRST_Pos                    1                                                       /*!< RTC CCR: CTCRST Position                */
+#define RTC_CCR_CTCRST_Msk                    (0x01UL << RTC_CCR_CTCRST_Pos)                          /*!< RTC CCR: CTCRST Mask                    */
+#define RTC_CCR_CCALEN_Pos                    4                                                       /*!< RTC CCR: CCALEN Position                */
+#define RTC_CCR_CCALEN_Msk                    (0x01UL << RTC_CCR_CCALEN_Pos)                          /*!< RTC CCR: CCALEN Mask                    */
+
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -148,7 +165,7 @@ T_uezError LPC17xx_40xx_RTC_Set(void *aWorkspace, const T_uezTimeDate *aTimeDate
  * Outputs:
  *      T_uezError                   -- Error code
  *---------------------------------------------------------------------------*/
-T_uezError LPC17xx_40xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
+T_uezError LPC17xx_40xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock, TUInt32 aCalibrationValue)
 {
     T_LPC17xx_40xx_RTC_Workspace *p = (T_LPC17xx_40xx_RTC_Workspace *)aWorkspace;
 
@@ -156,7 +173,49 @@ T_uezError LPC17xx_40xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock)
     p->iExternalClock = aIsExternalClock;
 
     // Go ahead and make clock run (regardless of the time)
-    LPC_RTC->CCR = (p->iExternalClock?0x10:0)|1;
+    //LPC_RTC->CCR = (p->iExternalClock?0x10:0)|1;
+    
+    // Disable RTC so registers can be changed.
+    LPC_RTC->CCR = (LPC_RTC->CCR & ~RTC_CCR_CLKEN_Msk) & RTC_CCR_BITMASK;
+
+#if (RTC_ENABLE_CALIBRATION == 1)
+  // RTC_CCR_CLKEN_Msk is set to 0 above.
+#else
+  // Disable Calibration
+  LPC_RTC->CCR |= RTC_CCR_CCALEN_Msk;
+#endif
+
+  // TODO how long does it take on these parts?
+  
+  // Reset RTC clock
+  LPC_RTC->CCR |= RTC_CCR_CTCRST_Msk;
+  while (!(LPC_RTC->CCR & RTC_CCR_CTCRST_Msk)) { // per manual should be able to task delay here as long as we don't allow register writes
+    UEZTaskDelay(1);
+  } 
+  // Finish resetting RTC clock
+  LPC_RTC->CCR = (LPC_RTC->CCR & ~RTC_CCR_CTCRST_Msk) & RTC_CCR_BITMASK; // CTCRST should already be 0?
+  while (LPC_RTC->CCR & RTC_CCR_CTCRST_Msk) { // check that it is zero?
+    UEZTaskDelay(1); 
+  }
+  // The reset is now finished.
+
+  // Clear alarm interrupts here.
+  // TODO
+  // Clear any other registers to default value here.
+  // TODO
+
+#if (RTC_ENABLE_CALIBRATION == 1)
+  LPC_RTC->CALIBRATION = aCalibrationValue; // forward direction to add 1 second every X seconds.
+#else
+  (void) (aCalibrationValue);
+  LPC_RTC->CALIBRATION = 0x00;
+#endif
+
+  // Enable RTC
+  LPC_RTC->CCR |= RTC_CCR_CLKEN_Msk; // Note that you should not repeatedly write this bit!
+  while (!(LPC_RTC->CCR & RTC_CCR_CLKEN_Msk)) { // wait for enable to continue
+    UEZTaskDelay(1); // 
+  }
 
     return UEZ_ERROR_NONE;
 }
@@ -217,7 +276,7 @@ const HAL_RTC LPC17xx_40xx_RTC_Interface = {
 /*---------------------------------------------------------------------------*
  * Requirement routines:
  *---------------------------------------------------------------------------*/
-void LPC17xx_40xx_RTC_Require(TBool aIsExternalClock)
+void LPC17xx_40xx_RTC_Require(TBool aIsExternalClock, TUInt32 aCalibrationValue)
 {
     T_halWorkspace *p_rtc;
 
@@ -227,7 +286,7 @@ void LPC17xx_40xx_RTC_Require(TBool aIsExternalClock)
             (T_halInterface *)&LPC17xx_40xx_RTC_Interface,
             0,
             &p_rtc);
-    LPC17xx_40xx_RTC_Configure(p_rtc, aIsExternalClock);
+    LPC17xx_40xx_RTC_Configure(p_rtc, aIsExternalClock, aCalibrationValue);
 }
 
 /*-------------------------------------------------------------------------*

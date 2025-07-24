@@ -95,6 +95,7 @@ T_uezError UEZRandomStreamCreate(
     TInt32 aPlant,
     T_uezRandomStreamType aStreamType)
 {
+  PARAM_NOT_USED(aPlant);
 #if 0
     /* Original implementation didn't seem to work */
     const TInt32 Q = MODULUS / A256;

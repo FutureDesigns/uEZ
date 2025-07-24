@@ -74,7 +74,6 @@
 #include <Source/Devices/LED/NXP/PCA9551/LED_NXP_PCA9551.h>
 #include <Source/Devices/MassStorage/LPCUSBLib/LPCUSBLib_MS.h>
 #include <Source/Devices/MassStorage/SDCard/SDCard_MS_driver_SD_MMC.h>
-#include <Source/Devices/Stream/LPCUSBLib/SerialHost/Stream_LPCUSBLib_SerialHost.h>
 #include <Source/Devices/Network/GainSpan/Network_GainSpan.h>
 #include <Source/Devices/Network/ESPWROOM32/Network_ESPWROOM32.h>
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
@@ -85,6 +84,7 @@
 #include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
 #include <Source/Devices/Stream/SWO/Stream_SWO_CortexM.h>
+#include <Source/Devices/Stream/LPCUSBLib/SerialHost/Stream_LPCUSBLib_SerialHost.h>
 #include <Source/Devices/Serial/LPCUSBLib/SerialHost_FTDI/Stream_LPCUSBLib_SerialHost_FTDI.h>
 #include <Source/Devices/SPI/Generic/Generic_SPI.h>
 #include <Source/Devices/Temperature/NXP/LM75A/Temperature_LM75A.h>
@@ -172,6 +172,10 @@ void RITIMER_OR_WWDT_IRQHandler(void);
 #define LCD_BACKLIGHT_FREERTOS_TIMER    1 // set to 0 here and in library project Config_Build.h to force using MCU timer peripheral for LCD backlight delay.
 #endif
 
+#ifndef HEAP_ENABLED_ON_EXTERNAL_RAM
+#define HEAP_ENABLED_ON_EXTERNAL_RAM    1 // 0 for NoSDRAM builds
+#endif
+
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
@@ -189,11 +193,12 @@ T_uezTimerCallback G_sysTickCallback;
  *---------------------------------------------------------------------------*/
 //Allocate general purpose frames memory
 #if (MAX_NUM_FRAMES > 0)
-UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]);
+//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]); // only allocate 2 permanent frames, might be compatible with emWin, but not FDI demos
+UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [FRAME_SIZE*2]); // only allocate 2 frames permanently, use heap for more
 TUInt8 *_framesMemoryptr = _framesMemory;
-#else
-UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]);
-TUInt8 *_framesMemoryptr = _framesMemory;
+#else // LCD not being used, don't create frames section
+//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]); // don't create a dummy frames section anymore
+TUInt8 *_framesMemoryptr = (TUInt8 *) UEZBSP_SDRAM_BASE_ADDR; // dummy variable that we aren't using if we don't call framebuffer code.
 #endif
 
 // See Users Manual UM10503 Section 6.6 Code Read Protection. If you set these to certain bytes JTAG will be disabled.
@@ -690,15 +695,13 @@ void UEZBSP_CPU_PinConfigInit(void)
 }
 
 #if (defined __GNUC__) // GCC
-//(uint32_t*)&.frames)));
 
-#define RAMTEST_START_ADDRESS ((const uint32_t) &".frames")
+#define RAMTEST_START_ADDRESS ((const uint32_t) __SDRAM_segment_start__) //&".frames")
 #define RAMTEST_LENGTH (const uint32_t)(((uint32_t)UEZBSP_SDRAM_SIZE) - RAMTEST_START_ADDRESS)
 
 #elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
 // Must declare these pragmas before below section placement if IAR
-#pragma section = ".frames"
-#define RAMTEST_START_ADDRESS &".frames"
+#define RAMTEST_START_ADDRESS UEZBSP_SDRAM_BASE_ADDR
 #define RAMTEST_LENGTH (UEZBSP_SDRAM_SIZE-RAMTEST_START_ADDRESS)
 
 #endif
@@ -1260,7 +1263,6 @@ void UEZPlatform_Backlight_Require(void)
     Backlight_Generic_PWMControlled_Create("Backlight", &settings);
 }
 
-#if(UEZ_PROCESSOR == NXP_LPC4357)
 #if (DISABLE_BACKLIGHT_PWM_UEZ_API == 1)
 typedef struct {
         TVUInt32  iCON;                   /*!< (@ 0x400A0000) PWM Control read address        */
@@ -1298,8 +1300,9 @@ typedef struct {
 T_LPC43xx_PWM_Registers *G_LPC43XX_PWM_register_Base = (T_LPC43xx_PWM_Registers *)0x400A0000;
 #define PWM_MATCH_REGISTER 0
 
-#undef UEZLCDBacklight
-T_uezError UEZLCDBacklight(T_uezDevice aLCDDevice, TUInt32 aLevel) 
+//#include <uEZLCD.h>
+//#undef UEZLCDBacklight
+T_uezError UEZLCDBacklight(T_uezDevice aLCDDevice, TUInt32 aLevel)
 {
  (void) aLCDDevice;
 
@@ -1308,8 +1311,7 @@ T_uezError UEZLCDBacklight(T_uezDevice aLCDDevice, TUInt32 aLevel)
   G_LPC43XX_PWM_register_Base->iMAT0 = (aLevel*20); // only need to adjust level here
     
   return UEZ_ERROR_NONE;
-} 
-#endif 
+}
 #endif
 
 void LCD_Pin_Power_Off(T_uezGPIOPortPin portPin)
@@ -1479,7 +1481,6 @@ void UEZPlatform_LCD_Require(void)
       UEZGPIOLock(GPIO_P3_14);
 #endif
    
-#if(UEZ_PROCESSOR == NXP_LPC4357)
 #if (DISABLE_BACKLIGHT_PWM_UEZ_API == 1)    
    // setup PWM output pin on P4_0/GPIO2[0]/MCOA0/ match register 0
    UEZGPIOControl(GPIO_P2_0, GPIO_CONTROL_SET_CONFIG_BITS, SCU_NORMAL_DRIVE_DEFAULT(1));
@@ -1500,7 +1501,7 @@ void UEZPlatform_LCD_Require(void)
     // Set to single output mode
    G_LPC43XX_PWM_register_Base->iCON_CLR = (1 << (1 + (PWM_MATCH_REGISTER * 8)));
 
-   UEZLCDBacklight(0, 0); // sets initial match register to backlight 0
+   UEZLCDBacklight((T_uezDevice)0, 0); // sets initial match register to backlight 0
    
    // Enable output
    G_LPC43XX_PWM_register_Base->iCON_SET = (1 << (0 + (PWM_MATCH_REGISTER * 8)));
@@ -1512,8 +1513,7 @@ void UEZPlatform_LCD_Require(void)
    UEZGPIOClear(GPIO_P3_11); // enables power to backlight driver
 #else
     UEZPlatform_Backlight_Require();
-#endif
-#endif    
+#endif   
 
     LPC43xx_LCDController_Require(&pins);
     extern const T_uezDeviceInterface *UEZ_LCD_INTERFACE_ARRAY[];
@@ -1582,8 +1582,13 @@ void UEZPlatform_Flash0_Require(void)
     DEVICE_CREATE_ONCE();
     Flash_NXP_LPC_SPIFI_M4_Create("Flash0");
     
+ /* No defined interrupt yet in Source/Devices/Flash/NXP/LPC43xx/.
+  * This is set to make sure from the platform level that all interrupts for
+  * used peripherals are set to a defined/known state and can be changed here.
+  */
 #ifdef CORE_M4
-    InterruptSetPriority(SPIFI_IRQn, INTERRUPT_PRIORITY_NORMAL);
+    // Currently there is no SPIFI_IRQn Interrupt Registeration being setup.
+    InterruptSetPriority(SPIFI_IRQn, INTERRUPT_PRIORITY_NORMAL); 
 #endif
     // No ISR on M0 cores!
 }
@@ -2365,11 +2370,10 @@ void UEZPlatform_WiredNetwork0_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-#if (UEZ_ENABLE_TCPIP_STACK == 1)
-    // Wired network needs an EMAC
-    UEZPlatform_EMAC_Require();
-    // Create the network driver for talking to lwIP on a wired
-    // network.
+#if (UEZ_ENABLE_TCPIP_STACK == 1) // ensure smaller build size
+    UEZPlatform_EMAC_Require(); // Wired network needs an EMAC
+
+    // Create the network driver for talking to lwIP on a wired network.
     Network_lwIP_Create("WiredNetwork0");
 #endif
 }
@@ -2526,7 +2530,7 @@ void UEZPlatform_USBHost_PortB_Require(void)
 
 void UEZPlatform_MS0_Connected(void *aWorkspace) // called from IUpdate
 {
-    PARAM_NOT_USED(aWorkspace);
+    UEZ_PARAMETER_NOT_USED(aWorkspace);
     TUInt32 driveNum = G_ms0_driveNum;
     T_uezDevice ms0;
     T_uezDeviceWorkspace *p_ms0;
@@ -2544,10 +2548,11 @@ void UEZPlatform_MS0_Connected(void *aWorkspace) // called from IUpdate
 
 void UEZPlatform_MS0_Disconnected(void *aWorkspace)
 {
-    PARAM_NOT_USED(aWorkspace);
+    UEZ_PARAMETER_NOT_USED(aWorkspace);
     TUInt32 driveNum = G_ms0_driveNum;
 
 #if (DISABLE_FEATURES_FOR_BOOTLOADER==1)
+    // We can't cleanly unmount the flash drive as it must have been pulled, but this does get called if no flash drive inserted.
 #else
     //printf("UEZGUI MS0 Disconnected drive %u\n", driveNum);
 #endif
@@ -2563,7 +2568,7 @@ void UEZPlatform_MS0_Disconnected(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_MS0_Require(TUInt32 aUSBNumber)
 {
-    PARAM_NOT_USED(aUSBNumber);
+    UEZ_PARAMETER_NOT_USED(aUSBNumber);
 #if (UEZ_ENABLE_USB_HOST_STACK == 1)
     T_MassStorage_LPCUSBLib_Callbacks ms0Callbacks = {
             UEZPlatform_MS0_Connected,
@@ -2928,6 +2933,71 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
     return PROCESSOR_OSCILLATOR_FREQUENCY;
 }
 
+#if (defined __GNUC__) // GCC
+extern uint32_t  __RAM_segment_end__[];
+extern uint32_t  __SRAM1_segment_end__[];
+extern uint32_t  __SRAM2_segment_end__[];
+extern uint32_t  __SDRAM_segment_end__[];
+extern uint32_t  __SDRAM_segment_size__[];
+extern uint8_t  __heap_start__[];
+// our custom named sections
+extern uint32_t  SDRAM_END[];
+extern uint32_t  SDRAM_END_CM0[];
+extern uint32_t  SRAM1_END[];
+extern uint32_t  SRAM1_END_CM0[];
+extern uint32_t  SRAM2_END[];
+extern uint32_t  SRAM2_END_CM0[];
+
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+// Must declare these pragmas if IAR
+#pragma section = "__RAM_segment_end__"
+#pragma section = "SRAM1_end"
+#pragma section = "SRAM2_end__"
+#pragma section = "SDRAM_end__"
+//#pragma section = "SDRAM_END"
+//#pragma section = "SDRAM_END_CM0"
+//#pragma section = "SRAM1_END"
+//#pragma section = "SRAM1_END_CM0"
+//#pragma section = "SRAM2_END"
+//#pragma section = "SRAM2_END_CM0"
+
+#pragma section=".heap"
+#pragma section="HEAP"
+void * __heap_start__ = __section_begin(".heap");
+void * heap_end_address = __section_end("HEAP");
+
+#else
+  #error "Not supported for this compiler."
+#endif
+
+// FreeRTOS will take care of aligment of both start and end addresses.
+TUInt32 UEZPlatform_GetApplicationHeapSize(void) // for heap 2, 4
+{ 
+    return (uint32_t) // original -> // return __HEAP_SIZE__; 
+#if (HEAP_ENABLED_ON_EXTERNAL_RAM == 1)
+  #if (defined __GNUC__) // GCC
+  #ifdef CORE_M0
+                     SDRAM_END_CM0
+  #else
+                     SDRAM_END
+  #endif
+  #elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+                      heap_end_address - 1
+  #endif
+#else // internal RAM heap only
+  #if (defined __GNUC__) // GCC
+  #ifdef CORE_M0
+                    SRAM2_END_CM0
+  #else
+                    SRAM2_END
+  #endif
+  #elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+                      heap_end_address - 1
+  #endif
+#endif
+                    - (uint32_t) __heap_start__; 
+}
+
 TUInt32 UEZPlatform_5V_Monitor_Get_Raw_Reading(void)
 {    
     T_uezDevice adc;
@@ -3009,7 +3079,7 @@ TUInt32 SUICallbackGetLCDBase(void)
 
 void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha aAlpha)
 {
-    static COLOR_T mask =(COLOR_T)(~((1<<10)|(1<<5)|(1<<0)));
+    static COLOR_T mask = (COLOR_T)(~((1<<10)|(1<<5)|(1<<0)));
     COLOR_T *p = (COLOR_T *)aAddr;
 
     switch (aAlpha) {
@@ -3030,10 +3100,12 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
  */
 /*---------------------------------------------------------------------------*/
 void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
-    PARAM_NOT_USED(pulFaultRegisters);
-#ifdef CORE_M4
-unsigned long ulStacked_pc = 0UL;
+    UEZ_PARAMETER_NOT_USED(pulFaultRegisters);
+    unsigned long ulStacked_pc = 0UL;
     ( void ) ulStacked_pc;
+    // Determine which stack was in use when the MPU fault occurred and extract the stacked PC.
+
+#ifdef CORE_M4
     __asm volatile
     (
         "   tst lr, #4          \n"
@@ -3043,25 +3115,19 @@ unsigned long ulStacked_pc = 0UL;
         "   ldr r0, [r0, #24]   \n" /* Extract the value of the stacked PC. */
         "   str r0, [sp]        \n" /* Store the value of the stacked PC into ulStacked_pc. */
     );
-
-    for( ;; );     /* Inspect ulStacked_pc to locate the offending instruction. */
-    //UEZPlatform_System_Reset();
 #endif
 #ifdef CORE_M0
-// TODO create appropriate ASM for these cores
-unsigned long ulStacked_pc = 0UL;
-    ( void ) ulStacked_pc;
-    __asm
+// TODO create appropriate ASM for these cores or use cmsis instrisics
+    __asm volatile
     (
     ""
     );
-
-    for( ;; );     /* Inspect ulStacked_pc to locate the offending instruction. */
-    //UEZPlatform_System_Reset();
 #endif
 #ifdef CORE_M0SUB
 // TODO
 #endif
+    for( ;; ); // Inspect ulStacked_pc to locate the offending instruction.
+    //UEZPlatform_System_Reset();
 }
 
 #include "chip.h"
@@ -3193,6 +3259,14 @@ static void IRITimerProcessIRQ(void)
 // Even though the header file lists a SysTick on M0 it doesn't exist, so use RITIMER here instead. 
 void vPortSetupTimerInterrupt( void )
 {
+    /* Calculate the constants required to configure the tick interrupt. */
+    #if ( configUSE_TICKLESS_IDLE == 1 )
+    { // TODO we need a way to set these but that requires modifying the RTOS port c file.
+        //ulTimerCountsForOneTick = ( PROCESSOR_OSCILLATOR_FREQUENCY / configTICK_RATE_HZ );
+        //xMaximumPossibleSuppressedTicks =  ( 0xffffffUL ) / ulTimerCountsForOneTick;
+        //ulStoppedTimerCompensation = ( 94UL ) / ( PROCESSOR_OSCILLATOR_FREQUENCY / PROCESSOR_OSCILLATOR_FREQUENCY );
+    }
+    #endif /* configUSE_TICKLESS_IDLE */
     // This simple timer only has 4 registers
     LPC_RITIMER->CTRL = 0x1; // disable
     LPC_RITIMER->COUNTER = 0; // default value
@@ -3209,15 +3283,14 @@ void vPortSetupTimerInterrupt( void )
 
 /*---------------------------------------------------------------------------*
  * Routine:  main
- *---------------------------------------------------------------------------*/
-/**
- *  The main() routine in UEZ is only a stub that is used to start
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
  *
- *  @return         int32_t
- */
-/*---------------------------------------------------------------------------*/
-int32_t main(void)
+ *  @return         int32_t -- not used, 0
+ *---------------------------------------------------------------------------*/
+int main(void)
 {
   // To be able to check RTOS check we need to finish SystemInit and actually clear/init RAM first.
   // Starting here we can check it.

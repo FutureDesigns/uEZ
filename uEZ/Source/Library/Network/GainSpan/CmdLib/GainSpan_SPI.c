@@ -92,6 +92,8 @@ bool GainSpan_SPI_SendTwoBytesLowLevel(uint8_t aByte1, uint8_t aByte2);
 
 static TUInt32 IGainSpan_SPI_Thread(T_uezTask aMyTask, void *aParameters)
 {
+        PARAM_NOT_USED(aMyTask);
+        PARAM_NOT_USED(aParameters);
 	int32_t isProcessing;
 	int32_t struggling = 0;
         TBool forever = ETrue;
@@ -346,8 +348,9 @@ bool GainSpan_SPI_IsDataReady(uint8_t channel)
 
 void GainSpan_SPI_Update(uint8_t channel)
 {
-	// TODO: Old way of doing it, now we do in background task
-	// IGainSpan_SPI_Update(0);
+  PARAM_NOT_USED(channel);
+  // TODO: Old way of doing it, now we do in background task
+  // IGainSpan_SPI_Update(0);
 }
 
 /*---------------------------------------------------------------------------*

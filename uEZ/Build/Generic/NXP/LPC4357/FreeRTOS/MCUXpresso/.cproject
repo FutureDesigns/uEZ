@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="com.crt.advproject.config.lib.debug.930665921">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.crt.advproject.config.lib.debug.930665921" moduleId="org.eclipse.cdt.core.settings" name="Debug_HEAP4">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/MCUXpresso"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/uEZ_NXP_LPC4357_FreeRTOS"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/MCUXpresso/Debug"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/uEZ_NXP_LPC4357_FreeRTOS/Debug_HEAP4"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="MCUXpresso" srcPrefixMapping="" srcRootPath=""/>
+						<entry flags="RESOLVED" kind="libraryFile" name="uEZ_NXP_LPC4357_FreeRTOS" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" cleanCommand="rm -rf" description="M4 Lib Build" errorParsers="org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="com.crt.advproject.config.lib.debug.930665921" name="Debug_HEAP4" parent="com.crt.advproject.config.lib.debug" postannouncebuildStep="Performing post-build steps" postbuildStep="arm-none-eabi-size &quot;lib${BuildArtifactFileName}&quot; ; # arm-none-eabi-objdump -h -S &quot;lib${BuildArtifactFileName}&quot; &gt;&quot;${BuildArtifactFileBaseName}.lss&quot;">
+					<folderInfo id="com.crt.advproject.config.lib.debug.930665921." name="/" resourcePath="">
+						<toolChain id="com.crt.advproject.toolchain.lib.debug.1176426801" name="NXP MCU Tools" superClass="com.crt.advproject.toolchain.lib.debug">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="com.crt.advproject.platform.lib.debug.1748004895" name="ARM-based MCU (Debug)" superClass="com.crt.advproject.platform.lib.debug"/>
+							<builder buildPath="${workspace_loc:/MCUXpresso}/Debug" id="com.crt.advproject.builder.lib.debug.315238411" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.lib.debug"/>
+							<tool id="com.crt.advproject.cpp.lib.debug.953187598" name="MCU C++ Compiler" superClass="com.crt.advproject.cpp.lib.debug">
+								<option id="com.crt.advproject.cpp.hdrlib.1980468820" name="Library headers" superClass="com.crt.advproject.cpp.hdrlib" useByScannerDiscovery="false"/>
+								<option id="com.crt.advproject.cpp.fpu.1021187157" name="Floating point" superClass="com.crt.advproject.cpp.fpu" useByScannerDiscovery="true"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1601837126" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false"/>
+							</tool>
+							<tool id="com.crt.advproject.gcc.lib.debug.2203783" name="MCU C Compiler" superClass="com.crt.advproject.gcc.lib.debug">
+								<option id="com.crt.advproject.gcc.thumb.792764119" name="Thumb mode" superClass="com.crt.advproject.gcc.thumb" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.arch.1309170420" name="Architecture" superClass="com.crt.advproject.gcc.arch" useByScannerDiscovery="true" value="com.crt.advproject.gcc.target.cm4" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1475735500" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="STARTUP_FROM_RESET"/>
+									<listOptionValue builtIn="false" value="__THUMB"/>
+									<listOptionValue builtIn="false" value="UEZ_LIBRARY"/>
+									<listOptionValue builtIn="false" value="LWIP_2_0_x"/>
+									<listOptionValue builtIn="false" value="__FPU_PRESENT=1"/>
+									<listOptionValue builtIn="false" value="CORE_M4"/>
+									<listOptionValue builtIn="false" value="FREERTOS_HEAP_SELECTION=4"/>
+									<listOptionValue builtIn="false" value="DEBUG"/>
+									<listOptionValue builtIn="false" value="__MCUXPRESSO"/>
+									<listOptionValue builtIn="false" value="CR_PRINTF_CHAR"/>
+									<listOptionValue builtIn="false" value="__NEWLIB__"/>
+								</option>
+								<option id="gnu.c.compiler.option.misc.other.452646639" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fms-extensions -Wno-strict-aliasing -ffunction-sections -fdata-sections -fsingle-precision-constant -Wformat=0 -Wno-address-of-packed-member" valueType="string"/>
+								<option id="gnu.c.compiler.option.optimization.flags.330276706" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fno-common" valueType="string"/>
+								<option id="com.crt.advproject.gcc.hdrlib.365964360" name="Library headers" superClass="com.crt.advproject.gcc.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gcc.hdrlib.newlib" valueType="enumerated"/>
+								<option id="com.crt.advproject.gcc.fpu.612758082" name="Floating point" superClass="com.crt.advproject.gcc.fpu" useByScannerDiscovery="true" value="com.crt.advproject.gcc.fpu.fpv4.hard" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1664041711" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="${ProjDirPath}/"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/GCC"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/Common/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/mbedtls/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/mbedtls"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/src/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/system"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/system/arch"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/LPCOpen"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/LPCOpen/chip_18xx_43xx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/GUI/SEGGER/emWin"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Platform/emWin/Inc"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Platform/emWin/Config"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/wolfssl"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/ctaocrypt"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/cyassl/openssl"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Network/wolfMQTT"/>
+								</option>
+								<option id="com.crt.advproject.c.misc.dialect.1311726948" name="Language standard" superClass="com.crt.advproject.c.misc.dialect" useByScannerDiscovery="true" value="com.crt.advproject.misc.dialect.gnu17" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.debugging.prof.894790864" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.gprof.730120570" name="Generate gprof information (-pg)" superClass="gnu.c.compiler.option.debugging.gprof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.codecov.1146578252" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.c.compiler.option.debugging.codecov" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitaddress.1361276512" name="Sanitize address (-fsanitize=address)" superClass="gnu.c.compiler.option.debugging.sanitaddress" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitpointers.998461922" name="Sanitize pointer operations (-fsanitize=pointer-compare -fsanitize=pointer-subtract)" superClass="gnu.c.compiler.option.debugging.sanitpointers" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitthread.1049708987" name="Sanitize data race in multi-thread (-fsanitize=thread)" superClass="gnu.c.compiler.option.debugging.sanitthread" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitleak.1628689914" name="Sanitize memory leak (-fsanitize=leak)" superClass="gnu.c.compiler.option.debugging.sanitleak" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitundef.125474992" name="Sanitize undefined behavior (-fsanitize=undefined)" superClass="gnu.c.compiler.option.debugging.sanitundef" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.lib.debug.option.optimization.level.1821620317" name="Optimization Level" superClass="com.crt.advproject.gcc.lib.debug.option.optimization.level" useByScannerDiscovery="true" value="gnu.c.optimization.level.optimize" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.verbose.33537915" name="Verbose (-v)" superClass="gnu.c.compiler.option.misc.verbose" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.warnings.extrawarn.1319880267" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.specs.479929129" name="Specs" superClass="com.crt.advproject.gcc.specs" useByScannerDiscovery="false" value="com.crt.advproject.gcc.specs.newlib" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.ansi.1504993124" name="Support ANSI programs (-ansi)" superClass="gnu.c.compiler.option.misc.ansi" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.stackusage.1780230364" name="Generate Stack Usage Info (-fstack-usage)" superClass="com.crt.advproject.gcc.stackusage" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<inputType id="com.crt.advproject.compiler.input.1920071746" superClass="com.crt.advproject.compiler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.gas.lib.debug.229635683" name="MCU Assembler" superClass="com.crt.advproject.gas.lib.debug">
+								<option id="com.crt.advproject.gas.thumb.691995516" name="Thumb mode" superClass="com.crt.advproject.gas.thumb" value="true" valueType="boolean"/>
+								<option id="com.crt.advproject.gas.arch.497032536" name="Architecture" superClass="com.crt.advproject.gas.arch" value="com.crt.advproject.gas.target.cm4" valueType="enumerated"/>
+								<option id="gnu.both.asm.option.flags.crt.1019949841" name="Assembler flags" superClass="gnu.both.asm.option.flags.crt" value="-c -x assembler-with-cpp -DDEBUG -DCORE_M4 -D__GENERIC_M4__ -D__MCUXPRESSO -D__NEWLIB__" valueType="string"/>
+								<option id="com.crt.advproject.gas.hdrlib.574328827" name="Library headers" superClass="com.crt.advproject.gas.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gas.hdrlib.newlib" valueType="enumerated"/>
+								<option id="com.crt.advproject.gas.fpu.1040864991" name="Floating point" superClass="com.crt.advproject.gas.fpu" value="com.crt.advproject.gas.fpu.fpv4.hard" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="true" id="gnu.both.asm.option.include.paths.1909869583" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
+								<option id="com.crt.advproject.gas.specs.394757737" name="Specs" superClass="com.crt.advproject.gas.specs" value="com.crt.advproject.gas.specs.newlib" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.108479897" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="com.crt.advproject.assembler.input.26073495" name="Additional Assembly Source Files" superClass="com.crt.advproject.assembler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.ar.lib.debug.1485370324" name="MCU Archiver" superClass="com.crt.advproject.ar.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Include"/>
+						<entry excluding="Library/Encryption/mbedtls/framework|Devices/Stream/SWO|RTOS/FreeRTOS/portable/GCC/ARM_CM33_NTZ|RTOS/FreeRTOS/portable/GCC/ARM_CM33|Library/Language/C/ltoa.c|Library/Language/C/printf-stdarg.c|Library/Language/C/itoa.c|Processor/NXP/LPC43xx/GCC|Devices/I2C/Mux/PCA9546|Devices/Flash/SST|Devices/Flash/Generic/CFI|Devices/GPIO/I2C/PCF8575|Devices/GPIO/I2C/PCF8574T|Devices/GPIO/I2C/PCA9532|Devices/Touchscreen/MicroChip/AR1020|Library/lwip_2.0.x_old|RTOS/uEZRTOS_CMSIS_V2.c|RTOS/FreeRTOS-Plus/Application-Protocols/coreHTTP/source/dependency/3rdparty/llhttp/src|Processor/NXP/LPC43xx/LPC43xx_CAN.c|Processor/NXP/LPC43xx/LPC43xx_USBHost.c|Processor/NXP/LPC43xx/LPC43xx_USBDeviceController.c|Devices/Flash/NXP/LPC17xx_40xx|Devices/EEPROM/NXP/LPC17xx_40xx|Library/USBDevice/MassStorage|Library/LPCOpen/board.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/OHCI|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/StillImageClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/RNDISClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/PrinterClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/MIDIClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/HIDClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/AudioClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC17XX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC11UXX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC17XX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC11UXX|Processor/NXP/LPC43xx/LPC43xx_USBSharedInterrupt.c|Processor/NXP/LPC43xx/LPC43xx_EMC_Static.c|Devices/USBDevice/NXP/LPC17xx_40xx|Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.c|Processor/NXP/LPC43xx/IAR|Processor/NXP/LPC17xx_40xx|Devices/Flash/Micron|Devices/Flash/Numonyx|Devices/ExternalInterrupt/NXP|Devices/EEPROM/NXP/LPC546xx|Devices/Flash/Renesas|Devices/Flash/NXP/LPC1756|Devices/Light Sensor/ROHM/BH1721FVC|Devices/USBDevice/NXP/LPC1768|Devices/USBDevice/NXP/LPC1756|Devices/Touchscreen/H8SX|Devices/Touchscreen/Semisense|Devices/Touchscreen/Renesas|Devices/Touchscreen/PenMount|Devices/Touchscreen/Novatek|ExpansionBoard/FDI/uEZGUI_EXP_DK|Library/Encryption/mbedtls/3rdparty/everest|Library/Encryption/mbedtls/programs|Library/Encryption/mbedtls/tests|Library/Encryption/wolfSSL|Library/Encryption/wolfSSL/zephyr|Library/FileSystem/FATFS/main.c|Library/FileSystem/Win32|Library/FileSystem/FATFS/documents|Library/Graphics/BMP|Library/GUI/FLNX|Library/GUI/Nano-X|Library/Graphics/JPeg|Library/Graphics/Glyph|Library/Network/wolfMQTT/examples|Library/Modbus|Library/Network/VNC|Library/USBDevice/LPCUSBLib|Library/StreamIO/StdInOut/Generic|Library/StreamIO/StdInOut/GCC/StdInOut_GCC.c|Library/StreamIO/StdInOut/CrossWorks|Library/StreamIO/StdInOut/RenesasRX|Library/StreamIO/StdInOut/Keil|Library/StreamIO/StdInOut/IAR|Library/Tests/Encryption|Library/Tests/RTOS|Library/USBHID/Mouse/USBHID_Mouse_Task.c|Scripts/Compilers/CrossWorks|Library/USBHID/Keyboard/USBHIDKeyboard_Task.c|Library/USBDevice/USBTMC|Library/USBDevice/MassStorage/RAM|Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui|Library/Web/HTTPClient|Library/lwip_2.0.x/arch/sys_arch.c|Library/XML/mxml|Library/lwip_2.0.x/contrib/examples/example_app|Library/lwip_2.0.x/contrib/Coverity|Library/lwip_2.0.x/contrib/addons/tcp_md5|Library/lwip_2.0.x/contrib/addons/netconn|Library/lwip_2.0.x/contrib/ports|Library/lwip_2.0.x/doc|Library/lwip_2.0.x/src/apps/http/makefsdata|Library/lwip_2.0.x/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning|RTOS/FreeRTOS-Plus/AWS/jobs|RTOS/FreeRTOS-Plus/AWS/device-defender/test|RTOS/FreeRTOS-Plus/AWS/device-shadow/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning/test/unit-test/Unity/test|RTOS/FreeRTOS-Plus/AWS/jobs/test|RTOS/FreeRTOS-Plus/AWS/sigv4|RTOS/FreeRTOS-Plus/AWS/ota|RTOS/FreeRTOS-Plus/AWS/sigv4/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreHTTP/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreMQTT-Agent/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreSNTP/docs|RTOS/FreeRTOS-Plus/Application-Protocols/coreMQTT/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreSNTP/test|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/tcp_sockets_wrapper/ports/cellular/tcp_sockets_wrapper.c|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Interface/source|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Interface/test|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-CLI|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Modules|RTOS/FreeRTOS-Plus/backoffAlgorithm/docs|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/portable/NetworkInterface|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/test|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/tools|RTOS/FreeRTOS-Plus/Reliance-Edge|RTOS/FreeRTOS-Plus/Utilities/backoff_algorithm|RTOS/FreeRTOS-Plus/backoffAlgorithm/test|RTOS/FreeRTOS-Plus/coreJSON/test|RTOS/FreeRTOS-Plus/coreJSON/test/unit-test/Unity/test/tests|RTOS/FreeRTOS-Plus/corePKCS11/source/portable/os/posix|RTOS/FreeRTOS-Plus/corePKCS11/source/portable/os/freertos_winsim/core_pkcs11_pal.c|Library/SEGGER/Examples|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_SES.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_KEIL.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_IAR.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_GCC.c|Library/SEGGER/SEGGER_HardFaultHandler.S|Library/SEGGER/SEGGER_HardFaultHandler.c|RTOS/FreeRTOS-Plus/corePKCS11/test|RTOS/FreeRTOS/portable/RVDS|RTOS/FreeRTOS/portable/IAR|RTOS/FreeRTOS/portable/GCC/ARM_CM7|RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU|RTOS/FreeRTOS/portable/GCC/ARM_CM3_MPU|RTOS/FreeRTOS/portable/GCC/ARM_CM3|RTOS/FreeRTOS/portable/GCC/ARM_CM0|Library/lwIP|Platform/NXP|Platform/FDI|Processor/NXP/LPC17xx_40xx/IAR|Processor/NXP/LPC546xx|Processor/NXP/LPC1768|Processor/NXP/LPC1756|Processor/STMicro|Processor/Renesas|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_wolfSSL.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_plaintext.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_mbedtls.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_mbedtls_pkcs11.c|RTOS/uEZRTOS_SafeRTOS.c|RTOS/SafeRTOS|RTOS/uEZRTOS_FreeRTOS.c|RTOS/queue_register.c|RTOS/FreeRTOS/portable/MemMang/heap_2_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Source"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="com.crt.advproject.config.lib.debug.930665921.699958188">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.crt.advproject.config.lib.debug.930665921.699958188" moduleId="org.eclipse.cdt.core.settings" name="Release_HEAP4">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/uEZ_NXP_LPC4357_FreeRTOS"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/uEZ_NXP_LPC4357_FreeRTOS/Release_HEAP4"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="uEZ_NXP_LPC4357_FreeRTOS" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" cleanCommand="rm -rf" description="M4 Lib build" errorParsers="org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="com.crt.advproject.config.lib.debug.930665921.699958188" name="Release_HEAP4" parent="com.crt.advproject.config.lib.debug" postannouncebuildStep="Performing post-build steps" postbuildStep="arm-none-eabi-size &quot;lib${BuildArtifactFileName}&quot; ; # arm-none-eabi-objdump -h -S &quot;lib${BuildArtifactFileName}&quot; &gt;&quot;${BuildArtifactFileBaseName}.lss&quot;">
+					<folderInfo id="com.crt.advproject.config.lib.debug.930665921.699958188." name="/" resourcePath="">
+						<toolChain id="com.crt.advproject.toolchain.lib.debug.1249135645" name="NXP MCU Tools" superClass="com.crt.advproject.toolchain.lib.debug">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="com.crt.advproject.platform.lib.debug.618179170" name="ARM-based MCU (Debug)" superClass="com.crt.advproject.platform.lib.debug"/>
+							<builder buildPath="${workspace_loc:/MCUXpresso}/Debug" id="com.crt.advproject.builder.lib.debug.890337178" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.lib.debug"/>
+							<tool id="com.crt.advproject.cpp.lib.debug.502073116" name="MCU C++ Compiler" superClass="com.crt.advproject.cpp.lib.debug">
+								<option id="com.crt.advproject.cpp.hdrlib.1757793258" name="Library headers" superClass="com.crt.advproject.cpp.hdrlib" useByScannerDiscovery="false"/>
+								<option id="com.crt.advproject.cpp.fpu.1491385993" name="Floating point" superClass="com.crt.advproject.cpp.fpu" useByScannerDiscovery="true"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1323150846" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false"/>
+							</tool>
+							<tool id="com.crt.advproject.gcc.lib.debug.446630696" name="MCU C Compiler" superClass="com.crt.advproject.gcc.lib.debug">
+								<option id="com.crt.advproject.gcc.thumb.1670494882" name="Thumb mode" superClass="com.crt.advproject.gcc.thumb" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.arch.1097760124" name="Architecture" superClass="com.crt.advproject.gcc.arch" useByScannerDiscovery="true" value="com.crt.advproject.gcc.target.cm4" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.470978913" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="STARTUP_FROM_RESET"/>
+									<listOptionValue builtIn="false" value="__THUMB"/>
+									<listOptionValue builtIn="false" value="UEZ_LIBRARY"/>
+									<listOptionValue builtIn="false" value="LWIP_2_0_x"/>
+									<listOptionValue builtIn="false" value="__FPU_PRESENT=1"/>
+									<listOptionValue builtIn="false" value="CORE_M4"/>
+									<listOptionValue builtIn="false" value="FREERTOS_HEAP_SELECTION=4"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="__MCUXPRESSO"/>
+									<listOptionValue builtIn="false" value="CR_PRINTF_CHAR"/>
+									<listOptionValue builtIn="false" value="__NEWLIB__"/>
+								</option>
+								<option id="gnu.c.compiler.option.misc.other.1166002147" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fms-extensions -Wno-strict-aliasing -ffunction-sections -fdata-sections -fsingle-precision-constant -Wformat=0 -Wno-address-of-packed-member" valueType="string"/>
+								<option id="gnu.c.compiler.option.optimization.flags.748734539" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fno-common" valueType="string"/>
+								<option id="com.crt.advproject.gcc.hdrlib.903450725" name="Library headers" superClass="com.crt.advproject.gcc.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gcc.hdrlib.newlib" valueType="enumerated"/>
+								<option id="com.crt.advproject.gcc.fpu.1105728431" name="Floating point" superClass="com.crt.advproject.gcc.fpu" useByScannerDiscovery="true" value="com.crt.advproject.gcc.fpu.fpv4.hard" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1749375770" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="${ProjDirPath}/"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/GCC"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/Common/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/mbedtls/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/mbedtls"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/src/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/system"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/system/arch"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/LPCOpen"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/LPCOpen/chip_18xx_43xx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/GUI/SEGGER/emWin"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Platform/emWin/Inc"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Platform/emWin/Config"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/wolfssl"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/ctaocrypt"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/cyassl/openssl"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Network/wolfMQTT"/>
+								</option>
+								<option id="com.crt.advproject.c.misc.dialect.769977840" name="Language standard" superClass="com.crt.advproject.c.misc.dialect" useByScannerDiscovery="true" value="com.crt.advproject.misc.dialect.gnu17" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.debugging.prof.568729361" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.gprof.1370392308" name="Generate gprof information (-pg)" superClass="gnu.c.compiler.option.debugging.gprof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.codecov.100182179" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.c.compiler.option.debugging.codecov" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitaddress.974242443" name="Sanitize address (-fsanitize=address)" superClass="gnu.c.compiler.option.debugging.sanitaddress" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitpointers.209385848" name="Sanitize pointer operations (-fsanitize=pointer-compare -fsanitize=pointer-subtract)" superClass="gnu.c.compiler.option.debugging.sanitpointers" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitthread.2105328342" name="Sanitize data race in multi-thread (-fsanitize=thread)" superClass="gnu.c.compiler.option.debugging.sanitthread" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitleak.297822675" name="Sanitize memory leak (-fsanitize=leak)" superClass="gnu.c.compiler.option.debugging.sanitleak" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitundef.263328086" name="Sanitize undefined behavior (-fsanitize=undefined)" superClass="gnu.c.compiler.option.debugging.sanitundef" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.lib.debug.option.optimization.level.754981545" name="Optimization Level" superClass="com.crt.advproject.gcc.lib.debug.option.optimization.level" useByScannerDiscovery="true" value="gnu.c.optimization.level.optimize" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.verbose.909946789" name="Verbose (-v)" superClass="gnu.c.compiler.option.misc.verbose" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.warnings.extrawarn.1841905769" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.specs.873071331" name="Specs" superClass="com.crt.advproject.gcc.specs" useByScannerDiscovery="false" value="com.crt.advproject.gcc.specs.newlib" valueType="enumerated"/>
+								<inputType id="com.crt.advproject.compiler.input.1454674773" superClass="com.crt.advproject.compiler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.gas.lib.debug.1050063100" name="MCU Assembler" superClass="com.crt.advproject.gas.lib.debug">
+								<option id="com.crt.advproject.gas.thumb.1180778243" name="Thumb mode" superClass="com.crt.advproject.gas.thumb" value="true" valueType="boolean"/>
+								<option id="com.crt.advproject.gas.arch.1263965616" name="Architecture" superClass="com.crt.advproject.gas.arch" value="com.crt.advproject.gas.target.cm4" valueType="enumerated"/>
+								<option id="gnu.both.asm.option.flags.crt.61073078" name="Assembler flags" superClass="gnu.both.asm.option.flags.crt" value="-c -x assembler-with-cpp -DNDEBUG -DCORE_M4 -D__GENERIC_M4__ -D__MCUXPRESSO -D__NEWLIB__" valueType="string"/>
+								<option id="com.crt.advproject.gas.hdrlib.1666326368" name="Library headers" superClass="com.crt.advproject.gas.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gas.hdrlib.newlib" valueType="enumerated"/>
+								<option id="com.crt.advproject.gas.fpu.634074347" name="Floating point" superClass="com.crt.advproject.gas.fpu" value="com.crt.advproject.gas.fpu.fpv4.hard" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="true" id="gnu.both.asm.option.include.paths.202957043" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
+								<option id="com.crt.advproject.gas.specs.1781639081" name="Specs" superClass="com.crt.advproject.gas.specs" value="com.crt.advproject.gas.specs.newlib" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.118657889" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="com.crt.advproject.assembler.input.870777210" name="Additional Assembly Source Files" superClass="com.crt.advproject.assembler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.ar.lib.debug.634575108" name="MCU Archiver" superClass="com.crt.advproject.ar.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Include"/>
+						<entry excluding="Library/Encryption/mbedtls/framework|Devices/Stream/SWO|RTOS/FreeRTOS/portable/GCC/ARM_CM33_NTZ|RTOS/FreeRTOS/portable/GCC/ARM_CM33|Library/Language/C/ltoa.c|Library/Language/C/printf-stdarg.c|Library/Language/C/itoa.c|Processor/NXP/LPC43xx/GCC|Devices/I2C/Mux/PCA9546|Devices/Flash/SST|Devices/Flash/Generic/CFI|Devices/GPIO/I2C/PCF8575|Devices/GPIO/I2C/PCF8574T|Devices/GPIO/I2C/PCA9532|Devices/Touchscreen/MicroChip/AR1020|Library/lwip_2.0.x_old|RTOS/uEZRTOS_CMSIS_V2.c|RTOS/FreeRTOS-Plus/Application-Protocols/coreHTTP/source/dependency/3rdparty/llhttp/src|Processor/NXP/LPC43xx/LPC43xx_CAN.c|Processor/NXP/LPC43xx/LPC43xx_USBHost.c|Processor/NXP/LPC43xx/LPC43xx_USBDeviceController.c|Devices/Flash/NXP/LPC17xx_40xx|Devices/EEPROM/NXP/LPC17xx_40xx|Library/USBDevice/MassStorage|Library/LPCOpen/board.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/OHCI|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/StillImageClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/RNDISClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/PrinterClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/MIDIClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/HIDClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/AudioClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC17XX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC11UXX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC17XX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC11UXX|Processor/NXP/LPC43xx/LPC43xx_USBSharedInterrupt.c|Processor/NXP/LPC43xx/LPC43xx_EMC_Static.c|Devices/USBDevice/NXP/LPC17xx_40xx|Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.c|Processor/NXP/LPC43xx/IAR|Processor/NXP/LPC17xx_40xx|Devices/Flash/Micron|Devices/Flash/Numonyx|Devices/ExternalInterrupt/NXP|Devices/EEPROM/NXP/LPC546xx|Devices/Flash/Renesas|Devices/Flash/NXP/LPC1756|Devices/Light Sensor/ROHM/BH1721FVC|Devices/USBDevice/NXP/LPC1768|Devices/USBDevice/NXP/LPC1756|Devices/Touchscreen/H8SX|Devices/Touchscreen/Semisense|Devices/Touchscreen/Renesas|Devices/Touchscreen/PenMount|Devices/Touchscreen/Novatek|ExpansionBoard/FDI/uEZGUI_EXP_DK|Library/Encryption/mbedtls/3rdparty/everest|Library/Encryption/mbedtls/programs|Library/Encryption/mbedtls/tests|Library/Encryption/wolfSSL|Library/Encryption/wolfSSL/zephyr|Library/FileSystem/FATFS/main.c|Library/FileSystem/Win32|Library/FileSystem/FATFS/documents|Library/Graphics/BMP|Library/GUI/FLNX|Library/GUI/Nano-X|Library/Graphics/JPeg|Library/Graphics/Glyph|Library/Network/wolfMQTT/examples|Library/Modbus|Library/Network/VNC|Library/USBDevice/LPCUSBLib|Library/StreamIO/StdInOut/Generic|Library/StreamIO/StdInOut/GCC/StdInOut_GCC.c|Library/StreamIO/StdInOut/CrossWorks|Library/StreamIO/StdInOut/RenesasRX|Library/StreamIO/StdInOut/Keil|Library/StreamIO/StdInOut/IAR|Library/Tests/Encryption|Library/Tests/RTOS|Library/USBHID/Mouse/USBHID_Mouse_Task.c|Scripts/Compilers/CrossWorks|Library/USBHID/Keyboard/USBHIDKeyboard_Task.c|Library/USBDevice/USBTMC|Library/USBDevice/MassStorage/RAM|Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui|Library/Web/HTTPClient|Library/lwip_2.0.x/arch/sys_arch.c|Library/XML/mxml|Library/lwip_2.0.x/contrib/examples/example_app|Library/lwip_2.0.x/contrib/Coverity|Library/lwip_2.0.x/contrib/addons/tcp_md5|Library/lwip_2.0.x/contrib/addons/netconn|Library/lwip_2.0.x/contrib/ports|Library/lwip_2.0.x/doc|Library/lwip_2.0.x/src/apps/http/makefsdata|Library/lwip_2.0.x/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning|RTOS/FreeRTOS-Plus/AWS/jobs|RTOS/FreeRTOS-Plus/AWS/device-defender/test|RTOS/FreeRTOS-Plus/AWS/device-shadow/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning/test/unit-test/Unity/test|RTOS/FreeRTOS-Plus/AWS/jobs/test|RTOS/FreeRTOS-Plus/AWS/sigv4|RTOS/FreeRTOS-Plus/AWS/ota|RTOS/FreeRTOS-Plus/AWS/sigv4/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreHTTP/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreMQTT-Agent/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreSNTP/docs|RTOS/FreeRTOS-Plus/Application-Protocols/coreMQTT/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreSNTP/test|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/tcp_sockets_wrapper/ports/cellular/tcp_sockets_wrapper.c|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Interface/source|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Interface/test|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-CLI|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Modules|RTOS/FreeRTOS-Plus/backoffAlgorithm/docs|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/portable/NetworkInterface|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/test|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/tools|RTOS/FreeRTOS-Plus/Reliance-Edge|RTOS/FreeRTOS-Plus/Utilities/backoff_algorithm|RTOS/FreeRTOS-Plus/backoffAlgorithm/test|RTOS/FreeRTOS-Plus/coreJSON/test|RTOS/FreeRTOS-Plus/coreJSON/test/unit-test/Unity/test/tests|RTOS/FreeRTOS-Plus/corePKCS11/source/portable/os/posix|RTOS/FreeRTOS-Plus/corePKCS11/source/portable/os/freertos_winsim/core_pkcs11_pal.c|Library/SEGGER/Examples|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_SES.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_KEIL.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_IAR.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_GCC.c|Library/SEGGER/SEGGER_HardFaultHandler.S|Library/SEGGER/SEGGER_HardFaultHandler.c|RTOS/FreeRTOS-Plus/corePKCS11/test|RTOS/FreeRTOS/portable/RVDS|RTOS/FreeRTOS/portable/IAR|RTOS/FreeRTOS/portable/GCC/ARM_CM7|RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU|RTOS/FreeRTOS/portable/GCC/ARM_CM3_MPU|RTOS/FreeRTOS/portable/GCC/ARM_CM3|RTOS/FreeRTOS/portable/GCC/ARM_CM0|Library/lwIP|Platform/NXP|Platform/FDI|Processor/NXP/LPC17xx_40xx/IAR|Processor/NXP/LPC546xx|Processor/NXP/LPC1768|Processor/NXP/LPC1756|Processor/STMicro|Processor/Renesas|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_wolfSSL.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_plaintext.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_mbedtls.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_mbedtls_pkcs11.c|RTOS/uEZRTOS_SafeRTOS.c|RTOS/SafeRTOS|RTOS/uEZRTOS_FreeRTOS.c|RTOS/queue_register.c|RTOS/FreeRTOS/portable/MemMang/heap_2_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Source"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="com.crt.advproject.config.lib.debug.930665921.197885531">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.crt.advproject.config.lib.debug.930665921.197885531" moduleId="org.eclipse.cdt.core.settings" name="Debug_HEAP4_M0">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/uEZ_NXP_LPC4357_FreeRTOS"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/uEZ_NXP_LPC4357_FreeRTOS/Debug_HEAP4_M0"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="uEZ_NXP_LPC4357_FreeRTOS" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib" cleanCommand="rm -rf" description="M0 Lib build" errorParsers="org.eclipse.cdt.core.CWDLocator;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="com.crt.advproject.config.lib.debug.930665921.197885531" name="Debug_HEAP4_M0" parent="com.crt.advproject.config.lib.debug" postannouncebuildStep="Performing post-build steps" postbuildStep="arm-none-eabi-size &quot;lib${BuildArtifactFileName}&quot; ; # arm-none-eabi-objdump -h -S &quot;lib${BuildArtifactFileName}&quot; &gt;&quot;${BuildArtifactFileBaseName}.lss&quot;">
+					<folderInfo id="com.crt.advproject.config.lib.debug.930665921.197885531." name="/" resourcePath="">
+						<toolChain id="com.crt.advproject.toolchain.lib.debug.1659822555" name="NXP MCU Tools" superClass="com.crt.advproject.toolchain.lib.debug">
+							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="com.crt.advproject.platform.lib.debug.1206901901" name="ARM-based MCU (Debug)" superClass="com.crt.advproject.platform.lib.debug"/>
+							<builder buildPath="${workspace_loc:/MCUXpresso}/Debug" id="com.crt.advproject.builder.lib.debug.738298533" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="com.crt.advproject.builder.lib.debug"/>
+							<tool id="com.crt.advproject.cpp.lib.debug.1063202645" name="MCU C++ Compiler" superClass="com.crt.advproject.cpp.lib.debug">
+								<option id="com.crt.advproject.cpp.hdrlib.78346141" name="Library headers" superClass="com.crt.advproject.cpp.hdrlib" useByScannerDiscovery="false"/>
+								<option id="com.crt.advproject.cpp.fpu.1608528843" name="Floating point" superClass="com.crt.advproject.cpp.fpu" useByScannerDiscovery="true"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.1001840708" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false"/>
+							</tool>
+							<tool id="com.crt.advproject.gcc.lib.debug.1655204718" name="MCU C Compiler" superClass="com.crt.advproject.gcc.lib.debug">
+								<option id="com.crt.advproject.gcc.thumb.854206550" name="Thumb mode" superClass="com.crt.advproject.gcc.thumb" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.arch.1818380752" name="Architecture" superClass="com.crt.advproject.gcc.arch" useByScannerDiscovery="true" value="com.crt.advproject.gcc.target.cm0" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1518190023" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="STARTUP_FROM_RESET"/>
+									<listOptionValue builtIn="false" value="__THUMB"/>
+									<listOptionValue builtIn="false" value="UEZ_LIBRARY"/>
+									<listOptionValue builtIn="false" value="LWIP_2_0_x"/>
+									<listOptionValue builtIn="false" value="CORE_M0"/>
+									<listOptionValue builtIn="false" value="FREERTOS_HEAP_SELECTION=4"/>
+									<listOptionValue builtIn="false" value="DEBUG"/>
+									<listOptionValue builtIn="false" value="__MCUXPRESSO"/>
+									<listOptionValue builtIn="false" value="CR_PRINTF_CHAR"/>
+									<listOptionValue builtIn="false" value="__NEWLIB__"/>
+								</option>
+								<option id="gnu.c.compiler.option.misc.other.1061749687" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fms-extensions -Wno-strict-aliasing -ffunction-sections -fdata-sections -fsingle-precision-constant -Wformat=0 -Wno-address-of-packed-member" valueType="string"/>
+								<option id="gnu.c.compiler.option.optimization.flags.667730483" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fno-common" valueType="string"/>
+								<option id="com.crt.advproject.gcc.hdrlib.1596375041" name="Library headers" superClass="com.crt.advproject.gcc.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gcc.hdrlib.newlib" valueType="enumerated"/>
+								<option id="com.crt.advproject.gcc.fpu.907019203" name="Floating point" superClass="com.crt.advproject.gcc.fpu" useByScannerDiscovery="true" value="com.crt.advproject.gcc.fpu.none" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.1880406636" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="${ProjDirPath}/"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS/portable/GCC/ARM_CM0"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/GCC"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/Common/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Processor/NXP/LPC43xx/Common/include/CMSIS"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/mbedtls/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/mbedtls"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/src/include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/Include"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/system"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/lwip_2.0.x/system/arch"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/LPCOpen"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/LPCOpen/chip_18xx_43xx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/GUI/SEGGER/emWin"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Platform/emWin/Inc"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Platform/emWin/Config"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/wolfssl"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/ctaocrypt"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Encryption/wolfSSL/cyassl/openssl"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../../Source/Library/Network/wolfMQTT"/>
+								</option>
+								<option id="com.crt.advproject.c.misc.dialect.2143491588" name="Language standard" superClass="com.crt.advproject.c.misc.dialect" useByScannerDiscovery="true" value="com.crt.advproject.misc.dialect.gnu17" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.debugging.prof.496027882" name="Generate prof information (-p)" superClass="gnu.c.compiler.option.debugging.prof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.gprof.915411304" name="Generate gprof information (-pg)" superClass="gnu.c.compiler.option.debugging.gprof" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.codecov.19387146" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.c.compiler.option.debugging.codecov" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitaddress.1443696615" name="Sanitize address (-fsanitize=address)" superClass="gnu.c.compiler.option.debugging.sanitaddress" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitpointers.875920155" name="Sanitize pointer operations (-fsanitize=pointer-compare -fsanitize=pointer-subtract)" superClass="gnu.c.compiler.option.debugging.sanitpointers" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitthread.1986264123" name="Sanitize data race in multi-thread (-fsanitize=thread)" superClass="gnu.c.compiler.option.debugging.sanitthread" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitleak.334562672" name="Sanitize memory leak (-fsanitize=leak)" superClass="gnu.c.compiler.option.debugging.sanitleak" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.debugging.sanitundef.1024554474" name="Sanitize undefined behavior (-fsanitize=undefined)" superClass="gnu.c.compiler.option.debugging.sanitundef" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.lib.debug.option.optimization.level.1881900532" name="Optimization Level" superClass="com.crt.advproject.gcc.lib.debug.option.optimization.level" useByScannerDiscovery="true" value="gnu.c.optimization.level.optimize" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.verbose.301827454" name="Verbose (-v)" superClass="gnu.c.compiler.option.misc.verbose" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.warnings.extrawarn.1555740826" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.specs.317756171" name="Specs" superClass="com.crt.advproject.gcc.specs" useByScannerDiscovery="false" value="com.crt.advproject.gcc.specs.newlib" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.ansi.207830224" name="Support ANSI programs (-ansi)" superClass="gnu.c.compiler.option.misc.ansi" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.crt.advproject.gcc.stackusage.1608964204" name="Generate Stack Usage Info (-fstack-usage)" superClass="com.crt.advproject.gcc.stackusage" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<inputType id="com.crt.advproject.compiler.input.698836474" superClass="com.crt.advproject.compiler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.gas.lib.debug.1855395866" name="MCU Assembler" superClass="com.crt.advproject.gas.lib.debug">
+								<option id="com.crt.advproject.gas.thumb.322216769" name="Thumb mode" superClass="com.crt.advproject.gas.thumb" value="true" valueType="boolean"/>
+								<option id="com.crt.advproject.gas.arch.323108396" name="Architecture" superClass="com.crt.advproject.gas.arch" value="com.crt.advproject.gas.target.cm0" valueType="enumerated"/>
+								<option id="gnu.both.asm.option.flags.crt.1363887783" name="Assembler flags" superClass="gnu.both.asm.option.flags.crt" value="-c -x assembler-with-cpp -DDEBUG -DCORE_M0 -D__GENERIC_M0__ -D__MCUXPRESSO -D__NEWLIB__" valueType="string"/>
+								<option id="com.crt.advproject.gas.hdrlib.1610769661" name="Library headers" superClass="com.crt.advproject.gas.hdrlib" useByScannerDiscovery="false" value="com.crt.advproject.gas.hdrlib.newlib" valueType="enumerated"/>
+								<option id="com.crt.advproject.gas.fpu.814856112" name="Floating point" superClass="com.crt.advproject.gas.fpu" value="com.crt.advproject.gas.fpu.none" valueType="enumerated"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="true" id="gnu.both.asm.option.include.paths.1253635139" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath"/>
+								<option id="com.crt.advproject.gas.specs.1781361651" name="Specs" superClass="com.crt.advproject.gas.specs" value="com.crt.advproject.gas.specs.newlib" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.924228987" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+								<inputType id="com.crt.advproject.assembler.input.809853446" name="Additional Assembly Source Files" superClass="com.crt.advproject.assembler.input"/>
+							</tool>
+							<tool id="com.crt.advproject.ar.lib.debug.694876359" name="MCU Archiver" superClass="com.crt.advproject.ar.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+					<sourceEntries>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Include"/>
+						<entry excluding="Library/Encryption/mbedtls/framework|Processor/NXP/LPC43xx/LPC43xx_PLL.c|Processor/NXP/LPC43xx/LPC43xx_SDRAM.c|RTOS/FreeRTOS/portable/GCC/ARM_CM4F|Devices/Stream/SWO|RTOS/FreeRTOS/portable/GCC/ARM_CM33_NTZ|RTOS/FreeRTOS/portable/GCC/ARM_CM33|Library/Language/C/ltoa.c|Library/Language/C/printf-stdarg.c|Library/Language/C/itoa.c|Processor/NXP/LPC43xx/GCC|Devices/I2C/Mux/PCA9546|Devices/Flash/SST|Devices/Flash/Generic/CFI|Devices/GPIO/I2C/PCF8575|Devices/GPIO/I2C/PCF8574T|Devices/GPIO/I2C/PCA9532|Devices/Touchscreen/MicroChip/AR1020|Library/lwip_2.0.x_old|RTOS/uEZRTOS_CMSIS_V2.c|RTOS/FreeRTOS-Plus/Application-Protocols/coreHTTP/source/dependency/3rdparty/llhttp/src|Processor/NXP/LPC43xx/LPC43xx_CAN.c|Processor/NXP/LPC43xx/LPC43xx_USBHost.c|Processor/NXP/LPC43xx/LPC43xx_USBDeviceController.c|Devices/Flash/NXP/LPC17xx_40xx|Devices/EEPROM/NXP/LPC17xx_40xx|Library/USBDevice/MassStorage|Library/LPCOpen/board.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HCD/OHCI|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/StillImageClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/RNDISClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/PrinterClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/MIDIClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/HIDClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Class/Host/AudioClassHost.c|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC17XX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/DCD/LPC11UXX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC17XX|Library/LPCOpen/LPCUSBLib/Drivers/USB/Core/HAL/LPC11UXX|Processor/NXP/LPC43xx/LPC43xx_USBSharedInterrupt.c|Processor/NXP/LPC43xx/LPC43xx_EMC_Static.c|Devices/USBDevice/NXP/LPC17xx_40xx|Devices/MassStorage/SDCard/SDCard_MS_driver_MCI.c|Processor/NXP/LPC43xx/IAR|Processor/NXP/LPC17xx_40xx|Devices/Flash/Micron|Devices/Flash/Numonyx|Devices/ExternalInterrupt/NXP|Devices/EEPROM/NXP/LPC546xx|Devices/Flash/Renesas|Devices/Flash/NXP/LPC1756|Devices/Light Sensor/ROHM/BH1721FVC|Devices/USBDevice/NXP/LPC1768|Devices/USBDevice/NXP/LPC1756|Devices/Touchscreen/H8SX|Devices/Touchscreen/Semisense|Devices/Touchscreen/Renesas|Devices/Touchscreen/PenMount|Devices/Touchscreen/Novatek|ExpansionBoard/FDI/uEZGUI_EXP_DK|Library/Encryption/mbedtls/3rdparty/everest|Library/Encryption/mbedtls/programs|Library/Encryption/mbedtls/tests|Library/Encryption/wolfSSL|Library/Encryption/wolfSSL/zephyr|Library/FileSystem/FATFS/main.c|Library/FileSystem/Win32|Library/FileSystem/FATFS/documents|Library/Graphics/BMP|Library/GUI/FLNX|Library/GUI/Nano-X|Library/Graphics/JPeg|Library/Graphics/Glyph|Library/Network/wolfMQTT/examples|Library/Modbus|Library/Network/VNC|Library/USBDevice/LPCUSBLib|Library/StreamIO/StdInOut/Generic|Library/StreamIO/StdInOut/GCC/StdInOut_GCC.c|Library/StreamIO/StdInOut/CrossWorks|Library/StreamIO/StdInOut/RenesasRX|Library/StreamIO/StdInOut/Keil|Library/StreamIO/StdInOut/IAR|Library/Tests/Encryption|Library/Tests/RTOS|Library/USBHID/Mouse/USBHID_Mouse_Task.c|Scripts/Compilers/CrossWorks|Library/USBHID/Keyboard/USBHIDKeyboard_Task.c|Library/USBDevice/USBTMC|Library/USBDevice/MassStorage/RAM|Library/Web/AWSIoTClient/aws_iot/iot-reference/demo_gui|Library/Web/HTTPClient|Library/lwip_2.0.x/arch/sys_arch.c|Library/XML/mxml|Library/lwip_2.0.x/contrib/examples/example_app|Library/lwip_2.0.x/contrib/Coverity|Library/lwip_2.0.x/contrib/addons/tcp_md5|Library/lwip_2.0.x/contrib/addons/netconn|Library/lwip_2.0.x/contrib/ports|Library/lwip_2.0.x/doc|Library/lwip_2.0.x/src/apps/http/makefsdata|Library/lwip_2.0.x/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning|RTOS/FreeRTOS-Plus/AWS/jobs|RTOS/FreeRTOS-Plus/AWS/device-defender/test|RTOS/FreeRTOS-Plus/AWS/device-shadow/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning/test|RTOS/FreeRTOS-Plus/AWS/fleet-provisioning/test/unit-test/Unity/test|RTOS/FreeRTOS-Plus/AWS/jobs/test|RTOS/FreeRTOS-Plus/AWS/sigv4|RTOS/FreeRTOS-Plus/AWS/ota|RTOS/FreeRTOS-Plus/AWS/sigv4/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreHTTP/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreMQTT-Agent/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreSNTP/docs|RTOS/FreeRTOS-Plus/Application-Protocols/coreMQTT/test|RTOS/FreeRTOS-Plus/Application-Protocols/coreSNTP/test|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/tcp_sockets_wrapper/ports/cellular/tcp_sockets_wrapper.c|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Interface/source|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Interface/test|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-CLI|RTOS/FreeRTOS-Plus/FreeRTOS-Cellular-Modules|RTOS/FreeRTOS-Plus/backoffAlgorithm/docs|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/source/portable/NetworkInterface|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/test|RTOS/FreeRTOS-Plus/FreeRTOS-Plus-TCP/tools|RTOS/FreeRTOS-Plus/Reliance-Edge|RTOS/FreeRTOS-Plus/Utilities/backoff_algorithm|RTOS/FreeRTOS-Plus/backoffAlgorithm/test|RTOS/FreeRTOS-Plus/coreJSON/test|RTOS/FreeRTOS-Plus/coreJSON/test/unit-test/Unity/test/tests|RTOS/FreeRTOS-Plus/corePKCS11/source/portable/os/posix|RTOS/FreeRTOS-Plus/corePKCS11/source/portable/os/freertos_winsim/core_pkcs11_pal.c|Library/SEGGER/Examples|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_SES.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_KEIL.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_IAR.c|Library/SEGGER/RTT/SEGGER_RTT_Syscalls_GCC.c|Library/SEGGER/SEGGER_HardFaultHandler.S|Library/SEGGER/SEGGER_HardFaultHandler.c|RTOS/FreeRTOS-Plus/corePKCS11/test|RTOS/FreeRTOS/portable/RVDS|RTOS/FreeRTOS/portable/IAR|RTOS/FreeRTOS/portable/GCC/ARM_CM7|RTOS/FreeRTOS/portable/GCC/ARM_CM4_MPU|RTOS/FreeRTOS/portable/GCC/ARM_CM3_MPU|RTOS/FreeRTOS/portable/GCC/ARM_CM3|Library/lwIP|Platform/NXP|Platform/FDI|Processor/NXP/LPC17xx_40xx/IAR|Processor/NXP/LPC546xx|Processor/NXP/LPC1768|Processor/NXP/LPC1756|Processor/STMicro|Processor/Renesas|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_wolfSSL.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_plaintext.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_mbedtls.c|RTOS/FreeRTOS-Plus/Application-Protocols/network_transport/transport_mbedtls_pkcs11.c|RTOS/uEZRTOS_SafeRTOS.c|RTOS/SafeRTOS|RTOS/uEZRTOS_FreeRTOS.c|RTOS/queue_register.c|RTOS/FreeRTOS/portable/MemMang/heap_2_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Source"/>
+					</sourceEntries>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="MCUXpresso.com.crt.advproject.projecttype.lib.761047751" name="Static Library" projectType="com.crt.advproject.projecttype.lib"/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="com.crt.config">
+		<projectStorage>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;TargetConfig&gt;
+&lt;Properties property_2="LPC177x_8x_407x_8x_512.cfx" property_3="NXP" property_4="LPC4357" property_count="5" version="100300"/&gt;
+&lt;infoList vendor="NXP"&gt;
+&lt;info chip="LPC4357" flash_driver="LPC18x7_43x7_2x512_BootA.cfx" match_id="0x0" name="LPC4357" resetscript="LPC18LPC43InternalFLASHBootResetscript.scp" stub="crt_emu_lpc18_43_nxp"&gt;
+&lt;chip&gt;
+&lt;name&gt;LPC4357&lt;/name&gt;
+&lt;family&gt;LPC43xx&lt;/family&gt;
+&lt;vendor&gt;NXP (formerly Philips)&lt;/vendor&gt;
+&lt;reset board="None" core="Real" sys="Real"/&gt;
+&lt;clock changeable="TRUE" freq="20MHz" is_accurate="TRUE"/&gt;
+&lt;memory can_program="true" id="Flash" is_ro="true" type="Flash"/&gt;
+&lt;memory id="RAM" type="RAM"/&gt;
+&lt;memory id="Periph" is_volatile="true" type="Peripheral"/&gt;
+&lt;memoryInstance derived_from="Flash" edited="true" id="MFlash512" location="0x0" size="0x80000"/&gt;
+&lt;memoryInstance derived_from="RAM" edited="true" id="RamLoc64" location="0x10000000" size="0x10000"/&gt;
+&lt;memoryInstance derived_from="RAM" edited="true" id="RamPeriph32" location="0x20000000" size="0x8000"/&gt;
+&lt;prog_flash blocksz="0x2000" location="0x1a000000" maxprgbuff="0x400" progwithcode="TRUE" size="0x10000"/&gt;
+&lt;prog_flash blocksz="0x10000" location="0x1a010000" maxprgbuff="0x400" progwithcode="TRUE" size="0x70000"/&gt;
+&lt;prog_flash blocksz="0x2000" location="0x1b000000" maxprgbuff="0x400" progwithcode="TRUE" size="0x10000"/&gt;
+&lt;prog_flash blocksz="0x10000" location="0x1b010000" maxprgbuff="0x400" progwithcode="TRUE" size="0x70000"/&gt;
+&lt;/chip&gt;
+&lt;processor&gt;
+&lt;name gcc_name="cortex-m4"&gt;Cortex-M4&lt;/name&gt;
+&lt;family&gt;Cortex-M&lt;/family&gt;
+&lt;/processor&gt;
+&lt;/info&gt;
+&lt;/infoList&gt;
+&lt;/TargetConfig&gt;</projectStorage>
+	</storageModule>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release_HEAP4"/>
+		<configuration configurationName="Multiple configurations">
+			<resource resourceType="PROJECT" workspacePath="/MCUXpresso"/>
+		</configuration>
+		<configuration configurationName="Debug_HEAP4">
+			<resource resourceType="PROJECT" workspacePath="/uEZ_NXP_LPC4357_FreeRTOS"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/MCUXpresso"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/MCUXpresso"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.lib.debug.930665921;com.crt.advproject.config.lib.debug.930665921.;com.crt.advproject.gcc.lib.debug.2203783;com.crt.advproject.compiler.input.1920071746">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.lib.debug.930665921;com.crt.advproject.config.lib.debug.930665921.;com.crt.advproject.gas.lib.debug.229635683;com.crt.advproject.assembler.input.26073495">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.crt.advproject.GCCManagedMakePerProjectProfile"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="openCmsis"/>
+	<storageModule moduleId="com.crt.advproject"/>
+</cproject>

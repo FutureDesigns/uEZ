@@ -72,11 +72,13 @@ HCD_STATUS HcdDeInitDriver(uint8_t HostID)
 
 HCD_STATUS HcdRhPortEnable(uint8_t HostID)
 {
+        (void)(HostID);
 	return HCD_STATUS_OK;
 }
 
 HCD_STATUS HcdRhPortDisable(uint8_t HostID)
 {
+        (void)(HostID);
 	return HCD_STATUS_OK;
 }
 
@@ -98,6 +100,7 @@ HCD_STATUS HcdRhPortReset(uint8_t HostID)
 
 HCD_STATUS HcdClearEndpointHalt(uint32_t PipeHandle)// FIXME not implemented
 {
+        (void)(PipeHandle);
 	return HCD_STATUS_OK;
 }
 

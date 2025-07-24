@@ -167,6 +167,7 @@ T_uezError Software_CRC_Create(const char *aName)
  *---------------------------------------------------------------------------*/
 T_uezError Software_CRC_Open(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 
@@ -182,6 +183,7 @@ T_uezError Software_CRC_Open(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError Software_CRC_Close(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 

@@ -144,8 +144,8 @@
 #define ETHARP_DEBUG                    LWIP_DBG_OFF
 #define NETIF_DEBUG                     LWIP_DBG_OFF
 #define PBUF_DEBUG                      LWIP_DBG_OFF
-#define API_LIB_DEBUG                   LWIP_DBG_ON
-#define API_MSG_DEBUG                   LWIP_DBG_ON
+#define API_LIB_DEBUG                   LWIP_DBG_OFF
+#define API_MSG_DEBUG                   LWIP_DBG_OFF
 #define SOCKETS_DEBUG                   LWIP_DBG_OFF
 #define ICMP_DEBUG                      LWIP_DBG_OFF
 #define IGMP_DEBUG                      LWIP_DBG_OFF
@@ -155,7 +155,7 @@
 #define RAW_DEBUG                       LWIP_DBG_OFF
 #define MEM_DEBUG                       LWIP_DBG_OFF
 #define MEMP_DEBUG                      LWIP_DBG_OFF
-#define SYS_DEBUG                       LWIP_DBG_ON
+#define SYS_DEBUG                       LWIP_DBG_OFF
 #define THREAD_SAFE_DEBUG               LWIP_DBG_ON
 #define TCP_DEBUG                       LWIP_DBG_OFF
 #define TCP_INPUT_DEBUG                 LWIP_DBG_OFF
@@ -172,11 +172,12 @@
 #define SLIP_DEBUG                      LWIP_DBG_OFF
 #define DHCP_DEBUG                      LWIP_DBG_OFF
 #define AUTOIP_DEBUG                    LWIP_DBG_OFF
-#define SNMP_MSG_DEBUG                  LWIP_DBG_ON
-#define SNMP_MIB_DEBUG                  LWIP_DBG_ON
+#define SNMP_MSG_DEBUG                  LWIP_DBG_OFF
+#define SNMP_MIB_DEBUG                  LWIP_DBG_OFF
 #define DNS_DEBUG                       LWIP_DBG_OFF
 #define DHCP6_DEBUG                     LWIP_DBG_OFF
-#define SNTP_DEBUG                      LWIP_DBG_ON
+#define SNTP_DEBUG                      LWIP_DBG_OFF
+#define FTPD_DEBUG                      LWIP_DBG_ON
 
 /* ---------- Statistics options ---------- */
 #if (LWIP_SNMP == 1)
@@ -612,6 +613,8 @@
  */
 //#define ETH_PAD_SIZE                    2 //Currently broken
 
+
+//#define TFTP_MAX_FILENAME_LEN 30 // To increase directory length for tftp server change this.
 
 
 #else // LWIP1

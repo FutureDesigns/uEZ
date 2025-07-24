@@ -638,6 +638,7 @@ T_uezError FS_FATFS_DeleteReadOnly(
             const char * const aFilename)
 {
     PARAM_NOT_USED(aWorkspace);
+    (void)(aFilename);
 
     // Don't even try, just return error
     return IFATFS_ConvertResultCodeToErrorCode(FR_WRITE_PROTECTED);
@@ -864,6 +865,7 @@ T_uezError FS_FATFS_FindStop(
             void *aWorkspace,
             T_uezFileEntry *aEntry)
 {
+    PARAM_NOT_USED(aWorkspace);
 #ifdef NO_DYNAMIC_MEMORY_ALLOC
     T_FATFS_FileSystem_Workspace *p = (T_FATFS_FileSystem_Workspace *)aWorkspace;
 #endif
@@ -1092,6 +1094,8 @@ T_uezError FS_FATFS_RenameReadOnly(
     const char * const aNewFilename)
 {
     PARAM_NOT_USED(aWorkspace);
+    (void)(aOldFilename);
+    (void)(aNewFilename);
 
     // Don't even try, just return error
     return IFATFS_ConvertResultCodeToErrorCode(FR_WRITE_PROTECTED);
@@ -1150,6 +1154,7 @@ T_uezError FS_FATFS_MakeDirectoryReadOnly(
     const char * const aDirectoryName)
 {
     PARAM_NOT_USED(aWorkspace);
+    (void)(aDirectoryName);
 
     // Don't even try, just return error
     return IFATFS_ConvertResultCodeToErrorCode(FR_WRITE_PROTECTED);
@@ -1185,6 +1190,7 @@ T_uezError FS_FATFS_MakeDirectoryReadOnly(
 /*---------------------------------------------------------------------------*/
 void FileSystem_FATFS_Create(const char *aName)
 {
+    PARAM_NOT_USED(aName);
     // Setup the FAT file system device
     UEZDeviceTableRegister(
             "FATFS",
@@ -1224,6 +1230,7 @@ void FileSystem_FATFS_Create(const char *aName)
 /*---------------------------------------------------------------------------*/
 void FileSystem_FATFS_Create_ReadOnly(const char *aName)
 {
+    PARAM_NOT_USED(aName);
     // Setup the FAT file system device
     UEZDeviceTableRegister(
             "FATFS",

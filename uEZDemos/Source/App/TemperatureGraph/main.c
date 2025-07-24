@@ -48,10 +48,26 @@
 #include "emWin/WindowManager.h"
 #include "emWin/TemperatureGraph.h"
 #include <uEZWatchdog.h>
+#include <uEZMemory.h>
 
 #include <HAL/GPIO.h>
+#include <uEZGPIO.h>
 
 #define HEARTBEAT_BLINK_DELAY			 250
+
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  4
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
+#endif
 
 TBool G_usbIsDevice;
 

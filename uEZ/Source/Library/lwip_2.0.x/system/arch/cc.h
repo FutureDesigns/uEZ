@@ -42,11 +42,27 @@
 
 #include "cpu.h"
 #include <Config.h>
+
+// Include both of these before the below define checks and include that before time.h
+#include <stdint.h> //  for int types
 #include <stdlib.h>
-#include <stdint.h> /* for int types */
+
+#ifndef _CLOCK_T_ // Rowley Runtime
+  //#undef __CLOCK_T_DEFINED // not needed or used in Rowley yet
+#else // Standard GCC runtime
+  #ifndef __machine_clock_t_defined
+    #define __machine_clock_t_defined
+    typedef       _CLOCK_T_       clock_t;
+    #define __clock_t_defined
+    #define _CLOCK_T_DECLARED
+  #endif
+#endif
+
+#include <time.h> // TODO can we include time.h yet on IAR and does it work?
+
 #include <uEZTypes.h> // bring in cmsis functions for btye swap, they are different for each toolchain
 #include <uEZPacked.h>
-//#include <time.h> // this isn't working properly in IAR yet
+
 #include <sys/time.h> // uez has own timeval definition
 
 #ifdef __cplusplus
@@ -59,6 +75,7 @@ extern "C" {
 
 #define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS // provide our platform specific byte swap for perf
 
+// Always use optimized functions provided by CMSIS or similar for these, not the toolchain specific variants.
 #define htons(x) __REVSH(x) // IAR doesn't have __builtin_bswap16 and related, but has iar__ versions
 #define ntohs(x) __REVSH(x) // get __builtin_bswap16(x) from cmsis
 #define htonl(x) __REV(x) // get __builtin_bswap32(x) from cmsis
@@ -126,6 +143,9 @@ typedef int32_t sys_prot_t;
 #endif
 
 #include <stdio.h>
+
+
+#define LWIP_NO_CTYPE_H 1 // use provided defines in arch.h instead of ctype.h
 
 #if 0
 #ifdef NDEBUG

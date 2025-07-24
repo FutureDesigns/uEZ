@@ -43,11 +43,13 @@ void USB_Event_Stub(void)
 }
 void USB_Event_Stub_param(const uint8_t ErrorCode)
 {
+  (void)(ErrorCode);
 
 }
 void USB_Event_Stub_param_2(const uint8_t ErrorCode, const uint8_t SubErrorCode)
 {
-
+  (void)(ErrorCode);
+  (void)(SubErrorCode);
 }
 #if defined(__ICCARM__)
 void USB_Host_HostError_Event_Stub(const uint8_t ErrorCode)

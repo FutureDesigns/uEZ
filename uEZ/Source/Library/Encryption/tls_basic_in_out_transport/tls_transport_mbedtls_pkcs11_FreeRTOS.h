@@ -1,5 +1,5 @@
 /*
- * FreeRTOS V202212.01
+ * FreeRTOS V202411.00
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  * Copyright 2022 NXP
  *
@@ -50,13 +50,14 @@
 
 /* mbed TLS includes. */
 #include "mbedtls/debug.h"
+#include "mbedtls/build_info.h" // Note that we can retrieve mbedtls version number here to use in our software or demo
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/threading.h"
 #include "mbedtls/x509.h"
 #include "mbedtls/pk.h"
-//#include "mbedtls/pk_internal.h" // future mbedtls
+//#include "mbedtls/pk_internal.h" // use in future mbedtls or remove this from here (this file DOES exist in 3.6.x)
 #include "mbedtls/error.h"
 
 #include "library/pk_wrap.h"
@@ -97,9 +98,8 @@ typedef struct SSLContext
 typedef struct TlsTransportParams
 {
     T_uezDevice         aNetwork;
-    T_uezNetworkSocket  tcpSocket;
-    // original
-    //Socket_t tcpSocket;
+    //Socket_t tcpSocket; // original socket type
+    T_uezNetworkSocket  tcpSocket; // replaced with uEZ socket type
     SSLContext_t sslContext;
 } TlsTransportParams_t;
 
@@ -196,7 +196,7 @@ int32_t TLS_FreeRTOS_recv( NetworkContext_t * pNetworkContext,
 /**
  * @brief Sends data over an established TLS connection.
  *
- * This is the TLS version of the transport interface's
+ * @note This is the TLS version of the transport interface's
  * #TransportSend_t function.
  *
  * @param[in] pNetworkContext The network context.
@@ -210,5 +210,26 @@ int32_t TLS_FreeRTOS_recv( NetworkContext_t * pNetworkContext,
 int32_t TLS_FreeRTOS_send( NetworkContext_t * pNetworkContext,
                            const void * pBuffer,
                            size_t bytesToSend );
+
+
+#ifdef MBEDTLS_DEBUG_C
+
+/**
+ * @brief Write an MBedTLS Debug message to the LogDebug() function
+ *
+ * @param[in] sslContext Pointer of the SSL Context that is being used
+ * @param[in] level The severity level of the debug message from MBedTLS
+ * @param[in] file Name of the file that the debug message is from
+ * @param[in] line The line number that the debug message is from
+ * @param[in] str The full string debug message from MBedTLS
+ *
+ * @return void
+ */
+    void mbedtls_string_printf( void * sslContext,
+                                int level,
+                                const char * file,
+                                int line,
+                                const char * str );
+#endif /* MBEDTLS_DEBUG_C */
 
 #endif /* ifndef TLS_TRANSPORT_MBEDTLS_PKCS11_FREERTOS */

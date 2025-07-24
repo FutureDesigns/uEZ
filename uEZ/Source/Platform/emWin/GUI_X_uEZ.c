@@ -26,7 +26,6 @@ Purpose     : Config / System dependent externals for GUI
 #include "uEZRTOS.h"
 #include "GUI.h"
 #include "task.h"
-//#include <intrinsics.h>
 
 /*********************************************************************
 *
@@ -56,11 +55,11 @@ static T_uezSemaphore _RSema;
   1 ms.
 */
 
-int32_t GUI_X_GetTime(void) {
+GUI_TIMER_TIME GUI_X_GetTime(void) {
   return UEZTickCounterGet();
 }
 
-void GUI_X_Delay(int32_t Period) {
+void GUI_X_Delay(int Period) {
   UEZTaskDelay(Period);
 }
 

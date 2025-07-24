@@ -129,9 +129,8 @@
 #include <uEZAudioMixer.h>
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
 
-#include <Source/Library/FileSystem/FATFS/uEZFileSystem_FATFS.h>
-
 extern int32_t MainTask(void);
+
 /*---------------------------------------------------------------------------*
  * Constants:
  *---------------------------------------------------------------------------*/
@@ -141,6 +140,10 @@ extern int32_t MainTask(void);
 
 #ifndef UEZGUI_7_REV2_BOARD_SWAP_TP_LINES
   #define UEZGUI_7_REV2_BOARD_SWAP_TP_LINES           1
+#endif
+
+#ifndef HEAP_ENABLED_ON_EXTERNAL_RAM
+#define HEAP_ENABLED_ON_EXTERNAL_RAM    1 // 0 for NoSDRAM builds
 #endif
 
 /*---------------------------------------------------------------------------*
@@ -153,11 +156,12 @@ T_uezTask G_mainTask;
  *---------------------------------------------------------------------------*/
 //Allocate general purpose frames memory
 #if (MAX_NUM_FRAMES > 0)
-UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]);
+//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]); // only allocate 2 permanent frames, might be compatible with emWin, but not FDI demos
+UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [FRAME_SIZE*2]); // only allocate 2 frames permanently, use heap for more
 TUInt8 *_framesMemoryptr = _framesMemory;
-#else
-UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]);
-TUInt8 *_framesMemoryptr = _framesMemory;
+#else // LCD not being used, don't create frames section
+//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]); // don't create a dummy frames section anymore
+TUInt8 *_framesMemoryptr = (TUInt8 *) UEZBSP_SDRAM_BASE_ADDR; // dummy variable that we aren't using if we don't call framebuffer code.
 #endif
 
 // See Users Manual UM10470 Section 37.6 Code Read Protection. If you set these to certain bytes JTAG will be disabled.
@@ -537,15 +541,13 @@ void UEZBSP_CPU_PinConfigInit(void)
 }
 
 #if (defined __GNUC__) // GCC
-//(uint32_t*)&.frames)));
 
-#define RAMTEST_START_ADDRESS ((const uint32_t) &".frames")
+#define RAMTEST_START_ADDRESS ((const uint32_t) __SDRAM_segment_start__) //&".frames")
 #define RAMTEST_LENGTH (const uint32_t)(((uint32_t)UEZBSP_SDRAM_SIZE) - RAMTEST_START_ADDRESS)
 
 #elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
 // Must declare these pragmas before below section placement if IAR
-#pragma section = ".frames"
-#define RAMTEST_START_ADDRESS &".frames"
+#define RAMTEST_START_ADDRESS UEZBSP_SDRAM_BASE_ADDR
 #define RAMTEST_LENGTH (UEZBSP_SDRAM_SIZE-RAMTEST_START_ADDRESS)
 
 #endif
@@ -556,6 +558,7 @@ void UEZBSP_CPU_PinConfigInit(void)
  * Description:
  *      Perform any tests before things such as zero mem are performed.
  *      Called after external RAM and ROM are setup. (end of SystemInit)
+ *      Safe to access SDRAM here.
  *---------------------------------------------------------------------------*/
 void UEZBSP_Post_SystemInit(void)
 {
@@ -724,7 +727,7 @@ void UEZBSP_FatalError(int32_t aErrorCode)
 
     // Configure status led to be fully in our control
     // Make P1.13 be a GPIO pin
-    LPC_GPIO1->PIN &= (uint32_t) ~(3 << 3);
+    LPC_GPIO1->PIN &= (uint32_t) (~(3 << 3));
     // and an output pin
     LPC_GPIO1->DIR |= (1 << 13);
 
@@ -816,7 +819,6 @@ void UEZPlatform_I2C2_Require(void)
     LPC17xx_40xx_GPIO0_Require();
     LPC17xx_40xx_I2C2_Require(GPIO_P0_10, GPIO_P0_11);
     I2C_Generic_Create("I2C2", "I2C2", 0);
-
 }
 
 /*---------------------------------------------------------------------------*
@@ -860,7 +862,7 @@ void UEZPlatform_Accel0_Require(void)
     r.iWriteLength = 1; // send 1 byte
     r.iWriteTimeout = UEZ_TIMEOUT_INFINITE;
     r.iReadData = &dataIn;
-    r.iReadLength = 1; // read 20 bytes
+    r.iReadLength = 1; // read 1 bytes
     r.iReadTimeout = UEZ_TIMEOUT_INFINITE;
 
     error = UEZI2CTransaction(I2C, &r);
@@ -1159,6 +1161,8 @@ void UEZPlatform_Console_FullDuplex_UART2_Require(
         TUInt32 aWriteBufferSize,
         TUInt32 aReadBufferSize)
 {
+    PARAM_NOT_USED(aWriteBufferSize);
+    PARAM_NOT_USED(aReadBufferSize);
     // UART2 on P0.10/P0.11
     LPC17xx_40xx_GPIO0_Require();
     LPC17xx_40xx_UART2_Require(GPIO_P0_10, GPIO_P0_11);
@@ -1236,7 +1240,7 @@ void UEZPlatform_Console_HalfDuplex_RS485_Require(
     LPC17xx_40xx_GPIO0_Require(); // UART1 on P0.15/P0.16
     LPC17xx_40xx_UART1_Require(GPIO_P0_15, GPIO_P0_16, GPIO_NONE, GPIO_NONE,
             GPIO_NONE, GPIO_NONE, GPIO_NONE, GPIO_NONE);
-  
+ 
     aSettings.iSerialName = aHALSerialName; 
     aSettings.iQueueSendSize = aWriteBufferSize;
     aSettings.iQueueReceiveSize = aReadBufferSize;
@@ -1583,7 +1587,7 @@ T_uezError UEZLCDBacklight(T_uezDevice aLCDDevice, TUInt32 aLevel)
 void UEZPlatform_LCD_Require(void)
 {
     const T_LPC17xx_40xx_LCDController_Pins pins = {
-            GPIO_NONE,  // LCD_PWR -- GPIO controlled       
+            GPIO_NONE,  // LCD_PWR -- GPIO controlled
             GPIO_P2_2,  // LCD_DCLK
             GPIO_P2_4,  // LCD_ENAB_M
             GPIO_NONE,  // LCD_FP
@@ -1771,12 +1775,16 @@ void UEZPlatform_IRTC_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    LPC17xx_40xx_RTC_Require(ETrue);
+    // Come up with some mechanism (non-volatile storage, or LPC OTP, or QSPI OTP, etc)
+    // to load a unique calibration value for each MCU internal RTC. This may be
+    // required to get passable accuracy, otherwise you may be off a whole minute in a month.
+    TUInt32 aPerUnitRtcCalibrationValue = 0;
+    LPC17xx_40xx_RTC_Require(ETrue, aPerUnitRtcCalibrationValue);
     RTC_Generic_Create("RTC", "RTC");
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_IRTC_Require
+ * Routine:  UEZPlatform_ERTC_Require
  *---------------------------------------------------------------------------*
  * Description:
  *      Setup the external RTC device driver.  Not compatible with the
@@ -1966,7 +1974,7 @@ void UEZPlatform_USBHost_PortB_Require(void)
     // NOTE: USB1H_OVR  is on GPIO_P4_27 and is manually controlled
     //LPC17xx_40xx_GPIO4_Require();
     // P1.30 needs to be VBUS (USB controlled)
-    UEZGPIOSetMux(GPIO_P1_30, 2); // disabled 
+    UEZGPIOSetMux(GPIO_P1_30, 2); // disabled
 }
 
 /*---------------------------------------------------------------------------*
@@ -2007,7 +2015,6 @@ void UEZPlatform_FileSystem_Require(void)
 void UEZPlatform_MS0_Require(void)
 {
     DEVICE_CREATE_ONCE();
-
     MassStorage_USB_Create("MS0", "USBHost");
 }
 
@@ -2104,7 +2111,7 @@ void UEZPlatform_MCI_Require(void)
  * Routine:  UEZPlatform_MS1_MCI_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the Mass Storage device MS1 using SDCard drive using SPI driver.
+ *      Setup the Mass Storage device MS1 using SDCard drive using MCI driver.
  *---------------------------------------------------------------------------*/
 void UEZPlatform_MS1_MCI_Require(void)
 {
@@ -2273,11 +2280,13 @@ void UEZPlatform_Audio_Require(void)
 {    
     // Init audio outputs before amp so amp doesn't get noise/undefined signal.
     UEZPlatform_Speaker_Require(); // PWM output for basic tones
-    UEZPlatform_DAC0_Require();    // DAC output
     
-    UEZPlatform_AudioMixer_Require(); // UEZPlatform_AudioAmp_Require();
+    UEZPlatform_AudioMixer_Require(); // will mute the amp
     //UEZAudioMixerMute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
-    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);    
+    //UEZAudioMixerUnmute(UEZ_AUDIO_MIXER_OUTPUT_MASTER);
+    
+    // DAC output, currently this generates noise so we want to mute first.
+    //UEZPlatform_DAC0_Offboard_Require();
 }
 
 /*---------------------------------------------------------------------------*
@@ -2385,7 +2394,7 @@ void UEZPlatform_USBDevice_Require(void)
  *---------------------------------------------------------------------------*/
 void UEZPlatform_EMAC_Require(void)
 {
-    // This EMAC is RMII (less pins)
+    // This EMAC is RMII (less pins) // Due to RMII require, struct will be different from 4357.
     const T_LPC17xx_40xx_EMAC_Settings emacSettings = {
             GPIO_P1_4,      // ENET_TX_ENn      = P1.4_ENET_TXEN
             GPIO_NONE,      // ENET_TX_TXD[3]   = not used for RMII
@@ -2394,7 +2403,7 @@ void UEZPlatform_EMAC_Require(void)
             GPIO_P1_0,      // ENET_TX_TXD[0]   = P1.0_ENET_TXD0
             GPIO_NONE,      // ENET_TX_ER       = not used for RMII
             GPIO_NONE,      // ENET_TX_CLK      = not used for RMII
-            GPIO_NONE,      // ENET_RX_DV       = not used for RMII
+            GPIO_NONE,      // ENET_RX_DV       = not used for RMII pin set to DV mode below
             GPIO_NONE,      // ENET_RXD[3]      = not used for RMII
             GPIO_NONE,      // ENET_RXD[2]      = not used for RMII
             GPIO_P1_10,     // ENET_RXD[1]      = P1.10_ENET_RXD1
@@ -2402,7 +2411,7 @@ void UEZPlatform_EMAC_Require(void)
             GPIO_P1_14,     // ENET_RX_ER       = P1.14_ENET_RX_ER
             GPIO_P1_15,     // ENET_REFCLK      = P1.15_ENET_REFCLK
             GPIO_NONE,      // ENET_COL         = not used for RMII
-            GPIO_P1_8,      // ENET_CRS         = P1.8_ENET_CRSDV
+            GPIO_P1_8,      // ENET_CRS         = P1.8_ENET_DV dual purpose pin will run in DV mode for RMII
             GPIO_P1_16,     // ENET_MDC         = P1.16_ENET_MDC
             GPIO_P1_17,     // ENET_MDIO        = P1.17_ENET_MDIO
     };
@@ -2448,14 +2457,14 @@ void UEZPlatform_Timer1_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
             {
-            GPIO_NONE,      // T0_CAP[0]
-            GPIO_NONE,      // T0_CAP[1]
+            GPIO_NONE,      // T1_CAP[0]
+            GPIO_NONE,      // T1_CAP[1]
             },
             {
-            GPIO_NONE,      // T0_MAT[0]
-            GPIO_NONE,      // T0_MAT[1]
-            GPIO_NONE,      // T0_MAT[2]
-            GPIO_NONE,      // T0_MAT[3]
+            GPIO_NONE,      // T1_MAT[0]
+            GPIO_NONE,      // T1_MAT[1]
+            GPIO_NONE,      // T1_MAT[2]
+            GPIO_NONE,      // T1_MAT[3]
             }
     };
     DEVICE_CREATE_ONCE();
@@ -2474,14 +2483,14 @@ void UEZPlatform_Timer2_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
             {
-            GPIO_NONE,      // T0_CAP[0]
-            GPIO_NONE,      // T0_CAP[1]
+            GPIO_NONE,      // T2_CAP[0]
+            GPIO_NONE,      // T2_CAP[1]
             },
             {
-            GPIO_NONE,      // T0_MAT[0]
-            GPIO_NONE,      // T0_MAT[1]
-            GPIO_NONE,      // T0_MAT[2]
-            GPIO_NONE,      // T0_MAT[3]
+            GPIO_NONE,      // T2_MAT[0]
+            GPIO_NONE,      // T2_MAT[1]
+            GPIO_NONE,      // T2_MAT[2]
+            GPIO_NONE,      // T2_MAT[3]
             }
     };
     DEVICE_CREATE_ONCE();
@@ -2500,14 +2509,14 @@ void UEZPlatform_Timer3_Require(void)
 {
     static const T_LPC17xx_40xx_Timer_Settings settings = {
             {
-            GPIO_NONE,      // T0_CAP[0]
-            GPIO_NONE,      // T0_CAP[1]
+            GPIO_NONE,      // T3_CAP[0]
+            GPIO_NONE,      // T3_CAP[1]
             },
             {
-            GPIO_NONE,      // T0_MAT[0]
-            GPIO_NONE,      // T0_MAT[1]
-            GPIO_NONE,      // T0_MAT[2]
-            GPIO_NONE,      // T0_MAT[3]
+            GPIO_NONE,      // T3_MAT[0]
+            GPIO_NONE,      // T3_MAT[1]
+            GPIO_NONE,      // T3_MAT[2]
+            GPIO_NONE,      // T3_MAT[3]
             }
     };
     DEVICE_CREATE_ONCE();
@@ -2525,13 +2534,10 @@ void UEZPlatform_WiredNetwork0_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    // Wired network needs an EMAC
-    UEZPlatform_EMAC_Require();
+#if (UEZ_ENABLE_TCPIP_STACK == 1) // ensure smaller build size
+    UEZPlatform_EMAC_Require(); // Wired network needs an EMAC
 
-    // Create the network driver for talking to lwIP on a wired
-    // network.
-    
-#if (UEZ_ENABLE_TCPIP_STACK == 1)
+    // Create the network driver for talking to lwIP on a wired network.
     Network_lwIP_Create("WiredNetwork0");
 #endif
 }
@@ -2602,7 +2608,7 @@ void UEZPlatform_WiFiProgramMode(TBool runMode)
         UEZGPIOSet(GPIO_WIFI_MODE);          // WIFI PROGRAM ON
     }
     UEZGPIOOutput(GPIO_WIFI_MODE);       
-                
+    
     UEZGPIOUnlock(GPIO_P0_2);       // 1788 TX
     UEZGPIOSetMux(GPIO_P0_2, 0);
     UEZGPIOOutput(GPIO_P0_2);
@@ -2733,7 +2739,6 @@ void UEZPlatform_AudioCodec_Require(void)
 }
 #endif
 
-
 /*---------------------------------------------------------------------------*
  * Routine:  UEZPlatform_System_Reset
  *---------------------------------------------------------------------------*
@@ -2743,7 +2748,8 @@ void UEZPlatform_AudioCodec_Require(void)
  *      This is necessary to insure a full hardware reset across all lines
  *      with minimum reset hold timing.
  *---------------------------------------------------------------------------*/
-void UEZPlatform_System_Reset(void){
+void UEZPlatform_System_Reset(void) {
+  // No HW reset on board
     NVIC_SystemReset();
 }
 
@@ -2802,7 +2808,7 @@ void UEZPlatform_Standard_Require(void) {
     UEZPlatform_RTC_Require();
     UEZPlatform_Accel0_Require();
     
-    UEZPlatform_Audio_Require();       
+    UEZPlatform_Audio_Require();
 }
 
 TUInt16 UEZPlatform_LCDGetHeight(void)
@@ -2813,7 +2819,15 @@ TUInt16 UEZPlatform_LCDGetWidth(void)
 {
     return UEZ_LCD_DISPLAY_WIDTH;
 }
-#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+
+//#include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h>
+TUInt32 UEZPlatform_GetBaseAddress(void)
+{
+    // Keep various memory location declarations from optimizing out
+    ((TUInt8 volatile *)_framesMemoryptr)[0] = _framesMemoryptr[0];
+    return LCD_DISPLAY_BASE_ADDRESS;
+}
+
 TUInt32 UEZPlatform_LCDGetFrame(TUInt16 aFrameNum)
 {
     return (TUInt32)FRAME(aFrameNum);
@@ -2841,6 +2855,86 @@ TUInt32 UEZPlatform_GetPCLKFrequency(void)
 #else
     return 60000000;
 #endif
+}
+
+#if (defined __GNUC__) // GCC
+extern uint32_t  __RAM_segment_end__[];
+extern uint32_t  __SRAM_segment_end__[];
+extern uint32_t  __SDRAM_segment_end__[];
+extern uint32_t  __SDRAM_segment_size__[];
+extern uint8_t  __heap_start__[];
+// our custom named sections
+extern uint32_t  SDRAM_END[];
+extern uint32_t  SRAM1_END[];
+
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+// Must declare these pragmas if IAR
+#pragma section = "__RAM_segment_end__"
+#pragma section = "SRAM1_end"
+#pragma section = "SDRAM_end__"
+//#pragma section = "SDRAM_END"
+//#pragma section = "SRAM1_END"
+
+#pragma section=".heap"
+#pragma section="HEAP"
+void * __heap_start__ = __section_begin(".heap");
+void * heap_end_address = __section_end("HEAP");
+
+#else
+  #error "Not supported for this compiler."
+#endif
+
+// FreeRTOS will take care of aligment of both start and end addresses.
+TUInt32 UEZPlatform_GetApplicationHeapSize(void) // for heap 2, 4
+{ 
+    return (uint32_t) // original -> // return __HEAP_SIZE__; 
+#if (HEAP_ENABLED_ON_EXTERNAL_RAM == 1)
+  #if (defined __GNUC__) // GCC
+                     SDRAM_END
+  #elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+                      heap_end_address - 1
+  #endif
+#else // internal RAM heap only
+  #if (defined __GNUC__) // GCC
+                    SRAM1_END
+  #elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+                      heap_end_address - 1
+  #endif
+#endif
+                    - (uint32_t) __heap_start__; 
+}
+
+#if (INCLUDE_EMWIN == 1)
+#include <Source/Library/GUI/SEGGER/emWin/LCD.h>
+#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return GUICC_M555;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return &GUIDRV_Lin_16_API;
+}
+#else
+const void* UEZPlatform_GUIColorConversion(void)
+{
+    return 0;
+}
+
+const void *UEZPlatform_GUIDisplayDriver()
+{
+    return 0;
+}
+#endif
+
+void *SUICallbackGetLCDBase(void)
+{
+    return (void *)(LPC_LCD->UPBASE);
+}
+void SUICallbackSetLCDBase(void *aAddress)
+{
+    LPC_LCD->UPBASE = (TUInt32)aAddress;
 }
 
 TUInt32 UEZPlatform_5V_Monitor_Get_Raw_Reading(void)
@@ -2875,43 +2969,6 @@ T_pixelColor SUICallbackRGBConvert(int32_t r, int32_t g, int32_t b)
 {
     return RGB(r, g, b);
 }
-TUInt32 UEZPlatform_GetBaseAddress(void)
-{
-    return LCD_DISPLAY_BASE_ADDRESS;
-}
-#if INCLUDE_EMWIN
-#include <Source/Library/GUI/SEGGER/emWin/LCD.h>
-#include <Source/Library/GUI/SEGGER/emWin/GUIDRV_Lin.h>
-const void* UEZPlatform_GUIColorConversion(void)
-{
-    return GUICC_M555;
-}
-
-const void *UEZPlatform_GUIDisplayDriver()
-{
-    return &GUIDRV_Lin_16_API;
-}
-#else
-const void* UEZPlatform_GUIColorConversion(void)
-{
-    return 0;
-}
-
-const void *UEZPlatform_GUIDisplayDriver()
-{
-    return 0;
-}
-#endif
-
-void SUICallbackSetLCDBase(void *aAddress)
-{
-    LPC_LCD->UPBASE = (TUInt32)aAddress;
-}
-
-void *SUICallbackGetLCDBase(void)
-{
-    return (void *)(LPC_LCD->UPBASE);
-}
 
 void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha aAlpha)
 {
@@ -2928,12 +2985,10 @@ void WriteByteInFrameBufferWithAlpha(UNS_32 aAddr, COLOR_T aPixel, T_swimAlpha a
 void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
 {
     PARAM_NOT_USED(pulFaultRegisters);
-unsigned long ulStacked_pc = 0UL;
-
+    unsigned long ulStacked_pc = 0UL;
     ( void ) ulStacked_pc;
+    // Determine which stack was in use when the MPU fault occurred and extract the stacked PC.
 
-    /* Determine which stack was in use when the MPU fault occurred and extract
-    the stacked PC. */
     __asm volatile
     (
         "   tst lr, #4          \n"
@@ -2944,8 +2999,8 @@ unsigned long ulStacked_pc = 0UL;
         "   str r0, [sp]        \n" /* Store the value of the stacked PC into ulStacked_pc. */
     );
 
-    /* Inspect ulStacked_pc to locate the offending instruction. */
-    for( ;; );
+    for( ;; ); // Inspect ulStacked_pc to locate the offending instruction.
+    //UEZPlatform_System_Reset();
 }
 
 /*---------------------------------------------------------------------------*
@@ -2954,8 +3009,8 @@ unsigned long ulStacked_pc = 0UL;
  * Description:
  *      The main() routine in UEZ is only a stub that is used to start
  *      the whole UEZ system.  UEZBSP_Startup() is immediately called.
- * Outputs:
- *      int32_t -- not used, 0
+ *
+ *  @return         int32_t -- not used, 0
  *---------------------------------------------------------------------------*/
 int32_t main(void)
 {
@@ -2967,3 +3022,4 @@ int32_t main(void)
 /*-------------------------------------------------------------------------*
  * End of File:  uEZPlatform.c
  *-------------------------------------------------------------------------*/
+

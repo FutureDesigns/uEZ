@@ -118,6 +118,7 @@ static void II2C_Generic_Complete(
     void *aCallbackWorkspace,
     I2C_Request *iRequest)
 {
+    PARAM_NOT_USED(iRequest);
     T_I2C_Generic_Workspace *p = (T_I2C_Generic_Workspace *)aCallbackWorkspace;
     //    PARAM_NOT_USED(iRequest);
 

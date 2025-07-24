@@ -38,8 +38,8 @@
 #include <string.h>
 #include <uEZ.h>
 #include <uEZFile.h>
-#include <UEZTypes.h>
-#include <UEZErrors.h>
+#include <uEZTypes.h>
+#include <uEZErrors.h>
 #include <Device/PWM.h>
 #include <uEZToneGenerator.h>
 #include <uEZPlatform.h>
@@ -91,6 +91,8 @@ T_uezDevice G_MIDI_tg = 0;
 TUInt32 playMIDITask(T_uezTask aMyTask, void *aParameters)
 {
 	T_midiPlayParameters *params = (T_midiPlayParameters *)aParameters;
+        PARAM_NOT_USED(aMyTask);
+        PARAM_NOT_USED(params);
 	
 	#if MIDI_DEBUG
 		printf("--- NEW MIDI PLAYER TASK ---\n");
@@ -278,6 +280,7 @@ void MidiEventByteParser(TUInt8 aNextByte)
 		case MIDI_FIRST_EVENT_BYTE:
 			G_DeltaTime = 0;
 			// Continue to next case..
+		        // fall through
 		case MIDI_DTIME_BYTE:
 		{
 			G_NextByteType = MIDI_DTIME_BYTE;

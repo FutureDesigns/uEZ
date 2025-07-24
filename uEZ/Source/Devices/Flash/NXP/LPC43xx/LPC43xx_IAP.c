@@ -1036,6 +1036,8 @@ T_uezError Flash_NXP_LPC43xx_GetBlockInfo(
     TUInt32 aOffset,
     T_FlashBlockInfo *aBlockInfo)
 {
+
+    PARAM_NOT_USED(aWorkspace);
     // Blocks are either 8 or 64KB
     if (aOffset < 0x10000) {
         // 8K blocks (See UM1503 6.5 table 30 sector numbers in manual, referred to as sector size)

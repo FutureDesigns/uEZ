@@ -157,56 +157,80 @@ uint8_t Pipe_Write_Stream_BE(const void *const Buffer,
 							 uint16_t Length,
 							 uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Read_Stream_BE(void *const Buffer,
 							uint16_t Length,
 							uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Write_PStream_LE(const void *const Buffer,
 							  uint16_t Length,
 							  uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Write_PStream_BE(const void *const Buffer,
 							  uint16_t Length,
 							  uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Write_EStream_LE(const void *const Buffer,
 							  uint16_t Length,
 							  uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Write_EStream_BE(const void *const Buffer,
 							  uint16_t Length,
 							  uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Read_EStream_LE(void *const Buffer,
 							 uint16_t Length,
 							 uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Read_EStream_BE(void *const Buffer,
 							 uint16_t Length,
 							 uint16_t *const BytesProcessed)
 {
-	return PIPE_RWSTREAM_NoError;
+  (void)(Buffer);
+  (void)(Length);
+  (void)(BytesProcessed);
+  return PIPE_RWSTREAM_NoError;
 }
 
 uint8_t Pipe_Streaming(uint8_t corenum, uint8_t* const buffer, uint32_t const transferlength, uint16_t const packetsize)

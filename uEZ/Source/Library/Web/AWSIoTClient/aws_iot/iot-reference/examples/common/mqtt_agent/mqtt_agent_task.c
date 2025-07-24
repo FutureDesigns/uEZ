@@ -211,7 +211,7 @@ typedef struct TopicFilterSubscription
     BaseType_t xManageResubscription;
 } TopicFilterSubscription_t;
 
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 /*-----------------------------------------------------------*/
 
@@ -388,7 +388,6 @@ static char * pcDeviceCertID = NULL;
  * See https://www.freertos.org/network-interface.html
  */
 static NetworkContext_t xNetworkContext; /* The network context used for TLS operation. */
-T_uezDevice gNetwork;
 
 MQTTContext_t * pMqttContext = &( xGlobalMqttAgentContext.mqttContext );
 TlsTransportParams_t G_Params;
@@ -645,7 +644,7 @@ static MQTTStatus_t prvHandleResubscribe( void )
 
     /* These variables need to stay in scope until command completes. */
     static MQTTAgentSubscribeArgs_t xSubArgs = { 0 };
-    static MQTTSubscribeInfo_t xSubInfo[ MQTT_AGENT_MAX_SUBSCRIPTIONS ] = { MQTTQoS0 };
+    static MQTTSubscribeInfo_t xSubInfo[ MQTT_AGENT_MAX_SUBSCRIPTIONS ] = { {MQTTQoS0} };
     static MQTTAgentCommandInfo_t xCommandParams = { 0 };
 
     /* Loop through each subscription in the subscription list and add a subscribe
@@ -740,6 +739,7 @@ static void prvIncomingPublishCallback( MQTTAgentContext_t * pMqttAgentContext,
                                         uint16_t packetId,
                                         MQTTPublishInfo_t * pxPublishInfo )
 {
+    (void)(pMqttAgentContext);
     bool xPublishHandled = false;
     char cOriginalChar;
     char * pcLocation;
@@ -791,10 +791,11 @@ void prvMQTTAgentTask( void * pvParameters )
 {
     BaseType_t xStatus = pdFAIL;
     MQTTStatus_t xMQTTStatus = MQTTBadParameter;
+    T_uezDevice networkUsedForMQTT = (T_uezDevice) pvParameters;
 
     ( void ) pvParameters;
     
-    if(G_lwipTask != NULL) {
+    if(G_lwipTask != (sys_thread_t) NULL) {
       lwip_socket_thread_init(); // if lwip init make sure to init per thread objects
     }
 
@@ -853,7 +854,7 @@ void prvMQTTAgentTask( void * pvParameters )
     {
         xNetworkContext.pParams = &G_Params;
         if(xNetworkContext.pParams != NULL) {
-          xNetworkContext.pParams->aNetwork = gNetwork;
+          xNetworkContext.pParams->aNetwork = networkUsedForMQTT; //
         }
         xMQTTStatus = prvMQTTInit();
 
@@ -909,7 +910,8 @@ void prvMQTTAgentTask( void * pvParameters )
     }
 
     prvSetMQTTAgentState( MQTT_AGENT_STATE_TERMINATED );
-    if(G_lwipTask != NULL) {
+    vTaskDelay(1000);
+    if(G_lwipTask != (sys_thread_t) NULL) {
       lwip_socket_thread_cleanup();
     }
 
@@ -1076,7 +1078,9 @@ static void prvSetMQTTAgentState( MQTTAgentState_t xAgentState )
 /*-----------------------------------------------------------*/
 
 BaseType_t xMQTTAgentInit( configSTACK_DEPTH_TYPE uxStackSize,
-                           UBaseType_t uxPriority, TaskHandle_t * const pxCreatedTask)
+                           UBaseType_t uxPriority,
+                           T_uezDevice aNetwork,
+                           TaskHandle_t * const pxCreatedTask)
 {
     BaseType_t xResult = pdFAIL;
 
@@ -1105,9 +1109,22 @@ BaseType_t xMQTTAgentInit( configSTACK_DEPTH_TYPE uxStackSize,
             xResult = xTaskCreate( prvMQTTAgentTask,
                                    "MQTT",
                                    uxStackSize,
-                                   NULL,
+                                   (void *)aNetwork,
                                    uxPriority,
                                    pxCreatedTask );
+        }
+    } else if( xState == MQTT_AGENT_STATE_TERMINATED )
+    {
+        if( xSubscriptionsMutex != NULL ) {
+          if( xStateEventGrp != NULL ) {
+            prvSetMQTTAgentState( MQTT_AGENT_STATE_INITIALIZED );
+            xResult = xTaskCreate( prvMQTTAgentTask,
+                                   "MQTT",
+                                   uxStackSize,
+                                   (void *)aNetwork,
+                                   uxPriority,
+                                   pxCreatedTask );
+          }
         }
     }
 

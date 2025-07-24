@@ -41,12 +41,11 @@
  * Globals:
  *---------------------------------------------------------------------------*/
 T_SUISettings G_SUISettings = {
-// Double sized icons?  Default = false/no
-    EFalse,
-    // FlipX
-    EFalse,
-    // FlipY
-    EFalse, };
+    EFalse, // Double sized icons?  Default = false/no
+    EFalse, // FlipX
+    EFalse, // FlipY
+    {0} // SWIM_WINDOW_T
+};
 
 /*---------------------------------------------------------------------------*
  * Routine:  SUICopyFast32

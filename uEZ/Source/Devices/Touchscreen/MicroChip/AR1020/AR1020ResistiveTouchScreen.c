@@ -110,7 +110,7 @@ T_uezError TS_MC_AR1020_Open(void *aW)
 {
     T_MC_AR1020Workspace *p = (T_MC_AR1020Workspace *)aW;
     T_uezError error = UEZ_ERROR_NONE;
-    I2C_Request r;
+    //I2C_Request r;
     T_uezDevice i2c2;
     TUInt8 dataout[4] = {0x00, 0x55,0x01,EnableTouch};
     TUInt8 datain[4] = {0xff, 0xff, 0xff, 0xff};
@@ -121,6 +121,7 @@ T_uezError TS_MC_AR1020_Open(void *aW)
     const TUInt32 pin = 15;
     TUInt32 Read = 0;
 
+    //PARAM_NOT_USED(r);
     HALInterfaceFind("GPIO2", (T_halWorkspace **)&p_gpio);
 
     (*p_gpio)->SetInputMode(p_gpio, 1<<pin);
@@ -497,6 +498,52 @@ T_uezError Touchscreen_MC_AR1020_Create(const char *aName)
             0, 0);
 }
 
+
+static T_uezError TS_MC_AR1020_SetTouchDetectSensitivity(
+        void *aWorkspace,
+        TUInt16 aLowLevel,
+        TUInt16 aHighLevel)
+{
+  T_MC_AR1020Workspace *p = (T_MC_AR1020Workspace *)aWorkspace;
+
+  PARAM_NOT_USED(p);
+  PARAM_NOT_USED(aLowLevel);
+  PARAM_NOT_USED(aHighLevel);
+    //UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    // Shift down the sensitivity to be a 10 bit reading
+    // then multiply by the number of readings.
+    //p->iTDSLow = (aLowLevel>>6)*NUM_SAMPLES_PER_READING;
+    //p->iTDSHigh = (aHighLevel>>6)*NUM_SAMPLES_PER_READING;
+    //UEZSemaphoreRelease(p->iSem);
+
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+static T_uezError TS_MC_AR1020_WaitForTouch(
+        void *aWorkspace,
+        TUInt32 aTimeout)
+{
+  T_MC_AR1020Workspace *p = (T_MC_AR1020Workspace *)aWorkspace;
+    T_uezError error;
+    //TUInt32 sense;
+
+    PARAM_NOT_USED(aTimeout);
+
+    // Grab the touch screen
+    error = UEZSemaphoreGrab(p->iSem, 100);
+    if (error)
+            return error;
+
+    // TODO make this function real if we ever need it.
+
+    // Done waiting
+    UEZSemaphoreRelease(p->iSem);
+
+    // Return a timeout, error, or positive results
+    //return error;
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -517,6 +564,10 @@ const DEVICE_TOUCHSCREEN Touchscreen_MC_AR1020_Interface = {
     TS_MC_AR1020_CalibrateStart,
     TS_MC_AR1020_CalibrateAdd,
     TS_MC_AR1020_CalibrateEnd,
+
+    TS_MC_AR1020_SetTouchDetectSensitivity,
+
+    TS_MC_AR1020_WaitForTouch,
 } ;
 
 /*-------------------------------------------------------------------------*

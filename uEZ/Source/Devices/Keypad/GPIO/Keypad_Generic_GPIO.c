@@ -56,7 +56,7 @@ typedef struct {
 /*---------------------------------------------------------------------------*
  * Prototypes:
  *---------------------------------------------------------------------------*/
-static void Keypad_Generic_GPIO_Monitor(
+static TUInt32 Keypad_Generic_GPIO_Monitor(
         T_uezTask aMyTask, 
         void *aParameters);
 
@@ -263,7 +263,7 @@ T_uezError Keypad_Generic_GPIO_Close(void *aWorkspace)
  *      T_uezTask aMyTask           -- This task
  *      void *aParameters           -- Passed in workspace
  *---------------------------------------------------------------------------*/
-static void Keypad_Generic_GPIO_Monitor(
+static TUInt32 Keypad_Generic_GPIO_Monitor(
         T_uezTask aMyTask, 
         void *aParameters)
 {
@@ -332,6 +332,7 @@ static void Keypad_Generic_GPIO_Monitor(
             IRelease(p);
         }
     }
+    return 0;
 }
 
 /*---------------------------------------------------------------------------*

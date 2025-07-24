@@ -71,19 +71,26 @@
  *---------------------------------------------------------------------------*/
  TBool G_HeartBeat;		// Global Variable for uC/Probe Demo
 
-
+// New projects should use heap4. Pick the heap4 library option and define this
+// to 4 in project setting or config build. Heap 3 is for legacy library build.
 #ifndef FREERTOS_HEAP_SELECTION
-#define FREERTOS_HEAP_SELECTION  3
+#define FREERTOS_HEAP_SELECTION  4
 #endif
 
-#ifndef __HEAP_SIZE__
-#define __HEAP_SIZE__ 5000000
+#if (defined __GNUC__) // GCC
+#elif (defined __ICCARM__) || (defined __ICCRX__) // IAR
+#elif (defined __CC_ARM) // ARM RealView Compiler
+#else
+#endif
+
+#ifndef __HEAP_SIZE__  
+    #define __HEAP_SIZE__ 3500000 // mininmum size before auto expansion to end of RAM, higher on most uEZGUIs
 #endif
 
 #if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
 // In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
 // Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
-UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]); // actual size checked by RTOS is UEZPlatform_GetApplicationHeapSize()
 #endif
 
 #if ((FREERTOS_HEAP_SELECTION==5))
@@ -109,7 +116,7 @@ TUInt32 HeartbeatTask(T_uezTask aMyTask, void *aParams)
     UEZGPIOSetMux(GPIO_HEARTBEAT_LED, 0);    
     
     for (int i = 0; i <10 ; i++) { //initial fast blink     
-	UEZGPIOSet(GPIO_HEARTBEAT_LED);    	
+	    UEZGPIOSet(GPIO_HEARTBEAT_LED);    	
         UEZTaskDelay(100);
         
         UEZGPIOClear(GPIO_HEARTBEAT_LED);    	
@@ -121,7 +128,7 @@ TUInt32 HeartbeatTask(T_uezTask aMyTask, void *aParams)
     	G_HeartBeat = ETrue;
         UEZTaskDelay(250);
 		
-	UEZGPIOClear(GPIO_HEARTBEAT_LED);
+	    UEZGPIOClear(GPIO_HEARTBEAT_LED);
     	G_HeartBeat = EFalse;
         UEZTaskDelay(250);
     }
@@ -171,18 +178,18 @@ void printStorageInfo(char driveLetter) {
 
     T_msSizeInfo aDeviceInfo;
     if (UEZFileSystemGetStorageInfo(drivePath, &aDeviceInfo) == UEZ_ERROR_NONE) {
-        printf("Storage Medium Report:\n  Sectors: %u\n", aDeviceInfo.iNumSectors);
+        printf("Storage Medium Report:\n  Sectors: %u\n", (unsigned int) aDeviceInfo.iNumSectors);
         printf("  Sector Size: %u\n  Block Size: %u\n",
-            aDeviceInfo.iSectorSize, aDeviceInfo.iBlockSize);
+          (unsigned int) aDeviceInfo.iSectorSize, (unsigned int) aDeviceInfo.iBlockSize);
     }
 
     T_uezFileSystemVolumeInfo aFSInfo;
     if (UEZFileSystemGetVolumeInfo(drivePath, &aFSInfo) == UEZ_ERROR_NONE) {
         printf("File System Report:\n");
         printf("  Bytes Per Sector: %u\n  Sectors Per Cluster: %u\n",
-            aFSInfo.iBytesPerSector, aFSInfo.iSectorsPerCluster);
+          (unsigned int) aFSInfo.iBytesPerSector, (unsigned int) aFSInfo.iSectorsPerCluster);
         printf("  Num Clusters Total: %u\n  Num Clusters Free: %u\n",
-            aFSInfo.iNumClustersTotal, aFSInfo.iNumClustersFree);
+          (unsigned int) aFSInfo.iNumClustersTotal, (unsigned int) aFSInfo.iNumClustersFree);
     }
 }
 
@@ -282,12 +289,13 @@ void MainTask(void)
     // UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS will be starting address of NOR Flash or QSPI (MCU-dependent).
 
     // Check the resource file to make sure that it has a valid HIMG block.
-    if (!HImgBlockIsValid((void *)UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS)) {
+    if (!HImgBlockIsValid((void *)UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS + 0x800000)) {
         UEZFailureMsg("Resources are corrupt/not installed!");
     }
 
     // Register a new resource in the system, starting from the 0x100 offset after the HIMG block.
-    ResourceCache_DirectAccess_Create("Resources", (void *)(UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS + 0x100));
+    // For this example project start these resources 8 MB into the 16 MB QSPI flash. This allows room for the project to grow into external flash without overlap.
+    ResourceCache_DirectAccess_Create("Resources", (void *)(UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS + 0x800000 + 0x100));
 #endif
 
     //Start emWin interface
@@ -367,7 +375,8 @@ void uEZPlatformStartup_EXP_DK()
     #endif
 
     #if UEZ_ENABLE_WIRELESS_NETWORK
-        UEZPlatform_WirelessNetwork0_Require();
+      //UEZPlatform_WirelessNetwork0_Require(); // Gainspan W-Fi and maybe Gainspan compatible modules
+        UEZPlatform_WirelessNetwork1_Require(); // ESP32 Wi-Fi
     #endif
 }
 #endif //UEZGUI_EXPANSION_DEVKIT

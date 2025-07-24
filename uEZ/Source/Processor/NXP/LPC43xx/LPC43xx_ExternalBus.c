@@ -45,6 +45,7 @@ void scu_pinmux(TUInt8 port, TUInt8 pin, TUInt8 mode, TUInt8 func)
 
 void LPC43xx_ExternalAddressBus_ConfigureIOPins(TUInt8 aBitSize)
 {
+    PARAM_NOT_USED(aBitSize);
     LPC_SCU->SFSP2_9 = EMC_PIN_SET | 3;    /* P2_9:  A0 */
     LPC_SCU->SFSP2_10 = EMC_PIN_SET | 3;   /* P2_10: A1 */
     LPC_SCU->SFSP2_11 = EMC_PIN_SET | 3;   /* P2_11: A2 */
@@ -74,6 +75,7 @@ void LPC43xx_ExternalAddressBus_ConfigureIOPins(TUInt8 aBitSize)
 
 void LPC43xx_ExternalDataBus_ConfigureIOPins(TUInt8 aBitSize)
 {
+    PARAM_NOT_USED(aBitSize);
     /* DATA LINES 0..31 > D0..D31 */
     LPC_SCU->SFSP1_7 = EMC_PIN_SET | 3;    /* P1_7:  D0 */
     LPC_SCU->SFSP1_8 = EMC_PIN_SET | 3;    /* P1_8:  D1 */

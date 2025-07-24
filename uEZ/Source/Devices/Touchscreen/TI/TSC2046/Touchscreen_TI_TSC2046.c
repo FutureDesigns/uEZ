@@ -74,6 +74,9 @@ typedef struct {
     TInt32 iPenBaseY;
     TInt32 iPenYScaleTop;
     TInt32 iPenYScaleBottom;
+
+    T_uezSemaphore iSem;
+
 } T_TI_TSC2046Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -189,6 +192,9 @@ static T_uezError TS_TI_TSC2046_ReadX(T_TI_TSC2046Workspace *p, TUInt32 *aValue)
 
         0,    // cs bit
         EFalse,     // chip select is falling
+        0,
+        0,
+        0
     } ;
     T_uezError error;
 
@@ -232,6 +238,9 @@ static T_uezError TS_TI_TSC2046_ReadY(T_TI_TSC2046Workspace *p, TUInt32 *aValue)
 
         0,    // cs bit
         EFalse,     // chip select is falling
+        0,
+        0,
+        0
     } ;
     T_uezError error;
 
@@ -384,23 +393,23 @@ T_uezError TS_TI_TSC2046_CalibrateEnd(void *aWorkspace)
 
         for (i=0; i<p->iNumCalibratePoints; i++)  {
             // Find range of inputs
-            if (p->iCalibrateReadingsTaken[i].iX < minIX)
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX < minIX)
                 minIX = p->iCalibrateReadingsTaken[i].iX;
-            if (p->iCalibrateReadingsTaken[i].iX > maxIX)
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX > maxIX)
                 maxIX = p->iCalibrateReadingsTaken[i].iX;
-            if (p->iCalibrateReadingsTaken[i].iY < minIY)
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY < minIY)
                 minIY = p->iCalibrateReadingsTaken[i].iY;
-            if (p->iCalibrateReadingsTaken[i].iY > maxIY)
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY > maxIY)
                 maxIY = p->iCalibrateReadingsTaken[i].iY;
 
             // Find range of outputs
-            if (p->iCalibrateReadingsExpected[i].iX < minOX)
+            if ((TUInt32) p->iCalibrateReadingsExpected[i].iX < minOX)
                 minOX = p->iCalibrateReadingsExpected[i].iX;
-            if (p->iCalibrateReadingsExpected[i].iX > maxOX)
+            if ((TUInt32) p->iCalibrateReadingsExpected[i].iX > maxOX)
                 maxOX = p->iCalibrateReadingsExpected[i].iX;
-            if (p->iCalibrateReadingsExpected[i].iY < minOY)
+            if ((TUInt32) p->iCalibrateReadingsExpected[i].iY < minOY)
                 minOY = p->iCalibrateReadingsExpected[i].iY;
-            if (p->iCalibrateReadingsExpected[i].iY > maxOY)
+            if ((TUInt32) p->iCalibrateReadingsExpected[i].iY > maxOY)
                 maxOY = p->iCalibrateReadingsExpected[i].iY;
         }
 
@@ -417,6 +426,16 @@ T_uezError TS_TI_TSC2046_CalibrateEnd(void *aWorkspace)
         p->iPenYScaleBottom = maxIY - minIY;
 
         p->iHaveCalibration = ETrue;
+
+        // Check to see if this is valid calibration data
+        // (should have a resolution of at least 5 bits per pixel output
+        // using 10 bit ADCs).
+        // This check doesn't catch everything but will help catch
+        // most of the bogus readings (such as all the same points)
+        if ((p->iPenXScaleBottom < p->iPenXScaleTop * 32)
+                || (p->iPenYScaleBottom < p->iPenYScaleTop * 32)) {
+            return UEZ_ERROR_OUT_OF_RANGE;
+        }
     }
 
     return UEZ_ERROR_NONE;
@@ -475,6 +494,50 @@ T_uezError Touchscreen_TI_TSC2046_Create(
         GPIO_TO_PIN_BIT(aChipSelect));
 }
 
+static T_uezError TS_TI_TSC2046_SetTouchDetectSensitivity(
+        void *aWorkspace,
+        TUInt16 aLowLevel,
+        TUInt16 aHighLevel)
+{
+  T_TI_TSC2046Workspace *p = (T_TI_TSC2046Workspace *)aWorkspace;
+
+  PARAM_NOT_USED(p);
+  PARAM_NOT_USED(aLowLevel);
+  PARAM_NOT_USED(aHighLevel);
+    //UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    // Shift down the sensitivity to be a 10 bit reading
+    // then multiply by the number of readings.
+    //p->iTDSLow = (aLowLevel>>6)*NUM_SAMPLES_PER_READING;
+    //p->iTDSHigh = (aHighLevel>>6)*NUM_SAMPLES_PER_READING;
+    //UEZSemaphoreRelease(p->iSem);
+
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+static T_uezError TS_TI_TSC2046_WaitForTouch(
+        void *aWorkspace,
+        TUInt32 aTimeout)
+{
+  T_TI_TSC2046Workspace *p = (T_TI_TSC2046Workspace *)aWorkspace;
+    T_uezError error;
+    //TUInt32 sense;
+
+    PARAM_NOT_USED(aTimeout);
+
+    // Grab the touch screen
+    error = UEZSemaphoreGrab(p->iSem, 100);
+    if (error)
+            return error;
+
+    // TODO make this function real if we ever need it.
+
+    // Done waiting
+    UEZSemaphoreRelease(p->iSem);
+
+    // Return a timeout, error, or positive results
+    //return error;
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
 
 /*---------------------------------------------------------------------------*
  * Device Interface table:
@@ -496,6 +559,10 @@ const DEVICE_TOUCHSCREEN Touchscreen_TI_TSC2046_Interface = {
     TS_TI_TSC2046_CalibrateStart,
     TS_TI_TSC2046_CalibrateAdd,
     TS_TI_TSC2046_CalibrateEnd,
+
+    TS_TI_TSC2046_SetTouchDetectSensitivity,
+
+    TS_TI_TSC2046_WaitForTouch,
 } ;
 
 /*-------------------------------------------------------------------------*

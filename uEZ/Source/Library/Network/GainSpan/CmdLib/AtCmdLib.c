@@ -17,12 +17,15 @@
 #include <stdio.h>
 #include <string.h> /* for sprintf(), strstr(), strlen() , strtok() and strcpy()  */
 #include <stdlib.h>
-#include <ctype.h>
+//#include <ctype.h> // remove for compatibility
 #include "AtCmdLib.h"
 #include "GainSpan_Config.h"
 
 //#define ATLIBGS_DEBUG_ENABLE
 #define ConsolePrintf printf
+
+
+#define isspace(c)           ((c) == ' ' || (c) == '\f' || (c) == '\n' || (c) == '\r' || (c) == '\t' || (c) == '\v')
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -1703,6 +1706,7 @@ uint16_t AtLibGs_ParseIntoLines(char *text, char *pLines[], uint16_t maxLines)
                 mode = 1;
                 /* Fall into looking for a \n character immediately */
                 /* no break */
+                // fall through
             case 1:
                 /* Did we find the end of the line? */
                 if ((c == '\n') || (c == '\r')) {
@@ -1755,6 +1759,7 @@ uint8_t AtLibGs_ParseIntoTokens(
                 mode = 1;
                 /* Fall into looking for a non-white space character immediately */
                 /* no break */
+                // fall through
             case 1:
                 /* Skip any white space at the beginning (by staying in this state) */
                 if (isspace(c))
@@ -1764,6 +1769,7 @@ uint8_t AtLibGs_ParseIntoTokens(
                 mode = 2;
                 /* Fall into mode 2 if not a white space and process immediately */
                 /* no break */
+                // fall through
             case 2:
                 /* Did we find the end of the token? */
                 if ((c == deliminator) || (c == '\0')) {
@@ -1858,6 +1864,8 @@ uint8_t AtLibGs_ParseNodeIPv4Address(ATLIBGS_IPv4 *ip)
 {
     char *pSubStr;
     char ipstr[20];
+
+    PARAM_NOT_USED(ip);
 
     pSubStr = strstr((const char *)MRBuffer, "IP addr=");
     if (pSubStr) {

@@ -48,6 +48,34 @@
 /*-------------------------------------------------------------------------*
  * Includes:
  *-------------------------------------------------------------------------*/
+
+// This block checks that we aren't in IAR ASM before we include anything.
+#include "Config.h"
+   
+#if (COMPILER_TYPE == IAR)
+#ifdef __ICCARM__
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+#endif
+
+#if (COMPILER_TYPE == GCC_ARM) // 
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+
+#if (COMPILER_TYPE == KEIL_UV) // TODO compiler not verified yet
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+
+#if (defined __CCRX__) // TODO compiler not verified yet
+#define CURRENTLY_IN_IAR_ASM                    0
+#endif
+
+#ifndef CURRENTLY_IN_IAR_ASM
+#define CURRENTLY_IN_IAR_ASM                    1
+#endif
+
+#if (CURRENTLY_IN_IAR_ASM == 0) // Don't include in IAR assembler.
+
 #include <uEZ.h>
 #include <uEZNetwork.h>
 #include <uEZRTOS.h>
@@ -106,6 +134,9 @@ TUInt32 UEZPlatform_5V_Monitor_Get_Raw_Reading(void);
 // Expansion
 TBool UEZPlatform_ExpansionBoardIsConnected(void);
 
+// Memory
+TUInt32 UEZPlatform_GetApplicationHeapSize(void);
+
 // Memory Test step callbacks
 void UEZPlatform_MemTest_StepA(void);
 void UEZPlatform_MemTest_StepA_Pass(void);
@@ -120,6 +151,10 @@ void UEZPlatform_MemTest_StepE_Pass(void);
 void UEZPlatform_MemTest_StepF(void);
 void UEZPlatform_MemTest_StepF_Pass(void);
 
+// Networking
+void UEZPlatform_WiFiProgramMode(TBool runMode);
+void UEZPlatform_WiFiRunMode(void);
+
 // Flash programming
 void UEZPlatform_IAP_Require(void);
 
@@ -128,6 +163,8 @@ void UEZPlatform_System_Reset(void);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif // UEZPLATFORMAPI_H_

@@ -6,12 +6,36 @@
 #ifndef GAPI_H
 #define GAPI_H
 
+//#include <Types/LCD.h> // include before Config_Build.h so that color depth select works!
 #include <uEZ.h>
 #include <Device/LCD/Config_LCD.h>
 #include <Config_Build.h>
 #include <uEZPacked.h>
 #include <uEZInline.h>
 #include <uEZMemory.h>
+
+// TODO if including in library build check that the correct color type is used.
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_1_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_1_BIT selected")
+#endif
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_2_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_2_BIT selected")
+#endif
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_4_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_4_BIT selected")
+#endif
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_8_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_8_BIT selected")
+#endif
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_16_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_16_BIT selected")
+#endif
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_I15_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_I15_BIT selected")
+#endif
+#if (UEZ_LCD_COLOR_DEPTH == UEZLCD_COLOR_DEPTH_24_BIT)
+#pragma message("    UEZLCD_COLOR_DEPTH_24_BIT selected")
+#endif
 
 /***********************************************************************************
 FILE NAME    : GAPI.h

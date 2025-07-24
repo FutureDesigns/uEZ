@@ -70,6 +70,12 @@ int32_t SUILoadPicture(
     TUInt8 aPage,
     TBool *aAbortFlag,
     TUInt8 *aLoadAddr);
+void SUIShowPage0FancyDownAddress(TUInt8 *aBufferAddrFB1, TUInt8 *aBufferAddrFB2);
+int32_t SUILoadPictureAddress(
+    char *aPicture,
+    TUInt8 *aBufferAddr,
+    TBool *aAbortFlag,
+    TUInt8 *aLoadAddr);
 void SUICopyRGBRaster(
     TUInt8 aPage,
     TUInt16 x,

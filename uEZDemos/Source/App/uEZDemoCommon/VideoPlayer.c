@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <uEZ.h>
+#include <uEZAudioMixer.h>
 #include <uEZFile.h>
 #include <uEZLCD.h>
 #include <uEZMemory.h>
@@ -58,6 +59,8 @@
 #endif
 #define MAX_DISPLAY_FRAMES  2
 
+#define USING_VIDEO_READ_BUF_ON_HEAP 1
+
 #define PRINT_VIDEO_STATISTICS 0
 
 /*-------------------------------------------------------------------------*
@@ -80,11 +83,14 @@ typedef struct {
 } T_VideoPlayerWorkspace;
 
 #if (UEZBSP_SDRAM_SIZE > (8*1024*1024))
-#define FILE_SYSTEM_TABLE_BUFFER_SIZE (512*1024)
+#define FILE_SYSTEM_TABLE_BUFFER_SIZE (512*1024) // 2MB total size
 uint32_t clmt[FILE_SYSTEM_TABLE_BUFFER_SIZE];// Cluster link map table buffer
 #else
-#define FILE_SYSTEM_TABLE_BUFFER_SIZE (4*1024)
-UEZ_PUT_SECTION(".IRAM", uint32_t clmt[FILE_SYSTEM_TABLE_BUFFER_SIZE]); // Cluster link map table buffer
+#define FILE_SYSTEM_TABLE_BUFFER_SIZE (32*1024) // 128KB total size
+//UEZ_PUT_SECTION(".IRAM", 
+uint32_t clmt[FILE_SYSTEM_TABLE_BUFFER_SIZE]
+//)
+; // Cluster link map table buffer
 #endif
 
 /*-------------------------------------------------------------------------*
@@ -166,9 +172,17 @@ void VideoPlayer_Screen(T_VideoPlayerWorkspace *p_ws, TUInt8 aFrame) {
 }
 
 #if (APP_DEMO_VIDEO_PLAYER == 1)
-UEZ_PUT_SECTION(".video", static TUInt8 G_videoBuffer[MAX_VIDEO_WIDTH*MAX_VIDEO_HEIGHT*2]); // MAX video size
+#define VIDEO_READ_BUF_SIZE (MAX_VIDEO_WIDTH*MAX_VIDEO_HEIGHT*2) // MAX video size
 #else
-UEZ_PUT_SECTION(".video", static TUInt8 G_videoBuffer[4]); // dummy variable in case it tries to place memory
+#define VIDEO_READ_BUF_SIZE (4) // dummy variable in case it tries to place memory
+#endif
+
+#if (USING_VIDEO_READ_BUF_ON_HEAP == 1)
+TUInt8 *_videoReadBufMemoryptr = 0;
+#define VIDEO_READ_BUF_BASE_ADDRESS (TUInt32) _videoReadBufMemoryptr // Use define for simplification
+#else
+UEZ_PUT_SECTION(".video", static TUInt8 G_videoBuffer[VIDEO_READ_BUF_SIZE]);
+#define VIDEO_READ_BUF_BASE_ADDRESS (TUInt32) G_videoBuffer // Use define for simplification
 #endif
 
 T_uezError VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
@@ -188,7 +202,7 @@ T_uezError VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
             //UEZFailureMsg("Invalid Frame Size");
         }
     } else { // playing video that isn't full screen
-        error = UEZFileRead(p_ws->iFile, (void *)G_videoBuffer, (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2), &numRead);
+        error = UEZFileRead(p_ws->iFile, (void *)VIDEO_READ_BUF_BASE_ADDRESS, (G_pVideoInfo->iVideoWidth * G_pVideoInfo->iVideoHeight * 2), &numRead);
         if(error) {
             return error;
             //UEZFailureMsg("Frame Read Error");
@@ -201,7 +215,7 @@ T_uezError VideoPlayer_DrawNextFrame(T_VideoPlayerWorkspace *p_ws)
         // Center the video
         pDest = FRAME(p_ws->iHiddenFrame) + p_ws->iVideoOffset;
 
-        pSource = G_videoBuffer;
+        pSource =  (TUInt8 *) VIDEO_READ_BUF_BASE_ADDRESS;
         for(i=0;i<G_pVideoInfo->iVideoHeight;i++) {
             memcpy((void *)pDest, (void *)pSource, G_pVideoInfo->iVideoWidth*2);
             pSource+=(G_pVideoInfo->iVideoWidth*2);
@@ -299,7 +313,9 @@ extern void * G_UEZGUIWorkspace;
 void VideoPlayer_deprioritize_other_tasks(void)
 {
 #if (APP_ENABLE_HEARTBEAT_LED == 1)
-  UEZTaskSuspend(G_heartBeatTask);
+  if(G_heartBeatTask != 0) {
+    UEZTaskSuspend(G_heartBeatTask);
+  }
 #endif
 
   T_FDICmdWorkspace *p = (T_FDICmdWorkspace *)G_UEZGUIWorkspace;
@@ -307,32 +323,38 @@ void VideoPlayer_deprioritize_other_tasks(void)
      UEZTaskSuspend(p->iTask);
   }
 
-  UEZTaskPriorityGet(G_mainTask, &PriorityList[0]);
-  //EZTaskPrioritySet(G_mainTask, UEZ_PRIORITY_HIGH);
-  UEZTaskPrioritySet(G_mainTask, UEZ_PRIORITY_NORMAL);
+  if(G_mainTask != 0) {
+    UEZTaskPriorityGet(G_mainTask, &PriorityList[0]);
+    //EZTaskPrioritySet(G_mainTask, UEZ_PRIORITY_HIGH);
+    UEZTaskPrioritySet(G_mainTask, UEZ_PRIORITY_NORMAL);
+  }
 
-  //G_tsMonitorTask = (T_uezTask) xTaskGetHandle("TS_Mon");
-  // change TS_Mon task (separate from emWin touch task)
-  UEZTaskPriorityGet(G_tsMonitorTask, &PriorityList[1]);
-  UEZTaskPrioritySet(G_tsMonitorTask, UEZ_PRIORITY_VERY_LOW);
-  //UEZTaskSuspend(G_tsMonitorTask);  // could disable touchscreen task to prevent being able to stop video.
+  if(G_tsMonitorTask != 0) {
+    //G_tsMonitorTask = (T_uezTask) xTaskGetHandle("TS_Mon");
+    // change TS_Mon task (separate from emWin touch task)
+    UEZTaskPriorityGet(G_tsMonitorTask, &PriorityList[1]);
+    UEZTaskPrioritySet(G_tsMonitorTask, UEZ_PRIORITY_VERY_LOW);
+    //UEZTaskSuspend(G_tsMonitorTask);  // could disable touchscreen task to prevent being able to stop video.
+  }
 
-#if (UEZ_ENABLE_USB_HOST_STACK==1) // lower prio of USB tasks
-#if(UEZ_PROCESSOR == NXP_LPC4357)
-  UEZTaskPriorityGet(G_usbHostTask, &PriorityList[2]);
-  UEZTaskPrioritySet(G_usbHostTask, UEZ_PRIORITY_LOW);
-  UEZTaskSuspend(G_usbHostTask);
-#endif
-#if(UEZ_PROCESSOR == NXP_LPC4088)
-  UEZTaskPriorityGet(G_usbHostTask, &PriorityList[2]);
-  UEZTaskPrioritySet(G_usbHostTask, UEZ_PRIORITY_LOW);
-  UEZTaskSuspend(G_usbHostTask);
-#endif
-#if(UEZ_PROCESSOR == NXP_LPC1788)
-  UEZTaskPriorityGet(G_usbHostTask, &PriorityList[2]);
-  UEZTaskPrioritySet(G_usbHostTask, UEZ_PRIORITY_LOW);
-  UEZTaskSuspend(G_usbHostTask);
-#endif
+  #if (UEZ_ENABLE_USB_HOST_STACK==1) // lower prio of USB tasks
+  if(G_usbHostTask != 0) {
+  #if(UEZ_PROCESSOR == NXP_LPC4357)
+    UEZTaskPriorityGet(G_usbHostTask, &PriorityList[2]);
+    UEZTaskPrioritySet(G_usbHostTask, UEZ_PRIORITY_LOW);
+    UEZTaskSuspend(G_usbHostTask);
+  #endif
+  #if(UEZ_PROCESSOR == NXP_LPC4088)
+    UEZTaskPriorityGet(G_usbHostTask, &PriorityList[2]);
+    UEZTaskPrioritySet(G_usbHostTask, UEZ_PRIORITY_LOW);
+    UEZTaskSuspend(G_usbHostTask);
+  #endif
+  #if(UEZ_PROCESSOR == NXP_LPC1788)
+    UEZTaskPriorityGet(G_usbHostTask, &PriorityList[2]);
+    UEZTaskPrioritySet(G_usbHostTask, UEZ_PRIORITY_LOW);
+    UEZTaskSuspend(G_usbHostTask);
+  #endif
+  }
 #endif
   
   if(G_DACAudioTask != 0) { // want lower prio dac audio task that just reads files every few seconds, 
@@ -353,7 +375,9 @@ void VideoPlayer_deprioritize_other_tasks(void)
 void VideoPlayer_return_other_task_priorities(void)
 {
 #if (APP_ENABLE_HEARTBEAT_LED == 1)
-  UEZTaskResume(G_heartBeatTask);
+  if(G_heartBeatTask != 0) {
+    UEZTaskResume(G_heartBeatTask);
+  }
 #endif
 
   T_FDICmdWorkspace *p = (T_FDICmdWorkspace *)G_UEZGUIWorkspace;
@@ -361,24 +385,30 @@ void VideoPlayer_return_other_task_priorities(void)
      UEZTaskResume(p->iTask);
   }
 
-  UEZTaskPrioritySet(G_mainTask, PriorityList[0]);
+  if(G_mainTask != 0) {
+    UEZTaskPrioritySet(G_mainTask, PriorityList[0]);
+  }
 
-  UEZTaskPrioritySet(G_tsMonitorTask, PriorityList[1]); //  return touch prio
-  //UEZTaskResume(G_tsMonitorTask); // resume touchscreen task if disabled
+  if(G_tsMonitorTask != 0) {
+    UEZTaskPrioritySet(G_tsMonitorTask, PriorityList[1]); //  return touch prio
+    //UEZTaskResume(G_tsMonitorTask); // resume touchscreen task if disabled
+  }
 
 #if (UEZ_ENABLE_USB_HOST_STACK==1) // return prio of USB tasks
-#if(UEZ_PROCESSOR == NXP_LPC4357)
-  UEZTaskPrioritySet(G_usbHostTask, PriorityList[2]);
-  UEZTaskResume(G_usbHostTask);
-#endif
-#if(UEZ_PROCESSOR == NXP_LPC4088)
-  UEZTaskPrioritySet(G_usbHostTask, PriorityList[2]);
-  UEZTaskResume(G_usbHostTask);
-#endif
-#if(UEZ_PROCESSOR == NXP_LPC1788)
-  UEZTaskPrioritySet(G_usbHostTask, PriorityList[2]);
-  UEZTaskResume(G_usbHostTask);
-#endif
+  if(G_usbHostTask != 0) {
+  #if(UEZ_PROCESSOR == NXP_LPC4357)
+    UEZTaskPrioritySet(G_usbHostTask, PriorityList[2]);
+    UEZTaskResume(G_usbHostTask);
+  #endif
+  #if(UEZ_PROCESSOR == NXP_LPC4088)
+    UEZTaskPrioritySet(G_usbHostTask, PriorityList[2]);
+    UEZTaskResume(G_usbHostTask);
+  #endif
+  #if(UEZ_PROCESSOR == NXP_LPC1788)
+    UEZTaskPrioritySet(G_usbHostTask, PriorityList[2]);
+    UEZTaskResume(G_usbHostTask);
+  #endif
+  }
 #endif
 
   if(G_DACAudioTask != 0) {
@@ -423,9 +453,19 @@ void VideoPlayer(const T_choice *aChoice)
     printf("\r\nVideo FPS %u\n", G_pVideoInfo->iFPS);
 #endif
 
-    if(VideoPlayer_Open(&ws) != UEZ_ERROR_NONE){
+    if(VideoPlayer_Open(&ws) != UEZ_ERROR_NONE) {
       return;
     }
+
+#if(USING_VIDEO_READ_BUF_ON_HEAP == 1)
+  _videoReadBufMemoryptr = UEZMemAlloc(VIDEO_READ_BUF_SIZE);
+  if(_videoReadBufMemoryptr == 0) {
+    return;
+  } else {
+  }
+#else
+  // No need to init this file buffer memory
+#endif
 
     UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue);
 #if UEZ_REGISTER
@@ -460,10 +500,12 @@ void VideoPlayer(const T_choice *aChoice)
       ws.iSoundNextPartial = (float)(((float)100.0) / (float)(G_WaveFile.iSampleRate));
     }
 
-    if(error == UEZ_ERROR_NONE)
+    if(error == UEZ_ERROR_NONE) {
         isAudioPlaying = ETrue;
-    else
+        UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, 255);
+    } else {
         isAudioPlaying = EFalse;
+    }
 
 
     while (!ws.iExit) {
@@ -517,8 +559,15 @@ void VideoPlayer(const T_choice *aChoice)
     printf("Total Skip Count: %u out of %u total frames\r\n", G_totalSkipCount, ws.iFrameCount);
 #endif
 
+    UEZAudioMixerSetLevel(UEZ_AUDIO_MIXER_OUTPUT_ONBOARD_SPEAKER, UEZ_DEFAULT_AUDIO_LEVEL);
     UEZDACWAVStop();
     UEZFileClose(ws.iFile);
+
+#if (USING_VIDEO_READ_BUF_ON_HEAP == 1)
+        UEZMemFree(_videoReadBufMemoryptr);
+#else
+#endif
+
     UEZLCDClose(ws.iLCD);
     VideoPlayer_return_other_task_priorities();
 #if UEZ_ENABLE_BUTTON_BOARD

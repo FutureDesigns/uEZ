@@ -560,6 +560,7 @@ static uint32_t spifiDeviceDataGetStatusW25Q80BV(const SPIFI_HANDLE_T *pHandle)
 static void spifiDeviceDataClearStatusNone(const SPIFI_HANDLE_T *pHandle)
 {
 	/* Do nothing */
+        (void)(pHandle);
 }
 
 #endif
@@ -691,6 +692,8 @@ static SPIFI_ERR_T spifiDeviceDataSetOptsQuadModeBit9(const SPIFI_HANDLE_T *pHan
 #if NEED_spifiDeviceDataInitDeinit
 static SPIFI_ERR_T spifiDeviceDataInitDeinit(const SPIFI_HANDLE_T *pHandle, uint32_t init)
 {
+        (void)(pHandle);
+        (void)(init);
 	return SPIFI_ERR_NONE;
 }
 
@@ -719,6 +722,8 @@ static SPIFI_ERR_T spifiDeviceDataInitDeinitS25FL164K(const SPIFI_HANDLE_T *pHan
 static void spifiDeviceInitReadCommand(const SPIFI_HANDLE_T *pHandle, uint8_t enable,
 								uint32_t *cmd, uint32_t *iData)
 {
+        (void)(pHandle);
+        (void)(enable);
 	if (iData) {
 		*iData = 0xFF;
 	}
@@ -1047,6 +1052,7 @@ static uint32_t spifiFamFxGetDeviceStatus(const SPIFI_HANDLE_T *pHandle, uint8_t
 /* lock/ unlock commands */
 static SPIFI_ERR_T spifiFamFxLockDeviceCmd(const SPIFI_HANDLE_T *pHandle, SPIFI_PCMD_LOCK_UNLOCK_T cmd, uint32_t data)
 {
+        (void)(data);
 	SPIFI_ERR_T status = SPIFI_ERR_NOTSUPPORTED;
 
 	if ((cmd == SPIFI_PCMD_UNLOCK_DEVICE) || (cmd == SPIFI_PCMD_LOCK_DEVICE)) {
@@ -1337,12 +1343,16 @@ static SPIFI_ERR_T spifiFamFxReadDevice(const SPIFI_HANDLE_T *pHandle,
 /* Enable or disable software write protect state */
 static SPIFI_ERR_T spifiFamFxResetDevice(const SPIFI_HANDLE_T *pHandle)
 {
+        (void)(pHandle);
 	return SPIFI_ERR_NOTSUPPORTED;
 }
 
 /* Setup a device */
 static SPIFI_ERR_T spifiFamFxDeviceSetup(SPIFI_HANDLE_T *pHandle, uint32_t spifiCtrlAddr, uint32_t baseAddr)
 {
+        (void)(pHandle);
+        (void)(spifiCtrlAddr);
+        (void)(baseAddr);
 	/* Common Command Set family function table */
 	static  SPIFI_FAM_FX_T fxTable;
 

@@ -70,7 +70,7 @@ void UEZMemInit(void);
  *
  *	@return	Pointer to memory allocated, or NULL if memory not available.
  */
-void *UEZMemAlloc(TUInt32 aSize);
+void *UEZMemAlloc(size_t aSize);
 
 /**
  *	Allocate a block of memory that will never be freed. The buffer is 
@@ -100,7 +100,7 @@ void UEZMemFree(void *aMemory);
  *
  *	@return	Pointer to memory allocated, or NULL if memory not available.
  */
-void *UEZMemRealloc(void *aMemory, TUInt32 aSize); //NOT IMPLEMENTED YET
+void *UEZMemRealloc(void *aMemory, size_t aSize); //NOT IMPLEMENTED YET
 
 /**
  *	Allocate a permanent block of memory that will never be freed.
@@ -182,8 +182,8 @@ TUInt32 UEZMemGetNumBlocks(void);
   #if (defined __GNUC__)
     #define UEZ_PUT_SECTION(Section, ...) __attribute__ ((section (Section))) __attribute__ ((__used__)) __VA_ARGS__
   #elif (defined __ICCARM__) || (defined __ICCRX__)
-// There are now 2 different IAR USED defs as IAR is changing to support attribute keywords (lol)
-#define UEZ_PUT_SECTION(Section, ...)  UEZ_PRAGMA(location=Section) __USED \
+// IAR switched to __root some time ago and new versions may support the GCC __used__ attribute
+#define UEZ_PUT_SECTION(Section, ...)  UEZ_PRAGMA(location=Section) __root \
                                           __VA_ARGS__
   #elif (defined __CC_ARM)
     #define UEZ_PUT_SECTION(Section, ...) __attribute__ ((section (Section), zero_init)) __VA_ARGS__

@@ -12,6 +12,8 @@
 
 #define FATFS_MAX_MASS_STORAGE_DEVICES      2
 
+//#define COMPATIBLE_SD_MMC           1 // Not used yet
+
 #define UEZ_LCD_COLOR_DEPTH         UEZLCD_COLOR_DEPTH_I15_BIT
 
 #define UEZ_LCD_DISPLAY_HEIGHT      UEZPlatform_LCDGetHeight()
@@ -26,11 +28,11 @@
 #define SERIAL_PORTS_DEFAULT_BAUD   UEZPlatform_SerialGetDefaultBaud()
 
 #define PROCESSOR_OSCILLATOR_FREQUENCY  UEZPlatform_ProcessorGetFrequency()
+#define APPLICATION_HEAP_SIZE       UEZPlatform_GetApplicationHeapSize()
 #define PCLK_FREQUENCY              UEZPlatform_GetPCLKFrequency()
 
 #define INTERRUPT_BASED_EMAC        1
 #define EMAC_ENABLE_JUMBO_FRAME     1 // set to 1 to enable jumbo frame support (see TCP_MSS for LPC specific size)
-#define LCD_BACKLIGHT_FREERTOS_TIMER 1 // use FreeRTOS timer for backlight turn on delay instead of MCU Timer0.
 
 #ifdef FREERTOS_PLUS_TRACE
 #define configUSE_TRACE_FACILITY  1
@@ -45,8 +47,7 @@
 
 #else // debug build settings
 #define UEZ_REGISTER              1  //Used for registering Queues and Semaphores in the RTOS
-#define UEZ_DEBUG_HEAVY_ASSERTS   1 
-
+#define UEZ_DEBUG_HEAVY_ASSERTS   1
 #endif
 
 #define DEBUG_HTTP_SERVER           	      0
@@ -65,17 +66,16 @@
 #ifndef FREERTOS_HEAP_SELECTION // Make sure the number 1-5 is set here.
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
 #define FREERTOS_HEAP_SELECTION         2 // default Heap for bootloader, less code space than 4.
-#else
-//#define FREERTOS_HEAP_SELECTION         4 // Need Heap 2, 4, 5 for heap monitoring. TODO
-#define FREERTOS_HEAP_SELECTION         3 // default Heap for all other projects
-// TODO switch default demo projects to use heap 4
+#else // default Heap for all other projects
+#define FREERTOS_HEAP_SELECTION         4 // Need Heap 2, 4, 5 for heap monitoring.
+//#define FREERTOS_HEAP_SELECTION         3 // old uEZ heap default
 #endif
 #endif
 
 #if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
 // These heaps will use ucHeap[configTOTAL_HEAP_SIZE] global variable;
 // If configAPPLICATION_ALLOCATED_HEAP is 1 make sure to declare ucHeap in application project.
-// You should #undef configTOTAL_HEAP_SIZE in application then redfine it to change the size per app.
+// You should #undef configTOTAL_HEAP_SIZE in application then redefine it to change the size per app.
 #define configAPPLICATION_ALLOCATED_HEAP    1
 #endif
 
@@ -93,6 +93,9 @@
 
 #define ALLOW_LOCKING_XSPI_OTP 0 // set to 1 to allow sending WRSCUR command for 512/1024 byte hidden region in spifiLockOtp function.
 
-#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
+#if (DISABLE_FEATURES_FOR_BOOTLOADER == 1) // for bootloader builds only
 #define DISABLE_UEZ_FATAL_ERROR         1
+#define LCD_BACKLIGHT_FREERTOS_TIMER 0
+#else // general purpose library builds
+#define LCD_BACKLIGHT_FREERTOS_TIMER 1 // use FreeRTOS timer for backlight turn on delay instead of MCU Timer0.
 #endif

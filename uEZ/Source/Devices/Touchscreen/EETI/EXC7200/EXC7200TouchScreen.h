@@ -41,7 +41,7 @@
 
 #include <uEZ.h>
 #include <Device/Touchscreen.h>
-#include <UEZGPIO.h>
+#include <uEZGPIO.h>
 #define NUM_CALIBRATE_POINTS_NEEDED     3
 
 #ifdef __cplusplus

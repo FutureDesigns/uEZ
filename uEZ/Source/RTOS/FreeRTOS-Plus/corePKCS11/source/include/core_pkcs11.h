@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -207,7 +207,7 @@
     #undef CreateMutex /* This is a workaround because CreateMutex is redefined to CreateMutexW in synchapi.h in windows. :/ */
 #endif
 
-#include "../dependency/3rdparty/pkcs11/pkcs11.h"
+#include "../dependency/3rdparty/pkcs11/pkcs11.h" //#include "pkcs11.h"
 //#include "Source/RTOS/FreeRTOS-Plus/corePKCS11/source/dependency/3rdparty/pkcs11/pkcs11.h"
 
 // Optional 3rd party library. (not used if not needed)

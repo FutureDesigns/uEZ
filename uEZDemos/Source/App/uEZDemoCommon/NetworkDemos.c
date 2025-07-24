@@ -34,6 +34,7 @@
 #include <Source/Library/lwip_2.0.x/contrib/examples/snmp/snmp_example.h>
 #include <Source/Library/lwip_2.0.x/contrib/examples/tftp/tftp_example.h>
 #include <Source/Library/lwip_2.0.x/contrib/examples/lwiperf/lwiperf_example.h>
+#include <Source/Library/Network/lwip-ftpd/ftpd.h> // full featured ftp server
 #include <sys/socket.h>
 
 /*-------------------------------------------------------------------------*
@@ -45,7 +46,7 @@
  *-------------------------------------------------------------------------*/
 
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 static TBool need_updated_server_time = EFalse; // create a user button to set to this to true, or set true only after on RTC battery drain.
 
@@ -59,7 +60,7 @@ static TBool need_updated_server_time = EFalse; // create a user button to set t
  *-------------------------------------------------------------------------*/
 T_uezError Start_lwIP_Network_Demos(T_uezDevice network)
 {
-    if(G_lwipTask != NULL) {
+    if(G_lwipTask != (sys_thread_t) NULL) {
       lwip_socket_thread_init(); // if lwip init make sure to init per thread objects
     } // This would be needed to run below mqtt demo, iperf demo, etc unelss they start their own threads and init the objects.
 
@@ -80,6 +81,10 @@ T_uezError Start_lwIP_Network_Demos(T_uezDevice network)
 
     //tftp_example_init_client(); // not tested yet
     //tftp_example_init_server();  // test using atftp software to put files onto SD card.
+
+    ftpd_init();  // full FTP server (third party) that integrates with lwip and fatfs directly. Both SD card and Flash drive can be accessed and directories can be browsed.
+    ftpd_setValidUserName("testUN"); // Use this ftp server over lwip built-in tftp server. Much faster and more features. (tftp failed large files and is limited to 512 packet size)
+    ftpd_setValidPassword("testPW"); // Currently don't access the sdcard or flash drive on the unit while accessing over ftp.
 
     //lwiperf_example_init(); // can run iperf from PC to uEZGUI
 

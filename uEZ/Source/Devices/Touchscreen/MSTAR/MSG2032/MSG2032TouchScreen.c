@@ -73,6 +73,8 @@ typedef struct {
     TInt32 iPenYScaleTop;
     TInt32 iPenYScaleBottom;
 
+    T_uezSemaphore iSem;
+
     TInt32 iLastX;
     TInt32 iLastY;
     T_uezTSFlags iLastTouch;
@@ -99,6 +101,8 @@ void TS_MSG2032_InterruptISR(
         TUInt32 aPortPins,
         T_gpioInterruptType aType)
 {
+    PARAM_NOT_USED(aType);
+    PARAM_NOT_USED(aPortPins);
     T_MSG2032Workspace *p = (T_MSG2032Workspace *)aInterruptHandlerWorkspace;
     _isr_UEZSemaphoreRelease(p->iSemWaitForTouch);
 }
@@ -267,14 +271,15 @@ T_uezError TS_MSG2032_Poll(void *aWorkspace, T_uezTSReading *aReading)
     T_MSG2032Workspace *p =
             (T_MSG2032Workspace *) aWorkspace;
     T_uezError error;
-    I2C_Request r;
+    //I2C_Request r;
     T_uezDevice i2c0;
     TUInt8 dataIn[0x30];
     TUInt8 dataOut[5];
     TUInt32 Read = 0;
     TUInt32 x;
     TUInt32 y;
-    
+
+    //PARAM_NOT_USED(r);
     error = UEZI2COpen(p->iI2CBus, &i2c0);
 
     // Try to grab the semaphore -- do we have new data?
@@ -425,19 +430,19 @@ T_uezError TS_MSG2032_CalibrateEnd(void *aWorkspace)
 
         for (i = 0; i < p->iNumCalibratePoints; i++) {
             // Find range of inputs
-            if (p->iCalibrateReadingsTaken[i].iX < minIX) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX < minIX) {
                 minIX = p->iCalibrateReadingsTaken[i].iX;
                 minOX = p->iCalibrateReadingsExpected[i].iX;
             }
-            if (p->iCalibrateReadingsTaken[i].iX > maxIX) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iX > maxIX) {
                 maxIX = p->iCalibrateReadingsTaken[i].iX;
                 maxOX = p->iCalibrateReadingsExpected[i].iX;
             }
-            if (p->iCalibrateReadingsTaken[i].iY < minIY) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY < minIY) {
                 minIY = p->iCalibrateReadingsTaken[i].iY;
                 minOY = p->iCalibrateReadingsExpected[i].iY;
             }
-            if (p->iCalibrateReadingsTaken[i].iY > maxIY) {
+            if ((TUInt32) p->iCalibrateReadingsTaken[i].iY > maxIY) {
                 maxIY = p->iCalibrateReadingsTaken[i].iY;
                 maxOY = p->iCalibrateReadingsExpected[i].iY;
             }
@@ -456,6 +461,16 @@ T_uezError TS_MSG2032_CalibrateEnd(void *aWorkspace)
         p->iPenYScaleBottom = maxIY - minIY;
 
         p->iHaveCalibration = ETrue;
+
+        // Check to see if this is valid calibration data
+        // (should have a resolution of at least 5 bits per pixel output
+        // using 10 bit ADCs).
+        // This check doesn't catch everything but will help catch
+        // most of the bogus readings (such as all the same points)
+        if ((p->iPenXScaleBottom < p->iPenXScaleTop * 32)
+                || (p->iPenYScaleBottom < p->iPenYScaleTop * 32)) {
+            return UEZ_ERROR_OUT_OF_RANGE;
+        }
     } else {
         return UEZ_ERROR_NOT_ENOUGH_DATA;
     }    
@@ -524,6 +539,52 @@ T_uezError Touchscreen_MSG2032_Create(const char *aName,
     return error;
 }
 
+
+static T_uezError TS_MSG2032_SetTouchDetectSensitivity(
+        void *aWorkspace,
+        TUInt16 aLowLevel,
+        TUInt16 aHighLevel)
+{
+  T_MSG2032Workspace *p = (T_MSG2032Workspace *)aWorkspace;
+
+  PARAM_NOT_USED(p);
+  PARAM_NOT_USED(aLowLevel);
+  PARAM_NOT_USED(aHighLevel);
+    //UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
+    // Shift down the sensitivity to be a 10 bit reading
+    // then multiply by the number of readings.
+    //p->iTDSLow = (aLowLevel>>6)*NUM_SAMPLES_PER_READING;
+    //p->iTDSHigh = (aHighLevel>>6)*NUM_SAMPLES_PER_READING;
+    //UEZSemaphoreRelease(p->iSem);
+
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
+static T_uezError TS_MSG2032_WaitForTouch(
+        void *aWorkspace,
+        TUInt32 aTimeout)
+{
+  T_MSG2032Workspace *p = (T_MSG2032Workspace *)aWorkspace;
+    T_uezError error;
+    //TUInt32 sense;
+
+    PARAM_NOT_USED(aTimeout);
+
+    // Grab the touch screen
+    error = UEZSemaphoreGrab(p->iSem, 100);
+    if (error)
+            return error;
+
+    // TODO make this function real if we ever need it.
+
+    // Done waiting
+    UEZSemaphoreRelease(p->iSem);
+
+    // Return a timeout, error, or positive results
+    //return error;
+    return UEZ_ERROR_NOT_SUPPORTED;
+}
+
 /*---------------------------------------------------------------------------*
  * Device Interface table:
  *---------------------------------------------------------------------------*/
@@ -544,6 +605,10 @@ const DEVICE_TOUCHSCREEN Touchscreen_MSG2032_Interface = {
         TS_MSG2032_CalibrateStart,
         TS_MSG2032_CalibrateAdd,
         TS_MSG2032_CalibrateEnd,
+
+        TS_MSG2032_SetTouchDetectSensitivity,
+
+        TS_MSG2032_WaitForTouch,
 } ;
 
 /*-------------------------------------------------------------------------*

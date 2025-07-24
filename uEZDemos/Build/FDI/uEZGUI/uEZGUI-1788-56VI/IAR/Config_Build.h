@@ -9,9 +9,9 @@
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J10 header
 
 #ifdef NDEBUG
-#define UEZ_REGISTER              			0
+#define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER              			1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        1 // Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #define UEZ_ENABLE_LOOPBACK_TEST            0 // set to 1 to allow loopback test to run
@@ -33,6 +33,7 @@
 #define UEZ_BASIC_WEB_SERVER                0
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
+#define UEZ_NETWORK_DEMOS                   0
 
 // Expansion Options, set to 1 to enable an expansion board
 #define UEZGUI_EXPANSION_DEVKIT             0
@@ -41,8 +42,8 @@
 
 //#define UEZ_ICONS_SET                     ICONS_SET_UEZ_OPEN_SOURCE
 #define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS
-//#define UEZ_ICONS_SET                       ICONS_SET_PROFESSIONAL_ICONS_LARGE
-#define SIMPLEUI_DOUBLE_SIZED_ICONS         1// 1 to 1 icons
+//#define UEZ_ICONS_SET                     ICONS_SET_PROFESSIONAL_ICONS_LARGE
+#define SIMPLEUI_DOUBLE_SIZED_ICONS         1 // 2 to 1 icons
 
 // Modify the default accelerometer demo settings
 #define ACCEL_DEMO_SWAP_XY                  0
@@ -79,3 +80,4 @@
 
 #define UEZ_SLIDESHOW_NAME                  "uEZGUI-1788-56VI"
 
+#define FREERTOS_HEAP_SELECTION 4

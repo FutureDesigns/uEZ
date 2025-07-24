@@ -1,0 +1,470 @@
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:51: Warning: include file stdint.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Include/uEZTypes.h:52: Warning: include file CMSIS/cmsis_compiler.h not found, perhaps you forgot to add its directory to INCLUDE_PATH?
+D:/uEZ_Repository/uEZ/Source/Platform/FDI/uEZGUI_4357_50WVN/uEZPlatform.h:2: warning: the name `Platform\EA\OEM511_LPC4357\uEZPlatform.h' supplied as the second argument in the \file statement is not an input file
+D:/uEZ_Repository/uEZ/Source/Platform/FDI/uEZGUI_4357_70WVN/uEZPlatform.h:2: warning: the name `Platform\EA\OEM511_LPC4357\uEZPlatform.h' supplied as the second argument in the \file statement is not an input file
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:107: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iLength)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:110: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iType)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:113: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t iBCDHIDVersion)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:116: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iCountryCode)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:119: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iNumDescriptors)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:122: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iDescriptorType)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:125: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t iDescriptorLength)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:132: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iLength)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:135: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iType)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:138: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iEndpointAddress)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:141: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iEndpointType)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:144: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t iMaxPacketSize)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/Types/USBHost.h:147: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iInterval)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:63: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t x)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:64: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t y)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:65: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t w)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:66: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t h)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:77: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t bitsPerPixel)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:78: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t depth)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:79: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t bigEndian)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:85: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t trueColour)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:91: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t redMax)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:95: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t greenMax)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:98: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t blueMax)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:101: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t redShift)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:114: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t greenShift)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:116: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t blueShift)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:118: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad1)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:119: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:218: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t shared)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:234: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t framebufferWidth)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:235: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t framebufferHeight)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:236: warning: no matching file member found for 
+PACK_STRUCT_FIELD(rfbPixelFormat format)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:237: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t nameLength)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:311: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:312: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:313: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t nRects)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:330: warning: no matching file member found for 
+PACK_STRUCT_FIELD(rfbRectangle r)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:331: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t encoding)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:349: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t srcX)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:350: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t srcY)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:365: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t nSubrects)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:381: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t x)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:382: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t y)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:383: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t w)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:384: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t h)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:453: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:454: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:455: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t firstColour)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:456: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t nColours)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:472: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:484: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:485: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad1)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:486: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:487: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t length)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:502: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:503: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad1)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:504: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t desktop_w)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:505: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t desktop_h)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:506: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t buffer_w)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:507: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t buffer_h)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:508: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:540: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:541: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad1)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:542: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:543: warning: no matching file member found for 
+PACK_STRUCT_FIELD(rfbPixelFormat format)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:556: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:557: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t scale)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:558: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:573: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:574: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:575: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t firstColour)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:576: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t nColours)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:592: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:593: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:594: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t nEncodings)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:609: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:610: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t incremental)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:611: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t x)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:612: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t y)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:613: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t w)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:614: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t h)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:653: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:654: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t down)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:655: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:656: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t key)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:668: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:669: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t buttonMask)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:670: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t x)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:671: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t y)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:687: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t type)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:688: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t pad1)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:689: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint16_t pad2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/Network/VNC/uEZVNC/uEZVNC_rfb.h:690: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t length)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:71: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint32_t iBaudRate)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:72: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iCharFormat)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:73: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iParity)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:74: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iNumDataBits)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Keyboard/USBHID_Keyboard.h:69: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iFlags)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Keyboard/USBHID_Keyboard.h:70: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iReserved)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Keyboard/USBHID_Keyboard.h:71: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t[6] iKeys[6])Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Mouse/USBHID_Mouse.h:66: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iButtons)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Mouse/USBHID_Mouse.h:67: warning: no matching file member found for 
+PACK_STRUCT_FIELD(int8_t iDeltaX)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Mouse/USBHID_Mouse.h:68: warning: no matching file member found for 
+PACK_STRUCT_FIELD(int8_t iDeltaY)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Mouse/USBHID_Mouse.h:69: warning: no matching file member found for 
+PACK_STRUCT_FIELD(int8_t iDeltaWheel)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Mouse/USBHID_Mouse.h:70: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iACPan)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Source/Library/USBHID/Mouse/USBHID_Mouse.h:71: warning: no matching file member found for 
+PACK_STRUCT_FIELD(uint8_t iButtons2)Possible candidates:
+  #define PACK_STRUCT_FIELD(x)
+
+D:/uEZ_Repository/uEZ/Include/lwipopts.h:189: warning: explicit link request to 'define' could not be resolved
+D:/uEZ_Repository/uEZ/Include/lwipopts.h:190: warning: explicit link request to 'define' could not be resolved
+D:/uEZ_Repository/uEZ/Source/Library/Audio/DAC/uEZDACWAVFile.c:235: warning: The following parameters of UEZDACWAVPlay(char *aFileName, wavFileHeader *aHeader) are not documented:
+  parameter 'aHeader'
+D:/uEZ_Repository/uEZ/Source/Library/Audio/DAC/uEZDACWAVFile.c:235: warning: The following parameters of UEZDACWAVPlay(char *aFileName, wavFileHeader *aHeader) are not documented:
+  parameter 'aHeader'
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:321: warning: unable to resolve reference to `USB_Descriptor_String_t' for \ref command
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:321: warning: argument 'String' of command @param is not found in the argument list of USB_STRING_DESCRIPTOR(PString)
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/VirtualComm/VirtualComm.c:321: warning: The following parameters of USB_STRING_DESCRIPTOR(PString) are not documented:
+  parameter 'PString'
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/MassStorage/USBMSDrive.c:96: warning: unable to resolve reference to `USB_Descriptor_String_t' for \ref command
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/MassStorage/USBMSDrive.c:96: warning: argument 'String' of command @param is not found in the argument list of USB_STRING_DESCRIPTOR(aString)
+D:/uEZ_Repository/uEZ/Source/Library/USBDevice/LPCUSBLib/MassStorage/USBMSDrive.c:96: warning: The following parameters of USB_STRING_DESCRIPTOR(aString) are not documented:
+  parameter 'aString'
+D:/uEZ_Repository/uEZ/Source/Processor/NXP/LPC1768/CodeRed2/include/CMSIS/core_cm3.h:116: warning: explicit link request to 'define' could not be resolved
+D:/uEZ_Repository/uEZ/Source/uEZSystem/uEZGPIO.c:494: warning: argument 'aPort' of command @param is not found in the argument list of UEZGPIOConfigureInterruptCallback(T_uezGPIOPortPin aPortPin, T_gpioInterruptHandler aInterruptCallback, void *aInterruptCallbackWorkspace)
+D:/uEZ_Repository/uEZ/Source/uEZSystem/uEZGPIO.c:494: warning: The following parameters of UEZGPIOConfigureInterruptCallback(T_uezGPIOPortPin aPortPin, T_gpioInterruptHandler aInterruptCallback, void *aInterruptCallbackWorkspace) are not documented:
+  parameter 'aPortPin'
+D:/uEZ_Repository/uEZ/Source/Library/Network/GainSpan/CmdLib/AtCmdLib.c:2303: warning: argument 'pBuffer' of command @param is not found in the argument list of AtLibGs_checkEOFMessage(const char *pBufferInput)
+D:/uEZ_Repository/uEZ/Source/Library/Network/GainSpan/CmdLib/AtCmdLib.c:2303: warning: The following parameters of AtLibGs_checkEOFMessage(const char *pBufferInput) are not documented:
+  parameter 'pBufferInput'
+D:/uEZ_Repository/uEZ/Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.c:801: warning: argument 'channel' of command @param is not found in the argument list of GainSpan_SPI_IsLinkActive(void)
+D:/uEZ_Repository/uEZ/Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.c:801: warning: argument 'aData' of command @param is not found in the argument list of GainSpan_SPI_IsLinkActive(void)
+D:/uEZ_Repository/uEZ/Source/Library/Network/GainSpan/CmdLib/GainSpan_SPI.c:801: warning: argument 'aLen' of command @param is not found in the argument list of GainSpan_SPI_IsLinkActive(void)

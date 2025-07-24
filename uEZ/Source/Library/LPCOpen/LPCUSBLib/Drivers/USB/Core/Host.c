@@ -192,6 +192,7 @@ void USB_Host_ProcessNextHostState(uint8_t corenum)
 
 uint8_t USB_Host_WaitMS(uint8_t MS)
 {
+        (void)(MS);
 	return HOST_WAITERROR_Successful;
 }
 

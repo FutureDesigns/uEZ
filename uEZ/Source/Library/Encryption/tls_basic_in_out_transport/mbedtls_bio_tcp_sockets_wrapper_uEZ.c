@@ -119,10 +119,11 @@ int mbedtls_bio_socket_send(void *ctx, const unsigned char *buf, size_t len)
 
     configASSERT(buf != NULL);
 
-    error = UEZNetworkSocketWrite(pTlsTransportParams->aNetwork, pTlsTransportParams->tcpSocket, (unsigned char *) buf, len, EFalse, 10000);
+    error = UEZNetworkSocketWrite(pTlsTransportParams->aNetwork, pTlsTransportParams->tcpSocket, (unsigned char *) buf, len, EFalse, 5000);
     if(UEZ_ERROR_NONE != error)
     {
         DEBUG_RTT_Printf(0, "\nFailed mbedtls_bio_socket_send::UEZNetworkSocketWrite, error=%d, length %u\n", error, len);
+        mbedtls_bio_socket_disconnect(pTlsTransportParams);
     }
     else
     {
@@ -154,6 +155,12 @@ int mbedtls_bio_socket_recv(void *ctx, unsigned char *buf, size_t len)
         if(UEZ_ERROR_TIMEOUT == error)
         {
             ret = MBEDTLS_ERR_SSL_WANT_READ;
+        } else {
+          mbedtls_bio_socket_disconnect(pTlsTransportParams);
+        }
+        if(UEZ_ERROR_OUT_OF_MEMORY == error)
+        {            
+          __BKPT(0);
         }
     }
     else

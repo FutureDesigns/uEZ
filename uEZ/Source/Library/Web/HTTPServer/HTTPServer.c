@@ -31,9 +31,9 @@
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <uEZ.h>
 #include <uEZMemory.h>
@@ -81,7 +81,7 @@ extern T_uezError VFileClose(T_uezFile aFile);
 #define VFileClose UEZFileClose
 #endif
 
-T_uezTask G_HttpServerTask = NULL;
+T_uezTask G_HttpServerTask = (T_uezTask) NULL;
 
 /*---------------------------------------------------------------------------*
  * Constants and Macros:
@@ -685,6 +685,8 @@ static T_uezError IHTTPWriteFlush(T_httpState *aState, TBool aMoreToCome)
     int32_t sent;
     DEBUG_SV_Print("FS");
 
+    PARAM_NOT_USED(aMoreToCome);
+
 #if LWIP_NETCONN_SEM_PER_THREAD // It appears that per thread semaphore fixes this crashing issue and a 1ms delay is not needed, but call 0 delay to allow a switch.
 #else
     UEZTaskDelay(1); // Will crash if flushstart debug code is not running, testing delay fix
@@ -1122,6 +1124,8 @@ static T_uezError IHTTPOutputParsedFile(
     TUInt32 fileLen = 0;
 
     VFileGetLength(aFile, &fileLen);
+
+    PARAM_NOT_USED(aLength);
 
     for (i = 0; (i < fileLen) && (error == UEZ_ERROR_NONE); i++) {
         // Put in c the next character
@@ -2041,6 +2045,8 @@ static void vProcessConnection(int32_t aSocket,
 /*---------------------------------------------------------------------------*/
 TUInt32 HTTPServer(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
+    PARAM_NOT_USED(aParameters);
     int32_t socket_fd;
     int32_t accept_fd;
     socklen_t addr_size;

@@ -223,8 +223,35 @@ T_uezError UEZNetworkConfigureInfrastructure(
  *  #include <uEZNetwork.h>
  *
  *  T_uezDevice Network;
- *  T_uezNetworkScanCallback aCallback;
- *  UEZNetworkScan(Network,0,"", aCallback, (void *) aCallbackWorkspace,10000);
+ *  
+ *  // Define a callback function, example:
+ *  static TBool IScanGetNetworkName(void *aCallbackWorkspace, *  T_uezNetworkInfo *aNetworkInfo)
+ *  {
+ *      char buffer[96];
+ *      snprintf(buffer, 96, "%32s\t%02x:%02x:%02x:%02x:%02x:%02x\t%16s\t%10d\t%10u\n", aNetworkInfo->iName, 
+ *                                                aNetworkInfo->iBSSID[0],
+ *                                                aNetworkInfo->iBSSID[1],
+ *                                                aNetworkInfo->iBSSID[2],
+ *                                                aNetworkInfo->iBSSID[3],
+ *                                                aNetworkInfo->iBSSID[4],
+ *                                                aNetworkInfo->iBSSID[5],
+ *                                                (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_OPEN) ? "OPEN"
+ *                                                  : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA) ? "WPA"
+ *                                                  : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA2) ? "WPA2"
+ *                                                  : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WEP) ? "WEP"
+ *                                                  : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA_ENTERPRISE) ? "WPA ENTERPRISE"
+ *                                                  : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_WPA2_ENTERPRISE) ? "WPA2 ENTERPRISE"
+ *                                                  : (aNetworkInfo->iSecurityMode == UEZ_NETWORK_SECURITY_MODE_UNKNOWN) ? "UNKNOWN"
+ *                                                  : "UNKNOWN", 
+ *                                                aNetworkInfo->iRSSILevel,
+ *                                                aNetworkInfo->iChannel);
+ *      DEBUG_RTT_Write(0, buffer, strlen(buffer));
+ *      return ETrue;
+ *  }
+ *  
+ *  // Call the API function and pass the callback function and lower level implementation 
+ *  // will pass each network's info via the callback function one at a time
+ *  UEZNetworkScan(Network, 0, NULL, IScanGetNetworkName, NULL, 10000);
  *  @endcode
  */
 /*---------------------------------------------------------------------------*/
@@ -949,6 +976,14 @@ T_uezError UEZNetworkConnect(
         T_uezDevice *aNetwork,
         T_uezNetworkStatus *aStatus)
 {
+    PARAM_NOT_USED(aNetworkName);
+    PARAM_NOT_USED(aJoinName);
+    PARAM_NOT_USED(aIPAddr);
+    PARAM_NOT_USED(aIPMask);
+    PARAM_NOT_USED(aIPGateway);
+    PARAM_NOT_USED(aEnableDHCP);
+    PARAM_NOT_USED(aNetwork);
+    PARAM_NOT_USED(aStatus);
 #if 0
     T_uezNetworkSettings settings;
     T_uezError error = UEZ_ERROR_NONE;

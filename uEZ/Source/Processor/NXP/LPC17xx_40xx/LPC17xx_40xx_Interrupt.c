@@ -29,12 +29,7 @@
 #endif
 
 #if (COMPILER_TYPE == GCC_ARM)
-#include <intrinsics.h>
-
-#elif (COMPILER_TYPE == KEIL_UV)
-#define __disable_interrupt __disable_irq
-#define __enable_interrupt	__enable_irq
-
+//#include <intrinsics.h> // not available in MCUXpresso, don't use.
 #endif
 
 /*---------------------------------------------------------------------------*
@@ -62,7 +57,9 @@ static T_irqHandleStruct G_isrArray[UEZ_MAX_IRQ_CHANNELS];
 void InterruptFatalError(void)
 {
     // Disable all interrupts
-    __disable_interrupt();
+    __disable_irq(); // uses cpsi intrisics from common CMSIS files
+    //CPUDisableInterrupts() // use MSR basepri intrinsics
+
     while(1)  {
         //TBD: Report error in some form
     }

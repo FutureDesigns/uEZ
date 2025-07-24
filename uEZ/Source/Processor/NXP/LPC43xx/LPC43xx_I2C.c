@@ -555,6 +555,7 @@ T_uezError ILPC43xx_I2C_IsHung(void *aWorkspace, TBool *aBool)
 
 T_uezError ILPC43xx_I2C_ResetBus(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     T_uezError error = UEZ_ERROR_NONE;
     //T_LPC43xx_I2C_Workspace *p = (T_LPC43xx_I2C_Workspace *)aWorkspace;
     //TODO: implement reset functionality.

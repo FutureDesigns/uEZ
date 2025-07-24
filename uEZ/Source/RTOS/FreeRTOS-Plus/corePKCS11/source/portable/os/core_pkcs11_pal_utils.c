@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -45,6 +45,7 @@
  *
  */
 
+// merge these ifdefs on update if def names don't change
 #ifndef pkcs11palFILE_NAME_CLIENT_CERTIFICATE
  #define pkcs11palFILE_NAME_CLIENT_CERTIFICATE    "corePKCS11_Certificate.dat"       /**< The file name of the Certificate object. */
 #endif
@@ -52,7 +53,7 @@
  #define pkcs11palFILE_NAME_KEY                   "corePKCS11_Key.dat"               /**< The file name of the Key object. */
 #endif
 #ifndef pkcs11palFILE_NAME_PUBLIC_KEY
-#define pkcs11palFILE_NAME_PUBLIC_KEY            "corePKCS11_PubKey.dat"            /**< The file name of the Public Key object. */
+ #define pkcs11palFILE_NAME_PUBLIC_KEY            "corePKCS11_PubKey.dat"            /**< The file name of the Public Key object. */
 #endif
 #ifndef pkcs11palFILE_CODE_SIGN_PUBLIC_KEY
  #define pkcs11palFILE_CODE_SIGN_PUBLIC_KEY       "corePKCS11_CodeSignKey.dat"       /**< The file name of the Code Sign Key object. */

@@ -54,6 +54,14 @@
 #define SNMP_IS_INFORM                            1
 #define SNMP_IS_TRAP                              0
 
+#if defined(__GNUC__) && __GNUC__ > 5
+  #ifdef __clang__
+  #else // gcc only
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdangling-pointer"
+  #endif
+#endif
+
 struct snmp_msg_trap
 {
   /* source enterprise ID (sysObjectID) */
@@ -890,5 +898,12 @@ snmp_send_inform(const struct snmp_obj_id* oid, s32_t generic_trap, s32_t specif
   *ptr_request_id = req_id;
   return snmp_send_trap_or_notification_or_inform_generic(&trap_msg, oid, generic_trap, specific_trap, varbinds);
 }
+
+#if defined(__GNUC__) && __GNUC__ > 5
+  #ifdef __clang__
+  #else // gcc only
+    #pragma GCC diagnostic pop
+  #endif
+#endif
 
 #endif /* LWIP_SNMP */

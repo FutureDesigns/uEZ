@@ -27,6 +27,10 @@
  * @brief The source file that implements the user-facing functions in core_json.h.
  */
 
+// Use pre-existing common assert if adding new asserts
+// Not sure why this dummy function was created
+// void __assertion_failed(char *_Expr) { while(1){;} }
+
 #include <assert.h>
 #include <limits.h>
 #include <stddef.h>

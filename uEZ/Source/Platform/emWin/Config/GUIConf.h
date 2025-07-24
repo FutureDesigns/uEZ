@@ -41,7 +41,6 @@ File        : GUIConf.h
 Purpose     : Configures emWins abilities, fonts etc.
 ----------------------------------------------------------------------
 */
-
 #ifndef GUICONF_H
 #define GUICONF_H
 
@@ -50,15 +49,10 @@ Purpose     : Configures emWins abilities, fonts etc.
 #include "SEGGER.h"
 
 /*********************************************************************
-*
 *       Memory
-*
-**********************************************************************
-*/
+*********************************************************************/
 
-//
 // Define memory space for emWin
-//
 extern TUInt32 UEZEmWinGetRAMAddr(void);
 extern TUInt32 UEZEmWinGetRAMSize(void);
 
@@ -72,37 +66,28 @@ extern TUInt32 UEZEmWinGetRAMSize(void);
 #define GUI_VRAM_BASE_ADDR  EMWIN_RAM_BASE_ADDR
 #define GUI_VRAM_SIZE       EMWIN_RAM_SIZE
 
-//
 // Define the number of available virtual displays for the GUI
-//
 #define GUI_NUM_VIRTUAL_DISPLAYS  MAX_NUM_FRAMES // default of 2
 
-//
 // Pixel width in bytes
-//
 #define GUI_PIXEL_WIDTH  2
 
-//
 // Define the average block size
-//
 #define GUI_BLOCKSIZE 0x80
 
 /*********************************************************************
-*
 *       Multi layer/display support
-*/
+*********************************************************************/
 #define GUI_NUM_LAYERS            (16) // Maximum number of available layers
 
 /*********************************************************************
-*
 *       Multi tasking support
-*/
+*********************************************************************/
 #define GUI_OS                    (1)  // Compile with multitasking support
 
 /*********************************************************************
-*
 *         Configuration of available packages
-*/
+*********************************************************************/
 #ifndef   GUI_SUPPORT_TOUCH
   #define GUI_SUPPORT_TOUCH       (1)  // Support a touch screen (req. win-manager)
 #endif
@@ -120,17 +105,13 @@ extern TUInt32 UEZEmWinGetRAMSize(void);
 //#define GUI_USE_ARGB             1    // Enable ARGB mode, default in 5.48+     
 
 /*********************************************************************
-*
 *       Default font
-*/
+*********************************************************************/
 #define GUI_DEFAULT_FONT          &GUI_Font6x8
 
 /*********************************************************************
-*
 *       Macros
-*
-**********************************************************************
-*/
+*********************************************************************/
 #ifndef GUICONF_C
   #define EXTERN extern
 #else
@@ -138,11 +119,8 @@ extern TUInt32 UEZEmWinGetRAMSize(void);
 #endif
 
 /*********************************************************************
-*
 *       Global data
-*
-**********************************************************************
-*/
+*********************************************************************/
 EXTERN U32 * GUI_pMem;
 EXTERN U32   GUI_MemSize;
 // new 5.24
@@ -150,6 +128,12 @@ EXTERN U32   GUI_MemSize;
 #define GUI_MEMCPY(dst,src,size)   memcpy(dst,src,size)
 extern void *emWin_memcpy(void *pDst, const void *pSrc, long size);
 
+/*********************************************************************
+*      Function prototypes
+**********************************************************************/
+// VNC example functions
+void setup_emWin_VNC_Context(int emWinLayerIndex);
+void setup_emWin_VNC_NetworkTask(void);
 
 #endif  // Avoid multiple inclusion
 

@@ -20,7 +20,7 @@
  *-------------------------------------------------------------------------*/
 #include <uEZ.h>
 #include <HAL/LCDController.h>
-#include <UEZSPI.h>
+#include <uEZSPI.h>
 #include "MicroTips_UMSH_8065MD_21T.h"
 #include <uEZDeviceTable.h>
 #include <string.h>

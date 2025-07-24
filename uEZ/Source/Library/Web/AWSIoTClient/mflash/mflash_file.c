@@ -194,6 +194,8 @@ static inline void *mflash_fs_get_ptr(mflash_fs_t *fs, uint32_t offset)
  */
 static T_uezError mflash_readable_check(void *ptr, uint32_t size)
 {
+  (void)(ptr);
+  (void)(size);
 #if defined(MFLASH_PAGE_INTEGRITY_CHECKS) && MFLASH_PAGE_INTEGRITY_CHECKS
     T_uezError status;
 
@@ -627,7 +629,7 @@ static T_uezError mflash_file_save_internal(
 
     /* Program the file data page by page, skipping the first page containing meta that is going to be programmed in the
      * last step */
-    for (int data_offset = MFLASH_PAGE_SIZE - sizeof(mflash_file_meta_t); data_offset < size;
+    for (uint32_t data_offset = MFLASH_PAGE_SIZE - sizeof(mflash_file_meta_t); data_offset < size;
          data_offset += MFLASH_PAGE_SIZE)
     {
         /* Pointer and size of the data portion to be programmed */

@@ -1766,7 +1766,7 @@ HTTPStatus_t HTTPClient_AddRangeHeader( HTTPRequestHeaders_t * pRequestHeaders,
                     ( long int ) rangeStartOrlastNbytes, ( long int ) rangeEnd ) );
         returnStatus = HTTPInvalidParameter;
     }
-    else if( rangeStartOrlastNbytes == INT32_MIN )
+    else if( rangeStartOrlastNbytes == (int32_t) INT32_MIN )
     {
         LogError( ( "Parameter check failed: Arithmetic overflow detected: "
                     "rangeStart should be > -2147483648 (INT32_MIN): "

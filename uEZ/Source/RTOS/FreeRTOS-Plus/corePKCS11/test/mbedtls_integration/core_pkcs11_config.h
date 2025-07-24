@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -24,7 +24,7 @@
 
 /**
  * @file core_pkcs11_config.h
- * @brief PCKS#11 config options.
+ * @brief PKCS#11 config options.
  */
 
 
@@ -42,7 +42,7 @@
  * 3. Include the header file "logging_stack.h", if logging is enabled for PKCS #11.
  */
 
-#include "../include/logging_levels.h"
+#include "logging_levels.h"
 
 /* Logging configuration for the PKCS #11 library. */
 #ifndef LIBRARY_LOG_NAME
@@ -53,7 +53,7 @@
     #define LIBRARY_LOG_LEVEL    LOG_NONE
 #endif
 
-#include "../include/logging_stack.h"
+#include "logging_stack.h"
 
 /************ End of logging configuration ****************/
 

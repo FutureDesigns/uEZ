@@ -4,7 +4,7 @@
 #define PROCESSOR_OSCILLATOR_FREQUENCY      120000000 //96000000 //80000000
 #define UEZ_ENABLE_WATCHDOG                 0 // Turn on watchdog for testing
 #define CARRIER_R2                          0 
-#define CARRIER_R4                          1 
+#define CARRIER_R4                          1
 
 #define FDI_PLATFORM                        CARRIER_R4 // set for CARRIER board R4 or R5
 //#define FDI_PLATFORM                        CARRIER_R2 // set for CARRIER board R2
@@ -24,7 +24,7 @@
 #ifdef NDEBUG
 #define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER                        1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        1 // Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #if (FDI_PLATFORM == CARRIER_R4)
@@ -47,6 +47,8 @@
 #define UEZ_ENABLE_WIRED_NETWORK            UEZ_ENABLE_TCPIP_STACK
 #define UEZ_HTTP_SERVER                     0
 #define INTERRUPT_BASED_EMAC                1
+#define UEZ_WIRELESS_PROGRAM_MODE           0
+#define UEZ_NETWORK_DEMOS                   0
 
 #define DKTS_BUTTON_SLIDE_SHOW_DEMO         0 // set to 1 to be able to load emwin or slideshows using buttons
 //#define UEZ_ICONS_SET                       ICONS_SET_UEZ_OPEN_SOURCE
@@ -93,3 +95,5 @@
 #define SHOW_GUIDEMO_TRANSPARENTDIALOG      0
 
 #define UEZ_SLIDESHOW_NAME                  "DK-LPC1788"
+
+#define FREERTOS_HEAP_SELECTION 4

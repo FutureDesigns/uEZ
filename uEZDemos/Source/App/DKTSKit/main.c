@@ -34,9 +34,32 @@
 #include "NVSettings.h"
 #include "Audio.h"
 #include "Source/Library/GUI/FDI/SimpleUI/SimpleUI_Types.h"
+#include <uEZMemory.h>
 
 #ifdef FREERTOS_PLUS_TRACE //LPC1788 only as of uEZ v2.04
 #include <trcUser.h>
+#endif
+
+#ifndef FREERTOS_HEAP_SELECTION
+#define FREERTOS_HEAP_SELECTION  4
+#endif
+
+#ifndef __HEAP_SIZE__
+#if(UEZ_PROCESSOR == NXP_LPC4357)
+#define __HEAP_SIZE__ 5000000
+#else
+#define __HEAP_SIZE__ 2000000
+#endif
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==1) |(FREERTOS_HEAP_SELECTION==2) | (FREERTOS_HEAP_SELECTION==4))
+// In Crossworks use the Project properties setting "Heap Size" which will change the definition size automatically.
+// Then both heap3 and heap4 builds will use the same number from the same spot. (otherwise you will get a build error)
+UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]);
+#endif
+
+#if ((FREERTOS_HEAP_SELECTION==5))
+// TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
 #endif
 
 extern T_uezTask G_mainTask;

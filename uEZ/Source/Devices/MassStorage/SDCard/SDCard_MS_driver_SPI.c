@@ -797,6 +797,7 @@ static T_uezError SDCard_MS_Init(void *aWorkspace, TUInt32 aAddress)
     T_msSizeInfo si;
     TUInt8 ty, cmd ;
 
+    PARAM_NOT_USED(aAddress);
     IGrab();
 
     /* Ensure we are not active */
@@ -1325,6 +1326,8 @@ static T_uezError SDCard_MS_GetSizeInfo(void *aWorkspace, T_msSizeInfo *aInfo)
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SetPower(void *aWorkspace, TBool aOn)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aOn);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -1342,6 +1345,8 @@ static T_uezError SDCard_MS_SetPower(void *aWorkspace, TBool aOn)
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_SetLock(void *aWorkspace, TBool aLock)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aLock);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -1382,6 +1387,7 @@ static T_uezError SDCard_MS_SetSoftwareWriteProtect(
  *---------------------------------------------------------------------------*/
 static T_uezError SDCard_MS_Eject(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -1404,6 +1410,9 @@ static T_uezError SDCard_MS_MiscControl(
                                         void *aBuffer
                                        )
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aControlCode);
+    PARAM_NOT_USED(aBuffer);
     return UEZ_ERROR_ILLEGAL_OPERATION;
 }
 

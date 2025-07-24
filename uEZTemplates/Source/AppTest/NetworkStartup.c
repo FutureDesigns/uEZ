@@ -49,7 +49,7 @@
 
 #if (UEZ_ENABLE_TCPIP_STACK == 1)
 TBool G_networkDown = EFalse;
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 
 #include "Source/Library/Web/BasicWeb/BasicWEB.h"
 //#include "AppHTTPServer.h"

@@ -54,8 +54,7 @@
 #error "LWIP_SO_RCVTIMEO must be 1 to use device Network::lwIP"
 #endif
 
-T_uezTask G_lwipDhcpTask = NULL;
-TBool G_DHCP_Task_Has_IP = EFalse;
+T_uezTask G_lwipDhcpTask = (T_uezTask) NULL;
 
 /*---------------------------------------------------------------------------*
  * Macros:
@@ -110,6 +109,7 @@ typedef struct {
     // use range of NETWORK_LWIP_LOCAL_PORT_START - NETWORK_LWIP_LOCAL_PORT_END
 
     T_uezNetworkSettings iInfrastructureSettings;
+    //T_uezTimeDate         iCurrentSntpTime;
 } T_Network_lwIP_Workspace;
 
 /*---------------------------------------------------------------------------*
@@ -191,8 +191,10 @@ T_uezError Network_lwIP_InitializeWorkspace(void *aWorkspace)
 #if LWIP_DHCP
 static TUInt32 DHCP(T_uezTask aMyTask, void *aParams)
 {
+    PARAM_NOT_USED(aMyTask);
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace*)aParams;
     TUInt32 mscnt = 0;
+    PARAM_NOT_USED(p);
     UEZTaskDelay(2000); // let the first request complete before we try to spam a second one    
 
 #if (LWIP_IPV6 == 1)
@@ -204,43 +206,41 @@ static TUInt32 DHCP(T_uezTask aMyTask, void *aParams)
 
     while(1) {
 
-    while(
+      while( // while no address assigned
 #if (LWIP_IPV6 == 1)       
-       ip6_addr_isanyA(&p->EMAC_if.ip_addr.u_addr.ip6)// check only ipv6 dhcp
+        ip6_addr_isanyA(&p->EMAC_if.ip_addr.u_addr.ip6)// check only ipv6 dhcp
 #else
-      p->EMAC_if.ip_addr.addr  == 0
+        p->EMAC_if.ip_addr.addr  == 0
 #endif
-    ){
-        G_DHCP_Task_Has_IP = EFalse;
-        UEZTaskDelay(DHCP_FINE_TIMER_MSECS); // TODO add dhcp6 timer defines and auto auto ip timer defines to this routine
-        mscnt += DHCP_FINE_TIMER_MSECS;
-        if (mscnt >= DHCP_COARSE_TIMER_MSECS) {
+      ){
+          UEZTaskDelay(DHCP_FINE_TIMER_MSECS); // TODO add dhcp6 timer defines and auto auto ip timer defines to this routine
+          mscnt += DHCP_FINE_TIMER_MSECS;
+          if (mscnt >= DHCP_COARSE_TIMER_MSECS) {
 #if (LWIP_IPV6 == 1) 
                dhcp6_tmr();
 #endif
                dhcp_coarse_tmr();
                mscnt = 0;
-        }
+          }
 #if (LWIP_AUTOIP == 1)
         //autoip_tmr(); // must configure or will exit immediately
 #endif
-    }
-    G_DHCP_Task_Has_IP = ETrue;
-    //LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("pbuf->len = %"U16_F"\n", p->len));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\nDone with DHCP"));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\nAcquired IP ="));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr)));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>8)));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>16)));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>24)));
-    LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\n"));
+      } // while no address
+      //G_DHCP_Task_Has_IP = ETrue;
+      //LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("pbuf->len = %"U16_F"\n", p->len));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\nDone with DHCP"));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\nAcquired IP ="));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr)));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>8)));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>16)));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("."));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("%d", 0xff&(p->EMAC_if.ip_addr.addr>>24)));
+      LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE, ("\n"));
     
-      UEZTaskDelay(10000); // cehck ip status and try to renew every 10 seconds if we lose connection
-    }
-
+      UEZTaskDelay(2500); // check ip status and try to renew every 2.5 seconds if we lose connection
+    } // end wile forever
     
 #ifdef __IAR_SYSTEMS_ICC__
 #else
@@ -275,20 +275,23 @@ static T_uezError IStartOrRestartPhy(
     struct ip_addr xIpAddr, xNetMast, xGateway;
 #endif
 
-    // Only support infrastructure network types
-    if (aSettings->iNetworkType != UEZ_NETWORK_TYPE_INFRASTRUCTURE)
+    /* // TODO clean this up and clearly define the network types
+    if (aSettings->iNetworkType != UEZ_NETWORK_TYPE_INFRASTRUCTURE){
         return UEZ_ERROR_INCORRECT_TYPE;
+    }
+    if (aSettings->iNetworkType != UEZ_NETWORK_TYPE_WIRED){
+        return UEZ_ERROR_INCORRECT_TYPE;
+    }*/
 
-    if(restart == ETrue) {
-      if(G_lwipDhcpTask != NULL){
+    if(restart == ETrue) { // restart only dhcp task
+      if(G_lwipDhcpTask != (T_uezTask) NULL) {
         UEZTaskDelete(G_lwipDhcpTask);
       }
       // Note that we don't/shouldn't need to re-int the whole lwip and it doesn't really support that without modification
     } else {
-      if(G_lwipTask == NULL) { // Only init if not previously init. If we add a second interface later, we don't want to init again.
-        //G_lwipTask = (T_uezTask)
-        tcpip_init(NULL, NULL);
-        if(G_lwipTask == 0) { // incresae your heap or lower TCPIP_THREAD_STACKSIZE
+      if(G_lwipTask == (sys_thread_t) NULL) { // Only init if not previously init. If we add a second interface later, we don't want to init again.        
+        tcpip_init(NULL, NULL); // TODO pass in init done callback here
+        if(G_lwipTask == (sys_thread_t) NULL) { // increase your heap or lower TCPIP_THREAD_STACKSIZE
           return UEZ_ERROR_OUT_OF_MEMORY;
         } 
       }
@@ -376,19 +379,21 @@ static T_uezError IStartOrRestartPhy(
 #else
 #endif
 
-    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    if(restart == EFalse) {
+      sntp_setoperatingmode(SNTP_OPMODE_POLL);
 #if LWIP_DHCP
-    sntp_servermode_dhcp(1); /* get SNTP server via DHCP */
+      sntp_servermode_dhcp(1); /* get SNTP server via DHCP */
 #else /* LWIP_DHCP */
 #if LWIP_IPV4
-    sntp_setserver(0, netif_ip_gw4(netif_default));
+      sntp_setserver(0, netif_ip_gw4(netif_default));
 #endif /* LWIP_IPV4 */
 #endif /* LWIP_DHCP */
-    sntp_init(); // We want to init this before DHCP, since first name server could return from DHCP query.
+      sntp_init(); // We want to init this before DHCP, since first name server could return from DHCP query.
+    }
 
 #if LWIP_DHCP
     if(aSettings->iEnableDHCP) {    
-        if(restart == ETrue) {        
+        if(restart == ETrue) {
           dhcp_stop(&p->EMAC_if);
           //dhcp_release_and_stop(&p->EMAC_if);
         } else {
@@ -559,6 +564,10 @@ T_uezError Network_lwIP_Scan(
     void *aCallbackWorkspace,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aTimeout);
+    PARAM_NOT_USED(aChannelNumber);
+    PARAM_NOT_USED(aScanSSID);
+
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
     T_uezNetworkInfo scanInfo;
@@ -574,6 +583,7 @@ T_uezError Network_lwIP_Scan(
     scanInfo.iChannel = 0;
     strcpy(scanInfo.iName, "lwIP");
     p->iInfo = scanInfo;
+    p->iInfo.iNetworkType = p->iInfrastructureSettings.iNetworkType;
     p->iScanStatus = UEZ_NETWORK_SCAN_STATUS_COMPLETE;
 
     if (aCallback) {
@@ -604,6 +614,9 @@ T_uezError Network_lwIP_Join(
     const char *aJoinPassword,
     TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aTimeout);
+    PARAM_NOT_USED(aJoinPassword);
+
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
 
@@ -660,20 +673,23 @@ static T_uezError Network_lwIP_GetStatus(
 
     // Grab and pause the background task (we don't want
     // the background task changing things while we copy over the info)
-    UEZSemaphoreGrab(p->iSem, 1000);//UEZ_TIMEOUT_INFINITE);
+    UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
 
     memset(aStatus, 0, sizeof(*aStatus));
     aStatus->iInfo = p->iInfo;
+    aStatus->iJoinStatus = p->iJoinStatus;
+    aStatus->iScanStatus = p->iScanStatus;
+
 #if (LWIP_IPV6 == 1)
     addr = ntohl(p->EMAC_if.ip_addr.u_addr.ip4.addr);
 #else
     addr = ntohl(p->EMAC_if.ip_addr.addr);
 #endif
-    
     aStatus->iIPAddr.v4[0] = (addr >> 24) & 0xFF;
     aStatus->iIPAddr.v4[1] = (addr >> 16) & 0xFF;
     aStatus->iIPAddr.v4[2] = (addr >> 8) & 0xFF;
     aStatus->iIPAddr.v4[3] = (addr >> 0) & 0xFF;
+
 #if (LWIP_IPV6 == 1)
     addr = ntohl(p->EMAC_if.gw.u_addr.ip4.addr);
 #else
@@ -683,6 +699,7 @@ static T_uezError Network_lwIP_GetStatus(
     aStatus->iGatewayAddress.v4[1] = (addr >> 16) & 0xFF;
     aStatus->iGatewayAddress.v4[2] = (addr >> 8) & 0xFF;
     aStatus->iGatewayAddress.v4[3] = (addr >> 0) & 0xFF;
+
 #if (LWIP_IPV6 == 1)
     addr = ntohl(p->EMAC_if.netmask.u_addr.ip4.addr);
 #else
@@ -691,10 +708,8 @@ static T_uezError Network_lwIP_GetStatus(
     aStatus->iSubnetMask.v4[0] = (addr >> 24) & 0xFF;
     aStatus->iSubnetMask.v4[1] = (addr >> 16) & 0xFF;
     aStatus->iSubnetMask.v4[2] = (addr >> 8) & 0xFF;
-    aStatus->iSubnetMask.v4[3] = (addr >> 0) & 0xFF;
-    aStatus->iJoinStatus = p->iJoinStatus;
-    aStatus->iScanStatus = p->iScanStatus;
-
+    aStatus->iSubnetMask.v4[3] = (addr >> 0) & 0xFF;    
+    
 #if (LWIP_IPV6 == 1)
     //printf("IP6 address ID0: %s\n", ip6addr_ntoa(netif_ip6_addr(&p->EMAC_if,0)));
     //printf("IP6 address ID1: %s\n", ip6addr_ntoa(netif_ip6_addr(&p->EMAC_if,1)));
@@ -707,6 +722,8 @@ static T_uezError Network_lwIP_GetStatus(
 
     return error;
 }
+
+// TODO there is a netconn_new_with_callback available if needed
 
 static T_uezNetworkSocket ISocketCreate(
     T_Network_lwIP_Workspace *p,
@@ -1025,7 +1042,7 @@ T_uezError Network_lwIP_SocketClose(
         p_socket->iReceiveRemaining = 0;
         p_socket->iReceiveNetBuf = 0;
         p_socket->iFlags = 0;
-        error = IConvertErrorCode(netconn_close(p_socket->iNetconn));
+        error = IConvertErrorCode(netconn_close(p_socket->iNetconn)); // must delete the netcom after this call
     }
 
     UEZSemaphoreRelease(p->iSem);
@@ -1184,6 +1201,7 @@ T_uezError Network_lwIP_SocketWrite(
     T_uezError error = UEZ_ERROR_UNKNOWN;
     T_lwIPSocket *p_socket = p->iSockets + aSocket;
     TUInt16 numWrite;
+    TUInt32 aNumBytesWritten;
     PARAM_NOT_USED(aTimeout);
 
     if ((aSocket == 0) || (aSocket > NETWORK_LWIP_NUM_SOCKETS))
@@ -1207,6 +1225,7 @@ T_uezError Network_lwIP_SocketWrite(
                 numWrite = (TUInt16)aNumBytes;
             aNumBytes -= numWrite;
 
+            netconn_set_sendtimeout(p_socket->iNetconn, aTimeout); // TODO verify this is fully the correct way to use netcon write with timeout, but first testing seems to be ok.
 #ifndef LWIP_2_0_x
             // Clean up any previous timeout errors
             if (p_socket->iNetconn->err == ERR_TIMEOUT)
@@ -1215,9 +1234,13 @@ T_uezError Network_lwIP_SocketWrite(
 #endif
             // Write out this segment (noting if there is data past this one)
             error
-                = IConvertErrorCode(netconn_write(p_socket->iNetconn, aData, // no lock required
+                /*= IConvertErrorCode(netconn_write(p_socket->iNetconn, aData, // no lock required
                     numWrite, ((aFlush) ? NETCONN_COPY
-                        : NETCONN_MORE)));
+                        : NETCONN_MORE)));*/
+                = IConvertErrorCode(netconn_write_partly(p_socket->iNetconn, aData, // no lock required
+                    numWrite, ((aFlush) ? NETCONN_COPY
+                        : NETCONN_MORE), (size_t *) &aNumBytesWritten));
+                        
             // Stop on any errors
             if (error != UEZ_ERROR_NONE)
                 break;
@@ -1236,6 +1259,7 @@ T_uezError Network_lwIP_AuxControl(
     TUInt32 aAuxCommand,
     void *aAuxData)
 {
+    PARAM_NOT_USED(aAuxData);
     T_Network_lwIP_Workspace *p = (T_Network_lwIP_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
 
@@ -1310,6 +1334,7 @@ T_uezError Network_lwIP_InfrastructureConfigure(
 
     UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
     p->iInfrastructureSettings = *aSettings;
+    p->iInfo.iNetworkType = p->iInfrastructureSettings.iNetworkType;
     UEZSemaphoreRelease(p->iSem);
 
     return UEZ_ERROR_NONE;
@@ -1329,6 +1354,7 @@ T_uezError Network_lwIP_InfrastructureBringUp(void *aWorkspace)
 
 T_uezError Network_lwIP_InfrastructureTakeDown(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Not currently supported, yet
     return UEZ_ERROR_NOT_SUPPORTED;
 }

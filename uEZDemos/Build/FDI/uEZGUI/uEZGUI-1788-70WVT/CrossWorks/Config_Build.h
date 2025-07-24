@@ -9,9 +9,9 @@
 #define UEZ_ENABLE_CONSOLE_ALT_PWR_COM      0 // set to 1 to enable the console on the J11 header
 
 #ifdef NDEBUG
-#define UEZ_REGISTER              			0
+#define UEZ_REGISTER                        0
 #else
-#define UEZ_REGISTER              			1  //Used for registering Queues and Semaphores in the RTOS
+#define UEZ_REGISTER                        1 // Used for registering Queues and Semaphores in the RTOS
 #endif
 
 #define UEZ_ENABLE_LOOPBACK_TEST            0 // set to 1 to allow loopback test to run
@@ -33,6 +33,7 @@
 #define UEZ_BASIC_WEB_SERVER                0
 #define UEZ_ENABLE_WIRELESS_NETWORK         0
 #define UEZ_WIRELESS_PROGRAM_MODE           0
+#define UEZ_NETWORK_DEMOS                   0
 
 // Expansion Options, set to 1 to enable an expansion board
 #define UEZGUI_EXPANSION_DEVKIT             0
@@ -83,3 +84,5 @@
 #define UEZ_SPEAKER_TEST                    0 // set to 1 for FCT build
 #define UEZ_SPEAKER_TEST_HZ                 500
 /* ----------------------------------------- */
+
+#define FREERTOS_HEAP_SELECTION 4

@@ -61,11 +61,11 @@ extern "C" {
 #endif
 
 #if !defined(putchar)
-int32_t putchar(int32_t aChar);
+  int putchar(int aChar);
 #endif
 
 #if !defined(getchar)
-int32_t getchar(void);
+  int getchar(void);
 #endif
 
 /*-------------------------------------------------------------------------*

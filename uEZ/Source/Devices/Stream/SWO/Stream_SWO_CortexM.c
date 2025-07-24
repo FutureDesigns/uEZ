@@ -54,6 +54,7 @@ typedef struct {
  *---------------------------------------------------------------------------*/
 T_uezError Stream_SWO_CortexM_InitializeWorkspace(void *aW)
 {
+    PARAM_NOT_USED(aW);
     return UEZ_ERROR_NONE;
 }
 
@@ -73,6 +74,7 @@ T_uezError Stream_SWO_CortexM_InitializeWorkspace(void *aW)
  *---------------------------------------------------------------------------*/
 T_uezError Stream_SWO_CortexM_Configure(T_uezDeviceWorkspace *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 
@@ -88,6 +90,7 @@ T_uezError Stream_SWO_CortexM_Configure(T_uezDeviceWorkspace *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError Stream_SWO_CortexM_Open(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 
@@ -103,6 +106,7 @@ T_uezError Stream_SWO_CortexM_Open(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError Stream_SWO_CortexM_Close(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NONE;
 }
 
@@ -130,6 +134,9 @@ T_uezError Stream_SWO_CortexM_Read(
             TUInt32 *aNumBytesRead,
             TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aData);
+    PARAM_NOT_USED(aNumBytes);
     *aNumBytesRead = 0;
     UEZTaskDelay(aTimeout);
     return UEZ_ERROR_TIMEOUT;
@@ -213,6 +220,8 @@ T_uezError Stream_SWO_CortexM_Write(
             TUInt32 *aNumBytesWritten,
             TUInt32 aTimeout)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aNumBytesWritten);
     T_uezError error;
     TUInt32 i;
     for(i=0; i<aNumBytes; i++) {
@@ -241,6 +250,9 @@ T_uezError Stream_SWO_CortexM_Control(
             TUInt32 aControl, 
             void *aControlData)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aControl);
+    PARAM_NOT_USED(aControlData);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
@@ -257,6 +269,7 @@ T_uezError Stream_SWO_CortexM_Control(
  *---------------------------------------------------------------------------*/
 T_uezError Stream_SWO_CortexM_Flush(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 

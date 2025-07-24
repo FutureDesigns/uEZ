@@ -139,6 +139,7 @@ T_uezError I2C_Mux_PCA9546_SlaveStart(
     const T_I2CSlaveSetup *aSetup)
 {
     PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aSetup);
 
     return UEZ_ERROR_NOT_SUPPORTED;
 }

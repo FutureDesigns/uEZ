@@ -47,7 +47,7 @@ typedef struct {
     T_uezSemaphore iSemEmpty;
 } T_Serial_GenericHalfDuplex_Workspace;
 
-static void Serial_GenericHalfDuplex_MonitorDriveEnable(
+static TUInt32 Serial_GenericHalfDuplex_MonitorDriveEnable(
                 T_uezTask aMyTask, 
                 void *aWorkspace);
 
@@ -478,10 +478,11 @@ T_uezError Serial_GenericHalfDuplex_Control(
     return UEZ_ERROR_NOT_SUPPORTED;
 }
 
-static void Serial_GenericHalfDuplex_MonitorDriveEnable(
+static TUInt32 Serial_GenericHalfDuplex_MonitorDriveEnable(
                 T_uezTask aMyTask, 
                 void *aWorkspace)
 {
+    PARAM_NOT_USED(aMyTask);
     T_Serial_GenericHalfDuplex_Workspace *p = 
         (T_Serial_GenericHalfDuplex_Workspace *)aWorkspace;
     T_serialStatusByte status;
@@ -558,6 +559,9 @@ static void Serial_GenericHalfDuplex_MonitorDriveEnable(
             UEZSemaphoreRelease(p->iSem);
         }
     }
+#ifdef __GNUC__
+    return 0;
+#endif
 }
 
 /*---------------------------------------------------------------------------*

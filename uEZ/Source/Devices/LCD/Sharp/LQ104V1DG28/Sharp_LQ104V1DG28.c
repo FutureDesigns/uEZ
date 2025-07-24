@@ -24,6 +24,8 @@
 #include "Sharp_LQ104V1DG28.h"
 #include <uEZGPIO.h>
 #include "uEZPlatform.h"
+#include "uEZDeviceTable.h"
+
 
 /*---------------------------------------------------------------------------*
  * Constants:
@@ -639,6 +641,7 @@ static T_uezError LCD_LQ104V1DG28_WaitForVerticalSync(
 void LCD_LQ104V1DG28_Create(char* aName,
                             T_uezGPIOPortPin aStandByControlPin)
 {
+    PARAM_NOT_USED(aStandByControlPin);
     T_LQ104V1DG28Workspace *p;
     T_uezDevice lcd;
     T_uezDeviceWorkspace *p_lcd;
@@ -648,7 +651,7 @@ void LCD_LQ104V1DG28_Create(char* aName,
 
     p = (T_LQ104V1DG28Workspace*)p_lcd;
 
-    p->iStandByControlPin;
+    UEZGPIOOutput(p->iStandByControlPin);
 
     UEZGPIOClear(p->iStandByControlPin);
 }

@@ -165,6 +165,8 @@ static T_uezError RTC_Generic_SetClockOutHz(
         void *aWorkspace,
         TUInt32 aHertz)
 {
+    PARAM_NOT_USED(aWorkspace);
+    PARAM_NOT_USED(aHertz);
     // By default, this is generically not supported.
     return UEZ_ERROR_NOT_SUPPORTED;
 }

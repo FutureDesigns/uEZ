@@ -134,6 +134,7 @@ T_uezError LPC43xx_I2S_InitializeWorkspace(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_I2S_Stop(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     //Turn off Interrupts
 #ifdef CORE_M4
     InterruptDisable(I2S0_IRQn);
@@ -159,6 +160,7 @@ T_uezError LPC43xx_I2S_Stop(void *aWorkspace)
  *---------------------------------------------------------------------------*/
 T_uezError LPC43xx_I2S_Start(void *aWorkspace)//transmit low functions ?
 {
+    PARAM_NOT_USED(aWorkspace);
     //Turn on transmit Interrupt
     LPC_I2S0->TXFIFO = 0;
     LPC_I2S0->TXFIFO = 0;

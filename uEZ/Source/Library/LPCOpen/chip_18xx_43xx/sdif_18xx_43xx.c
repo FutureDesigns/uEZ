@@ -85,6 +85,7 @@ void Chip_SDIF_Init(LPC_SDMMC_T *pSDMMC)
 /* Shutdown the SD/MMC controller */
 void Chip_SDIF_DeInit(LPC_SDMMC_T *pSDMMC)
 {
+    PARAM_NOT_USED(pSDMMC);
     /* Disable the clock */
 	Chip_Clock_Disable(CLK_MX_SDIO);
 }

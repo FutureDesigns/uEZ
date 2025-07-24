@@ -73,8 +73,8 @@ void Sensor_GetSettings(T_SensorSettings *aSettings)
             G_Temperature = reading/65536.0; // For uC/Probe Demo
             f = ((((TUInt32)reading) & 0xFFFF) * 10) >> 16;  // Convert to 1 digit decimal
             sprintf(G_SensorSettings.iBoardTemp, "%02d.%01d C",
-                                                i,
-                                                f);
+                                          (int) i,
+                                          (int) f);
         }
         UEZTemperatureClose(temp);
     }    
@@ -109,12 +109,12 @@ void Sensor_GetSettings(T_SensorSettings *aSettings)
             zi = (TInt32)(z * 0.6);
             zf = (((TInt32)(z * 10)) & 0xF)*6/10; // Convert to 1 digit decimal
             sprintf(G_SensorSettings.iAccelerometer, "%+1d.%1dX %+1d.%1dY %+1d.%1dZ",
-                                                xi,
-                                                xf,
-                                                yi,
-                                                yf,
-                                                zi,
-                                                zf);    
+                                               (int) xi,
+                                               (int) xf,
+                                               (int) yi,
+                                               (int) yf,
+                                               (int) zi,
+                                               (int) zf);
         
 #else    
     sprintf(G_SensorSettings.iBoardTemp, "50.0 C");

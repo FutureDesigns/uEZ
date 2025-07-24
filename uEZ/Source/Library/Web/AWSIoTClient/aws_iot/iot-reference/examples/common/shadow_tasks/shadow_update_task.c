@@ -199,7 +199,7 @@ struct MQTTAgentCommandContext
 };
 
 extern MQTTAgentContext_t xGlobalMqttAgentContext;
-extern T_uezTask G_lwipTask;
+extern sys_thread_t G_lwipTask;
 extern uint16_t ucDeviceState;
 /*-----------------------------------------------------------*/
 
@@ -689,6 +689,7 @@ void vShadowUpdateTask( void * pvParameters )
     uint32_t ulNotificationValue;
     MQTTAgentCommandInfo_t xCommandParams = { 0 };
     MQTTStatus_t xCommandAdded;
+    MQTTAgentState_t currentMqttTaskState = MQTT_AGENT_STATE_NONE;
 
     /* Variables for collecting device data */
     T_uezError error;
@@ -710,7 +711,7 @@ void vShadowUpdateTask( void * pvParameters )
     static T_uezInputEvent prev_touch_event = { 0 };
     uint8_t tries;
     
-    if(G_lwipTask != NULL) 
+    if(G_lwipTask != (sys_thread_t) NULL)
     {
         lwip_socket_thread_init(); // if lwip init make sure to init per thread objects
     }
@@ -729,9 +730,9 @@ void vShadowUpdateTask( void * pvParameters )
     {
         error = UEZDeviceTableGetWorkspace(acc_device,
                     (T_uezDeviceWorkspace **)&G_accel0);
-    }
     
-    error = (*G_accel0)->ReadXYZ(G_accel0, &reading, 4000);
+        error = (*G_accel0)->ReadXYZ(G_accel0, &reading, 4000);
+    }
     if (error != UEZ_ERROR_NONE) 
     {
         LogError( ( "Failed to open accelerometer! " ) );
@@ -936,6 +937,20 @@ void vShadowUpdateTask( void * pvParameters )
                 LogDebug( ( "Publish content: %.*s", strlen(pcDesiredDocument), pcDesiredDocument ) );
 
                 vTaskDelay(1);
+
+                                
+                // If we run when MQTT task is gone we will fault on assert, so at minimum try to avoid running here.
+                currentMqttTaskState = xGetMQTTAgentState();
+                while (currentMqttTaskState != MQTT_AGENT_STATE_CONNECTED) {
+                    // TODO do something else here?
+                    vTaskDelay(500);
+                    currentMqttTaskState = xGetMQTTAgentState();
+                    while (currentMqttTaskState == MQTT_AGENT_STATE_TERMINATED) {
+                        vTaskDelay(2000);
+                        currentMqttTaskState = xGetMQTTAgentState();
+                    }
+                }
+
                 xCommandAdded = MQTTAgent_Publish( &xGlobalMqttAgentContext,
                                                    &xPublishInfo,
                                                    &xCommandParams );

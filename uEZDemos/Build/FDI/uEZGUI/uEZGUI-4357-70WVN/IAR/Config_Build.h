@@ -38,9 +38,9 @@
 #define UEZ_ENABLE_USB_HOST_STACK           1
 #define USB_PORT_B_HOST_DETECT_ENABLED      1
 
-#define UEZ_ENABLE_USB_DEVICE_STACK         0
-#define COMPILE_OPTION_USB_SDCARD_DISK      0//UEZ_ENABLE_USB_DEVICE_STACK
-#define UEZ_ENABLE_VIRTUAL_COM_PORT         UEZ_ENABLE_USB_DEVICE_STACK
+#define UEZ_ENABLE_USB_DEVICE_STACK         0 // must turn this off to use USB host on separate port from VCOM
+#define COMPILE_OPTION_USB_SDCARD_DISK      0//UEZ_ENABLE_USB_DEVICE_STACK // not working yet
+#define UEZ_ENABLE_VIRTUAL_COM_PORT         UEZ_ENABLE_USB_DEVICE_STACK //
 
 // Choose one when TCP/IP stack is enabled
 #define UEZ_HTTP_SERVER                     UEZ_ENABLE_TCPIP_STACK

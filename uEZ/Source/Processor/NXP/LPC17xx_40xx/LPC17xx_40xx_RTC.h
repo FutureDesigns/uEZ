@@ -65,9 +65,10 @@ extern const HAL_RTC LPC17xx_40xx_RTC_Interface;
 /*-------------------------------------------------------------------------*
  * Prototypes:
  *-------------------------------------------------------------------------*/
-T_uezError LPC17xx_40xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock);
+T_uezError LPC17xx_40xx_RTC_Configure(void *aWorkspace, TBool aIsExternalClock,
+                TUInt32 aCalibrationValue);
 
-void LPC17xx_40xx_RTC_Require(TBool aIsExternalClock);
+void LPC17xx_40xx_RTC_Require(TBool aIsExternalClock, TUInt32 aCalibrationValue);
 
 #ifdef __cplusplus
 }

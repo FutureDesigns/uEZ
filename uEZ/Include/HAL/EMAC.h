@@ -60,7 +60,7 @@
 #include <Include/Types/EMAC.h>
 
 #ifndef EMAC_USE_INTERRUPT_TIMEOUT_DETECT
-#define EMAC_USE_INTERRUPT_TIMEOUT_DETECT  0 // enable to detect PHY timeout, restart of full stack experimental.
+#define EMAC_USE_INTERRUPT_TIMEOUT_DETECT  1 // Enable to detect PHY timeout (clock input failure), then Ethernet PHY can be fully restarted. See uEZDemos NetworkStartup.c for 600 second example.
 #endif
 
 #ifdef __cplusplus

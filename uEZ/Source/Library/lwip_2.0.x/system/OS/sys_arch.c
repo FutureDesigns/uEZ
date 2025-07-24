@@ -125,7 +125,8 @@ struct timeoutlist { // track thread handles
  * Globals:
  *---------------------------------------------------------------------------*/
 static struct timeoutlist timeoutlist[SYS_THREAD_MAX];
-T_uezTask G_lwipTask = NULL;
+sys_thread_t G_lwipTask = (sys_thread_t) NULL;
+
 static sys_mutex_t g_lwip_protect_mutex = NULL;
 T_uezRandomStream G_randomstream;
 static u16_t nextThread = 0;
@@ -616,7 +617,6 @@ sys_thread_t
 sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int stacksize, int prio)
 {
   BaseType_t ret;
-  T_uezTask CreatedTask = NULL;
 
   /* LwIP's lwip_thread_fn matches FreeRTOS' TaskFunction_t, so we can pass the
      thread function without adaption here. */
@@ -624,7 +624,14 @@ sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int stacksize
     //      thread, name, stacksize, arg, prio, &rtos_task,
           //CONFIG_LWIP_TCPIP_TASK_AFFINITY
           //);
+  // Use xTaskCreateAffinitySet in newer FreeRTOS for mult-core setups in future.
 
+#if 1 // use FreeRTOS task type to avoid mismatch
+  TaskHandle_t CreatedTask = NULL;
+  ret = xTaskCreate(thread, name, stacksize, arg,
+                tskIDLE_PRIORITY+prio, &CreatedTask);
+#else
+  T_uezTask CreatedTask = (T_uezTask) NULL;
   ret = UEZTaskCreate(
                 (T_uezTaskFunction)thread,
                 name,
@@ -632,9 +639,10 @@ sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int stacksize
                 arg,
                 (T_uezPriority)prio,
                 &CreatedTask);
+#endif
   
   if(strcmp(name, TCPIP_THREAD_NAME) == 0){
-    G_lwipTask = CreatedTask;
+    G_lwipTask = (sys_thread_t) CreatedTask; // we just need non-null here to pass checks that task exists
   }
 
   LWIP_DEBUGF(TCPIP_DEBUG, ("new lwip task : %x, prio:%d,stack:%d\n",
@@ -646,9 +654,9 @@ sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int stacksize
     if(nextThread < SYS_THREAD_MAX) {
       timeoutlist[nextThread++].pid = CreatedTask;
     }
-    return CreatedTask;
+    return (sys_thread_t) CreatedTask;
   } else {
-    return NULL;
+    return (sys_thread_t) NULL;
   }
 }
 
@@ -777,17 +785,17 @@ sys_delay_ms(uint32_t ms)
 bool
 sys_thread_tcpip(sys_thread_core_lock_t type)
 {
-    static sys_thread_t lwip_task = NULL;
+    static sys_thread_t lwip_task = (sys_thread_t) NULL;
 #if LWIP_TCPIP_CORE_LOCKING
-    static sys_thread_t core_lock_holder = NULL;
+    static sys_thread_t core_lock_holder = (sys_thread_t) NULL;
 #endif
     switch (type) {
         default:
             return false;
         case LWIP_CORE_IS_TCPIP_INITIALIZED:
-            return lwip_task != NULL;
+            return lwip_task != (sys_thread_t) NULL;
         case LWIP_CORE_MARK_TCPIP_TASK:
-            LWIP_ASSERT("LWIP_CORE_MARK_TCPIP_TASK: lwip_task == NULL", (lwip_task == NULL));
+            LWIP_ASSERT("LWIP_CORE_MARK_TCPIP_TASK: lwip_task == NULL", (lwip_task == (sys_thread_t) NULL));
             lwip_task = (sys_thread_t) xTaskGetCurrentTaskHandle();
             return true;
 #if LWIP_TCPIP_CORE_LOCKING
@@ -797,7 +805,7 @@ sys_thread_tcpip(sys_thread_core_lock_t type)
             core_lock_holder = (sys_thread_t) xTaskGetCurrentTaskHandle();
             return true;
         case LWIP_CORE_LOCK_UNMARK_HOLDER:
-            core_lock_holder = NULL;
+            core_lock_holder = (sys_thread_t) NULL;
             return true;
 #else
         case LWIP_CORE_LOCK_QUERY_HOLDER:

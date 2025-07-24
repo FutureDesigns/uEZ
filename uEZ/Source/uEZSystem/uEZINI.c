@@ -180,6 +180,7 @@ T_INIKeyPair *IFindKeyPair(
     T_INISection *p_section,
     const char *aKey)
 {
+    PARAM_NOT_USED(p);
     T_INIKeyPair *p_keypair;
 
     if (p_section == 0)

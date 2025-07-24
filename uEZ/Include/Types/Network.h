@@ -136,6 +136,7 @@ typedef struct {
     TUInt32 iChannel;
     T_uezNetworkSecurityMode iSecurityMode;
     char iBSSID[ATLIBGS_BSSID_MAX_LENGTH];
+    T_uezNetworkType iNetworkType;
 } T_uezNetworkInfo;
 
 typedef TBool (*T_uezNetworkScanCallback)(

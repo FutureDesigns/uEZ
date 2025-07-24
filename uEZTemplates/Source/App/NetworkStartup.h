@@ -66,6 +66,7 @@ T_uezError NetworkRestartPhy(T_uezDevice network);
 void NetworkStopApplications(T_uezDevice network);
 T_uezError NetworkReStartApplications(T_uezDevice network);
 T_uezDevice NetworkGetActiveDevice(TUInt8 Index);
+T_uezDevice NetworkGetPrimaryDevice(void);
 
 #ifdef __cplusplus
 }

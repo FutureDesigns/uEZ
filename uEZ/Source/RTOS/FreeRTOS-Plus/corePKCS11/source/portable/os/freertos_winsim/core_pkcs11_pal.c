@@ -1,6 +1,6 @@
 /*
- * corePKCS11 v3.5.0
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * corePKCS11 v3.6.2
+ * Copyright (C) 2024 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -32,18 +32,26 @@
 
 /*-----------------------------------------------------------*/
 
-#include "FreeRTOS.h"
-#include "core_pkcs11.h"
-#include "core_pkcs11_config.h"
-#include "core_pkcs11_config_defaults.h"
-
-
-/* C runtime includes. */
+/* System Includes */
 #include <stdio.h>
 #include <string.h>
 
-#include "core_pkcs11_pal_utils.h"
+#ifdef WIN32
+    #ifdef WIN32_LEAN_AND_MEAN
+        #include <winsock2.h>
+    #else
+        #include <winsock.h>
+    #endif /* WIN32_LEAN_AND_MEAN */
+#endif /* WIN32 */
 
+/* FreeRTOS Includes */
+#include "FreeRTOS.h"
+
+/* corePKCS11 Includes */
+#include "core_pkcs11.h"
+#include "core_pkcs11_config.h"
+#include "core_pkcs11_config_defaults.h"
+#include "core_pkcs11_pal_utils.h"
 
 /*-----------------------------------------------------------*/
 

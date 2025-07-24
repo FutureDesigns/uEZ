@@ -1404,6 +1404,7 @@ void LPC43xx_EMAC_EnableReceiveInterrupt(
  *---------------------------------------------------------------------------*/
 void LPC43xx_EMAC_DisableReceiveInterrupt(void *aWorkspace)
 {
+    PARAM_NOT_USED(aWorkspace);
     // Turn off those types of interrupts
     LPC_ETHERNET->DMA_INT_EN = 0;//INT_RX_DONE;
     // Turn off the whole interrutp since it is the only one

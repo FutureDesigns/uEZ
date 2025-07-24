@@ -102,6 +102,7 @@ static uint32_t Chip_Clock_TestMainPLLMultiplier(uint32_t InputHz, uint32_t Test
 /* Returns clock rate out of a divider */
 static uint32_t Chip_Clock_GetDivRate(CHIP_CGU_CLKIN_T clock, CHIP_CGU_IDIV_T divider)
 {
+        PARAM_NOT_USED(clock);
 	CHIP_CGU_CLKIN_T input;
 	uint32_t div;
 
@@ -413,8 +414,9 @@ uint32_t Chip_Clock_GetBaseClocktHz(CHIP_CGU_BASE_CLK_T clock)
 }
 
 /* Sets a CGU Base Clock clock source */
+// TODO this is only used for USB so replace the function call with a common function
 void Chip_Clock_SetBaseClock(CHIP_CGU_BASE_CLK_T BaseClock, CHIP_CGU_CLKIN_T Input, bool autoblocken, bool powerdn)
-{
+{       // If you get a warning here, we don't pass in BaseClock > 27 array index.
 	uint32_t reg = LPC_CGU->BASE_CLK[BaseClock];
 
 	if (BaseClock < CLK_BASE_NONE) {
@@ -436,7 +438,7 @@ void Chip_Clock_SetBaseClock(CHIP_CGU_BASE_CLK_T BaseClock, CHIP_CGU_CLKIN_T Inp
 		}
 	}
 	else {
-		LPC_CGU->BASE_CLK[BaseClock] = reg | 1;	/* Power down this base clock */
+		//LPC_CGU->BASE_CLK[BaseClock] = reg | 1;	/* Power down this base clock */
 	}
 }
 

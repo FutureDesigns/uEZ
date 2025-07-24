@@ -245,6 +245,7 @@ static void IGenericUSBHostFlagIRQEvent(void *aWorkspace)
 
 static TUInt32 Generic_USBHost_Monitor(T_uezTask aMyTask, void *aParameters)
 {
+    PARAM_NOT_USED(aMyTask);
     T_Generic_USBHost_Workspace *p = (T_Generic_USBHost_Workspace *)aParameters;
     T_usbhostEvent event = {USBHOST_EVENT_TYPE_UNKNOWN};
     T_usbhostRegistration *p_reg;
