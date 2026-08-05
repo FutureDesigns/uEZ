@@ -9661,6 +9661,18 @@
                     </file>
                 </group>
                 <group>
+                    <name>MicroCrystal</name>
+                    <group>
+                        <name>RV_3XXX</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\RTC\MicroCrystal\RV_3XXX\RTC_RV_3XXX.c</name>
+                        </file>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Devices\RTC\MicroCrystal\RV_3XXX\RTC_RV_3XXX.h</name>
+                        </file>
+                    </group>
+                </group>
+                <group>
                     <name>NXP</name>
                     <group>
                         <name>PCF2129</name>

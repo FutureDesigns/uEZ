@@ -81,7 +81,7 @@
 #endif
 #include <Source/Devices/PWM/Generic/Generic_PWM.h>
 #include <Source/Devices/RTC/Generic/Generic_RTC.h>
-#include <Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.h>
+#include <Source/Devices/RTC/MicroCrystal/RV_3XXX/RTC_RV_3XXX.h>
 #include <Source/Devices/Serial/Generic/Generic_Serial.h>
 #include <Source/Devices/Stream/SWO/Stream_SWO_CortexM.h>
 #include <Source/Devices/Stream/LPCUSBLib/SerialHost/Stream_LPCUSBLib_SerialHost.h>
@@ -2279,17 +2279,57 @@ void UEZPlatform_IRTC_Require(void)
 }
 
 /*---------------------------------------------------------------------------*
- * Routine:  UEZPlatform_IRTC_Require
+ * Routine:  UEZPlatform_ERTC_Require
  *---------------------------------------------------------------------------*
  * Description:
- *      Setup the internal RTC device driver.  Not compatible with the
- *      external RTC.
+ *      Setup the external RTC device driver for use with I2C RTC.
+ *---------------------------------------------------------------------------*/
+void UEZPlatform_ERTC_Require(void)
+{
+    T_uezDevice rtcDev;
+    DEVICE_RTC **p_rtcDev;
+    const T_uezTimeDate resetTD = {
+      {  0, 0, 0}, // 12:00 midnight
+      {  1, 1, 2026}, // Jan 1, 2026
+    };
+
+    T_uezError error;
+    DEVICE_CREATE_ONCE();
+    UEZTaskDelay(100); // allow for additional power on delay
+
+    //UEZPlatform_I2C0_Require(); // if connected to standard onboard I2C
+    //RTC_RV_3XXX_Create("RTC", "I2C0");
+    
+    UEZPlatform_I2C1_Require(); // offboard I2C, or XBEE socket
+    RTC_RV_3XXX_Create("RTC", "I2C1");
+    
+    // Make sure the RTC has valid data, if a POR occurred then reset it.
+    UEZDeviceTableFind("RTC", &rtcDev);
+    UEZDeviceTableGetWorkspace(rtcDev, (T_uezDeviceWorkspace **)&p_rtcDev);
+    error = (*p_rtcDev)->Validate(p_rtcDev, &resetTD);
+    if (error == UEZ_ERROR_INVALID) {
+    //printf("RTC was invalid, reset to 01/01/2026 12:00:00\n");
+    } else if (error == UEZ_ERROR_NAK) {
+    //printf("RTC error #%d!  Switchover mode and/or POR flag couldn't be programmed!\n", error);
+    } else if (error != UEZ_ERROR_NONE) {
+    //printf("RTC error #%d!  Could not check validity!\n", error);
+    } else {
+    //printf("RTC OK\n");
+    }
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  UEZPlatform_RTC_Require
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      Setup an RTC.
  *---------------------------------------------------------------------------*/
 void UEZPlatform_RTC_Require(void)
 {
     DEVICE_CREATE_ONCE();
 
-    UEZPlatform_IRTC_Require();
+    UEZPlatform_IRTC_Require(); // Use the micro-controller's built-in RTC.
+    //UEZPlatform_ERTC_Require(); // Needs to be added to an expansion board, or future board rev.
 }
 
 /*---------------------------------------------------------------------------*

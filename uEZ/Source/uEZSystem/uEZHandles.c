@@ -205,7 +205,9 @@ T_uezError uEZHandleAlloc(T_uezHandle *aHandle)
     HANDLE_ASSERT(*aHandle < UEZ_NUM_HANDLES);
 
     // Fill in the data
-    p = G_handles+*aHandle;
+    p = G_handles; // fix issues with -02 on GCC when it gets confused from 2 different struct types
+    p = (p + (uint32_t)*aHandle);
+
     p->iTypeAndFlags = UEZ_HANDLE_ZOMBIE;  // allocate but don't do anything with it
     p->iData[0] = 0;
     p->iData[1] = 0;
@@ -228,8 +230,10 @@ T_uezError uEZHandleFree(T_uezHandle aHandle)
     // Is this handle in range?
     if ((aHandle >= UEZ_NUM_HANDLES) || (aHandle == UEZ_NULL_HANDLE))
         return UEZ_ERROR_HANDLE_INVALID;
+    
+    p = G_handles; // fix issues with -02 on GCC when it gets confused from 2 different struct types
+    p = (p + (uint32_t)aHandle);
 
-    p = G_handles+aHandle;
     IGrab();
 
     // Is this a free handle already?
@@ -268,7 +272,8 @@ T_uezError uEZHandleSet(
     if ((aHandle >= UEZ_NUM_HANDLES) || (aHandle == UEZ_NULL_HANDLE))
         return UEZ_ERROR_HANDLE_INVALID;
 
-    p = G_handles+aHandle;
+    p = G_handles; // fix issues with -02 on GCC when it gets confused from 2 different struct types
+    p = (p + (uint32_t)aHandle);
 
     IGrab();
     // Is this a free handle already?
@@ -307,7 +312,8 @@ T_uezError uEZHandleGet(
         return UEZ_ERROR_HANDLE_INVALID;
 
     // Get the data
-    p = G_handles+aHandle;
+    p = G_handles; // fix issues with -02 on GCC when it gets confused from 2 different struct types
+    p = (p + (uint32_t)aHandle);
 
     IGrab();
 
@@ -342,7 +348,8 @@ T_uezError uEZHandleGetFromISR(
         return UEZ_ERROR_HANDLE_INVALID;
 
     // Get the data
-    p = G_handles+aHandle;
+    p = G_handles; // fix issues with -02 on GCC when it gets confused from 2 different struct types
+    p = (p + (uint32_t)aHandle);
 
     if (aTypeAndFlags)
         *aTypeAndFlags = p->iTypeAndFlags;
@@ -409,3 +416,4 @@ void uEZHandlesCheck(void)
 /*-------------------------------------------------------------------------*
  * End of File:  uEZHandles.c
  *-------------------------------------------------------------------------*/
+

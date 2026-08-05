@@ -63,10 +63,10 @@
 #define MICRON_M23P80_READ_DATA             (0x03)
 #define MICRON_M23P80_READ_DATA_FAST        (0x0B)
 #define MICRON_M23P80_PAGE_PROGRAM          (0x02)
-#define MICRON_M23P80_SECTOR_ERASE          (0xD8)
+#define MICRON_M23P80_SECTOR_ERASE          (0xD8) // on new parts this is for 64KB erase, and 0x52 is 32KB erase
 #define MICRON_M23P80_BULK_ERASE            (0xC7)
 #define MICRON_M23P80_DEEP_POWER            (0xB9)
-#define MICRON_M23P80_RELEASE_DEEP_POWER    (0xAB)
+#define MICRON_M23P80_RELEASE_DEEP_POWER    (0xAB) // Not used in this driver, not supported on some parts.
 
 #define MICRON_M23P80_CLOCK_SPEED           (25000) //20MHz for initial testing
 #define MICRON_M23P80_PAGE_SIZE             (256) //256 Byte Page Size
@@ -74,8 +74,9 @@
 #define MICRON_M23P80_NUM_SECTORS           (16)
 
 #define MICRON_M23P80_MFG_ID                (0x20) // Multiple MFG IDs supported
-#define MICRON_M23P80_JEDEC_1               (0x20)
-#define MICRON_M23P80_JEDEC_2               (0x14)
+#define MICRON_M23P80_JEDEC_1_A             (0x20) // old parts memory type RDID
+#define MICRON_M23P80_JEDEC_1_B             (0x23) // 35F memory type RDID (unable to find out what it means compared to 0x20)
+#define MICRON_M23P80_JEDEC_2               (0x14) // We will call this the minimum JDEC density to expect. 1 MB
 
 #define STATUS_REG_WIP_BIT_MASK             (1<<0) //Write in Progress bit
 #define STATUS_REG_WEL_BIT_MASK             (1<<1) //Write enable latch bit
@@ -87,20 +88,6 @@
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
-typedef struct {
-        const DEVICE_Flash *iDevice;
-        TUInt32 iNumOpen;
-        T_uezSemaphore iSem;
-        T_uezGPIOPortPin iChipSelect;
-        T_uezGPIOPortPin iWriteProtect;
-        T_uezGPIOPortPin iReset;
-        char iSPIPortName[5];
-        TUInt8 iMFGID;
-        TUInt16 iJEDEC;
-        T_uezDevice iSPI;
-        TBool iDeviceFound;
-        SPI_Request iRequest;
-}T_Flash_Micron_M25P80_Workspace;
 
 typedef struct {
     TInt32 iIndex;
@@ -269,15 +256,19 @@ static TBool MicronDeviceIDRead(void *aWorkspace)
     p->iRequest.iDataMISO = dataIn;
     p->iRequest.iDataMOSI = dataOut;
 
-    dataOut[0] = 0x9F; //Read ID Register
+    dataOut[0] = MICRON_M23P80_READ_ID; //Read ID Register
 
-    if(UEZSPITransferPolled(p->iSPI, &p->iRequest) == UEZ_ERROR_NONE){
-      if(dataIn[1] != 0){
-          if(dataIn[2] == 0x20 && dataIn[3] == 0x14){
-              // JEDEC Codes match expected values, test pass.
-			  p->iMFGID = dataIn[1]; // The MFG ID can change even on the same part!
-              read = ETrue;
+    if(UEZSPITransferPolled(p->iSPI, &p->iRequest) == UEZ_ERROR_NONE) {
+      p->iJEDEC = dataIn[2] << 8 | dataIn[3]; // populate the fields even if we didn't read anything
+      p->iMFGID = dataIn[1]; // The MFG ID can change even on the same part!
+      if((dataIn[1] > 0x0) && (dataIn[1] != 0xFF)) { // We read some type of MFG ID, but we want to support multiple manufacturers.
+          if((dataIn[2] > 0x0) && (dataIn[2] != 0xFF)) { // we read a non-zero mememory type, but we support multiple types
+             if(dataIn[3] >= MICRON_M23P80_JEDEC_2) {  // check a minimum density, and support larger memory sizes
+                read = ETrue; // JEDEC Codes match expected values, test pass.
+             } // else stuck line
+          } else { // Read either 0 for memory type, or density size is too small.
           }
+      } else { // read 0 on ID, signal issue
       }
     }
 
@@ -314,8 +305,7 @@ T_uezError Flash_Micron_M25P80_Open(void *aWorkspace)
             return UEZ_ERROR_NOT_FOUND;
         }
 
-        if (MicronDeviceIDRead(aWorkspace)) {            
-            p->iJEDEC = MICRON_M23P80_JEDEC_1 << 8 | MICRON_M23P80_JEDEC_2;
+        if (MicronDeviceIDRead(aWorkspace) == ETrue) {
             p->iDeviceFound = ETrue;
         } else {
             p->iDeviceFound = EFalse;
@@ -381,6 +371,7 @@ T_uezError Flash_Micron_M25P80_Read(
         (T_Flash_Micron_M25P80_Workspace *)aWorkspace;
     T_uezError error = UEZ_ERROR_NONE;
     TUInt8 dataOut[5];
+    TUInt8 dataIn[4 + MICRON_M23P80_PAGE_SIZE];
     TBool isBusy = ETrue;
 
     if(!p->iDeviceFound){
@@ -402,7 +393,9 @@ T_uezError Flash_Micron_M25P80_Read(
     dataOut[3] = (TUInt8)((aOffset >> 0) & 0xFF);
     //dataOut[4] = 0; //dummy byte High speed read command only
 
-    IMicron_M25P80_Command(p, dataOut, 4, aBuffer, aNumBytes);
+    IMicron_M25P80_Command(p, dataOut, 4, dataIn, aNumBytes); // will get first read at 5th byte in
+    
+    memcpy(aBuffer, (void*)&dataIn[4], aNumBytes); // then copy starting from 5th byte
 
     UEZSemaphoreRelease(p->iSem);
 
@@ -448,7 +441,8 @@ T_uezError Flash_Micron_M25P80_Write(
         return UEZ_ERROR_NOT_FOUND;
     }
 
-    if((aOffset == 0) || ((aOffset % MICRON_M23P80_SECTOR_SIZE) == 0)){
+    //if((aOffset == 0) || ((aOffset % MICRON_M23P80_SECTOR_SIZE) == 0)){ // TODO support a sector program
+    if((aOffset == 0) || ((aOffset % MICRON_M23P80_PAGE_SIZE) == 0)){
         UEZSemaphoreGrab(p->iSem, UEZ_TIMEOUT_INFINITE);
         currentSector = startSector = IMicron_M25P80_OffsetToSector(p, aOffset);
 
@@ -518,7 +512,7 @@ T_uezError Flash_Micron_M25P80_Write(
                 dataOut[2] = (TUInt8)((aOffset >> 8) & 0xFF);
                 dataOut[3] = (TUInt8)((aOffset >> 0) & 0xFF);
 
-                memcpy((void*)&dataOut[4], aBuffer, dataToWrite);
+                memcpy((void*)&dataOut[4], aBuffer, dataToWrite); // place data starting at 5th byte
 
                 error = IMicron_M25P80_Command(p, dataOut, dataToWrite + 4, NULL, 0);
             }
@@ -533,7 +527,7 @@ T_uezError Flash_Micron_M25P80_Write(
                 currentSector++;
             }
         }
-        G_sectorsNeedingErase[currentSector] = ETrue;
+        //G_sectorsNeedingErase[currentSector] = ETrue; // if we were sector programming, set after each write
         UEZSemaphoreRelease(p->iSem);
     } else {
         error = UEZ_ERROR_BAD_ALIGNMENT;
@@ -604,7 +598,7 @@ T_uezError Flash_Micron_M25P80_BlockErase(
                     }
                     isBusy = ETrue;
 
-                    if ((error = IMicron_M25P80_Command(p, dataOut, sizeof(dataOut), NULL, 0))
+                    if ((error = IMicron_M25P80_Command(p, dataOut, 4, NULL, 0))
                             == UEZ_ERROR_NONE) {
                         G_sectorsNeedingErase[currentSector] = EFalse;
                     }

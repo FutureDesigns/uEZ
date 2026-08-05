@@ -641,6 +641,12 @@
           <folder Name="Generic">
             <file file_name="../../../../../../Source/Devices/RTC/Generic/generic_rtc.c" />
           </folder>
+          <folder Name="MicroCrystal">
+            <folder Name="RV_3XXX">
+              <file file_name="../../../../../../Source/Devices/RTC/MicroCrystal/RV_3XXX/RTC_RV_3XXX.c" />
+              <file file_name="../../../../../../Source/Devices/RTC/MicroCrystal/RV_3XXX/RTC_RV_3XXX.h" />
+            </folder>
+          </folder>
           <folder Name="NXP">
             <folder Name="PCF8563">
               <file file_name="../../../../../../Source/Devices/RTC/NXP/PCF8563/RTC_PCF8563.c" />
