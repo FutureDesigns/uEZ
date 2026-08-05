@@ -32,9 +32,10 @@
 
   // When we change RTT or Systemview we need to do a full clean and rebuild of both library and app project!
   #define SEGGER_ENABLE_RTT              0
-  #define SEGGER_ENABLE_EMWINSPY_RTT     0
   #define SEGGER_ENABLE_SYSTEM_VIEW      0
+  #define USE_MULTICORE_RTT_SYSTEM_VIEW  0 // Set to 1 to use a single RTT buffer for all cores.
   //#define configPRINTF( X )   DEBUG_RTT_Printf0(X) // uncomment to enable the FreeRTOS printf,  mainly for TCP and AWS SW
+  #define SEGGER_ENABLE_EMWINSPY_RTT     0 // If 1 this will use SEGGER's PC tool with emWin to check memory usage of the GUI.
 
 #else // Release Build Unique Settings
   #define configUSE_TRACE_FACILITY       0
@@ -42,9 +43,11 @@
 
 // When we change RTT or Systemview we need to do a full clean and rebuild of both library and app project!
   #define SEGGER_ENABLE_RTT              0
-  #define SEGGER_ENABLE_EMWINSPY_RTT     0
   #define SEGGER_ENABLE_SYSTEM_VIEW      0
+  #define USE_MULTICORE_RTT_SYSTEM_VIEW  0 // Set to 1 to use a single RTT buffer for all cores.
 // #define configPRINTF( X )   DEBUG_RTT_Printf0(X) // uncomment to enable the FreeRTOS printf,  mainly for TCP and AWS SW
+  #define SEGGER_ENABLE_EMWINSPY_RTT     0 // If 1 this will use SEGGER's PC tool with emWin to check memory usage of the GUI.
+
 #endif
 
 
@@ -56,6 +59,9 @@
 
 #define SEGGER_ENABLE_PRINTF        1 // Not recommended for micros with smaller memories, some printf types don't actually work.
 #define SEGGER_ENABLE_INPUT         0 // TODO enable command receive routine/console
+
+
+#define SEGGER_SYSVIEW_RTT_BUFFER_SIZE        8192
 
 #if (SEGGER_ENABLE_RTT ==1 )
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>

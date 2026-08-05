@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.54                                    *
+*       SystemView version: 3.62                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -74,9 +74,22 @@ Revision: $Rev: 24316 $
 //
 //#define SEGGER_RTT_CPU_CACHE_LINE_SIZE            (32)          // Largest cache line size (in bytes) in the current system
 //#define SEGGER_RTT_UNCACHED_OFF                   (0xFB000000)  // Address alias where RTT CB and buffers can be accessed uncached
-
-
-// Define the number of buffers in SEGGER_RTT.h since for some reason it can't read it from here correctly.
+//
+// Most common case:
+// Up-channel 0: RTT
+// Up-channel 1: SystemView
+//
+#ifndef   SEGGER_RTT_MAX_NUM_UP_BUFFERS
+  #define SEGGER_RTT_MAX_NUM_UP_BUFFERS             (3)     // Max. number of up-buffers (T->H) available on this target    (Default: 3)
+#endif
+//
+// Most common case:
+// Down-channel 0: RTT
+// Down-channel 1: SystemView
+//
+#ifndef   SEGGER_RTT_MAX_NUM_DOWN_BUFFERS
+  #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS           (3)     // Max. number of down-buffers (H->T) available on this target  (Default: 3)
+#endif
 
 #ifndef   BUFFER_SIZE_UP // Need to set one more byte than needed.
   #define BUFFER_SIZE_UP                            (1024)  // Size of the buffer for terminal output of target, up to host (Default: 1k)
@@ -89,11 +102,11 @@ Revision: $Rev: 24316 $
 #ifndef   SEGGER_RTT_PRINTF_BUFFER_SIZE
   #define SEGGER_RTT_PRINTF_BUFFER_SIZE             (16u)    // Size of buffer for RTT printf to bulk-send chars via RTT     (Default: 64)
 #endif
-// Sizes of second and 3rd buffer.
 
+// Sizes of second and 3rd buffer.
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
  #define BUFFER_SIZE_UP_1                            (SEGGER_SYSVIEW_RTT_BUFFER_SIZE)
- #define BUFFER_SIZE_DOWN_1                          (8) // for reference here they use 8 as a hardcoded number, but not define.
+ #define BUFFER_SIZE_DOWN_1                          (8)
 #else
  #define BUFFER_SIZE_UP_1                            (64)
  #define BUFFER_SIZE_DOWN_1                          (4)
@@ -102,6 +115,10 @@ Revision: $Rev: 24316 $
 #define BUFFER_SIZE_UP_2                            (64)
 #define BUFFER_SIZE_DOWN_2                          (4)
 
+// For system view channels 1 and above (for multicore) we typically want SEGGER_RTT_MODE_NO_BLOCK_TRIM for "best-effort" sending to PC.
+// If a section of too much activity happens but it calms down, you will still get data coming in until some crash or issue that you need to debug.
+// For some terminal usage, depending on the importance (functional test or command console) a blocking mode might be prefered.
+// Select the default blocking or non-blocking mode:
 #ifndef   SEGGER_RTT_MODE_DEFAULT
 //  #define SEGGER_RTT_MODE_DEFAULT                   SEGGER_RTT_MODE_NO_BLOCK_SKIP // Mode for pre-initialized terminal channel (buffer 0)
   #define SEGGER_RTT_MODE_DEFAULT                   SEGGER_RTT_MODE_NO_BLOCK_TRIM // Trim: Do not block, output as much as fits.
@@ -171,7 +188,7 @@ Revision: $Rev: 24316 $
                                                   :                                                 \
                                                   );                                                \
                                 }
-  #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M_MAIN__))
+  #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M_MAIN__) || defined(__ARM_ARCH_8_1M_MAIN__))
     #ifndef   SEGGER_RTT_MAX_INTERRUPT_PRIORITY
       #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (0x20)
     #endif
@@ -237,10 +254,10 @@ Revision: $Rev: 24316 $
   #else
 		#ifdef __RX
 		#else
-			#define SEGGER_RTT_LOCK()
-			#define SEGGER_RTT_UNLOCK()
-		#endif
+    #define SEGGER_RTT_LOCK()
+    #define SEGGER_RTT_UNLOCK()
   #endif
+#endif
 #endif
 
 /*********************************************************************
@@ -431,6 +448,17 @@ void OS_SIM_LeaveCriticalSection(void);
 
 #ifndef   SEGGER_RTT_UNLOCK
   #define SEGGER_RTT_UNLOCK()              // Unlock RTT (nestable) (i.e. enable previous interrupt lock state)
+#endif
+
+/*********************************************************************
+*
+*       If SEGGER_RTT_SECTION is defined but SEGGER_RTT_BUFFER_SECTION
+*       is not, use the same section for SEGGER_RTT_BUFFER_SECTION.
+*/
+#ifndef SEGGER_RTT_BUFFER_SECTION
+  #if defined(SEGGER_RTT_SECTION)
+    #define SEGGER_RTT_BUFFER_SECTION SEGGER_RTT_SECTION
+  #endif
 #endif
 
 #endif

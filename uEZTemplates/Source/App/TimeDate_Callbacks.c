@@ -37,8 +37,8 @@ static void IRelease(void)
     UEZSemaphoreRelease(G_Sem);
 }
 
-char G_DateMessage[25] = {0}; // Global Variable for uC/Probe Demo
-char G_TimeMessage[25] = {0}; // Global Variable for uC/Probe Demo
+char G_DateMessage[25] = {0}; // Global Variable for tracing demo
+char G_TimeMessage[25] = {0}; // Global Variable for tracing demo
 /*-------------------------------------------------------------------------*
  * Gets the time and date from the internal RTC
  *-------------------------------------------------------------------------*/
@@ -48,11 +48,11 @@ void TimeDate_GetSettings(T_TimeDateSettings *aSettings)
     UEZTimeDateGet(&aSettings->iTimeDate);
     IRelease();
     
-	// For uC/Probe Demo
+	// For tracing demo
     sprintf(G_TimeMessage, "%02d:%02d:%02d",  aSettings->iTimeDate.iTime.iHour,
                                             aSettings->iTimeDate.iTime.iMinute,
                                             aSettings->iTimeDate.iTime.iSecond);
-    // For uC/Probe Demo               
+    // For tracing demo               
     sprintf(G_DateMessage, "%02d/%02d/%04d",  aSettings->iTimeDate.iDate.iMonth,
                                             aSettings->iTimeDate.iDate.iDay,
                                             aSettings->iTimeDate.iDate.iYear);    

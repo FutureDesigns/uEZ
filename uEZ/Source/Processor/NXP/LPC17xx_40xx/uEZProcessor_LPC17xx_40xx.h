@@ -42,9 +42,9 @@
 #include <Config.h>
 // Don't include util functions here!
 #if (UEZ_PROCESSOR == NXP_LPC1788)
-#include <CMSIS/LPC407x_8x_177x_8x.h>
+#include <LPC407x_8x_177x_8x.h>
 #elif (UEZ_PROCESSOR == NXP_LPC4088)
-#include <CMSIS/LPC407x_8x_177x_8x.h>
+#include <LPC407x_8x_177x_8x.h>
 #endif
 #include <Types/GPIO.h>
 #include "LPC17xx_40xx_EMAC.h"

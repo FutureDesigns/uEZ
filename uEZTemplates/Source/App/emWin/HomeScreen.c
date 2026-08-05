@@ -248,6 +248,7 @@ static void IUpdateFields(WM_MESSAGE * pMsg)
 
 }
 
+char imageFilePathExample[] = "1:/IMAGE.BMP";
 /*---------------------------------------------------------------------------*
  * Routine: ISetupButtonsOptions
  *---------------------------------------------------------------------------*/
@@ -260,6 +261,8 @@ static void IUpdateFields(WM_MESSAGE * pMsg)
 static void ISetLogo(WM_MESSAGE * pMsg)
 {
     IMAGE_SetBitmap(WM_GetDialogItem(pMsg->hWin, ID_LOGO), &bmlogo);
+    // To load the icon file from the SD card, comment the above line, and replace it with this line.
+    //IMAGE_SetBMPEx(WM_GetDialogItem(pMsg->hWin, ID_LOGO), APP_GetData, &imageFilePathExample);
 }
 
 /*---------------------------------------------------------------------------*
@@ -398,3 +401,4 @@ WM_HWIN HomeScreen_Create(void)
 /*-------------------------------------------------------------------------*
  * End of File:    HomeScreen.c
  *-------------------------------------------------------------------------*/
+

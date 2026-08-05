@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.54                                    *
+*       SystemView version: 3.62                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -82,6 +82,7 @@ Notes:
 #endif
 
 #define SYSVIEW_FREERTOS_MAX_NOF_TASKS  16 // Default is 8. // TODO use define for the actual number of tasks we might spawn.
+#define SYSVIEW_PORT_PROVIDES_CONTEXT_CHECK 0
 
 /*********************************************************************
 *

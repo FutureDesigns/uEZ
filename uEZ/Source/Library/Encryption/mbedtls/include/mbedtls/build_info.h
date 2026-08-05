@@ -26,16 +26,16 @@
  */
 #define MBEDTLS_VERSION_MAJOR  3
 #define MBEDTLS_VERSION_MINOR  6
-#define MBEDTLS_VERSION_PATCH  2
+#define MBEDTLS_VERSION_PATCH  5
 
 /**
  * The single version number has the following structure:
  *    MMNNPP00
  *    Major version | Minor version | Patch version
  */
-#define MBEDTLS_VERSION_NUMBER         0x03060200
-#define MBEDTLS_VERSION_STRING         "3.6.2"
-#define MBEDTLS_VERSION_STRING_FULL    "Mbed TLS 3.6.2"
+#define MBEDTLS_VERSION_NUMBER         0x03060500
+#define MBEDTLS_VERSION_STRING         "3.6.5"
+#define MBEDTLS_VERSION_STRING_FULL    "Mbed TLS 3.6.5"
 
 /* Macros for build-time platform detection */
 
@@ -110,7 +110,7 @@
 
 /* X.509, TLS and non-PSA crypto configuration */
 #if !defined(MBEDTLS_CONFIG_FILE)
-#include "mbedtls_config.h"
+#include "mbedtls_config.h" // This has been changed for uEZ. If we keep this unchanged we need to move all configs into a subdirectory.
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif

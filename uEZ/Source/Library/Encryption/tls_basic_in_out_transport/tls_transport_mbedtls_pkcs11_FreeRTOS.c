@@ -100,6 +100,8 @@
 #define FORCE_TLS_12_EVEN_IF_13_SUPPORTED   0 // set to 1 to disable TLS 1.3 even if included in the software.
 #endif
 
+#define UNUSED(x) ((void)(x)) // To avoid warnings
+
 /*-----------------------------------------------------------*/
 
 /**

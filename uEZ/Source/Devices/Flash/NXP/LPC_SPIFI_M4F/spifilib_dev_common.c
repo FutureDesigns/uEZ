@@ -917,7 +917,7 @@ SPIFI_ERR_T spifiEraseByAddr(const SPIFI_HANDLE_T *pHandle, uint32_t firstAddr, 
 SPIFI_ERR_T spifiSetENSO(const SPIFI_HANDLE_T *pHandle)
 {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(pHandle);
+    UEZ_PARAMETER_NOT_USED(pHandle);
     return SPIFI_ERR_NONE;
 #else
     LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
@@ -935,7 +935,7 @@ SPIFI_ERR_T spifiSetENSO(const SPIFI_HANDLE_T *pHandle)
 SPIFI_ERR_T spifiSetEXSO(const SPIFI_HANDLE_T *pHandle)
 {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(pHandle);
+    UEZ_PARAMETER_NOT_USED(pHandle);
     return SPIFI_ERR_NONE;
 #else
     LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
@@ -953,7 +953,7 @@ SPIFI_ERR_T spifiSetEXSO(const SPIFI_HANDLE_T *pHandle)
 uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
 {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(pHandle);
+    UEZ_PARAMETER_NOT_USED(pHandle);
     return SPIFI_ERR_NONE;
 #else
     LPC_SPIFI_CHIPHW_T *pSpifiCtrlAddr = (LPC_SPIFI_CHIPHW_T *) pHandle->pInfoData->spifiCtrlAddr;
@@ -976,10 +976,10 @@ uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
  SPIFI_ERR_T spifiProgramOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, const uint32_t *writeBuff, uint32_t bytes)
  {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(pHandle);
-    UNUSED(addr);
-    UNUSED(writeBuff);
-    UNUSED(bytes);
+    UEZ_PARAMETER_NOT_USED(pHandle);
+    UEZ_PARAMETER_NOT_USED(addr);
+    UEZ_PARAMETER_NOT_USED(writeBuff);
+    UEZ_PARAMETER_NOT_USED(bytes);
     return SPIFI_ERR_NONE;
 #else
     SPIFI_ERR_T err = SPIFI_ERR_NONE;
@@ -1035,10 +1035,10 @@ uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
  SPIFI_ERR_T spifiReadOtp(const SPIFI_HANDLE_T *pHandle, uint32_t addr, uint32_t *readBuff, uint32_t bytes)
  {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(pHandle);
-    UNUSED(addr);
-    UNUSED(readBuff);
-    UNUSED(bytes);
+    UEZ_PARAMETER_NOT_USED(pHandle);
+    UEZ_PARAMETER_NOT_USED(addr);
+    UEZ_PARAMETER_NOT_USED(readBuff);
+    UEZ_PARAMETER_NOT_USED(bytes);
     return SPIFI_ERR_NONE;
 #else
     uint32_t readBytes;
@@ -1083,8 +1083,8 @@ uint32_t spifiReadCUR(const SPIFI_HANDLE_T *pHandle)
 uint32_t spifiLockOtp(const SPIFI_HANDLE_T *pHandle, TBool lockOtp)
 {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(pHandle);
-    UNUSED(lockOtp);
+    UEZ_PARAMETER_NOT_USED(pHandle);
+    UEZ_PARAMETER_NOT_USED(lockOtp);
     return SPIFI_ERR_NONE;
 #else
 #if (ALLOW_LOCKING_XSPI_OTP == 1)

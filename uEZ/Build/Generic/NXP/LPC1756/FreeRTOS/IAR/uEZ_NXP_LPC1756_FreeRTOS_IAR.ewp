@@ -358,6 +358,9 @@
                     <state>$PROJ_DIR$/../../../../../../.</state>
                     <state>$PROJ_DIR$/../../../../../../Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756</state>
+<state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/Common/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/DSP/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/IAR/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
@@ -641,6 +644,9 @@
                     <state>$PROJ_DIR$/../../../../../../.</state>
                     <state>$PROJ_DIR$/../../../../../../Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756</state>
+<state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/Common/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/DSP/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/IAR/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
@@ -1436,6 +1442,9 @@
                     <state>$PROJ_DIR$/../../../../../../.</state>
                     <state>$PROJ_DIR$/../../../../../../Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756</state>
+<state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/Common/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/DSP/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/IAR/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
@@ -1719,6 +1728,9 @@
                     <state>$PROJ_DIR$/../../../../../../.</state>
                     <state>$PROJ_DIR$/../../../../../../Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756</state>
+<state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/Common/include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../../../../../Source/Processor/ARM/DSP/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/Processor/NXP/LPC1756/IAR/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../Source/RTOS/FreeRTOS/portable/IAR/ARM_CM3</state>
@@ -4815,24 +4827,12 @@
                 <group>
                     <name>LPC1756</name>
                     <group>
-                        <name>IAR</name>
+                        <name>Common</name>
                         <group>
                             <name>include</name>
-                            <group>
-                                <name>CMSIS</name>
                                 <file>
-                                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\IAR\include\CMSIS\core_cm3.h</name>
+                                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\IAR\include\LPC17xx.h</name>
                                 </file>
-                                <file>
-                                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\IAR\include\CMSIS\core_cmFunc.h</name>
-                                </file>
-                                <file>
-                                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\IAR\include\CMSIS\core_cmInstr.h</name>
-                                </file>
-                                <file>
-                                    <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\IAR\include\CMSIS\LPC17xx.h</name>
-                                </file>
-                            </group>
                         </group>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\..\Source\Processor\NXP\LPC1756\IAR\startup_LPC1756.s</name>

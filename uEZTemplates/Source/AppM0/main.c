@@ -52,7 +52,7 @@
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
- TBool G_HeartBeat;		// Global Variable for uC/Probe Demo
+ TBool G_HeartBeat;		// Global Variable for tracing Demo
 
 
 #ifndef FREERTOS_HEAP_SELECTION
@@ -108,6 +108,7 @@ TUInt32 HeartbeatTask(T_uezTask aMyTask, void *aParams)
     }
 }
 
+extern  TUInt32 G_MainCoreCurrentCycle;
 /*---------------------------------------------------------------------------*
  * Task:  main
  *---------------------------------------------------------------------------*
@@ -117,7 +118,12 @@ TUInt32 HeartbeatTask(T_uezTask aMyTask, void *aParams)
  *      setup the system and then run the main loop of the program.       
  *---------------------------------------------------------------------------*/
 void MainTask(void)
-{    
+{   
+    // TickType_t mainCoreStartTicks = G_MainCoreCurrentCycle; // previous count before starting cores
+    // To synchronize the RTOS ticks, you will need to update this number from the 1st core, then subtract it here. This register if read from the second core is a different value.
+    // G_MainCoreUpdatedCycle = TODO update from the other core then notify here
+    //xTaskCatchUpTicks(G_MainCoreUpdatedCycle-mainCoreStartTicks);
+
     // Start up the heart beat of the LED first thing.
     UEZTaskCreate(HeartbeatTask, "Heart", 128, (void *)0, UEZ_PRIORITY_NORMAL, 0);
 
@@ -138,17 +144,19 @@ void MainTask(void)
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
-    SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init and SEGGER_RTT_Init
+    // When using multi-core systemview, don't call these functions from the second core, it is ready to be used.
+    //SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init and SEGGER_RTT_Init, but we call this from BSP init earlier.
     SEGGER_SYSVIEW_Start(); // Start recording events
+
     // These "DEBUG_SV_" defines only compile in when systemview is enabled.
     // So you can leave them in the application for release builds.
     // Warnings and errors show different graphical icons and colors for debug.
     // Must add #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h> even when turned off
 
     // In our patched sytemview we provide both non-printf and printf functions. We use the non-printf here, so it just sends the strings.
-    DEBUG_SV_Print("SystemView Started"); // SystemView terminal
-    DEBUG_SV_PrintW("Warn Test"); // example warning
-    DEBUG_SV_PrintE("Error Test"); // example error
+    DEBUG_SV_Print("M0 Started"); // SystemView terminal
+    DEBUG_SV_PrintW("M0 Warn Test"); // example warning
+    DEBUG_SV_PrintE("M0 Error Test"); // example error
 #endif
 #endif
 
@@ -189,13 +197,14 @@ void MainTask(void)
     PlayAudio(523, 100);
 #endif
 
-    // Start various M0 application tasks here.
+    // Start various additional M0 application tasks here.
     // TODO
 
     // Loop forever
-    while (1)
-		// Good spot to add supervisory task to monitor other tasks.
+    while (1) { // Good spot to add supervisory task to monitor other tasks.
+        // TODO insert routines here
         UEZTaskDelay(10);
+    }
 }
 
 /*---------------------------------------------------------------------------*

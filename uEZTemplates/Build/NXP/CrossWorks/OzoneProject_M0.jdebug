@@ -20,8 +20,13 @@ void OnProjectLoad (void) {
   //
   // User settings
   //
-  Project.SetOSPlugin("FreeRTOSPlugin"); // have to manually set this for RTOS menu to be available
-  File.Open ("$(ProjectDir)/THUMB Flash Debug M0/$[sym project_name].elf"); // set the elf file name
+  // Include an RTOS plugin to be able to see tasks.
+  Project.SetOSPlugin("FreeRTOSPlugin_Cortex-M");
+
+  // Open an elf file to debug. Duplicate this file then change the below to create projects for other builds.
+  File.Open ("$(ProjectDir)/Debug_Heap4_ M0/$[sym project_name].elf"); // set the elf file name
+  //File.Open ("$(ProjectDir)/Release_Heap4_ M0/$[sym project_name].elf"); // set the elf file name
+  //File.Open ("$(ProjectDir)/Debug_CLANG_ M0/$[sym project_name].elf"); // set the elf file name
 }
 
 /*********************************************************************

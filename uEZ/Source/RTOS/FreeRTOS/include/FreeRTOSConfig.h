@@ -82,6 +82,8 @@
 
 #define configMAX_PRIORITIES		( 7 )
 
+//#define configUSE_QUEUE_SETS            0 // enable for multiple wait feature usage
+
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 		0
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
@@ -89,7 +91,7 @@
 #ifdef DEBUG // Debug Build Unique Settings
 
 #define configUSE_IDLE_HOOK			0 // TODO we may need this enabled for some things?
-#define configUSE_TICK_HOOK			0
+#define configUSE_TICK_HOOK			1
 
 #define configUSE_MALLOC_FAILED_HOOK		1
 
@@ -102,7 +104,7 @@
 #else // Release Build Unique Settings
    
 #define configUSE_IDLE_HOOK			0
-#define configUSE_TICK_HOOK			0
+#define configUSE_TICK_HOOK			1
 
 #define configUSE_MALLOC_FAILED_HOOK		0 // For release build we should know that we aren't overflowing at boot-up.
 #define configCHECK_FOR_STACK_OVERFLOW		0
@@ -175,6 +177,10 @@ to exclude the API function. */
     #define configSUPPORT_STATIC_ALLOCATION     1
 #endif
 
+#if (configSUPPORT_STATIC_ALLOCATION == 1)
+#define configKERNEL_PROVIDED_STATIC_MEMORY     1 // enable and use the provided vApplicationGetIdleTaskMemory and vApplicationGetTimerTaskMemory
+#endif
+
 #ifndef configSUPPORT_DYNAMIC_ALLOCATION
     #define configSUPPORT_DYNAMIC_ALLOCATION    1
 #endif
@@ -231,7 +237,19 @@ to exclude the API function. */
 #ifndef INCLUDE_xTaskGetSchedulerState
     #define INCLUDE_xTaskGetSchedulerState      1
 #endif
-   
+
+// Place the generic name in the vector table, then select the FreeRTOS vector here.
+#ifndef vPortSVCHandler
+  #define vPortSVCHandler      SVC_Handler
+#endif
+#ifndef xPortPendSVHandler
+  #define xPortPendSVHandler   PendSV_Handler
+#endif
+#ifndef xPortSysTickHandler
+  #define xPortSysTickHandler  SysTick_Handler 
+#endif
+
+
 #if (CURRENTLY_IN_IAR_ASM == 0) // We can't include this in IAR ASM
 /* The configPRE_SLEEP_PROCESSING() and configPOST_SLEEP_PROCESSING() macros
 allow the application writer to add additional code before and after the MCU is
@@ -314,7 +332,7 @@ kernel is doing. */
     /* Priority 5, or 160 as only the top three bits are implemented. */
     #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( 1 << (8 - configPRIO_BITS) )
 #ifndef configMINIMAL_STACK_SIZE
-    #define configMINIMAL_STACK_SIZE	( ( unsigned short )128 )
+    #define configMINIMAL_STACK_SIZE	( ( unsigned short )128 ) // UEZTaskDelay will use 96 bytes on the stack, semaphore functions use 152 bytes
 #endif
     #define configUSE_TASK_FPU_SUPPORT            1
 #endif
@@ -410,21 +428,25 @@ kernel is doing. */
 #endif
 
 #define configSTATS_BUFFER_MAX_LENGTH            0x1FFF
-#define configNUM_THREAD_LOCAL_STORAGE_POINTERS    1 // enable for lwip per thread sem
+#define configNUM_THREAD_LOCAL_STORAGE_POINTERS    1 // enable minimum 1 for lwip per-thread sem
 
 #ifndef USE_PROCESS_STACK  
     #define USE_PROCESS_STACK      0
 #endif
 
 #if (USE_PROCESS_STACK == 1) // MPU port selected, (portUSING_MPU_WRAPPERS is set in portmacro header)
-#define configUSE_MPU_WRAPPERS_V1    0 // default is using wrapper V2, set to 1 to use V1
-#define configSYSTEM_CALL_STACK_SIZE 4096
+#define configUSE_MPU_WRAPPERS_V1                      0 // default is using wrapper V2, set to 1 to use V1
+#define configENABLE_MPU                               1
+#define configSYSTEM_CALL_STACK_SIZE                   4096
 #define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY    1
-#define configPROTECTED_KERNEL_OBJECT_POOL_SIZE  128
-#define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS    0 // set to 1 for better security
-//#define configENABLE_HEAP_PROTECTOR              1
-//#define configKERNEL_PROVIDED_STATIC_MEMORY      1
+#define configPROTECTED_KERNEL_OBJECT_POOL_SIZE        128
+#define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS     0 // set to 1 for better security
+//#define configENABLE_HEAP_PROTECTOR                  1
+//#define configKERNEL_PROVIDED_STATIC_MEMORY          1
 #endif
 
+#ifndef configENABLE_MPU  
+    #define configENABLE_MPU      0
+#endif
 
 #endif /* FREERTOS_CONFIG_H */

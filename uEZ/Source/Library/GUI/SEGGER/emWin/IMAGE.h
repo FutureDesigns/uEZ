@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : IMAGE.h
@@ -114,19 +114,20 @@ int  IMAGE_GetImageSize(IMAGE_Handle hObj, int * pxSize, int * pySize);
 int  IMAGE_GetUserData (IMAGE_Handle hObj, void * pDest, int NumBytes);
 void IMAGE_SetBitmap   (IMAGE_Handle hWin, const GUI_BITMAP * pBitmap);
 void IMAGE_SetBMP      (IMAGE_Handle hObj, const void * pData, U32 FileSize);
-void IMAGE_SetBMPEx    (IMAGE_Handle hObj, GUI_GET_DATA_FUNC * pfGetData, void * pVoid);
+void IMAGE_SetBMPEx    (IMAGE_Handle hObj, GUI_BMP_GET_DATA_FUNC * pfGetData, void * pVoid);
 void IMAGE_SetDTA      (IMAGE_Handle hObj, const void * pData, U32 FileSize);
-void IMAGE_SetDTAEx    (IMAGE_Handle hObj, GUI_GET_DATA_FUNC * pfGetData, void * pVoid);
+void IMAGE_SetDTAEx    (IMAGE_Handle hObj, GUI_DTA_GET_DATA_FUNC * pfGetData, void * pVoid);
 void IMAGE_SetGIF      (IMAGE_Handle hObj, const void * pData, U32 FileSize);
-void IMAGE_SetGIFEx    (IMAGE_Handle hObj, GUI_GET_DATA_FUNC * pfGetData, void * pVoid);
+void IMAGE_SetGIFEx    (IMAGE_Handle hObj, GUI_GIF_GET_DATA_FUNC * pfGetData, void * pVoid);
 void IMAGE_SetJPEG     (IMAGE_Handle hObj, const void * pData, U32 FileSize);
-void IMAGE_SetJPEGEx   (IMAGE_Handle hObj, GUI_GET_DATA_FUNC * pfGetData, void * pVoid);
+void IMAGE_SetJPEGEx   (IMAGE_Handle hObj, GUI_JPEG_GET_DATA_FUNC * pfGetData, void * pVoid);
 void IMAGE_SetPNG      (IMAGE_Handle hObj, const void * pData, U32 FileSize);
-void IMAGE_SetPNGEx    (IMAGE_Handle hObj, GUI_GET_DATA_FUNC * pfGetData, void * pVoid);
+void IMAGE_SetPNGEx    (IMAGE_Handle hObj, GUI_PNG_GET_DATA_FUNC * pfGetData, void * pVoid);
 void IMAGE_SetTiled    (IMAGE_Handle hObj, int OnOff);
 int  IMAGE_SetUserData (IMAGE_Handle hObj, const void * pSrc, int NumBytes);
 void IMAGE_SetAlign    (IMAGE_Handle hObj, int Align);
 void IMAGE_SetOffset   (IMAGE_Handle hObj, int xOff, int yOff);
+void IMAGE_SetBkColor  (IMAGE_Handle hObj, GUI_COLOR BkColor);
 
 #if GUI_SUPPORT_MEMDEV
 U8   IMAGE_SetAlpha    (IMAGE_Handle hObj, U8 Alpha);

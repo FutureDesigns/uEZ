@@ -103,6 +103,9 @@ void MQTT_Demo(const T_choice *aChoice);
 void TS_NoiseDetect(void);
 void FWTSTest(void);
 
+void StartDemoScreenSaver(void);
+TBool AppIsDemoScreenSaverRunning(void);
+void AppStopDemoScreenSaver(void);
 
 T_uezError Storage_PrintInfo(char driveLetter, TBool printToConsole);
 

@@ -65,11 +65,19 @@
 /*---------------------------------------------------------------------------*
  * Defines:
  *---------------------------------------------------------------------------*/
+ #define TIME_BETWEEN_GUI_MEMORY_STATUS_UPDATE 1000
 
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
- TBool G_HeartBeat;		// Global Variable for uC/Probe Demo
+/* To properly fill sections (directly in the project build) without using a full custom linker file
+ * at least one const should be created then placed in the desired area. Then (with Crossworks as an example)
+ * the rest of the section can be filled with that number. */
+//UEZ_PUT_SECTION(".fill_A5", static const TUInt8 G_Fill_A5 = 0xA5);
+//UEZ_PUT_SECTION(".fill_FF", static const TUInt8 G_Fill_FF = 0xFF);
+//UEZ_PUT_SECTION(".fill_00", static const TUInt8 G_Fill_00 = 0x00);
+
+ TBool G_HeartBeat;		// Global Variable for tracing demo
 
 // New projects should use heap4. Pick the heap4 library option and define this
 // to 4 in project setting or config build. Heap 3 is for legacy library build.
@@ -96,6 +104,10 @@ UEZ_PUT_SECTION(".heap", uint8_t ucHeap [__HEAP_SIZE__]); // actual size checked
 #if ((FREERTOS_HEAP_SELECTION==5))
 // TODO dual heap (doesn't make much sense with small internal SRAM on old LPCs)
 #endif
+
+// Example to be used for below static task placement example. Placing a task in internal RAM can improve performance.
+//UEZ_PUT_SECTION(".IRAM", uint8_t taskGuiStack [(14 * 1024)]); // 
+//UEZ_PUT_SECTION(".IRAM", uint8_t taskGuiStruct [(sizeof(StaticTask_t))]); // 
 
  /*---------------------------------------------------------------------------*
  * Task:  Heartbeat
@@ -150,6 +162,8 @@ TUInt32 GUIInterfaceTask(T_uezTask aMyTask, void *aParams)
     PARAM_NOT_USED(aMyTask);
     PARAM_NOT_USED(aParams);
     TBool done = EFalse;
+    TUInt16 updateMemoryStatusTime = 1; // insure memory report after first GUI_Exec call
+
     if( WindowManager_Start_emWin() != UEZ_ERROR_NONE){
         UEZFailureMsg("Failed to start emWin!");
     }
@@ -165,7 +179,15 @@ TUInt32 GUIInterfaceTask(T_uezTask aMyTask, void *aParams)
     WindowManager_BackLight_On(255);
 
     while (!done) {
+        // Note: If we make sure that we ONLY call emWin functions from this task, we can disable it's multitasking support.
+        // See GUIConf.h define: GUI_OS
+        // See GUI_X_uEZ.c GUI_X_Lock() and related slow functions. GUI_X_GetTaskId could be used to check if only 1 task is used.
+        updateMemoryStatusTime--;
         GUI_X_ExecIdle(); // By default this is just a task delay.
+        if(updateMemoryStatusTime == 0) {
+          WindowManager_Check_Memory_Usage();
+          updateMemoryStatusTime = TIME_BETWEEN_GUI_MEMORY_STATUS_UPDATE;
+        }
         GUI_Exec();
     }
     return 0;
@@ -216,11 +238,9 @@ void MainTask(void)
     T_USBMSDriveCallbacks usbMSDiskCallbacks = {0};
 #endif
 
-#if (SEGGER_ENABLE_RTT ==1 )  // enable RTT
-#if (SEGGER_ENABLE_SYSTEM_VIEW != 1) //systemview will auto init RTT
-    #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
-    (void)_SEGGER_RTT; // Crossworks complains if we don't use this.
-    SEGGER_RTT_Init();
+// See uEZInit.c and int main() for the RTT initialization and systemview buffer config.
+#if (SEGGER_ENABLE_RTT == 1 )  // if RTT enabled
+#if (SEGGER_ENABLE_SYSTEM_VIEW != 1) // If not using Systemview, print the first message.
     SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
 #endif
 #endif
@@ -229,7 +249,6 @@ void MainTask(void)
   // Don't enable SystemView with FreeRTOS+Trace
 #else // Otherwise SystemView can be enabled
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Only include if SystemView is enabled
-    SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init and SEGGER_RTT_Init
     SEGGER_SYSVIEW_Start(); // Start recording events
     // These "DEBUG_SV_" defines only compile in when systemview is enabled.
     // So you can leave them in the application for release builds.
@@ -298,8 +317,9 @@ void MainTask(void)
     ResourceCache_DirectAccess_Create("Resources", (void *)(UEZBSP_EXTERNAL_FLASH_BASE_ADDRESS + 0x800000 + 0x100));
 #endif
 
-    //Start emWin interface
-    UEZTaskCreate(GUIInterfaceTask, "GUIInterface", (8 * 1024), (void *) 0, UEZ_PRIORITY_NORMAL, 0);
+    //Start emWin interface, this shows an example of puttin gthe task on the heap, then the second line example is for the static placement.
+    UEZTaskCreate(GUIInterfaceTask, "GUIInterface", (14 * 1024), (void *) 0, UEZ_PRIORITY_NORMAL, 0); // heap usage
+    //UEZTaskCreateStaticPlace(GUIInterfaceTask, "GUIInterface", sizeof(taskGuiStack)/sizeof(StackType_t), (void *) 0, UEZ_PRIORITY_NORMAL, 0, (void*) &taskGuiStack, (void*) &taskGuiStruct); // static place
     
 #if (UEZ_ENABLE_WIRELESS_NETWORK == 1) || (UEZ_ENABLE_WIRED_NETWORK == 1)
     // Start the network task if needed
@@ -323,9 +343,10 @@ void MainTask(void)
     PlayAudio(523, 100);
 
     // Loop forever
-    while (1)
-		// Good spot to add supervisory task to monitor other tasks.
-        UEZTaskDelay(10);
+    while (1) {
+	// Good spot to add supervisory task to monitor other tasks.
+        UEZTaskDelay(100);
+    }
 }
 
 /*---------------------------------------------------------------------------*
@@ -525,13 +546,25 @@ TUInt32 uEZPlatformStartup(T_uezTask aMyTask, void *aParameters)
          printf("%x", traceAddressInMemory);     
     #endif
     
+    #if(UEZ_PROCESSOR == NXP_LPC4357)
+      #if (UEZ_ENABLE_TCPIP_STACK == 1)
+        UEZPlatform_IRTC_Require(); // start this first, even if it can stall the MCU from a dead battery clock reset
+      #endif
+    #else
+        UEZPlatform_IRTC_Require();
+    #endif
+
      // Create a main task (not running yet)
      UEZTaskCreate((T_uezTaskFunction)MainTask, "Main", MAIN_TASK_STACK_SIZE, 0,
                    UEZ_PRIORITY_NORMAL, &G_mainTask);
 
      // For LPC4357 make sure to start other tasks first so that RTC doesn't stall boot.
-     UEZPlatform_IRTC_Require();
-     
+     #if(UEZ_PROCESSOR == NXP_LPC4357)
+      #if (UEZ_ENABLE_TCPIP_STACK == 0)
+        UEZPlatform_IRTC_Require(); // start later
+      #endif
+    #endif
+
      // Done with this task, fall out
      return 0;
 }

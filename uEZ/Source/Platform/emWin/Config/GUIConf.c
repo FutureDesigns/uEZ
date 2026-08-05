@@ -36,6 +36,8 @@ Purpose     : Display controller initialization
 #include <uEZ.h>
 #include "Source/uEZSystem/uEZHandles.h"
 
+typedef void * (* pmemcpyFunc)(void *, const void *, size_t); // cast the function due to restrict, and no return value
+
 /*********************************************************************
 *
 *       Public code
@@ -81,6 +83,10 @@ void GUI_X_Config(void) {
   GUI_SetSignalEventFunc(uEZ_emWin_SignalEvent);
   GUI_SetWaitEventFunc(uEZ_emWin_WaitEvent);
   GUI_SetWaitEventTimedFunc(uEZ_emWin_WaitEventTimed);
+
+  // Set emWin here to use alternate functions for standard library routines.
+  //GUI_SetpfMemcpy((pmemcpyFunc)memcpy_4lw_unaligned_no_ret); // can set a customized memcpy function. This should be used over the #define
+  
   //
   // Set default font
   //

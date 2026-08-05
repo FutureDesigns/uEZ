@@ -82,13 +82,20 @@ T_uezError UEZSystemInit(void)
       #error "Cannot use SystemView with FreeRTOS+Trace!"
     #endif
 #endif
-    // Start SystemView if enabled
-#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+
+#if (SEGGER_ENABLE_RTT == 1 )  // enable RTT, make sure that main calls SEGGER_RTT_ResetStruct() one time only
+    (void)_SEGGER_RTT; // GCC complains if we don't use this.
+    // This will check init in multicore mode to init the RTT buffer only 1 time.
+    SEGGER_RTT_Init(); // RTT can be enabled and used early here before RTOS. (no RTOS required)
+    //SEGGER_RTT_WriteString(0, "Hello World RTT 0!\n"); // Test RTT Interface
+#endif
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // Start SystemView if enabled, 
   #if (SEGGER_ENABLE_RTT == 0)
     #error "RTT Must be enabled to use SystemView!"
   #endif
-    SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init and SEGGER_RTT_Init
+    SEGGER_SYSVIEW_Conf(); // This runs SEGGER_SYSVIEW_Init but not SEGGER_RTT_Init
 #endif
+
     // Start the task system
     UEZTaskInit();
 

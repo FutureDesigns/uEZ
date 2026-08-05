@@ -90,11 +90,11 @@ void GUI_X_ExecIdle(void) {
 *  needs to be in GUIConf.h
 */
 #if (RTOS==SafeRTOS)
-// TODO: Not so safe, eh?  These need recursive mutexes for something
+// TODO: Add the required multiple task protection or force all emWin function calls to be from only the emWinGUI RTOS task. Then change GUI_OS to 0.
 void GUI_X_InitOS(void)    { }
 void GUI_X_Unlock(void)    { }
 void GUI_X_Lock(void)      { }
-U32  GUI_X_GetTaskId(void) { return UEZTaskGetCurrent(); }
+U32  GUI_X_GetTaskId(void) { return ( uint32_t )xTaskGetCurrentTaskHandle();} //return UEZTaskGetCurrent(); } // emWin constantly calls locking functions to check the current task, so don't search all of the uEZ handles constantly
 #else
 void GUI_X_InitOS(void)    { UEZSemaphoreCreateRecursiveMutex(&_RSema, UEZ_PRIORITY_VERY_HIGH); }
 void GUI_X_Unlock(void)    { UEZSemaphoreRecursiveRelease(_RSema); }

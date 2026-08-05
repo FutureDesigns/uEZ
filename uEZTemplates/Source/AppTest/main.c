@@ -66,7 +66,7 @@
 /*---------------------------------------------------------------------------*
  * Globals:
  *---------------------------------------------------------------------------*/
- TBool G_HeartBeat;		// Global Variable for uC/Probe Demo
+ TBool G_HeartBeat;		// Global Variable for tracing demo
  UEZ_PUT_SECTION(".non_init", volatile T_BootTestModeSetting G_hardwareTest);
  
 extern TBool G_SDCard_inserted;

@@ -44,6 +44,7 @@ Purpose     : emWin demo
 #include <Source/Library/GUI/FDI/SimpleUI/SimpleUI_UtilityFunctions.h>
 #include <Config_App.h>
 #include "NVSettings.h"
+#include "uEZDemoCommon.h"
 
 WM_HWIN MQTT_Create(void);
 extern WM_HWIN MQTT_Create(void);
@@ -200,7 +201,7 @@ static void runDemoScreenTillHomeExit(void)
 void emWin(const T_choice *aChoice) {
 
   T_uezDevice    hLCD;
-
+  TBool doesTheScreenSaverNeedARestart;
   (void)aChoice;
   (void) runDemoScreenTillHomeExit;
 
@@ -267,6 +268,14 @@ void emWin(const T_choice *aChoice) {
   WM_SetCreateFlags(WM_CF_MEMDEV);  // Enable memory devices
   GUI_Init();
 #endif
+
+  if(AppIsDemoScreenSaverRunning() == ETrue) {
+      AppStopDemoScreenSaver();
+      doesTheScreenSaverNeedARestart = ETrue;
+  } else {
+      doesTheScreenSaverNeedARestart = EFalse;
+  }
+
   //
   // Open the LCD
   //
@@ -344,6 +353,10 @@ void emWin(const T_choice *aChoice) {
 #if !EMWIN_LOAD_ONCE
   GUI_Exit();
 #endif
+
+  if(doesTheScreenSaverNeedARestart == ETrue) {
+      StartDemoScreenSaver();
+  }
 }
 
 

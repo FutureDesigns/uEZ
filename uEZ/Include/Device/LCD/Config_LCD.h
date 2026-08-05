@@ -111,11 +111,23 @@
 #define TOUCH_RESISTIVE                             1
 #define TOUCH_PCAP                                  2
 
+// DPI settings used by some GUI Toolkits for widget size adjustment:
+// https://www.sven.de/dpi/       /*[px/inch]*/
+#define DPI_SETTING_35_320_240    114 // 3.5"   320x240
+#define DPI_SETTING_43_480_272    128 // 4.3"   480x272
+#define DPI_SETTING_56_640_480    143 // 5.6"   640x480
+#define DPI_SETTING_43_800_480    217 // 4.3"   800x480
+#define DPI_SETTING_5_800_480     187 // 5"     800x480
+#define DPI_SETTING_7_800_480     133 // 7"     800x480
+#define DPI_SETTING_7_1024_600    170 // 7"    1024x600
+#define DPI_SETTING_10_1280_800   151 // 10"   1280x800
+
 #if (UEZ_DEFAULT_LCD_CONFIG==LCD_CONFIG_TIANMA_TM070RVHG01)
     #define UEZ_LCD_DEFAULT_COLOR_DEPTH     UEZLCD_COLOR_DEPTH_I15_BIT
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Tianma_TM070RVHG01_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /** Configure PWM of backlight settings */
@@ -132,6 +144,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_KOE_TX18D35VM0APB_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_5_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -161,6 +174,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Kyocera_TCG043WQLBAANN_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -195,6 +209,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Generic_480x272_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -228,6 +243,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Orient_AFY480272B0_43N12NTM_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -261,6 +277,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272MF_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -294,6 +311,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272EF_ASXP_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -327,6 +345,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NewHaven_NHD43480272EF_ASXV_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -360,6 +379,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_DLC0430BCP12RF_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -393,6 +413,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_DLC0430DCP15RF_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_5_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -426,6 +447,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_LMTDA043ZHN3_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -449,6 +471,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_KOE_TX13D06VM2BAA_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -478,6 +501,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Tianma_TM070RBHG04_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -507,6 +531,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SEIKO_43WQW1T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -524,6 +549,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SEIKO_70WVW2T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -555,6 +581,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Toshiba_LTA057A347F_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -573,6 +600,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Toshiba_LTA057A347F_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -609,6 +637,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_OKAYA_RV320240T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -626,6 +655,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_OKAYA_RV640480T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_56_640_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -649,6 +679,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_OKAYA_RH320240T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -666,6 +697,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ043T3DG02_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     #define UEZ_DEFAULT_LCD_RES_480x272     1
@@ -684,6 +716,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ043T1DG01_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -708,6 +741,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ043T1DG28_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -732,6 +766,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ040Y3DX80A_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          800
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -756,6 +791,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_NEC_NL6448BC_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_56_640_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -777,6 +813,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_OPTREX_T_5596GD035JU_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 
@@ -799,6 +836,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Inteltronic_LMIX0560NTN53V1_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_56_640_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -828,6 +866,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Tianma_TM047NBH01_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -843,6 +882,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Tianma_TM043NBH02_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -858,6 +898,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Hitachi_TX11D06VM2APA_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -875,6 +916,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Tianma_TM035NBH02_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -890,6 +932,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_DigitalImage_FG050720DSSWDG01_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_56_640_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -907,6 +950,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ042T5DZ11_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -931,6 +975,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ104V1DG28_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           640
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_56_640_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_VGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -955,6 +1000,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_MicroTips_UMSH_8065MD_21T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
     /**
@@ -973,6 +1019,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_MicroTips_UMSH_8253MD_3T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           480
     #define UEZ_LCD_DISPLAY_HEIGHT          272
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_480_272
     #define UEZ_DEFAULT_LCD                 LCD_RES_480x272
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
     /**
@@ -991,6 +1038,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_MicroTips_AWT_800480T50P03_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -1008,6 +1056,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_Microtips_UMSH_8596MD_20T_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
     /**
@@ -1037,6 +1086,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         LCD_SHARP_LQ070Y3LW01_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
     /**
@@ -1075,6 +1125,7 @@
 #endif
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_5_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -1116,6 +1167,7 @@
 #endif
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_7_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -1157,6 +1209,7 @@
 #endif
     #define UEZ_LCD_DISPLAY_WIDTH           800
     #define UEZ_LCD_DISPLAY_HEIGHT          480
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_43_800_480
     #define UEZ_DEFAULT_LCD                 LCD_RES_WVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_PCAP
 /**
@@ -1191,6 +1244,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         Tianma_TM035KBH02_09_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -1223,6 +1277,7 @@
     #define UEZ_LCD_INTERFACE_ARRAY         Kyocera_T55343GD035JU_3_5_InterfaceArray
     #define UEZ_LCD_DISPLAY_WIDTH           320
     #define UEZ_LCD_DISPLAY_HEIGHT          240
+    #define UEZ_LCD_DEFAULT_DPI             DPI_SETTING_35_320_240
     #define UEZ_DEFAULT_LCD                 LCD_RES_QVGA
     #define UEZ_DEFAULT_TOUCH               TOUCH_RESISTIVE
 /**
@@ -1283,6 +1338,10 @@
     #define UEZ_DEFAULT_LCD_RES_WVGA            1
 #else
     #define UEZ_DEFAULT_LCD_RES_WVGA            0
+#endif
+
+#ifndef UEZ_LCD_DEFAULT_DPI
+    #define UEZ_LCD_DEFAULT_DPI                 128
 #endif
 
 #endif // _CONFIG_LCD_H_

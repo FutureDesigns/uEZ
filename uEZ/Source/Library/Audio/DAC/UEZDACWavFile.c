@@ -533,7 +533,7 @@ T_uezError UEZDACWAVConfig(const char* aTimer)
                                   DAC_AUDIO_TASK_STACK_SIZE, 0, UEZ_PRIORITY_HIGH,
                                   &G_DACAudioTask);
 
-            UEZTaskCreate(MuteTask, "MuteTask", 128, (void *)0, UEZ_PRIORITY_LOW, 0);
+            UEZTaskCreate(MuteTask, "MuteTask", UEZ_TASK_STACK_BYTES(768), (void *)0, UEZ_PRIORITY_LOW, 0);
         }
         if(error == UEZ_ERROR_NONE){
             G_DACFileWorkspace.iConfigured = ETrue;

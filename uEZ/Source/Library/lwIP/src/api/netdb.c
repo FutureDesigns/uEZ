@@ -2,10 +2,12 @@
  * @file
  * API functions for name resolving
  *
+ * @defgroup netdbapi NETDB API
+ * @ingroup socket
  */
 
 /*
- * Redistribution and use in source and binary forms, with or without modification, 
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice,
@@ -14,55 +16,64 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission. 
+ *    derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED 
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
- * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
- * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
  * This file is part of the lwIP TCP/IP stack.
- * 
+ *
  * Author: Simon Goldschmidt
  *
  */
 
-#include <string.h>
-#include <stdlib.h>
 #include "lwip/netdb.h"
 
 #if LWIP_DNS && LWIP_SOCKET
 
 #include "lwip/err.h"
+#include "lwip/errno.h"
 #include "lwip/mem.h"
+#include "lwip/memp.h"
 #include "lwip/ip_addr.h"
 #include "lwip/api.h"
+#include "lwip/dns.h"
+
+#include <string.h> /* memset */
+#include <stdlib.h> /* atoi */
 
 /** helper struct for gethostbyname_r to access the char* buffer */
 struct gethostbyname_r_helper {
-  struct ip_addr *addrs;
-  struct ip_addr addr;
+  ip_addr_t *addr_list[2];
+  ip_addr_t addr;
   char *aliases;
 };
 
 /** h_errno is exported in netdb.h for access by applications. */
 #if LWIP_DNS_API_DECLARE_H_ERRNO
-int32_t h_errno;
+int h_errno;
 #endif /* LWIP_DNS_API_DECLARE_H_ERRNO */
 
-/** define "hostent" variables storage: 0 if we use a static (but unprotected)
- * set of variables for lwip_gethostbyname, 1 if we use a local storage */
+/** LWIP_DNS_API_HOSTENT_STORAGE: if set to 0 (default), lwip_gethostbyname()
+ * returns the same global variable for all calls (in all threads).
+ * When set to 1, your port should provide a function
+ *      struct hostent* sys_thread_hostent( struct hostent* h);
+ * which have to do a copy of "h" and return a pointer ont the "per-thread"
+ * copy.
+ */
 #ifndef LWIP_DNS_API_HOSTENT_STORAGE
 #define LWIP_DNS_API_HOSTENT_STORAGE 0
 #endif
 
-/** define "hostent" variables storage */
+/* define "hostent" variables storage */
 #if LWIP_DNS_API_HOSTENT_STORAGE
 #define HOSTENT_STORAGE
 #else
@@ -78,17 +89,18 @@ int32_t h_errno;
  * @return an entry containing addresses of address family AF_INET
  *         for the host with name name
  */
-struct hostent*
+struct hostent *
 lwip_gethostbyname(const char *name)
 {
   err_t err;
-  struct ip_addr addr;
+  ip_addr_t addr;
 
   /* buffer variables for lwip_gethostbyname() */
   HOSTENT_STORAGE struct hostent s_hostent;
   HOSTENT_STORAGE char *s_aliases;
-  HOSTENT_STORAGE struct ip_addr s_hostent_addr;
-  HOSTENT_STORAGE struct ip_addr *s_phostent_addr;
+  HOSTENT_STORAGE ip_addr_t s_hostent_addr;
+  HOSTENT_STORAGE ip_addr_t *s_phostent_addr[2];
+  HOSTENT_STORAGE char s_hostname[DNS_MAX_NAME_LENGTH + 1];
 
   /* query host IP address */
   err = netconn_gethostbyname(name, &addr);
@@ -100,32 +112,29 @@ lwip_gethostbyname(const char *name)
 
   /* fill hostent */
   s_hostent_addr = addr;
-  s_phostent_addr = &s_hostent_addr;
-  s_hostent.h_name = (char*)name;
+  s_phostent_addr[0] = &s_hostent_addr;
+  s_phostent_addr[1] = NULL;
+  strncpy(s_hostname, name, DNS_MAX_NAME_LENGTH);
+  s_hostname[DNS_MAX_NAME_LENGTH] = 0;
+  s_hostent.h_name = s_hostname;
+  s_aliases = NULL;
   s_hostent.h_aliases = &s_aliases;
   s_hostent.h_addrtype = AF_INET;
-  s_hostent.h_length = sizeof(struct ip_addr);
-  s_hostent.h_addr_list = (char**)&s_phostent_addr;
+  s_hostent.h_length = sizeof(ip_addr_t);
+  s_hostent.h_addr_list = (char **)&s_phostent_addr;
 
 #if DNS_DEBUG
   /* dump hostent */
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_name           == %s\n",      s_hostent.h_name));
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases        == 0x%08lX\n",(u32_t)(s_hostent.h_aliases)));
-  if (s_hostent.h_aliases != NULL) {
-    u8_t idx;
-    for ( idx=0; s_hostent.h_aliases[idx]; idx++) {
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases[%i]->   == 0x%08lX\n", idx, s_hostent.h_aliases[idx]));
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases[%i]->   == %s\n",      idx, s_hostent.h_aliases[idx]));
-    }
-  }
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addrtype       == %lu\n",    (u32_t)(s_hostent.h_addrtype)));
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_length         == %lu\n",    (u32_t)(s_hostent.h_length)));
-  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list      == 0x%08lX\n", s_hostent.h_addr_list));
+  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_name           == %s\n", s_hostent.h_name));
+  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_aliases        == %p\n", (void *)s_hostent.h_aliases));
+  /* h_aliases are always empty */
+  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addrtype       == %d\n", s_hostent.h_addrtype));
+  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_length         == %d\n", s_hostent.h_length));
+  LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list      == %p\n", (void *)s_hostent.h_addr_list));
   if (s_hostent.h_addr_list != NULL) {
     u8_t idx;
-    for ( idx=0; s_hostent.h_addr_list[idx]; idx++) {
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]   == 0x%08lX\n", idx, s_hostent.h_addr_list[idx]));
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n",      idx, inet_ntoa(*((struct in_addr*)(s_hostent.h_addr_list[idx])))));
+    for (idx = 0; s_hostent.h_addr_list[idx]; idx++) {
+      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa(s_phostent_addr[idx])));
     }
   }
 #endif /* DNS_DEBUG */
@@ -149,20 +158,20 @@ lwip_gethostbyname(const char *name)
  * @param buflen the size of buf
  * @param result pointer to a hostent pointer that is set to ret on success
  *               and set to zero on error
- * @param h_errnop pointer to an int32_t where to store errors (instead of modifying
+ * @param h_errnop pointer to an int where to store errors (instead of modifying
  *                 the global h_errno)
  * @return 0 on success, non-zero on error, additional error information
  *         is stored in *h_errnop instead of h_errno to be thread-safe
  */
-int32_t
+int
 lwip_gethostbyname_r(const char *name, struct hostent *ret, char *buf,
-                size_t buflen, struct hostent **result, int32_t *h_errnop)
+                     size_t buflen, struct hostent **result, int *h_errnop)
 {
   err_t err;
   struct gethostbyname_r_helper *h;
   char *hostname;
   size_t namelen;
-  int32_t lh_errno;
+  int lh_errno;
 
   if (h_errnop == NULL) {
     /* ensure h_errnop is never NULL */
@@ -176,27 +185,27 @@ lwip_gethostbyname_r(const char *name, struct hostent *ret, char *buf,
   }
   /* first thing to do: set *result to nothing */
   *result = NULL;
-  if ((name == NULL) || (ret == NULL) || (buf == 0)) {
+  if ((name == NULL) || (ret == NULL) || (buf == NULL)) {
     /* not all arguments given */
     *h_errnop = EINVAL;
     return -1;
   }
 
   namelen = strlen(name);
-  if (buflen < (sizeof(struct gethostbyname_r_helper) + namelen + 1 + (MEM_ALIGNMENT - 1))) {
+  if (buflen < (sizeof(struct gethostbyname_r_helper) + LWIP_MEM_ALIGN_BUFFER(namelen + 1))) {
     /* buf can't hold the data needed + a copy of name */
     *h_errnop = ERANGE;
     return -1;
   }
 
-  h = (struct gethostbyname_r_helper*)LWIP_MEM_ALIGN(buf);
-  hostname = ((char*)h) + sizeof(struct gethostbyname_r_helper);
+  h = (struct gethostbyname_r_helper *)LWIP_MEM_ALIGN(buf);
+  hostname = ((char *)h) + sizeof(struct gethostbyname_r_helper);
 
   /* query host IP address */
-  err = netconn_gethostbyname(name, &(h->addr));
+  err = netconn_gethostbyname(name, &h->addr);
   if (err != ERR_OK) {
     LWIP_DEBUGF(DNS_DEBUG, ("lwip_gethostbyname(%s) failed, err=%d\n", name, err));
-    *h_errnop = ENSRNOTFOUND;
+    *h_errnop = HOST_NOT_FOUND;
     return -1;
   }
 
@@ -205,13 +214,14 @@ lwip_gethostbyname_r(const char *name, struct hostent *ret, char *buf,
   hostname[namelen] = 0;
 
   /* fill hostent */
-  h->addrs = &(h->addr);
+  h->addr_list[0] = &h->addr;
+  h->addr_list[1] = NULL;
   h->aliases = NULL;
-  ret->h_name = (char*)hostname;
-  ret->h_aliases = &(h->aliases);
+  ret->h_name = hostname;
+  ret->h_aliases = &h->aliases;
   ret->h_addrtype = AF_INET;
-  ret->h_length = sizeof(struct ip_addr);
-  ret->h_addr_list = (char**)&(h->addrs);
+  ret->h_length = sizeof(ip_addr_t);
+  ret->h_addr_list = (char **)&h->addr_list;
 
   /* set result != NULL */
   *result = ret;
@@ -233,14 +243,8 @@ lwip_freeaddrinfo(struct addrinfo *ai)
   struct addrinfo *next;
 
   while (ai != NULL) {
-    if (ai->ai_addr != NULL) {
-      mem_free(ai->ai_addr);
-    }
-    if (ai->ai_canonname != NULL) {
-      mem_free(ai->ai_canonname);
-    }
     next = ai->ai_next;
-    mem_free(ai);
+    memp_free(MEMP_NETDB, ai);
     ai = next;
   }
 }
@@ -259,20 +263,25 @@ lwip_freeaddrinfo(struct addrinfo *ai)
  *
  * @param nodename descriptive name or address string of the host
  *                 (may be NULL -> local address)
- * @param servname port number as string of NULL 
+ * @param servname port number as string of NULL
  * @param hints structure containing input values that set socktype and protocol
  * @param res pointer to a pointer where to store the result (set to NULL on failure)
  * @return 0 on success, non-zero on failure
+ *
+ * @todo: implement AI_V4MAPPED, AI_ADDRCONFIG
  */
-int32_t
+int
 lwip_getaddrinfo(const char *nodename, const char *servname,
-       const struct addrinfo *hints, struct addrinfo **res)
+                 const struct addrinfo *hints, struct addrinfo **res)
 {
   err_t err;
-  struct ip_addr addr;
+  ip_addr_t addr;
   struct addrinfo *ai;
-  struct sockaddr_in *sa = NULL;
-  int32_t port_nr = 0;
+  struct sockaddr_storage *sa = NULL;
+  int port_nr = 0;
+  size_t total_size;
+  size_t namelen = 0;
+  int ai_family;
 
   if (res == NULL) {
     return EAI_FAIL;
@@ -282,44 +291,120 @@ lwip_getaddrinfo(const char *nodename, const char *servname,
     return EAI_NONAME;
   }
 
+  if (hints != NULL) {
+    ai_family = hints->ai_family;
+    if ((ai_family != AF_UNSPEC)
+#if LWIP_IPV4
+        && (ai_family != AF_INET)
+#endif /* LWIP_IPV4 */
+#if LWIP_IPV6
+        && (ai_family != AF_INET6)
+#endif /* LWIP_IPV6 */
+       ) {
+      return EAI_FAMILY;
+    }
+  } else {
+    ai_family = AF_UNSPEC;
+  }
+
   if (servname != NULL) {
     /* service name specified: convert to port number
-     * @todo?: currently, only ASCII integers (port numbers) are supported! */
+     * @todo?: currently, only ASCII integers (port numbers) are supported (AI_NUMERICSERV)! */
     port_nr = atoi(servname);
-    if ((port_nr <= 0) || (port_nr > 0xffff)) {
+    if (port_nr == 0 && (servname[0] != '0')) {
+      /* atoi failed - service was not numeric */
+      return EAI_SERVICE;
+    }
+    if ((port_nr < 0) || (port_nr > 0xffff)) {
       return EAI_SERVICE;
     }
   }
 
   if (nodename != NULL) {
     /* service location specified, try to resolve */
-    err = netconn_gethostbyname(nodename, &addr);
-    if (err != ERR_OK) {
-      return EAI_FAIL;
+    if ((hints != NULL) && (hints->ai_flags & AI_NUMERICHOST)) {
+      /* no DNS lookup, just parse for an address string */
+      if (!ipaddr_aton(nodename, &addr)) {
+        return EAI_NONAME;
+      }
+#if LWIP_IPV4 && LWIP_IPV6
+      if ((IP_IS_V6_VAL(addr) && ai_family == AF_INET) ||
+          (IP_IS_V4_VAL(addr) && ai_family == AF_INET6)) {
+        return EAI_NONAME;
+      }
+#endif /* LWIP_IPV4 && LWIP_IPV6 */
+    } else {
+#if LWIP_IPV4 && LWIP_IPV6
+      /* AF_UNSPEC: prefer IPv4 */
+      u8_t type = NETCONN_DNS_IPV4_IPV6;
+      if (ai_family == AF_INET) {
+        type = NETCONN_DNS_IPV4;
+      } else if (ai_family == AF_INET6) {
+        type = NETCONN_DNS_IPV6;
+      }
+#endif /* LWIP_IPV4 && LWIP_IPV6 */
+      err = netconn_gethostbyname_addrtype(nodename, &addr, type);
+      if (err != ERR_OK) {
+        return EAI_FAIL;
+      }
     }
   } else {
     /* service location specified, use loopback address */
-    addr.addr = INADDR_LOOPBACK;
+    if ((hints != NULL) && (hints->ai_flags & AI_PASSIVE)) {
+      ip_addr_set_any_val(ai_family == AF_INET6, addr);
+    } else {
+      ip_addr_set_loopback_val(ai_family == AF_INET6, addr);
+    }
   }
 
-  ai = mem_malloc(sizeof(struct addrinfo));
+  total_size = sizeof(struct addrinfo) + sizeof(struct sockaddr_storage);
+  if (nodename != NULL) {
+    namelen = strlen(nodename);
+    if (namelen > DNS_MAX_NAME_LENGTH) {
+      /* invalid name length */
+      return EAI_FAIL;
+    }
+    LWIP_ASSERT("namelen is too long", total_size + namelen + 1 > total_size);
+    total_size += namelen + 1;
+  }
+  /* If this fails, please report to lwip-devel! :-) */
+  LWIP_ASSERT("total_size <= NETDB_ELEM_SIZE: please report this!",
+              total_size <= NETDB_ELEM_SIZE);
+  ai = (struct addrinfo *)memp_malloc(MEMP_NETDB);
   if (ai == NULL) {
-    goto memerr;
+    return EAI_MEMORY;
   }
-  memset(ai, 0, sizeof(struct addrinfo));
-  sa = mem_malloc(sizeof(struct sockaddr_in));
-  if (sa == NULL) {
-    goto memerr;
+  memset(ai, 0, total_size);
+  /* cast through void* to get rid of alignment warnings */
+  sa = (struct sockaddr_storage *)(void *)((u8_t *)ai + sizeof(struct addrinfo));
+  if (IP_IS_V6_VAL(addr)) {
+#if LWIP_IPV6
+    struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
+    /* set up sockaddr */
+    inet6_addr_from_ip6addr(&sa6->sin6_addr, ip_2_ip6(&addr));
+    sa6->sin6_family = AF_INET6;
+#if LWIP_SOCKET_HAVE_SA_LEN
+    sa6->sin6_len = sizeof(struct sockaddr_in6);
+#endif /* LWIP_SOCKET_HAVE_SA_LEN */
+    sa6->sin6_port = lwip_htons((u16_t)port_nr);
+    sa6->sin6_scope_id = ip6_addr_zone(ip_2_ip6(&addr));
+    ai->ai_family = AF_INET6;
+#endif /* LWIP_IPV6 */
+  } else {
+#if LWIP_IPV4
+    struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
+    /* set up sockaddr */
+    inet_addr_from_ip4addr(&sa4->sin_addr, ip_2_ip4(&addr));
+    sa4->sin_family = AF_INET;
+#if LWIP_SOCKET_HAVE_SA_LEN
+    sa4->sin_len = sizeof(struct sockaddr_in);
+#endif /* LWIP_SOCKET_HAVE_SA_LEN */
+    sa4->sin_port = lwip_htons((u16_t)port_nr);
+    ai->ai_family = AF_INET;
+#endif /* LWIP_IPV4 */
   }
-  memset(sa, 0, sizeof(struct sockaddr_in));
-  /* set up sockaddr */
-  sa->sin_addr.s_addr = addr.addr;
-  sa->sin_family = AF_INET;
-  sa->sin_len = sizeof(struct sockaddr_in);
-  sa->sin_port = htons(port_nr);
 
   /* set up addrinfo */
-  ai->ai_family = AF_INET;
   if (hints != NULL) {
     /* copy socktype & protocol from hints if specified */
     ai->ai_socktype = hints->ai_socktype;
@@ -327,28 +412,16 @@ lwip_getaddrinfo(const char *nodename, const char *servname,
   }
   if (nodename != NULL) {
     /* copy nodename to canonname if specified */
-    size_t namelen = strlen(nodename);
-    ai->ai_canonname = mem_malloc(namelen + 1);
-    if (ai->ai_canonname == NULL) {
-      goto memerr;
-    }
+    ai->ai_canonname = ((char *)ai + sizeof(struct addrinfo) + sizeof(struct sockaddr_storage));
     MEMCPY(ai->ai_canonname, nodename, namelen);
     ai->ai_canonname[namelen] = 0;
   }
-  ai->ai_addrlen = sizeof(struct sockaddr_in);
-  ai->ai_addr = (struct sockaddr*)sa;
+  ai->ai_addrlen = sizeof(struct sockaddr_storage);
+  ai->ai_addr = (struct sockaddr *)sa;
 
   *res = ai;
 
   return 0;
-memerr:
-  if (ai != NULL) {
-    mem_free(ai);
-  }
-  if (sa != NULL) {
-    mem_free(sa);
-  }
-  return EAI_MEMORY;
 }
 
 #endif /* LWIP_DNS && LWIP_SOCKET */

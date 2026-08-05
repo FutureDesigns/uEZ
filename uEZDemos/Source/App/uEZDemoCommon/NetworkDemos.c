@@ -30,10 +30,10 @@
 #include "NetworkDemos.h"
 #include <NVSettings.h>
 #include <Config_Build.h>
-#include <Source/Library/lwip_2.0.x/system/arch/sntp_uEZ.h>
-#include <Source/Library/lwip_2.0.x/contrib/examples/snmp/snmp_example.h>
-#include <Source/Library/lwip_2.0.x/contrib/examples/tftp/tftp_example.h>
-#include <Source/Library/lwip_2.0.x/contrib/examples/lwiperf/lwiperf_example.h>
+#include <Source/Library/lwIP/system/arch/sntp_uEZ.h>
+#include <Source/Library/lwIP/contrib/examples/snmp/snmp_example.h>
+#include <Source/Library/lwIP/contrib/examples/tftp/tftp_example.h>
+#include <Source/Library/lwIP/contrib/examples/lwiperf/lwiperf_example.h>
 #include <Source/Library/Network/lwip-ftpd/ftpd.h> // full featured ftp server
 #include <sys/socket.h>
 

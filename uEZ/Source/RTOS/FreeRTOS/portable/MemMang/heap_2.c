@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.2.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -90,8 +90,8 @@
 #if ( configAPPLICATION_ALLOCATED_HEAP == 1 )
 
 /* The application writer has already defined the array used for the RTOS
-* heap - probably so it can be placed in a special segment or address. */
-    extern uint8_t ucHeap[];
+ * heap - probably so it can be placed in a special segment or address. */
+    extern uint8_t ucHeap[]; // configTOTAL_HEAP_SIZE ];
 #else
     PRIVILEGED_DATA static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
 #endif /* configAPPLICATION_ALLOCATED_HEAP */
@@ -114,7 +114,10 @@ PRIVILEGED_DATA static BlockLink_t xStart, xEnd;
 
 /* Keeps track of the number of free bytes remaining, but says nothing about
  * fragmentation. */
-PRIVILEGED_DATA static size_t xFreeBytesRemaining;// = configADJUSTED_HEAP_SIZE;
+PRIVILEGED_DATA static size_t xFreeBytesRemaining; // = configADJUSTED_HEAP_SIZE;
+
+/* Indicates whether the heap has been initialised or not. */
+PRIVILEGED_DATA static BaseType_t xHeapHasBeenInitialised = pdFALSE;
 
 /*-----------------------------------------------------------*/
 
@@ -158,9 +161,9 @@ void * pvPortMalloc( size_t xWantedSize )
     BlockLink_t * pxBlock;
     BlockLink_t * pxPreviousBlock;
     BlockLink_t * pxNewBlockLink;
-    PRIVILEGED_DATA static BaseType_t xHeapHasBeenInitialised = pdFALSE;
     void * pvReturn = NULL;
     size_t xAdditionalRequiredSize;
+    size_t xAllocatedBlockSize = 0;
 
     if( xWantedSize > 0 )
     {
@@ -262,6 +265,8 @@ void * pvPortMalloc( size_t xWantedSize )
 
                     xFreeBytesRemaining -= pxBlock->xBlockSize;
 
+                    xAllocatedBlockSize = pxBlock->xBlockSize;
+
                     /* The block is being returned - it is allocated and owned
                      * by the application and has no "next" block. */
                     heapALLOCATE_BLOCK( pxBlock );
@@ -270,7 +275,10 @@ void * pvPortMalloc( size_t xWantedSize )
             }
         }
 
-        traceMALLOC( pvReturn, xWantedSize );
+        traceMALLOC( pvReturn, xAllocatedBlockSize );
+
+        /* Prevent compiler warnings when trace macros are not used. */
+        ( void ) xAllocatedBlockSize;
     }
     ( void ) xTaskResumeAll();
 
@@ -376,16 +384,31 @@ static void prvHeapInit( void ) /* PRIVILEGED_FUNCTION */
     xStart.pxNextFreeBlock = ( void * ) pucAlignedHeap;
     xStart.xBlockSize = ( size_t ) 0;
 
-    xFreeBytesRemaining =  ( configTOTAL_HEAP_SIZE - portBYTE_ALIGNMENT );
     /* xEnd is used to mark the end of the list of free blocks. */
+    //xEnd.xBlockSize = configADJUSTED_HEAP_SIZE;
     xEnd.xBlockSize = ( configTOTAL_HEAP_SIZE - portBYTE_ALIGNMENT );
     xEnd.pxNextFreeBlock = NULL;
 
     /* To start with there is a single free block that is sized to take up the
      * entire heap space. */
     pxFirstFreeBlock = ( BlockLink_t * ) pucAlignedHeap;
+    //pxFirstFreeBlock->xBlockSize = configADJUSTED_HEAP_SIZE;
     pxFirstFreeBlock->xBlockSize = ( configTOTAL_HEAP_SIZE - portBYTE_ALIGNMENT );
     pxFirstFreeBlock->pxNextFreeBlock = &xEnd;
+}
+/*-----------------------------------------------------------*/
+
+/*
+ * Reset the state in this file. This state is normally initialized at start up.
+ * This function must be called by the application before restarting the
+ * scheduler.
+ */
+void vPortHeapResetState( void )
+{
+    //xFreeBytesRemaining = configADJUSTED_HEAP_SIZE;
+    xFreeBytesRemaining =  ( configTOTAL_HEAP_SIZE - portBYTE_ALIGNMENT );
+
+    xHeapHasBeenInitialised = pdFALSE;
 }
 /*-----------------------------------------------------------*/
 

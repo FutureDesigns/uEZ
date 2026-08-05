@@ -24,9 +24,9 @@
 
     <configuration Name="THUMB"
       Platform="ARM"
-      arm_instruction_set="THUMB"
+      arm_instruction_set="Thumb"
       arm_target_monitor_mode_debug="Yes"
-      arm_library_instruction_set="THUMB"
+      arm_library_instruction_set="Thumb"
       c_preprocessor_definitions="__THUMB" />
 
     <configuration Name="CLANG"
@@ -51,29 +51,29 @@
 
   <configuration Name="Release_Heap3-Bootload" hidden="Yes"/>
 
-  <configuration Name="Debug_Heap4"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+    <configuration Name="Debug_Heap4"
+      c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
 
-  <configuration Name="Release_Heap4"
-    c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
+    <configuration Name="Release_Heap4"
+      c_preprocessor_definitions="FREERTOS_HEAP_SELECTION=4" />
 
-  <configuration Name="Release-Bootload" />
+    <configuration Name="Release-Bootload" />
 
-   <configuration Name="Bootload"
+    <configuration Name="Bootload"
 $[ifdef LPC1788]
       linker_section_placement_macros="CRP1_KEEP=No;"
       c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E8;FLASHA_START=0x000101E8;FLASH_SIZE=0x80000"
 $[endif]
 $[ifdef LPC4088]
       linker_section_placement_macros="CRP1_KEEP=No;"
       c_preprocessor_definitions="DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E4;FLASHA_START=0x000101E4;FLASH_SIZE=0x80000"
+      linker_memory_map_macros="FLASHA0_START=0x00010100;FLASHA0_SIZE=0x000000E8;FLASHA_START=0x000101E8;FLASH_SIZE=0x80000"
 $[endif]
 $[ifdef LPC4357]
-      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=Yes"
+      linker_section_placement_macros="CRP1_KEEP=No;CRP2_KEEP=No"
       c_preprocessor_definitions="DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1;RENAME_INI=1"
-      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000120;FLASHA_START=0x1A010220"
+      linker_memory_map_macros="FLASHA0_START=0x1A010100;FLASHA0_SIZE=0x00000118;FLASHA_START=0x1A010218"
 $[endif] />
 
   <configuration Name="Common"
@@ -150,27 +150,27 @@ $[endif]
       c_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
       c_only_additional_options="-fms-extensions;-Wall;-Wno-strict-aliasing"
 $[ifdef LPC1788]
-      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M3"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;CORE_M3"
 $[endif]      
 $[ifdef LPC4088]
-      c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+      c_preprocessor_definitions="STARTUP_FROM_RESET;CORE_M4;__FPU_PRESENT=1"
 $[endif]
 $[ifdef LPC4357]
-	  c_preprocessor_definitions="STARTUP_FROM_RESET;LWIP_2_0_x;CORE_M4;__FPU_PRESENT=1"
+	  c_preprocessor_definitions="STARTUP_FROM_RESET;CORE_M4;__FPU_PRESENT=1"
 $[endif]
       c_user_include_directories=".;$[SkipNewLine]
 ../../../.;../../../Source/App/;$[SkipNewLine]
 ../../../../uEZ;$[SkipNewLine]
 ../../../../uEZ/Include;$[SkipNewLine]
 ../../../../uEZ/Source/RTOS/FreeRTOS/include;$[SkipNewLine]
-$[ifdef LPC1788]../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM3;$[endif]$[SkipNewLine]
-$[ifdef LPC4088]../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;$[endif]$[SkipNewLine]
-$[ifdef LPC546X]../../../../uEZ/Source/Processor/NXP/LPC546xx;../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include;../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;$[endif]$[SkipNewLine]
-$[ifdef LPC4357]../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;../../../../uEZ/Source/Library/LPCOpen;../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx;$[endif]$[SkipNewLine]
+$[ifdef LPC1788]../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../uEZ/Source/Processor/ARM/CMSIS/Include;../../../../uEZ/Source/Processor/ARM/DSP/Include;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM3;$[endif]$[SkipNewLine]
+$[ifdef LPC4088]../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include;../../../../uEZ/Source/Processor/ARM/CMSIS/Include;../../../../uEZ/Source/Processor/ARM/DSP/Include;../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;$[endif]$[SkipNewLine]
+$[ifdef LPC546X]../../../../uEZ/Source/Processor/NXP/LPC546xx;../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include;../../../../uEZ/Source/Processor/ARM/CMSIS/Include;../../../../uEZ/Source/Processor/ARM/DSP/Include;../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;$[endif]$[SkipNewLine]
+$[ifdef LPC4357]../../../../uEZ/Source/Processor/NXP/LPC43xx;../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include;../../../../uEZ/Source/Processor/ARM/CMSIS/Include;../../../../uEZ/Source/Processor/ARM/DSP/Include;../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC;../../../../uEZ/Source/RTOS/FreeRTOS/portable/GCC/ARM_CM4F;../../../../uEZ/Source/Library/LPCOpen;../../../../uEZ/Source/Library/LPCOpen/chip_18xx_43xx;$[endif]$[SkipNewLine]
 ../../../../uEZ/Source/Platform/FDI/$[sym platform];$[SkipNewLine]
 ../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/;../../../../uEZ/Source/RTOS/FreeRTOS-Plus/FreeRTOS-Plus-Trace/Include;$[SkipNewLine]
 ../../../../uEZ/Source/Library/Encryption/mbedtls/include;../../../../uEZ/Source/Library/Encryption/mbedtls;$[SkipNewLine]
-../../../../uEZ/Source/Library/lwip_2.0.x/src/include;../../../../uEZ/Source/Library/lwip_2.0.x/src;../../../../uEZ/Source/Library/lwip_2.0.x/Include;../../../../uEZ/Source/Library/lwip_2.0.x/src/include/ipv4;../../../../uEZ/Source/Library/lwip_2.0.x/system;../../../../uEZ/Source/Library/lwip_2.0.x/system/arch;$[SkipNewLine]
+../../../../uEZ/Source/Library/lwIP/src/include;../../../../uEZ/Source/Library/lwIP/src;../../../../uEZ/Source/Library/lwIP/Include;../../../../uEZ/Source/Library/lwIP/src/include/ipv4;../../../../uEZ/Source/Library/lwIP/system;../../../../uEZ/Source/Library/lwIP/system/arch;$[SkipNewLine]
 $[ifdef LPC4088]$[endif]$[SkipNewLine]
 $[ifdef LPC1788]$[endif]$[SkipNewLine]
 $[ifdef LPC4357]$[endif]$[SkipNewLine]
@@ -197,7 +197,7 @@ $[ifdef LPC4088]
       linker_memory_map_macros="QSPI_START=0x28000000;QSPI_SIZE=0x01000000;FLASHA0_START=0x00000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x00000300;FLASH_SIZE=0x80000;SDRAM_SIZE=0x00800000"
 $[endif]	  
 $[ifdef LPC4357]
-      linker_memory_map_macros="FLASHA0_START=0x1A000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x1A000300;FLASHB_START=0x1B010000;FLASHA_CM0_SIZE=0x10000;FLASHB_CM0_SIZE=0x10000;SRAM1_CM0_SIZE=0x8000;SRAM2_CM0_SIZE=0x0000;AHBSRAM1_3_CM0_SIZE=0x0;AHBSRAM1_2_CM0_SIZE=0x0;AHBSRAM3_CM0_SIZE=0x1000;DYCS0_NAME=SDRAM;SDRAM_CM0_SIZE=0x80000;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;CS0_NAME=EMC;DYCS0_SIZE=0x2000000;CS0_SIZE=0x400000;CS0_CM0_SIZE=0x200000;CS0_ACCESS=ReadOnly"
+      linker_memory_map_macros="FLASHA0_START=0x1A000000;FLASHA0_SIZE=0x000002FC;FLASHA_START=0x1A000300;FLASHB_START=0x1B010000;FLASHA_CM0_SIZE=0x10000;FLASHB_CM0_SIZE=0x10000;SRAM1_CM0_SIZE=0x8000;SRAM2_CM0_SIZE=0x0200;AHBSRAM1_3_CM0_SIZE=0x0;AHBSRAM1_2_CM0_SIZE=0x0;AHBSRAM3_CM0_SIZE=0x1000;DYCS0_NAME=SDRAM;SDRAM_CM0_SIZE=0x80000;SPIFI_SIZE=0x1000000;SPIFI_CM0_SIZE=0x80000;CS0_NAME=EMC;DYCS0_SIZE=0x2000000;CS0_SIZE=0x400000;CS0_CM0_SIZE=0x200000;CS0_ACCESS=ReadOnly"
       linker_patch_build_command="&quot;$(StudioDir)/bin/crossscript&quot; &quot;load(\&quot;$(TargetsDir)/LPC4300/LinkPatch.js\&quot;);patch(0x1A000000, \&quot;$(TargetPath)\&quot;);&quot;"
 $[endif]
       linker_output_format="hex"
@@ -210,7 +210,7 @@ $[ifdef LPC4088]
       linker_section_placement_macros="FLASH_NAME=FLASHA;CRP1_KEEP=Yes;"
 $[endif]
 $[ifdef LPC4357]
-      linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM;CRP1_KEEP=Yes;CRP2_KEEP=Yes"
+      linker_section_placement_macros="FLASH_NAME=FLASHA;RAM_NAME=SDRAM;CRP1_KEEP=Yes;CRP2_KEEP=No"
 $[endif]
 	  oscillator_frequency="12MHz" 	
 $[ifdef LPC1788]
@@ -577,19 +577,104 @@ $[endif]
         </folder>
       </folder>
       <folder Name="Processor">
+        <folder Name="ARM">
+          <folder Name="CMSIS">
+            <folder Name="m-profile">
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/armv7m_cachel1.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/armv7m_mpu.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/armv81m_pac.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/armv8m_mpu.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/armv8m_pmu.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/cmsis_armclang_m.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/cmsis_clang_m.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/cmsis_gcc_m.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/cmsis_iccarm_m.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/m-profile/cmsis_tiarmclang_m.h" />
+            </folder>
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/cmsis_armclang.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/cmsis_clang.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/cmsis_compiler.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/cmsis_gcc.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/cmsis_iccarm.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/cmsis_version.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_ca.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm0.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm0plus.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm1.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm23.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm3.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm33.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm35p.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm4.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm52.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm55.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm7.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_cm85.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_sc000.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_sc300.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_starmc1.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/core_starmc3.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/CMSIS/Include/tz_context.h" />
+          </folder>
+          <folder Name="DSP">
+            <folder Name="dsp">
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/basic_math_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/basic_math_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/bayes_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/bayes_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/complex_math_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/complex_math_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/controller_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/controller_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/debug.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/distance_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/distance_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/fast_math_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/fast_math_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/filtering_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/filtering_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/interpolation_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/interpolation_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/matrix_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/matrix_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/matrix_utils.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/none.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/quaternion_math_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/statistics_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/statistics_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/support_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/support_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/svm_defines.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/svm_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/svm_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/transform_functions.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/transform_functions_f16.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/utils.h" />
+              <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/dsp/window_functions.h" />
+            </folder>
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_common_tables.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_common_tables_f16.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_const_structs.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_const_structs_f16.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_helium_utils.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_math.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_math_f16.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_math_memory.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_math_types.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_math_types_f16.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_mve_tables.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_mve_tables_f16.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_vec_math.h" />
+            <file file_name="../../../../uEZ/Source/Processor/ARM/DSP/Include/arm_vec_math_f16.h" />
+          </folder>
+        </folder>
         <folder Name="NXP">
           $[ifdef LPC1788]
 		  <folder Name="LPC17xx_40xx">
-			  <folder Name="CMSIS">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm3.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
+			  <folder Name="include">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/LPC407x_8x_177x_8x.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/system_LPC407x_8x_177x_8x.c" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/system_LPC407x_8x_177x_8x.h" />
 			  </folder>
 			  <folder Name="GCC">
 				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
@@ -602,17 +687,10 @@ $[endif]
           $[endif]
 		  $[ifdef LPC4088]
 		  <folder Name="LPC17xx_40xx">
-			  <folder Name="CMSIS">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_common_tables.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_const_structs.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/arm_math.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm4.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cm4_simd.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmFunc.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/core_cmInstr.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/LPC407x_8x_177x_8x.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.c" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/CMSIS/system_LPC407x_8x_177x_8x.h" />
+			  <folder Name="include">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/LPC407x_8x_177x_8x.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/system_LPC407x_8x_177x_8x.c" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/Common/include/system_LPC407x_8x_177x_8x.h" />
 			  </folder>
 			  <folder Name="GCC">
 				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/thumb_crt0.s" />
@@ -620,22 +698,15 @@ $[endif]
 				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC17xx_40xx/GCC/LPC17xx40xx_Target.js">
 					<configuration Name="Common" file_type="Target Script" />
 				  </file>
-			  </folder>		  
+			  </folder>	
           </folder>
           $[endif]
 		  $[ifdef LPC546X]
 		  <folder Name="LPC546XX">
-			  <folder Name="CMSIS">
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_common_tables.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_const_structs.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/arm_math.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cm4.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cm4_simd.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cmFunc.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/core_cmInstr.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/LPC54608.h" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/system_LPC54608.c" />
-				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/CMSIS/system_LPC54608.h" />
+			  <folder Name="include">
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/LPC54608.h" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/system_LPC54608.c" />
+				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/Common/include/system_LPC54608.h" />
 			  </folder>
 			  <folder Name="GCC">
 				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/thumb_crt0.s" />
@@ -643,23 +714,14 @@ $[endif]
 				  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC546xx/GCC/LPC546xx_Target.js">
 					<configuration Name="Common" file_type="Target Script" />
 				  </file>
-			  </folder>		  
+			  </folder>	
           </folder>
           $[endif]
           $[ifdef LPC4357]
-		  <folder Name="CMSIS">
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_common_tables.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_const_structs.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/arm_math.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm0plus.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cm4_simd.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmFunc.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/core_cmInstr.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/LPC43xx.h" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.c" />
-              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS/system_LPC43xx.h" />
+		  <folder Name="include">
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/LPC43xx.h" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/system_LPC43xx.c" />
+              <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/system_LPC43xx.h" />
           </folder>
           <folder Name="GCC">
 			  <file file_name="../../../../uEZ/Source/Processor/NXP/LPC43xx/GCC/thumb_crt0.s" />

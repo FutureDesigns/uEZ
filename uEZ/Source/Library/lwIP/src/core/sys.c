@@ -36,309 +36,113 @@
  *
  */
 
+/**
+ * @defgroup sys_layer Porting (system abstraction layer)
+ * @ingroup lwip
+ *
+ * @defgroup sys_os OS abstraction layer
+ * @ingroup sys_layer
+ * No need to implement functions in this section in NO_SYS mode.
+ * The OS-specific code should be implemented in arch/sys_arch.h
+ * and sys_arch.c of your port.
+ *
+ * The operating system emulation layer provides a common interface
+ * between the lwIP code and the underlying operating system kernel. The
+ * general idea is that porting lwIP to new architectures requires only
+ * small changes to a few header files and a new sys_arch
+ * implementation. It is also possible to do a sys_arch implementation
+ * that does not rely on any underlying operating system.
+ *
+ * The sys_arch provides semaphores, mailboxes and mutexes to lwIP. For the full
+ * lwIP functionality, multiple threads support can be implemented in the
+ * sys_arch, but this is not required for the basic lwIP
+ * functionality. Timer scheduling is implemented in lwIP, but can be implemented
+ * by the sys_arch port (LWIP_TIMERS_CUSTOM==1).
+ *
+ * In addition to the source file providing the functionality of sys_arch,
+ * the OS emulation layer must provide several header files defining
+ * macros used throughout lwip.  The files required and the macros they
+ * must define are listed below the sys_arch description.
+ *
+ * Since lwIP 1.4.0, semaphore, mutexes and mailbox functions are prototyped in a way that
+ * allows both using pointers or actual OS structures to be used. This way, memory
+ * required for such types can be either allocated in place (globally or on the
+ * stack) or on the heap (allocated internally in the "*_new()" functions).
+ *
+ * Note:
+ * -----
+ * Be careful with using mem_malloc() in sys_arch. When malloc() refers to
+ * mem_malloc() you can run into a circular function call problem. In mem.c
+ * mem_init() tries to allocate a semaphore using mem_malloc, which of course
+ * can't be performed when sys_arch uses mem_malloc.
+ *
+ * @defgroup sys_sem Semaphores
+ * @ingroup sys_os
+ * Semaphores can be either counting or binary - lwIP works with both
+ * kinds.
+ * Semaphores are represented by the type "sys_sem_t" which is typedef'd
+ * in the sys_arch.h file. Mailboxes are equivalently represented by the
+ * type "sys_mbox_t". Mutexes are represented by the type "sys_mutex_t".
+ * lwIP does not place any restrictions on how these types are represented
+ * internally.
+ *
+ * @defgroup sys_mutex Mutexes
+ * @ingroup sys_os
+ * Mutexes are recommended to correctly handle priority inversion,
+ * especially if you use LWIP_CORE_LOCKING .
+ *
+ * @defgroup sys_mbox Mailboxes
+ * @ingroup sys_os
+ * Mailboxes should be implemented as a queue which allows multiple messages
+ * to be posted (implementing as a rendez-vous point where only one message can be
+ * posted at a time can have a highly negative impact on performance). A message
+ * in a mailbox is just a pointer, nothing more.
+ *
+ * @defgroup sys_time Time
+ * @ingroup sys_layer
+ *
+ * @defgroup sys_prot Critical sections
+ * @ingroup sys_layer
+ * Used to protect short regions of code against concurrent access.
+ * - Your system is a bare-metal system (probably with an RTOS)
+ *   and interrupts are under your control:
+ *   Implement this as LockInterrupts() / UnlockInterrupts()
+ * - Your system uses an RTOS with deferred interrupt handling from a
+ *   worker thread: Implement as a global mutex or lock/unlock scheduler
+ * - Your system uses a high-level OS with e.g. POSIX signals:
+ *   Implement as a global mutex
+ *
+ * @defgroup sys_misc Misc
+ * @ingroup sys_os
+ */
+
 #include "lwip/opt.h"
 
-#if (NO_SYS == 0) /* don't build if not configured for use in lwipopts.h */
-
 #include "lwip/sys.h"
-#include "lwip/def.h"
-#include "lwip/memp.h"
-#include "lwip/tcpip.h"
 
+/* Most of the functions defined in sys.h must be implemented in the
+ * architecture-dependent file sys_arch.c */
+
+#if !NO_SYS
+
+#ifndef sys_msleep
 /**
- * Struct used for sys_sem_wait_timeout() to tell wether the time
- * has run out or the semaphore has really become available.
- */
-struct sswt_cb
-{
-  s16_t timeflag;
-  sys_sem_t *psem;
-};
-
-/**
- * Wait (forever) for a message to arrive in an mbox.
- * While waiting, timeouts (for this thread) are processed.
- *
- * @param mbox the mbox to fetch the message from
- * @param msg the place to store the message
- */
-void
-sys_mbox_fetch(sys_mbox_t mbox, void **msg)
-{
-  u32_t time;
-  struct sys_timeouts *timeouts;
-  struct sys_timeo *tmptimeout;
-  sys_timeout_handler h;
-  void *arg;
-
- again:
-  timeouts = sys_arch_timeouts();
-
-  if (!timeouts || !timeouts->next) {
-    UNLOCK_TCPIP_CORE();
-    time = sys_arch_mbox_fetch(mbox, msg, 0);
-    LOCK_TCPIP_CORE();
-  } else {
-    if (timeouts->next->time > 0) {
-      UNLOCK_TCPIP_CORE();
-      time = sys_arch_mbox_fetch(mbox, msg, timeouts->next->time);
-      LOCK_TCPIP_CORE();
-    } else {
-      time = SYS_ARCH_TIMEOUT;
-    }
-
-    if (time == SYS_ARCH_TIMEOUT) {
-      /* If time == SYS_ARCH_TIMEOUT, a timeout occured before a message
-         could be fetched. We should now call the timeout handler and
-         deallocate the memory allocated for the timeout. */
-      tmptimeout = timeouts->next;
-      timeouts->next = tmptimeout->next;
-      h   = tmptimeout->h;
-      arg = tmptimeout->arg;
-      memp_free(MEMP_SYS_TIMEOUT, tmptimeout);
-      if (h != NULL) {
-        LWIP_DEBUGF(SYS_DEBUG, ("smf calling h=%p(%p)\n", (void*)&h, arg));
-        h(arg);
-      }
-
-      /* We try again to fetch a message from the mbox. */
-      goto again;
-    } else {
-      /* If time != SYS_ARCH_TIMEOUT, a message was received before the timeout
-         occured. The time variable is set to the number of
-         milliseconds we waited for the message. */
-      if (time < timeouts->next->time) {
-        timeouts->next->time -= time;
-      } else {
-        timeouts->next->time = 0;
-      }
-    }
-  }
-}
-
-/**
- * Wait (forever) for a semaphore to become available.
- * While waiting, timeouts (for this thread) are processed.
- *
- * @param sem semaphore to wait for
- */
-void
-sys_sem_wait(sys_sem_t sem)
-{
-  u32_t time;
-  struct sys_timeouts *timeouts;
-  struct sys_timeo *tmptimeout;
-  sys_timeout_handler h;
-  void *arg;
-
- again:
-
-  timeouts = sys_arch_timeouts();
-
-  if (!timeouts || !timeouts->next) {
-    sys_arch_sem_wait(sem, 0);
-  } else {
-    if (timeouts->next->time > 0) {
-      time = sys_arch_sem_wait(sem, timeouts->next->time);
-    } else {
-      time = SYS_ARCH_TIMEOUT;
-    }
-
-    if (time == SYS_ARCH_TIMEOUT) {
-      /* If time == SYS_ARCH_TIMEOUT, a timeout occured before a message
-        could be fetched. We should now call the timeout handler and
-        deallocate the memory allocated for the timeout. */
-      tmptimeout = timeouts->next;
-      timeouts->next = tmptimeout->next;
-      h = tmptimeout->h;
-      arg = tmptimeout->arg;
-      memp_free(MEMP_SYS_TIMEOUT, tmptimeout);
-      if (h != NULL) {
-        LWIP_DEBUGF(SYS_DEBUG, ("ssw h=%p(%p)\n", (void*)&h, (void *)arg));
-        h(arg);
-      }
-
-      /* We try again to fetch a message from the mbox. */
-      goto again;
-    } else {
-      /* If time != SYS_ARCH_TIMEOUT, a message was received before the timeout
-         occured. The time variable is set to the number of
-         milliseconds we waited for the message. */
-      if (time < timeouts->next->time) {
-        timeouts->next->time -= time;
-      } else {
-        timeouts->next->time = 0;
-      }
-    }
-  }
-}
-
-/**
- * Create a one-shot timer (aka timeout). Timeouts are processed in the
- * following cases:
- * - while waiting for a message using sys_mbox_fetch()
- * - while waiting for a semaphore using sys_sem_wait() or sys_sem_wait_timeout()
- * - while sleeping using the inbuilt sys_msleep()
- *
- * @param msecs time in milliseconds after that the timer should expire
- * @param h callback function to call when msecs have elapsed
- * @param arg argument to pass to the callback function
- */
-void
-sys_timeout(u32_t msecs, sys_timeout_handler h, void *arg)
-{
-  struct sys_timeouts *timeouts;
-  struct sys_timeo *timeout, *t;
-
-  timeout = memp_malloc(MEMP_SYS_TIMEOUT);
-  if (timeout == NULL) {
-    LWIP_ASSERT("sys_timeout: timeout != NULL", timeout != NULL);
-    return;
-  }
-  timeout->next = NULL;
-  timeout->h = h;
-  timeout->arg = arg;
-  timeout->time = msecs;
-
-  timeouts = sys_arch_timeouts();
-
-  LWIP_DEBUGF(SYS_DEBUG, ("sys_timeout: %p msecs=%"U32_F" h=%p arg=%p\n",
-    (void *)timeout, msecs, (void*)&h, (void *)arg));
-
-  if (timeouts == NULL) {
-    LWIP_ASSERT("sys_timeout: timeouts != NULL", timeouts != NULL);
-    return;
-  }
-
-  if (timeouts->next == NULL) {
-    timeouts->next = timeout;
-    return;
-  }
-
-  if (timeouts->next->time > msecs) {
-    timeouts->next->time -= msecs;
-    timeout->next = timeouts->next;
-    timeouts->next = timeout;
-  } else {
-    for(t = timeouts->next; t != NULL; t = t->next) {
-      timeout->time -= t->time;
-      if (t->next == NULL || t->next->time > timeout->time) {
-        if (t->next != NULL) {
-          t->next->time -= timeout->time;
-        }
-        timeout->next = t->next;
-        t->next = timeout;
-        break;
-      }
-    }
-  }
-}
-
-/**
- * Go through timeout list (for this task only) and remove the first matching
- * entry, even though the timeout has not triggered yet.
- *
- * @note This function only works as expected if there is only one timeout
- * calling 'h' in the list of timeouts.
- *
- * @param h callback function that would be called by the timeout
- * @param arg callback argument that would be passed to h
-*/
-void
-sys_untimeout(sys_timeout_handler h, void *arg)
-{
-  struct sys_timeouts *timeouts;
-  struct sys_timeo *prev_t, *t;
-
-  timeouts = sys_arch_timeouts();
-
-  if (timeouts == NULL) {
-    LWIP_ASSERT("sys_untimeout: timeouts != NULL", timeouts != NULL);
-    return;
-  }
-  if (timeouts->next == NULL) {
-    return;
-  }
-
-  for (t = timeouts->next, prev_t = NULL; t != NULL; prev_t = t, t = t->next) {
-    if ((t->h == h) && (t->arg == arg)) {
-      /* We have a match */
-      /* Unlink from previous in list */
-      if (prev_t == NULL)
-        timeouts->next = t->next;
-      else
-        prev_t->next = t->next;
-      /* If not the last one, add time of this one back to next */
-      if (t->next != NULL)
-        t->next->time += t->time;
-      memp_free(MEMP_SYS_TIMEOUT, t);
-      return;
-    }
-  }
-  return;
-}
-
-/**
- * Timeout handler function for sys_sem_wait_timeout()
- *
- * @param arg struct sswt_cb* used to signal a semaphore and end waiting.
- */
-static void
-sswt_handler(void *arg)
-{
-  struct sswt_cb *sswt_cb = (struct sswt_cb *) arg;
-
-  /* Timeout. Set flag to TRUE and signal semaphore */
-  sswt_cb->timeflag = 1;
-  sys_sem_signal(*(sswt_cb->psem));
-}
-
-/**
- * Wait for a semaphore with timeout (specified in ms)
- *
- * @param sem semaphore to wait
- * @param timeout timeout in ms (0: wait forever)
- * @return 0 on timeout, 1 otherwise
- */
-int32_t
-sys_sem_wait_timeout(sys_sem_t sem, u32_t timeout)
-{
-  struct sswt_cb sswt_cb;
-
-  sswt_cb.psem = &sem;
-  sswt_cb.timeflag = 0;
-
-  /* If timeout is zero, then just wait forever */
-  if (timeout > 0) {
-    /* Create a timer and pass it the address of our flag */
-    sys_timeout(timeout, sswt_handler, &sswt_cb);
-  }
-  sys_sem_wait(sem);
-  /* Was it a timeout? */
-  if (sswt_cb.timeflag) {
-    /* timeout */
-    return 0;
-  } else {
-    /* Not a timeout. Remove timeout entry */
-    sys_untimeout(sswt_handler, &sswt_cb);
-    return 1;
-  }
-}
-
-/**
- * Sleep for some ms. Timeouts are processed while sleeping.
+ * Sleep for some ms. Timeouts are NOT processed while sleeping.
  *
  * @param ms number of milliseconds to sleep
  */
 void
 sys_msleep(u32_t ms)
 {
-  sys_sem_t delaysem = sys_sem_new(0);
-
-  sys_sem_wait_timeout(delaysem, ms);
-
-  sys_sem_free(delaysem);
+  if (ms > 0) {
+    sys_sem_t delaysem;
+    err_t err = sys_sem_new(&delaysem, 0);
+    if (err == ERR_OK) {
+      sys_arch_sem_wait(&delaysem, ms);
+      sys_sem_free(&delaysem);
+    }
+  }
 }
+#endif /* sys_msleep */
 
-
-#endif /* NO_SYS */
+#endif /* !NO_SYS */

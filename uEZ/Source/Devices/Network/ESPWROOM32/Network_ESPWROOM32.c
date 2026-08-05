@@ -663,7 +663,7 @@ T_uezError Network_ESPWROOM32_GetStatus(
 {
     T_uezError error = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
-    UNUSED(error);
+    UEZ_PARAMETER_NOT_USED(error);
 
     UEZSemaphoreGrab(p->iSem, 500);//UEZ_TIMEOUT_INFINITE);
     
@@ -938,7 +938,7 @@ T_uezError Network_ESPWROOM32_SocketRead(
 {
     T_uezError error = UEZ_ERROR_NONE;
     T_Network_ESPWROOM32_Workspace *p = (T_Network_ESPWROOM32_Workspace *)aWorkspace;
-    UNUSED(p);
+    UEZ_PARAMETER_NOT_USED(p);
 #if 0
     if(*p->iSocket[aSocket].status == ESPWROOM32_SOCKET_STATUS_CLOSED)
     {
@@ -1531,8 +1531,8 @@ static void ESPWROOM32_GetMACHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
     T_uezError error = UEZ_ERROR_NONE;
 
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
-    UNUSED(p);
-    UNUSED(error);
+    UEZ_PARAMETER_NOT_USED(p);
+    UEZ_PARAMETER_NOT_USED(error);
 
     /* TODO: Implement based on `get_mac_handler` */
     
@@ -1547,7 +1547,7 @@ static void ESPWROOM32_GetMACHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
 static void ESPWROOM32_ReceiveSendingDataHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
 {
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
-    UNUSED(p);
+    UEZ_PARAMETER_NOT_USED(p);
     char ATResponse[100];
     char *str;
 
@@ -1568,8 +1568,8 @@ static void ESPWROOM32_QueryStationConnectionHandler(T_ESPWROOM32_ATCmdArgs *pAr
     T_uezError error = UEZ_ERROR_NOT_SUPPORTED;
 
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
-    UNUSED(p);
-    UNUSED(error);
+    UEZ_PARAMETER_NOT_USED(p);
+    UEZ_PARAMETER_NOT_USED(error);
 
     /* TODO: Implement based on `query_station_connection` */
     
@@ -1638,8 +1638,8 @@ static void ESPWROOM32_ReceiveSntpTimeHandler(T_ESPWROOM32_ATCmdArgs *pArgs)
     T_Network_ESPWROOM32_Workspace *p   = (T_Network_ESPWROOM32_Workspace *)G_ESPWROOM32_Workspace;
     T_uezError error = UEZ_ERROR_NONE;
     T_uezTimeDate currentSntpTime;
-    UNUSED(p);
-    UNUSED(error);
+    UEZ_PARAMETER_NOT_USED(p);
+    UEZ_PARAMETER_NOT_USED(error);
     DEBUG_RTT_Printf(0, "ESPWROOM32_ReceiveSntpTimeHandle\n");
     
     char ATResponse[100]; //+CIPSNTPTIME:Mon Oct 18 20:12:27 2021
@@ -3369,14 +3369,14 @@ TUInt32 ESPWROOM32_RXHandler(T_uezTask aMyTask, void *aParams)
     TUInt8                          data        = 0;
     TaskHandle_t                    taskHandle  = 0;
     char                            *str;
-    UNUSED(taskHandle);
-    UNUSED(str);
-    UNUSED(p);
+    UEZ_PARAMETER_NOT_USED(taskHandle);
+    UEZ_PARAMETER_NOT_USED(str);
+    UEZ_PARAMETER_NOT_USED(p);
 
     PARAM_NOT_USED(aMyTask);
     PARAM_NOT_USED(aParams);
-    UNUSED(ESPWROOM32_AT_ListSupportedCommands);
-    UNUSED(ESPWROOM32_AT_GetVersionInfo);
+    UEZ_PARAMETER_NOT_USED(ESPWROOM32_AT_ListSupportedCommands);
+    UEZ_PARAMETER_NOT_USED(ESPWROOM32_AT_GetVersionInfo);
 
     xTaskNotifyWait(0, 0, NULL, portMAX_DELAY);
 

@@ -21,7 +21,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include <UEZDeviceTable.h>
+#include <uEZDeviceTable.h>
 #include <Device/USBDevice.h>
 #include <Source/Library/USBDevice/USBTMC/Usbtmc.h>
 
@@ -35,12 +35,12 @@
 #define USB_TMC_BULK_OUT_EP_NUM                 (5)
 #define USB_TMC_BULK_IN_EP_NUM                  (2)
 
-// Form the complete endpoint address with direction bit 
+// Form the complete endpoint address with direction bit
 #define USB_TMC_INT_EP_IN                       USB_ENDPOINT_ADDRESS(USB_TMC_INT_IN_EP_NUM, USB_ENDPOINT_ADDRESS_DIR_IN)
 #define USB_TMC_BULK_EP_OUT                     USB_ENDPOINT_ADDRESS(USB_TMC_BULK_OUT_EP_NUM, USB_ENDPOINT_ADDRESS_DIR_OUT)
 #define USB_TMC_BULK_EP_IN                      USB_ENDPOINT_ADDRESS(USB_TMC_BULK_IN_EP_NUM, USB_ENDPOINT_ADDRESS_DIR_IN)
 
-// Interface descriptor parameters 
+// Interface descriptor parameters
 #define USB_DEVICE_CLASS_USBTMC                 (0xFE)
 #define TMC_SUBCLASS                            (0x03)
 #define TMC_PROTOCOL_NO_SUBCLASS                (0x00)
@@ -89,7 +89,7 @@ typedef enum
 #define GENERIC_BULK_QUEUE_IN_SIZE              (1024)
 #define GENERIC_BULK_QUEUE_OUT_SIZE             (1024)
 
-typedef struct  
+typedef struct
 {
     TUInt8 usbTmcStatus;
     TUInt8 reserved_0;
@@ -98,7 +98,7 @@ typedef struct
     TUInt8 usbTmcDevCapabilities;
     TUInt8 reserved_1[6];
     TUInt8 bcdUSB488[2];
-    union 
+    union
     {
         TUInt8 data;
         struct
@@ -169,7 +169,7 @@ typedef struct
     TUInt8 status;
     struct bmClear
     {
-        TUInt8 bulkInFifoBytes  : 1; 
+        TUInt8 bulkInFifoBytes  : 1;
         TUInt8 reserved         : 7;
     };
 } __packed T_CtrlCheckClearStatusResponse;
@@ -195,7 +195,7 @@ static void UsbTmcBulkIn(void *aWorkspace, TUInt8 aEndpoint, T_USBEndpointStatus
 static DEVICE_USB_DEVICE **G_ghDevice;
 static T_uezDevice G_usbDev;
 static T_uezTask G_ghTask;
-static T_uezQueue TmcFifoOut;  
+static T_uezQueue TmcFifoOut;
 static T_uezQueue TmcFifoIn;
 static T_uezSemaphore sLock = 0;
 
@@ -211,7 +211,7 @@ static T_CtrlCheckClearStatusResponse checkClearStatResp;   // response to check
 static T_UsbTmcStatusByte usb488StatusByte;                 // USB488 status byte register
 
 static TBool epIntInEmpty = ETrue;                          // interrupt endpoint available?
-static T_UsbTmcLocalRemoteStatus sTmcStatus;                // bit vector to aide in mainting remote/local control 
+static T_UsbTmcLocalRemoteStatus sTmcStatus;                // bit vector to aide in mainting remote/local control
                                                             // - usb488 4.3.2
 static T_UsbTmcSettings sSettings;                          // local copy of device settings from app
 
@@ -250,21 +250,21 @@ static T_UsbDescriptorTable usbDescriptor = {
   .interface.iSubClass              = TMC_SUBCLASS,
   .interface.iProtocol              = TMC_PROTOCOL_USB488,
   .interface.iString                = 0x00,
-  // endpoint descriptor 
+  // endpoint descriptor
   .endpoint[0].iHeader.iLength      = 0x07,
   .endpoint[0].iHeader.iDescriptorType  = USB_DESCRIPTOR_ENDPOINT,
   .endpoint[0].iAddress                 = USB_TMC_INT_EP_IN,
   .endpoint[0].iAttributes              = USB_ENDPOINT_TYPE_INTERRUPT,
   .endpoint[0].iMaximumPacketSize       = USB_UINT16(USB_TMC_MAX_PACKET_SIZE),
   .endpoint[0].iPollInterval            = 0x0A,
-  // endpoint descriptor 
+  // endpoint descriptor
   .endpoint[1].iHeader.iLength      = 0x07,
   .endpoint[1].iHeader.iDescriptorType  = USB_DESCRIPTOR_ENDPOINT,
   .endpoint[1].iAddress                 = USB_TMC_BULK_EP_OUT,
   .endpoint[1].iAttributes              = USB_ENDPOINT_TYPE_BULK,
   .endpoint[1].iMaximumPacketSize       = USB_UINT16(USB_TMC_MAX_PACKET_SIZE),
   .endpoint[1].iPollInterval            = 0x0A,
-  // endpoint descriptor 
+  // endpoint descriptor
   .endpoint[2].iHeader.iLength      = 0x07,
   .endpoint[2].iHeader.iDescriptorType  = USB_DESCRIPTOR_ENDPOINT,
   .endpoint[2].iAddress                 = USB_TMC_BULK_EP_IN,
@@ -275,7 +275,7 @@ static T_UsbDescriptorTable usbDescriptor = {
   .string                               = {0}
 };
 
-static GetCapabilities_t sGetCapabilities = 
+static GetCapabilities_t sGetCapabilities =
 {
     .usbTmcStatus                   = USBTMC_STATUS_SUCCESS,
     .reserved_0                     = 0,
@@ -284,7 +284,7 @@ static GetCapabilities_t sGetCapabilities =
     .usbTmcDevCapabilities          = 0,
     .reserved_1                     = {0},
     .bcdUSB488                      = {0x01, 0x00},
-    .ifaceCapabilities.D0           = 1,    // interface supports trigger          
+    .ifaceCapabilities.D0           = 1,    // interface supports trigger
     .ifaceCapabilities.D1           = 1,    // interface supports remote control
     .ifaceCapabilities.D2           = 1,    // usb488.2 device
     .devCapabilities.D0             = 1,    // DT1 capable
@@ -294,7 +294,7 @@ static GetCapabilities_t sGetCapabilities =
     .reserved_2                     = {0}
 };
 
-static T_UsbTmcRequest sUsbTmcRequest = 
+static T_UsbTmcRequest sUsbTmcRequest =
 {
     .active                     = EFalse,
     .msg                        = {0}
@@ -308,7 +308,7 @@ static T_UsbTmcRequest sUsbTmcRequest =
  * Function:  modLock
  *-------------------------------------------------------------------------*
  * Description:
- *      Locks the binary semaphore. 
+ *      Locks the binary semaphore.
  * Inputs:
  *      TUInt32 period -- timeout
  * Outputs:
@@ -317,9 +317,9 @@ static T_UsbTmcRequest sUsbTmcRequest =
 static TBool modLock(TUInt32 period)
 {
   T_uezError error;
-  
+
   if (0 == sLock) return EFalse;
-  error = UEZSemaphoreGrab(sLock, period);  
+  error = UEZSemaphoreGrab(sLock, period);
   return (UEZ_ERROR_NONE == error) ? ETrue : EFalse;
 }
 
@@ -327,7 +327,7 @@ static TBool modLock(TUInt32 period)
  * Function:  modUnlock
  *-------------------------------------------------------------------------*
  * Description:
- *      Unlocks the binary semaphore. 
+ *      Unlocks the binary semaphore.
  * Inputs:
  *      TUInt32 period -- timeout
  * Outputs:
@@ -347,9 +347,9 @@ static TBool modUnlock(void)
  * Function:  setTmcstatusBit
  *-------------------------------------------------------------------------*
  * Description:
- *      Set status bit to reflect SETUP packet data and state info 
+ *      Set status bit to reflect SETUP packet data and state info
  * Inputs:
- *      TUInt32 bitVector        -- bit to set    
+ *      TUInt32 bitVector        -- bit to set
  *      TUInt32 timeout          -- timeout for blocking
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
@@ -357,9 +357,9 @@ static TBool modUnlock(void)
 static TBool setTmcstatusBit(TUInt32 bitVector, TUInt32 timeout)
 {
     TBool status = EFalse;
-    
+
     if (modLock(timeout) == ETrue)
-    {   
+    {
         sTmcStatus.data |= (bitVector);
         modUnlock();
         status = ETrue;
@@ -371,9 +371,9 @@ static TBool setTmcstatusBit(TUInt32 bitVector, TUInt32 timeout)
  * Function:  clearTmcstatusBit
  *-------------------------------------------------------------------------*
  * Description:
- *      clear status bit to reflect SETUP packet data and state info 
+ *      clear status bit to reflect SETUP packet data and state info
  * Inputs:
- *      TUInt32 bitVector        -- bit to set    
+ *      TUInt32 bitVector        -- bit to set
  *      TUInt32 timeout          -- timeout for blocking
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
@@ -381,9 +381,9 @@ static TBool setTmcstatusBit(TUInt32 bitVector, TUInt32 timeout)
 static TBool clearTmcstatusBit(TUInt32 bitVector, TUInt32 timeout)
 {
     TBool status = EFalse;
-    
+
     if (modLock(timeout) == ETrue)
-    {   
+    {
         sTmcStatus.data &= ~(bitVector);
         modUnlock();
         status = ETrue;
@@ -395,34 +395,34 @@ static TBool clearTmcstatusBit(TUInt32 bitVector, TUInt32 timeout)
  * Function:  ctrlReadStatusByte
  *-------------------------------------------------------------------------*
  * Description:
- *      Class request to read usb488 status byte 
+ *      Class request to read usb488 status byte
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
  *      TUInt8 **aData           -- Pointer to start of return data
  *-------------------------------------------------------------------------*/
-static void ctrlReadStatusByte(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlReadStatusByte(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
     USBTMC_status = USBTMC_STATUS_INTERRUPT_IN_BUSY;
     TUInt8 bTag = aSetup->iValue;
-    
-    // NOTE: removed flag check for customer finding FIND002. 
+
+    // NOTE: removed flag check for customer finding FIND002.
     // queue interrupt IN response if interrupt endpoint available
     //if (epIntInEmpty)
     {
         // write to INT_IN endpoint FIFO
         intStatusResponse.one               = 0x01; // must be 0x01
-        intStatusResponse.bTag              = bTag; 
+        intStatusResponse.bTag              = bTag;
         intStatusResponse.usb488StatusByte  = usb488StatusByte.data;
         ((*G_ghDevice)->Write)(G_ghDevice, USB_TMC_INT_EP_IN, (TUInt8*)&intStatusResponse, 2);
         epIntInEmpty = EFalse;
         USBTMC_status = USBTMC_STATUS_SUCCESS;
     }
     ctrlStatusResponse.status    = USBTMC_status;
-    ctrlStatusResponse.bTag      = bTag; 
+    ctrlStatusResponse.bTag      = bTag;
     ctrlStatusResponse.Constant  = 0x00;
-    
+
     // setup control response
     *aData = (TUInt8*)&ctrlStatusResponse;
     *aLength = 3;
@@ -432,7 +432,7 @@ static void ctrlReadStatusByte(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Function:  ctrlRemoteEnable
  *-------------------------------------------------------------------------*
  * Description:
- *      Class request handler to change the state of the REN bit 
+ *      Class request handler to change the state of the REN bit
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -440,22 +440,22 @@ static void ctrlReadStatusByte(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
  *-------------------------------------------------------------------------*/
-static void ctrlRemoteEnable(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlRemoteEnable(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
     if (aSetup->iValue)
     {
-        USBTMC_status = setTmcstatusBit(USBTMC_CMD_REN_CONTROL, UEZ_TIMEOUT_NONE) == ETrue ? 
+        USBTMC_status = setTmcstatusBit(USBTMC_CMD_REN_CONTROL, UEZ_TIMEOUT_NONE) == ETrue ?
                     USBTMC_STATUS_SUCCESS : USBTMC_STATUS_FAILED;
     }
     else
     {
-        USBTMC_status = clearTmcstatusBit(USBTMC_CMD_REN_CONTROL, UEZ_TIMEOUT_NONE) == ETrue ? 
+        USBTMC_status = clearTmcstatusBit(USBTMC_CMD_REN_CONTROL, UEZ_TIMEOUT_NONE) == ETrue ?
                     USBTMC_STATUS_SUCCESS : USBTMC_STATUS_FAILED;
     }
     dprintf("ctrlRemoteEnable: %02x ", aSetup->iValue);
     dprintf("ret: %02x\n", USBTMC_status);
-    
+
     *aData = (TUInt8*)&USBTMC_status;
     *aLength = 1;
 }
@@ -464,7 +464,7 @@ static void ctrlRemoteEnable(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Function:  ctrlGotoLocal
  *-------------------------------------------------------------------------*
  * Description:
- *      Class request handler to change the state of the "goto local" bit 
+ *      Class request handler to change the state of the "goto local" bit
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -472,13 +472,13 @@ static void ctrlRemoteEnable(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
  *-------------------------------------------------------------------------*/
-static void ctrlGotoLocal(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlGotoLocal(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
-    USBTMC_status = setTmcstatusBit(USBTMC_CMD_GOTOLOCAL, UEZ_TIMEOUT_NONE) == ETrue ? 
+    USBTMC_status = setTmcstatusBit(USBTMC_CMD_GOTOLOCAL, UEZ_TIMEOUT_NONE) == ETrue ?
                 USBTMC_STATUS_SUCCESS : USBTMC_STATUS_FAILED;
     dprintf("ctrlGotoLocal: ret: %02x\n", USBTMC_status);
-    
+
     *aData = (TUInt8*)&USBTMC_status;
     *aLength = 1;
 }
@@ -487,7 +487,7 @@ static void ctrlGotoLocal(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Function:  ctrlLocalLockout
  *-------------------------------------------------------------------------*
  * Description:
- *      Class request handler to change the state of the local lockout bit. 
+ *      Class request handler to change the state of the local lockout bit.
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -495,13 +495,13 @@ static void ctrlGotoLocal(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
  *-------------------------------------------------------------------------*/
-static void ctrlLocalLockout(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlLocalLockout(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
-    USBTMC_status = setTmcstatusBit(USBTMC_CMD_LLO, UEZ_TIMEOUT_NONE) == ETrue ? 
+    USBTMC_status = setTmcstatusBit(USBTMC_CMD_LLO, UEZ_TIMEOUT_NONE) == ETrue ?
                 USBTMC_STATUS_SUCCESS : USBTMC_STATUS_FAILED;
     dprintf("ctrlLocalLockout: ret: %02x\n", USBTMC_status);
-    
+
     *aData = (TUInt8*)&USBTMC_status;
     *aLength = 1;
 }
@@ -510,7 +510,7 @@ static void ctrlLocalLockout(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Function:  ctrlIndicatorPulse
  *-------------------------------------------------------------------------*
  * Description:
- *      Class request handler to change the status of the indicator pulse bit. 
+ *      Class request handler to change the status of the indicator pulse bit.
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -518,13 +518,13 @@ static void ctrlLocalLockout(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
  *-------------------------------------------------------------------------*/
-static void ctrlIndicatorPulse(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlIndicatorPulse(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
-    USBTMC_status = setTmcstatusBit(USBTMC_CMD_INDICATOR, UEZ_TIMEOUT_NONE) == ETrue ? 
+    USBTMC_status = setTmcstatusBit(USBTMC_CMD_INDICATOR, UEZ_TIMEOUT_NONE) == ETrue ?
                 USBTMC_STATUS_SUCCESS : USBTMC_STATUS_FAILED;
     dprintf("ctrlIndicatorPulse: ret: %02x\n", USBTMC_status);
-    
+
     *aData = (TUInt8*)&USBTMC_status;
     *aLength = 1;
 }
@@ -533,7 +533,7 @@ static void ctrlIndicatorPulse(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Function:  ctrlInitiateClear
  *-------------------------------------------------------------------------*
  * Description:
- *      Class request handler to clear enpoint buffers. 
+ *      Class request handler to clear enpoint buffers.
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -541,7 +541,7 @@ static void ctrlIndicatorPulse(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
  *-------------------------------------------------------------------------*/
-static void ctrlInitiateClear(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlInitiateClear(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
     memset(usbData.bufferIn, 0, sizeof(usbData.bufferIn));
@@ -566,7 +566,7 @@ static void ctrlInitiateClear(T_USBSetupPacket *aSetup, TUInt16 *aLength,
  * Outputs:
  *      TBool                    -- ETrue if handled, else EFalse.
  *-------------------------------------------------------------------------*/
-static void ctrlCheckClearStatus(T_USBSetupPacket *aSetup, TUInt16 *aLength, 
+static void ctrlCheckClearStatus(T_USBSetupPacket *aSetup, TUInt16 *aLength,
                            TUInt8 **aData)
 {
     checkClearStatResp.status = USBTMC_STATUS_SUCCESS;
@@ -589,11 +589,11 @@ static TBool processRequest(void)
     TUInt32 bytesToSend;
     UsbTmcDevDepMsgIn_t *respMsg;
     TBool termFound = EFalse;
-    
+
     error = UEZQueueGetCount(TmcFifoOut, &bytesToSend);
     if (error != UEZ_ERROR_NONE)
       return (EFalse);
-    
+
     if (bytesToSend)
     {
         memset(usbData.bufferIn, 0, sizeof(usbData.bufferIn));
@@ -601,7 +601,7 @@ static TBool processRequest(void)
         respMsg->header.MsgID       = USBTMC_DEV_DEP_MSG_IN;
         respMsg->header.bTag        = sUsbTmcRequest.msg.header.bTag;
         respMsg->header.bTagInverse = sUsbTmcRequest.msg.header.bTagInverse;
-        
+
         TUInt32 i = 0;
         while (i < bytesToSend && i < USB_TMC_MAX_PACKET_SIZE && termFound == EFalse)
         {
@@ -616,7 +616,7 @@ static TBool processRequest(void)
         }
         respMsg->header.TransferSize = i;
         usbData.sizeIn = respMsg->header.TransferSize + 12; // payload + header
-        
+
         // write to BULK_IN endpoint FIFO
         ((*G_ghDevice)->Write)(G_ghDevice, USB_TMC_BULK_EP_IN, usbData.bufferIn, usbData.sizeIn);
         dprintf("processRequest: writing BULK_IN resp %d bytes, termFound: %d\n", usbData.sizeIn, termFound);
@@ -638,7 +638,7 @@ static void usbTmcDevDepOut(UsbTmcDevDepMsgOut_t *msg, TUInt32 len)
 {
     T_uezError error;
     TUInt32 i;
-    
+
     if (msg->EOM)
     {
         for (i = 0; i < msg->header.TransferSize; i++)
@@ -647,24 +647,24 @@ static void usbTmcDevDepOut(UsbTmcDevDepMsgOut_t *msg, TUInt32 len)
             if (error)
               break;
         }
-    } 
+    }
 }
 
 /*-------------------------------------------------------------------------*
  * Function:  usbTmcDevDepIn
  *-------------------------------------------------------------------------*
  * Description:
- *      Handle Device dependent data requests. 
+ *      Handle Device dependent data requests.
  * Inputs:
  *      TUInt8 *msg                 -- buffer to received data
  *      TUInt32 len                 -- length of buffer
  *-------------------------------------------------------------------------*/
 static void usbTmcDevDepIn(UsbTmcDevDepMsgIn_t *msg, TUInt32 len)
-{   
+{
     if (!sUsbTmcRequest.active)
     {
         // latch the request
-        memcpy(&sUsbTmcRequest.msg, msg, len);       
+        memcpy(&sUsbTmcRequest.msg, msg, len);
         sUsbTmcRequest.active = ETrue;
     }
 }
@@ -673,11 +673,11 @@ static void usbTmcDevDepIn(UsbTmcDevDepMsgIn_t *msg, TUInt32 len)
  * Function:  usbTmcTrigger
  *-------------------------------------------------------------------------*
  * Description:
- *      Called in response to a BULK_OUT trigger msg 
+ *      Called in response to a BULK_OUT trigger msg
  *-------------------------------------------------------------------------*/
 static void usbTmcTrigger(void)
 {
-    USBTMC_status = setTmcstatusBit(USBTMC_CMD_TRIGGER, UEZ_TIMEOUT_NONE) == ETrue ? 
+    USBTMC_status = setTmcstatusBit(USBTMC_CMD_TRIGGER, UEZ_TIMEOUT_NONE) == ETrue ?
             USBTMC_STATUS_SUCCESS : USBTMC_STATUS_FAILED;
             dprintf("usbTmcTrigger: ret: %02x ", USBTMC_status);
 }
@@ -699,7 +699,7 @@ static void UsbTmcInterruptIn(
 {
     // data sent - allow new interrupt responses to be queued
     epIntInEmpty = ETrue;
-    // clear the RQS bit from the status byte - will be set if this interrupt  
+    // clear the RQS bit from the status byte - will be set if this interrupt
     // transfer was triggered by an SRQ condition
     usb488StatusByte.RQS = 0;
 }
@@ -720,19 +720,19 @@ static void UsbTmcBulkOut(
 {
     TUInt16 length;
     TUInt8 msgId;
-    
+
     PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aStatus);
-            
+
     TBool stallState = ((*G_ghDevice)->IsStalled)(G_ghDevice, USB_TMC_BULK_EP_OUT);
-    dprintf("stall state: %d\n", stallState);    
-    
+    dprintf("stall state: %d\n", stallState);
+
     // Read data from endpoint
-    length = (*G_ghDevice)->Read(G_ghDevice, 
-                                 aEndpoint, 
-                                 usbData.bufferOut, 
+    length = (*G_ghDevice)->Read(G_ghDevice,
+                                 aEndpoint,
+                                 usbData.bufferOut,
                                  sizeof(usbData.bufferOut));
-    
+
     msgId = usbData.bufferOut[0];
     switch(msgId)
     {
@@ -752,7 +752,7 @@ static void UsbTmcBulkOut(
     }
     // purge usb buffer
     memset(usbData.bufferOut, 0, sizeof(usbData.bufferOut));
-    usbData.sizeOut = 0;   
+    usbData.sizeOut = 0;
 }
 
 /*-------------------------------------------------------------------------*
@@ -771,9 +771,9 @@ static void UsbTmcBulkIn(
 {
     PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aStatus);
-    
+
     TUInt32 bytesToSend;
-    
+
     UEZQueueGetCount(TmcFifoOut, &bytesToSend);
     if (bytesToSend == 0)
         UsbTmc_clearSTBBit(USBTMC_STATUS_MAV, UEZ_TIMEOUT_NONE);
@@ -797,19 +797,19 @@ static TUInt8 appendStringDescriptor(TUInt8 *str)
     TUInt32 i, len;
     TUInt8 index = 0;
     TUInt8 *strDesc;
-    
+
     while (usbDescriptor.string[DescOffset] != 0 && DescOffset < sizeof(usbDescriptor.string))
     {
         DescOffset += usbDescriptor.string[DescOffset];
         index++;
     }
-     
+
     len = strlen((const char*)str);
     // set the size of the string descriptor
     strDesc = &usbDescriptor.string[DescOffset];
     *strDesc++ = len * 2 + 2;
     *strDesc++ = USB_DESCRIPTOR_STRING;
- 
+
     // convert character string to UTF-16
     for (i = 0; i < len; i++)
     {
@@ -831,16 +831,16 @@ static void setDeviceConfiguration(T_UsbTmcSettings *settings)
 {
     // copy settings locally for reference
     memcpy(&sSettings, settings, sizeof(sSettings));
-    
+
     usbDescriptor.device.idVendor   = settings->usVendorId;
     usbDescriptor.device.idProduct  = settings->usProductId;
-    
+
     // first set the language string
     usbDescriptor.string[0] = 4;
     usbDescriptor.string[1] = USB_DESCRIPTOR_STRING;
     usbDescriptor.string[2] = 0x09; // English - lower byte
     usbDescriptor.string[3] = 0x04; // English - upper byte
-    
+
     if (settings->sManf)
     { // Manufacturer string exists
         usbDescriptor.device.iManufacturer = appendStringDescriptor(settings->sManf);
@@ -859,7 +859,7 @@ static void setDeviceConfiguration(T_UsbTmcSettings *settings)
  * Function:  UsbTmcHandleClassRequest
  *-------------------------------------------------------------------------*
  * Description:
- *      Handle USBTMC class requests. 
+ *      Handle USBTMC class requests.
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -876,7 +876,7 @@ static TBool UsbTmcHandleClassRequest(
     PARAM_NOT_USED(aWorkspace);
 
     switch (aSetup->iRequest)
-    { 
+    {
         case TMC_INITIATE_ABORT_BULK_OUT:
             dprintf("TMC_INITIATE_ABORT_BULK_OUT\n");
             break;
@@ -927,7 +927,7 @@ static TBool UsbTmcHandleClassRequest(
  * Function:  UsbTmcMonitor
  *-------------------------------------------------------------------------*
  * Description:
- *      USBTMC monitoring task- process endpoints, and handle device requests 
+ *      USBTMC monitoring task- process endpoints, and handle device requests
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -941,12 +941,12 @@ static TUInt32 UsbTmcMonitor(T_uezTask aMyTask, void *aParameters)
     PARAM_NOT_USED(aMyTask);
 
     // Just constantly process endpoint data
-    for (;;)  
+    for (;;)
     {
         // process endpoints- periodically timeout the lock
         // to process an asynchronous RQS event
         ((*G_ghDevice)->ProcessEndpoints)(G_ghDevice, 1000);
-        
+
         if (sUsbTmcRequest.active)
         {
             // deassert request when processing complete
@@ -956,7 +956,7 @@ static TUInt32 UsbTmcMonitor(T_uezTask aMyTask, void *aParameters)
         {
             // write to INT_IN endpoint FIFO
             intStatusResponse.one               = 0x01; // must be 0x01
-            intStatusResponse.bTag              = 0x01; 
+            intStatusResponse.bTag              = 0x01;
             intStatusResponse.usb488StatusByte  = usb488StatusByte.data;
             ((*G_ghDevice)->Write)(G_ghDevice, USB_TMC_INT_EP_IN, (TUInt8*)&intStatusResponse, 2);
             epIntInEmpty = EFalse;
@@ -998,14 +998,14 @@ T_uezError UsbTmc_open(const char *aDeviceName, T_UsbTmcSettings *settings)
         return error;
 
     error = UEZQueueCreate(GENERIC_BULK_QUEUE_OUT_SIZE, 1, &TmcFifoOut);
-    if (error != UEZ_ERROR_NONE) 
+    if (error != UEZ_ERROR_NONE)
     {
         UEZQueueDelete(TmcFifoIn);
         return error;
     }
-    
+
     error = UEZSemaphoreCreateBinary(&sLock);
-    
+
     // set device configuration
     setDeviceConfiguration(settings);
 
@@ -1030,11 +1030,11 @@ T_uezError UsbTmc_open(const char *aDeviceName, T_UsbTmcSettings *settings)
             G_ghDevice,
             ENDPOINT_IN(USB_TMC_BULK_IN_EP_NUM),
             UsbTmcBulkIn);
-      
+
     // We are ready, let's initialize it and connect
     ((*G_ghDevice)->Initialize)(G_ghDevice);
     ((*G_ghDevice)->Connect)(G_ghDevice);
-    
+
     // Now create a task that constantly process the USBMSDrive buffers
     error = UEZTaskCreate(
                 UsbTmcMonitor,
@@ -1048,7 +1048,7 @@ T_uezError UsbTmc_open(const char *aDeviceName, T_UsbTmcSettings *settings)
         dprintf("UsbTmc_open: SUCCESS\n");
     else
         dprintf("UsbTmc_open: FAILURE\n");
-        
+
     return error;
 }
 
@@ -1056,10 +1056,10 @@ T_uezError UsbTmc_open(const char *aDeviceName, T_UsbTmcSettings *settings)
  * Function:  UsbTmc_read
  *-------------------------------------------------------------------------*
  * Description:
- *      Application interface to receive new command SCPI command strings 
+ *      Application interface to receive new command SCPI command strings
  * Inputs:
  *      TUInt8 *buf                 -- pointer to receive buffer
- *      TUInt32 size                -- size of buffer 
+ *      TUInt32 size                -- size of buffer
  *      TUInt32 timeout             -- timeout in ticks
  * Outputs:
  *      TUInt32                     -- Number of bytes received from queue
@@ -1067,7 +1067,7 @@ T_uezError UsbTmc_open(const char *aDeviceName, T_UsbTmcSettings *settings)
 TUInt32 UsbTmc_read(TUInt8 *buf, TUInt32 size, TUInt32 timeout)
 {
   TUInt32 i;
-  
+
   for (i = 0; i < size; i++)
   {
     if (UEZ_ERROR_NONE != UEZQueueReceive(TmcFifoIn, &buf[i], timeout))
@@ -1084,10 +1084,10 @@ TUInt32 UsbTmc_read(TUInt8 *buf, TUInt32 size, TUInt32 timeout)
  * Function:  UsbTmc_write
  *-------------------------------------------------------------------------*
  * Description:
- *      Application interface to write SCPI response strings to host. 
+ *      Application interface to write SCPI response strings to host.
  * Inputs:
  *      TUInt8 *buf                 -- pointer to send buffer
- *      TUInt32 size                -- length of buffer 
+ *      TUInt32 size                -- length of buffer
  *      TUInt32 timeout             -- timeout in ticks
  * Outputs:
  *      TUInt32                     -- Number of bytes sent from queue
@@ -1095,7 +1095,7 @@ TUInt32 UsbTmc_read(TUInt8 *buf, TUInt32 size, TUInt32 timeout)
 TUInt32 UsbTmc_write(TUInt8 *buf, TUInt32 len, TUInt32 timeout)
 {
   TUInt32 i;
-  
+
   for (i = 0; i < len; i++)
   {
     if (UEZ_ERROR_NONE != UEZQueueSend(TmcFifoOut, &buf[i], timeout))
@@ -1118,7 +1118,7 @@ TUInt32 UsbTmc_write(TUInt8 *buf, TUInt32 len, TUInt32 timeout)
  * Function:  UsbTmc_getStatus
  *-------------------------------------------------------------------------*
  * Description:
- *      Handle USBTMC class requests. 
+ *      Handle USBTMC class requests.
  * Inputs:
  *      T_USBSetupPacket *aSetup -- Setup packet with cmd
  *      TUInt16 *aLength         -- Pointer to length of return data
@@ -1129,9 +1129,9 @@ TUInt32 UsbTmc_write(TUInt8 *buf, TUInt32 len, TUInt32 timeout)
 TBool UsbTmc_getStatus(TUInt32 *tmcstat, TUInt32 timeout)
 {
     TBool status = EFalse;
-    
+
     if (modLock(timeout) == ETrue)
-    {   
+    {
         *tmcstat = sTmcStatus.data;
         modUnlock();
         status = ETrue;
@@ -1169,7 +1169,7 @@ TBool UsbTmc_clearREN(TUInt32 timeout)
  * Function:  UsbTmc_getSTB
  *-------------------------------------------------------------------------*
  * Description:
- *      Handle USBTMC class requests. 
+ *      Handle USBTMC class requests.
  * Inputs:
  *      TUInt8 *iSTB                -- Pointer to application status byte
  *      TUInt32 timeout             -- timeout
@@ -1179,9 +1179,9 @@ TBool UsbTmc_clearREN(TUInt32 timeout)
 TBool UsbTmc_getSTB(TUInt8 *iSTB, TUInt32 timeout)
 {
     TBool status = EFalse;
-    
+
     if (modLock(timeout) == ETrue)
-    {   
+    {
         *iSTB = usb488StatusByte.data;
         modUnlock();
         status = ETrue;
@@ -1193,7 +1193,7 @@ TBool UsbTmc_getSTB(TUInt8 *iSTB, TUInt32 timeout)
  * Function:  UsbTmc_setSTBBit
  *-------------------------------------------------------------------------*
  * Description:
- *      Set a bit in the 488 status byte 
+ *      Set a bit in the 488 status byte
  * Inputs:
  *      TUInt8 bitVector         -- bit(s) to clear
  *      TUInt32 timeout          -- timeout
@@ -1203,9 +1203,9 @@ TBool UsbTmc_getSTB(TUInt8 *iSTB, TUInt32 timeout)
 TBool UsbTmc_setSTBBit(TUInt8 bitVector, TUInt32 timeout)
 {
     TBool status = EFalse;
-    
+
     if (modLock(timeout) == ETrue)
-    {   
+    {
         usb488StatusByte.data |= bitVector;
         modUnlock();
         status = ETrue;
@@ -1217,7 +1217,7 @@ TBool UsbTmc_setSTBBit(TUInt8 bitVector, TUInt32 timeout)
  * Function:  UsbTmc_clearSTBBit
  *-------------------------------------------------------------------------*
  * Description:
- *      Clear a bit in the 488 status byte 
+ *      Clear a bit in the 488 status byte
  * Inputs:
  *      TUInt8 bitVector         -- bit(s) to clear
  *      TUInt32 timeout          -- timeout
@@ -1227,9 +1227,9 @@ TBool UsbTmc_setSTBBit(TUInt8 bitVector, TUInt32 timeout)
 TBool UsbTmc_clearSTBBit(TUInt8 bitVector, TUInt32 timeout)
 {
     TBool status = EFalse;
-    
+
     if (modLock(timeout) == ETrue)
-    {   
+    {
         usb488StatusByte.data &= ~(bitVector);
         modUnlock();
         status = ETrue;

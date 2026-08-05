@@ -29,10 +29,9 @@
 #include <Source/Processor/NXP/LPC17xx_40xx/LPC17xx_40xx_I2C.h>
 #include "LPC17xx_40xx_UtilityFuncs.h"
 
-// Setup Master mode only.  Slave mode is a future version but we'll
-// leave some of the code in so we don't have to write it later.
+// Setup Master and Slave Mode - Note: Disable Slave mode to save code space.
 #define COMPILE_I2C_MASTER_MODE 1
-#define COMPILE_I2C_SLAVE_MODE  0
+#define COMPILE_I2C_SLAVE_MODE  1 // set to 0 to remove from build
 
 /*---------------------------------------------------------------------------*
  * Types:
@@ -89,12 +88,13 @@ typedef struct {
     T_uezGPIOPortPin iSCLPin;
 
     volatile TBool iDoneFlag;
-#if COMPILE_I2C_SLAVE_MODE
-I2CSlaveIsLastReceiveByte iI2CSlaveIsLastReceiveByte;
-I2CSlaveIsLastTransmitByte iI2CSlaveIsLastTransmitByte;
-I2CTransferComplete iI2CTransferComplete;
-I2CSlaveReceiveByte iI2CSlaveReceiveByte;
-I2CSlaveGetTransmitByte iI2CSlaveGetTransmitByte;
+#if (COMPILE_I2C_SLAVE_MODE == 1)
+    void *iI2CSlaveCallbackWorkspace;
+    I2CSlaveIsLastReceiveByte iI2CSlaveIsLastReceiveByte;
+    I2CSlaveIsLastTransmitByte iI2CSlaveIsLastTransmitByte;
+    I2CTransferComplete iI2CSlaveTransferComplete;
+    I2CSlaveReceiveByte iI2CSlaveReceiveByte;
+    I2CSlaveGetTransmitByte iI2CSlaveGetTransmitByte;
 #endif
 } T_LPC17xx_40xx_I2C_Workspace;
 
@@ -116,6 +116,8 @@ typedef TUInt8 T_LPC17xx_40xx_i2cMode;
 #define SI_CLEAR(p)         (((p)->iRegs)->CONCLR) = I2CONCLR_SIC
 #define I2DAT_WRITE(p, v)   (((p)->iRegs)->DAT) = (v)
 #define I2DAT_READ(p)       (((p)->iRegs)->DAT)
+#define I2C_SET_ADDR0(p, v) (((p)->iRegs)->ADR0) = (v)
+#define I2C_SET_MASK0(p, v) (((p)->iRegs)->MASK0) = (v)
 
 /*-------------------------------------------------------------------------*
  * Globals:
@@ -331,7 +333,7 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
     //SerialSendHex(SERIAL_PORT_UART0, status);
     //ConsolePrintf("$%02X", status);
     switch (status) {
-#if COMPILE_I2C_MASTER_MODE
+#if (COMPILE_I2C_MASTER_MODE == 1)
         // Start condition tranmitted
         case 0x08:
 
@@ -461,12 +463,12 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
             p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
             break;
 #endif // COMPILE_I2C_MASTER_MODE
-#if COMPILE_I2C_SLAVE_MODE
+#if (COMPILE_I2C_SLAVE_MODE == 1)
             // SLAVE RECEIVER
-            case 0x60:
-            case 0x68:
-            case 0x70:
-            case 0x78:
+        case 0x60:
+        case 0x68:
+        case 0x70:
+        case 0x78:
             // Start of slave transaction
             // slave address + W received, or general call address received,
             // or lost arbitration, slave address + W received, or
@@ -476,7 +478,7 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
             p->iIndex = 0;
             p->iDoneFlag = EFalse;
             // Is this the last byte?
-            if (p->iI2CSlaveIsLastReceiveByte(p)) {
+            if (p->iI2CSlaveIsLastReceiveByte(p->iI2CSlaveCallbackWorkspace)) {
                 // Not allowed to send more bytes
                 AA_CLEAR(p);
             } else {
@@ -484,15 +486,15 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
                 AA_SET(p);
             }
             break;
-            case 0x80:
-            case 0x90:
+        case 0x80:
+        case 0x90:
             // Data received
-            p->iI2CSlaveReceiveByte(p, I2DAT_READ(p));
+            p->iI2CSlaveReceiveByte(p->iI2CSlaveCallbackWorkspace, I2DAT_READ(p));
             p->iIndex++;
             STA_CLEAR(p);
             STO_CLEAR(p);
             // Is this the last byte?
-            if (p->iI2CSlaveIsLastReceiveByte(p)) {
+            if (p->iI2CSlaveIsLastReceiveByte(p->iI2CSlaveCallbackWorkspace)) {
                 // Not allowed to send more bytes
                 AA_CLEAR(p);
             } else {
@@ -500,44 +502,42 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
                 AA_SET(p);
             }
             break;
-            case 0x88:
-            case 0x98:
+        case 0x88:
+        case 0x98:
             // Data received, NACK returned (signaling last byte)
-            p->iI2CSlaveReceiveByte(p, I2DAT_READ(p));
+            p->iI2CSlaveReceiveByte(p->iI2CSlaveCallbackWorkspace, I2DAT_READ(p));
             p->iIndex++;
-            p->iRequest->iStatus = I2C_OK;
+            //p->iRequest->iStatus = I2C_OK;
             STA_CLEAR(p);
             STO_CLEAR(p);
             AA_SET(p);
             p->iDoneFlag = ETrue;
-            p->iI2CTransferComplete(p);
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+            p->iI2CSlaveTransferComplete(p->iI2CSlaveCallbackWorkspace);
             break;
-            case 0xA0:
+        case 0xA0:
             // Stop condition received
-            p->iRequest->iStatus = I2C_OK;
+            //p->iRequest->iStatus = I2C_OK;
             STA_CLEAR(p);
             STO_CLEAR(p);
             AA_SET(p);
             p->iDoneFlag = ETrue;
-            p->iI2CTransferComplete(p);
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+            p->iI2CSlaveTransferComplete(p->iI2CSlaveCallbackWorkspace);
             break;
 
             // SLAVE TRANSMITTER
             // ACK returned on Slave Address + R received; or
             // arbitration lost, slave address + R received, ACK returned; or
             // data byte transmitted, ACK received
-            case 0xA8:
-            case 0xB0:
+        case 0xA8:
+        case 0xB0:
             p->iIndex = 0;
-            case 0xB8:
-            c = p->iI2CSlaveGetTransmitByte(p);
+        case 0xB8:
+            c = p->iI2CSlaveGetTransmitByte(p->iI2CSlaveCallbackWorkspace);
             p->iIndex++;
             I2DAT_WRITE(p, c);
             STA_CLEAR(p);
             STO_CLEAR(p);
-            if (p->iI2CSlaveIsLastTransmitByte(p)) {
+            if (p->iI2CSlaveIsLastTransmitByte(p->iI2CSlaveCallbackWorkspace)) {
                 // No more data
                 AA_CLEAR(p);
             } else {
@@ -545,17 +545,16 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
                 AA_SET(p);
             }
             break;
-            case 0xC0:
-            case 0xC8:
+        case 0xC0:
+        case 0xC8:
             // data byte transmitted, NACK received
             // last data byte transmitted, NACK received
-            p->iRequest->iStatus = I2C_OK;
+            //p->iRequest->iStatus = I2C_OK;
             STA_CLEAR(p);
             STO_CLEAR(p);
             AA_SET(p);
             p->iDoneFlag = ETrue;
-            p->iI2CTransferComplete(p);
-            p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
+            p->iI2CSlaveTransferComplete(p->iI2CSlaveCallbackWorkspace);
             break;
 #endif // #if COMPILE_I2C_SLAVE_MODE
             // Unhandled state
@@ -566,8 +565,8 @@ void ILPC17xx_40xx_ProcessState(T_LPC17xx_40xx_I2C_Workspace *p)
             AA_SET(p);
             p->iRequest->iStatus = I2C_ERROR;
             p->iDoneFlag = ETrue;
-#if COMPILE_I2C_SLAVE_MODE
-            p->iI2CTransferComplete(p);
+#if (COMPILE_I2C_SLAVE_MODE == 1)
+            p->iI2CSlaveTransferComplete(p->iI2CSlaveCallbackWorkspace);
 #endif
             p->iCompleteFunc(p->iCompleteWorkspace, p->iRequest);
             break;
@@ -599,6 +598,105 @@ T_uezError ILPC17xx_40xx_I2C_ResetBus(void *aWorkspace)
 
     return error;
 }
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ILPC17xx_40xx_ConfigureSlave
+ *---------------------------------------------------------------------------*/
+/**
+ *  Configure the I2C Slave callback functions and callback workspace.
+ *      Must call Enable in order to enable slave commands.
+ *
+ *  @param [in]    *aWorkspace              I2C Workspace
+ *
+ *  @param [in]    aAddressLower7Bits       Slave address to receive I2C commands
+ *
+ *  @param [in]    *aCallbackWorkspace      Callback's workspace, or 0 for none
+ *
+ *  @param [in]    *aCallbacks              List of callback functions
+ *
+ *  @return        T_uezError               Error code
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *
+ *  TODO
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError ILPC17xx_40xx_ConfigureSlave(
+    void *aWorkspace,
+    TUInt8 aAddressLower7Bits,
+    void *aCallbackWorkspace,
+    const T_I2CSlaveCallbacks *aCallbacks)
+{
+    T_LPC17xx_40xx_I2C_Workspace *p = (T_LPC17xx_40xx_I2C_Workspace *)aWorkspace;
+
+    p->iI2CSlaveIsLastReceiveByte = aCallbacks->iIsLastReceiveByteCallback;
+    p->iI2CSlaveIsLastTransmitByte = aCallbacks->iIsLastTransmitByteCallback;
+    p->iI2CSlaveReceiveByte = aCallbacks->iReceiveByteCallback;
+    p->iI2CSlaveGetTransmitByte = aCallbacks->iGetTransmitByteCallback;
+    p->iI2CSlaveTransferComplete = aCallbacks->iTransferCompleteCallback;
+    p->iI2CSlaveCallbackWorkspace = aCallbackWorkspace;
+
+    I2C_SET_MASK0(p, 0xFE);
+    I2C_SET_ADDR0(p, (aAddressLower7Bits<<1));
+
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ILPC17xx_40xx_Enable
+ *---------------------------------------------------------------------------*/
+/**
+ *  Enables the I2C channel.
+ *
+ *  @param [in]    *aWorkspace      I2C Workspace
+ *
+ *  @return        T_uezError       Error code
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *
+ *  TODO
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError ILPC17xx_40xx_Enable(void *aWorkspace)
+{
+    T_LPC17xx_40xx_I2C_Workspace *p = (T_LPC17xx_40xx_I2C_Workspace *)aWorkspace;
+
+    I2C_ENABLE(p);
+    AA_SET(p);
+
+    return UEZ_ERROR_NONE;
+}
+
+/*---------------------------------------------------------------------------*
+ * Routine:  ILPC17xx_40xx_Disable
+ *---------------------------------------------------------------------------*/
+/**
+ *  Disables the I2C channel.
+ *
+ *  @param [in]    *aWorkspace          I2C Workspace
+ *
+ *  @return        T_uezError           Error code
+ *  @par Example Code:
+ *  @code
+ *  #include <uEZ.h>
+ *
+ *  TODO
+ *  @endcode
+ */
+/*---------------------------------------------------------------------------*/
+T_uezError ILPC17xx_40xx_Disable(void *aWorkspace)
+{
+    T_LPC17xx_40xx_I2C_Workspace *p = (T_LPC17xx_40xx_I2C_Workspace *)aWorkspace;
+
+    I2C_DISABLE(p);
+
+    return UEZ_ERROR_NONE;
+}
+
 
 IRQ_ROUTINE(ILPC17xx_40xx_I2C0InterruptHandler)
 {
@@ -725,7 +823,13 @@ const HAL_I2CBus I2C_LPC17xx_40xx_Bus1_Interface = { {
         sizeof(T_LPC17xx_40xx_I2C_Workspace), },
 
 ILPC17xx_40xx_I2C_StartRead, ILPC17xx_40xx_I2C_StartWrite,
+#if (COMPILE_I2C_SLAVE_MODE == 1)
+    ILPC17xx_40xx_ConfigureSlave,
+    ILPC17xx_40xx_Enable,
+    ILPC17xx_40xx_Disable,
+#else
 0,0,0,
+#endif
 ILPC17xx_40xx_I2C_IsHung, ILPC17xx_40xx_I2C_ResetBus};
 
 const HAL_I2CBus I2C_LPC17xx_40xx_Bus2_Interface = { {
@@ -796,3 +900,4 @@ void LPC17xx_40xx_I2C2_Require(
 /*-------------------------------------------------------------------------*
  * End of File:  I2C.c
  *-------------------------------------------------------------------------*/
+

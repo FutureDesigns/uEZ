@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LCD.h
@@ -170,6 +170,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_16;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_1616I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_111;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_222;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_2222;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_233;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_323;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_332;
@@ -194,6 +195,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_8888I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M111;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M1555I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M222;
+extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M2222I;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M233;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M323;
 extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M332;
@@ -230,6 +232,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M8888I;
 #define GUICC_1616I     &LCD_API_ColorConv_1616I
 #define GUICC_111       &LCD_API_ColorConv_111
 #define GUICC_222       &LCD_API_ColorConv_222
+#define GUICC_2222      &LCD_API_ColorConv_2222
 #define GUICC_233       &LCD_API_ColorConv_233
 #define GUICC_323       &LCD_API_ColorConv_323
 #define GUICC_332       &LCD_API_ColorConv_332
@@ -255,6 +258,7 @@ extern const LCD_API_COLOR_CONV LCD_API_ColorConv_M8888I;
 #define GUICC_M111      &LCD_API_ColorConv_M111
 #define GUICC_M1555I    &LCD_API_ColorConv_M1555I
 #define GUICC_M222      &LCD_API_ColorConv_M222
+#define GUICC_M2222I    &LCD_API_ColorConv_M2222I
 #define GUICC_M233      &LCD_API_ColorConv_M233
 #define GUICC_M323      &LCD_API_ColorConv_M323
 #define GUICC_M332      &LCD_API_ColorConv_M332
@@ -370,15 +374,15 @@ typedef void tLCDDEV_DrawBitmap   (int x0, int y0, int xsize, int ysize,
 * and the LCD_GetpCapFunc routines.
 */
 
-#define LCD_DEVCAP_XSIZE             0x01    /* Quest horiz. res. of display */
-#define LCD_DEVCAP_YSIZE             0x02    /* Quest vert. res. of display */
-#define LCD_DEVCAP_VXSIZE            0x03    /* Quest vert. res. of virtual disp.*/
-#define LCD_DEVCAP_VYSIZE            0x04    /* Quest vert. res. of virtual disp.*/
-#define LCD_DEVCAP_XORG              0x05    /* X-origin ... usually 0 */
-#define LCD_DEVCAP_YORG              0x06    /* Y-origin ... usually 0 */
-#define LCD_DEVCAP_CONTROLLER        0x07    /* LCD Controller (Numerical) */
-#define LCD_DEVCAP_BITSPERPIXEL      0x08    /* Bits per pixel ... 1/2/4/8 */
-#define LCD_DEVCAP_NUMCOLORS         0x09    /* Quest number of colors */
+#define LCD_DEVCAP_XSIZE             0x01    // Quest horiz. res. of display
+#define LCD_DEVCAP_YSIZE             0x02    // Quest vert. res. of display
+#define LCD_DEVCAP_VXSIZE            0x03    // Quest vert. res. of virtual disp.*/
+#define LCD_DEVCAP_VYSIZE            0x04    // Quest vert. res. of virtual disp.*/
+#define LCD_DEVCAP_XORG              0x05    // X-origin ... usually 0
+#define LCD_DEVCAP_YORG              0x06    // Y-origin ... usually 0
+#define LCD_DEVCAP_CONTROLLER        0x07    // LCD Controller (Numerical)
+#define LCD_DEVCAP_BITSPERPIXEL      0x08    // Bits per pixel ... 1/2/4/8
+#define LCD_DEVCAP_NUMCOLORS         0x09    // Quest number of colors
 #define LCD_DEVCAP_XMAG              0x0A
 #define LCD_DEVCAP_YMAG              0x0B
 #define LCD_DEVCAP_MIRROR_X          0x0C
@@ -389,6 +393,7 @@ typedef void tLCDDEV_DrawBitmap   (int x0, int y0, int xsize, int ysize,
 #define LCD_DEVCAP_YSIZE_SIM         0x11
 #define LCD_DEVCAP_VXSIZE_SIM        0x12
 #define LCD_DEVCAP_VYSIZE_SIM        0x13
+#define LCD_DEVCAP_THRESHOLD         0x14    // Get threshold in pixels for calling HW function
 
 int LCD_GetXSizeMax(void);
 int LCD_GetYSizeMax(void);
@@ -412,6 +417,7 @@ int LCD_GetMirrorYEx        (int LayerIndex);
 int LCD_GetSwapXYEx         (int LayerIndex);
 int LCD_GetReversLUTEx      (int LayerIndex);
 int LCD_GetPhysColorsInRAMEx(int LayerIndex);
+int LCD_GetOrientationEx    (int LayerIndex);
 
 int LCD_GetXSize            (void);
 int LCD_GetYSize            (void);
@@ -426,6 +432,7 @@ int LCD_GetMirrorY          (void);
 int LCD_GetSwapXY           (void);
 int LCD_GetReversLUT        (void);
 int LCD_GetPhysColorsInRAM  (void);
+int LCD_GetOrientation      (void);
 
 I32 LCD__GetBPP      (U32 IndexMask);
 I32 LCD__GetBPPDevice(U32 IndexMask);
@@ -443,6 +450,7 @@ void      * LCD_GetVRAMAddr  (void);
 void      * LCD_GetVRAMAddrEx(int LayerIndex);
 
 void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
+int     LCD_GetHasFunc(int LayerIndex, int Item);
 
 /*********************************************************************
 *
@@ -457,6 +465,7 @@ int  LCD_ROTATE_DecSel                (void);
 int  LCD_ROTATE_DecSelEx              (int LayerIndex);
 int  LCD_ROTATE_GetCurrentIndex       (void);
 int  LCD_ROTATE_GetCurrentIndexEx     (int LayerIndex);
+int  LCD_ROTATE_GetCurrentOrientation (void);
 int  LCD_ROTATE_GetOrientation        (int DriverIndex);
 int  LCD_ROTATE_GetOrientationEx      (int LayerIndex, int DriverIndex);
 int  LCD_ROTATE_GetNumDrivers         (void);
@@ -471,43 +480,46 @@ int  LCD_ROTATE_SetSelEx              (int Index, int LayerIndex);
 *
 *       Values for requesting and setting function pointers (display driver)
 */
-                                       /* Request of a function pointer for... */
-#define LCD_DEVFUNC_READRECT      0x01 /* ...reading a rectangular display area */
-#define LCD_DEVFUNC_SETALPHA      0x02 /* ...setting the alpha blending factor */
-#define LCD_DEVFUNC_SETPOS        0x03 /* ...setting the layer position */
-#define LCD_DEVFUNC_GETPOS        0x04 /* ...getting the layer position */
-#define LCD_DEVFUNC_SETSIZE       0x05 /* ...setting the layer size */
-#define LCD_DEVFUNC_SETVIS        0x06 /* ...setting the visibility of a layer */
-#define LCD_DEVFUNC_24BPP         0x07 /* ...drawing 24bpp bitmaps */
-#define LCD_DEVFUNC_SET_VRAM_ADDR 0x09 /* ...setting the VRAM address */
-#define LCD_DEVFUNC_SET_VSIZE     0x0A /* ...setting the VRAM size */
-#define LCD_DEVFUNC_SET_SIZE      0x0B /* ...setting the display size */
-#define LCD_DEVFUNC_INIT          0x0C /* ...initializing the display controller */
-#define LCD_DEVFUNC_CONTROLCACHE  0x0D /* ...controlling the cache */
-#define LCD_DEVFUNC_ON            0x0E /* ...switching the display on */
-#define LCD_DEVFUNC_OFF           0x0F /* ...switching the display off */
-#define LCD_DEVFUNC_SETLUTENTRY   0x10 /* ...setting a LUT entry */
-#define LCD_DEVFUNC_FILLPOLY      0x11 /* ...filling a polygon */
-#define LCD_DEVFUNC_FILLPOLYAA    0x12 /* ...filling an antialiased polygon */
-#define LCD_DEVFUNC_ALPHAMODE     0x13 /* ...setting the alpha blending mode */
-#define LCD_DEVFUNC_CHROMAMODE    0x14 /* ...setting the chroma blending mode */
-#define LCD_DEVFUNC_CHROMA        0x15 /* ...setting the chroma values */
-#define LCD_DEVFUNC_SETFUNC       0x16 /* ...setting a function pointer */
-#define LCD_DEVFUNC_REFRESH       0x17 /* ...refreshing the display */
-#define LCD_DEVFUNC_SETRECT       0x18 /* ...setting the drawing rectangle */
-                                       /* Setting a function pointer for... */
-#define LCD_DEVFUNC_FILLRECT      0x19 /* ...filling a rectangular area */
-#define LCD_DEVFUNC_DRAWBMP_1BPP  0x20 /* ...drawing a 1bpp bitmap */
-#define LCD_DEVFUNC_COPYBUFFER    0x21 /* ...copying complete frame buffers */
-#define LCD_DEVFUNC_SHOWBUFFER    0x22 /* ...shows the given buffer */
-#define LCD_DEVFUNC_COPYRECT      0x23 /* ...filling a rectangular area */
-#define LCD_DEVFUNC_DRAWBMP_16BPP 0x24 /* ...drawing a 16bpp bitmap */
-#define LCD_DEVFUNC_DRAWBMP_8BPP  0x25 /* ...drawing a 8bpp bitmap */
-#define LCD_DEVFUNC_READPIXEL     0x26 /* ...reading a pixel index */
-#define LCD_DEVFUNC_READMPIXELS   0x27 /* ...reading multiple pixel indices */
-#define LCD_DEVFUNC_DRAWBMP_32BPP 0x28 /* ...drawing a 32bpp bitmap */
-#define LCD_DEVFUNC_SET_BUFFERPTR 0x29 /* ...setting an array of buffer pointers */
-#define LCD_DEVFUNC_EXIT          0x30 /* ...free memory and shut down controller */
+                                        /* Request of a function pointer for... */
+#define LCD_DEVFUNC_READRECT       0x01 /* ...reading a rectangular display area */
+#define LCD_DEVFUNC_SETALPHA       0x02 /* ...setting the alpha blending factor */
+#define LCD_DEVFUNC_SETPOS         0x03 /* ...setting the layer position */
+#define LCD_DEVFUNC_GETPOS         0x04 /* ...getting the layer position */
+#define LCD_DEVFUNC_SETSIZE        0x05 /* ...setting the layer size */
+#define LCD_DEVFUNC_SETVIS         0x06 /* ...setting the visibility of a layer */
+#define LCD_DEVFUNC_24BPP          0x07 /* ...drawing 24bpp bitmaps */
+#define LCD_DEVFUNC_SET_VRAM_ADDR  0x09 /* ...setting the VRAM address */
+#define LCD_DEVFUNC_SET_VSIZE      0x0A /* ...setting the VRAM size */
+#define LCD_DEVFUNC_SET_SIZE       0x0B /* ...setting the display size */
+#define LCD_DEVFUNC_INIT           0x0C /* ...initializing the display controller */
+#define LCD_DEVFUNC_CONTROLCACHE   0x0D /* ...controlling the cache */
+#define LCD_DEVFUNC_ON             0x0E /* ...switching the display on */
+#define LCD_DEVFUNC_OFF            0x0F /* ...switching the display off */
+#define LCD_DEVFUNC_SETLUTENTRY    0x10 /* ...setting a LUT entry */
+#define LCD_DEVFUNC_FILLPOLY       0x11 /* ...filling a polygon */
+#define LCD_DEVFUNC_FILLPOLYAA     0x12 /* ...filling an antialiased polygon */
+#define LCD_DEVFUNC_ALPHAMODE      0x13 /* ...setting the alpha blending mode */
+#define LCD_DEVFUNC_CHROMAMODE     0x14 /* ...setting the chroma blending mode */
+#define LCD_DEVFUNC_CHROMA         0x15 /* ...setting the chroma values */
+#define LCD_DEVFUNC_SETFUNC        0x16 /* ...setting a function pointer */
+#define LCD_DEVFUNC_REFRESH        0x17 /* ...refreshing the display */
+#define LCD_DEVFUNC_SETRECT        0x18 /* ...setting the drawing rectangle */
+#define LCD_DEVFUNC_SETTHRESHOLD   0x19 /* ...setting threshold for calling HW function */
+                                        /* Setting a function pointer or data for... */
+#define LCD_DEVFUNC_FILLRECT       0x1A /* ...filling a rectangular area */
+#define LCD_DEVFUNC_DRAWBMP_1BPP   0x1B /* ...drawing a 1bpp bitmap */
+#define LCD_DEVFUNC_COPYBUFFER     0x1C /* ...copying complete frame buffers */
+#define LCD_DEVFUNC_SHOWBUFFER     0x1D /* ...shows the given buffer */
+#define LCD_DEVFUNC_COPYRECT       0x1E /* ...copying a rectangular area */
+#define LCD_DEVFUNC_DRAWBMP_16BPP  0x1F /* ...drawing a 16bpp bitmap */
+#define LCD_DEVFUNC_DRAWBMP_8BPP   0x20 /* ...drawing a 8bpp bitmap */
+#define LCD_DEVFUNC_READPIXEL      0x21 /* ...reading a pixel index */
+#define LCD_DEVFUNC_READMPIXELS    0x22 /* ...reading multiple pixel indices */
+#define LCD_DEVFUNC_DRAWBMP_32BPP  0x23 /* ...drawing a 32bpp bitmap */
+#define LCD_DEVFUNC_SET_BUFFERPTR  0x24 /* ...setting an array of buffer pointers */
+#define LCD_DEVFUNC_EXIT           0x25 /* ...free memory and shut down controller */
+#define LCD_DEVFUNC_INIT_PRIVATE   0x26 /* ...initializing the display driver */
+#define LCD_DEVFUNC_SET_THRESHOLD  0x27 /* ...setting the threshold value for calling the HW function */
 
 /*********************************************************************
 *
@@ -714,7 +726,7 @@ void LCD_AA_GetGamma   (U8 * pGamma);
 
 LCD_COLOR    LCD_AA_MixColors16 (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
 LCD_COLOR    LCD_AA_MixColors256(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
-LCD_COLOR    LCD_MixColors256   (LCD_COLOR Color, LCD_COLOR BkColor, unsigned Intens);
+LCD_COLOR    LCD_MixColors256   (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
 LCD_COLOR    LCD_GetPixelColor(int x, int y);     /* Get RGB color of pixel */
 unsigned int LCD_GetPixelIndex(int x, int y);
 int          LCD_GetBkColorIndex (void);

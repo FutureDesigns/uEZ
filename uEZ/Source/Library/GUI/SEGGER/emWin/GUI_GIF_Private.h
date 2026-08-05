@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_GIF_Private.h
@@ -64,11 +64,11 @@ Purpose     : Private header file for GUI_GIF... functions
 /* Context structure */
 typedef struct {
   /* Required for getting input */
-  unsigned            NumBytesInBuffer;     /* Remaining bytes in buffer */
-  const U8          * pBuffer;              /* Pointer into buffer for reading data */
-  GUI_GET_DATA_FUNC * pfGetData;            /* Function pointer */
-  void              * pParam;               /* Parameter pointer passed to function */
-  U32                 Off;                  /* Data pointer */
+  unsigned                NumBytesInBuffer;     /* Remaining bytes in buffer */
+  const U8              * pBuffer;              /* Pointer into buffer for reading data */
+  GUI_GIF_GET_DATA_FUNC * pfGetData;            /* Function pointer */
+  void                  * pParam;               /* Parameter pointer passed to function */
+  U32                     Off;                  /* Data pointer */
   /* Decompression data */
   U8    aBuffer[258];                       /* Input buffer for data block */
   short aCode  [(1 << MAX_NUM_LWZ_BITS)];   /* This array stores the LZW codes for the compressed strings */

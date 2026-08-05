@@ -568,7 +568,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 
 #if (UEZ_HTTP_SERVER == 1)
     #if (UEZ_ENABLE_WIRED_NETWORK == 1)
-      //App_HTTPServerStart(wired_network); // TODO was this disabled for a specific reason? If so fix it later
+      App_HTTPServerStart(wired_network);
     #endif
     #if (UEZ_ENABLE_WIRELESS_NETWORK == 1)
     if (wirelessStarted)
@@ -581,7 +581,7 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
     if (error) {
         printf("Problem starting BasicWeb! (Error=%d)\n", error);
     } else {
-        printf("BasicWeb started\n");
+        printf("BasicWeb started (default port 81)\n");
     }
 #endif
 
@@ -614,16 +614,16 @@ TUInt32 NetworkStartup(T_uezTask aMyTask, void *aParams)
 
     while(1) {
 #if (UEZ_ENABLE_WIRED_NETWORK == 1)
-#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
-        (*phyTimeoutCounterPtr)++;
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1) // we want to accurately count up to 600 seconds with no activity
+        (*phyTimeoutCounterPtr)++; // make sure the task delay below, the RTOS tick rate, and the counter number all match together.
 #endif
 #endif
-        UEZTaskDelay(5000);
+        UEZTaskDelay(1000);
         
         // In this loop can do general monitoring of network tasks and could allow for dynamically turning DHCP on/off or similar.
 
 #if 0
-        if{network_settings.iEnableDHCP == ETrue) {
+        if(network_settings.iEnableDHCP == ETrue) {
         } else { // DHCP enabled
         }
 #endif

@@ -5,7 +5,7 @@
  |      USB implementation of the device side of a virtual comm port
  |      following CDC rules.
  *-------------------------------------------------------------------------*/
- 
+
 /*--------------------------------------------------------------------------
  * uEZ(R) - Copyright (C) 2007-2015 Future Designs, Inc.
  *--------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <uEZ.h>
-#include <UEZDeviceTable.h>
+#include <uEZDeviceTable.h>
 #include <Device/USBDevice.h>
 #include <Source/Library/USBDevice/MassStorage/RAM/USBRamDrive.h>
 
@@ -307,9 +307,9 @@ static void ISetCSW(void)
 {
     CSW.dSignature = MSC_CSW_Signature;
     (*G_ghDevice)->Write(
-            G_ghDevice, 
-            USB_RAM_DRIVE_EP_IN, 
-            (void *)&CSW, 
+            G_ghDevice,
+            USB_RAM_DRIVE_EP_IN,
+            (void *)&CSW,
             13);
     G_stage = STAGE_CSW;
 }
@@ -330,7 +330,7 @@ void USBRamDriveBulkOut(
         T_USBEndpointStatus aStatus)
 {
     TUInt16 length;
-    
+
     PARAM_NOT_USED(aWorkspace);
     PARAM_NOT_USED(aStatus);
 
@@ -360,7 +360,7 @@ void USBRamDriveBulkOut(
         default:
             (*G_ghDevice)->SetStallState(G_ghDevice, aEndpoint, ETrue);
             IStatusError();
-            
+
             ISetCSW();
             break;
     }
@@ -375,27 +375,27 @@ static void ITestUnitReady(void)
             (*G_ghDevice)->SetStallState(G_ghDevice, USB_RAM_DRIVE_EP_OUT, ETrue);
         }
     }
-    
+
     CSW.bStatus = CSW_CMD_PASSED;
     ISetCSW();
 }
 
 static void DataInTransfer(TUInt32 aLength)
-{    
+{
     if (aLength > CBW.dDataLength)
         aLength = CBW.dDataLength;
-    
+
     (*G_ghDevice)->Write(
-            G_ghDevice, 
-            USB_RAM_DRIVE_EP_IN, 
-            G_USBRamDriveBuffer, 
+            G_ghDevice,
+            USB_RAM_DRIVE_EP_IN,
+            G_USBRamDriveBuffer,
             aLength);
-    G_stage = STAGE_DATA_IN_LAST;    
+    G_stage = STAGE_DATA_IN_LAST;
     CSW.dDataResidue -= aLength;
     CSW.bStatus = CSW_CMD_PASSED;
 }
 
-static TBool DataInFormat(void) 
+static TBool DataInFormat(void)
 {
     if (CBW.dDataLength == 0) {
         IStatusError();
@@ -414,7 +414,7 @@ static TBool DataInFormat(void)
 static void IRequestSense(void)
 {
     TUInt8 *p = G_USBRamDriveBuffer;
-    if (!DataInFormat()) 
+    if (!DataInFormat())
         return;
 
     // See http://en.wikipedia.org/wiki/SCSI_Request_Sense_Command for details
@@ -440,27 +440,27 @@ static void IRequestSense(void)
     p[15] = 0x00;
     p[16] = 0x00;
     p[17] = 0x00;
-    
+
     DataInTransfer(18);
 }
 
-static void IInquiry(void) 
+static void IInquiry(void)
 {
     TUInt8 *p = G_USBRamDriveBuffer;
 
-    if (!DataInFormat()) 
+    if (!DataInFormat())
       return;
 
     p[ 0] = 0x00;          // Direct Access Device
     p[ 1] = 0x80;          // RMB = 1: Removable Medium
     p[ 2] = 0x00;          // Version: No conformance claim to any standard
     p[ 3] = 0x01;
-    
+
     p[ 4] = 36-4;          // Additional Length
     p[ 5] = 0x80;          // SCCS = 1: Storage Controller Component
     p[ 6] = 0x00;
     p[ 7] = 0x00;
-    
+
     p[ 8] = 'F';           // Vendor Identification
     p[ 9] = 'D';
     p[10] = 'I';
@@ -469,7 +469,7 @@ static void IInquiry(void)
     p[13] = ' ';
     p[14] = ' ';
     p[15] = ' ';
-    
+
     p[16] = 'u';           // Product Identification
     p[17] = 'E';
     p[18] = 'Z';
@@ -486,27 +486,27 @@ static void IInquiry(void)
     p[29] = ' ';
     p[30] = ' ';
     p[31] = ' ';
-    
+
     p[32] = '1';           // Product Revision Level
     p[33] = '.';
     p[34] = '0';
     p[35] = ' ';
-    
+
     DataInTransfer(36);
 }
 
-static void IModeSense6(void) 
+static void IModeSense6(void)
 {
     TUInt8 *p = G_USBRamDriveBuffer;
 
     if (!DataInFormat())
         return;
-    
+
     p[ 0] = 0x03;
     p[ 1] = 0x00;
     p[ 2] = 0x00;
     p[ 3] = 0x00;
-    
+
     DataInTransfer(4);
 }
 
@@ -516,7 +516,7 @@ static void IModeSense10(void)
 
     if (!DataInFormat())
         return;
-    
+
     p[ 0] = 0x00;
     p[ 1] = 0x06;
     p[ 2] = 0x00;
@@ -525,7 +525,7 @@ static void IModeSense10(void)
     p[ 5] = 0x00;
     p[ 6] = 0x00;
     p[ 7] = 0x00;
-    
+
     DataInTransfer(8);
 }
 
@@ -536,26 +536,26 @@ static void IReadFormatCapacity(void)
 
     if (!DataInFormat())
         return;
-    
+
     p[ 0] = 0x00;
     p[ 1] = 0x00;
     p[ 2] = 0x00;
     p[ 3] = 0x08;          // Capacity List Length
-    
+
     numBlocks = G_memorySize / G_blockSize;
-    
+
     // Block Count
     p[ 4] = (numBlocks >> 24) & 0xFF;
     p[ 5] = (numBlocks >> 16) & 0xFF;
     p[ 6] = (numBlocks >>  8) & 0xFF;
     p[ 7] = (numBlocks >>  0) & 0xFF;
-    
+
     // Block Length
     p[ 8] = 0x02;          // Descriptor Code: Formatted Media
     p[ 9] = (G_blockSize >> 16) & 0xFF;
     p[10] = (G_blockSize >>  8) & 0xFF;
     p[11] = (G_blockSize >>  0) & 0xFF;
-    
+
     DataInTransfer(12);
 }
 
@@ -566,7 +566,7 @@ static void IReadCapacity(void)
 
     if (!DataInFormat())
         return;
-    
+
     numBlocks = G_memorySize / G_blockSize;
 
     // Last Logical Block
@@ -574,34 +574,34 @@ static void IReadCapacity(void)
     p[ 1] = ((numBlocks - 1) >> 16) & 0xFF;
     p[ 2] = ((numBlocks - 1) >>  8) & 0xFF;
     p[ 3] = ((numBlocks - 1) >>  0) & 0xFF;
-    
+
     // Block Length
     p[ 4] = (G_blockSize >> 24) & 0xFF;
     p[ 5] = (G_blockSize >> 16) & 0xFF;
     p[ 6] = (G_blockSize >>  8) & 0xFF;
     p[ 7] = (G_blockSize >>  0) & 0xFF;
-    
+
     DataInTransfer(8);
 }
 
-static TBool IRWSetup(void) 
+static TBool IRWSetup(void)
 {
     TUInt32 n;
-    
+
     // Logical Block Address of First Block
     n = (CBW.CB[2] << 24) |
         (CBW.CB[3] << 16) |
         (CBW.CB[4] <<  8) |
         (CBW.CB[5] <<  0);
-    
+
     G_offset = n * G_blockSize;
-    
+
     // Number of Blocks to transfer
     n = (CBW.CB[7] <<  8) |
         (CBW.CB[8] <<  0);
-    
+
     G_length = n * G_blockSize;
-    
+
     if (CBW.dDataLength != G_length) {
         (*G_ghDevice)->SetStallState(G_ghDevice, USB_RAM_DRIVE_EP_IN, ETrue);
         (*G_ghDevice)->SetStallState(G_ghDevice, USB_RAM_DRIVE_EP_OUT, ETrue);
@@ -613,24 +613,24 @@ static TBool IRWSetup(void)
     return ETrue;
 }
 
-static TBool IRWSetupVerify(void) 
+static TBool IRWSetupVerify(void)
 {
     TUInt32 n;
-    
+
     // Logical Block Address of First Block
     n = (CBW.CB[2] << 24) |
         (CBW.CB[3] << 16) |
         (CBW.CB[4] <<  8) |
         (CBW.CB[5] <<  0);
-    
+
     G_offset = n * G_blockSize;
-    
+
     // Number of Blocks to transfer
     n = (CBW.CB[7] <<  8) |
         (CBW.CB[8] <<  0);
-    
+
     G_length = n * G_blockSize;
-    
+
     if (CBW.dDataLength == 0) {
         ISetCSW();
         return EFalse;
@@ -642,7 +642,7 @@ static TBool IRWSetupVerify(void)
 static void IGetCBW(TUInt32 aLength)
 {
     TUInt32 n;
-    
+
     for (n=0; n<aLength; n++)
         ((TUInt8 *)&CBW)[n] = G_USBRamDriveBuffer[n];
     if ((aLength == 31) && (CBW.dSignature == MSC_CBW_Signature)) {
@@ -731,29 +731,29 @@ static void IGetCBW(TUInt32 aLength)
 static void IMemoryRead(void)
 {
     TUInt32 n;
-    
+
     n = G_length;
     if (n > USB_RAM_DRIVE_MAX_PACKET_SIZE)
         n = USB_RAM_DRIVE_MAX_PACKET_SIZE;
-    
+
     if ((G_offset+n) > G_memorySize) {
         n = G_memorySize - G_offset;
         G_stage = STAGE_DATA_IN_LAST_STALL;
     }
-    
+
     (*G_ghDevice)->Write(
-            G_ghDevice, 
-            USB_RAM_DRIVE_EP_IN, 
-            G_memory+G_offset, 
+            G_ghDevice,
+            USB_RAM_DRIVE_EP_IN,
+            G_memory+G_offset,
             n);
     G_offset += n;
     G_length -= n;
-    
+
     CSW.dDataResidue -= n;
-    
+
     if (G_length == 0)
         G_stage = STAGE_DATA_IN_LAST;
-    
+
     if (G_stage != STAGE_DATA_IN) {
         // Inactive
         CSW.bStatus = CSW_CMD_PASSED;
@@ -762,7 +762,7 @@ static void IMemoryRead(void)
     }
 }
 
-static void IMemoryWrite(TUInt32 aLength) 
+static void IMemoryWrite(TUInt32 aLength)
 {
     TUInt32 n;
     TUInt32 length = aLength;
@@ -771,14 +771,14 @@ static void IMemoryWrite(TUInt32 aLength)
         G_stage = STAGE_CSW;
         (*G_ghDevice)->SetStallState(G_ghDevice, USB_RAM_DRIVE_EP_OUT, ETrue);
     }
-    
+
     for (n=0; n<aLength; n++)
         G_memory[G_offset + n] = G_USBRamDriveBuffer[n];
-    
+
     G_offset += length;
     G_length -= length;
     CSW.dDataResidue -= length;
-    
+
     if ((G_length == 0) || (G_stage == STAGE_CSW)) {
         CSW.bStatus = CSW_CMD_PASSED;
         if (G_callbacks.iUSBRamDriveActivity)
@@ -796,18 +796,18 @@ static void IMemoryVerify(TUInt32 aLength)
         G_stage = STAGE_CSW;
         (*G_ghDevice)->SetStallState(G_ghDevice, USB_RAM_DRIVE_EP_OUT, ETrue);
     }
-    
+
     for (n=0; n<length; n++) {
         if (G_memory[G_offset+n] != G_USBRamDriveBuffer[n]) {
             G_memOK = EFalse;
             break;
         }
     }
-    
+
     G_offset += length;
     G_length -= length;
     CSW.dDataResidue -= length;
-    
+
     if ((G_length == 0) || (G_stage == STAGE_CSW)) {
         CSW.bStatus = (G_memOK)?CSW_CMD_PASSED : CSW_CMD_FAILED;
         ISetCSW();

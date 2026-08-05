@@ -55,7 +55,7 @@ static int rsa_can_do(mbedtls_pk_type_t type)
            type == MBEDTLS_PK_RSASSA_PSS;
 }
 
-static size_t rsa_get_bitlen(const mbedtls_pk_context *pk)
+static size_t rsa_get_bitlen(mbedtls_pk_context *pk)
 {
     const mbedtls_rsa_context *rsa = (const mbedtls_rsa_context *) pk->pk_ctx;
     return mbedtls_rsa_get_bitlen(rsa);
@@ -441,7 +441,7 @@ static int rsa_encrypt_wrap(mbedtls_pk_context *pk,
 }
 #endif /* MBEDTLS_USE_PSA_CRYPTO */
 
-static int rsa_check_pair_wrap(const mbedtls_pk_context *pub, const mbedtls_pk_context *prv,
+static int rsa_check_pair_wrap(mbedtls_pk_context *pub, mbedtls_pk_context *prv,
                                int (*f_rng)(void *, unsigned char *, size_t),
                                void *p_rng)
 {
@@ -468,7 +468,7 @@ static void rsa_free_wrap(void *ctx)
     mbedtls_free(ctx);
 }
 
-static void rsa_debug(const mbedtls_pk_context *pk, mbedtls_pk_debug_item *items)
+static void rsa_debug(mbedtls_pk_context *pk, mbedtls_pk_debug_item *items)
 {
 #if defined(MBEDTLS_RSA_ALT)
     /* Not supported */
@@ -522,7 +522,7 @@ static int eckey_can_do(mbedtls_pk_type_t type)
            type == MBEDTLS_PK_ECDSA;
 }
 
-static size_t eckey_get_bitlen(const mbedtls_pk_context *pk)
+static size_t eckey_get_bitlen(mbedtls_pk_context *pk)
 {
 #if defined(MBEDTLS_PK_USE_PSA_EC_DATA)
     return pk->ec_bits;
@@ -1016,13 +1016,13 @@ static int eckey_check_pair_psa(mbedtls_pk_context *pub, mbedtls_pk_context *prv
 }
 #endif /* MBEDTLS_PK_USE_PSA_EC_DATA */
 
-static int eckey_check_pair_wrap(const mbedtls_pk_context *pub, const mbedtls_pk_context *prv,
+static int eckey_check_pair_wrap(mbedtls_pk_context *pub, mbedtls_pk_context *prv,
                                  int (*f_rng)(void *, unsigned char *, size_t),
                                  void *p_rng)
 {
     (void) f_rng;
     (void) p_rng;
-    return eckey_check_pair_psa((mbedtls_pk_context *) pub, (mbedtls_pk_context *) prv);
+    return eckey_check_pair_psa(pub, prv);
 }
 #else /* MBEDTLS_USE_PSA_CRYPTO */
 static int eckey_check_pair_wrap(mbedtls_pk_context *pub, mbedtls_pk_context *prv,
@@ -1041,8 +1041,8 @@ static int eckey_check_pair_wrap(mbedtls_pk_context *pub, mbedtls_pk_context *pr
  * using the same function. */
 #define ecdsa_opaque_check_pair_wrap    eckey_check_pair_wrap
 #else /* MBEDTLS_PK_USE_PSA_EC_DATA */
-static int ecdsa_opaque_check_pair_wrap(const mbedtls_pk_context *pub,
-                                        const mbedtls_pk_context *prv,
+static int ecdsa_opaque_check_pair_wrap(mbedtls_pk_context *pub,
+                                        mbedtls_pk_context *prv,
                                         int (*f_rng)(void *, unsigned char *, size_t),
                                         void *p_rng)
 {
@@ -1096,7 +1096,7 @@ static void eckey_free_wrap(void *ctx)
 }
 #endif /* MBEDTLS_PK_USE_PSA_EC_DATA */
 
-static void eckey_debug(const mbedtls_pk_context *pk, mbedtls_pk_debug_item *items)
+static void eckey_debug(mbedtls_pk_context *pk, mbedtls_pk_debug_item *items)
 {
 #if defined(MBEDTLS_PK_USE_PSA_EC_DATA)
     items->type = MBEDTLS_PK_DEBUG_PSA_EC;
@@ -1281,7 +1281,7 @@ static int rsa_alt_can_do(mbedtls_pk_type_t type)
     return type == MBEDTLS_PK_RSA;
 }
 
-static size_t rsa_alt_get_bitlen(const mbedtls_pk_context *pk)
+static size_t rsa_alt_get_bitlen(mbedtls_pk_context *pk)
 {
     const mbedtls_rsa_alt_context *rsa_alt = pk->pk_ctx;
 
@@ -1332,7 +1332,7 @@ static int rsa_alt_decrypt_wrap(mbedtls_pk_context *pk,
 }
 
 #if defined(MBEDTLS_RSA_C)
-static int rsa_alt_check_pair(const mbedtls_pk_context *pub, const mbedtls_pk_context *prv,
+static int rsa_alt_check_pair(mbedtls_pk_context *pub, mbedtls_pk_context *prv,
                               int (*f_rng)(void *, unsigned char *, size_t),
                               void *p_rng)
 {
@@ -1347,14 +1347,14 @@ static int rsa_alt_check_pair(const mbedtls_pk_context *pub, const mbedtls_pk_co
 
     memset(hash, 0x2a, sizeof(hash));
 
-    if ((ret = rsa_alt_sign_wrap((mbedtls_pk_context *) prv, MBEDTLS_MD_NONE,
+    if ((ret = rsa_alt_sign_wrap(prv, MBEDTLS_MD_NONE,
                                  hash, sizeof(hash),
                                  sig, sizeof(sig), &sig_len,
                                  f_rng, p_rng)) != 0) {
         return ret;
     }
 
-    if (rsa_verify_wrap((mbedtls_pk_context *) pub, MBEDTLS_MD_NONE,
+    if (rsa_verify_wrap(pub, MBEDTLS_MD_NONE,
                         hash, sizeof(hash), sig, sig_len) != 0) {
         return MBEDTLS_ERR_RSA_KEY_CHECK_FAILED;
     }
@@ -1406,7 +1406,7 @@ const mbedtls_pk_info_t mbedtls_rsa_alt_info = {
 #endif /* MBEDTLS_PK_RSA_ALT_SUPPORT */
 
 #if defined(MBEDTLS_USE_PSA_CRYPTO)
-static size_t opaque_get_bitlen(const mbedtls_pk_context *pk)
+static size_t opaque_get_bitlen(mbedtls_pk_context *pk)
 {
     size_t bits;
     psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;

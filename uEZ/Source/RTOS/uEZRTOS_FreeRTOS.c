@@ -94,14 +94,14 @@ static void ITaskStartup(void *aParams)
     TUInt32 startAddr;
 
     // Wait for the creation to complete after xTaskCreate called.
-    xSemaphoreTake(G_startingTaskReady, portMAX_DELAY);
+    xSemaphoreTake(G_startingTaskReady, portMAX_DELAY); // will use 136 bytes stack on CM4
 
     // Handle is ready.  Read the data.
     uEZHandleGet(taskHandle, 0, &startAddr, &paramAddr, 0);
 
     // Release the starting semaphore and run the program
     // with the right parameters.
-    xSemaphoreGive(G_startingTaskReady);
+    xSemaphoreGive(G_startingTaskReady); // will use 152 bytes stack on CM4
 
     ((T_uezTaskFunction)startAddr)(taskHandle, (void *)paramAddr);
 
@@ -112,6 +112,11 @@ static void ITaskStartup(void *aParams)
     UEZTaskDelete(taskHandle);
     while (1); // wait for this to die
 }
+
+// The minimum task that we can create using UEZTaskCreate(MinimalTask, "MinTask", configMINIMAL_STACK_SIZE, (void *) 0, UEZ_PRIORITY_NORMAL, 0);
+/* TUInt32 MinimalTask(T_uezTask aMyTask, void *aParams) { while(1) { 
+ *     UEZTaskDelay(10); // will use 96 bytes stack on CM4
+ *  )) */
 
 T_uezError UEZTaskCreate(
             T_uezTaskFunction aFunction,
@@ -142,12 +147,86 @@ T_uezError UEZTaskCreate(
         error = xTaskCreate(
                     ITaskStartup,
                     (const char *)aName,
-                    (TUInt16)(aStackSize+20), // TBD: is this enough for ITaskStartup?
+                    // Here we are passing in the number of sizeof(StackType_t) which is words on the Cortex-Ms.
+                     // 152 bytes for ITaskStartup for CM4, we need 4 or 8 bytes for alignment, and 128 min stack size ((152+8)-128=32), then another 20 bytes for UEZTaskDelay, so add 52 bytes on top of minimum stack size
+                    (TUInt16)(aStackSize+13), // For CM4 add 52 bytes on top of minimum stack size
                     (void *)(taskHandle),
                     tskIDLE_PRIORITY+aPriority,
                     &taskCreated);
 
         if (error == pdPASS)  {
+            // Got the task to create
+            // Now fill out the handle table entry and make the handle a true task handle.
+            uEZHandleSet(
+                taskHandle,
+                UEZ_HANDLE_TASK,
+                (TUInt32)aFunction,
+                (TUInt32)aParameters,
+                (TUInt32)taskCreated);
+            UEZTaskRegister(aName, aPriority, aStackSize);
+        } else {
+            // Could not create the task
+            // TBD: More mapping of errors?  Assuming too many tasks in system.
+            errorCode = UEZ_ERROR_TOO_MANY_TASKS;
+
+            uEZHandleFree(taskHandle);
+            taskHandle = 0;
+        }
+    }
+
+    // Done starting up the task.  Move on.
+    xSemaphoreGive(G_startingTaskReady);
+
+    // Done creating a task, allow the next one to be created
+    xSemaphoreGive(G_semTask);
+
+    if (aCreatedTask)
+        *aCreatedTask = taskHandle;
+
+    return errorCode;
+}
+
+T_uezError UEZTaskCreateStaticPlace(
+            T_uezTaskFunction aFunction,
+            const char * const aName,
+            TUInt32 aStackSize,
+            void *aParameters,
+            T_uezPriority aPriority,
+            T_uezTask *aCreatedTask,
+            void *aStackLocation,
+            void *aTaskStructLocation)
+{
+    xTaskHandle taskCreated;
+    T_uezError errorCode = UEZ_ERROR_NONE;
+    T_uezHandle taskHandle = 0;
+
+    // Grab the task semaphore (wait forever if necessary)
+    xSemaphoreTake(G_semTask, portMAX_DELAY);
+
+    // Grab the semaphore of the starting task.
+    // We want to catch the task before it fully starts.
+    xSemaphoreTake(G_startingTaskReady, portMAX_DELAY);
+
+    // Create a task handle
+    errorCode = uEZHandleAlloc(&taskHandle);
+
+    // Only continue if we got a handle
+    if (errorCode == UEZ_ERROR_NONE) {
+        // Start a task creation, but make it wait
+        taskCreated = xTaskCreateStatic(
+                    ITaskStartup,
+                    (const char *)aName,
+                    // Here we are passing in the number of sizeof(StackType_t) which is words on the Cortex-Ms. (to match above function)
+                    // For this function specify the size of the global array variable in bytes, then divide it by sizeof(StackType_t) in the input parameter.
+                    // Need a minimum array size of 180 bytes to perform ITaskStartup for CM4, then execute UEZTaskDelay(). But plain FreeRTOS usage could use the minimum stack size (128).
+                    (TUInt16)(aStackSize), // FreeRTOS needs to be passed the number of words, not bytes.
+                    (void *)(taskHandle),
+                    tskIDLE_PRIORITY+aPriority,
+                    aStackLocation,
+                    aTaskStructLocation
+                    );
+
+        if (taskCreated != NULL)  {
             // Got the task to create
             // Now fill out the handle table entry and make the handle a true task handle.
             uEZHandleSet(

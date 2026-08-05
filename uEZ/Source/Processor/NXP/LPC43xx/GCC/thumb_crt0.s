@@ -157,17 +157,16 @@ _start:
   bl memory_copy
 #endif /* #ifdef INITIALIZE_TCM_SECTIONS */
 
-  /* Zero the bss. */
+  /* Zero the bss, AFTER we have called RAM init */
   ldr r0, =__bss_start__
   ldr r1, =__bss_end__
   movs r2, #0
   bl memory_set
-#ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__tbss_start__
   ldr r1, =__tbss_end__
   movs r2, #0
   bl memory_set
-#endif /* #ifdef INITIALIZE_SECONDARY_SECTIONS */
+
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__bss2_start__
   ldr r1, =__bss2_end__
@@ -181,7 +180,7 @@ _start:
   bl memory_set
 #endif /* #ifdef INITIALIZE_TCM_SECTIONS */
 
-  /* Initialise the heap */
+  /* Initialise the heap, AFTER we have called RAM init*/
   ldr r0, = __heap_start__
   ldr r1, = __heap_end__
   subs r1, r1, r0
@@ -293,8 +292,8 @@ memory_set:
   .section .text.\helper_name, "ax", %progbits
   .global \helper_name
   .weak \helper_name  
-\helper_name:
   .thumb_func
+\helper_name:
 .endm
 
 HELPER __aeabi_read_tp

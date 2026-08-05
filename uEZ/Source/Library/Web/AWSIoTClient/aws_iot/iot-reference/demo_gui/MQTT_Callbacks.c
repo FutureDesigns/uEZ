@@ -69,7 +69,7 @@ void MQTT_GetSettings(T_MQTTSettings *aSettings)
             // 3 bits are fraction, 7 bits are integer, and 1 sign bit
 
             i = reading >> 16;
-            G_Temperature = reading/65536.0; // For uC/Probe Demo
+            G_Temperature = reading/65536.0; // For tracing demo
             f = ((((TUInt32)reading) & 0xFFFF) * 10) >> 16;  // Convert to 1 digit decimal
             sprintf(G_MQTTSettings.iBoardTemp, "%02d.%01d C",
                                                 i,
@@ -97,9 +97,9 @@ void MQTT_GetSettings(T_MQTTSettings *aSettings)
             y /= 65536.0 * 0.8;
             z /= 65536.0 * 0.8;
             
-            G_XAccel = x; // For uC/Probe Demo
-            G_YAccel = y; // For uC/Probe Demo
-            G_ZAccel = z; // For uC/Probe Demo
+            G_XAccel = x; // For tracing demo
+            G_YAccel = y; // For tracing demo
+            G_ZAccel = z; // For tracing demo
             
             xi = (TInt32)(x * 0.6);
             xf = (((TInt32)(x * 10)) & 0xF)*6/10; // Convert to 1 digit decimal

@@ -53,7 +53,7 @@
  *     s.iBaud = 1000000; // 1MHz
  *     s.iReceiveCallback = CAN_Receive_Callback;
  * 
- *     // These are the only address we’ll receive from 
+ *     // These are the only address we will receive from 
  *     s.iSFFEntry[0].iID = 0x001;
  *     s.iSFFEntry[0].iEnable = ETrue;
  *     s.iSFFEntry[1].iID = 0x004;
@@ -244,7 +244,7 @@ T_uezError UEZCANWrite(
  *      s.iBaud = 1000000; // 1MHz
  *      s.iReceiveCallback = CAN_Receive_Callback;
  * 
- *      // These are the only address we’ll receive from 
+ *      // These are the only address weï¿½ll receive from 
  *      s.iSFFEntry[0].iID = 0x001;
  *      s.iSFFEntry[0].iEnable = ETrue;
  *      s.iSFFEntry[1].iID = 0x004;

@@ -126,6 +126,7 @@ typedef enum {
  *-------------------------------------------------------------------------*/
 typedef TUInt32 (*T_uezTaskFunction)(T_uezTask aMyTask, void *aParameters);
 
+// Place the task in heap, passing in the number of words for the stack size (sizeof(StackType_t))
 T_uezError UEZTaskCreate(
             T_uezTaskFunction aFunction,
             const char * const aName,
@@ -133,6 +134,17 @@ T_uezError UEZTaskCreate(
             void *aParameters,
             T_uezPriority aPriority,
             T_uezTask *aCreatedTask);
+            
+// Place the task in specifieid RAM buffer, passing in the number of words for the stack size (sizeof(StackType_t))
+T_uezError UEZTaskCreateStaticPlace(
+            T_uezTaskFunction aFunction,
+            const char * const aName,
+            TUInt32 aStackSize,
+            void *aParameters,
+            T_uezPriority aPriority,
+            T_uezTask *aCreatedTask,
+            void *aStackLocation,
+            void *aTaskStructLocation);
 
 T_uezError UEZTaskDelete(T_uezTask aTask);
 

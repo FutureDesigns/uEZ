@@ -59,18 +59,18 @@ _vectors:
 #endif /* STARTUP_FROM_RESET */
   .word NMI_Handler
   .word HardFault_Handler
-  .word MemManage_Handler
+  .word MemManage_Handler // map RTOS MPU or memory fault handler to this
   .word BusFault_Handler
   .word UsageFault_Handler
   .word 0 // Reserved
   .word 0 // Reserved
   .word 0 // Reserved
   .word 0 // Reserved
-  .word vPortSVCHandler   // ;SVC_Handler
+  .word SVC_Handler       // map RTOS supervisor call to this
   .word DebugMon_Handler
   .word 0 // Reserved
-  .word xPortPendSVHandler // ;PendSV_Handler
-  .word xPortSysTickHandler // ;SysTick_Handler 
+  .word PendSV_Handler    // map RTOS context switch to this
+  .word SysTick_Handler   // map RTOS tick to this
   .word WDT_IRQHandler
   .word TIMER0_IRQHandler
   .word TIMER1_IRQHandler

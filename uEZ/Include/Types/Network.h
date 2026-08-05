@@ -159,8 +159,7 @@ typedef enum {
 typedef enum __attribute__ ((__packed__)) {
 #endif
     UEZ_NETWORK_SOCKET_TYPE_TCP,
-	UEZ_NETWORK_SOCKET_TYPE_UDP,
-/** TODO: UDP has not been tested! */
+    UEZ_NETWORK_SOCKET_TYPE_UDP,
 } T_uezNetworkSocketType;
 
 #if (COMPILER_TYPE==RENESASRX)
@@ -255,7 +254,10 @@ typedef struct {
 typedef struct{
 	T_uezNetworkAddrIPV4 iIPConnectedAddr;
 	TUInt16 iConnectedPort;
-}T_uEZNetworkConnectionInfo;
+} T_uEZNetworkConnectionInfo;
+
+// TODO any strickly common types can go here, if not tied specficially to lwip/freertostcp/etc.
+// socket type, socket flag, etc
 
 #ifdef __cplusplus
 }

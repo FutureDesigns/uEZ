@@ -111,6 +111,10 @@ _start:
   ldr r1, =__rodata_start__
   ldr r2, =__rodata_end__
   bl memory_copy
+  ldr r0, =__tdata_load_start__
+  ldr r1, =__tdata_start__
+  ldr r2, =__tdata_end__
+  bl memory_copy
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__data2_load_start__
   ldr r1, =__data2_start__
@@ -130,6 +134,10 @@ _start:
 #if 1
   ldr r0, =__bss_start__
   ldr r1, =__bss_end__
+  mov r2, #0
+  bl memory_set
+  ldr r0, =__tbss_start__
+  ldr r1, =__tbss_end__
   mov r2, #0
   bl memory_set
 #endif
@@ -244,15 +252,15 @@ memory_set:
   b memory_set
 1:
   bx lr
-  
+
   // default C/C++ library helpers
 
 .macro HELPER helper_name
   .section .text.\helper_name, "ax", %progbits
   .global \helper_name
   .weak \helper_name  
-\helper_name:
   .thumb_func
+\helper_name:
 .endm
 
 HELPER __aeabi_read_tp
@@ -274,6 +282,8 @@ HELPER __debug_io_lock
   bx lr
 HELPER __debug_io_unlock
   bx lr
+HELPER abort
+  b .
 HELPER __assert
   b .
 HELPER __aeabi_assert

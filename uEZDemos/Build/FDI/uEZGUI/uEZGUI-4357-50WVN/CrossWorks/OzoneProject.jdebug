@@ -14,15 +14,15 @@ void OnProjectLoad (void) {
   //
   Project.SetDevice ("LPC4350_M4");
   Project.SetHostIF ("USB", "");
-  Project.SetTargetIF ("SWD");
-  Project.SetTIFSpeed ("Automatic");
+  Project.SetTargetIF ("JTAG");
+  Project.SetTIFSpeed ("50 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M4F.svd");
   Project.AddSvdFile ("$(InstallDir)/Config/Peripherals/ARMv7M.svd");
-  Project.SetOSPlugin("FreeRTOSPlugin");
   //
   // User settings
   //
-  File.Open ("$(ProjectDir)/THUMB Flash Debug/uEZGUI-4357-50WVN.elf");
+  Project.SetOSPlugin ("FreeRTOSPlugin_Cortex-M");
+  File.Open ("$(ProjectDir)/Debug_Heap4/uEZGUI-4357-50WVN.elf");
 }
 
 /*********************************************************************

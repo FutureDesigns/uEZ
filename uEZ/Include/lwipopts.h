@@ -345,7 +345,7 @@
  * MEMP_NUM_SYS_TIMEOUT: the number of simulateously active timeouts.
  * (requires NO_SYS==0)
  */
-#define MEMP_NUM_SYS_TIMEOUT            20 // Need to be changed to macro?
+#define MEMP_NUM_SYS_TIMEOUT            LWIP_NUM_SYS_TIMEOUT_INTERNAL+2 // Add 1 for SNTP/MDNS
 
 /**
  * MEMP_NUM_NETBUF: the number of struct netbufs.
@@ -425,16 +425,26 @@
 
 #define MEM_USE_POOLS_TRY_BIGGER_POOL     1 // Seems to be working as expected
 
-/*
-   ---------------------------------
+/* ---------------------------------
    ---------- TCP options ----------
-   ---------------------------------
-*/
-/**
- * LWIP_TCP==1: Turn on TCP.
- */
-#define TCP_TMR_INTERVAL                250
-#define LWIP_TCP                        1
+   ---------------------------------*/
+#define LWIP_TCP                        1 // turn on TCP
+#define LWIP_TCP_KEEPALIVE              1 // allow seconds version of keepidle, keepcnt, etc. Can remove to save code space if not used. Normal KEEPALIVE works without this define. Needed for some demos.
+
+/* Timing related TCP options. With default settings, if you unplug an Ethernet cable the backoff algorithms can keep data in the buffers for a very long time.
+ * So (especially when running multiple networking applications simultaneously) you will potentially need to increase the number of MEMPOOLs so that 
+ * dead packets can survive for hundreds of seconds, or decrease the numbers so that the pools clear out faster when there is a disconnect.
+ * See tcp_slowtmr() (TIME_WAIT, etc), TCP_TMR_INTERVAL, TCP_SLOW_INTERVAL, TCP_SYN_RCVD_TIMEOUT, TCP_FIN_WAIT_TIMEOUT, TCP_MSL numbers and tcp_persist_backoff.*/
+
+#define TCP_TMR_INTERVAL                150 // default is 250ms, but lowering can clear old leftover buffers faster. This controls both the fast (1x) and slow (2x) timer settings.
+
+// TCP_MAXRTX: Maximum number of retransmissions of data segments.
+#define TCP_MAXRTX                      3 // default is 12, but this will take too long to abort and clear buffers due to exponential backup time.
+
+// TCP_SYNMAXRTX: Maximum number of retransmissions of SYN segments.
+#define TCP_SYNMAXRTX                   3 // default is 6, but this will take too long to abort and clear buffers due to exponential backup time.
+
+#define TCP_MSL                         30000UL // default is 60 seconds - max segment lifetime
 
 // If you see a late ACK causing TCP early socket close you probably need to turn this on. This will set TF_NODELAY flag on PCB.
 #define UEZ_LWIP_DISABLE_NAGLE          1 // if 1 call tcp_nagle_disable on created socket pcbs, binded sockets, and socket connect 
@@ -469,15 +479,6 @@
 //#define TCP_SND_QUEUELEN                ((16 * (TCP_SND_BUF) + (TCP_MSS - 1))/(TCP_MSS)) // If TCP window was smaller you need more snd queues
 #endif
 
-/**
- * TCP_MAXRTX: Maximum number of retransmissions of data segments.
- */
-#define TCP_MAXRTX                      12
-
-/**
- * TCP_SYNMAXRTX: Maximum number of retransmissions of SYN segments.
- */
-#define TCP_SYNMAXRTX                   4
 
 #ifndef LWIP_DNS
 #define LWIP_DNS                        1
@@ -492,7 +493,7 @@
 #define MIB2_STATS                      LWIP_SNMP
 #endif
 
-//#define LWIP_TCPIP_TIMEOUT              1 // use RTOS timers for timeout TODO test
+#define LWIP_TCPIP_TIMEOUT              1 // call tcpip_timeout() and tcpip_untimeout() from tcpip task
 #define LWIP_SO_RCVTIMEO                1 // enable socket/netcomnn timeout processing for recv
 #define LWIP_SO_SNDTIMEO                1 // enable socket/netcomnn timeout processing for send
 
@@ -514,18 +515,32 @@
     #endif
 #endif
 
+/* ---------- Socket options ---------- */
+#define SO_REUSE                1   // set to allow port reuse
+
 /* ---------- UDP options ---------- */
 #define LWIP_UDP                1
-#define LWIP_UDPLITE            LWIP_UDP
+#define LWIP_UDPLITE            LWIP_UDP // UDP-Light allows partial packets to be read
 #define UDP_TTL                 255
 
-//#define LWIP_IGMP                  LWIP_IPV4 // multiple devices, same IPV4 address, small performance decrease
+#define IP_SOF_BROADCAST        1
+#define IP_SOF_BROADCAST_RECV   IP_SOF_BROADCAST
+// This is needed to activate LWIP_MULTICAST_TX_OPTIONS
+#define LWIP_IGMP                  LWIP_IPV4 // multiple devices, same IPV4 address, small performance decrease
+
 // For IPV6 would need to use MLD, but we don't have it yet. It would be slower also.
 #define LWIP_ICMP                  LWIP_IPV4 // not noticeable perf impact leaving this on
 
-/* ---------- ICMP options ---------- */
-//#define ICMP_TTL                255
+/* ---------- RAW options ---------- */
+#define LWIP_RAW                1
+#define RAW_TTL                 IP_DEFAULT_TTL
 
+/* ---------- ICMP options ---------- */
+//#define ICMP_TTL                        255
+//#define LWIP_MULTICAST_PING             1
+//#define LWIP_BROADCAST_PING             1
+
+/* ---------- Status Callback options ---------- */
 // TODO
 //#define LWIP_NETIF_LINK_CALLBACK        1
 //#define LWIP_NETIF_STATUS_CALLBACK      1
@@ -553,12 +568,11 @@
 #define LWIP_AUTOIP            (LWIP_DHCP)
 #define LWIP_DHCP_AUTOIP_COOP  (LWIP_DHCP && LWIP_AUTOIP)
 
-#if LWIP_2_0_x
 // for LWIP2 you need both normal and custom pools enabled!
 #define MEM_USE_POOLS                   1 
 #define MEMP_USE_CUSTOM_POOLS           1
 
-#include "Source/Library/lwip_2.0.x/system/arch/sys_arch.h"
+#include "Source/Library/lwIP/system/arch/sys_arch.h"
 #define LWIP_RAND()                     ((u32_t)GetRandomNumber())
 
 #include "arch/sntp_uEZ.h"
@@ -616,14 +630,7 @@
 
 //#define TFTP_MAX_FILENAME_LEN 30 // To increase directory length for tftp server change this.
 
-
-#else // LWIP1
-// for LWIP1 you can only enable 1 or the other pool setting depending on config
-#define MEM_USE_POOLS                   1 
-#define MEMP_USE_CUSTOM_POOLS           1 
-
-#endif
-
 #define LWIP_TIMEVAL_PRIVATE            0 // use sys/time.h include in cc.h
 
 #endif /* __LWIPOPTS_H__ */
+

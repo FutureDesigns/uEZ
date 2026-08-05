@@ -3,7 +3,7 @@
 *                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*            (c) 1995 - 2023 SEGGER Microcontroller GmbH             *
+*            (c) 1995 - 2024 SEGGER Microcontroller GmbH             *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.50a                                    *
+*       SystemView version: 3.62                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -67,28 +67,55 @@ Additional information:
 #ifndef SEGGER_SYSVIEW_CONF_H
 #define SEGGER_SYSVIEW_CONF_H
 
-// The application name to be displayed in SystemViewer
-#define SEGGER_SYSVIEW_APP_NAME        "uEZ FreeRTOS Application"
-//#define SEGGER_SYSVIEW_APP_NAME                 "Demo Application"
-
-// The target device name
-#if (UEZ_PROCESSOR == NXP_LPC1788)
-#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC17XX"
-#elif (UEZ_PROCESSOR == NXP_LPC4088)
-#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC40XX"
-#elif (UEZ_PROCESSOR == NXP_LPC4357)
-#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC43XXX"
-#elif (UEZ_PROCESSOR == NXP_LPC546xx)
-#define SEGGER_SYSVIEW_DEVICE_NAME     "LPC546XX"
-#else
-#define SEGGER_SYSVIEW_DEVICE_NAME     "Cortex-M4"
-#endif
 /*********************************************************************
 *
 *       Defines, configurable
 *
-**********************************************************************
+*********************************************************************/
+
+/*********************************************************************
+*
+*       Define: SEGGER_SYSVIEW_SECTION
+*
+*  Description
+*    Section to place the SystemView RTT Buffer into.
+*  Default
+*    undefined: Do not place into a specific section.
+*  Notes
+*    If SEGGER_RTT_SECTION is defined, the default changes to use
+*    this section for the SystemView RTT Buffer, too.
 */
+#if !(defined SEGGER_SYSVIEW_SECTION) && (defined SEGGER_RTT_BUFFER_SECTION)
+  #define SEGGER_SYSVIEW_SECTION                  SEGGER_RTT_BUFFER_SECTION
+#endif
+
+
+/*********************************************************************
+* TODO: Add your defines here.                                       *
+*********************************************************************/
+
+// Some MCUs need extra functions provided for Systemview (RX, Cortex-M0, etc)
+
+/*********************************************************************
+*
+*       SystemView timestamp configuration
+*/
+
+/*********************************************************************
+*
+*       SystemView Id configuration
+*/
+#ifndef   SEGGER_SYSVIEW_ID_BASE
+  #define SEGGER_SYSVIEW_ID_BASE                0x10000000                      // Default value for the lowest Id reported by the application. Can be overridden by the application via SEGGER_SYSVIEW_SetRAMBase(). (i.e. 0x20000000 when all Ids are an address in this RAM)
+#endif
+
+#ifndef   SEGGER_SYSVIEW_ID_SHIFT
+  #define SEGGER_SYSVIEW_ID_SHIFT               2                               // Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
+#endif
+
+//#define SEGGER_SYSVIEW_ENABLE_UART()       HIF_UART_EnableTXEInterrupt()       // Needed for SystemView via UART, only. Macro to enable the UART.
+
+
 /*********************************************************************
 *
 *       SystemView buffer configuration
@@ -109,62 +136,13 @@ Additional information:
   #define SEGGER_SYSVIEW_CAN_RESTART            1                               // 1: Send the SystemView start sequence on every start command, not just on the first. Enables restart when SystemView Application disconnected unexpectedly.
 #endif
 
-/*********************************************************************
-*
-*       SystemView timestamp configuration
-*/
-#if !defined(SEGGER_SYSVIEW_GET_TIMESTAMP) && !defined(SEGGER_SYSVIEW_TIMESTAMP_BITS)
-  #if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
-    #define SEGGER_SYSVIEW_GET_TIMESTAMP()      (*(U32 *)(0xE0001004))          // Retrieve a system timestamp. Cortex-M cycle counter.
-    #define SEGGER_SYSVIEW_TIMESTAMP_BITS       32                              // Define number of valid bits low-order delivered by clock source
-  #else
-    #define SEGGER_SYSVIEW_GET_TIMESTAMP()      SEGGER_SYSVIEW_X_GetTimestamp() // Retrieve a system timestamp via user-defined function
-    #define SEGGER_SYSVIEW_TIMESTAMP_BITS       32                              // Define number of valid bits low-order delivered by SEGGER_SYSVIEW_X_GetTimestamp()
+
+#if (UEZ_PROCESSOR == NXP_LPC4357)
+  #ifdef CORE_M0
+    #define SEGGER_SYSVIEW_RTT_CHANNEL              2
   #endif
 #endif
 
-/*********************************************************************
-*
-*       SystemView Id configuration
-*/
-#ifndef   SEGGER_SYSVIEW_ID_BASE
-  #define SEGGER_SYSVIEW_ID_BASE                0x10000000                      // Default value for the lowest Id reported by the application. Can be overridden by the application via SEGGER_SYSVIEW_SetRAMBase(). (i.e. 0x20000000 when all Ids are an address in this RAM)
-#endif
-
-#ifndef   SEGGER_SYSVIEW_ID_SHIFT
-  #define SEGGER_SYSVIEW_ID_SHIFT               2                               // Number of bits to shift the Id to save bandwidth. (i.e. 2 when Ids are 4 byte aligned)
-#endif
-
-
-/*********************************************************************
-*
-*       SystemView interrupt configuration
-*/
-#ifndef SEGGER_SYSVIEW_GET_INTERRUPT_ID
-  #if SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM3
-    #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()      ((*(U32*)(0xE000ED04)) & 0x1FF)    // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[8:0] = active vector)
-  #elif SEGGER_SYSVIEW_CORE == SEGGER_SYSVIEW_CORE_CM0
-    #if defined(__ICCARM__)
-      #if (__VER__ > 6010000)
-        #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()  (__get_IPSR())                     // Workaround for IAR, which might do a byte-access to 0xE000ED04. Read IPSR instead.
-      #else
-        #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()  ((*(U32*)(0xE000ED04)) & 0x3F)     // Older versions of IAR do not include __get_IPSR, but might also not optimize to byte-access.
-      #endif
-    #else
-      #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()    ((*(U32*)(0xE000ED04)) & 0x3F)     // Get the currently active interrupt Id. (i.e. read Cortex-M ICSR[5:0] = active vector)
-    #endif
-  #else
-    #define SEGGER_SYSVIEW_GET_INTERRUPT_ID()      SEGGER_SYSVIEW_X_GetInterruptId()  // Get the currently active interrupt Id from the user-provided function.
-  #endif
-#endif
-
-//#define SEGGER_SYSVIEW_ENABLE_UART()       HIF_UART_EnableTXEInterrupt()       // Needed for SystemView via UART, only. Macro to enable the UART.
-
-
-/*********************************************************************
-* TODO: Add your defines here.                                       *
-**********************************************************************
-*/
 
 #endif  // SEGGER_SYSVIEW_CONF_H
 
