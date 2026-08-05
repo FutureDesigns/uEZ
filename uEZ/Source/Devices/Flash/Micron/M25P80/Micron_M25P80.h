@@ -35,10 +35,18 @@
  *    *===============================================================*
  *    |  Future Designs, Inc. can port uEZ(tm) to your own hardware!  |
  *    |             We can get you up and running fast!               |
-*    |      See http://goo.gl/UDtTCR for more details.               |
+ *    |      See http://goo.gl/UDtTCR for more details.               |
  *    *===============================================================*
  *
  *-------------------------------------------------------------------------*/
+
+/** This driver supports the following parts:
+  *   Micron_M25P80
+  *   Macronix MX25L8006EM2I-12G (all derivitives listed in datasheet)
+  *   Macronix MX25V8035F family planned to be supported
+  *   Macronix MX25L8035E family could be supported
+  *   Macronix MX25V8006E family could be supported
+  */
 
 /*-------------------------------------------------------------------------*
  * Includes:
@@ -46,15 +54,29 @@
 #include <uEZ.h>
 #include <Device/Flash.h>
 #include <Types/Flash.h>
+#include <Types/SPI.h>
 #include <uEZGPIO.h>
 /*-------------------------------------------------------------------------*
  * Constants:
  *-------------------------------------------------------------------------*/
 
-
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+typedef struct {
+        const DEVICE_Flash *iDevice;
+        TUInt32 iNumOpen;
+        T_uezSemaphore iSem;
+        T_uezGPIOPortPin iChipSelect;
+        T_uezGPIOPortPin iWriteProtect;
+        T_uezGPIOPortPin iReset;
+        char iSPIPortName[5];
+        TUInt8 iMFGID;
+        TUInt16 iJEDEC;
+        T_uezDevice iSPI;
+        TBool iDeviceFound;
+        SPI_Request iRequest;
+} T_Flash_Micron_M25P80_Workspace;
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

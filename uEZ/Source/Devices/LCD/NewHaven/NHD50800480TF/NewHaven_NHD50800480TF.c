@@ -74,36 +74,36 @@ static TimerHandle_t lcdBacklightDelayTimer = NULL;
 #endif
 
 static const T_LCDControllerSettings LCD_NHD50800480TF_params16bit = {
-        LCD_ADVANCED_TFT,
-        LCD_COLOR_RES_16_565,
+    LCD_ADVANCED_TFT,
+    LCD_COLOR_RES_16_565,
 
-        40,         // Horizontal back porch, must be 40!
-        20,         // Horizontal front porch
-        48,         // HSYNC pulse width, must be 48!
-        800,        // Pixels per line
+    40,         // Horizontal back porch, must be 40!
+    20,         // Horizontal front porch
+    48,         // HSYNC pulse width, must be 48!
+    800,        // Pixels per line
 
-        36,         // Vertical back porch, must be 36!
-        16,         // Vertical front porch
-        3,          // VSYNC pulse width, must be 3!
-        480,        // Lines per panel
+    36,         // Vertical back porch, must be 36! - Rev 1 Only!
+    16,         // Vertical front porch - Rev 1 Only!
+    3,          // VSYNC pulse width, must be 3!
+    480,        // Lines per panel
 
-        0,          // Line end delay disabled
+    0,          // Line end delay disabled
 
-        EFalse,     // Do not invert output enable
-        EFalse,     // Invert panel clock
-        ETrue,      // Invert HSYNC
-        ETrue,      // Invert VSYNC
+    ETrue,     // Do not invert output enable
+    ETrue,     // Invert panel clock
+    ETrue,      // Invert HSYNC
+    ETrue,      // Invert VSYNC
 
-        0,          /* AC bias frequency (not used) */
+    0,          /* AC bias frequency (not used) */
 
-        EFalse,     // Not dual panel
-        EFalse,     // Little endian (NOT big endian)
-        EFalse,     // Left to Right pixels (NOT right to left)
-        EFalse,     // Top to bottom (NOT bottom to top)
-        LCD_COLOR_ORDER_BGR,    // BGR order please
+    EFalse,     // Not dual panel
+    EFalse,     // Little endian (NOT big endian)
+    EFalse,     // Left to Right pixels (NOT right to left)
+    EFalse,     // Top to bottom (NOT bottom to top)
+    LCD_COLOR_ORDER_BGR,    // BGR order please
 
-        0, // Default Base address
-        LCD_CLOCK_RATE,
+    0, // Default Base address
+    LCD_CLOCK_RATE,
 };
 
 static const T_LCDControllerSettings LCD_NHD50800480TF_paramsI15bit = {
