@@ -59,11 +59,13 @@ static T_uezTask hTouchTask;
 static T_uezDevice G_lcd;
 static T_uezSemaphore WM_TochSem = 0;
 static GUI_PID_STATE G_State;
+static GUI_ALLOC_INFO G_emWinMemInfo;
 
 #define BACKLIGHT_TIMEOUT   30000 //300 seconds
 #define BACKLIGHT_TIMEOUT_ENABLED  0
 
 extern T_uezTask G_tsMonitorTask;
+#define SD_CARD_BUFFER_SIZE  512 // SD card sector write size (or some multiple of it)
 
 #define EMWIN_BASE_ADDRESS (TUInt32) _emWinMemoryptr //Keep this define for now
 
@@ -459,6 +461,15 @@ void WindowManager_BackLight_Off(void)
   }
 }
 
+void WindowManager_Check_Memory_Usage(void)
+{
+    GUI_ALLOC_GetMemInfo(&G_emWinMemInfo);
+    // See also these to get a subset of information:
+    // GUI_ALLOC_DATATYPE maxUsedBytes = GUI_ALLOC_GetMaxUsedBytes();
+    // GUI_ALLOC_DATATYPE freeBytes = GUI_ALLOC_GetNumFreeBytes();
+    // GUI_ALLOC_DATATYPE usedBytes = GUI_ALLOC_GetNumUsedBytes();
+}
+
 /*---------------------------------------------------------------------------*
  * Routine:  _WriteByte2File
  *---------------------------------------------------------------------------*
@@ -469,7 +480,7 @@ void WindowManager_BackLight_Off(void)
 static T_uezFile dumpfile;
 // At least with current Crossworks project it will always align to 4 byte boundary anyway.
 // But just in case lets do some forced alignment to 0xXXXXXX00.
-UEZ_ALIGN_VAR(256,static U8 ssBuffer[512]);
+UEZ_ALIGN_VAR(256,static U8 ssBuffer[SD_CARD_BUFFER_SIZE]);
 static TUInt32 ssindex;
 static U8 sscount = 0;
 static TUInt32 sstick = 0;
@@ -528,6 +539,30 @@ void WindowManager_SaveScreenShotBMP(char driveNumber){
     WM_Activate();  // re-activate the WM
     sstick = UEZTickCounterGet();
     }
+}
+
+// Read a file into a BMP, JEG, GIF, or DTA emWin IMAGE function.
+int APP_GetData(void * p, const U8 ** ppData, unsigned NumBytes, U32 Off) {
+  char * filename = (char *)p;
+  TUInt32 NumBytesRead = 0;
+  T_uezFile loadfile;
+  
+  if (NumBytes > sizeof(ssBuffer)) { // Check buffer size
+    NumBytes = sizeof(ssBuffer);
+  }
+
+  if (UEZFileOpen(filename, FILE_FLAG_READ_ONLY, &loadfile) == UEZ_ERROR_NONE) {      
+      if(Off != 0) { // Set file pointer to the required position
+        UEZFileSeekPosition(loadfile, Off);
+      }
+
+      UEZFileRead(loadfile, ssBuffer, NumBytes, &NumBytesRead); // Read data into buffer
+      UEZFileClose(loadfile);
+  }
+  
+  *ppData = ssBuffer; // Set data pointer to the beginning of the buffer
+
+  return NumBytesRead; // Return number of available bytes
 }
 
 /** @} */

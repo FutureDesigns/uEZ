@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.2.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -33,7 +33,6 @@
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
-
 
 /* Prototype of all Interrupt Service Routines (ISRs). */
 typedef void ( * portISR_t )( void );
@@ -202,7 +201,7 @@ StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
 
 static void prvTaskExitError( void )
 {
-    volatile uint32_t ulDummy = 0;
+    volatile uint32_t ulDummy = 0UL;
 
     /* A function that implements a task must not exit or attempt to return to
      * its caller as there is nothing to return to.  If a task wants to exit it
@@ -229,8 +228,8 @@ static void prvTaskExitError( void )
 void vPortSVCHandler( void )
 {
     __asm volatile (
-        "   ldr r3, pxCurrentTCBConst2      \n" /* Restore the context. */
-        "   ldr r1, [r3]                    \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
+        "   ldr r3, =pxCurrentTCB           \n" /* Restore the context. */
+        "   ldr r1, [r3]                    \n" /* Get the pxCurrentTCB address. */
         "   ldr r0, [r1]                    \n" /* The first item in pxCurrentTCB is the task top of stack. */
         "   ldmia r0!, {r4-r11}             \n" /* Pop the registers that are not automatically saved on exception entry and the critical nesting count. */
         "   msr psp, r0                     \n" /* Restore the task stack pointer. */
@@ -240,8 +239,7 @@ void vPortSVCHandler( void )
         "   orr r14, #0xd                   \n"
         "   bx r14                          \n"
         "                                   \n"
-        "   .align 4                        \n"
-        "pxCurrentTCBConst2: .word pxCurrentTCB             \n"
+        "   .ltorg                          \n"
         );
 }
 /*-----------------------------------------------------------*/
@@ -270,7 +268,7 @@ static void prvPortStartFirstTask( void )
 BaseType_t xPortStartScheduler( void )
 {
     /* An application can install FreeRTOS interrupt handlers in one of the
-     * folllowing ways:
+     * following ways:
      * 1. Direct Routing - Install the functions vPortSVCHandler and
      *    xPortPendSVHandler for SVCall and PendSV interrupts respectively.
      * 2. Indirect Routing - Install separate handlers for SVCall and PendSV
@@ -293,13 +291,11 @@ BaseType_t xPortStartScheduler( void )
          *
          * Assertion failures here indicate incorrect installation of the
          * FreeRTOS handlers. For help installing the FreeRTOS handlers, see
-         * https://www.FreeRTOS.org/FAQHelp.html.
+         * https://www.freertos.org/Why-FreeRTOS/FAQs.
          *
          * Systems with a configurable address for the interrupt vector table
          * can also encounter assertion failures or even system faults here if
          * VTOR is not set correctly to point to the application's vector table. */
-
-        (void)(pxVectorTable);
         configASSERT( pxVectorTable[ portVECTOR_INDEX_SVC ] == vPortSVCHandler );
         configASSERT( pxVectorTable[ portVECTOR_INDEX_PENDSV ] == xPortPendSVHandler );
     }
@@ -465,7 +461,7 @@ void xPortPendSVHandler( void )
         "   mrs r0, psp                         \n"
         "   isb                                 \n"
         "                                       \n"
-        "   ldr r3, pxCurrentTCBConst           \n" /* Get the location of the current TCB. */
+        "   ldr r3, =pxCurrentTCB               \n" /* Get the location of the current TCB. */
         "   ldr r2, [r3]                        \n"
         "                                       \n"
         "   stmdb r0!, {r4-r11}                 \n" /* Save the remaining registers. */
@@ -486,8 +482,7 @@ void xPortPendSVHandler( void )
         "   isb                                 \n"
         "   bx r14                              \n"
         "                                       \n"
-        "   .align 4                            \n"
-        "pxCurrentTCBConst: .word pxCurrentTCB  \n"
+        "   .ltorg                              \n"
         ::"i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
     );
 }
@@ -738,7 +733,7 @@ void xPortSysTickHandler( void )
         }
     }
 
-#endif /* #if configUSE_TICKLESS_IDLE */
+#endif /* configUSE_TICKLESS_IDLE */
 /*-----------------------------------------------------------*/
 
 /*
@@ -804,7 +799,7 @@ __attribute__( ( weak ) ) void vPortSetupTimerInterrupt( void )
              *
              * The following links provide detailed information:
              * https://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html
-             * https://www.FreeRTOS.org/FAQHelp.html */
+             * https://www.freertos.org/Why-FreeRTOS/FAQs */
             configASSERT( ucCurrentPriority >= ucMaxSysCallPriority );
         }
 

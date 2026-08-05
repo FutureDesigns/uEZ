@@ -236,7 +236,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>CORE_M4</state>
-                    <state>LWIP_2_0_x</state>
+                    
                     <state>DEBUG</state>
                     <state>__FPU_PRESENT=1</state>
                 </option>
@@ -365,24 +365,25 @@
                     <state>$PROJ_DIR$/../../../../../Source/App/SEGGER/emWin/GUIDEMO</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/FDI/uEZGUI_4357_70WVN</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/IAR/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/ARM/CMSIS/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/ARM/DSP/Include</state>
+                    
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/Encryption/mbedtls/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/Encryption/mbedtls</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/system/arch</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Platform/emWin/Config</state>
@@ -673,17 +674,19 @@
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/IAR/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/NXP/LPC43xx/Common/include/CMSIS</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/ARM/CMSIS/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Processor/ARM/DSP/Include</state>
+                    
                     <state>$PROJ_DIR$/../../../../../../uEZ/Include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/include</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/RTOS/FreeRTOS/portable/IAR/ARM_CM4F</state>
                     <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/GUI/SEGGER/emWin</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/src/include/ipv4</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system</state>
-                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP_2.0.x/system/arch</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/Include</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/src/include/ipv4</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/system</state>
+                    <state>$PROJ_DIR$/../../../../../../uEZ/Source/Library/lwIP/system/arch</state>
                 </option>
                 <option>
                     <name>AExtraOptionsCheckV2</name>

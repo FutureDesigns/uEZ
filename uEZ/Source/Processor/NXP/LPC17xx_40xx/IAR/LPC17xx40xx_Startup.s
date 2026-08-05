@@ -45,32 +45,34 @@
         SECTION CSTACK:DATA:NOROOT(3)
 
         SECTION .intvec:CODE:NOROOT(2)
-	
+
         EXTERN  __iar_program_start
         EXTERN  Lpc17xx40xxSystemInit
         EXTERN  SystemInit
-        EXTERN  vMainMPUFaultHandler
-        EXTERN  vSafeRTOSSVCHandler
-        EXTERN  vSafeRTOSPendSVHandler
-        EXTERN  vPortSysTickHandler
+//        EXTERN  MemManage_Handler
+        EXTERN  SVC_Handler
+		EXTERN  PendSV_Handler
+		EXTERN  SysTick_Handler
         EXTERN  UEZBSP_FatalError
         EXTERN  HardFault_HandlerC
-		
+
         PUBLIC  __vector_table
         PUBLIC  __vector_table_0x1c
         PUBLIC  __Vectors
         PUBLIC  __Vectors_End
         PUBLIC  __Vectors_Size
+
 #if ( RTOS == SafeRTOS )
-        EXTERN  vMainMPUFaultHandler
-        EXTERN  vSafeRTOSSVCHandler
-        EXTERN  vSafeRTOSPendSVHandler
-        EXTERN  vPortSysTickHandler
+//        EXTERN  vMainMPUFaultHandler
+//        EXTERN  vSafeRTOSSVCHandler
+//        EXTERN  vSafeRTOSPendSVHandler
+//        EXTERN  vPortSysTickHandler
 #elif (RTOS == FreeRTOS )
-		IMPORT xPortSysTickHandler
-		IMPORT vPortSVCHandler
-		IMPORT xPortPendSVHandler
+//		IMPORT xPortSysTickHandler
+//		IMPORT vPortSVCHandler
+//		IMPORT xPortPendSVHandler
 #endif
+
 
         DATA
 
@@ -81,7 +83,7 @@ __vector_table
 
         DCD     NMI_Handler
         DCD     HardFault_Handler
-        DCD     vMainMPUFaultHandler
+        DCD     MemManage_Handler    ; map RTOS MPU or memory fault handler to this
         DCD     BusFault_Handler
         DCD     UsageFault_Handler
 __vector_table_0x1c
@@ -89,11 +91,11 @@ __vector_table_0x1c
         DCD     0
         DCD     0
         DCD     0
-        DCD     vPortSVCHandler           ;SVC_Handler
+        DCD     SVC_Handler          ; map RTOS supervisor call to this
         DCD     DebugMon_Handler
         DCD     0
-        DCD     xPortPendSVHandler        ;PendSV_Handler
-        DCD     xPortSysTickHandler       ;SysTick_Handler
+        DCD     PendSV_Handler       ; map RTOS context switch to this
+        DCD     SysTick_Handler      ; map RTOS tick to this
 #elif ( RTOS == SafeRTOS )
 __vector_table
         DCD     sfe(CSTACK)
@@ -101,7 +103,7 @@ __vector_table
 
         DCD     NMI_Handler
         DCD     HardFault_Handler
-        DCD     vMainMPUFaultHandler
+        DCD     MemManage_Handler    ; map RTOS MPU or memory fault handler to this
         DCD     BusFault_Handler
         DCD     UsageFault_Handler
 __vector_table_0x1c
@@ -109,11 +111,11 @@ __vector_table_0x1c
         DCD     0
         DCD     0
         DCD     0
-        DCD     vSafeRTOSSVCHandler       ;SVC_Handler
+        DCD     SVC_Handler          ; map RTOS supervisor call to this
         DCD     DebugMon_Handler
         DCD     0
-        DCD     vSafeRTOSPendSVHandler    ;PendSV_Handler
-        DCD     vPortSysTickHandler       ;SysTick_Handler
+        DCD     PendSV_Handler       ; map RTOS context switch to this
+        DCD     SysTick_Handler      ; map RTOS tick to this
 #else
 __vector_table
         DCD     sfe(CSTACK)
@@ -121,7 +123,7 @@ __vector_table
 
         DCD     NMI_Handler
         DCD     HardFault_Handler
-        DCD     MemManage_Handler
+        DCD     MemManage_Handler    ; map RTOS MPU or memory fault handler to this
         DCD     BusFault_Handler
         DCD     UsageFault_Handler
 __vector_table_0x1c
@@ -129,11 +131,11 @@ __vector_table_0x1c
         DCD     0
         DCD     0
         DCD     0
+        DCD     SVC_Handler          ; map RTOS supervisor call to this
+        DCD     DebugMon_Handler
         DCD     0
-        DCD     0
-        DCD     0
-        DCD     0
-        DCD     0
+        DCD     PendSV_Handler       ; map RTOS context switch to this
+        DCD     SysTick_Handler      ; map RTOS tick to this
 #endif
 
         ; External Interrupts
@@ -181,26 +183,26 @@ __vector_table_0x1c
 __Vectors_End
 
 __Vectors       EQU   __vector_table
-__Vectors_Size 	EQU 	__Vectors_End - __Vectors
-
+__Vectors_Size  EQU   __Vectors_End - __Vectors
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Default interrupt handlers.
 ;;
-        THUMB
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+        THUMB
 
         PUBWEAK Reset_Handler
         SECTION .text:CODE:REORDER:NOROOT(2)
 Reset_Handler
-;; Call LPC init function so that we can initialize the FPU on CM4        
-        LDR     R0, =Lpc17xx40xxSystemInit
-        BLX     R0        
 ;; Configure vector table offset register 
         LDR     R0, =__vector_table
         LDR     R1, =0xE000ED08 ; VTOR
         STR     R0, [R1]
+;; Call LPC init function so that we can initialize the FPU on CM4
+        LDR     R0, =Lpc17xx40xxSystemInit
+        BLX     R0 
 ;; Call uEZ SystemInit here and initialize PLL and SDRAM here.
         LDR     R0, =SystemInit
         BLX     R0
@@ -242,11 +244,11 @@ UsageFault_Handler
         mov r0, #8
         b UEZBSP_FatalError
 
-        PUBWEAK SVC_Handler
+/*        PUBWEAK SVC_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)
 SVC_Handler
         mov r0, #9
-        b UEZBSP_FatalError
+        b UEZBSP_FatalError*/
 
         PUBWEAK DebugMon_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)
@@ -254,7 +256,7 @@ DebugMon_Handler
         mov r0, #10
         b UEZBSP_FatalError
 
-        PUBWEAK PendSV_Handler
+/*        PUBWEAK PendSV_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)
 PendSV_Handler
         mov r0, #11
@@ -263,7 +265,7 @@ PendSV_Handler
         PUBWEAK SysTick_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)
 SysTick_Handler
-        B SysTick_Handler
+        B SysTick_Handler*/
 
         PUBWEAK WDT_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
@@ -471,3 +473,4 @@ KFLASH_IRQHandler
         B KFLASH_IRQHandler
 
         END
+

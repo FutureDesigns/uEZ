@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.54                                    *
+*       SystemView version: 3.62                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -74,7 +74,8 @@ Additional information:
 */
 
 #include "SEGGER_RTT.h"
-#include <string.h> // for memcpy
+
+#include <string.h>                 // for memcpy
 #include <stdint.h> // for int types
 #include <SEGGER_RTT_SYSVIEW_Config.h>
 
@@ -109,10 +110,20 @@ Additional information:
   #endif
 #endif
 
-#ifndef SEGGER_RTT_BUFFER_SECTION
-  #if defined(SEGGER_RTT_SECTION)
-    #define SEGGER_RTT_BUFFER_SECTION SEGGER_RTT_SECTION
-  #endif
+#ifndef   BUFFER_SIZE_UP
+  #define BUFFER_SIZE_UP                                  1024  // Size of the buffer for terminal output of target, up to host
+#endif
+
+#ifndef   BUFFER_SIZE_DOWN
+  #define BUFFER_SIZE_DOWN                                16    // Size of the buffer for terminal input to target from host (Usually keyboard input)
+#endif
+
+#ifndef   SEGGER_RTT_MAX_NUM_UP_BUFFERS
+  #define SEGGER_RTT_MAX_NUM_UP_BUFFERS                    2    // Number of up-buffers (T->H) available on this target
+#endif
+
+#ifndef   SEGGER_RTT_MAX_NUM_DOWN_BUFFERS
+  #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS                  2    // Number of down-buffers (H->T) available on this target
 #endif
 
 #ifndef   SEGGER_RTT_ALIGNMENT
@@ -202,7 +213,7 @@ Additional information:
 #define SEGGER_RTT_PUT_SECTION(Var, Section) RTT_PRAGMA(location=Section) \
                                         Var
   #elif (defined __CC_ARM)
-    #define SEGGER_RTT_PUT_SECTION(Var, Section) __attribute__ ((section (Section), zero_init))  Var
+    #define SEGGER_RTT_PUT_SECTION(Var, Section) __attribute__ ((section (Section)))  Var
   #else
     #error "Section placement not supported for this compiler."
   #endif
@@ -293,9 +304,9 @@ SEGGER_RTT_PUT_BUFFER_SECTION(SEGGER_RTT_BUFFER_ALIGN(static char _acDownBuffer2
 #endif
 
 #else // not using the cache line size adjustment
-SEGGER_RTT_PUT_CB_SECTION(SEGGER_RTT_CB_ALIGN(SEGGER_RTT_CB _SEGGER_RTT));
-SEGGER_RTT_PUT_BUFFER_SECTION(SEGGER_RTT_BUFFER_ALIGN(static char _acUpBuffer  [(BUFFER_SIZE_UP)]));
-SEGGER_RTT_PUT_BUFFER_SECTION(SEGGER_RTT_BUFFER_ALIGN(static char _acDownBuffer[(BUFFER_SIZE_DOWN)]));
+  SEGGER_RTT_PUT_CB_SECTION(SEGGER_RTT_CB_ALIGN(SEGGER_RTT_CB _SEGGER_RTT));
+  SEGGER_RTT_PUT_BUFFER_SECTION(SEGGER_RTT_BUFFER_ALIGN(static char _acUpBuffer  [BUFFER_SIZE_UP]));
+  SEGGER_RTT_PUT_BUFFER_SECTION(SEGGER_RTT_BUFFER_ALIGN(static char _acDownBuffer[BUFFER_SIZE_DOWN]));
 
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
 #else
@@ -340,7 +351,11 @@ static unsigned char _ActiveTerminal;
 *    (1) May only be called via INIT() to avoid overriding settings.
 *        The only exception is SEGGER_RTT_Init(), to make an intentional override possible.
 */
-  #define INIT() /*                                                                             \
+#define INIT() // disable running init on every function call
+
+// When using multicore check before init, if the data is properly zeroed in early init from 1st core, it should always start 0 then it can be skipped on additional cores.
+#if (USE_MULTICORE_RTT_SYSTEM_VIEW == 1)
+#define CHECKINIT()                                                                          \
     do {                                                                                     \
       volatile SEGGER_RTT_CB* pRTTCBInit;                                                    \
       pRTTCBInit = (volatile SEGGER_RTT_CB*)((uintptr_t)&_SEGGER_RTT + SEGGER_RTT_UNCACHED_OFF); \
@@ -348,31 +363,34 @@ static unsigned char _ActiveTerminal;
         _DoInit();                                                                           \
       }                                                                                      \
     } while (0)
-*/
+#endif
+
+// Reset the RTT struct to 0. On multi-core run this once on the main core since there may not be a 0 of the above global. Avoid running on additional cores.
+// This could also be used to change the RTT setup at run time, for example to setup different buffers/sizes
+void SEGGER_RTT_ResetStruct(void) {
+    memset (&_SEGGER_RTT, 0x0, sizeof(_SEGGER_RTT));
+}
 
 static void _DoInit(void) {
   volatile SEGGER_RTT_CB* p;   // Volatile to make sure that compiler cannot change the order of accesses to the control block
   static const char _aInitStr[] = "\0\0\0\0\0\0TTR REGGES";  // Init complete ID string to make sure that things also work if RTT is linked to a no-init memory area
   unsigned i;
-  //
+  
   // Initialize control block
-  //
   p                     = (volatile SEGGER_RTT_CB*)((uintptr_t)&_SEGGER_RTT + SEGGER_RTT_UNCACHED_OFF);  // Access control block uncached so that nothing in the cache ever becomes dirty and all changes are visible in HW directly
   memset((SEGGER_RTT_CB*)p, 0, sizeof(_SEGGER_RTT));         // Make sure that the RTT CB is always zero initialized.
   p->MaxNumUpBuffers    = SEGGER_RTT_MAX_NUM_UP_BUFFERS;
   p->MaxNumDownBuffers  = SEGGER_RTT_MAX_NUM_DOWN_BUFFERS;
-  //
+
   // Initialize up buffer 0
-  //
   p->aUp[0].sName         = "Terminal";
   p->aUp[0].pBuffer       = _acUpBuffer;
   p->aUp[0].SizeOfBuffer  = BUFFER_SIZE_UP;
   p->aUp[0].RdOff         = 0u;
   p->aUp[0].WrOff         = 0u;
   p->aUp[0].Flags         = SEGGER_RTT_MODE_DEFAULT;
-  //
+
   // Initialize down buffer 0
-  //
   p->aDown[0].sName         = "Terminal";
   p->aDown[0].pBuffer       = _acDownBuffer;
   p->aDown[0].SizeOfBuffer  = BUFFER_SIZE_DOWN;
@@ -386,10 +404,7 @@ static void _DoInit(void) {
 // Up buffer size = SEGGER_SYSVIEW_RTT_BUFFER_SIZE
 // Down buffer size = 8 (fixed in code, no define)
 #else
-#if (SEGGER_RTT_MAX_NUM_UP_BUFFERS > 1)
-  //
-  // Initialize up buffer 1
-  //
+#if (SEGGER_RTT_MAX_NUM_UP_BUFFERS > 1) // Initialize up buffer 1 (systemview core 1 will rename it)
   p->aUp[1].sName         = "Terminal1";
   p->aUp[1].pBuffer       = _acUpBuffer1;
   p->aUp[1].SizeOfBuffer  = sizeof(_acUpBuffer1);
@@ -398,10 +413,8 @@ static void _DoInit(void) {
   p->aUp[1].Flags         = SEGGER_RTT_MODE_DEFAULT;
 #endif
 
-#if (SEGGER_RTT_MAX_NUM_DOWN_BUFFERS > 1)
-  //
-  // Initialize down buffer 1
-  //
+#if (SEGGER_RTT_MAX_NUM_DOWN_BUFFERS > 1) // Initialize down buffer 1
+
   p->aDown[1].sName         = "Terminal1";
   p->aDown[1].pBuffer       = _acDownBuffer1;
   p->aDown[1].SizeOfBuffer  = sizeof(_acDownBuffer1);
@@ -410,12 +423,9 @@ static void _DoInit(void) {
   p->aDown[1].Flags         = SEGGER_RTT_MODE_DEFAULT;
 #endif
 #endif
-  
-#if (SEGGER_RTT_MAX_NUM_UP_BUFFERS > 2)
-  //
-  // Initialize up buffer 2
-  //
-  p->aUp[2].sName         = "Terminal2";
+
+#if (SEGGER_RTT_MAX_NUM_UP_BUFFERS > 2) // Initialize up buffer 2 (systemview core 2 will rename it)
+  p->aUp[2].sName         = "Terminal2"; 
 #if(SEGGER_ENABLE_EMWINSPY_RTT == 1)
 #else
   p->aUp[2].pBuffer       = _acUpBuffer2;
@@ -423,13 +433,10 @@ static void _DoInit(void) {
   p->aUp[2].SizeOfBuffer  = sizeof(_acUpBuffer2);
   p->aUp[2].RdOff         = 0u;
   p->aUp[2].WrOff         = 0u;
-  p->aUp[2].Flags         = SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL;
+  p->aUp[2].Flags         = SEGGER_RTT_MODE_NO_BLOCK_SKIP;
 #endif
   
-#if (SEGGER_RTT_MAX_NUM_DOWN_BUFFERS > 2)
-  //
-  // Initialize down buffer 2
-  //
+#if (SEGGER_RTT_MAX_NUM_DOWN_BUFFERS > 2) // Initialize down buffer 2
   p->aDown[2].sName         = "Terminal2";
 #if(SEGGER_ENABLE_EMWINSPY_RTT == 1)
 #else
@@ -438,7 +445,7 @@ static void _DoInit(void) {
   p->aDown[2].SizeOfBuffer  = sizeof(_acDownBuffer2);
   p->aDown[2].RdOff         = 0u;
   p->aDown[2].WrOff         = 0u;
-  p->aDown[2].Flags         = SEGGER_RTT_MODE_DEFAULT;
+  p->aDown[2].Flags         = SEGGER_RTT_MODE_NO_BLOCK_SKIP;
 #endif
   
   //
@@ -1999,7 +2006,12 @@ int SEGGER_RTT_SetFlagsDownBuffer(unsigned BufferIndex, unsigned Flags) {
 *
 */
 void SEGGER_RTT_Init (void) {
+  (void) _DoInit;
+#if (USE_MULTICORE_RTT_SYSTEM_VIEW == 1)
+  CHECKINIT(); // there is only 1 RTT structure, init on the main core only, skip this on all other cores
+#else // using separate RTT per-core, always call init
   _DoInit();
+#endif
 }
 
 /*********************************************************************

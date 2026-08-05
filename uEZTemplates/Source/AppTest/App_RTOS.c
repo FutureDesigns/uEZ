@@ -38,6 +38,8 @@
 #include <Config.h>
 #include <uEZTypes.h>
 #include <uEZErrors.h>
+//#include <uEZMemory.h>
+//#include <uEZTickCounter.h>
 #include <uEZRTOS.h>
 //#include <uEZProcessor.h>
 #include <uEZBSP.h>
@@ -113,7 +115,7 @@ void Processing_Before_Start_Kernel(void)
 }
 
 /*-----------------------------------------------------------*/
-#if ( configSUPPORT_STATIC_ALLOCATION == 1 )
+#if ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configKERNEL_PROVIDED_STATIC_MEMORY == 0 ) && ( portUSING_MPU_WRAPPERS == 0 ) )
 void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
                                         StackType_t ** ppxIdleTaskStackBuffer,
                                         uint32_t * pulIdleTaskStackSize )
@@ -129,14 +131,16 @@ void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
   *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
 
   /* Pass out the array that will be used as the Idle task's stack. */
-  *ppxIdleTaskStackBuffer = uxIdleTaskStack;
+  *ppxIdleTaskStackBuffer = &( uxIdleTaskStack[ 0 ] );
 
   /* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
   Note that, as the array is necessarily of type StackType_t,
   configMINIMAL_STACK_SIZE is specified in words, not bytes. */
   *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
+#endif
 
+#if ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configKERNEL_PROVIDED_STATIC_MEMORY == 0 ) && ( portUSING_MPU_WRAPPERS == 0 ) && ( configUSE_TIMERS == 1 ) )
 void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
                                          StackType_t ** ppxTimerTaskStackBuffer,
                                          uint32_t * pulTimerTaskStackSize)
@@ -152,7 +156,7 @@ void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
   *ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
 
   /* Pass out the array that will be used as the Timer task's stack. */
-  *ppxTimerTaskStackBuffer = uxTimerTaskStack;
+  *ppxTimerTaskStackBuffer = &( uxTimerTaskStack[ 0 ] );
 
   /* Pass out the size of the array pointed to by *ppxTimerTaskStackBuffer.
   Note that, as the array is necessarily of type StackType_t,
@@ -248,13 +252,13 @@ volatile unsigned long ul = 0;
 	taskEXIT_CRITICAL();
 }
 
-void vPreSleepProcessing( unsigned long ulExpectedIdleTime )
+void vPreSleepProcessing( unsigned long xModifiableIdleTime )
 {
 	/* Called by the kernel before it places the MCU into a sleep mode because
 	configPRE_SLEEP_PROCESSING() is #defined to vPreSleepProcessing(). */
 
 	/* Avoid compiler warnings about the unused parameter. */
-	( void ) ulExpectedIdleTime;
+	( void ) xModifiableIdleTime;
 
 	/* Is the MCU about to enter deep sleep mode or software standby mode? */
 	/*if(  == 0 ) {
@@ -276,3 +280,4 @@ void vPostSleepProcessing( unsigned long ulExpectedIdleTime )
 /*-----------------------------------------------------------*/
 
 /*-----------------------------------------------------------*/
+

@@ -76,7 +76,8 @@
 
 // Max output limit changes based on AMP
 #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_TDA8551 212 // Limit audio to 0.5W output
-#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output
+/* AG 1/27/26 - Kent requested to turn amp up to 1W (150 -> 18) to make voices more clear in videos - Tested unit for a day in the oven and accepted risk */
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 150 // Limit audio to 0.5W output
 
 // Define these for your own speakers or headphones.
 #ifndef UEZ_DEFAULT_OFFBOARD_SPEAKER_AUDIO_LEVEL

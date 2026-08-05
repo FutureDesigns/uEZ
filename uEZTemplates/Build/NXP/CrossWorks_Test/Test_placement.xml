@@ -1,14 +1,16 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement">
+  <!-- inputsections: If omitted (recommended) then the equivalent input section of *(.name .name.*) is supplied -->
 $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map Macros" Section! -->
+<!-- 8-byte aligned padded vector size = (41 IRQ + 16 Cortex IRQ) * 4 = 228 (+4 padding) = 0xE8 total size -->
   <MemorySegment name="FLASHA0">
-    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
-    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
+    <ProgramSection alignment="0x100" load="Yes" name=".vectors" fill="0x00" size_alignment="0x8" start="$(FLASH_START:)"/>
+    <ProgramSection alignment="4" load="Yes" name=".constFlashA"/>
+    <ProgramSection alignment="1" keep="Yes" load="Yes" fill="0x00" size="$(SEGMENT_SIZE_REMAINING)" inputsections="*(.fill_00)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="CRP1">
-    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:FLASH)">
     <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
@@ -27,8 +29,8 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <!-- constdata and conststring sections don't normally exist -->
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" name=".conststring"/>
     <ProgramSection alignment="4" load="Yes" name=".rodata" />
   </MemorySegment>
    <!-- Cannot put the same section in both Flash and NOR Flash at the same time! -->
@@ -40,24 +42,24 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   </MemorySegment>
   <MemorySegment name="SDRAM">
     <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
+    <ProgramSection alignment="0x100" load="No" name=".frames"/>
+    <ProgramSection alignment="0x100" load="No" name=".video"/>
     <!-- Reserved for emWin memory  -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
+    <ProgramSection alignment="0x100" load="No" name=".emWin"/>
     <!-- Reserved for Networking memory  -->
-    <ProgramSection alignment="4" inputsections="*(.network .network.*)" name=".network"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
+    <ProgramSection alignment="4" name=".network"/>
+    <ProgramSection alignment="4" load="No" name=".mpu"/>
+    <ProgramSection alignment="4" load="No" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
+    <ProgramSection alignment="4" load="No" name=".tbss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
     <!-- Keep Heap last so we can auto-size it. -->
     <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:RAM)" >
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.non_init .non_init.*)" name=".non_init"/>
+    <ProgramSection alignment="4" load="No" name=".non_init"/>
     <ProgramSection alignment="4" load="No" name=".fast_run" />
     <ProgramSection alignment="4" load="No" name=".data_run" />
     <ProgramSection alignment="4" load="No" name=".tdata_run"/>
@@ -81,14 +83,15 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   </MemorySegment>
   $[endif]
   $[ifdef LPC4088]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map Macros" Section! -->
+  <!-- 8-byte aligned padded vector size = (41 IRQ + 16 Cortex IRQ) * 4 = 228 (+4 padding) = 0xE8 total size -->
   <MemorySegment name="FLASHA0">
-    <ProgramSection alignment="0x100" load="Yes" inputsections="*(.vectors .vectors.*)" name=".vectors" start="$(FLASH_START:)"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
-    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
+    <ProgramSection alignment="0x100" load="Yes" name=".vectors" fill="0x00" size_alignment="0x8" start="$(FLASH_START:)"/>
+    <ProgramSection alignment="4" load="Yes" name=".constFlashA"/>
+    <ProgramSection alignment="1" keep="Yes" load="Yes" fill="0x00" size="$(SEGMENT_SIZE_REMAINING)" inputsections="*(.fill_00)" name=".fillFlashA0"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
   </MemorySegment>
   <MemorySegment name="CRP1">
-    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:FLASH)">
     <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
@@ -107,8 +110,8 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <!-- constdata and conststring sections don't normally exist -->
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" name=".conststring"/>
     <ProgramSection alignment="4" load="Yes" name=".rodata" />
   </MemorySegment>
    <!-- Cannot put the same section in both Flash and QSPI at the same time! -->
@@ -120,24 +123,24 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   </MemorySegment> 
   <MemorySegment name="SDRAM">
     <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
+    <ProgramSection alignment="0x100" load="No" name=".frames"/>
+    <ProgramSection alignment="0x100" load="No" name=".video"/>
     <!-- Reserved for emWin memory  -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
+    <ProgramSection alignment="0x100" load="No" name=".emWin"/>
     <!-- Reserved for Networking memory  -->
-    <ProgramSection alignment="4" inputsections="*(.network .network.*)" name=".network"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
+    <ProgramSection alignment="4" name=".network"/>
+    <ProgramSection alignment="4" load="No" name=".mpu"/>
+    <ProgramSection alignment="4" load="No" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss.libdebugio.*)" name=".bss.libdebugio"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.tbss .tbss.*)" name=".tbss"/>
+    <ProgramSection alignment="4" load="No" name=".tbss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
     <!-- Keep Heap last so we can auto-size it. -->
     <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
   <MemorySegment name="RAM">
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:)"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.non_init .non_init.*)" name=".non_init"/>
+    <ProgramSection alignment="4" load="No" name=".non_init"/>
     <ProgramSection alignment="4" load="No" name=".fast_run"/>
     <ProgramSection alignment="4" load="No" name=".data_run"/>
     <ProgramSection alignment="4" load="No" name=".tdata_run"/>
@@ -160,13 +163,12 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection load="No" name=".emacmem"/>
   </MemorySegment>
   $[endif]
-  $[ifdef LPC4357]
-  <!-- Remember to set the CM0_SIZE=0x? Macros in the "Memory Map Macros" Section! -->
+  $[ifdef LPC4357]  <!-- 8-byte aligned padded vector size = (53 IRQ + 16 Cortex IRQ) * 4 = 276 (+4 padding) = 0x118 total size -->
   <MemorySegment name="FLASHA0">
-    <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)" />
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashA .constFlashA.*)" name=".constFlashA"/>
-    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashA0"/>
+    <ProgramSection alignment="0x100" load="Yes" name=".vectors" fill="0x00" size_alignment="0x8" start="$(FLASH_START:)" />
+    <ProgramSection alignment="4" load="Yes" name=".constFlashA"/>
     <!-- Can place specific read-only variables here to avoid wasting flash -->
+    <ProgramSection alignment="1" keep="Yes" load="Yes" fill="0x00" size="$(SEGMENT_SIZE_REMAINING)" inputsections="*(.fill_00)" name=".fillFlashA0"/>
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:FLASH)">
     <!-- Normally this is FLASH A from the .hzp file definitions. If we split data sections to a later segment, we can split rodata and text. -->
@@ -185,8 +187,8 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data" />
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <!-- constdata and conststring sections don't normally exist -->
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.constdata .constdata.*)" name=".constdata"/>
-    <ProgramSection alignment="4" load="Yes" inputsections="*(.conststring .conststring.*)" name=".conststring"/>
+    <ProgramSection alignment="4" load="Yes" name=".constdata"/>
+    <ProgramSection alignment="4" load="Yes" name=".conststring"/>
   </MemorySegment>
   <MemorySegment name="FLASHA_CM0">
     <!-- Can place Cortex-M0 code here at the end of flash A, start offset in increments of 64KB. Adjust using FLASHA_CM0_SIZE -->
@@ -194,8 +196,12 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
 
   <MemorySegment name="FLASHB0">
     <!-- Maybe .init/CM0 vector section could be placed here or place specific read-only variables here to avoid wasting flash -->
+    <!-- To use the first 64KB, set CRP2_KEEP=Yes and uncomment this FLASHB0 section.  -->
+    <!-- To avoid the first 64KB, to allow use in AWS demo, set CRP2_KEEP=No and comment this FLASHB0 section. (shipping default)  -->
+    <!-- 
     <ProgramSection alignment="4" load="Yes" inputsections="*(.constFlashB .constFlashB.*)" name=".constFlashB"/>
-    <ProgramSection alignment="4" keep="Yes" fill="0xA5" load="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".fillFlashB0"/>
+    <ProgramSection alignment="1" keep="Yes" load="Yes" fill="0xA5" size="$(SEGMENT_SIZE_REMAINING)" inputsections="*(.fill_A5)" name=".fillFlashB0"/>
+      -->
   </MemorySegment>
   <MemorySegment name="FLASHB">
     <!-- Use FLASHB_START to adjust the starting offset. If 64KB offset, then the 2nd-7th sections (57,344 bytes) can be used for mflash. -->
@@ -227,23 +233,23 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
 
   <MemorySegment name="$(RAM_NAME:RAM);SDRAM">
     <!-- Reserved for frame buffer memory; Must match LCD_DISPLAY_BASE_ADDRESS location! -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.frames .frames.*)" name=".frames"/>
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.video .video.*)" name=".video"/>
+    <ProgramSection alignment="0x100" load="No" name=".frames"/>
+    <ProgramSection alignment="0x100" load="No" name=".video"/>
     <!-- Reserved for emWin memory  -->
-    <ProgramSection alignment="0x100" load="No" inputsections="*(.emWin .emWin.*)" name=".emWin"/>
+    <ProgramSection alignment="0x100" load="No" name=".emWin"/>
     <!-- Reserved for Networking memory  -->
-    <ProgramSection alignment="4" load="No" inputsections="*(.network .network.*)" name=".network"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.mpu .mpu.*)" name=".mpu"/>
-    <ProgramSection alignment="4" load="No" inputsections="*(.lwip .lwip.*)" name=".lwip"/>
+    <ProgramSection alignment="4" load="No" name=".network"/>
+    <ProgramSection alignment="4" load="No" name=".mpu"/>
+    <ProgramSection alignment="4" load="No" name=".lwip"/>
     <ProgramSection alignment="4" load="No" inputsections="*(.bss .bss.* .gnu.linkonce.b.*) *(COMMON)" name=".bss"/>
     <!-- Move rttbuf section here when using systemview with large trace buffer allocation. May break some RAM tests. -->
-    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview -->
-    <ProgramSection alignment="4" inputsections="*(.rttbuf .rttbuf.*)" name=".rttbuf"/>
+    <!-- This is the storage for the RTT buffers so we can have large buffers for console or systemview. For multicore each core has it's own buffer section. -->
+    <ProgramSection alignment="4" name=".rttbuf"/>
     <!-- Keep Heap last so we can auto-size it. -->
     <ProgramSection alignment="4" load="No" place_from_segment_end="Yes" size="$(SEGMENT_SIZE_REMAINING)" name=".heap"/>
   </MemorySegment>
 
-  <!-- Pick entire 40KB SRAM2 for CM4 and entire 32KB SRAM1 for CM0 -->
+  <!-- Pick entire 40KB SRAM2 for CM4 and entire 32KB SRAM1 for CM0. At end of SRAM2, have a shared area. -->
   <MemorySegment name="SRAM1">
   </MemorySegment>
   <MemorySegment name="SRAM2">
@@ -255,11 +261,15 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
     <ProgramSection alignment="4" load="No" name=".non_init" />
     <ProgramSection alignment="4" load="No" name=".tdata_run" />
     <ProgramSection alignment="8" size="__STACKSIZE__" load="No" name=".stack" />
-    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently Comment to remove from output. -->
+    <!-- stack_process not currently used and only setup in FreeRTOS MPU ports which we aren't using currently. Comment to remove from output. -->
     <!-- <ProgramSection alignment="8" size="__STACKSIZE_PROCESS__" load="No" name=".stack_process" /> -->
-    <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. -->
-    <ProgramSection alignment="4" load="No" name=".rtt" />
     <ProgramSection alignment="4" load="No" inputsections="*(.IRAM)" name=".IRAM"/>
+  </MemorySegment>
+  <MemorySegment name="SRAM2_CM0">
+    <!-- This is the RTT main structure which is small. Include in SRAM to automatically find it. For multicore RTT use only 1 section for all cores. -->
+    <ProgramSection alignment="4" load="No" name=".rtt" />
+    <!-- Can put some common shared data between cores in this spot. -->
+    <ProgramSection alignment="4" load="No" name=".coreshare"/>
   </MemorySegment>
   
   <!-- Use a combination of all 3 AHB sections as a single section. -->
@@ -283,10 +293,10 @@ $[ifdef LPC1788]  <!-- Remember to set the _SIZE=0x? Macros in the "Memory Map M
   </MemorySegment>
   
   <MemorySegment name="CRP1">
-    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" inputsections="*(.crp1 .crp1*)" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
+    <ProgramSection alignment="4" keep="$(CRP1_KEEP)" load="Yes" name=".crp1" address_symbol="__crp1_start" end_symbol="__crp1_end" />
   </MemorySegment>
   <MemorySegment name="CRP2">
-    <ProgramSection alignment="4" keep="$(CRP2_KEEP)" load="Yes" inputsections="*(.crp2 .crp2*)" name=".crp2" address_symbol="__crp2_start" end_symbol="__crp2_end" />
+    <ProgramSection alignment="4" keep="$(CRP2_KEEP)" load="Yes" name=".crp2" address_symbol="__crp2_start" end_symbol="__crp2_end" />
   </MemorySegment>
 $[endif]    
 </Root>

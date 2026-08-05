@@ -70,7 +70,7 @@ void ff_memfree (
 /* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
 DSTATUS disk_status (
-	BYTE pdrv		/* Physical drive nmuber to identify the drive */
+	BYTE pdrv		/* Physical drive number to identify the drive */
 )
 {
 /********************************************************************
@@ -175,7 +175,7 @@ T_uezError FATFS_UnregisterMassStorageDevice(TUInt32 aSlot)
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_initialize (
-	BYTE pdrv				/* Physical drive nmuber to identify the drive */
+	BYTE pdrv				/* Physical drive number to identify the drive */
 )
 {
 /********************************************************************
@@ -206,7 +206,7 @@ DSTATUS disk_initialize (
 /*-----------------------------------------------------------------------*/
 
 DRESULT disk_read (
-	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
+	BYTE pdrv,		/* Physical drive number to identify the drive */
 	BYTE *buff,		/* Data buffer to store read data */
 	LBA_t sector,	/* Start sector in LBA */
 	UINT count		/* Number of sectors to read */
@@ -239,6 +239,7 @@ DRESULT disk_read (
         }
       }
     } else {
+      // If the pointer is on a 32-bit boundary, do it the fast way
 
       while(count > MAX_SIMULTANEOUS_SECTORS) {
             error = (*p_ms)->Read(p_ms, sector, MAX_SIMULTANEOUS_SECTORS, buff);
@@ -255,7 +256,6 @@ DRESULT disk_read (
             UEZTaskDelay(0);
       }
 
-      // If the pointer is on a 32-bit boundary, do it the fast way
       error = (*p_ms)->Read(p_ms, sector, count, buff);
       if ((error == UEZ_ERROR_TIMEOUT) || (error == UEZ_ERROR_NAK)) {
         return RES_NOTRDY;
@@ -277,7 +277,7 @@ DRESULT disk_read (
 #if FF_FS_READONLY == 0
 
 DRESULT disk_write (
-	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
+	BYTE pdrv,			/* Physical drive number to identify the drive */
 	const BYTE *buff,	/* Data to be written */
 	LBA_t sector,		/* Start sector in LBA */
 	UINT count			/* Number of sectors to write */

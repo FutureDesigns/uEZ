@@ -53,19 +53,20 @@ _vectors:
   .word reset_handler
 ISR_HANDLER NMI_Handler
 ISR_HANDLER HardFault_Handler
-ISR_HANDLER MemManage_Handler
+ISR_HANDLER MemManage_Handler // map RTOS MPU or memory fault handler to this
 ISR_HANDLER BusFault_Handler
 ISR_HANDLER UsageFault_Handler
 ISR_RESERVED
 ISR_RESERVED
 ISR_RESERVED
 ISR_RESERVED
-ISR_HANDLER vPortSVCHandler // SVC_Handler
+ISR_HANDLER SVC_Handler       // map RTOS supervisor call to this
 ISR_HANDLER DebugMon_Handler
 ISR_RESERVED
-ISR_HANDLER xPortPendSVHandler // PendSV_Handler
-ISR_HANDLER SysTick_Handler // No Systick on CM0 on this part!
-// External interrupts start her 
+ISR_HANDLER PendSV_Handler    // map RTOS context switch to this
+//ISR_HANDLER SysTick_Handler // No Systick on CM0 on this part!
+ISR_RESERVED
+// External interrupts start here
 ISR_HANDLER RTC_IRQHandler
 ISR_HANDLER M4CORE_IRQHandler
 ISR_HANDLER DMA_IRQHandler

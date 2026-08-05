@@ -38,7 +38,7 @@
 #define _UEZPROCESSOR_LPC43xx_H_
 
 #include <Config.h>
-#include <CMSIS/LPC43xx.h> // It isn't possible to include this in IAR ASM
+#include <LPC43xx.h> // It isn't possible to include this in IAR ASM
 #include <Types/GPIO.h>
 //#include "LPC43xx_UtilityFuncs.h" // Don't include this as it will interfere with RTOS malloc
 #include "LPC43xx_EMAC.h"

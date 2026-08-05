@@ -30,7 +30,6 @@
 #include "LPC43xx_SD_MMC.h"
 #include "LPC43xx_GPIO.h"
 #include "LPC43xx_UtilityFuncs.h"
-#include "CMSIS/LPC43xx.h"
 #include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
 #include <Source/Library/SEGGER/RTT/SEGGER_RTT.h>
 

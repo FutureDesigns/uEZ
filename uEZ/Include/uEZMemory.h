@@ -191,6 +191,16 @@ TUInt32 UEZMemGetNumBlocks(void);
     #error "Section placement not supported for this compiler."
   #endif
 
+  #if (defined __GNUC__)
+  #define UEZ_PUT_SECTION_1_LINE(Section) __attribute__ ((section (Section))) __attribute__ ((__used__))
+#elif (defined __ICCARM__) || (defined __ICCRX__)
+  #define UEZ_PUT_SECTION_1_LINE(Section)  UEZ_PRAGMA(location=Section) __root
+#elif (defined __CC_ARM)
+  #define UEZ_PUT_SECTION_1_LINE(Section) __attribute__ ((section (Section), zero_init))
+#else
+  #error "Section placement not supported for this compiler."
+#endif
+
 /***************************************************************************************
  * Macro for general purpose variable alignment. This macro is always available.
  ***************************************************************************************/

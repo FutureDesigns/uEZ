@@ -193,6 +193,9 @@ BaseType_t mbedtls_bio_socket_connect(TlsTransportParams_t * pTlsTransportParams
     if(UEZ_ERROR_NONE != error)
     {
         LogError(("Failed to create TCP socket with error %d.", error));
+        if (error == UEZ_ERROR_OUT_OF_HANDLES) {
+      
+        }
     }
     
     if(UEZ_ERROR_NONE == error)

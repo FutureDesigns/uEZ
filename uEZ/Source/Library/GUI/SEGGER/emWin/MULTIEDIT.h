@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : MULTIEDIT.h
@@ -71,6 +71,7 @@ Purpose     : MULTIEDIT include
 #define MULTIEDIT_CF_SHOWCURSOR         (1 << 6)     // Shows the cursor.
 #define MULTIEDIT_CF_MOTION_H           (1 << 7)     // Enables motion support on X-axis.
 #define MULTIEDIT_CF_MOTION_V           (1 << 8)     // Enables motion support on Y-axis.
+#define MULTIEDIT_CF_USE_COPY           (1 << 9)     // Enables copyrect optimization
 /* status flags */
 #define MULTIEDIT_SF_READONLY           MULTIEDIT_CF_READONLY
 #define MULTIEDIT_SF_INSERT             MULTIEDIT_CF_INSERT
@@ -97,8 +98,11 @@ Purpose     : MULTIEDIT include
 *  Description
 *    Color indexes used for the cursor of the MULTIEDIT widget.
 */
-#define MULTIEDIT_CI_CURSOR_BK          2                   // Background color for cursor
-#define MULTIEDIT_CI_CURSOR_FG          3                   // Foreground color for cursor
+#define MULTIEDIT_CI_CURSOR_BK          0                   // Background color for cursor
+#define MULTIEDIT_CI_CURSOR_FG          1                   // Foreground color for cursor
+
+#define GUI_MULTIEDIT_SHOWCURSOR        (1 << 10)
+#define GUI_MULTIEDIT_CURSORBLINK       (1 << 11)
 
 /*********************************************************************
 *
@@ -139,6 +143,7 @@ void MULTIEDIT_Callback(WM_MESSAGE * pMsg);
 int              MULTIEDIT_AddKey               (MULTIEDIT_HANDLE hObj, U16 Key);
 int              MULTIEDIT_AddText              (MULTIEDIT_HANDLE hObj, const char * s);
 void             MULTIEDIT_EnableBlink          (MULTIEDIT_HANDLE hObj, int Period, int OnOff);
+void             MULTIEDIT_EnableCopy           (MULTIEDIT_HANDLE hObj, unsigned OnOff);
 void             MULTIEDIT_EnableMotion         (MULTIEDIT_HANDLE hObj, int Flags);
 GUI_COLOR        MULTIEDIT_GetBkColor           (MULTIEDIT_HANDLE hObj, unsigned Index);
 int              MULTIEDIT_GetCursorCharPos     (MULTIEDIT_HANDLE hObj);
@@ -152,6 +157,8 @@ int              MULTIEDIT_GetTextFromLine      (MULTIEDIT_HANDLE hObj, char * s
 int              MULTIEDIT_GetTextFromPos       (MULTIEDIT_HANDLE hObj, char * sDest, int MaxLen, int CharStart, int LineStart, int CharEnd, int LineEnd);
 int              MULTIEDIT_GetTextSize          (MULTIEDIT_HANDLE hObj);
 int              MULTIEDIT_GetUserData          (MULTIEDIT_HANDLE hObj, void * pDest, int NumBytes);
+int              MULTIEDIT_ReadBytesFromPos     (MULTIEDIT_HANDLE hObj, char * sDest, U32 SizeOfBuffer, U32 Off);
+int              MULTIEDIT_ReadCharsFromPos     (MULTIEDIT_HANDLE hObj, char * sDest, U32 SizeOfBuffer, U32 Offset);
 void             MULTIEDIT_SetTextAlign         (MULTIEDIT_HANDLE hObj, int Align);
 void             MULTIEDIT_SetAutoScrollH       (MULTIEDIT_HANDLE hObj, int OnOff);
 void             MULTIEDIT_SetAutoScrollV       (MULTIEDIT_HANDLE hObj, int OnOff);

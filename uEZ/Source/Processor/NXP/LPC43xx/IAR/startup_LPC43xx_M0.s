@@ -28,6 +28,14 @@
         SECTION .intvec:CODE:NOROOT(2)
 
         EXTERN  __iar_program_start
+// No Sys init on additional cores, unless we wanted to add one
+//        EXTERN  MemManage_Handler
+        EXTERN  SVC_Handler
+		EXTERN  PendSV_Handler
+		EXTERN  SysTick_Handler
+        EXTERN  UEZBSP_FatalError
+        EXTERN  HardFault_HandlerC
+
         PUBLIC  __vector_table
         PUBLIC  __vector_table_0x1c
         PUBLIC  __Vectors
@@ -39,9 +47,10 @@
 __vector_table
         DCD     sfe(CSTACK)
         DCD     Reset_Handler
+
         DCD     NMI_Handler
         DCD     HardFault_Handler
-        DCD     MemManage_Handler
+        DCD     MemManage_Handler    ; map RTOS MPU or memory fault handler to this
         DCD     BusFault_Handler
         DCD     UsageFault_Handler
 __vector_table_0x1c
@@ -49,11 +58,11 @@ __vector_table_0x1c
         DCD     0
         DCD     0
         DCD     0
-        DCD     vPortSVCHandler ; SVC_Handler
+        DCD     SVC_Handler          ; map RTOS supervisor call to this
         DCD     DebugMon_Handler
         DCD     0
-        DCD     xPortPendSVHandler ; PendSV_Handler
-        DCD     SysTick_Handler ; No Systick on CM0 on this part!
+        DCD     PendSV_Handler       ; map RTOS context switch to this
+        DCD     SysTick_Handler      ; map RTOS tick to this
 
         ; External Interrupts
         DCD   M0_RTC_IRQHandler                 ; 16 RTC Converter
@@ -102,20 +111,23 @@ __Vectors_Size  EQU   __Vectors_End - __Vectors
         THUMB
 
         PUBWEAK Reset_Handler
-        SECTION .text:CODE:REORDER(2)
+        SECTION .text:CODE:REORDER:NOROOT(2)
 Reset_Handler
-        LDR     R0, =__iar_program_start
+;; VTOR was set by main core already
+;; No Sys init on additional cores, unless we wanted to add one
+        LDR     R0, =__iar_program_start ; Will call IAR zero init on SDRAM sections here.
         BX      R0
 
         PUBWEAK NMI_Handler
+        SECTION .text:CODE:REORDER:NOROOT(1)
         PUBWEAK HardFault_Handler
         PUBWEAK MemManage_Handler
         PUBWEAK BusFault_Handler
         PUBWEAK UsageFault_Handler
-        PUBWEAK SVC_Handler
+//        PUBWEAK SVC_Handler
         PUBWEAK DebugMon_Handler
-        PUBWEAK PendSV_Handler
-        PUBWEAK SysTick_Handler
+//        PUBWEAK PendSV_Handler
+//        PUBWEAK SysTick_Handler
         PUBWEAK M0_RTC_IRQHandler
         PUBWEAK M0_M4CORE_IRQHandler
         PUBWEAK M0_DMA_IRQHandler
@@ -147,14 +159,14 @@ Reset_Handler
         SECTION .text:CODE:REORDER(1)
 NMI_Handler
         B NMI_Handler
-SVC_Handler
-        B SVC_Handler
+/*SVC_Handler
+        B SVC_Handler*/
 DebugMon_Handler
         B DebugMon_Handler
-PendSV_Handler
+/*PendSV_Handler
         B PendSV_Handler
 SysTick_Handler
-        B SysTick_Handler
+        B SysTick_Handler*/
 HardFault_Handler
         B HardFault_Handler
 MemManage_Handler
@@ -220,4 +232,4 @@ performed on the device.
 ;;;
 
         END
- 
+

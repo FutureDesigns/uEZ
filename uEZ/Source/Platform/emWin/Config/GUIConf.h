@@ -48,6 +48,8 @@ Purpose     : Configures emWins abilities, fonts etc.
 #include <uEZTypes.h>
 #include "SEGGER.h"
 
+#include <Source/Library/Optimization/optimized_routines.h>
+
 /*********************************************************************
 *       Memory
 *********************************************************************/
@@ -126,6 +128,9 @@ EXTERN U32   GUI_MemSize;
 // new 5.24
 //#define GUI_MEMCPY(dst,src,size)   emWin_memcpy(dst,src,size)
 #define GUI_MEMCPY(dst,src,size)   memcpy(dst,src,size)
+//#define GUI_MEMCPY                   GUI__memcpy // emWim provided optimized function
+//#define GUI_MEMCPY(dst,src,size)   memcpy_4lw_unaligned_no_ret(dst,src,size) // optimized function
+
 extern void *emWin_memcpy(void *pDst, const void *pSrc, long size);
 
 /*********************************************************************

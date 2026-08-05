@@ -152,7 +152,7 @@ static void DrawScreenSaverBox(T_brightnessControlWorkspace *G_ws)
         G_ssOptionBox.iBottom-1);
 }
 
-static void BCMScreenSaverToggle(const T_choice *aChoice)
+void StartDemoScreenSaver(void)
 {
     T_uezLCDScreenSaverInfo ssInfo;
     T_uezDevice lcd;
@@ -160,8 +160,7 @@ static void BCMScreenSaverToggle(const T_choice *aChoice)
     UEZLCDOpen("LCD", &lcd);
     
     if(G_ScreenSaverOn == ETrue) {
-        G_ScreenSaverOn = EFalse;
-        UEZLCDScreensaverStop();
+        AppStopDemoScreenSaver();
     } else {
         G_ScreenSaverOn = ETrue;
 
@@ -181,7 +180,22 @@ static void BCMScreenSaverToggle(const T_choice *aChoice)
                 DISPLAY_HEIGHT);
         UEZLCDScreensaverStart(lcd, &ssInfo);
     }
+}
+
+static void BCMScreenSaverToggle(const T_choice *aChoice)
+{
+    StartDemoScreenSaver(); // separate this from the SWIM choice code
     DrawScreenSaverBox(((T_brightnessControlWorkspace *)(aChoice->iData)));
+}
+
+TBool AppIsDemoScreenSaverRunning(void)
+{
+ return G_ScreenSaverOn;
+}
+void AppStopDemoScreenSaver(void)
+{
+    G_ScreenSaverOn = EFalse;
+    UEZLCDScreensaverStop();
 }
 
 static void IPatternOfColors(T_brightnessControlWorkspace *G_ws)

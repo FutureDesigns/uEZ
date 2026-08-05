@@ -2945,6 +2945,9 @@ void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
 /*---------------------------------------------------------------------------*/
 int32_t main(void)
 {
+#if (SEGGER_ENABLE_RTT == 1)
+    SEGGER_RTT_ResetStruct(); // clear on reset
+#endif
     UEZBSP_Startup();
     while (1) {
     } // never should get here

@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.54                                    *
+*       SystemView version: 3.62                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -104,9 +104,15 @@ static void _cbSendTaskList(void) {
 */
 static U64 _cbGetTime(void) {
   U64 Time;
-
-  Time = xTaskGetTickCountFromISR();
-//  Time = xTaskGetTickCount();//xTaskGetTickCountFromISR(); // TODO on RX set vSetVarulMaxPRIGROUPValue to fix from ISR version
+#if SYSVIEW_PORT_PROVIDES_CONTEXT_CHECK
+  if (xPortIsInsideInterrupt() == pdTRUE) {
+    Time = xTaskGetTickCountFromISR();
+  } else {
+    Time = xTaskGetTickCount();
+  }
+#else
+  Time = xTaskGetTickCountFromISR(); // TODO if still needed on RX set vSetVarulMaxPRIGROUPValue to fix from ISR version
+#endif
   Time *= portTICK_PERIOD_MS;
   Time *= 1000;
   return Time;
@@ -252,18 +258,6 @@ const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI = {
 };
 #include "SEGGER_SYSVIEW_Conf.h" // Bring in the name information here.
 
-/********************************************************************* 
-*
-*       _cbSendSystemDesc()
-*
-*  Function description
-*    Sends SystemView description strings.
-*/
-static void _cbSendSystemDesc(void) {
-  SEGGER_SYSVIEW_SendSysDesc("N="SEGGER_SYSVIEW_APP_NAME",D="SEGGER_SYSVIEW_DEVICE_NAME",O=FreeRTOS");
-  //SEGGER_SYSVIEW_SendSysDesc("N=FreeRTOS Application,D=undefined device,O=FreeRTOS"); // On Renesas Toolchains the defines don't seem to work here.
-  SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
-}
 
 /*********************************************************************
 *
@@ -271,29 +265,18 @@ static void _cbSendSystemDesc(void) {
 *
 **********************************************************************
 */
-#include <uEZPlatform.h> // Below is platform specific things such as tick rate and any specific timestamp functions that are needed on some platforms.
 
-// Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_Conf.h
-#define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ)
+/* Some MCUs lack a standardized tick interrupt used by FreeRTOS, so in addition
+ * to supplying that interrupt, you must supply additional SystemView functions. */
+#if (defined __RX)      // Renesas RX
+  #define SYSVIEW_INTERRUPT_ID_FUNC_NEEDED 1
+#elif (defined CORE_M0) // Cortex-M0
+  #define SYSVIEW_INTERRUPT_ID_FUNC_NEEDED 1
+#else
+  #define SYSVIEW_INTERRUPT_ID_FUNC_NEEDED 0
+#endif
 
-// System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
-#define SYSVIEW_CPU_FREQ        configCPU_CLOCK_HZ
-
-// The lowest RAM address used for IDs (pointers)
-#define SYSVIEW_RAM_BASE        (0x10000000) // TODO this may need to be changed for some platforms
-
-void SEGGER_SYSVIEW_Conf(void) {
-  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
-                      &SYSVIEW_X_OS_TraceAPI, _cbSendSystemDesc);
-  SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
-}
-
-// These functions are missing on RX, Cortex-M0 and must be defined!
-// So far only one of these port specific functions must be added.
-U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
-	return SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific();
-}
-
+// Note that this function hasn't been fully checked for accuracy yet.
 U32 SEGGER_SYSVIEW_X_GetInterruptId(void) {
   U32 IntId;
 #ifdef __RX  // Renesas CCRX
@@ -301,19 +284,57 @@ U32 SEGGER_SYSVIEW_X_GetInterruptId(void) {
 	// may have to manually assign interrupt numbers such as i2c = 0, uart = 1, etc to use this feature.
 	//return (INTC_SIR_IRQ & (0x7Fu)); // INTC_SIR_IRQ[6:0]: ActiveIRQ
 #endif
-#ifdef CORE_M0 // Cortex-M0 example, not tested in uEZ yet.
+#ifdef CORE_M0 // Cortex-M0 example
   __asm volatile ("mrs %0, ipsr"
                   : "=r" (IntId)
                   );
   IntId &= 0x3F;
 #endif
-#ifdef CORE_M4 
-  IntId = 1; // prevenet warning
+#if (SYSVIEW_INTERRUPT_ID_FUNC_NEEDED == 0)
+  IntId = 1; // prevent warning
 #endif
   return IntId;
 }
 
+/* If SYSVIEW_INTERRUPT_ID_FUNC_NEEDED=1 supply the SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific()
+ * in the application project to match the chosen tick timer and count up/down direction. Only on these 
+ * ports is it needed to increment SEGGER_SYSVIEW_TickCnt in the tick handler. Most ports J-Link handles automatically.
+ * Below is an example timer ISR and example get timestamp implementation for both up/down. */
+U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
+	return SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific();
+}
+
+#if 0 // example of the interrupt and get timestamp for an up or down timer (to be implemented in application/BSP)
+static void ExampleCustomRtosTickTimerIRQ(void) {
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+    SEGGER_SYSVIEW_TickCnt++; // <<-- Increment SEGGER_SYSVIEW_TickCnt asap.
 #endif
+    SysTick_Handler(); // map the RTOS tick to this interrupt
+}
+
+U32 SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific(void) {
+// Get the cycles of the current system tick. 
+// For implementing this manually on timers both the up and down counting timer versions are shown.
+// If switching to a differnet timer peripheral you may need to swap which code is included.
+
+// If using SysTick down-counting, subtract the current value from the number of cycles per tick, otherwise it is the count.
+//  U32 Cycles = (CyclesPerTick - LPC_RITIMER->COUNTER); // cycles per tick minus current value
+  U32 Cycles = (LPC_RITIMER->COUNTER); // this timer is up counting, so no subtraction
+
+  U32 TickCount = SEGGER_SYSVIEW_TickCnt;
+  if (NVIC_GetPendingIRQ(Example_Timer_IRQn)) {   // Check if timer interrupt pending ...
+   // Interrupt pending, re-read timer and adjust result
+    //Cycles = (SYSVIEW_CYCLES_PER_TICK - LPC_RITIMER->COUNTER); // if a down counter was used subtract
+    Cycles = (LPC_RITIMER->COUNTER); // if an up counter is used no subtraction
+    TickCount++;
+  }
+
+  Cycles += TickCount * SYSVIEW_CYCLES_PER_TICK;
+  return Cycles;
+}
+#endif // end example
+
+#endif // #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
 
 #include "FreeRTOSConfig.h"
 

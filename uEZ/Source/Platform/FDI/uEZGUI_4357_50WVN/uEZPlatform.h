@@ -93,7 +93,8 @@
 #define AUDIO_AMP_WOLFSON                     2
 #define AUDIO_AMP_LM48110                     3
 // Max output limit changes based on AMP
-#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 140 // Limit audio to 0.5W output for SMS1515-08H04 LF Speaker (8 OHM,87db,0.5W)
+/* AG 1/27/26 - Kent requested to turn amp up to 1W (150 -> 18) to make voices more clear in videos - Tested unit for a day in the oven and accepted risk */
+#define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 150 // Limit audio to 0.5W output for SMS1515-08H04 LF Speaker (8 OHM,87db,0.5W)
 
 #ifndef UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL
     #define UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL  UEZ_DEFAULT_ONBOARD_SPEAKER_AUDIO_LEVEL_LM48110 // Limit audio to 0.5W output
@@ -101,7 +102,7 @@
 
 // Set default audio levels for this platform
 #ifndef UEZ_DEFAULT_AUDIO_LEVEL
-    #define UEZ_DEFAULT_AUDIO_LEVEL  192 // default master volume level in range of 0-255. Will be scaled to allowed AMP volume.
+    #define UEZ_DEFAULT_AUDIO_LEVEL  255 // default master volume level in range of 0-255. Will be scaled to allowed AMP volume.
 #endif
 
 // Define these for your own speakers or headphones.

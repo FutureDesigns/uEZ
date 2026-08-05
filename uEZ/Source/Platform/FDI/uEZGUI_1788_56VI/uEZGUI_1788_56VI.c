@@ -155,11 +155,11 @@ T_uezTask G_mainTask;
  *---------------------------------------------------------------------------*/
 //Allocate general purpose frames memory
 #if (MAX_NUM_FRAMES > 0)
-//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]); // only allocate 2 permanent frames, might be compatible with emWin, but not FDI demos
-UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [FRAME_SIZE*2]); // only allocate 2 frames permanently, use heap for more
+//static UEZ_PUT_SECTION(".frames", TUInt8 _framesMemory [LCD_FRAMES_SIZE]); // only allocate 2 permanent frames, might be compatible with emWin, but not FDI demos
+static UEZ_PUT_SECTION(".frames", TUInt8 _framesMemory [FRAME_SIZE*2]); // only allocate 2 frames permanently, use heap for more
 TUInt8 *_framesMemoryptr = _framesMemory;
 #else // LCD not being used, don't create frames section
-//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]); // don't create a dummy frames section anymore
+//static UEZ_PUT_SECTION(".frames", TUInt8 _framesMemory [4]); // don't create a dummy frames section anymore
 TUInt8 *_framesMemoryptr = (TUInt8 *) UEZBSP_SDRAM_BASE_ADDR; // dummy variable that we aren't using if we don't call framebuffer code.
 #endif
 
@@ -176,7 +176,7 @@ TUInt8 *_framesMemoryptr = (TUInt8 *) UEZBSP_SDRAM_BASE_ADDR; // dummy variable 
 #if (DO_NOT_INCLUDE_LPC17XX40XX_CODE_READ_PROTECTION_1 == 1)
     // Create this define set to 1 in application code to allow for only setting CRP1 in a bootloader.
 #else
-UEZ_PUT_SECTION(".crp1", static const TUInt32 G_LPC17XX40XX_CRP1 = 0xFFFFFFFF);
+static UEZ_PUT_SECTION(".crp1", const TUInt32 G_LPC17XX40XX_CRP1 = 0xFFFFFFFF);
 TUInt32 *_crp1ptr = (TUInt32 * const)&G_LPC17XX40XX_CRP1;
 #endif
 
@@ -193,7 +193,7 @@ volatile TUInt8 *_usbMemoryptr = G_usbHostMemory;
 #else
   #if UEZGUI_EXP_BRK_OUT    // mci memory should exist
   #else // The below is equivalent to NUM_MAX_BLOCKS == 16 in LPC17xx_40xx_MCI.c.
-    UEZ_PUT_SECTION(".mcimem", static TUInt8 G_mciDummyMemory[16*136*4]);
+    static UEZ_PUT_SECTION(".mcimem", TUInt8 G_mciDummyMemory[16*136*4]);
     volatile TUInt8 *_mciDummyMemoryptr = G_mciDummyMemory;
   #endif
 #endif
@@ -2852,6 +2852,9 @@ void vMainMPUFaultHandler( unsigned long * pulFaultRegisters )
  *---------------------------------------------------------------------------*/
 int32_t main(void)
 {
+#if (SEGGER_ENABLE_RTT == 1)
+    SEGGER_RTT_ResetStruct(); // clear on reset
+#endif
     UEZBSP_Startup();
     while (1) {
     } // never should get here

@@ -70,6 +70,27 @@ extern "C" {
 /*-------------------------------------------------------------------------*
  * Types:
  *-------------------------------------------------------------------------*/
+// We want to be able to use netcon pointers, flag, rx data, len, etc in UDP applications.
+
+typedef enum {
+    SOCKET_STATE_FREE, SOCKET_STATE_CREATED, SOCKET_STATE_LISTENING
+} T_lwIPSocketState;
+
+typedef TUInt16 T_lwIPSocketFlags;
+#define SOCKET_FLAG_CONNECTED           (1<<0)
+
+typedef struct {
+    T_lwIPSocketState iState;
+    T_uezNetworkSocketType iType;
+    TUInt16 iPort;
+    volatile T_lwIPSocketFlags iFlags;
+    TUInt16 iSourcePort;
+    struct netconn *iNetconn;
+    struct netbuf *iReceiveNetBuf;
+    TUInt8 *iReceiveData;
+    TUInt16 iReceiveLength;
+    TUInt16 iReceiveRemaining;
+} T_lwIPSocket;
 
 /*-------------------------------------------------------------------------*
  * Prototypes:

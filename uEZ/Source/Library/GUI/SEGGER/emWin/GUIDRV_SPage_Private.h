@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_SPage_Private.h
@@ -185,6 +185,7 @@ static I32 _GetDevProp_##EXT(GUI_DEVICE * pDevice, int Index) { \
   case LCD_DEVCAP_MIRROR_X: return MX;                          \
   case LCD_DEVCAP_MIRROR_Y: return MY;                          \
   case LCD_DEVCAP_SWAP_XY:  return SWAP;                        \
+  default:                  break;                              \
   }                                                             \
   return _GetDevProp(pDevice, Index);                           \
 }
@@ -217,11 +218,12 @@ int    GUIDRV__SPage_Init      (GUI_DEVICE * pDevice);
 *
 **********************************************************************
 */
-void GUIDRV__SPage_WriteCache  (DRIVER_CONTEXT * pContext, int x, int Page, U8 Data);
-U8   GUIDRV__SPage_ReadCache   (DRIVER_CONTEXT * pContext, int x, int Page);
-void GUIDRV__SPage_FlushCache  (DRIVER_CONTEXT * pContext);
-void GUIDRV__SPage_AddDirtyRect(DRIVER_CONTEXT * pContext, int Page0, int Page1, int x0, int x1);
-int  GUIDRV__SPage_ControlCache(GUI_DEVICE * pDevice, int Cmd);
+void   GUIDRV__SPage_WriteCache  (DRIVER_CONTEXT * pContext, int x, int Page, U8 Data);
+U8     GUIDRV__SPage_ReadCache   (DRIVER_CONTEXT * pContext, int x, int Page);
+void   GUIDRV__SPage_FlushCache  (DRIVER_CONTEXT * pContext);
+void   GUIDRV__SPage_AddDirtyRect(DRIVER_CONTEXT * pContext, int Page0, int Page1, int x0, int x1);
+int    GUIDRV__SPage_ControlCache(GUI_DEVICE * pDevice, int Cmd);
+void * GUIDRV__SPage_GetCacheAddr(GUI_DEVICE * pDevice);
 
 /*********************************************************************
 *

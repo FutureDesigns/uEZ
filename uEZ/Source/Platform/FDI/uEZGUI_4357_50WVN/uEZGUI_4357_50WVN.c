@@ -193,11 +193,11 @@ T_uezTimerCallback G_sysTickCallback;
  *---------------------------------------------------------------------------*/
 //Allocate general purpose frames memory
 #if (MAX_NUM_FRAMES > 0)
-//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [LCD_FRAMES_SIZE]); // only allocate 2 permanent frames, might be compatible with emWin, but not FDI demos
-UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [FRAME_SIZE*2]); // only allocate 2 frames permanently, use heap for more
+//static UEZ_PUT_SECTION(".frames", TUInt8 _framesMemory [LCD_FRAMES_SIZE]); // only allocate 2 permanent frames, might be compatible with emWin, but not FDI demos
+static UEZ_PUT_SECTION(".frames", TUInt8 _framesMemory [FRAME_SIZE*2]); // only allocate 2 frames permanently, use heap for more
 TUInt8 *_framesMemoryptr = _framesMemory;
 #else // LCD not being used, don't create frames section
-//UEZ_PUT_SECTION(".frames", static TUInt8 _framesMemory [4]); // don't create a dummy frames section anymore
+//static UEZ_PUT_SECTION(".frames", TUInt8 _framesMemory [4]); // don't create a dummy frames section anymore
 TUInt8 *_framesMemoryptr = (TUInt8 *) UEZBSP_SDRAM_BASE_ADDR; // dummy variable that we aren't using if we don't call framebuffer code.
 #endif
 
@@ -216,15 +216,15 @@ TUInt8 *_framesMemoryptr = (TUInt8 *) UEZBSP_SDRAM_BASE_ADDR; // dummy variable 
 #if (DO_NOT_INCLUDE_LPC43XX_CODE_READ_PROTECTION_1 == 1)
     // Create this define set to 1 in application code to allow for only setting CRP1 in a bootloader.
 #else
-UEZ_PUT_SECTION(".crp1", static const TUInt32 G_LPC43XX_CRP1 = 0xFFFFFFFF);
+static UEZ_PUT_SECTION(".crp1", const TUInt32 G_LPC43XX_CRP1 = 0xFFFFFFFF);
 TUInt32 *_crp1ptr = (TUInt32 * const)&G_LPC43XX_CRP1;
 #endif
 
 #ifndef BBL_BASE_ADDRESS // Don't include anything in the second flash section in a bootloader application.
 // We want to fill or put some kind of data in bank b at the very start of it to make sure that image generation is correct.
-UEZ_PUT_SECTION(".fillFlashB0", static const TUInt32 G_LPC43XX_CRP2_FILL = 0x6C6C6946);
+static UEZ_PUT_SECTION(".fillFlashB0", const TUInt32 G_LPC43XX_CRP2_FILL = 0x6C6C6946);
 //TUInt32 *_crp2fillptr  = (TUInt32 * const)&G_LPC43XX_CRP2_FILL;
-UEZ_PUT_SECTION(".crp2", static const TUInt32 G_LPC43XX_CRP2 = 0xFFFFFFFF);
+static UEZ_PUT_SECTION(".crp2", const TUInt32 G_LPC43XX_CRP2 = 0xFFFFFFFF);
 TUInt32 *_crp2ptr  = (TUInt32 * const)&G_LPC43XX_CRP2;
 #endif
 #endif
@@ -3117,7 +3117,7 @@ void vMainMPUFaultHandler( unsigned long * pulFaultRegisters ) {
     );
 #endif
 #ifdef CORE_M0
-// TODO create appropriate ASM for these cores or use cmsis instrisics
+// TODO create appropriate ASM for these cores or use cmsis intrinsics
     __asm volatile
     (
     ""
@@ -3142,6 +3142,8 @@ T_LPC43xx_M4_CORE_Workspace G_M4_CORE_Workspace;
 #ifdef CORE_M0SUB
 // TODO
 #endif
+
+//UEZ_PUT_SECTION(".coreshare", struct struct_to_share_between_cores); // example placement in shared RAM
 
 // Register and intializae the interrupt. Untested so far.
 void uEZPlatform_Register_InterCore_WS(void)
@@ -3191,7 +3193,7 @@ void uEZPlatform_Start_Additonal_Cores(void)
     Chip_RGU_ClearReset(RGU_M0APP_RST); // Must trigger reset above, before clearing it here.
     LPC_RGU->RESET_STATUS3 &= ~(RGU_RESET_STATUS3_M0APP_RST_Msk); // clear reset status
     if((LPC_RGU->RESET_ACTIVE_STATUS1 & RGU_RESET_ACTIVE_STATUS1_M0APP_RST_Msk) == RGU_RESET_ACTIVE_STATUS1_M0APP_RST_Msk) {
-        // M0 came out of reset
+        DEBUG_SV_Print("M0 Reset Release"); // M0 came out of reset
     }
     
 #if 0 // M0Sub starting
@@ -3199,7 +3201,7 @@ void uEZPlatform_Start_Additonal_Cores(void)
     Chip_RGU_ClearReset(RGU_M0SUB_RST); //
     LPC_RGU->RESET_STATUS0 &= ~(RGU_RESET_STATUS0_M0SUB_RST_Msk); // clear reset status
     if((LPC_RGU->RESET_ACTIVE_STATUS0 & RGU_RESET_ACTIVE_STATUS0_M0SUB_RST_Msk) == RGU_RESET_ACTIVE_STATUS0_M0SUB_RST_Msk) {
-        // M0 Sub came out of reset
+        DEBUG_SV_Print("M0S Reset Release"); // M0 Sub came out of reset
     }
 #endif
 
@@ -3208,11 +3210,12 @@ void uEZPlatform_Start_Additonal_Cores(void)
 
 #ifdef CORE_M0 // Enable RITIMER interrupt.
 #include "FreeRTOS.h" // Can Get FreeRTOS config settings to configure tick rate or some other settings.
-extern void xPortSysTickHandler( void );
+extern void SysTick_Handler( void );
 
 #if (SEGGER_ENABLE_SYSTEM_VIEW == 1) // For SEGGER System View Time stamping
 // Make sure tick suppression is off, so that normal ticks are used and a small divider is used for higher resolution.
 #define SYSVIEW_TIMESTAMP_FREQ  (configCPU_CLOCK_HZ) // Frequency of the timestamp. Must match SEGGER_SYSVIEW_GET_TIMESTAMP in SEGGER_SYSVIEW_FreeRTOS.c
+#define SYSVIEW_CYCLES_PER_TICK (SYSVIEW_TIMESTAMP_FREQ/configTICK_RATE_HZ) // normally 204000 on this part for 1ms tick
 
 /*********************************************************************
 *
@@ -3231,15 +3234,27 @@ extern void xPortSysTickHandler( void );
 *   disabled. Therefore locking here is not required.
 */
 U32 SEGGER_SYSVIEW_X_GetTimestamp_Port_Specific(void) {
+// Get the cycles of the current system tick. 
+// For implementing this manually on timers both the up and down counting timer versions are shown.
+// If switching to a differnet timer peripheral you may need to swap which code is included.
+
+// If using SysTick down-counting, subtract the current value from the number of cycles per tick.
+//  U32 Cycles = (CyclesPerTick - LPC_RITIMER->COUNTER); // cycles per tick minus current value
+
+  U32 Cycles = (LPC_RITIMER->COUNTER); // this timer is up counting, so no subtraction
   U32 TickCount = SEGGER_SYSVIEW_TickCnt;
-  U32 Cycles = LPC_RITIMER->COUNTER;
-  
+
   if (NVIC_GetPendingIRQ(M0_RITIMER_OR_WWDT_IRQn)) {   // Check if timer interrupt pending ...
-    Cycles = LPC_RITIMER->COUNTER; // Interrupt pending, re-read timer and adjust result
+   // Interrupt pending, re-read timer and adjust result
+    //Cycles = (SYSVIEW_CYCLES_PER_TICK - LPC_RITIMER->COUNTER); // if a down counter was used subtract
+    Cycles = (LPC_RITIMER->COUNTER); // if an up counter is used no subtraction
     TickCount++;
   }
-  return ((SYSVIEW_TIMESTAMP_FREQ/configTICK_RATE_HZ) * TickCount) + Cycles;
+
+  Cycles += TickCount * SYSVIEW_CYCLES_PER_TICK;
+  return Cycles;
 }
+
 #endif
 
 static void IRITimerProcessIRQ(void)
@@ -3250,10 +3265,13 @@ static void IRITimerProcessIRQ(void)
     } else {
       LPC_GPIO_PORT->SET[7] |= (1 << 17); // set on
     }
-#endif    
+#endif
     LPC_RITIMER->CTRL |= RITIMER_CTRL_RITINT_Msk; // Must clear interrupt every time for proper reload and timing.
     // Run RTOS tick here.
-    xPortSysTickHandler();
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+    SEGGER_SYSVIEW_TickCnt++; // <<-- Increment SEGGER_SYSVIEW_TickCnt asap.
+#endif
+    SysTick_Handler(); // map RTOS tick to this
 }
 
 // Even though the header file lists a SysTick on M0 it doesn't exist, so use RITIMER here instead. 
@@ -3292,14 +3310,20 @@ void vPortSetupTimerInterrupt( void )
  *---------------------------------------------------------------------------*/
 int main(void)
 {
-  // To be able to check RTOS check we need to finish SystemInit and actually clear/init RAM first.
+  // To be able to check if RTOS was initialized we need to finish SystemInit and actually clear/init RAM first.
   // Starting here we can check it.
 
   // At start we are in PD0_SLEEP0_HW_ENA = 0x1 mode and second/third cores are being held in RESET.
   // Note that some low power modes on these parts have issues that FDI didn't test/workaround.
   // So make sure to thoroughly read the manual and errata to put either M4 or M0 in a sleep mode.
+  
+  /* For some sleep errata on various Cortex-Ms if there is a cache corruption issue, and you use the built-in CMSIS WFI functions for stop modes,
+   * then you need to add NOPs and force reads (for cache) in a customized copy of the CMSIS functions to force refresh before any return of the function call, to avoid wrong return from if cache isn't woken up yet. */
 
 #ifdef CORE_M4
+#if (SEGGER_ENABLE_RTT == 1)
+    SEGGER_RTT_ResetStruct(); // clear on reset on the first core that is started
+#endif
     // We want to call this before starting M0, so that full init takes place. (GPIO, PLL, SDRAM, etc)
     UEZBSP_Startup();
 #endif
@@ -3309,11 +3333,21 @@ int main(void)
           UEZBSPDelayMS(1000);
           UEZBSP_HEARTBEAT_TOGGLE();
       }
-  #else
+  #else // by default start the RTOS
+      #if (USE_MULTICORE_RTT_SYSTEM_VIEW == 0)
+        SEGGER_RTT_ResetStruct(); // each core has a separate RTT buffer, so clear it
+      #endif
+
+      #if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+        // Is there any further synchronization that needs to be performed? Need to check with a GPIO.
+      #endif
       UEZBSP_Startup(); // start RTOS
   #endif
 #endif
 #ifdef CORE_M0SUB
+    #if (USE_MULTICORE_RTT_SYSTEM_VIEW == 0)
+      SEGGER_RTT_ResetStruct(); // each core has a separate RTT buffer, so clear it
+    #endif
     while (1) {
         UEZBSPDelayMS(1000);
         UEZBSP_HEARTBEAT_TOGGLE();

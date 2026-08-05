@@ -901,6 +901,10 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     TUInt16 v;
 #endif
 
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    p->iPhyTimeoutDetect = 0; // reset the counter every re-init attempt
+#endif
+
     // Because the LPC43xx has a problem with EMAC's that are missing,
     // we will detect the EMAC using bit bang I2C
     // Don't allow this if not detected
@@ -957,6 +961,10 @@ T_uezError LPC43xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettings)
     LPC_ETHERNET->MAC_CONFIG =  (3<<17) | (1<<15) | (1 << 14) | (1<<13) | (1 << 11) | (1 << 10);
 
     /* Setup default filter */
+    // TODO add hash and promiscuous mode options here
+    // This is currently setting promiscuous mode and receive all settings, not the same broadcast/multicast as the other driver.
+    // The reason this register is set this way is that unicast/multicast must use the hash table, but it isn't implemented yet.
+    // TODO check if setting bit 10 can allow the programmed MAC with the hash table.
     LPC_ETHERNET->MAC_FRAME_FILTER = (1<<0) | (1UL<<31);
 
     UEZTaskDelay(500);

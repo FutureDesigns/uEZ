@@ -31,7 +31,7 @@ $[ifdef LPC546X]  Project.SetDevice ("LPC54608J512 (allow ECRP)");
   Project.AddSvdFile ("$(InstallDir)/Config/Peripherals/ARMv7M.svd");$[endif]$[SkipNewLine]
 $[ifdef LPC4357]  Project.SetDevice ("LPC4357_M4");
   Project.SetHostIF ("USB", "");
-  Project.SetTargetIF ("SWD");
+  Project.SetTargetIF ("JTAG");
   Project.SetTIFSpeed ("50 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M4F.svd");
   Project.AddSvdFile ("$(InstallDir)/Config/Peripherals/ARMv7M.svd");$[endif]$[SkipNewLine]
@@ -39,8 +39,16 @@ $[ifdef LPC4357]  Project.SetDevice ("LPC4357_M4");
   //
   // User settings
   //
-  Project.SetOSPlugin("FreeRTOSPlugin"); // have to manually set this for RTOS menu to be available
-  File.Open ("$(ProjectDir)/THUMB Flash Debug/$[sym project_name].elf"); // set the elf file name
+  // Include an RTOS plugin to be able to see tasks.
+$[ifdef LPC1788]  Project.SetOSPlugin("FreeRTOSPlugin_Cortex-M"); $[endif]$[SkipNewLine]
+$[ifdef LPC4088]  Project.SetOSPlugin("FreeRTOSPlugin_Cortex-M"); $[endif]$[SkipNewLine]
+$[ifdef LPC546X]  Project.SetOSPlugin("FreeRTOSPlugin_Cortex-M"); $[endif]$[SkipNewLine]
+$[ifdef LPC4357]  Project.SetOSPlugin("FreeRTOSPlugin_Cortex-M"); $[endif]$[SkipNewLine]
+
+  // Open an elf file to debug. Duplicate this file then change the below to create projects for other builds.
+  File.Open ("$(ProjectDir)/Debug_Heap4/$[sym project_name].elf"); // set the elf file name
+  //File.Open ("$(ProjectDir)/Release_Heap4/$[sym project_name].elf"); // set the elf file name
+  //File.Open ("$(ProjectDir)/Debug_CLANG/$[sym project_name].elf"); // set the elf file name
 }
 
 /*********************************************************************

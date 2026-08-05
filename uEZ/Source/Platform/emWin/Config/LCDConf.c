@@ -225,7 +225,11 @@ static void _CopyBuffer(int32_t LayerIndex, int32_t IndexSrc, int32_t IndexDst) 
   //
   AddrSrc    = VRAM_ADDR + (BufferSize * IndexSrc);
   AddrDst    = VRAM_ADDR + (BufferSize * IndexDst);
+
+  // Select a memcpy routine to use. Typically LCD buffers should be fully aligned and multiples of 4 bytes, allowing for faster memcpy to be used.
   memcpy((void *)AddrDst, (void *)AddrSrc, BufferSize);
+  //memcpy_4lw_unaligned_no_ret((void *)AddrDst, (void *)AddrSrc, BufferSize); // this version allows unaligned
+  //memcpy_4x_longword_no_ret((void *)AddrDst, (void *)AddrSrc, BufferSize); // full LCD framebuffer should always be aligned
 }
 
 #endif

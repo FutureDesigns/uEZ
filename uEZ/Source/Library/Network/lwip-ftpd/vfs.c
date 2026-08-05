@@ -168,9 +168,15 @@ struct tm current_time_val = {
 	.tm_min  = 0
 };
 struct tm* gmtime(const time_t* c_t) {
-    (void) c_t;
+   (void) c_t;
 
+    // convert seconds to tm struct. Typical MCU RTCs don't support microsecond time setting in RTC.
+#if defined(_WIN32) || defined(WIN32) || defined ( __ICCARM__ )
+    struct tm *t = localtime(c_t); // This specifically is working in IAR
+    memcpy(&current_time_val, t, sizeof(struct tm));  
+#else // GCC, newlib, etc.
     localtime_r(c_t, &current_time_val); // convert to local time
+#endif
 
     return &current_time_val;
 }

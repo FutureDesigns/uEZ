@@ -65,9 +65,9 @@
 
 // smaller demos
 #define SHOW_GUIDEMO_SPEED                  0
-#define SHOW_GUIDEMO_AATEXT                 1
+#define SHOW_GUIDEMO_AATEXT                 0
 #define SHOW_GUIDEMO_BARGRAPH               1
-#define SHOW_GUIDEMO_COLORBAR               1
+#define SHOW_GUIDEMO_COLORBAR               0
 #define SHOW_GUIDEMO_CURSOR                 0
 
 // large demos

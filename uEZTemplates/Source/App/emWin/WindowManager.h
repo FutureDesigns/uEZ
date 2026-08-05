@@ -70,7 +70,8 @@ void WindowManager_ShowSystemSetupScreen(void);
 void WindowManager_BackLight_On(TUInt8 alevel);
 void WindowManager_BackLight_Off(void);
 void WindowManager_SaveScreenShotBMP(char driveNumber);
-
+int APP_GetData(void * p, const U8 ** ppData, unsigned NumBytes, U32 Off);
+void WindowManager_Check_Memory_Usage(void);
 
 #endif /* _WindowManager_H */
 /*-------------------------------------------------------------------------*

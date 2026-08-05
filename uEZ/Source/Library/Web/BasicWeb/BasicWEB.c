@@ -211,13 +211,15 @@ TUInt32 BasicWEBServerTask(T_uezTask aMyTask, void *aParameters)
 {
     T_uezNetworkSocket socket;
     T_uezNetworkSocket newSocket;
+    T_uezError currentSocketError;
     T_uezDevice aNetwork = (T_uezDevice)aParameters;
     PARAM_NOT_USED(aMyTask);
 
     lwip_socket_thread_init(); // initialize per thread semaphore if used, creates new semaphore for this thread
     /* Create a new tcp connection handle */
-    if (UEZNetworkSocketCreate(aNetwork, UEZ_NETWORK_SOCKET_TYPE_TCP,
-            &socket) == UEZ_ERROR_NONE) {
+    currentSocketError = UEZNetworkSocketCreate(aNetwork, UEZ_NETWORK_SOCKET_TYPE_TCP,
+            &socket);
+    if (currentSocketError == UEZ_ERROR_NONE) {
         // Setup the socket to be on the HTTP port
         UEZNetworkSocketBind(aNetwork, socket, 0, webHTTP_PORT);
         // Put the socket into listen mode
@@ -236,6 +238,10 @@ TUInt32 BasicWEBServerTask(T_uezTask aMyTask, void *aParameters)
                 UEZNetworkSocketDelete(aNetwork, newSocket);
             }
         }
+    } else {
+      if (currentSocketError == UEZ_ERROR_OUT_OF_HANDLES) {
+      
+      }
     }
     lwip_socket_thread_cleanup(); // clean up semaphores
     while (1) {
@@ -283,7 +289,7 @@ void UEZGetTaskInfo(char* aBuffer, char* aLineBuffer)
       for( x = 0; x < uxArraySize; x++ ) { // For each populated position in the pxTaskStatusArray array
           if(x > 14) { // stop before overflowing the webMAX_PAGE_SIZE, only up to 15 tasks.
             // roughly each task line adds about 65-70 bytes to the total
-            printf("Dynamic Page Limit Reached");
+            printf("Dynamic Page Limit Reached, showing %u out of %u task lines.\n", (unsigned int) x, (unsigned int)uxArraySize);
             break;
           }
           sprintf(aLineBuffer, "%10s: ", pxTaskStatusArray[x].pcTaskName);

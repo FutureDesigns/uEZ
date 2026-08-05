@@ -672,8 +672,9 @@ void UEZLCDScreensaverTask(void)
         }
         UEZTaskDelay(50);
     }
-        G_ssState = LCD_SS_STOPPED;
+    G_ssState = LCD_SS_STOPPED;
     G_ssTaskActive = EFalse;
+    G_ssTask = 0; // task will exit and be deleted
 }
 
 T_uezError UEZLCDScreensaverStart(
@@ -693,7 +694,7 @@ T_uezError UEZLCDScreensaverStart(
         return UEZTaskCreate(
             (T_uezTaskFunction)UEZLCDScreensaverTask, 
             "Screensaver",
-            UEZ_TASK_STACK_BYTES(512), 0,
+            UEZ_TASK_STACK_BYTES(896), 0, // give about 50% extra more than we need as it changes per build/driver
             UEZ_PRIORITY_HIGH, &G_ssTask);
         
     } else {

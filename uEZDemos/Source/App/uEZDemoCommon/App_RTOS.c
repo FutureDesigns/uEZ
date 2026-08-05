@@ -115,7 +115,7 @@ void Processing_Before_Start_Kernel(void)
 }
 
 /*-----------------------------------------------------------*/
-#if ( configSUPPORT_STATIC_ALLOCATION == 1 )
+#if ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configKERNEL_PROVIDED_STATIC_MEMORY == 0 ) && ( portUSING_MPU_WRAPPERS == 0 ) )
 void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
                                         StackType_t ** ppxIdleTaskStackBuffer,
                                         uint32_t * pulIdleTaskStackSize )
@@ -131,15 +131,16 @@ void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
   *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
 
   /* Pass out the array that will be used as the Idle task's stack. */
-  *ppxIdleTaskStackBuffer = uxIdleTaskStack;
+  *ppxIdleTaskStackBuffer = &( uxIdleTaskStack[ 0 ] );
 
   /* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
   Note that, as the array is necessarily of type StackType_t,
   configMINIMAL_STACK_SIZE is specified in words, not bytes. */
   *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
+#endif
 
-#if (configUSE_TIMERS == 1)
+#if ( ( configSUPPORT_STATIC_ALLOCATION == 1 ) && ( configKERNEL_PROVIDED_STATIC_MEMORY == 0 ) && ( portUSING_MPU_WRAPPERS == 0 ) && ( configUSE_TIMERS == 1 ) )
 void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
                                          StackType_t ** ppxTimerTaskStackBuffer,
                                          uint32_t * pulTimerTaskStackSize)
@@ -155,15 +156,13 @@ void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
   *ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
 
   /* Pass out the array that will be used as the Timer task's stack. */
-  *ppxTimerTaskStackBuffer = uxTimerTaskStack;
+  *ppxTimerTaskStackBuffer = &( uxTimerTaskStack[ 0 ] );
 
   /* Pass out the size of the array pointed to by *ppxTimerTaskStackBuffer.
   Note that, as the array is necessarily of type StackType_t,
   configTIMER_TASK_STACK_DEPTH is specified in words, not bytes. */
   *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }
-#endif
-
 #endif
 
 /*-----------------------------------------------------------*/

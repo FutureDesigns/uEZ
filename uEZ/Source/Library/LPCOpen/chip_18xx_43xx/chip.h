@@ -29,7 +29,7 @@
 #ifndef __CHIP_H_
 #define __CHIP_H_
 
-#include "CMSIS/LPC43xx.h"
+#include "LPC43xx.h"
 
 #include <uEZ.h>
 

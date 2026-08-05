@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_Private.h
@@ -223,6 +223,7 @@ void              GUI_MEMDEV__WriteToActiveAt    (GUI_MEMDEV_Handle hMem,int x, 
 void              GUI_MEMDEV__WriteToActiveOpaque(GUI_MEMDEV_Handle hMem,int x, int y);
 void            * GUI_MEMDEV__XY2PTR             (int x,int y);
 void            * GUI_MEMDEV__XY2PTREx           (GUI_MEMDEV * pDev, int x,int y);
+void            * GUI_MEMDEV__XY2PTRStride       (int x, int y, int * pBytesPerLine);
 void              GUI_MEMDEV__BlendColor32       (GUI_MEMDEV_Handle hMem, U32 BlendColor, U8 BlendIntens);
 
 unsigned GUI__AlphaPreserveTrans(int OnOff);
@@ -285,25 +286,29 @@ U32    * GUI__DoAlphaBlending   (int x, int y, U32 * pData, int xSize, tLCDDEV_I
 unsigned GUI__SetAlphaBufferSize(int xSize);
 
 /* System independent font routines */
-int        GUI_SIF__GetCharDistX       (U16P c, int * pSizeX);
-void       GUI_SIF__GetFontInfo        (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
-char       GUI_SIF__IsInFont           (const GUI_FONT * pFont, U16 c);
-const U8 * GUI_SIF__GetpCharInfo       (const GUI_FONT * pFont, U16P c, unsigned SizeOfCharInfo);
-int        GUI_SIF__GetNumCharAreas    (const GUI_FONT * pFont);
-int        GUI_SIF__GetCharDistX_ExtFrm(U16P c, int * pSizeX);
-void       GUI_SIF__GetFontInfo_ExtFrm (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
-char       GUI_SIF__IsInFont_ExtFrm    (const GUI_FONT * pFont, U16 c);
-int        GUI_SIF__GetCharInfo_ExtFrm (U16P c, GUI_CHARINFO_EXT * pInfo);
-void       GUI_SIF__ClearLine_ExtFrm   (const char * s, int Len);
+int        GUI_SIF__GetCharDistX         (U16P c, int * pSizeX);
+void       GUI_SIF__GetFontInfo          (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
+char       GUI_SIF__IsInFont             (const GUI_FONT * pFont, U16 c);
+const U8 * GUI_SIF__GetpCharInfo         (const GUI_FONT * pFont, U16P c, unsigned SizeOfCharInfo);
+int        GUI_SIF__GetNumCharAreas      (const GUI_FONT * pFont);
+int        GUI_SIF__GetCharDistX_ExtFrm  (U16P c, int * pSizeX);
+void       GUI_SIF__GetFontInfo_ExtFrm   (const GUI_FONT * pFont, GUI_FONTINFO * pfi);
+char       GUI_SIF__IsInFont_ExtFrm      (const GUI_FONT * pFont, U16 c);
+int        GUI_SIF__GetCharInfo_ExtFrm   (U16P c, GUI_CHARINFO_EXT * pInfo);
+void       GUI_SIF__ClearLine_ExtFrm     (const char * s, int Len);
+int        GUI_SIF__GetStringDistX_ExtFrm(const char * s, int Len);
 
 /* External binary font routines */
-int        GUI_XBF__GetOff       (const GUI_XBF_DATA * pXBF_Data, unsigned c, U32 * pOff);
-int        GUI_XBF__GetOffAndSize(const GUI_XBF_DATA * pXBF_Data, unsigned c, U32 * pOff, U16 * pSize);
-int        GUI_XBF__GetCharDistX (U16P c, int * pSizeX);
-void       GUI_XBF__GetFontInfo  (const GUI_FONT * pFont, GUI_FONTINFO * pInfo);
-char       GUI_XBF__IsInFont     (const GUI_FONT * pFont, U16 c);
-int        GUI_XBF__GetCharInfo  (U16P c, GUI_CHARINFO_EXT * pInfo);
-void       GUI_XBF__ClearLine    (const char * s, int Len);
+int        GUI_XBF__GetOff        (const GUI_XBF_DATA * pXBF_Data, unsigned c, U32 * pOff);
+int        GUI_XBF__GetOffAndSize (const GUI_XBF_DATA * pXBF_Data, unsigned c, U32 * pOff, U16 * pSize);
+int        GUI_XBF__GetCharDistX  (U16P c, int * pSizeX);
+void       GUI_XBF__GetFontInfo   (const GUI_FONT * pFont, GUI_FONTINFO * pInfo);
+char       GUI_XBF__IsInFont      (const GUI_FONT * pFont, U16 c);
+int        GUI_XBF__GetCharInfo   (U16P c, GUI_CHARINFO_EXT * pInfo);
+void       GUI_XBF__ClearLine     (const char * s, int Len);
+int        GUI_XBF__GetStringDistX(const char * s, int Len);
+
+void GUI_Swap(void * p0, void * p1, size_t Size);
 
 /* Conversion routines */
 void GUI_AddHex     (U32 v, U8 Len, char ** ps);
@@ -312,6 +317,9 @@ void GUI_AddDecMin  (I32 v, char ** ps);
 void GUI_AddDecShift(I32 v, U8 Len, U8 Shift, char ** ps);
 long GUI_AddSign    (long v, char ** ps);
 int  GUI_Long2Len   (I32 v);
+
+void * GUI__C2D(const void * c);
+void * GUI__F2D(void (* pFunc)(void));
 
 #define GUI_UC__GetCharSize(sText)  GUI_pUC_API->pfGetCharSize(sText)
 #define GUI_UC__GetCharCode(sText)  GUI_pUC_API->pfGetCharCode(sText)
@@ -353,10 +361,12 @@ void GUI__ClearTextBackground(int xDist, int yDist);
 int  GUI__WrapGetNumCharsDisp       (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
 int  GUI__WrapGetNumCharsToNextLine (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
 int  GUI__WrapGetNumBytesToNextLine (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
-void GUI__memset16  (U16 * p, U16 Fill, int NumWords);
-int  GUI__strlen    (const char * s);
-int  GUI__strcmp    (const char * s0, const char * s1);
-int  GUI__strcmp_hp (GUI_HMEM hs0, const char * s1);
+void GUI__memset16   (U16 * p, U16 Fill, int NumWords);
+int  GUI__strlen     (const char * s);
+int  GUI__strcmp     (const char * s0, const char * s1);
+int  GUI__strcmp_hp  (GUI_HMEM hs0, const char * s1);
+int  GUI__strncasecmp(const char * s1, const char * s2, size_t Length);
+
 
 /* Get cursor position */
 int  GUI__GetCursorPosX     (const char * s, int Index, int MaxNumChars);
@@ -386,8 +396,6 @@ U16          GUI__NOBIDI_GetCursorCharacter(const char * s, int Index, int MaxNu
 int          GUI__NOBIDI_GetWordWrap       (const char * s, int xSize, int * pxDist);
 int          GUI__NOBIDI_GetCharWrap       (const char * s, int xSize);
 
-#if (GUI_USE_BIDI2)
-
 #define GUI__BIDI_Log2Vis            GUI__BIDI2_Log2Vis
 #define GUI__BIDI_GetCursorPosX      GUI__BIDI2_GetCursorPosX
 #define GUI__BIDI_GetCursorPosChar   GUI__BIDI2_GetCursorPosChar
@@ -414,15 +422,6 @@ void GUI__BIDI_SetBaseDir        (int Dir);
 int  GUI__BIDI_GetBaseDir        (void);
 U16  GUI__BIDI_GetGlyph          (const char * s, int CursorPosByte, int * pByteSize);
 
-#else
-
-#define GUI__BIDI_SetBaseDir
-#define GUI__BIDI_GetBaseDir
-
-#define GUI__BIDI_GetGlyph           NULL
-
-#endif
-
 const char * GUI__BIDI_Log2VisBuffered(const char * s, int * pMaxNumChars, int Mode);
 
 extern int GUI__BIDI_Enabled;
@@ -447,10 +446,15 @@ extern int (* GUI__Wrap_pfGetCharWrap)(const char * s, int xSize);
 const GUI_FONT_PROP * GUIPROP__FindChar(const GUI_FONT_PROP * pProp, U16P c);
 
 /* Extended proportional font support */
-const GUI_FONT_PROP_EXT * GUIPROP_EXT__FindChar(const GUI_FONT_PROP_EXT * pPropExt, U16P c);
-void  GUIPROP_EXT__DispLine      (const char * s, int Len);
-void  GUIPROP_EXT__ClearLine     (const char * s, int Len);
-void  GUIPROP_EXT__SetfpClearLine(void (* fpClearLine)(const char * s, int Len));
+extern int GUIPROP_EXT__Index;
+
+const GUI_CHARINFO_EXT  * GUIPROP_EXT__GetpCharInfo(const GUI_FONT_PROP_EXT * pPropExt, U16P c);
+const GUI_FONT_PROP_EXT * GUIPROP_EXT__FindChar    (const GUI_FONT_PROP_EXT * pPropExt, U16P c);
+
+void  GUIPROP_EXT__DispLine           (const char * s, int Len);
+void  GUIPROP_EXT__ClearLine          (const char * s, int Len);
+int   GUIPROP_EXT__GetStringDistX     (const char * s, int Len);
+void  GUIPROP_EXT__SetfpClearLine     (void (* fpClearLine)(const char * s, int Len));
 
 /* Reading data routines */
 U16 GUI__Read16(const U8 ** ppData);
@@ -464,6 +468,7 @@ int              GUI_TIMER__IsActive       (void);
 GUI_TIMER_TIME   GUI_TIMER__GetPeriod      (void);
 GUI_TIMER_HANDLE GUI_TIMER__GetFirstTimer  (PTR_ADDR * pContext);
 GUI_TIMER_HANDLE GUI_TIMER__GetNextTimerLin(GUI_TIMER_HANDLE hTimer, PTR_ADDR * pContext);
+int              GUI_TIMER__IsTimer        (GUI_TIMER_HANDLE hObj);
 
 /* Get function pointers for color conversion */
 tLCDDEV_Index2Color * GUI_GetpfIndex2ColorEx(int LayerIndex);
@@ -491,6 +496,7 @@ int GUI_GetBitsPerPixelEx(int LayerIndex);
 #define GUI_STREAM_FORMAT_8888       16  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_RLE32      15  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_24         17  /* DO NOT CHANGE */
+#define GUI_STREAM_FORMAT_A8         33  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_RLEALPHA   18  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_444_12     19  /* DO NOT CHANGE */
 #define GUI_STREAM_FORMAT_M444_12    20  /* DO NOT CHANGE */
@@ -617,6 +623,229 @@ extern const GUI_UC_ENC_APILIST GUI_UC_None;
 
 /*********************************************************************
 *
+*       Instrumentation via SystemView
+*
+**********************************************************************
+*/
+/*********************************************************************
+*
+*       Profile event identifiers
+*/
+enum {
+  //
+  // GUI_..
+  //
+  GUI_EVTID_GUI_DRAWBITMAP = 0,
+  GUI_EVTID_GUI_DRAWCIRCLE,
+  GUI_EVTID_GUI_DRAWROUNDEDRECT,
+  GUI_EVTID_GUI_FILLCIRCLE,
+  GUI_EVTID_GUI_FILLROUNDEDRECT,
+  GUI_EVTID_GUI_INIT,
+  GUI_EVTID_GUI_MEMDEV_DRAW,
+  GUI_EVTID_GUI_MULTIBUF_BEGINEX,
+  GUI_EVTID_GUI_MULTIBUF_CONFIRMEX,
+  GUI_EVTID_GUI_MULTIBUF_ENDEX,
+  //
+  // GUI_AA_...
+  //
+  GUI_EVTID_GUI_AA__DRAWCHARAA4,
+  GUI_EVTID_GUI_AA__DRAWCHARAA8,
+  GUI_EVTID_GUI_AA_DRAWARCHR,
+  GUI_EVTID_GUI_AA_DRAWCIRCLE,
+  GUI_EVTID_GUI_AA_DRAWLINE,
+  GUI_EVTID_GUI_AA_DRAWPOLYOUTLINE,
+  GUI_EVTID_GUI_AA_FILLCIRCLE,
+  GUI_EVTID_GUI_AA_FILLPOLYGON,
+  //
+  // GUI__...
+  //
+  GUI_EVTID_GUI__DISPLINE,
+  GUI_EVTID_GUI__DRAWCHAREXT,
+  //
+  // GL_...
+  //
+  GUI_EVTID_GL_DRAWBITMAP,
+  GUI_EVTID_GL_DRAWLINE,
+  //
+  // LCD_...
+  //
+  GUI_EVTID_LCD_DRAWBITMAP,
+  GUI_EVTID_LCD_DRAWHLINE,
+  GUI_EVTID_LCD_DRAWPIXEL,
+  GUI_EVTID_LCD_DRAWVLINE,
+  GUI_EVTID_LCD_FILLRECT,
+  //
+  // WM_...
+  //
+  GUI_EVTID_WM_EXEC,
+  GUI_EVTID_WM__PAINT,
+  GUI_EVTID_WM__PAINTWINANDOVERLAYS,
+  //
+  // Last entry, number of ids.
+  //
+  GUI_NUM_EVTIDS
+};
+
+#define GUI_PROFILE_GET_EVENT_ID(EvtId) ((unsigned)(EvtId) + (unsigned)GUI_pContext->Profile.IdOffset)
+
+/*********************************************************************
+*
+*       GUI_PROFILE_END_CALL
+*/
+#if (GUI_SUPPORT_PROFILE != 0) && (GUI_SUPPORT_PROFILE_END_CALL != 0)
+  #define GUI_PROFILE_END_CALL(EventId)                                                \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                          \
+      GUI_pContext->Profile.pAPI->pfRecordEndCall(GUI_PROFILE_GET_EVENT_ID(EventId));  \
+    }
+#else
+  #define GUI_PROFILE_END_CALL(EventId)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_END_CALL_U32
+*/
+#if (GUI_SUPPORT_PROFILE != 0) && (GUI_SUPPORT_PROFILE_END_CALL != 0)
+  #define GUI_PROFILE_END_CALL_U32(EventId, Para0)                                                      \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                           \
+      GUI_pContext->Profile.pAPI->pfRecordEndCallU32(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0));  \
+    }
+#else
+  #define GUI_PROFILE_END_CALL_U32(EventId, ReturnValue)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_VOID
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_VOID(EventId)                                            \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                       \
+      GUI_pContext->Profile.pAPI->pfRecordVoid(GUI_PROFILE_GET_EVENT_ID(EventId));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_VOID(EventId)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32(EventId, Para0)                                                   \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                    \
+      GUI_pContext->Profile.pAPI->pfRecordU32(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32(EventId, Para0)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32x2
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32x2(EventId, Para0, Para1)                                                          \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                    \
+      GUI_pContext->Profile.pAPI->pfRecordU32x2(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0), (U32)(Para1));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32x2(Id, Para0, Para1)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32x3
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32x3(EventId, Para0, Para1, Para2)                                                                 \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                                  \
+      GUI_pContext->Profile.pAPI->pfRecordU32x3(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0), (U32)(Para1), (U32)(Para2));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32x3(EventId, Para0, Para1, Para2)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32x4
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32x4(EventId, Para0, Para1, Para2, Para3)                                                                        \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                                                \
+      GUI_pContext->Profile.pAPI->pfRecordU32x4(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0), (U32)(Para1), (U32)(Para2), (U32)(Para3));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32x4(EventId, Para0, Para1, Para2, Para3)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32x5
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32x5(EventId, Para0, Para1, Para2, Para3, Para4)                                                                               \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                                                              \
+      GUI_pContext->Profile.pAPI->pfRecordU32x5(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0), (U32)(Para1), (U32)(Para2), (U32)(Para3), (U32)(Para4));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32x5(EventId, Para0, Para1, Para2, Para3, Para4)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32x6
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32x6(EventId, Para0, Para1, Para2, Para3, Para4, Para5)                                                                                      \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                                                                            \
+      GUI_pContext->Profile.pAPI->pfRecordU32x6(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0), (U32)(Para1), (U32)(Para2), (U32)(Para3), (U32)(Para4), (U32)(Para5));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32x6(EventId, Para0, Para1, Para2, Para3, Para4, Para5)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_U32x7
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_U32x7(EventId, Para0, Para1, Para2, Para3, Para4, Para5, Para6)                                                                                             \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                                                                                          \
+      GUI_pContext->Profile.pAPI->pfRecordU32x7(GUI_PROFILE_GET_EVENT_ID(EventId), (U32)(Para0), (U32)(Para1), (U32)(Para2), (U32)(Para3), (U32)(Para4), (U32)(Para5), (U32)(Para6));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_U32x7(EventId, Para0, Para1, Para2, Para3, Para4, Para5, Para6)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_CALL_STRING
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_STRING(EventId, pPara0)                                                            \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                 \
+      GUI_pContext->Profile.pAPI->pfRecordString(GUI_PROFILE_GET_EVENT_ID(EventId), (const char *)(pPara0));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_STRING(EventId, pPara0)
+#endif
+
+/*********************************************************************
+*
+*       GUI_PROFILE_RECORD_API_STRINGx2
+*/
+#if GUI_SUPPORT_PROFILE
+  #define GUI_PROFILE_CALL_STRINGx2(EventId, pPara0, pPara1)                                                                            \
+    if (GUI_pContext->Profile.pAPI != NULL) {                                                                                           \
+      GUI_pContext->Profile.pAPI->pfRecordStringx2(GUI_PROFILE_GET_EVENT_ID(EventId), (const char *)(pPara0), (const char *)(pPara1));  \
+    }
+#else
+  #define GUI_PROFILE_CALL_STRINGx2(EventId, pPara0, pPara1)
+#endif
+
+/*********************************************************************
+*
 *       LCDDEV_L0_xxx
 *
 **********************************************************************
@@ -693,6 +922,7 @@ extern LCD_PIXELINDEX * (* GUI_pfGetpPalConvTable)(const LCD_LOGPALETTE * pLogPa
 //
 // Function pointer for mixing up 2 colors
 //
+extern LCD_COLOR (* LCD__pfMixColors)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
 extern LCD_COLOR (* GUI__pfMixColors)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
 
 //
@@ -726,48 +956,42 @@ extern const GUI_MULTIBUF_API    GUI_MULTIBUF_APIList;
 extern const GUI_MULTIBUF_API    GUI_MULTIBUF_APIListMasked;
 extern const GUI_MULTIBUF_API_EX GUI_MULTIBUF_APIListEx;
 
-#ifdef  GL_CORE_C
-  #define GUI_EXTERN
-#else
-  #define GUI_EXTERN extern
-#endif
-
-GUI_EXTERN   void (* GUI_pfExecAnimations)(void);
-GUI_EXTERN   int  (* GUI_pfUpdateSoftLayer)(void);
+extern void (* GUI_pfExecAnimations)(void);
+extern int  (* GUI_pfUpdateSoftLayer)(void);
 
 #ifdef WIN32
-  GUI_EXTERN void (* GUI_pfSoftlayerGetPixel)(int x, int y, void * p);
+  extern void (* GUI_pfSoftlayerGetPixel)(int x, int y, void * p);
 #endif
 
-GUI_EXTERN void (* GUI_pfHookMTOUCH)(const GUI_MTOUCH_STATE * pState);
+extern void (* GUI_pfHookMTOUCH)(const GUI_MTOUCH_STATE * pState);
 
-GUI_EXTERN tGUI_GetGlyph * GUI_UC_pfGetGlyph;
+extern void (* GUI_pfManageCursor)(int Layer, int OnOff);
 
-GUI_EXTERN const GUI_UC_ENC_APILIST * GUI_pUC_API; /* Unicode encoding API */
+extern tGUI_GetGlyph * GUI_UC_pfGetGlyph;
 
-GUI_EXTERN GUI_SADDR char             GUI_DecChar;
-GUI_EXTERN           GUI_tfTimer    * GUI_pfTimerExec;
-GUI_EXTERN           WM_tfHandlePID * WM_pfHandlePID;
-GUI_EXTERN   void (* GUI_pfDispCharStyle)(U16 Char);
-GUI_EXTERN   void (* GUI_pfDispCharLine)(int x0);
+extern const GUI_UC_ENC_APILIST * GUI_pUC_API; /* Unicode encoding API */
 
-GUI_EXTERN           int GUI_AA__BufferSize;  // Required buffer size in pixels for alpha blending and/or antialiasing
-GUI_EXTERN           int GUI_AA__ClipX0;      // x0-clipping value for AA module
+extern GUI_SADDR char             GUI_DecChar;
+extern           GUI_tfTimer    * GUI_pfTimerExec;
+extern           WM_tfHandlePID * WM_pfHandlePID;
+extern   void (* GUI_pfDispCharStyle)(U16 Char);
+extern   void (* GUI_pfDispCharLine)(int x0);
 
-GUI_EXTERN           I8  GUI__aNumBuffers[GUI_NUM_LAYERS]; // Number of buffers used per layer
-GUI_EXTERN           U8  GUI__PreserveTrans;
-GUI_EXTERN           U8  GUI__IsInitialized;
+extern           int GUI_AA__BufferSize;  // Required buffer size in pixels for alpha blending and/or antialiasing
+extern           int GUI_AA__ClipX0;      // x0-clipping value for AA module
 
-GUI_EXTERN           U8  GUI__NumLayersInUse;
-GUI_EXTERN           U32 GUI__LayerMask;
+extern           I8  GUI__aNumBuffers[GUI_NUM_LAYERS]; // Number of buffers used per layer
+extern           U8  GUI__PreserveTrans;
+extern           U8  GUI__IsInitialized;
+
+extern           U8  GUI__NumLayersInUse;
+extern           U32 GUI__LayerMask;
 
 #if GUI_SUPPORT_ROTATION
-  GUI_EXTERN const tLCD_APIList * GUI_pLCD_APIList; /* Used for rotating text */
+  extern const tLCD_APIList * GUI_pLCD_APIList; /* Used for rotating text */
 #endif
 
-GUI_EXTERN I16 GUI_OrgX, GUI_OrgY;
-
-#undef GUI_EXTERN
+extern I16 GUI_OrgX, GUI_OrgY;
 
 #if defined(__cplusplus)
 }

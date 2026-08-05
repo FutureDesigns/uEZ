@@ -21,6 +21,7 @@
 #include <uEZDeviceTable.h>
 #endif
 #include "Sensor_Callbacks.h"
+#include <Source/Library/SEGGER/SystemView/SEGGER_SYSVIEW.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -50,8 +51,59 @@ static void IRelease(void)
     UEZSemaphoreRelease(G_Sem);
 }
 
-float G_XAccel, G_YAccel, G_ZAccel; 	// Global Variables for uC/Probe Demo
-float G_Temperature;	                // Global Variable for uC/Probe Demo
+float G_XAccel, G_YAccel, G_ZAccel; 	// Global Variables for tracing Demo
+float G_Temperature;	                // Global Variable for tracing Demo
+
+
+#define SEGGER_SYSVIEW_DATA_ID_ACCEL_X   (0)
+#define SEGGER_SYSVIEW_DATA_ID_ACCEL_Y   (1)
+#define SEGGER_SYSVIEW_DATA_ID_ACCEL_Z   (2)
+ 
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+static const SEGGER_SYSVIEW_DATA_REGISTER regAccelDataX = {
+    .ID = SEGGER_SYSVIEW_DATA_ID_ACCEL_X,
+    .DataType = SEGGER_SYSVIEW_TYPE_FLOAT,
+    .Offset = 0,
+    .RangeMin = 0,
+    .RangeMax = 0,
+    .ScalingFactor = 1.0f, // must be > 0
+    .sName = "Accel X",
+    .sUnit = "g"
+};
+static const SEGGER_SYSVIEW_DATA_REGISTER regAccelDataY = {
+    .ID = SEGGER_SYSVIEW_DATA_ID_ACCEL_Y,
+    .DataType = SEGGER_SYSVIEW_TYPE_FLOAT,
+    .Offset = 0,
+    .RangeMin = 0,
+    .RangeMax = 0,
+    .ScalingFactor = 1.0f, // must be > 0
+    .sName = "Accel Y",
+    .sUnit = "g"
+};
+static const SEGGER_SYSVIEW_DATA_REGISTER regAccelDataZ = {
+    .ID = SEGGER_SYSVIEW_DATA_ID_ACCEL_Z,
+    .DataType = SEGGER_SYSVIEW_TYPE_FLOAT,
+    .Offset = 0,
+    .RangeMin = 0,
+    .RangeMax = 0,
+    .ScalingFactor = 1.0f, // must be > 0
+    .sName = "Accel Z",
+    .sUnit = "g"
+};
+#endif
+const SEGGER_SYSVIEW_DATA_SAMPLE sampleAccelXdata = {
+    .ID = SEGGER_SYSVIEW_DATA_ID_ACCEL_X,
+    .pValue.pFloat= &G_XAccel,
+};
+const SEGGER_SYSVIEW_DATA_SAMPLE sampleAccelYdata = {
+    .ID = SEGGER_SYSVIEW_DATA_ID_ACCEL_Y,
+    .pValue.pFloat= &G_YAccel,
+};
+const SEGGER_SYSVIEW_DATA_SAMPLE sampleAccelZdata = {
+    .ID = SEGGER_SYSVIEW_DATA_ID_ACCEL_Z,
+    .pValue.pFloat= &G_ZAccel,
+};
+
 void Sensor_GetSettings(T_SensorSettings *aSettings)
 {
 #if (COMPILER_TYPE != VisualC)
@@ -70,7 +122,7 @@ void Sensor_GetSettings(T_SensorSettings *aSettings)
             // 3 bits are fraction, 7 bits are integer, and 1 sign bit
 
             i = reading >> 16;
-            G_Temperature = reading/65536.0; // For uC/Probe Demo
+            G_Temperature = reading/65536.0; // For tracing demo
             f = ((((TUInt32)reading) & 0xFFFF) * 10) >> 16;  // Convert to 1 digit decimal
             sprintf(G_SensorSettings.iBoardTemp, "%02d.%01d C",
                                           (int) i,
@@ -98,9 +150,14 @@ void Sensor_GetSettings(T_SensorSettings *aSettings)
             y /= 65536.0 * 0.8;
             z /= 65536.0 * 0.8;
             
-            G_XAccel = x; // For uC/Probe Demo
-            G_YAccel = y; // For uC/Probe Demo
-            G_ZAccel = z; // For uC/Probe Demo
+            G_XAccel = x; // For tracing demo
+            G_YAccel = y; // For tracing demo
+            G_ZAccel = z; // For tracing demo
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+            SEGGER_SYSVIEW_SampleData(&sampleAccelXdata);
+            SEGGER_SYSVIEW_SampleData(&sampleAccelYdata);
+            SEGGER_SYSVIEW_SampleData(&sampleAccelZdata);
+#endif
             
             xi = (TInt32)(x * 0.6);
             xf = (((TInt32)(x * 10)) & 0xF)*6/10; // Convert to 1 digit decimal
@@ -136,8 +193,14 @@ void Sensor_Initialize()
 {
     static TBool haveRun = EFalse;
 
-    if(!haveRun)
+    if(!haveRun) {
         UEZSemaphoreCreateBinary(&G_Sem);
+#if (SEGGER_ENABLE_SYSTEM_VIEW == 1)
+        SEGGER_SYSVIEW_RegisterData((SEGGER_SYSVIEW_DATA_REGISTER*)&regAccelDataX);
+        SEGGER_SYSVIEW_RegisterData((SEGGER_SYSVIEW_DATA_REGISTER*)&regAccelDataY);
+        SEGGER_SYSVIEW_RegisterData((SEGGER_SYSVIEW_DATA_REGISTER*)&regAccelDataZ);
+#endif
+    }
 }
 /*-------------------------------------------------------------------------*
  * End of File:  Sensor_Callbacks.c

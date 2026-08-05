@@ -42,7 +42,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: 3.54                                    *
+*       SystemView version: 3.62                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -62,6 +62,7 @@ Revision: $Rev: 26230 $
 **********************************************************************
 */
 
+#include "SEGGER_SYSVIEW_Conf.h"
 #include "Source/Library/SEGGER/RTT/SEGGER_RTT_Conf.h"
 #include "Source/Library/SEGGER/RTT/SEGGER_RTT.h"
 
@@ -88,17 +89,17 @@ extern "C" {
   #if (defined __SES_ARM) || (defined __CROSSWORKS_ARM) || (defined __SEGGER_CC__) || (defined __GNUC__) || (defined __clang__)
     #if (defined __ARM_ARCH_6M__) || (defined __ARM_ARCH_8M_BASE__)
       #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-    #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M_MAIN__))
+    #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_8M_MAIN__) || defined(__ARM_ARCH_8_1M_MAIN__))
       #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
     #endif
   #elif defined(__ICCARM__)
     #if (defined (__ARM6M__)          && (__CORE__ == __ARM6M__))          \
      || (defined (__ARM8M_BASELINE__) && (__CORE__ == __ARM8M_BASELINE__))
       #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM0
-    #elif (defined (__ARM7EM__)         && (__CORE__ == __ARM7EM__))         \
-       || (defined (__ARM7M__)          && (__CORE__ == __ARM7M__))          \
-       || (defined (__ARM8M_MAINLINE__) && (__CORE__ == __ARM8M_MAINLINE__)) \
-       || (defined (__ARM8M_MAINLINE__) && (__CORE__ == __ARM8M_MAINLINE__))
+    #elif (defined (__ARM7EM__)           && (__CORE__ == __ARM7EM__))         \
+       || (defined (__ARM7M__)            && (__CORE__ == __ARM7M__))          \
+       || (defined (__ARM8M_MAINLINE__)   && (__CORE__ == __ARM8M_MAINLINE__)) \
+       || (defined (__ARM8_1M_MAINLINE__) && (__CORE__ == __ARM8_1M_MAINLINE__))
       #define SEGGER_SYSVIEW_CORE SEGGER_SYSVIEW_CORE_CM3
     #endif
   #elif defined(__CC_ARM)
@@ -143,7 +144,7 @@ extern "C" {
 *    Convenience define to be used for SEGGER_SYSVIEW_SendSysDesc().
 */
 #ifndef   SEGGER_SYSVIEW_APP_NAME
-  //#define SEGGER_SYSVIEW_APP_NAME                 "SystemView-enabled Application"
+  #define SEGGER_SYSVIEW_APP_NAME                 "SystemView-enabled Application"
 #endif
 
 /*********************************************************************
@@ -158,7 +159,7 @@ extern "C" {
 *    Convenience define to be used for SEGGER_SYSVIEW_SendSysDesc().
 */
 #ifndef   SEGGER_SYSVIEW_DEVICE_NAME
-  //#define SEGGER_SYSVIEW_DEVICE_NAME              "undefined device"
+  #define SEGGER_SYSVIEW_DEVICE_NAME              "undefined device"
 #endif
 
 /*********************************************************************
@@ -265,23 +266,7 @@ extern "C" {
 *    1024
 */
 #ifndef   SEGGER_SYSVIEW_RTT_BUFFER_SIZE
-//  #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE          8192
-#endif
-
-/*********************************************************************
-*
-*       Define: SEGGER_SYSVIEW_SECTION
-*
-*  Description
-*    Section to place the SystemView RTT Buffer into.
-*  Default
-*    undefined: Do not place into a specific section.
-*  Notes
-*    If SEGGER_RTT_SECTION is defined, the default changes to use
-*    this section for the SystemView RTT Buffer, too.
-*/
-#if !(defined SEGGER_SYSVIEW_SECTION) && (defined SEGGER_RTT_SECTION)
-  #define SEGGER_SYSVIEW_SECTION                  SEGGER_RTT_SECTION
+  #define SEGGER_SYSVIEW_RTT_BUFFER_SIZE          8192
 #endif
 
 /*********************************************************************
@@ -313,8 +298,8 @@ extern "C" {
 *    .... addresses, to compress event parameters.
 *    Should be the lowest RAM address of the system.
 */
-#ifndef   SEGGER_SYSVIEW_ID_BASE 
-//  #define SEGGER_SYSVIEW_ID_BASE                  0
+#ifndef   SEGGER_SYSVIEW_ID_BASE
+  #define SEGGER_SYSVIEW_ID_BASE                  0
 #endif
 
 /*********************************************************************
@@ -331,7 +316,7 @@ extern "C" {
 *    e.g. 2 when Ids are 4 byte aligned.
 */
 #ifndef   SEGGER_SYSVIEW_ID_SHIFT
-  //#define SEGGER_SYSVIEW_ID_SHIFT                 0
+  #define SEGGER_SYSVIEW_ID_SHIFT                 2
 #endif
 
 /*********************************************************************
@@ -373,7 +358,7 @@ extern "C" {
 *    1
 */
 #ifndef   SEGGER_SYSVIEW_SUPPORT_LONG_ID
-  #define SEGGER_SYSVIEW_SUPPORT_LONG_ID          0
+  #define SEGGER_SYSVIEW_SUPPORT_LONG_ID          1
 #endif
 
 /*********************************************************************
@@ -432,7 +417,7 @@ extern "C" {
 *    1: Enabled
 */
 #ifndef   SEGGER_SYSVIEW_CAN_RESTART
-//  #define SEGGER_SYSVIEW_CAN_RESTART              1
+  #define SEGGER_SYSVIEW_CAN_RESTART              1
 #endif
 
 /*********************************************************************
@@ -469,7 +454,7 @@ extern "C" {
 *    is locked when writing the packet to the RTT buffer.
 */
 #ifndef   SEGGER_SYSVIEW_USE_STATIC_BUFFER
-//  #define SEGGER_SYSVIEW_USE_STATIC_BUFFER        1
+  #define SEGGER_SYSVIEW_USE_STATIC_BUFFER        1
 #endif
 
 /*********************************************************************
@@ -502,7 +487,7 @@ extern "C" {
 *    https://www.segger.com/products/development-tools/systemview/technology/post-mortem-mode
 */
 #ifndef   SEGGER_SYSVIEW_POST_MORTEM_MODE
-//  #define SEGGER_SYSVIEW_POST_MORTEM_MODE         0
+  #define SEGGER_SYSVIEW_POST_MORTEM_MODE         0
 #endif
 
 /*********************************************************************
@@ -569,7 +554,6 @@ extern "C" {
 #ifndef   SEGGER_SYSVIEW_UNLOCK
   #define SEGGER_SYSVIEW_UNLOCK()                 SEGGER_RTT_UNLOCK()
 #endif
-#include "SEGGER_SYSVIEW_Conf.h"
 
 #ifdef __cplusplus
 }

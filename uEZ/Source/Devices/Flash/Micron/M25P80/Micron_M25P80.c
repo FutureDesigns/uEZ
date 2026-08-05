@@ -50,7 +50,7 @@
 #include <uEZPlatform.h>
 #include <uEZDeviceTable.h>
 #include <uEZProcessor.h>
-#include <UEZSPI.h>
+#include <uEZSPI.h>
 
 /*-------------------------------------------------------------------------*
  * Constants:
@@ -179,17 +179,18 @@ static T_uezError IMicron_M25P80_IsBusy(
     T_uezError error = UEZ_ERROR_NONE;
     TUInt8 dataIn[2];
     TUInt8 dataOut[2];
+    TUInt32 iNumTransfersIn, iNumTransfersOut;
 
     dataOut[0] = MICRON_M23P80_READ_STATUS_REG;
 
-    p->iRequest.iNumTransfersIn = 1;
-    p->iRequest.iNumTransfersOut = 1;
-    p->iRequest.iNumTransfers = p->iRequest.iNumTransfersIn + p->iRequest.iNumTransfersOut;
+    iNumTransfersIn = 1;
+    iNumTransfersOut = 1;
+    p->iRequest.iNumTransfers = iNumTransfersIn + iNumTransfersOut;
     p->iRequest.iDataMISO = dataIn;
     p->iRequest.iDataMOSI = dataOut;
 
     if((error = UEZSPITransferPolled(p->iSPI, &p->iRequest)) == UEZ_ERROR_NONE){
-        if((dataIn[0] & STATUS_REG_WIP_BIT_MASK) == STATUS_REG_WIP_BIT_MASK){
+        if((dataIn[1] & STATUS_REG_WIP_BIT_MASK) == STATUS_REG_WIP_BIT_MASK){
             *aBusy = ETrue;
         } else {
             *aBusy = EFalse;
@@ -213,9 +214,6 @@ static T_uezError IMicron_M25P80_Command(
         TUInt32 aNumTransfersIn)
 {
     T_uezError error = UEZ_ERROR_NONE;
-
-    p->iRequest.iNumTransfersIn = aNumTransfersIn;
-    p->iRequest.iNumTransfersOut = aNumTransfersOut;
     p->iRequest.iNumTransfers = aNumTransfersOut + aNumTransfersIn;
     p->iRequest.iDataMISO = aDataIn;
     p->iRequest.iDataMOSI = aDataOut;
@@ -263,20 +261,21 @@ static TBool MicronDeviceIDRead(void *aWorkspace)
 
     TUInt8 dataOut[25];
     TUInt8 dataIn[25];
+    TUInt32 iNumTransfersIn, iNumTransfersOut;
 
-    p->iRequest.iNumTransfersIn = 21;
-    p->iRequest.iNumTransfersOut = 1;
-    p->iRequest.iNumTransfers = p->iRequest.iNumTransfersIn + p->iRequest.iNumTransfersOut;
+    iNumTransfersIn = 21;
+    iNumTransfersOut = 1;
+    p->iRequest.iNumTransfers = iNumTransfersIn + iNumTransfersOut;
     p->iRequest.iDataMISO = dataIn;
     p->iRequest.iDataMOSI = dataOut;
 
     dataOut[0] = 0x9F; //Read ID Register
 
     if(UEZSPITransferPolled(p->iSPI, &p->iRequest) == UEZ_ERROR_NONE){
-      if(dataIn[0] != 0){
-          if(dataIn[1] == 0x20 && dataIn[2] == 0x14){
+      if(dataIn[1] != 0){
+          if(dataIn[2] == 0x20 && dataIn[3] == 0x14){
               // JEDEC Codes match expected values, test pass.
-			  p->iMFGID = dataIn[0]; // The MFG ID can change even on the same part!
+			  p->iMFGID = dataIn[1]; // The MFG ID can change even on the same part!
               read = ETrue;
           }
       }
@@ -443,6 +442,7 @@ T_uezError Flash_Micron_M25P80_Write(
     TUInt8 dataOut[4 + MICRON_M23P80_PAGE_SIZE];
     TUInt32 dataToWrite;
     TBool isBusy = ETrue;
+    UEZ_PARAMETER_NOT_USED(startSector);
 
     if(!p->iDeviceFound){
         return UEZ_ERROR_NOT_FOUND;
@@ -568,6 +568,7 @@ T_uezError Flash_Micron_M25P80_BlockErase(
     TUInt32 bytesToErase = aNumBytes;
     TUInt8 dataOut[5];
     TBool isBusy = ETrue;
+    UEZ_PARAMETER_NOT_USED(startSector);
     
     if(!p->iDeviceFound){
         return UEZ_ERROR_NOT_FOUND;

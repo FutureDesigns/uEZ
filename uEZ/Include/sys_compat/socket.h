@@ -61,7 +61,7 @@
  */
 #include "Config.h"
 
-#if LWIP_2_0_x
+// This is for LWIP 2.X. For some other stack can change includes here.
 #include <lwip/opt.h>
 #include <lwip/init.h>
 #include <lwip/stats.h>
@@ -79,25 +79,7 @@
 #include <lwip/prot/igmp.h>
 #include <lwip/dns.h>
 #include <netif/etharp.h>
-#else
-#include <lwip/opt.h>
-#include <lwip/init.h>
-#include <lwip/stats.h>
-#include <lwip/sys.h>
-#include <lwip/mem.h>
-#include <lwip/memp.h>
-#include <lwip/pbuf.h>
-#include <lwip/netif.h>
-#include <lwip/sockets.h>
-#include <ipv4/lwip/ip.h>
-#include <lwip/raw.h>
-#include <lwip/udp.h>
-#include <lwip/tcp.h>
-#include <ipv4/lwip/autoip.h>
-#include <ipv4/lwip/igmp.h>
-#include <lwip/dns.h>
-#include <netif/etharp.h>
-#endif
+
 
 #ifdef __cplusplus
 extern "C" {

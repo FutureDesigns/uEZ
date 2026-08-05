@@ -231,17 +231,17 @@ static const char *month_table[12] = {
  *	A safe type should be used, and  sfifo should limit the
  *	maximum buffer size accordingly.
  */
-typedef int sfifo_atomic_t;
-#ifdef __TURBOC__
-#	define	SFIFO_MAX_BUFFER_SIZE	0x7fff
-#else /* Kludge: Assume 32 bit platform */
-#	define	SFIFO_MAX_BUFFER_SIZE	0x7fffffff
-#endif
+// uint32_t is atomic on Cortex-M4/M33
+typedef uint32_t sfifo_atomic_t;
+//#define	SFIFO_MAX_BUFFER_SIZE	INT32_MAX // 0x7fffffff
+#define	SFIFO_MAX_BUFFER_SIZE	INT16_MAX // 0x7fff
+
+// Note: There are some bugs where u16 is used below so we can't use >32kb currently anyway
 
 typedef struct sfifo_t
 {
 	char *buffer;
-	int size;			/* Number of bytes */
+	uint32_t size;			/* Number of bytes */
 	sfifo_atomic_t readpos;		/* Read position */
 	sfifo_atomic_t writepos;	/* Write position */
 } sfifo_t;
@@ -260,7 +260,7 @@ static char G_FTP_Password[32] = {0};
 /*
  * Alloc buffer, init FIFO etc...
  */
-static int sfifo_init(sfifo_t *f, int size)
+static int sfifo_init(sfifo_t *f, uint32_t size)
 {
 	memset(f, 0, sizeof(sfifo_t));
 
@@ -301,9 +301,9 @@ static void sfifo_close(sfifo_t *f)
  * Write bytes to a FIFO
  * Return number of bytes written, or an error code
  */
-static int sfifo_write(sfifo_t *f, const void *_buf, int len)
+static int sfifo_write(sfifo_t *f, const void *_buf, sfifo_atomic_t len)
 {
-	int total;
+	sfifo_atomic_t total;
 	int i;
 	const char *buf = (const char *)_buf;
 
@@ -409,7 +409,7 @@ static void send_data(struct tcp_pcb *pcb, struct ftpd_datastate *fsd)
 	u16_t len;
 
 	if (sfifo_used(&fsd->fifo) > 0) {
-		int i;
+		sfifo_atomic_t i;
 
 		/* We cannot send more data than space available in the send
 		   buffer. */
@@ -446,7 +446,7 @@ static void send_file(struct ftpd_datastate *fsd, struct tcp_pcb *pcb)
 		return;
 
 	if (fsd->vfs_file) { // todo put send buffer on heap dynamically when init
-		int len;
+		sfifo_atomic_t len;
 
 		len = sfifo_space(&fsd->fifo);
 		if (len == 0) {
@@ -478,7 +478,7 @@ static void send_file(struct ftpd_datastate *fsd, struct tcp_pcb *pcb)
 static void send_next_directory(struct ftpd_datastate *fsd, struct tcp_pcb *pcb, int shortlist)
 {
 	char buffer[1024];
-	int len;
+	sfifo_atomic_t len;
 
 	while (1) {
 	if (fsd->vfs_dirent == NULL)
@@ -1160,7 +1160,7 @@ static void send_msgdata(struct tcp_pcb *pcb, struct ftpd_msgstate *fsm)
 	u16_t len;
 
 	if (sfifo_used(&fsm->fifo) > 0) {
-		int i;
+		sfifo_atomic_t i;
 
 		/* We cannot send more data than space available in the send
 		   buffer. */
@@ -1195,7 +1195,7 @@ static void send_msg(struct tcp_pcb *pcb, struct ftpd_msgstate *fsm, char *msg, 
 {
 	va_list arg;
 	char buffer[1024];
-	int len;
+	sfifo_atomic_t len;
 
 	va_start(arg, msg);
 	vsprintf(buffer, msg, arg);

@@ -390,13 +390,13 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_ReadOtpRegion(
         TUInt32 aNumBytes)
 {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(aWorkspace);
-    UNUSED(aOffset);
-    UNUSED(aBuffer);
-    UNUSED(aNumBytes);
+    UEZ_PARAMETER_NOT_USED(aWorkspace);
+    UEZ_PARAMETER_NOT_USED(aOffset);
+    UEZ_PARAMETER_NOT_USED(aBuffer);
+    UEZ_PARAMETER_NOT_USED(aNumBytes);
     return UEZ_ERROR_NONE;
 #else
-   T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
+    T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
     TUInt32 spifiResult = 0;
 
     // Make sure its not in a programming mode.
@@ -435,10 +435,10 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_WriteOtpRegion(
 {
 
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(aWorkspace);
-    UNUSED(aOffset);
-    UNUSED(aBuffer);
-    UNUSED(aNumBytes);
+    UEZ_PARAMETER_NOT_USED(aWorkspace);
+    UEZ_PARAMETER_NOT_USED(aOffset);
+    UEZ_PARAMETER_NOT_USED(aBuffer);
+    UEZ_PARAMETER_NOT_USED(aNumBytes);
     return UEZ_ERROR_NONE;
 #else
     T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;
@@ -474,8 +474,8 @@ T_uezError Flash_NXP_LPC_SPIFI_M4_LockOtp(
         void *aWorkspace, TBool aLockOtp)
 {
 #if (DISABLE_FEATURES_FOR_BOOTLOADER == 1)
-    UNUSED(aWorkspace);
-    UNUSED(aLockOtp);
+    UEZ_PARAMETER_NOT_USED(aWorkspace);
+    UEZ_PARAMETER_NOT_USED(aLockOtp);
     return UEZ_ERROR_NONE;
 #else
     T_Flash_NXP_LPC_SPIFI_M4_Workspace *p = (T_Flash_NXP_LPC_SPIFI_M4_Workspace *)aWorkspace;

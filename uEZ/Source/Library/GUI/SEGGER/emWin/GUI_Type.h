@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2023  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V6.32 - Graphical user interface for embedded applications **
+** emWin V6.50 - Graphical user interface for embedded applications **
 All  Intellectual Property rights  in the Software belongs to  SEGGER.
 emWin is protected by  international copyright laws.  Knowledge of the
 source code may not be used to write a similar product.  This file may
@@ -34,7 +34,7 @@ License model:            emWin License Agreement, dated August 20th 2011 and Am
 Licensed platform:        NXP's ARM 7/9, Cortex-M0, M3, M4, M7, A7, M33
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2011-08-19 - 2023-09-03
+SUA period:               2011-08-19 - 2025-09-02
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_Type.h
@@ -288,11 +288,22 @@ typedef struct GUI_FONT_PROP {
   const struct GUI_FONT_PROP * pNext;          /* Pointer to next               */
 } GUI_FONT_PROP;
 
+typedef struct {
+  const U16 * pData;
+  unsigned    NumItems;
+} GUI_PROP_TABLE_INFO;
+
 typedef struct GUI_FONT_PROP_EXT {
   U16P First;                                  /* First character               */
   U16P Last;                                   /* Last character                */
   const GUI_CHARINFO_EXT         * paCharInfo; /* Address of first character    */
   const struct GUI_FONT_PROP_EXT * pNext;      /* Pointer to next               */
+#if GUI_USE_CODEPOINT_TABLE
+  //
+  // Optional codepoint table saves ROM, is faster but unfortunately it makes existing SIF fonts incompatible
+  //
+  const GUI_PROP_TABLE_INFO      * pTable;     /* Optional pointer to table     */
+#endif
 } GUI_FONT_PROP_EXT;
 
 typedef struct {
@@ -405,21 +416,21 @@ DECLARE_FONT(PROP_AA4);
 DECLARE_FONT(PROP_AA4_EXT);
 
 /* MONO: Monospaced fonts */
-#define GUI_FONTTYPE_MONO       \
-  GUIMONO_DispChar,             \
-  GUIMONO_GetCharDistX,         \
-  GUIMONO_GetFontInfo,          \
-  GUIMONO_IsInFont,             \
-  (GUI_GETCHARINFO *)0,         \
+#define GUI_FONTTYPE_MONO           \
+  GUIMONO_DispChar,                 \
+  GUIMONO_GetCharDistX,             \
+  GUIMONO_GetFontInfo,              \
+  GUIMONO_IsInFont,                 \
+  (GUI_GETCHARINFO *)0,             \
   (tGUI_ENC_APIList*)0
 
 /* PROP: Proportional fonts */
-#define GUI_FONTTYPE_PROP       \
-  GUIPROP_DispChar,             \
-  GUIPROP_GetCharDistX,         \
-  GUIPROP_GetFontInfo,          \
-  GUIPROP_IsInFont,             \
-  (GUI_GETCHARINFO *)0,         \
+#define GUI_FONTTYPE_PROP           \
+  GUIPROP_DispChar,                 \
+  GUIPROP_GetCharDistX,             \
+  GUIPROP_GetFontInfo,              \
+  GUIPROP_IsInFont,                 \
+  (GUI_GETCHARINFO *)0,             \
   (tGUI_ENC_APIList*)0
 
 /* PROP_EXT: Extended proportional fonts */
@@ -441,21 +452,21 @@ DECLARE_FONT(PROP_AA4_EXT);
   (tGUI_ENC_APIList*)0
 
 /* PROP: Proportional fonts SJIS */
-#define GUI_FONTTYPE_PROP_SJIS  \
-  GUIPROP_DispChar,             \
-  GUIPROP_GetCharDistX,         \
-  GUIPROP_GetFontInfo,          \
-  GUIPROP_IsInFont,             \
-  (GUI_GETCHARINFO *)0,         \
+#define GUI_FONTTYPE_PROP_SJIS      \
+  GUIPROP_DispChar,                 \
+  GUIPROP_GetCharDistX,             \
+  GUIPROP_GetFontInfo,              \
+  GUIPROP_IsInFont,                 \
+  (GUI_GETCHARINFO *)0,             \
   &GUI_ENC_APIList_SJIS
 
 /* PROPAA: Proportional, antialiased fonts */
-#define GUI_FONTTYPE_PROPAA       \
-  GUIPROPAA_DispChar,             \
-  GUIPROPAA_GetCharDistX,         \
-  GUIPROPAA_GetFontInfo,          \
-  GUIPROPAA_IsInFont,             \
-  (GUI_GETCHARINFO *)0,           \
+#define GUI_FONTTYPE_PROPAA         \
+  GUIPROPAA_DispChar,               \
+  GUIPROPAA_GetCharDistX,           \
+  GUIPROPAA_GetFontInfo,            \
+  GUIPROPAA_IsInFont,               \
+  (GUI_GETCHARINFO *)0,             \
   (tGUI_ENC_APIList*)0
 
 /* PROP_AA2: Proportional, antialiased fonts, 2bpp */
@@ -540,6 +551,19 @@ struct GUI_FONT {
 
 /*********************************************************************
 *
+*       GUI_KERNING_INFO
+*/
+typedef struct GUI_KERNING_INFO GUI_KERNING_INFO;
+
+struct GUI_KERNING_INFO {
+  const GUI_FONT   * pFont;
+  const U16        * pData;
+  U32                NumItems;
+  GUI_KERNING_INFO * pNext;
+};
+
+/*********************************************************************
+*
 *       Bitmap serialization (BMP)
 */
 typedef void GUI_CALLBACK_VOID_U8_P(U8 Data, void * p);
@@ -591,17 +615,64 @@ typedef struct tGUI_SIF_APIList_struct {
 } tGUI_SIF_APIList;
 
 #define GUI_SIF_TYPE              tGUI_SIF_APIList
+//
+// Old macros left for compatibility.
+//
 #define GUI_SIF_TYPE_PROP         &GUI_SIF_APIList_Prop
 #define GUI_SIF_TYPE_PROP_EXT     &GUI_SIF_APIList_Prop_Ext
-#define GUI_SIF_TYPE_PROP_FRM     &GUI_SIF_APIList_Prop_Frm
 #define GUI_SIF_TYPE_PROP_AA2     &GUI_SIF_APIList_Prop_AA2
 #define GUI_SIF_TYPE_PROP_AA4     &GUI_SIF_APIList_Prop_AA4
 #define GUI_SIF_TYPE_PROP_AA2_EXT &GUI_SIF_APIList_Prop_AA2_EXT
 #define GUI_SIF_TYPE_PROP_AA4_EXT &GUI_SIF_APIList_Prop_AA4_EXT
 
+
+/*********************************************************************
+*
+*       SIF font types
+* 
+*  Description
+*    Available font type defines to be used by the \a{pFontType} parameter in function GUI_SIF_CreateFont().
+*/
+//
+// New macros: 'standard' renamed to 'legacy', 'extended' renamed to 'standard'.
+// Macro for framed fonts was left unchanged.
+//
+#define GUI_SIF_TYPE_PROP_LEG       GUI_SIF_TYPE_PROP            // Should be used if the parameter \a{pFont} points to a legacy proportional font.
+#define GUI_SIF_TYPE_PROP_LEG_AA2   GUI_SIF_TYPE_PROP_AA2        // Should be used if the parameter \a{pFont} points to a legacy proportional font that uses 2bpp anti-aliasing.
+#define GUI_SIF_TYPE_PROP_LEG_AA4   GUI_SIF_TYPE_PROP_AA4        // Should be used if the parameter \a{pFont} points to a legacy proportional font that uses 4bpp anti-aliasing.
+#define GUI_SIF_TYPE_PROP_FRM       &GUI_SIF_APIList_Prop_Frm    // Should be used if the parameter \a{pFont} points to a standard proportional framed font.
+#define GUI_SIF_TYPE_PROP_STD       GUI_SIF_TYPE_PROP_EXT        // Should be used if the parameter \a{pFont} points to a standard proportional font.
+#define GUI_SIF_TYPE_PROP_STD_AA2   GUI_SIF_TYPE_PROP_AA2_EXT    // Should be used if the parameter \a{pFont} points to a standard proportional font that uses 2bpp anti-aliasing.
+#define GUI_SIF_TYPE_PROP_STD_AA4   GUI_SIF_TYPE_PROP_AA4_EXT    // Should be used if the parameter \a{pFont} points to a standard proportional font that uses 4bpp anti-aliasing.
+
+
 /*********************************************************************
 *
 *       External binary font structures (XBF)
+*/
+/*********************************************************************
+*
+*       GUI_XBF_GET_DATA_FUNC
+* 
+*  Description
+*    A callback which is used for loading XBF files into RAM, e.g. from
+*    a file system.
+*    
+*    For more details about GetData functions in general, please refer
+*    to the chapter \ref{FileAccess}.
+* 
+*  Parameters
+*    Off:      Current byte offset in the file.
+*    NumBytes: Number of bytes to be read.
+*    pVoid:    [IN] Parameter is passed to the callback function when
+*                   requesting font data. It can be used for example to
+*                   pass a file handle to the callback function.
+*    pBuffer:  [IN] Pointer to a preallocated buffer where the read file data
+*                   should be written to.
+* 
+*  Return value
+*    == 0: On success.
+*    == 1: On error.
 */
 typedef int GUI_XBF_GET_DATA_FUNC(U32 Off, U16 NumBytes, void * pVoid, void * pBuffer);
 
@@ -622,11 +693,30 @@ typedef struct tGUI_XBF_APIList_struct {
 } tGUI_XBF_APIList;
 
 #define GUI_XBF_TYPE              tGUI_XBF_APIList
+//
+// Old macros left for compatibility.
+//
 #define GUI_XBF_TYPE_PROP         &GUI_XBF_APIList_Prop
 #define GUI_XBF_TYPE_PROP_EXT     &GUI_XBF_APIList_Prop_Ext
-#define GUI_XBF_TYPE_PROP_FRM     &GUI_XBF_APIList_Prop_Frm
 #define GUI_XBF_TYPE_PROP_AA2_EXT &GUI_XBF_APIList_Prop_AA2_Ext
 #define GUI_XBF_TYPE_PROP_AA4_EXT &GUI_XBF_APIList_Prop_AA4_Ext
+
+/*********************************************************************
+*
+*       XBF font types
+* 
+*  Description
+*    Available font type defines to be used by the \a{pFontType} parameter in function GUI_XBF_CreateFont().
+*/
+//
+// New macros: 'standard' renamed to 'legacy', 'extended' renamed to 'standard'.
+// Macro for framed fonts was left unchanged.
+//
+#define GUI_XBF_TYPE_PROP_LEG         GUI_XBF_TYPE_PROP            // Should be used if the parameter \a{pFont} points to a legacy proportional font.
+#define GUI_XBF_TYPE_PROP_FRM         &GUI_XBF_APIList_Prop_Frm    // Should be used if the parameter \a{pFont} points to a standard proportional font.
+#define GUI_XBF_TYPE_PROP_STD         GUI_XBF_TYPE_PROP_EXT        // Should be used if the parameter \a{pFont} points to a standard framed proportional font.
+#define GUI_XBF_TYPE_PROP_STD_AA2     GUI_XBF_TYPE_PROP_AA2_EXT    // Should be used if the parameter \a{pFont} points to a standard proportional font that uses 2bpp anti-aliasing.
+#define GUI_XBF_TYPE_PROP_STD_AA4     GUI_XBF_TYPE_PROP_AA4_EXT    // Should be used if the parameter \a{pFont} points to a standard proportional font that uses 4bpp anti-aliasing.
 
 /*********************************************************************
 *
@@ -654,7 +744,7 @@ typedef struct {
 typedef struct {
   GUI_TTF_DATA * pTTF;     // Pointer to GUI_TTF_DATA structure which contains location and size
                            // of font file.
-  U32 aImageTypeBuffer[4]; /* Buffer for image type structure */
+  U32 aImageTypeBuffer[6]; /* Buffer for image type structure */
   int PixelHeight;         // Pixel height of new font. It means the height of the surrounding
                            // rectangle between the glyphs 'g' anf 'f'. Please notice that it is
                            // not the distance between two lines of text. With other words the value

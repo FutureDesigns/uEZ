@@ -22,7 +22,8 @@ void OnProjectLoad (void) {
   //
   // User settings
   //
-  File.Open ("$(ProjectDir)/THUMB Flash Debug/uEZGUI-4088-43WQN.elf");
+  Project.SetOSPlugin ("FreeRTOSPlugin_Cortex-M");
+  File.Open ("$(ProjectDir)/Debug_Heap4/uEZGUI-4088-43WQN.elf");
 }
 
 /*********************************************************************

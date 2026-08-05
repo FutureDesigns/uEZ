@@ -436,12 +436,13 @@ void VideoPlayer(const T_choice *aChoice)
     T_uezError error;
     TUInt32 backlightLevel, aNumberBacklightLevels;
     TBool isAudioPlaying;
+    TBool doesTheScreenSaverNeedARestart;
 #if UEZ_ENABLE_BUTTON_BOARD
     T_uezDevice keypadDevice;
 #endif
     PARAM_NOT_USED(aChoice);
 
-    G_pVideoInfo = (T_VideoInfo *)aChoice->iData;
+    G_pVideoInfo = (T_VideoInfo *)aChoice->iData; // At this point in the software, the video has already been selected
 
     // Calculate the LCD offset
     ws.iExit = EFalse;
@@ -466,6 +467,14 @@ void VideoPlayer(const T_choice *aChoice)
 #else
   // No need to init this file buffer memory
 #endif
+
+    // If we did not return, proceed towards playing the video.
+    if(AppIsDemoScreenSaverRunning() == ETrue) {
+        AppStopDemoScreenSaver();
+        doesTheScreenSaverNeedARestart = ETrue;
+    } else {
+        doesTheScreenSaverNeedARestart = EFalse;
+    }
 
     UEZQueueCreate(1, sizeof(T_uezInputEvent), &queue);
 #if UEZ_REGISTER
@@ -575,6 +584,10 @@ void VideoPlayer(const T_choice *aChoice)
 #endif
     UEZTSClose(tsDevice, queue);
     UEZQueueDelete(queue);
+    
+  if(doesTheScreenSaverNeedARestart == ETrue) {
+      StartDemoScreenSaver();
+  }
 }
 
 /*-------------------------------------------------------------------------*

@@ -815,6 +815,10 @@ T_uezError LPC17xx_40xx_EMAC_Configure(void *aWorkspace, T_EMACSettings *aSettin
     TUInt16 v;
 #endif
 
+#if (EMAC_USE_INTERRUPT_TIMEOUT_DETECT == 1)
+    p->iPhyTimeoutDetect = 0; // reset the counter every re-init attempt
+#endif
+
     // Because the LPC17xx_40xx has a problem with EMAC's that are missing,
     // we will detect the EMAC using bit bang I2C
     // Don't allow this if not detected
@@ -1251,8 +1255,10 @@ void LPC17xx_40xx_EMAC_EnableReceiveInterrupt(
     p->iReceiveCallback = aCallback;
     p->iReceiveCallbackWorkspace = aCallbackWorkspace;
     // Register this interrupt (if not already)
-    InterruptRegister(ENET_IRQn, (TISRFPtr)LPC17xx_40xx_EMAC_ISR,
-        INTERRUPT_PRIORITY_HIGH, "EMAC");
+    if(InterruptIsRegistered(ENET_IRQn) == EFalse) {
+      InterruptRegister(ENET_IRQn, (TISRFPtr)LPC17xx_40xx_EMAC_ISR,
+          INTERRUPT_PRIORITY_HIGH, "EMAC");
+    }
     InterruptEnable(ENET_IRQn);
     // Turn on those types of interrupts
     LPC_EMAC->IntEnable = INT_RX_DONE;

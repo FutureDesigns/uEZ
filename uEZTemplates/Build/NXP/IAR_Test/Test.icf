@@ -1,38 +1,26 @@
-/*###ICF### Section handled by ICF editor, don't touch! ****/
-/*-Editor annotation file-*/
-/* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_0.xml" */
-/*-Specials-*/
-$[ifdef LPC1788]define symbol __ICFEDIT_intvec_start__ = 0x00000000;$[endif]$[SkipNewLine]
-$[ifdef LPC4088]define symbol __ICFEDIT_intvec_start__ = 0x00000000;$[endif]$[SkipNewLine]
-$[ifdef LPC4357]define symbol __ICFEDIT_intvec_start__ = 0x1A000000;$[endif]$[SkipNewLine]
-/*-Memory Regions-*/
-/*-Sizes-*/
-define symbol __ICFEDIT_size_heap__        = 3500000;
-define symbol __ICFEDIT_size_cstack__      = 0x800;  // main stack
-define symbol __ICFEDIT_size_proc_stack__  = 0x0;    // process stack for MPU RTOS port usage
-define symbol __ICFEDIT_size_svcstack__    = 0x10;   // These stacks aren't normally used in uEZGUI/Cortex-M projects.
-define symbol __ICFEDIT_size_irqstack__    = 0x100;
-define symbol __ICFEDIT_size_fiqstack__    = 0x100;
-define symbol __ICFEDIT_size_undstack__    = 0x10;
-define symbol __ICFEDIT_size_abtstack__    = 0x10;
-/**** End of ICF editor section. ###ICF###*/
-
 /*-- Sizes: -----------------------------------------------------------------*/
 /* This must match the number of implemented vectors * 4 and be padded to an 8 byte boundary
-(check the mapfile to ensure that the kernel function region is correctly occupying
-the first 8K region of flash). There does not seem to be any way of dynamically
-determining the size of the vector table section at link time, hence this direct definition. */
-$[ifdef LPC1788]define symbol __size_vectors__              = 0xE8;$[endif]$[SkipNewLine]
-$[ifdef LPC4088]define symbol __size_vectors__              = 0xE8;$[endif]$[SkipNewLine]
-$[ifdef LPC4357]define symbol __size_vectors__              = 0x118;$[endif]$[SkipNewLine]
+(check the mapfile to ensure that the .intvec region is correctly occupying the first used region of flash). */
+$[ifdef LPC1788]/* size = (41 IRQ + 16 Cortex IRQ) * 4 = 228(+4 padding) = 0xE8 total */
+define symbol __size_vectors__              = 0xE8;$[endif]$[SkipNewLine]
+$[ifdef LPC4088]/* size = (41 IRQ + 16 Cortex IRQ) * 4 = 228(+4 padding) = 0xE8 total */
+define symbol __size_vectors__              = 0xE8;$[endif]$[SkipNewLine]
+$[ifdef LPC4357]/* size = (53 IRQ + 16 Cortex IRQ) * 4 = 276(+4 padding) = 0x118 total */
+define symbol __size_vectors__              = 0x118;$[endif]$[SkipNewLine]
 
 define memory mem with size = 4G;
 
 /*-- uEZ Defines: -----------------------------------------------------------*/
+define symbol BOOTLOADER_HEADER  = 0x100; // 256 Byte standard bootloader header
+
+/* To switch between bootloader and non-bootloader change which define is used. */
+//define symbol BOOTLOADER_OFFSET = 0x10000 + BOOTLOADER_HEADER; // bootloader (64KB)
+define symbol BOOTLOADER_OFFSET   = 0x0; // non-bootloader
+
 /*-Memory Region Start and End Addresss symbols-*/$[SkipNewLine]
 $[ifdef LPC1788]
 /********** Flash Bank A Region **********/
-define symbol FLASHA_start__     = 0x00000080;
+define symbol FLASHA_start__     = 0x00000000 + BOOTLOADER_OFFSET;
 define symbol FLASHA_end__       = 0x0007FFFF;
 /********* CRP (Code Read Protection) Region *********/
 define symbol CRP1_start__       = 0x000002FC;
@@ -62,7 +50,7 @@ define region NORFlash_region = mem:[from NORFlash_start to NORFlash_end];$[endi
 $[SkipNewLine]
 $[ifdef LPC4088]
 /********** Flash Bank A Region **********/
-define symbol FLASHA_start__     = 0x00000080;
+define symbol FLASHA_start__     = 0x00000000 + BOOTLOADER_OFFSET;
 define symbol FLASHA_end__       = 0x0007FFFF;
 /********* CRP (Code Read Protection) Region *********/
 define symbol CRP1_start__       = 0x000002FC;
@@ -92,7 +80,7 @@ define region SPIFI_region = mem:[from SPIFI_start to SPIFI_end];$[endif]$[SkipN
 $[SkipNewLine]
 $[ifdef LPC4357]
 /********** Flash Bank A and B Regions **********/
-define symbol FLASHA_start__     = 0x1A000114;
+define symbol FLASHA_start__     = 0x1A000000 + BOOTLOADER_OFFSET;
 define symbol FLASHA_end__       = 0x1A06FFFF; // 448KB out of 512KB max, leave room for CM0 project
 define symbol FLASHB_start__     = 0x1B000000;
 define symbol FLASHB_end__       = 0x1B06FFFF; // 448KB out of 512KB max, leave room for CM0 project
@@ -135,7 +123,26 @@ define region AHB_SRAM1_2_region = mem:[from AHB_SRAM1_start__ to AHB_SRAM2_end_
 define region ETB_SRAM_region = mem:[from ETB_SRAM_start__ to ETB_SRAM_end__];
 define region SDRAM_region = mem:[from SDRAM_start__ to SDRAM_end__];
 define region SPIFI_region = mem:[from SPIFI_start to SPIFI_end];
-define region EEPROM_region = mem:[from __EE_start__ to __EE_end__];$[endif]$[SkipNewLine]
+define region EEPROM_region = mem:[from __EE_start__ to __EE_end__];$[endif]
+
+/*###ICF### Section handled by ICF editor, don't touch! ****/
+/*-Editor annotation file-*/
+/* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_0.xml" */
+/*-Specials-*/
+$[ifdef LPC1788]define symbol __ICFEDIT_intvec_start__ = FLASHA_start__;$[endif]$[SkipNewLine]
+$[ifdef LPC4088]define symbol __ICFEDIT_intvec_start__ = FLASHA_start__;$[endif]$[SkipNewLine]
+$[ifdef LPC4357]define symbol __ICFEDIT_intvec_start__ = FLASHA_start__;$[endif]$[SkipNewLine]
+/*-Memory Regions-*/
+/*-Sizes-*/
+define symbol __ICFEDIT_size_heap__        = 3500000; // minimum size
+define symbol __ICFEDIT_size_cstack__      = 0x800;  // main stack
+define symbol __ICFEDIT_size_proc_stack__  = 0x0;    // process stack for MPU RTOS port usage
+define symbol __ICFEDIT_size_svcstack__    = 0x10;   // These stacks aren't normally used in uEZGUI/Cortex-M projects.
+define symbol __ICFEDIT_size_irqstack__    = 0x100;
+define symbol __ICFEDIT_size_fiqstack__    = 0x100;
+define symbol __ICFEDIT_size_undstack__    = 0x10;
+define symbol __ICFEDIT_size_abtstack__    = 0x10;
+/**** End of ICF editor section. ###ICF###*/
 
 /*-- Blocks: ----------------------------------------------------------------*/
 define block HEAP       with alignment = 8, minimum size = __ICFEDIT_size_heap__, expanding size { rw section ".heap" };
@@ -151,19 +158,18 @@ define block ABT_STACK  with alignment = 8, size = __ICFEDIT_size_abtstack__ { }
 initialize by copy { readwrite };
 do not initialize  { section .noinit, section .non_init };
 
-/* Define a block for the kernel's functions.  - __size_vectors__ because the 
-first part of the 8K is taken by the interrupt vectors. */
-define block __kernel_functions_block__ with alignment = 8, 
-    size = 0x2000 - __size_vectors__ { section __kernel_functions__ };
-
-/* Place the interrupt vectors at the required address, followed by the kernel's functions. */
-place at address mem:__ICFEDIT_intvec_start__ { 
+/* Define a block (to use minimum size) for the interrupt vectors and kernel's functions. */
+define block __kernel_functions_block__ with alignment = 8, minimum size = __size_vectors__ { 
     readonly section .intvec, 
-    block __kernel_functions_block__ 
+    section __kernel_functions__ 
+};
+/* Place the interrupt vectors at the required address, followed by the kernel's functions. */
+place at address mem:__ICFEDIT_intvec_start__ {
+    block __kernel_functions_block__
 };
 /* Define a block for the kernel's data. */
 define block __kernel_data_block__ with alignment = 0x400, size = 0x400 { section __kernel_data__ };
-$[SkipNewLine]
+
 $[ifdef LPC1788]
 place in FLASHA_region   { readonly };$[endif]$[SkipNewLine]
 $[ifdef LPC4088]
@@ -237,15 +243,15 @@ place in SDRAM_region {
 };
 
 $[ifdef LPC1788]place in NORFlash_region { 
-    readonly section ExternalFlashText,
-    readonly section ExternalFlashRodata,
-    readonly section ExternalFlash,
+    readonly section .ExternalFlashText,
+    readonly section .ExternalFlashRodata,
+    readonly section .ExternalFlash,
     //ro object background.o
 };$[endif]$[SkipNewLine]
 $[ifdef LPC4088]place in SPIFI_region { 
-    readonly section ExternalFlashText,
-    readonly section ExternalFlashRodata,
-    readonly section ExternalFlash,
+    readonly section .ExternalFlashText,
+    readonly section .ExternalFlashRodata,
+    readonly section .ExternalFlash,
     ro object 1.o,
     ro object 2.o,
     ro object 3.o,
@@ -254,9 +260,9 @@ $[ifdef LPC4088]place in SPIFI_region {
     //ro object background.o
 };$[endif]$[SkipNewLine]
 $[ifdef LPC4357]place in SPIFI_region { 
-    readonly section ExternalFlashText,
-    readonly section ExternalFlashRodata,
-    readonly section ExternalFlash,
+    readonly section .ExternalFlashText,
+    readonly section .ExternalFlashRodata,
+    readonly section .ExternalFlash,
     ro object 1.o,
     ro object 2.o,
     ro object 3.o,
@@ -317,3 +323,4 @@ export symbol FLASHA_end__;
 export symbol SRAM1_end;$[ifdef LPC4357]
 export symbol SRAM2_end__;$[endif]
 export symbol SDRAM_end__;
+
